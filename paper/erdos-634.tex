@@ -1,0 +1,402 @@
+\documentclass[11pt,reqno]{amsart}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\DeclareMathOperator{\Area}{Area}
+
+\title[A signed-direction invariant for triangle tilings]{A signed-direction invariant for triangle tilings, and the exclusion of primes congruent to $3$ modulo $4$}
+\author{Vico Bonfioli}
+\date{\today}
+
+\begin{document}
+
+\begin{abstract}
+For a triangle $T$ and a triangle $ABC$, an \emph{$N$-tiling} is a dissection of $ABC$ into $N$
+triangles each congruent to $T$. Erd\H{o}s asked which $N$ occur; a folklore conjecture is that no
+prime $N\equiv 3\pmod 4$ does. By the classification of Laczkovich and the branch theorems of
+Beeson, the conjecture reduces to a tile with a $2\pi/3$ angle on a non-equilateral triangle, where
+a prime count forces $ABC$ isosceles. For that isosceles case Beeson established a finite lower
+bound on $N$, and Zhang's recent constructions led to the conjecture that no prime occurs; we prove
+it. We introduce a translation-invariant, signed-direction tiling functional, linear in edge length
+and hence insensitive to non-edge-to-edge incidences, whose integrality forces, for an isosceles
+target, the elementary fact that $(c-a-b)/\sqrt b$ is never an integer for a primitive triple with
+$c^2=a^2+ab+b^2$. With a self-contained reduction of the scalene shapes, this completes the
+exclusion of primes $\equiv 3\pmod 4$, conditional on the cited classification. The
+number-theoretic core is machine-checked in Lean~4; the geometric lemmas are verified numerically
+and are offered for refereeing.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Let $T$ be a triangle (the \emph{tile}). An \emph{$N$-tiling} of a triangle $ABC$ is a way of
+writing $ABC$ as a union of $N$ triangles, each congruent to $T$, with pairwise disjoint interiors.
+We do \emph{not} assume the tiling is edge-to-edge: a vertex of one tile may lie in the relative
+interior of an edge of another. Erd\H{o}s asked (reported by Soifer~\cite{Soifer}) to determine the
+set of $N$ for which some triangle admits an $N$-tiling by some tile. Every perfect square occurs
+(any triangle, by the $n^2$ subdivision), and Soifer observed that $n^2+m^2$, $2n^2$, $3n^2$ and
+$6n^2$ occur as well. The outstanding question is whether the primes $\equiv 3\pmod 4$, which are
+exactly the primes that are not sums of two squares, are excluded.
+
+\begin{theorem}\label{thm:main}
+No prime $N\equiv 3\pmod 4$ is a number of congruent triangles into which some triangle can be cut.
+In particular, no triangle can be cut into $19$ congruent triangles.
+\end{theorem}
+
+The proof rests on Laczkovich's classification of triangle tilings~\cite{Laczkovich1995,
+Laczkovich2012}, organized by Beeson across a series of papers \cite{BeesonI, BeesonIII,
+BeesonIso, BeesonSeven, BeesonEq}. For a prime number of tiles every branch of the classification
+is excluded by an existing theorem, with one exception: a tile having a $2\pi/3$ angle, tiling a
+non-equilateral triangle. We treat that branch.
+
+This branch is the active frontier. Zhang~\cite{Zhang} classifies the non-equilateral
+$2\pi/3$ shapes into six sporadic similarity types (Section~\ref{sub:shapes} below), constructs
+families of tilings for each, and conjectures that the constructed $N$, all composite, are the only
+ones; the present results prove the no-prime half of that conjecture for the isosceles type, and
+reduce the scalene types directly. For the isosceles type Beeson~\cite{BeesonIso} had already
+established a finite lower bound $N\ge 2736$, excluding small $N$; the invariant below removes the
+bound, excluding \emph{every} prime. The adjacent Erd\H{o}s Problem~633, on tilings into a square
+number of triangles, was recently settled by Beeson, Laczkovich and Zhang~\cite{Erdos633}.
+
+Two reductions prepare it. First, by the rationality theorem of Beeson and
+Zhang~\cite{BeesonZhang}, such a tile has commensurable sides, so after scaling we may take it
+integer-sided with $c^2=a^2+ab+b^2$. Second, an elementary area-and-incidence argument shows that a
+\emph{prime} number of such tiles forces $ABC$ to be \emph{isosceles}
+(Section~\ref{sec:reduction}).
+
+The heart of the paper is Section~\ref{sec:invariant}. The natural parity argument for a $2\pi/3$
+tile (a black/white colouring of the tiles) fails, because a vertex of the tiling may be surrounded
+by an even number of tiles, so no consistent two-colouring exists. We replace it by a functional
+$\Phi$ that assigns to a directed edge of direction $\theta=j\frac\pi3+k\alpha$ the weight
+$(\text{length})\cdot(-1)^j$. Two features make it work: $\Phi(\theta+\pi)=-\Phi(\theta)$, so
+interior edges cancel; and the weight is \emph{linear in edge length}, so the cancellation is
+unaffected by non-edge-to-edge incidences, where one long edge meets several shorter ones summing
+to it. Summing over the tiles, $\Phi$ of the boundary equals an integer multiple of a fixed
+tile-value $c+a-b$. For an isosceles target this forces $(c-a-b)/\sqrt b\in\Z$, which never holds
+(Section~\ref{sec:isosceles}). Assembling the branches proves Theorem~\ref{thm:main}
+(Section~\ref{sec:assembly}).
+
+The combinatorial and numerical claims are verified by the scripts in the accompanying repository,
+and the number-theoretic core (Lemma~\ref{lem:nonint}) is formalized and machine-checked in Lean~4
+with Mathlib; see Section~\ref{sec:verification}.
+
+\section{Preliminaries}\label{sec:prelim}
+
+\subsection*{The classification.}
+By Laczkovich~\cite{Laczkovich1995,Laczkovich2012}, every $N$-tiling of a triangle falls into one
+of finitely many types of pairs $(ABC,T)$. For a prime $N$ the relevant dichotomy, in Beeson's
+organization~\cite{BeesonSeven}, is: either the angles of $T$ are pairwise commensurable with $\pi$,
+or they are not. If they are commensurable, then $N$ is a square, a sum of two squares, or
+$2$, $3$ or $6$ times a square \cite[Thm.~7]{BeesonSeven}; a prime $\equiv 3\pmod4$ is none of
+these. If they are not, then (after the right-angle and similar-tile cases, which give
+$N$ a sum of two squares or $N=n^2$ \cite{BeesonI, SWW}) the tile has a special angle and falls into
+one of: $3\alpha+2\beta=\pi$, for which $N$ is not prime \cite{BeesonIII}; an isosceles tile with
+$\gamma=2\alpha$, for which $N$ is not squarefree \cite[Thm.~11.7]{BeesonIso}; or the tile has an
+angle equal to $\pi/3$ or $2\pi/3$. The case of a $\pi/3$ or $2\pi/3$ tile on an \emph{equilateral}
+triangle gives $N$ not prime \cite[Thms.~3 and 6]{BeesonEq}. What remains for a prime $N$ is a tile
+with a $\pi/3$ or $2\pi/3$ angle on a \emph{non-equilateral} triangle. A vertex enumeration
+(Section~\ref{sub:shapes}) shows the $\pi/3$ case admits only equilateral or tile-similar $ABC$,
+already covered; so the sole remaining branch is a $2\pi/3$ tile, which we now fix.
+
+\subsection*{The tile.}
+Throughout, $T$ has angles $(\alpha,\beta,\gamma)$ opposite sides $(a,b,c)$, with
+$\gamma=2\pi/3$, hence $\alpha+\beta=\pi/3$; we treat the incommensurable case, $\alpha$ an
+irrational multiple of $\pi$. By Beeson--Zhang~\cite{BeesonZhang}, $T$ has commensurable sides, so
+we scale to
+\begin{equation}\label{eq:tile}
+(a,b,c)\in\Z^3,\qquad \gcd(a,b,c)=1,\qquad c^2=a^2+ab+b^2
+\end{equation}
+(the law of cosines at $\gamma=2\pi/3$). We call such a triple a \emph{primitive $120^\circ$-triple}.
+If a prime $p$ divides two of $a,b,c$ it divides the third (by~\eqref{eq:tile}), so
+\eqref{eq:tile} gives $\gcd(a,b)=\gcd(a,c)=\gcd(b,c)=1$. One computes
+\begin{equation}\label{eq:trig}
+\sin\alpha=\tfrac{a\sqrt3}{2c},\quad \cos\alpha=\tfrac{2b+a}{2c},\qquad
+\sin\beta=\tfrac{b\sqrt3}{2c},\quad \cos\beta=\tfrac{2a+b}{2c}.
+\end{equation}
+
+\subsection*{The direction grid.}
+Set $G=\{\,j\frac\pi3+k\alpha:j,k\in\Z\,\}$ (mod $2\pi$). We claim every edge of every tile in a
+tiling points in a direction lying in $G$, for a single fixed reference. Fix the reference along an
+edge of one tile; its three edge-directions are then in $G$, since the tile angles
+$\alpha,\beta=\frac\pi3-\alpha,\gamma=\frac{2\pi}3$ all lie in $\Z\alpha+\Z\frac\pi3$. Now argue by
+adjacency. The tiling fills a connected region, so any tile $t'$ shares at least a boundary point
+$P$ with the union of the tiles already placed; at $P$ the surrounding corner angles each belong to
+$\{\alpha,\beta,\gamma\}$, and a directed edge of $t'$ at $P$ differs from a known grid direction at
+$P$ by a sum of such angles, hence lies in $G$; the remaining edges of $t'$ then differ from it by
+$\Z$-combinations of $\alpha,\frac\pi3$, so all of $t'$ is in $G$. This uses only the angles meeting
+at a point and so applies verbatim at non-edge-to-edge incidences, where $P$ lies in the relative
+interior of an edge (the angles there sum to $\pi$ rather than $2\pi$). Since $\alpha/\pi$ is
+irrational, $\frac\pi3$ and $\alpha$ are $\Q$-linearly independent, so the pair $(j,k)$ is
+determined by the direction (and $(-1)^j$ by the direction alone, as $2\pi=6\cdot\frac\pi3$).
+
+\subsection*{Vertex types and shapes of $ABC$.}\label{sub:shapes}
+A corner of $ABC$ is filled by tile-corners, so its measure is $m\alpha+k\frac\pi3$ with
+$(m,k)=(P-Q,\,Q+2R)$ for nonnegative integers $P,Q,R$ counting the $\alpha,\beta,\gamma$ corners
+there. The three corners satisfy $\sum m_i=0$ and $\sum k_i=3$. Enumerating all such triples (a
+finite computation; see Section~\ref{sec:verification}) gives exactly eleven shapes of $ABC$: the
+equilateral triangle; two isosceles triangles, with base angles $\alpha$ (apex $\alpha+3\beta$) and
+$\beta$ (apex $\beta+3\alpha$); and eight scalene triangles, namely
+\[
+F_1=(\alpha,\alpha+\beta,\alpha+2\beta),\ \ F_2=(2\alpha,2\beta,\alpha+\beta),\ \
+F_3=(\alpha,2\alpha,3\beta),\ \ F_4=(\alpha,2\beta,2\alpha+\beta),
+\]
+their reflections (interchanging $\alpha\leftrightarrow\beta$), and the tile-similar triangle
+$(\alpha,\beta,2\pi/3)$.
+
+\subsection*{The area identity.}
+If $ABC$ is similar to a fixed shape whose primitive integer side-proportion vector is $D$
+($\gcd$ of its entries $1$), and $ABC$ is $N$-tiled, then each side of $ABC$ is a disjoint union of
+whole tile-edges (a tile meeting a straight portion of the boundary has a whole side on it), hence
+an integer; so the sides of $ABC$ are $k\cdot D$ for an integer $k\ge1$, and
+\begin{equation}\label{eq:area}
+N=\frac{\Area(ABC)}{\Area(T)}=k^2N_0,\qquad N_0:=\frac{\Area(D)}{\Area(T)},\qquad
+\Area(T)=\tfrac{\sqrt3}{4}ab .
+\end{equation}
+This is a necessary condition on $N$.
+
+\section{Reduction to the isosceles case}\label{sec:reduction}
+
+\begin{proposition}\label{prop:reduction}
+If a $2\pi/3$ tile $N$-tiles a triangle and $N$ is prime, then $ABC$ is isosceles.
+\end{proposition}
+
+\begin{proof}
+By Section~\ref{sub:shapes}, a non-isosceles $ABC$ is equilateral, tile-similar, or one of
+$F_1,\dots,F_4$ or their reflections. The equilateral case gives $N$ not prime
+\cite[Thm.~6]{BeesonEq}; the tile-similar case gives $N=n^2$ \cite{BeesonI, SWW}, not prime. For the
+remaining shapes we compute $N_0$ from \eqref{eq:area}; in each case $N=k^2N_0$ is composite.
+
+\emph{$F_2$ and $F_4$.} The side-proportion vector of $F_2$ is
+$\bigl(a(a+2b),\,b(2a+b),\,c^2\bigr)$ with the $\pi/3$ vertex between the first two sides, giving
+$N_0=(a+2b)(2a+b)$. For $F_4$ one checks the side-vector $\bigl(ac,\,b(2a+b),\,(a+b)c\bigr)$ has
+$\gcd 1$ (any common prime $g$ divides $c$ and then $g^2\mid 3b^2$, forcing $g=1$), giving
+$N_0=(a+b)(2a+b)$. Both are products of two integer factors each at least $3$, hence composite, so
+$N=k^2N_0$ is composite.
+
+\emph{$F_3$.} Clearing the common factor $c$, the primitive side-vector of $F_3$ is
+$\bigl(ac^2,\,a(a+2b)c,\,3ab(a+b)\bigr)$, and $N_0=3(a+b)(a+2b)$. This is divisible by $3$, hence
+composite, so $N\equiv0\pmod3$ is composite.
+
+\emph{$F_1$.} The side-vector is $(a,c,a+b)$ with the $\pi/3$ vertex between the sides $a$ and
+$a+b$, so $N_0=(a+b)/b$ and $N=k^2(a+b)/b$. As $\gcd(b,a+b)=1$, integrality forces $b\mid k^2$, so
+$N=t(a+b)$ with $t=k^2/b\in\Z_{\ge1}$. It remains to show $a+b$ is composite. Suppose $a+b=p$ is
+prime. Since $(a+b)^2-c^2=ab$ by~\eqref{eq:tile}, we have $ab=p^2-c^2$, so $a,b$ are the roots of
+$x^2-px+(p^2-c^2)$, whose discriminant $4c^2-3p^2$ must be a perfect square $d^2$; then
+$3p^2=(2c-d)(2c+d)$. With $2c-d<2c+d$ the factorizations of $3p^2$ into two positive factors are
+$(1,3p^2)$, $(3,p^2)$, $(p,3p)$, and in each the smaller root $\tfrac{p-d}{2}$ is not a positive
+integer: in the first, $d=(3p^2-1)/2>p$, so the root is negative; in the second, $d=(p^2-3)/2$ and
+the root $\tfrac{p-d}{2}=-\tfrac{(p-3)(p+1)}{4}$ is negative for $p>3$; in the third, $d=p$ gives
+$c=p$ and $ab=p^2-c^2=0$. (The case $p\le3$ is impossible since $a+b\ge8$ for a primitive
+$120^\circ$-triple.) Hence $a+b\ge8$ is composite, and $N=t(a+b)$ is composite.
+
+The reflected shapes are handled by $\alpha\leftrightarrow\beta$ (which swaps $a\leftrightarrow b$
+and leaves each $N_0$ above of the same form). In every non-isosceles non-equilateral case
+$N$ is composite, so a prime $N$ forces $ABC$ isosceles.
+\end{proof}
+
+\section{The signed-direction invariant}\label{sec:invariant}
+
+Fix the reference so the direction grid is $G=\{\,j\frac\pi3+k\alpha\,\}$. Because
+$\beta=\frac\pi3-\alpha$, every grid direction also has the form $(j+k)\frac\pi3-k\beta$, so we may
+read off the coefficient of $\frac\pi3$ in two coordinate systems. Define, for a direction
+$\theta\in G$,
+\[
+f_\alpha(\theta)=(-1)^{j}\ \ (\theta=j\tfrac\pi3+k\alpha),\qquad
+f_\beta(\theta)=(-1)^{j'}\ \ (\theta=j'\tfrac\pi3+k'\beta).
+\]
+Both are well defined (Section~\ref{sec:prelim}), and both satisfy
+\begin{equation}\label{eq:antisym}
+f(\theta+\pi)=-f(\theta),
+\end{equation}
+since adding $\pi=3\cdot\frac\pi3$ increases the $\frac\pi3$-coefficient by $3$. They are genuinely
+different functions: $f_\beta=(-1)^{k}f_\alpha$.
+
+For $f\in\{f_\alpha,f_\beta\}$ and a directed edge of length $L$ and direction $\theta$, assign the
+weight $L\,f(\theta)$. For a tile $t$ with boundary traversed counterclockwise, put
+$C_f(t)=\sum_{\text{edges}}L\,f(\theta)$, and for the boundary of $ABC$ put
+$\Phi_f(\partial ABC)=\sum_{\text{sides}}L\,f(\theta)$ (counterclockwise).
+
+\begin{lemma}[Cancellation]\label{lem:cancel}
+For each $f\in\{f_\alpha,f_\beta\}$, $\displaystyle\sum_{\text{tiles}}C_f(t)=\Phi_f(\partial ABC)$.
+\end{lemma}
+
+\begin{proof}
+Group the contributions by location. Every point of $ABC$ interior to the tiling lies on a maximal
+straight segment shared by the tiles on its two sides; along that segment the tiles on one side
+present directed edges of total length $L$ in direction $\theta$, and the tiles on the other side
+directed edges of total length $L$ in direction $\theta+\pi$ (each side covers the segment exactly
+once, though the two subdivisions need not agree). By additivity in length, their combined weight is
+$L\,f(\theta)+L\,f(\theta+\pi)=0$ by~\eqref{eq:antisym}, the value $f$ being constant along a fixed
+direction. This holds verbatim where a single long edge meets several shorter edges that sum to it
+(a non-edge-to-edge incidence): the several short weights add up to $L\,f(\theta+\pi)$. Only the
+boundary of $ABC$ survives.
+\end{proof}
+
+\begin{lemma}[Tile value]\label{lem:value}
+For every placement of $T$, $C_{f_\alpha}(t)=\pm(c+a-b)$ and $C_{f_\beta}(t)=\pm(c+b-a)$.
+\end{lemma}
+
+\begin{proof}
+Counterclockwise, the three edges have lengths $c,a,b$ (opposite $\gamma,\alpha,\beta$) and their
+directions differ by the exterior angles $\pi-\beta=\frac{2\pi}3+\alpha$ and $\pi-\gamma=\frac\pi3$;
+so their $\alpha$-frame $\frac\pi3$-coefficients are $j_0,\,j_0+2,\,j_0+3$. Hence under $f_\alpha$
+the signs are $(-1)^{j_0}(+,+,-)$ (the $b$-edge, after the $\gamma$-turn, is the odd one out), and
+$C_{f_\alpha}=(-1)^{j_0}(c+a-b)$. A reflection reverses the traversal and negates $C$, and every
+placement is a grid rotation $m\alpha+n\frac\pi3$ (which multiplies $C_{f_\alpha}$ by $(-1)^n$)
+possibly composed with a reflection; so $C_{f_\alpha}=\pm(c+a-b)$ always. The same computation in
+the $\beta$-frame makes the $a$-edge odd, giving $C_{f_\beta}=\pm(c+b-a)$.
+\end{proof}
+
+\begin{corollary}[Integrality]\label{cor:int}
+Each of $\dfrac{\Phi_{f_\alpha}(\partial ABC)}{c+a-b}$ and $\dfrac{\Phi_{f_\beta}(\partial ABC)}{c+b-a}$
+is an integer. They are separate necessary conditions: each follows from Lemma~\ref{lem:cancel} for
+its own $f$, so a single non-integer value forbids a tiling.
+\end{corollary}
+
+\begin{proof}
+By Lemmas \ref{lem:cancel} and~\ref{lem:value}, $\Phi_{f_\alpha}(\partial ABC)=\sum_t C_{f_\alpha}(t)
+=(c+a-b)\sum_t\varepsilon_t$ with $\varepsilon_t\in\{\pm1\}$, and likewise for $f_\beta$.
+\end{proof}
+
+\section{The isosceles obstruction}\label{sec:isosceles}
+
+\begin{lemma}[Non-integrality]\label{lem:nonint}
+Let $a,k$ be positive integers with $\gcd(a,k)=1$, put $b=k^2$, and let $c>0$ satisfy
+$c^2=a^2+ab+b^2$. Then $k\nmid(a+b-c)$.
+\end{lemma}
+
+\begin{proof}
+From $c^2=a^2+ab+b^2$ we get $c>a$ and, since $c^2<(a+b)^2$, also $c<a+b$. Suppose
+$k\mid(a+b-c)$. As $b=k^2\equiv0\pmod k$, this gives $c\equiv a\pmod k$; with $0<c-a<b=k^2$ we may
+write $c=a+kt$, $1\le t\le k-1$. Substituting into $c^2=a^2+ak^2+k^4$ and dividing by $k$,
+\[
+2at+kt^2=ak+k^3,\qquad\text{that is}\qquad a(2t-k)=k(k-t)(k+t).
+\]
+Then $k\mid a(2t-k)$, and $\gcd(a,k)=1$ gives $k\mid(2t-k)$, hence $k\mid 2t$. But $2\le2t\le2k-2$
+contains no multiple of $k$ other than $k$ itself, so $2t=k$. The left side is then $a(2t-k)=0$,
+while the right side is $k\cdot\frac k2\cdot\frac{3k}2=\frac{3k^3}4>0$, a contradiction. Hence
+$k\nmid(a+b-c)$.
+\end{proof}
+
+\begin{theorem}\label{thm:iso}
+No prime number of $2\pi/3$ tiles tiles an isosceles triangle.
+\end{theorem}
+
+\begin{proof}
+An isosceles $ABC$ has its base angle equal to a tile acute angle (its corner angles lie in
+$\Z\alpha+\Z\frac\pi3$, and the base angle is acute). We use the invariant generated by the base
+angle, so that the equal sides land on $\frac\pi3$-coefficient $3$ (odd) and pick up $f=-1$.
+
+If the base angle is $\alpha$, then $ABC=k(c,c,2b+a)$ (equal sides $kc$, base $k(2b+a)$): the base
+is at direction $0$ ($f_\alpha=+1$) and the equal sides at $\pi-\alpha=3\frac\pi3-\alpha$
+($f_\alpha=-1$), so $\Phi_{f_\alpha}(\partial ABC)=k(2b+a)-2kc=k(2b+a-2c)$. The tiling count is
+$N=k^2(a+2b)/b$; since $N$ is prime and $\gcd(a+2b,b)=1$, we have $k^2=b$, i.e.\ $k=\sqrt b$.
+By Corollary~\ref{cor:int} and $c^2=a^2+ab+b^2$,
+\[
+\frac{k(2b+a-2c)}{c+a-b}=\frac{c-a-b}{k}\in\Z,\qquad k=\sqrt b,
+\]
+so $k\mid(a+b-c)$, contradicting Lemma~\ref{lem:nonint}. If the base angle is $\beta$, then
+$ABC=k(c,c,2a+b)$, the equal sides are at $\pi-\beta$, and using $f_\beta$ (for which the equal
+sides have $\frac\pi3$-coefficient $3$) the same computation gives, with $k=\sqrt a$,
+$(c-a-b)/k\in\Z$, again contradicting Lemma~\ref{lem:nonint} (the integer $a+b-c$ is symmetric in
+$a,b$). In both cases no tiling exists.
+\end{proof}
+
+\begin{remark}
+The role of the two invariants is essential. For the base-angle-$\beta$ shape, $f_\alpha$ places
+the equal sides at $\pi-\beta=\frac{2\pi}3+\alpha$, an \emph{even} $\frac\pi3$-coefficient, so
+$f_\alpha$ gives an integer value and does not obstruct; $f_\beta$ does. Each invariant is a
+necessary condition in its own right (Corollary~\ref{cor:int}), so using the one that fails is
+legitimate, not a choice of convenient frame: on any genuine tiling both invariants return an
+integer.
+\end{remark}
+
+\section{Resolution of the problem}\label{sec:assembly}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Let $p\equiv3\pmod4$ be prime and suppose some triangle is $p$-tiled. By the classification
+(Section~\ref{sec:prelim}) the tile is in one of the listed types, and every type other than a
+$2\pi/3$ tile on a non-equilateral triangle excludes a prime $\equiv3\pmod4$ by an existing theorem
+\cite{SWW, BeesonI, BeesonSeven, BeesonIII, BeesonIso, BeesonEq}. For a $2\pi/3$ tile,
+Proposition~\ref{prop:reduction} forces $ABC$ isosceles, and Theorem~\ref{thm:iso} excludes that.
+Hence no such tiling exists. Finally $19$ is prime and $\equiv3\pmod4$, so no triangle is cut into
+$19$ congruent triangles.
+\end{proof}
+
+\section{Verification}\label{sec:verification}
+
+The finite and numerical claims are checked by the scripts in the repository (exact arithmetic).
+\texttt{verify\_shapes.py} reproduces the eleven-shape enumeration of Section~\ref{sub:shapes} and
+the values $N_0$ of Section~\ref{sec:reduction}. \texttt{verify\_invariant.py} confirms
+Lemma~\ref{lem:value} ($C_f(t)=\pm(c+a-b)$ over all orientations of $T$), validates
+Lemma~\ref{lem:cancel} by computing both sides on explicit subdivision tilings, exhibits the
+cancellation~\eqref{eq:antisym} at a non-edge-to-edge incidence, and confirms
+Lemma~\ref{lem:nonint} has no counterexample among primitive $120^\circ$-triples up to
+$c\approx 9\times10^6$. Lemma~\ref{lem:nonint} is also formalized and machine-checked in Lean~4 with
+Mathlib (\texttt{lean/Erdos634.lean}, theorem \texttt{k\_not\_dvd\_sum\_sub}); the proof term
+depends only on the standard axioms \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}.
+
+\section*{Acknowledgements}
+
+This work was carried out with substantial assistance from an artificial-intelligence system
+(Anthropic's Claude), which proposed the signed-direction invariant, performed the symbolic and
+numerical verification, found the elementary proof of Lemma~\ref{lem:nonint}, and produced the Lean
+formalization, under the author's direction and review. The geometric arguments depend on the cited
+classification of Laczkovich and Beeson and on the rationality theorem of Beeson and Zhang, and the
+shape list coincides with Zhang's six sporadic types~\cite{Zhang}; the present contribution is the
+invariant of Section~\ref{sec:invariant}, the consequent exclusion of \emph{every} prime for the
+isosceles $2\pi/3$ branch (where only a finite bound was known), and the self-contained reduction of
+the scalene types. As an exceptional claim resting on geometric lemmas that are here verified only
+numerically, it is offered for independent refereeing.
+
+\begin{thebibliography}{99}
+
+\bibitem{BeesonI} M.~Beeson, \emph{Triangle tiling I: The tile is similar to ABC or has a right
+angle}, arXiv:1206.2231.
+
+\bibitem{BeesonIII} M.~Beeson, \emph{Triangle tiling III: the case $3\alpha+2\beta=\pi$},
+arXiv:1206.2229.
+
+\bibitem{BeesonIso} M.~Beeson, \emph{Tilings of an isosceles triangle}, arXiv:1206.1974.
+
+\bibitem{BeesonSeven} M.~Beeson, \emph{No triangle can be cut into seven congruent triangles},
+arXiv:1811.09723.
+
+\bibitem{BeesonEq} M.~Beeson, \emph{Tiling an equilateral triangle}, arXiv:1812.07014.
+
+\bibitem{BeesonZhang} M.~Beeson and Y.~X.~Zhang, \emph{Rationality of certain triangle tilings},
+arXiv:2604.01314.
+
+\bibitem{Zhang} Y.~X.~Zhang, \emph{Tiling triangles with $2\pi/3$ angles}, arXiv:2512.22696.
+
+\bibitem{Erdos633} M.~Beeson, M.~Laczkovich and Y.~X.~Zhang, \emph{Solution of Erd\H{o}s
+Problem~633}, arXiv:2604.03609.
+
+\bibitem{Laczkovich1995} M.~Laczkovich, \emph{Tilings of triangles}, Discrete Math.\ \textbf{140}
+(1995), 79--94.
+
+\bibitem{Laczkovich2012} M.~Laczkovich, \emph{Tilings of convex polygons with congruent triangles},
+Discrete Comput.\ Geom.\ \textbf{38} (2012), 330--372.
+
+\bibitem{SWW} S.~L.~Snover, C.~Waiveris and J.~K.~Williams, \emph{Rep-tiling for triangles},
+Discrete Math.\ \textbf{91} (1991), 193--200.
+
+\bibitem{Soifer} A.~Soifer, \emph{How does one cut a triangle?}, 2nd ed., Springer, 2009.
+
+\end{thebibliography}
+
+\end{document}

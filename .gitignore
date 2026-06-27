@@ -1,0 +1,9 @@
+lean/.lake/
+lean/lake-packages/
+__pycache__/
+*.pyc
+*.olean
+*.aux
+*.log
+*.out
+.DS_Store

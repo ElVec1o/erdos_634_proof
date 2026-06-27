@@ -1,0 +1,10 @@
+name = "Erdos634"
+defaultTargets = ["Erdos634"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.30.0"
+
+[[lean_lib]]
+name = "Erdos634"

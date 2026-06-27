@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "A signed-direction invariant for triangle tilings, and the exclusion of primes congruent to 3 modulo 4"
+authors:
+  - family-names: Bonfioli
+    given-names: Vico
+    email: vicobonfioli@gmail.com
+abstract: >-
+  A translation-invariant, signed-direction tiling functional that, within the 2pi/3 branch of
+  Laczkovich's classification of triangle tilings, proves that no prime number of 2pi/3 tiles tiles
+  an isosceles triangle (for every prime, where only a finite bound was previously known). With a
+  self-contained reduction of the scalene shapes, this completes the exclusion of primes congruent
+  to 3 modulo 4 as numbers of congruent triangles tiling a triangle, conditional on the cited
+  classification; in particular no triangle can be cut into 19 congruent triangles. The
+  number-theoretic core is machine-checked in Lean 4 with Mathlib. Developed with AI assistance
+  (Anthropic Claude); presented for peer review.
+keywords:
+  - triangle tiling
+  - Erdős problem 634
+  - congruent triangles
+  - discrete geometry
+  - combinatorics
+  - tiling invariant
+  - Lean
+  - formal verification
+license: CC-BY-4.0
+year: 2026
