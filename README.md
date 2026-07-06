@@ -4,25 +4,29 @@
 **Status:** preprint, not yet independently refereed.
 
 This repository concerns Erdős Problem #634: for which `N` can some triangle be cut into `N`
-pairwise-congruent triangles? A folklore conjecture holds that no prime `N ≡ 3 (mod 4)` occurs.
-The problem is recorded at [erdosproblems.com/634](https://www.erdosproblems.com/634) (a $25 prize
-problem), where `N = 19` is listed as a specific open instance.
+pairwise-congruent triangles? A folklore conjecture holds that no prime `N ≡ 3 (mod 4)` with `N > 3`
+occurs (the value `N = 3` does occur). The problem is recorded at
+[erdosproblems.com/634](https://www.erdosproblems.com/634) (a $25 prize problem), where `N = 19` is
+listed as a specific open instance.
 
 By the classification of Laczkovich and the branch theorems of Beeson, the conjecture reduces to a
 single branch: a tile with a `2π/3` angle on a non-equilateral triangle, where a prime count forces
 the large triangle to be isosceles. Within that branch this work:
 
 - introduces a translation-invariant, signed-direction tiling functional and uses it to prove that
-  **no prime number of `2π/3` tiles tiles an isosceles triangle** — for *every* prime. Previously
-  only a finite bound was known for this case (`N ≥ 2736`, Beeson), and Zhang's recent constructions
-  had led to the conjecture that no prime occurs;
+  **no prime number of `2π/3` tiles tiles an isosceles triangle** — for *every* prime. For this case
+  Beeson proved no tiling exists with `N < 36` and *explicitly left open whether N can be prime*
+  (the smallest known tiling has 2673 tiles, due to Herdt); the invariant settles it;
 - gives a self-contained reduction of the scalene shapes, showing each forces a composite `N`;
 
-which together complete the exclusion of primes `≡ 3 (mod 4)`, conditional on the cited
-classification. As a corollary, no triangle can be cut into 19 congruent triangles.
+which together complete the exclusion of primes `≡ 3 (mod 4)` exceeding `3`, conditional on the
+cited classification of the remaining branches. As a corollary, no triangle can be cut into 19
+congruent triangles.
 
-The number-theoretic core is machine-checked in Lean 4 + Mathlib (axiom-clean, no `sorry`). The
-geometric lemmas are verified numerically and are offered for refereeing.
+The **entire arithmetic layer** is machine-checked in Lean 4 + Mathlib (axiom-clean, no `sorry`):
+the isosceles non-integrality obstruction, the reduction identity, "a+b is never prime", and the
+commensurable-branch exclusion of primes ≡ 3 (mod 4). The two geometric lemmas have written proofs
+in the paper backed by numerical checks; the whole is offered for refereeing.
 
 ## The invariant in one line
 
@@ -40,8 +44,7 @@ holds for a primitive triple with `c² = a² + ab + b²`.
   closed-form `N₀` of the scalene shapes with their compositeness (exact arithmetic).
 - `code/verify_invariant.py` — the tile-value and cancellation lemmas, the role of the two
   invariants, the non-edge-to-edge cancellation, and the non-integrality search.
-- `lean/` — a Lean 4 + Mathlib proof of the arithmetic core (`k ∤ a+b−c`, i.e. `(c−a−b)/√b ∉ ℤ`),
-  axiom-clean.
+- `lean/` — a Lean 4 + Mathlib proof of the entire arithmetic layer (five theorems), axiom-clean.
 
 ## How to verify
 
@@ -50,24 +53,27 @@ holds for a primitive triple with `c² = a² + ab + b²`.
 python3 code/verify_shapes.py        # eleven shapes; scalene N composite
 python3 code/verify_invariant.py     # tile value; cancellation; non-integrality
 
-# the arithmetic core, machine-checked in Lean (needs elan/lake)
+# the arithmetic layer, machine-checked in Lean (needs elan/lake)
 cd lean && lake exe cache get && lake build
 ```
 
 ## What is proven, cited, and machine-checked
 
-- **Proven here (human-checked, in the paper):** the signed-direction invariant and its lemmas; the
-  reduction of the prime `2π/3` case to an isosceles target; the exclusion of every prime for the
-  isosceles `2π/3` case; the scalene reduction.
-- **Machine-checked (Lean 4 + Mathlib):** the arithmetic core `(c−a−b)/√b ∉ ℤ`
-  (`lean/Erdos634.lean`, theorem `k_not_dvd_sum_sub`); axiom-clean.
+- **Proven here (human-checked, in the paper):** the signed-direction invariant and its two
+  geometric lemmas (cancellation, tile value); the reduction of the prime `2π/3` case to an
+  isosceles target; the exclusion of every prime for the isosceles `2π/3` case; the scalene
+  reduction.
+- **Machine-checked (Lean 4 + Mathlib, axiom-clean, no `sorry`):** the whole arithmetic layer —
+  the isosceles non-integrality obstruction `(c−a−b)/√b ∉ ℤ` (`k_not_dvd_sum_sub`, `M_not_int`),
+  the reduction identity (`iso_reduction_identity`), "a+b is never prime" (`add_not_prime`), and the
+  commensurable-branch exclusion of primes ≡ 3 (mod 4) (`prime_three_mod_four_excluded`).
 - **Machine-checked (Python, exact arithmetic):** the eleven shapes; the `N₀` formulas and scalene
   compositeness; `a+b` never prime; the tile value `±(c+a−b)` over all orientations; the cancellation
   identity on explicit tilings; the non-edge-to-edge cancellation; zero counterexamples to the
   non-integrality over a large search.
 - **Cited, not re-derived:** Laczkovich's classification of triangle tilings; Beeson's branch
   theorems (similar tile and right angle; `3α+2β=π`; the `γ=2α` isosceles tile; the equilateral
-  no-prime theorem; the finite lower bound for the isosceles `2π/3` case); the Beeson–Zhang
+  no-prime theorem; the `N < 36` exclusion for the isosceles `2π/3` case); the Beeson–Zhang
   rationality theorem; and Zhang's constructions and conjecture for the `2π/3` shapes.
 
 ## Disclosure of AI assistance
