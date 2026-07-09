@@ -23,10 +23,13 @@ which together complete the exclusion of primes `≡ 3 (mod 4)` exceeding `3`, c
 cited classification of the remaining branches. As a corollary, no triangle can be cut into 19
 congruent triangles.
 
-The **entire arithmetic layer** is machine-checked in Lean 4 + Mathlib (axiom-clean, no `sorry`):
-the isosceles non-integrality obstruction, the reduction identity, "a+b is never prime", and the
-commensurable-branch exclusion of primes ≡ 3 (mod 4). The two geometric lemmas have written proofs
-in the paper backed by numerical checks; the whole is offered for refereeing.
+The **entire arithmetic and combinatorial layer** is machine-checked in Lean 4 + Mathlib (thirteen
+theorems, axiom-clean, no `sorry`): the eleven-shape enumeration, the isosceles branch end-to-end
+(non-integrality obstruction, scale-pinning, and a master theorem combining the area equation with
+the invariant's divisibility), the scalene compositeness, and the commensurable-branch exclusion of
+primes ≡ 3 (mod 4). Only the geometry (the direction grid and the two invariant lemmas) is not
+formalized — Mathlib has no dissection theory; those have written proofs in the paper backed by
+numerical checks. The whole is offered for refereeing.
 
 ## The invariant in one line
 
@@ -63,14 +66,17 @@ cd lean && lake exe cache get && lake build
   geometric lemmas (cancellation, tile value); the reduction of the prime `2π/3` case to an
   isosceles target; the exclusion of every prime for the isosceles `2π/3` case; the scalene
   reduction.
-- **Machine-checked (Lean 4 + Mathlib, axiom-clean, no `sorry`):** the whole arithmetic layer —
-  the isosceles non-integrality obstruction `(c−a−b)/√b ∉ ℤ` (`k_not_dvd_sum_sub`, `M_not_int`),
-  the reduction identity (`iso_reduction_identity`), "a+b is never prime" (`add_not_prime`), and the
-  commensurable-branch exclusion of primes ≡ 3 (mod 4) (`prime_three_mod_four_excluded`).
+- **Machine-checked (Lean 4 + Mathlib, thirteen theorems, axiom-clean, no `sorry`):** the whole
+  arithmetic and combinatorial layer — the eleven-shape enumeration (`shape_enumeration`); the
+  isosceles branch end-to-end (`k_not_dvd_sum_sub`, `M_not_int`, `iso_reduction_identity`,
+  `prime_count_forces_scale`, and the master theorem `no_prime_isosceles_count`); the scalene
+  compositeness (`add_not_prime`, `F1_count_not_prime`–`F4_count_not_prime`); and the
+  commensurable-branch exclusion (`prime_three_mod_four_excluded`).
 - **Machine-checked (Python, exact arithmetic):** the eleven shapes; the `N₀` formulas and scalene
   compositeness; `a+b` never prime; the tile value `±(c+a−b)` over all orientations; the cancellation
   identity on explicit tilings; the non-edge-to-edge cancellation; zero counterexamples to the
-  non-integrality over a large search.
+  non-integrality over a large search; and, as a positive control, both necessary conditions hold on
+  Herdt's genuine 2673-tile isosceles tiling (tile (5,3,7), k=27: N=2673 and M=−9 are integers).
 - **Cited, not re-derived:** Laczkovich's classification of triangle tilings; Beeson's branch
   theorems (similar tile and right angle; `3α+2β=π`; the `γ=2α` isosceles tile; the equilateral
   no-prime theorem; the `N < 36` exclusion for the isosceles `2π/3` case); the Beeson–Zhang

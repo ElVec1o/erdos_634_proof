@@ -2,28 +2,48 @@ import Mathlib.Tactic
 import Mathlib.NumberTheory.SumTwoSquares
 
 /-!
-# Erdős Problem #634 — the arithmetic core of the Φ-invariant proof
+# Erdős Problem #634 — the arithmetic layer of the Φ-invariant proof
 
 For a primitive 120°-triple `(a, b, c)` (`gcd = 1`, `c² = a² + ab + b²`) whose squared leg is
 `b = k²`, the integer `k` does **not** divide `a + b − c`.  Equivalently the Φ-invariant tile-count
 `M = (c − a − b)/k` is never an integer, so no prime number of `2π/3` tiles tiles an isosceles
-triangle; with the classification of the other Laczkovich branches this resolves the conjecture that
-no prime `≡ 3 (mod 4)` is achievable (Erdős #634).
+triangle; with the composite tile counts of the scalene families and the exclusion of the
+commensurable-angle forms this resolves the conjecture that no prime `≡ 3 (mod 4)` exceeding `3`
+is achievable (`3` itself occurs, in the commensurable branch) — Erdős #634, prime case.
 
-This file machine-checks the **arithmetic layer** of the argument, axiom-clean (only `propext`,
+This file machine-checks the **arithmetic layer end-to-end**, axiom-clean (only `propext`,
 `Classical.choice`, `Quot.sound`):
 
+Isosceles branch:
 * `k_not_dvd_sum_sub`, `M_not_int` — the Φ-invariant tile count is never an integer.
 * `iso_reduction_identity` — the algebraic identity behind the isosceles boundary reduction.
+* `prime_count_forces_scale` — the area equation `N·b = k²(a + 2b)` with `N` prime and
+  `gcd(a, b) = 1` forces `b = k²` and `N = a + 2b`.
+* `no_prime_isosceles_count` — **master theorem**: the full isosceles arithmetic in one
+  statement — no `(a, b, c, k, N)` with `N` prime satisfies the 120°-relation, the area
+  equation, and the Φ-divisibility `(c + a − b) ∣ k(2b + a − 2c)` simultaneously.
+
+Scalene branches (the tile counts of Laczkovich's four families are composite):
 * `add_not_prime` — for a 120°-triple, `a + b` is never prime (over ℤ; coprimality not even
   needed — it holds for every positive `a, b, c` with `c² = a² + ab + b²`).
+* `not_prime_of_two_le` — a product of two integer factors `≥ 2` is not prime.
+* `F1_count_not_prime` … `F4_count_not_prime` — the four scalene tile counts `t(a + b)`,
+  `(a + 2b)(2a + b)`, `3(a + b)(a + 2b)`, `(a + b)(2a + b)` are never prime.
+
+Commensurable branch:
 * `prime_three_mod_four_excluded` — a prime `≡ 3 (mod 4)` exceeding `3` is none of the
   commensurable-angle forms `{square, sum of two squares, 2·□, 3·□, 6·□}` (Beeson–Laczkovich),
   using Fermat's two-squares theorem from Mathlib (`Nat.eq_sq_add_sq_iff`).
 
-The *geometric* ingredients of the paper (the Φ-invariant's cancellation and tile-value lemmas, the
-shape classification, Laczkovich's case analysis, Beeson's equilateral input) are **not** formalized
-— there is no theory of triangle dissections in Mathlib — and remain human-checked in the paper.
+Shape classification:
+* `shape_enumeration` — the eleven-shape list: a corner type `(m, k) : ℤ × ℤ` is realizable iff
+  `(1 ≤ k ∧ −k ≤ m) ∨ (k = 0 ∧ 1 ≤ m)`; the lexicographically sorted triples of realizable corner
+  types with `m₁ + m₂ + m₃ = 0` and `k₁ + k₂ + k₃ = 3` are exactly the eleven shapes of the
+  paper's case analysis.
+
+The *geometric* ingredients of the paper (the Φ-invariant's cancellation and tile-value lemmas,
+Laczkovich's case analysis, Beeson's equilateral input) are **not** formalized — there is no theory
+of triangle dissections in Mathlib — and remain human-checked in the paper.
 -/
 
 namespace Erdos634
@@ -239,6 +259,205 @@ theorem prime_three_mod_four_excluded
     intro ⟨k, hk⟩
     exact hp_odd ⟨3 * k ^ 2, by rw [hk]; ring⟩
 
+/-- A product of two integer factors each `≥ 2` is not prime. -/
+theorem not_prime_of_two_le (u v : ℤ) (hu : 2 ≤ u) (hv : 2 ≤ v) : ¬ Prime (u * v) := by
+  intro hp
+  rcases hp.irreducible.isUnit_or_isUnit rfl with h | h <;>
+    rw [Int.isUnit_iff] at h <;> omega
+
+/-- **Scale-pinning.** If a prime `N` satisfies the area equation `N·b = k²(a + 2b)` with
+`gcd(a, b) = 1`, then `b = k²` and `N = a + 2b`. -/
+theorem prime_count_forces_scale (a b k N : ℤ) (ha : 0 < a) (hb : 0 < b) (hk : 0 < k)
+    (hcop : IsCoprime a b) (hN : Prime N) (harea : N * b = k ^ 2 * (a + 2 * b)) :
+    b = k ^ 2 ∧ N = a + 2 * b := by
+  -- `a + 2b` is coprime to `b`
+  have hcop2 : IsCoprime (a + 2 * b) b := hcop.add_mul_right_left 2
+  -- `b ∣ k²(a + 2b)`, hence `b ∣ k²` by coprimality
+  have hdvd : b ∣ k ^ 2 * (a + 2 * b) := ⟨N, by linear_combination -harea⟩
+  have hbk2 : b ∣ k ^ 2 := hcop2.symm.dvd_of_dvd_mul_right hdvd
+  obtain ⟨m, hm⟩ := hbk2
+  have hmpos : 0 < m := by
+    have h : 0 < b * m := by rw [← hm]; exact pow_pos hk 2
+    exact (mul_pos_iff_of_pos_left hb).mp h
+  -- cancel `b` in the area equation:  N = m(a + 2b)
+  have hNm : N = m * (a + 2 * b) := by
+    have h1 : b * N = b * (m * (a + 2 * b)) := by
+      linear_combination harea + (a + 2 * b) * hm
+    exact mul_left_cancel₀ (ne_of_gt hb) h1
+  -- primality of `N` forces `m` to be the unit
+  rcases hN.irreducible.isUnit_or_isUnit hNm with hu | hu
+  · rw [Int.isUnit_iff] at hu
+    have hm1 : m = 1 := by omega
+    subst hm1
+    exact ⟨by linear_combination -hm, by linear_combination hNm⟩
+  · rw [Int.isUnit_iff] at hu
+    omega
+
+/-- **Master theorem (isosceles branch).** For a primitive 120°-triple `(a, b, c)` there is no
+prime tile count `N` satisfying the area equation `N·b = k²(a + 2b)` together with the
+Φ-invariant divisibility `(c + a − b) ∣ k(2b + a − 2c)`. -/
+theorem no_prime_isosceles_count (a b c k N : ℤ)
+    (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (hk : 0 < k)
+    (hcop : IsCoprime a b) (hc2 : c ^ 2 = a ^ 2 + a * b + b ^ 2)
+    (hN : Prime N) (harea : N * b = k ^ 2 * (a + 2 * b))
+    (hphi : (c + a - b) ∣ k * (2 * b + a - 2 * c)) : False := by
+  -- the area equation pins the scale:  b = k²
+  obtain ⟨hbk, -⟩ := prime_count_forces_scale a b k N ha hb hk hcop hN harea
+  subst hbk
+  have hc2' : c ^ 2 = a ^ 2 + a * k ^ 2 + k ^ 4 := by linear_combination hc2
+  have hcopk : IsCoprime a k :=
+    hcop.of_isCoprime_of_dvd_right (dvd_pow_self k (by norm_num))
+  -- positivity of the cancelled factor:  c > k²
+  have hck : k ^ 2 < c := by
+    nlinarith [hc2', pow_pos hk 2, mul_pos ha (pow_pos hk 2), sq_nonneg a, hc]
+  have hpos : 0 < c + a - k ^ 2 := by linarith
+  obtain ⟨M, hM⟩ := hphi
+  -- reduction identity + Φ-divisibility  ⇒  (c − a − k²) = kM  after cancelling (c + a − k²)
+  have hkey : (c - a - k ^ 2) * (c + a - k ^ 2) = (k * M) * (c + a - k ^ 2) := by
+    linear_combination iso_reduction_identity a k c ha hk hc2' + k * hM
+  have hcancel : c - a - k ^ 2 = k * M := mul_right_cancel₀ (ne_of_gt hpos) hkey
+  -- contradiction with the non-integrality of the Φ-invariant tile count
+  exact M_not_int a k c ha hk hcopk hc2' hc ⟨M, by linear_combination hcancel⟩
+
+/-- **Scalene family F1.** The tile count `t(a + b)`, `t ≥ 1`, is never prime for a
+120°-triple. -/
+theorem F1_count_not_prime (a b c t : ℤ) (ha : 0 < a) (hb : 0 < b) (hc : 0 < c)
+    (hcop : IsCoprime a b) (hc2 : c ^ 2 = a ^ 2 + a * b + b ^ 2) (ht : 1 ≤ t) :
+    ¬ Prime (t * (a + b)) := by
+  rcases ht.eq_or_lt with h | h
+  · subst h
+    simpa using add_not_prime a b c ha hb hcop hc2 hc
+  · exact not_prime_of_two_le t (a + b) (by omega) (by omega)
+
+/-- **Scalene family F2.** The tile count `(a + 2b)(2a + b)` is never prime. -/
+theorem F2_count_not_prime (a b : ℤ) (ha : 0 < a) (hb : 0 < b) :
+    ¬ Prime ((a + 2 * b) * (2 * a + b)) :=
+  not_prime_of_two_le _ _ (by omega) (by omega)
+
+/-- **Scalene family F3.** The tile count `3(a + b)(a + 2b)` is never prime. -/
+theorem F3_count_not_prime (a b : ℤ) (ha : 0 < a) (hb : 0 < b) :
+    ¬ Prime (3 * ((a + b) * (a + 2 * b))) := by
+  have hfac : 2 ≤ (a + b) * (a + 2 * b) := by
+    have h1 : 2 ≤ a + b := by omega
+    have h2 : 3 ≤ a + 2 * b := by omega
+    nlinarith
+  exact not_prime_of_two_le 3 _ (by norm_num) hfac
+
+/-- **Scalene family F4.** The tile count `(a + b)(2a + b)` is never prime. -/
+theorem F4_count_not_prime (a b : ℤ) (ha : 0 < a) (hb : 0 < b) :
+    ¬ Prime ((a + b) * (2 * a + b)) :=
+  not_prime_of_two_le _ _ (by omega) (by omega)
+
+set_option maxHeartbeats 1000000 in
+/-- **The eleven-shape enumeration.** A corner type `(m, k) : ℤ × ℤ` is *realizable* iff
+`(1 ≤ k ∧ −k ≤ m) ∨ (k = 0 ∧ 1 ≤ m)`.  The lexicographically sorted triples of realizable
+corner types with `m₁ + m₂ + m₃ = 0` and `k₁ + k₂ + k₃ = 3` are exactly the eleven shapes of
+the paper's case analysis. -/
+theorem shape_enumeration (m1 k1 m2 k2 m3 k3 : ℤ)
+    (h1 : (1 ≤ k1 ∧ -k1 ≤ m1) ∨ (k1 = 0 ∧ 1 ≤ m1))
+    (h2 : (1 ≤ k2 ∧ -k2 ≤ m2) ∨ (k2 = 0 ∧ 1 ≤ m2))
+    (h3 : (1 ≤ k3 ∧ -k3 ≤ m3) ∨ (k3 = 0 ∧ 1 ≤ m3))
+    (hsort12 : m1 < m2 ∨ (m1 = m2 ∧ k1 ≤ k2))
+    (hsort23 : m2 < m3 ∨ (m2 = m3 ∧ k2 ≤ k3))
+    (hm : m1 + m2 + m3 = 0) (hk : k1 + k2 + k3 = 3) :
+    (m1 = -3 ∧ k1 = 3 ∧ m2 = 1 ∧ k2 = 0 ∧ m3 = 2 ∧ k3 = 0) ∨
+    (m1 = -2 ∧ k1 = 2 ∧ m2 = -1 ∧ k2 = 1 ∧ m3 = 3 ∧ k3 = 0) ∨
+    (m1 = -2 ∧ k1 = 2 ∧ m2 = 0 ∧ k2 = 1 ∧ m3 = 2 ∧ k3 = 0) ∨
+    (m1 = -2 ∧ k1 = 2 ∧ m2 = 1 ∧ k2 = 0 ∧ m3 = 1 ∧ k3 = 1) ∨
+    (m1 = -2 ∧ k1 = 3 ∧ m2 = 1 ∧ k2 = 0 ∧ m3 = 1 ∧ k3 = 0) ∨
+    (m1 = -1 ∧ k1 = 1 ∧ m2 = -1 ∧ k2 = 1 ∧ m3 = 2 ∧ k3 = 1) ∨
+    (m1 = -1 ∧ k1 = 1 ∧ m2 = -1 ∧ k2 = 2 ∧ m3 = 2 ∧ k3 = 0) ∨
+    (m1 = -1 ∧ k1 = 1 ∧ m2 = 0 ∧ k2 = 1 ∧ m3 = 1 ∧ k3 = 1) ∨
+    (m1 = -1 ∧ k1 = 1 ∧ m2 = 0 ∧ k2 = 2 ∧ m3 = 1 ∧ k3 = 0) ∨
+    (m1 = -1 ∧ k1 = 2 ∧ m2 = 0 ∧ k2 = 1 ∧ m3 = 1 ∧ k3 = 0) ∨
+    (m1 = 0 ∧ k1 = 1 ∧ m2 = 0 ∧ k2 = 1 ∧ m3 = 0 ∧ k3 = 1) := by
+  -- Pin one variable at a time: every omega goal below is a disjunction of at most three
+  -- single equalities, and the eleven-way goal is only ever closed by explicit Or-introduction.
+  have hk1 : k1 = 1 ∨ k1 = 2 ∨ k1 = 3 := by omega
+  rcases hk1 with rfl | rfl | rfl
+  · -- k1 = 1
+    have hk2 : k2 = 1 ∨ k2 = 2 := by omega
+    rcases hk2 with rfl | rfl
+    · -- (k1,k2,k3) = (1,1,1)
+      have hk3 : k3 = 1 := by omega
+      subst hk3
+      have hm1 : m1 = -1 ∨ m1 = 0 := by omega
+      rcases hm1 with rfl | rfl
+      · have hm2 : m2 = -1 ∨ m2 = 0 := by omega
+        rcases hm2 with rfl | rfl
+        · have hm3 : m3 = 2 := by omega
+          subst hm3
+          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩)))))
+        · have hm3 : m3 = 1 := by omega
+          subst hm3
+          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩)))))))
+      · have hm2 : m2 = 0 := by omega
+        subst hm2
+        have hm3 : m3 = 0 := by omega
+        subst hm3
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩)))))))))
+    · -- (k1,k2,k3) = (1,2,0)
+      have hk3 : k3 = 0 := by omega
+      subst hk3
+      have hm1 : m1 = -1 := by omega
+      subst hm1
+      have hm2 : m2 = -1 ∨ m2 = 0 := by omega
+      rcases hm2 with rfl | rfl
+      · have hm3 : m3 = 2 := by omega
+        subst hm3
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩))))))
+      · have hm3 : m3 = 1 := by omega
+        subst hm3
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩))))))))
+  · -- k1 = 2
+    have hk2 : k2 = 0 ∨ k2 = 1 := by omega
+    rcases hk2 with rfl | rfl
+    · -- (k1,k2,k3) = (2,0,1)
+      have hk3 : k3 = 1 := by omega
+      subst hk3
+      have hm1 : m1 = -2 := by omega
+      subst hm1
+      have hm2 : m2 = 1 := by omega
+      subst hm2
+      have hm3 : m3 = 1 := by omega
+      subst hm3
+      exact Or.inr (Or.inr (Or.inr (Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩)))
+    · -- (k1,k2,k3) = (2,1,0)
+      have hk3 : k3 = 0 := by omega
+      subst hk3
+      have hm1 : m1 = -2 ∨ m1 = -1 := by omega
+      rcases hm1 with rfl | rfl
+      · have hm2 : m2 = -1 ∨ m2 = 0 := by omega
+        rcases hm2 with rfl | rfl
+        · have hm3 : m3 = 3 := by omega
+          subst hm3
+          exact Or.inr (Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩)
+        · have hm3 : m3 = 2 := by omega
+          subst hm3
+          exact Or.inr (Or.inr (Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩))
+      · have hm2 : m2 = 0 := by omega
+        subst hm2
+        have hm3 : m3 = 1 := by omega
+        subst hm3
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩)))))))))
+  · -- k1 = 3, so (k1,k2,k3) = (3,0,0)
+    have hk2 : k2 = 0 := by omega
+    subst hk2
+    have hk3 : k3 = 0 := by omega
+    subst hk3
+    have hm1 : m1 = -3 ∨ m1 = -2 := by omega
+    rcases hm1 with rfl | rfl
+    · have hm2 : m2 = 1 := by omega
+      subst hm2
+      have hm3 : m3 = 2 := by omega
+      subst hm3
+      exact Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
+    · have hm2 : m2 = 1 := by omega
+      subst hm2
+      have hm3 : m3 = 1 := by omega
+      subst hm3
+      exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩))))
+
 end Erdos634
 
 #print axioms Erdos634.k_not_dvd_sum_sub
@@ -246,3 +465,11 @@ end Erdos634
 #print axioms Erdos634.iso_reduction_identity
 #print axioms Erdos634.add_not_prime
 #print axioms Erdos634.prime_three_mod_four_excluded
+#print axioms Erdos634.not_prime_of_two_le
+#print axioms Erdos634.prime_count_forces_scale
+#print axioms Erdos634.no_prime_isosceles_count
+#print axioms Erdos634.F1_count_not_prime
+#print axioms Erdos634.F2_count_not_prime
+#print axioms Erdos634.F3_count_not_prime
+#print axioms Erdos634.F4_count_not_prime
+#print axioms Erdos634.shape_enumeration

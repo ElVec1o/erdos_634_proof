@@ -161,6 +161,26 @@ for m in range(2, 2500):
                     counter += 1
 print(f"   prime isosceles candidates checked: {checked};  counterexamples (k | a+b-c): {counter}\n")
 
+
+# (6) positive control: the necessary conditions PASS on the known genuine tiling --------------
+# Herdt's 2673-tiling of an isosceles triangle by the tile (5,3,7) (reported in Beeson,
+# "Tilings of an isosceles triangle", Sec. 15).  N is composite, so no obstruction may fire:
+# the area count N = k^2*(a+2b)/b and the invariant ratio M = k(2b+a-2c)/(c+a-b) must both be
+# integers.  A necessary condition that rejected a genuine tiling would refute the theory.
+print("== (6) positive control: Herdt's genuine 2673-tiling passes both conditions ==")
+a, b, c, k = 5, 3, 7, 27
+assert c * c == a * a + a * b + b * b and gcd(a, b) == 1
+N = k * k * (a + 2 * b)
+assert N % b == 0
+N //= b
+M_num, M_den = k * (2 * b + a - 2 * c), (c + a - b)
+assert M_num % M_den == 0
+print(f"   tile ({a},{b},{c}), k={k}:  N = k^2(a+2b)/b = {N} (integer, composite: "
+      f"{'yes' if not isprime(N) else 'NO'});  M = k(2b+a-2c)/(c+a-b) = {M_num // M_den} (integer)")
+print("   -> both necessary conditions hold on the genuine tiling; the obstruction fires only")
+print("      at prime N, where b must be a perfect square and k | (a+b-c) fails.\n")
+
 print("RESULT: C(tile) = +-(c+a-b) confirmed; sum_tiles C = Phi(boundary) on explicit tilings;")
-print("non-edge-to-edge cancellation holds; both invariants needed; k never divides a+b-c.")
-print("No prime number of 2pi/3 tiles tiles an isosceles triangle.")
+print("non-edge-to-edge cancellation holds; both invariants needed; k never divides a+b-c;")
+print("the known genuine tiling passes.  No prime number of copies of an incommensurable-angle")
+print("2pi/3 tile tiles an isosceles, non-equilateral triangle.")
