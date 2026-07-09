@@ -458,6 +458,88 @@ theorem shape_enumeration (m1 k1 m2 k2 m3 k3 : ℤ)
       subst hm3
       exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩))))
 
+/-- **Sum of two positive squares.** A prime `p ≢ 3 (mod 4)` is a sum of two *positive* squares
+(Fermat).  This is the arithmetic content of the achievability half of the prime dichotomy: the
+biquadratic tiling realizes `N = e² + f²` tiles for any `e, f ≥ 1`, so together with
+`no_prime_isosceles_count` and its companions, a prime `p` is a number of congruent triangles
+tiling a triangle iff `p = 2`, `p = 3`, or `p ≡ 1 (mod 4)`. -/
+theorem prime_sum_two_pos_squares (p : ℕ) (hp : p.Prime) (h4 : p % 4 ≠ 3) :
+    ∃ e f : ℕ, 1 ≤ e ∧ 1 ≤ f ∧ e ^ 2 + f ^ 2 = p := by
+  haveI : Fact p.Prime := ⟨hp⟩
+  obtain ⟨e, f, hef⟩ := Nat.Prime.sq_add_sq h4
+  have hsq : ∀ r : ℕ, r ^ 2 ≠ p := by
+    intro r hr
+    have hrdvd : r ∣ p := ⟨r, by rw [← hr]; ring⟩
+    rcases hp.eq_one_or_self_of_dvd r hrdvd with h | h
+    · subst h
+      have := hp.two_le
+      simp at hr
+      omega
+    · subst h
+      nlinarith [hp.two_le, hr]
+  rcases Nat.eq_zero_or_pos e with rfl | he
+  · exact absurd (by simpa using hef) (hsq f)
+  rcases Nat.eq_zero_or_pos f with rfl | hf
+  · exact absurd (by simpa using hef) (hsq e)
+  exact ⟨e, f, he, hf, hef⟩
+
+/-- **General-`N` admissibility for the isosceles branch.**  Write `b = d·e²` with `d` squarefree.
+Any tile count `N` compatible with the area equation `N·b = k²(a+2b)` and the Φ-divisibility
+`(c+a−b) ∣ k(2b+a−2c)` on the base-α isosceles target has the form `N = d·w²·(a+2b)` with scale
+`k = d·e·w`, and moreover `e ∣ w(c−a−b)`.  For prime `N` this forces `d = w = 1`, so `b = e²` and
+`e ∣ (c−a−b)`, which `k_not_dvd_sum_sub` refutes: `no_prime_isosceles_count` is the degenerate
+case `d = w = 1` of this statement. -/
+theorem iso_admissible (a b c k N d e : ℤ)
+    (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (hk : 0 < k) (hd : 0 < d) (he : 0 < e)
+    (hsf : Squarefree d) (hbde : b = d * e ^ 2) (hcop : IsCoprime a b)
+    (hc2 : c ^ 2 = a ^ 2 + a * b + b ^ 2)
+    (harea : N * b = k ^ 2 * (a + 2 * b))
+    (hphi : (c + a - b) ∣ k * (2 * b + a - 2 * c)) :
+    ∃ w : ℤ, k = d * e * w ∧ N = d * w ^ 2 * (a + 2 * b) ∧ e ∣ w * (c - a - b) := by
+  subst hbde
+  -- the area equation forces `b ∣ k²`
+  have hcop2 : IsCoprime (a + 2 * (d * e ^ 2)) (d * e ^ 2) := hcop.add_mul_right_left 2
+  have hbk2 : (d * e ^ 2) ∣ k ^ 2 :=
+    hcop2.symm.dvd_of_dvd_mul_right ⟨N, by linear_combination -harea⟩
+  -- hence `e ∣ k`
+  have he2 : e ^ 2 ∣ k ^ 2 := dvd_trans ⟨d, by ring⟩ hbk2
+  have hek : e ∣ k := (IsIntegrallyClosed.pow_dvd_pow_iff two_ne_zero).mp he2
+  obtain ⟨k₁, hk₁⟩ := hek
+  subst hk₁
+  -- and `d ∣ k₁` by squarefreeness
+  have hd1 : d ∣ k₁ ^ 2 := by
+    have h : e ^ 2 * d ∣ e ^ 2 * k₁ ^ 2 := by
+      calc e ^ 2 * d = d * e ^ 2 := by ring
+        _ ∣ (e * k₁) ^ 2 := hbk2
+        _ = e ^ 2 * k₁ ^ 2 := by ring
+    exact (mul_dvd_mul_iff_left (pow_ne_zero 2 (ne_of_gt he))).mp h
+  have hdk1 : d ∣ k₁ := (hsf.dvd_pow_iff_dvd two_ne_zero).mp hd1
+  obtain ⟨w, hw⟩ := hdk1
+  subst hw
+  refine ⟨w, by ring, ?_, ?_⟩
+  · -- the count: `N = d w² (a+2b)`
+    have hBne : (d * e ^ 2 : ℤ) ≠ 0 :=
+      mul_ne_zero (ne_of_gt hd) (pow_ne_zero 2 (ne_of_gt he))
+    have h : (d * e ^ 2) * N = (d * e ^ 2) * (d * w ^ 2 * (a + 2 * (d * e ^ 2))) := by
+      linear_combination harea
+    exact mul_left_cancel₀ hBne h
+  · -- the Φ-divisibility descends to `e ∣ w(c−a−b)`
+    have hpos : 0 < c + a - d * e ^ 2 := by
+      nlinarith [hc2, mul_pos hd (pow_pos he 2), mul_pos ha (mul_pos hd (pow_pos he 2)), hc,
+        sq_nonneg (c + a - d * e ^ 2), sq_nonneg (c - a + d * e ^ 2)]
+    obtain ⟨M, hM⟩ := hphi
+    have hid : (c - a - d * e ^ 2) * (c + a - d * e ^ 2)
+        = (d * e ^ 2) * (2 * (d * e ^ 2) + a - 2 * c) := by
+      linear_combination hc2
+    have hzero : (c + a - d * e ^ 2)
+        * (e * d * (w * (c - a - d * e ^ 2)) - e * d * (e * M)) = 0 := by
+      linear_combination (e * d * w) * hid + (d * e ^ 2) * hM
+    have hcancel : e * d * (w * (c - a - d * e ^ 2)) = e * d * (e * M) := by
+      rcases mul_eq_zero.mp hzero with h | h
+      · exact absurd h (ne_of_gt hpos)
+      · linarith
+    exact ⟨M, mul_left_cancel₀ (mul_ne_zero (ne_of_gt he) (ne_of_gt hd)) hcancel⟩
+
 end Erdos634
 
 #print axioms Erdos634.k_not_dvd_sum_sub
@@ -473,3 +555,5 @@ end Erdos634
 #print axioms Erdos634.F3_count_not_prime
 #print axioms Erdos634.F4_count_not_prime
 #print axioms Erdos634.shape_enumeration
+#print axioms Erdos634.prime_sum_two_pos_squares
+#print axioms Erdos634.iso_admissible

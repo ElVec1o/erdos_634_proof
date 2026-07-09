@@ -12,7 +12,9 @@ abstract: >-
   self-contained reduction of the scalene shapes, this completes the exclusion of primes congruent
   to 3 modulo 4 as numbers of congruent triangles tiling a triangle, conditional on the cited
   classification; in particular no triangle can be cut into 19 congruent triangles. The
-  number-theoretic core is machine-checked in Lean 4 with Mathlib. Developed with AI assistance
+  prime case of the full problem is thereby complete (a prime occurs iff p = 2, 3, or 1 mod 4),
+  and the admissible spectrum of each sporadic branch is determined. The arithmetic and
+  combinatorial layer is machine-checked in Lean 4 with Mathlib. Developed with AI assistance
   (Anthropic Claude); presented for peer review.
 keywords:
   - triangle tiling

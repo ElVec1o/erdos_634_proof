@@ -18,12 +18,17 @@ the large triangle to be isosceles. Within that branch this work:
   Beeson proved no tiling exists with `N < 36` and *explicitly left open whether N can be prime*
   (the smallest known tiling has 2673 tiles, due to Herdt); the invariant settles it;
 - gives a self-contained reduction of the scalene shapes, showing each forces a composite `N`;
+- completes the **prime case of the full problem**: a prime `p` is achievable **iff** `p = 2`,
+  `p = 3`, or `p ≡ 1 (mod 4)` (constructions are classical; the exclusion is the theorem above);
+- determines the **admissible spectrum** of each sporadic `2π/3` branch — for the isosceles
+  target, writing `b = d·e²` with `d` squarefree, every count is `N = d·w²·(a+2b)` with
+  `e | w(c−a−b)` — an outer bound on the realizable set (33 and 46 are admissible; no prime is);
 
 which together complete the exclusion of primes `≡ 3 (mod 4)` exceeding `3`, conditional on the
 cited classification of the remaining branches. As a corollary, no triangle can be cut into 19
 congruent triangles.
 
-The **entire arithmetic and combinatorial layer** is machine-checked in Lean 4 + Mathlib (thirteen
+The **entire arithmetic and combinatorial layer** is machine-checked in Lean 4 + Mathlib (fifteen
 theorems, axiom-clean, no `sorry`): the eleven-shape enumeration, the isosceles branch end-to-end
 (non-integrality obstruction, scale-pinning, and a master theorem combining the area equation with
 the invariant's divisibility), the scalene compositeness, and the commensurable-branch exclusion of
@@ -46,8 +51,11 @@ holds for a primitive triple with `c² = a² + ab + b²`.
 - `code/verify_shapes.py` — the eleven shapes of `ABC` from the vertex enumeration, and the
   closed-form `N₀` of the scalene shapes with their compositeness (exact arithmetic).
 - `code/verify_invariant.py` — the tile-value and cancellation lemmas, the role of the two
-  invariants, the non-edge-to-edge cancellation, and the non-integrality search.
-- `lean/` — a Lean 4 + Mathlib proof of the entire arithmetic layer (five theorems), axiom-clean.
+  invariants, the non-edge-to-edge cancellation, the non-integrality search, and the Herdt
+  positive control.
+- `code/verify_spectrum.py` — the prime dichotomy's achievability half, the scale structure
+  `b | k² ⟺ de | k`, the isosceles admissible spectrum, and the `j`-classification.
+- `lean/` — a Lean 4 + Mathlib proof of the entire arithmetic and combinatorial layer (fifteen theorems), axiom-clean.
 
 ## How to verify
 
@@ -55,6 +63,7 @@ holds for a primitive triple with `c² = a² + ab + b²`.
 # combinatorial and numerical checks (needs python3 + sympy)
 python3 code/verify_shapes.py        # eleven shapes; scalene N composite
 python3 code/verify_invariant.py     # tile value; cancellation; non-integrality
+python3 code/verify_spectrum.py      # prime dichotomy; admissible spectrum
 
 # the arithmetic layer, machine-checked in Lean (needs elan/lake)
 cd lean && lake exe cache get && lake build
@@ -66,12 +75,14 @@ cd lean && lake exe cache get && lake build
   geometric lemmas (cancellation, tile value); the reduction of the prime `2π/3` case to an
   isosceles target; the exclusion of every prime for the isosceles `2π/3` case; the scalene
   reduction.
-- **Machine-checked (Lean 4 + Mathlib, thirteen theorems, axiom-clean, no `sorry`):** the whole
+- **Machine-checked (Lean 4 + Mathlib, fifteen theorems, axiom-clean, no `sorry`):** the whole
   arithmetic and combinatorial layer — the eleven-shape enumeration (`shape_enumeration`); the
   isosceles branch end-to-end (`k_not_dvd_sum_sub`, `M_not_int`, `iso_reduction_identity`,
   `prime_count_forces_scale`, and the master theorem `no_prime_isosceles_count`); the scalene
-  compositeness (`add_not_prime`, `F1_count_not_prime`–`F4_count_not_prime`); and the
-  commensurable-branch exclusion (`prime_three_mod_four_excluded`).
+  compositeness (`add_not_prime`, `F1_count_not_prime`–`F4_count_not_prime`); the
+  commensurable-branch exclusion (`prime_three_mod_four_excluded`); the two-positive-squares
+  decomposition (`prime_sum_two_pos_squares`); and the general-`N` admissibility theorem
+  (`iso_admissible`).
 - **Machine-checked (Python, exact arithmetic):** the eleven shapes; the `N₀` formulas and scalene
   compositeness; `a+b` never prime; the tile value `±(c+a−b)` over all orientations; the cancellation
   identity on explicit tilings; the non-edge-to-edge cancellation; zero counterexamples to the
@@ -87,14 +98,14 @@ cd lean && lake exe cache get && lake build
 This work was carried out by Vico Bonfioli in close collaboration with an AI system (Anthropic's
 Claude). The AI proposed the signed-direction invariant, carried out the symbolic and numerical
 verification, found the elementary non-integrality argument, and produced the Lean formalization and
-drafts of the write-up, under the author's direction and review. The result is an exceptional claim
-resting on geometric lemmas that are here verified only numerically; it should not be regarded as
-established until checked by experts in the field.
+drafts of the write-up, under the author's direction and review. The result is an exceptional claim whose
+geometric lemmas rest on written proofs backed by numerical checks, not yet refereed; it should not
+be regarded as established until checked by experts in the field.
 
 ## Key references
 
 - M. Laczkovich, *Tilings of triangles*, Discrete Math. 140 (1995); *Tilings of convex polygons with
-  congruent triangles*, Discrete Comput. Geom. 38 (2012).
+  congruent triangles*, Discrete Comput. Geom. 48 (2012).
 - M. Beeson, the *Triangle Tiling* series and *Tilings of an isosceles triangle* / *Tiling an
   equilateral triangle* (arXiv:1206.2231, 1206.2229, 1206.1974, 1811.09723, 1812.07014).
 - M. Beeson and Y. X. Zhang, *Rationality of certain triangle tilings*, arXiv:2604.01314.

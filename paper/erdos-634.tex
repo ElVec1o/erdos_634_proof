@@ -35,8 +35,12 @@ tiling functional, linear in edge length and hence insensitive to non-edge-to-ed
 integrality forces, for an isosceles target, that $(c-a-b)/\sqrt b$ be an integer for a primitive
 triple with $c^2=a^2+ab+b^2$; an elementary lemma shows this never occurs. With a self-contained
 reduction of the scalene shapes, this completes the exclusion of primes $\equiv 3\pmod 4$ exceeding
-$3$, conditional on the cited classification of the remaining branches. The arithmetic core is
-machine-checked in Lean~4 with Mathlib.
+$3$, conditional on the cited classification of the remaining branches. Consequently the prime case
+of the full problem is complete: a prime $p$ occurs if and only if $p=2$, $p=3$, or
+$p\equiv1\pmod4$. Beyond primes, we determine the admissible spectrum of each sporadic $2\pi/3$
+branch --- for the isosceles target, writing $b=de^2$ with $d$ squarefree, every count has the form
+$N=dw^2(a+2b)$ with $e\mid w(c-a-b)$ --- bounding the realizable set from outside. The arithmetic
+and combinatorial layer is machine-checked in Lean~4 with Mathlib.
 \end{abstract}
 
 \maketitle
@@ -408,6 +412,114 @@ Theorem~\ref{thm:iso} excludes that. Hence no such tiling exists. Finally $19>3$
 $19$ congruent triangles.
 \end{proof}
 
+\section{Towards the full problem}\label{sec:full}
+
+Erd\H{o}s's question asks for \emph{all} $N$. Theorem~\ref{thm:main} settles the negative side for
+primes; this section records what the present methods contribute to the full determination: a
+complete answer for primes, and, for each sporadic $2\pi/3$ branch, a determination of its
+\emph{admissible spectrum} --- the set of counts compatible with the area and invariant conditions.
+
+\begin{theorem}[The prime case, complete]\label{thm:primefull}
+A prime $p$ is a number of congruent triangles into which some triangle can be cut if and only if
+$p=2$, $p=3$, or $p\equiv 1\pmod 4$.
+\end{theorem}
+
+\begin{proof}
+\emph{If.} For $p=2$, the altitude from the right angle splits an isosceles right triangle into two
+congruent triangles. For $p=3$, join the centre of an equilateral triangle to its vertices. For
+$p\equiv1\pmod4$, Fermat's two-squares theorem gives $p=e^2+f^2$ with $e,f\ge1$; splitting a right
+triangle with legs $e,f$ by the altitude from the right angle and tiling the two similar pieces
+quadratically with $e^2$ and $f^2$ congruent copies realizes $N=e^2+f^2$ (the biquadratic tiling
+\cite{Soifer, BeesonIso}). \emph{Only if.} Theorem~\ref{thm:main}, whose dependencies this
+direction inherits.
+\end{proof}
+
+\begin{theorem}[Isosceles admissible spectrum]\label{thm:admissible}
+Let $(a,b,c)$ be a primitive $120^\circ$-triple and write $b=de^2$ with $d$ squarefree. Every
+$N$-tiling of the base-$\alpha$ isosceles target has scale $k=dew$ for a positive integer $w$, and
+\[
+N=d\,w^2\,(a+2b),\qquad e\mid w\,(c-a-b).
+\]
+Symmetrically, with $a=d'e'^2$, the base-$\beta$ target forces $N=d'w^2(2a+b)$ and
+$e'\mid w(c-a-b)$.
+\end{theorem}
+
+\begin{proof}
+By the area identity $Nb=k^2(a+2b)$ and $\gcd(a+2b,b)=1$ we get $b\mid k^2$. For a prime
+$p\mid d$ the valuation $v_p(b)=2v_p(e)+1\le 2v_p(k)$ forces $v_p(k)\ge v_p(e)+1$, and for
+$p\nmid d$, $v_p(k)\ge v_p(e)$; hence $de\mid k$, say $k=dew$, and substituting back,
+$N=dw^2(a+2b)$. By Corollary~\ref{cor:int} and the identity $(c-a-b)(c+a-b)=b(2b+a-2c)$, the
+invariant value is $M=k(c-a-b)/b$, so $b\mid k(c-a-b)$, i.e.\ $de^2\mid dew(c-a-b)$, i.e.\
+$e\mid w(c-a-b)$.
+\end{proof}
+
+\noindent Theorem~\ref{thm:iso} is the degenerate case: $N$ prime forces $d=w=1$, so $b=e^2$ and
+$e\mid(c-a-b)$, which Lemma~\ref{lem:nonint} refutes. The residual divisibility is governed by the
+following classification.
+
+\begin{proposition}[Solvability of $e\mid(a+b-c)$]\label{prop:solv}
+Let $b=de^2$, $d$ squarefree, $\gcd(a,b)=1$. Then $e\mid(a+b-c)$ holds for a primitive
+$120^\circ$-triple if and only if there is an integer $j$ with $d<j<2d$ such that $ej$ is even,
+\[
+a=\frac{e^2(2d-j)(2d+j)}{4(j-d)}
+\]
+is a positive integer coprime to $de^2$; in that case $c=a+\tfrac{e^2 j}{2}$. In particular, for
+$d=1$ the range $(1,2)$ contains no integer, which re-proves Lemma~\ref{lem:nonint}; for $d=2$,
+$j=3$, $e=2$ one obtains $(a,b,c)=(7,8,13)$.
+\end{proposition}
+
+\begin{proof}
+Since $e\mid b$, the hypothesis gives $c\equiv a\pmod e$, and $0<c-a<b$ writes $c=a+et$ with
+$1\le t\le de-1$. Substituting into $c^2=a^2+ab+b^2$ and dividing by $e$,
+$a(2t-de)=e(de-t)(de+t)$. As $e\mid a(2t-de)$ and $\gcd(a,e)=1$, we get $e\mid 2t$, say $2t=ej$
+with $1\le j\le 2d-1$; substituting $t=ej/2$ gives $4a(j-d)=e^2(2d-j)(2d+j)$, whose right side is
+positive, forcing $j>d$ and the displayed formula. Conversely, given such $j$, setting
+$t=ej/2$, $a$ as displayed and $c=a+et$ reverses the computation: $c^2=a^2+ab+b^2$ and
+$a+b-c=e(de-t)$ is divisible by $e$.
+\end{proof}
+
+\begin{remark}\label{rem:necessary}
+Admissibility is necessary, not sufficient. The smallest admissible value is $N=33=3\cdot 11$ on
+the tile $(5,3,7)$ (where $d=3$, $e=1$, so the divisibility is vacuous); it is nevertheless
+excluded by Beeson's boundary analysis, which rules out $N<36$~\cite{BeesonIso}, while Herdt's
+$2673$-tile tiling is the member $w=9$ of the same family $33w^2$. On the tile $(7,8,13)$ (where
+$d=2$, $e=2$, $c-a-b=-2$) all $N=46w^2$ are admissible; the smallest, $N=46=2\cdot 23$, survives
+every necessary condition known to us and has no known tiling. Zhang's
+constructions~\cite{Zhang} realize $N=m^2b(a+2b)$ for $m$ in certain residue classes, a proper
+subset of the admissible spectrum; his conjecture, restricted to this branch, says the realized
+set is exactly his. The spectrum above bounds it from outside.
+\end{remark}
+
+\begin{proposition}[The other branches]\label{prop:otherspectra}
+With the same normalizations:
+$F_1$ forces $N=dw^2(a+b)$ where $b=de^2$, $d$ squarefree (from $b\mid k^2$ as above);
+$F_2,F_3,F_4$ force $N=N_0k^2$ exactly, with $N_0=(a+2b)(2a+b)$, $3(a+b)(a+2b)$, $(a+b)(2a+b)$;
+the tile-similar shape forces $N=n^2$; and an equilateral target of side $S$ forces $ab\mid S^2$,
+$N=S^2/(ab)$ (so $N$ and $ab$ have the same squarefree kernel) together with
+$(c+a-b)\mid 3S$ and $(c+b-a)\mid 3S$.
+\end{proposition}
+
+\begin{proof}
+The scalene statements are the area identity~\eqref{eq:area} with the side-vectors of
+Section~\ref{sec:reduction} ($F_1$ repeats the $b\mid k^2$ analysis). For the equilateral target
+the three sides, traversed counterclockwise, differ in direction by $\frac{2\pi}3=2\cdot\frac\pi3$,
+so $f$ takes one sign on all three and $\Phi_f(\partial ABC)=\pm3S$ for both invariants;
+Corollary~\ref{cor:int} gives the two divisibilities, and the area identity gives $N\,ab=S^2$.
+\end{proof}
+
+\subsection*{State of the full problem.}
+Assembling: the commensurable branch is completely determined (squares, sums of two squares, and
+$2,3,6$ times squares, all realized \cite{BeesonSeven}); the similar-tile and right-angle branches
+are settled in \cite{BeesonI, SWW}; the primes are settled by Theorem~\ref{thm:primefull}. What
+remains open for the full determination of the tile-count set is: sufficiency in the sporadic
+$2\pi/3$ branches (Zhang's completeness conjecture~\cite{Zhang}; the admissible spectra above are
+the outer bounds), the $3\alpha+2\beta=\pi$ and $\gamma=2\alpha$ branches beyond the partial
+results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommensurable tiles,
+where Laczkovich has connected the possible $N$ to rational points on elliptic
+curves~\cite{LaczkovichEll}. To our knowledge the smallest undetermined values are
+$N=14,15,21,22$ ($7$ and $11$ are excluded by \cite{BeesonSeven}, and $19,23$ by
+Theorem~\ref{thm:main}).
+
 \subsection*{Standing of the inputs.}
 For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:
 Laczkovich's classification papers \cite{Laczkovich1995,Laczkovich2012} and the rep-tiling theorem
@@ -417,8 +529,8 @@ paper \cite{BeesonIso} is accepted (to appear in \emph{Integers}); Beeson's rema
 theorem~\cite{BeesonZhang}, which is load-bearing for the integrality of the tile, are arXiv
 preprints at the time of writing. Zhang's constructions~\cite{Zhang} are cited for context only and
 carry no logical weight here. The parts original to this paper (Sections
-\ref{sec:reduction}--\ref{sec:isosceles}, together with the shape enumeration of
-Section~\ref{sub:shapes}) are self-contained given those inputs, with the arithmetic layer
+\ref{sec:reduction}--\ref{sec:isosceles} and \ref{sec:full}, together with the shape enumeration
+of Section~\ref{sub:shapes}) are self-contained given those inputs, with the arithmetic layer
 machine-checked (Section~\ref{sec:verification}).
 
 \section{Verification}\label{sec:verification}
@@ -429,13 +541,18 @@ the values $N_0$ of Section~\ref{sec:reduction}. \texttt{verify\_invariant.py} c
 Lemma~\ref{lem:value} ($C_f(t)=\pm(c+a-b)$ over all orientations of $T$), Lemma~\ref{lem:cancel}
 (both sides agree on explicit subdivision tilings, and~\eqref{eq:antisym} cancels at a
 non-edge-to-edge incidence), and Lemma~\ref{lem:nonint} (no counterexample among primitive
-$120^\circ$-triples up to $c\approx 9\times10^6$). As a positive control, both necessary conditions
+$120^\circ$-triples up to $c\approx 9\times10^6$). \texttt{verify\_spectrum.py} checks
+Section~\ref{sec:full}: the two-positive-squares decomposition for all primes
+$p\not\equiv3\pmod4$ below $10^5$; the scale structure $b\mid k^2\iff de\mid k$; the admissible
+spectrum of Theorem~\ref{thm:admissible} (no prime is admissible; $33$ and $46$ are); and that
+every instance of $e\mid(a+b-c)$ with $a,b<3000$ arises from the $j$-classification of
+Proposition~\ref{prop:solv}, with none for $d=1$. As a positive control, both necessary conditions
 of Theorem~\ref{thm:iso} hold on the genuine $2673$-tile isosceles tiling of
 Herdt~\cite{BeesonIso}: for its tile $(5,3,7)$ and scale $k=27$, $N=k^2(a+2b)/b=2673$ and
 $M=k(2b+a-2c)/(c+a-b)=-9$ are integers, as they must be on any true tiling.
 
 The entire \emph{arithmetic and combinatorial} layer of the proof is formalized and machine-checked
-in Lean~4 with Mathlib (\texttt{lean/Erdos634.lean}, thirteen theorems); every theorem depends only
+in Lean~4 with Mathlib (\texttt{lean/Erdos634.lean}, fifteen theorems); every theorem depends only
 on the standard axioms \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}, with no
 \texttt{sorry}:
 \begin{itemize}
@@ -454,7 +571,12 @@ Proposition~\ref{prop:reduction} are composite ($a+b$ is never prime for a primi
 $120^\circ$-triple, and the $F_2,F_3,F_4$ counts factor);
 \item[] \texttt{prime\_three\_mod\_four\_excluded}: a prime $p\equiv3\pmod4$ with $p>3$ is
 neither a square, a sum of two squares, nor $2n^2$, $3n^2$ or $6n^2$ (the commensurable branch of
-Section~\ref{sec:prelim}), via Fermat's two-squares theorem.
+Section~\ref{sec:prelim}), via Fermat's two-squares theorem;
+\item[] \texttt{prime\_sum\_two\_pos\_squares}: a prime $p\not\equiv3\pmod4$ is a sum of two
+\emph{positive} squares (the achievability half of Theorem~\ref{thm:primefull});
+\item[] \texttt{iso\_admissible}: Theorem~\ref{thm:admissible} --- given $b=de^2$ with $d$
+squarefree, the area equation and $\Phi$-divisibility force $k=dew$, $N=dw^2(a+2b)$ and
+$e\mid w(c-a-b)$.
 \end{itemize}
 What is \emph{not} formalized is exactly the geometry: the direction grid of
 Section~\ref{sec:prelim} and Lemmas~\ref{lem:cancel} and~\ref{lem:value}, which are proved in the
@@ -504,6 +626,9 @@ Problem~633}, arXiv:2604.03609.
 
 \bibitem{Laczkovich2012} M.~Laczkovich, \emph{Tilings of convex polygons with congruent triangles},
 Discrete Comput.\ Geom.\ \textbf{48} (2012), 330--372.
+
+\bibitem{LaczkovichEll} M.~Laczkovich, \emph{Rational points of some elliptic curves related to
+the tilings of the equilateral triangle}, Discrete Comput.\ Geom.\ \textbf{64} (2020), 985--994.
 
 \bibitem{SWW} S.~L.~Snover, C.~Waiveris and J.~K.~Williams, \emph{Rep-tiling for triangles},
 Discrete Math.\ \textbf{91} (1991), 193--200.

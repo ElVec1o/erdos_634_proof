@@ -1,7 +1,7 @@
 # Lean formalization — arithmetic layer of the Erdős #634 proof
 
 `Erdos634.lean` machine-checks the entire **arithmetic and combinatorial layer** of the proof:
-thirteen theorems, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; the enumeration
+fifteen theorems, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; the enumeration
 needs only `propext`, `Quot.sound`), no `sorry`.
 
 Isosceles branch (end to end):
@@ -26,6 +26,12 @@ Commensurable branch:
 Shape classification:
 - `shape_enumeration` — the eleven-shape completeness: sorted triples of realizable corner types
   `(m, k)` with `Σm = 0`, `Σk = 3` are exactly the eleven of the paper.
+
+Towards the full problem:
+- `prime_sum_two_pos_squares` — a prime `p ≢ 3 (mod 4)` is a sum of two positive squares
+  (the achievability half of the prime dichotomy).
+- `iso_admissible` — the general-`N` admissibility theorem: with `b = d·e²`, `d` squarefree, the
+  area equation and Φ-divisibility force `k = d·e·w`, `N = d·w²·(a+2b)`, and `e | w(c−a−b)`.
 
 The geometric ingredients (the Φ-invariant's cancellation and tile-value lemmas, the direction
 grid, Laczkovich's case analysis, Beeson's branch inputs) are **not** formalized — there is no
