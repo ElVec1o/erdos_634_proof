@@ -1,7 +1,7 @@
 # Lean formalization — arithmetic layer of the Erdős #634 proof
 
 `Erdos634.lean` machine-checks the entire **arithmetic and combinatorial layer** of the proof:
-twenty theorems, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; the enumeration
+twenty-three theorems, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; the enumeration
 needs only `propext`, `Quot.sound`), no `sorry`.
 
 Isosceles branch (end to end):
@@ -41,6 +41,11 @@ The N = 14, 15 sweep (finite arithmetic of the branch checks):
   `(t−s)² + 16N = □`, the only factor pairs are `(6,7)` and `(5,9)`: the instances are unique.
 - `iso_ab_congruence_kills_14` — the boundary congruence kills the `N = 14` iso-`(α+β)` candidate
   (no `m ≡ 7 (mod 9)` fits `140 = 45p + 56m + 81q`).
+- `F1_invariant_kills_21` — the invariant integrality fails on the unique `N = 21` `F₁` candidate
+  (tile `(5,16,19)`, `k = 4`: `8 ∤ 28`).
+- `parity_kills_46` — the parity refinement kills `N = 46` on `(7,8,13)` (`w = 1` is odd).
+- `iso_ab_congruence_kills_22` — both `N = 22` iso-`(α+β)` candidates fall to the boundary
+  congruence.
 
 The geometric ingredients (the Φ-invariant's cancellation and tile-value lemmas, the direction
 grid, Laczkovich's case analysis, Beeson's branch inputs) are **not** formalized — there is no

@@ -23,18 +23,22 @@ the large triangle to be isosceles. Within that branch this work:
 - determines the **admissible spectrum** of each sporadic `2π/3` branch — for the isosceles
   target, writing `b = d·e²` with `d` squarefree, every count is `N = d·w²·(a+2b)` with
   `e | w(c−a−b)` — an outer bound on the realizable set (33 and 46 are admissible; no prime is);
-- settles the two smallest previously undetermined values: **no triangle can be cut into 14, or
-  into 15, congruent triangles** — a complete branch sweep (published tiling equations, the
-  spectra above, and a new equilateral criterion `st = 3N` with `(t−s)² + 16N` square) reduces
-  each to uniquely-determined finite instances, refuted by an exhaustive exact search
-  (`code/engine/`, validated on positive controls including a non-edge-to-edge tiling, verdicts
-  robust to disabling the strongest prune). The smallest undetermined values are now 21 and 22;
+- settles **every previously undetermined value up to 32**: no triangle can be cut into **14, 15,
+  21, 22, or 30** congruent triangles — a complete branch sweep (published tiling equations, the
+  spectra above with a **parity refinement** of the invariant counts (M ≡ N mod 2), and a new
+  equilateral criterion `st = 3N` with `(t−s)² + 16N` square) reduces each value to
+  uniquely-determined finite instances (22 and 30 die by arithmetic alone), refuted by an
+  exhaustive exact search (`code/engine/`, validated on positive controls including a
+  non-edge-to-edge tiling, verdicts robust to disabling the strongest prune);
+- excludes **N = 46**, previously the sharpest open test of Zhang's completeness conjecture: the
+  parity refinement kills it, and on tiles like (7,8,13) and (5,16,19) the refined spectrum
+  coincides exactly with Zhang's constructed family. The smallest undetermined value is now 33;
 
 which together complete the exclusion of primes `≡ 3 (mod 4)` exceeding `3`, conditional on the
 cited classification of the remaining branches. As a corollary, no triangle can be cut into 19
 congruent triangles.
 
-The **entire arithmetic and combinatorial layer** is machine-checked in Lean 4 + Mathlib (twenty
+The **entire arithmetic and combinatorial layer** is machine-checked in Lean 4 + Mathlib (twenty-three
 theorems, axiom-clean, no `sorry`): the eleven-shape enumeration, the isosceles branch end-to-end
 (non-integrality obstruction, scale-pinning, and a master theorem combining the area equation with
 the invariant's divisibility), the scalene compositeness, and the commensurable-branch exclusion of
@@ -66,7 +70,7 @@ holds for a primitive triple with `c² = a² + ab + b²`.
 - `code/engine/` — the exhaustive exact search engine (advancing front over `ℚ(√D)`, provably
   complete corner-anchored branching, sound prunes): `python3 run_all.py validate` then
   `python3 run_all.py A|B|D|E` (or `noP2-A` etc. for the prune-robustness reruns).
-- `lean/` — a Lean 4 + Mathlib proof of the entire arithmetic and combinatorial layer (twenty theorems), axiom-clean.
+- `lean/` — a Lean 4 + Mathlib proof of the entire arithmetic and combinatorial layer (twenty-three theorems), axiom-clean.
 
 ## How to verify
 
@@ -88,7 +92,7 @@ cd lean && lake exe cache get && lake build
   geometric lemmas (cancellation, tile value); the reduction of the prime `2π/3` case to an
   isosceles target; the exclusion of every prime for the isosceles `2π/3` case; the scalene
   reduction.
-- **Machine-checked (Lean 4 + Mathlib, twenty theorems, axiom-clean, no `sorry`):** the whole
+- **Machine-checked (Lean 4 + Mathlib, twenty-three theorems, axiom-clean, no `sorry`):** the whole
   arithmetic and combinatorial layer — the eleven-shape enumeration (`shape_enumeration`); the
   isosceles branch end-to-end (`k_not_dvd_sum_sub`, `M_not_int`, `iso_reduction_identity`,
   `prime_count_forces_scale`, and the master theorem `no_prime_isosceles_count`); the scalene

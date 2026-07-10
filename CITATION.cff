@@ -13,8 +13,11 @@ abstract: >-
   to 3 modulo 4 as numbers of congruent triangles tiling a triangle, conditional on the cited
   classification; in particular no triangle can be cut into 19 congruent triangles. The
   prime case of the full problem is thereby complete (a prime occurs iff p = 2, 3, or 1 mod 4),
-  and the admissible spectrum of each sporadic branch is determined. The arithmetic and
-  combinatorial layer is machine-checked in Lean 4 with Mathlib. Developed with AI assistance
+  the admissible spectrum of each sporadic branch is determined (with a parity refinement), every
+  value up to 32 is settled (14, 15, 21, 22, 30 are excluded, by branch sweeps and exhaustive
+  exact searches), and N = 46, the sharpest test of Zhang's completeness conjecture, is excluded
+  in agreement with that conjecture. The arithmetic and combinatorial layer is machine-checked in
+  Lean 4 with Mathlib. Developed with AI assistance
   (Anthropic Claude); presented for peer review.
 keywords:
   - triangle tiling

@@ -36,6 +36,26 @@ def make_instance(name):
         tile.area2 = qd(0, F(315, 2))                # 56*15*(3/16) = 315/2  (x sqrt23)
         target = [(qd(0), qd(0)), (qd(105), qd(0)), (qd(F(105, 2)), qd(0, F(45, 2)))]
         return tile, target, N
+    if name == 'F':
+        QD.D = 6
+        a, b, c, N = 110, 21, 121, 21
+        tile = Tile(a, b, c,
+                    qd(F(71, 121)), qd(0, F(40, 121)),
+                    qd(F(1315, 1331)), qd(0, F(84, 1331)),
+                    qd(F(-5, 11)), qd(0, F(4, 11)))
+        tile.area2 = qd(0, 840)                      # 110*21*(4/11) = 840  (x sqrt6)
+        target = [(qd(0), qd(0)), (qd(210), qd(0)), (qd(105), qd(0, 84))]
+        return tile, target, N
+    if name == 'G':
+        QD.D = 6
+        a, b, c, N = 10, 21, 25, 21
+        tile = Tile(a, b, c,
+                    qd(F(23, 25)), qd(0, F(4, 25)),
+                    qd(F(71, 125)), qd(0, F(42, 125)),
+                    qd(F(-1, 5)), qd(0, F(2, 5)))
+        tile.area2 = qd(0, 84)                       # 10*21*(2/5) = 84  (x sqrt6)
+        target = [(qd(0), qd(0)), (qd(42), qd(0)), (qd(21), qd(0, 42))]
+        return tile, target, N
     if name == 'E':
         QD.D = 7
         a, b, c, N = 4, 15, 16, 15

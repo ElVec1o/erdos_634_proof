@@ -639,6 +639,37 @@ theorem iso_ab_congruence_kills_14 :
   rintro ⟨p, m, q, h1, h2⟩
   omega
 
+/-- **Frontier check (`N = 21`, `F₁` target).** The unique structural `F₁` candidate — the genuine
+tile `(5,16,19)` with scale `k = 4` — fails the invariant integrality:
+`M_α = k(2a+b−c)/(c+a−b) = 28/8 ∉ ℤ`. -/
+theorem F1_invariant_kills_21 :
+    ∀ k : ℤ, 0 < k → k ^ 2 * 21 = 21 * 16 → ¬ ((19 + 5 - 16) ∣ k * (2 * 5 + 16 - 19)) := by
+  intro k hk h
+  have h1 : k ≤ 4 := by nlinarith
+  have h2 : 4 ≤ k := by nlinarith
+  intro hdvd
+  omega
+
+/-- **Frontier check (`N = 46`, parity).** On the tile `(7,8,13)` (`d = e = 2`) the divisibility
+spectrum admits `N = 2w²·23`, but the invariant count `−w` must have the parity of `N`; for
+`N = 46` the scale forces `w = 1`, and `1 ≢ 46 (mod 2)`. -/
+theorem parity_kills_46 :
+    ∀ w : ℤ, 0 < w → 2 * w ^ 2 * 23 = 46 → ¬ (2 ∣ w + 46) := by
+  intro w hw h
+  have h1 : w ≤ 1 := by nlinarith
+  have h2 : 1 ≤ w := hw
+  intro hdvd
+  omega
+
+/-- **Frontier check (`N = 22`, iso-`(α+β)`).** Both tiling-equation candidates die on the
+boundary congruence `M ≡ −m (mod gcd(a,c))`: for `M = 2`, tile `(117,88,169)`, the base
+`396 = 117p + 88m + 169q` cannot carry `m ≡ 11 (mod 13)`; for `M = 4`, tile `(57,352,361)`, the
+base `264` cannot carry `m ≡ 15 (mod 19)`. -/
+theorem iso_ab_congruence_kills_22 :
+    (¬ ∃ p m q : ℕ, 396 = 117 * p + 88 * m + 169 * q ∧ (2 + m) % 13 = 0) ∧
+    (¬ ∃ p m q : ℕ, 264 = 57 * p + 352 * m + 361 * q ∧ (4 + m) % 19 = 0) := by
+  constructor <;> rintro ⟨p, m, q, hsum, hmod⟩ <;> omega
+
 end Erdos634
 
 #print axioms Erdos634.k_not_dvd_sum_sub
@@ -661,3 +692,6 @@ end Erdos634
 #print axioms Erdos634.eq_spectrum_unique_14
 #print axioms Erdos634.eq_spectrum_unique_15
 #print axioms Erdos634.iso_ab_congruence_kills_14
+#print axioms Erdos634.F1_invariant_kills_21
+#print axioms Erdos634.parity_kills_46
+#print axioms Erdos634.iso_ab_congruence_kills_22

@@ -41,9 +41,11 @@ of the full problem is complete: a prime $p$ occurs if and only if $p=2$, $p=3$,
 $p\equiv1\pmod4$. Beyond primes, we determine the admissible spectrum of each sporadic $2\pi/3$
 branch --- for the isosceles target, writing $b=de^2$ with $d$ squarefree, every count has the form
 $N=dw^2(a+2b)$ with $e\mid w(c-a-b)$ --- bounding the realizable set from outside; and, combining
-the spectra with the published branch theorems and an exhaustive exact search of the four surviving
-finite instances, we settle the two smallest previously undetermined values: no triangle can be cut
-into $14$, or into $15$, congruent triangles. The arithmetic and combinatorial layer is
+the spectra (with a parity refinement of the invariant counts) with the published branch theorems
+and an exhaustive exact search of the surviving finite instances, we settle every previously
+undetermined value up to $32$: no triangle can be cut into $14$, $15$, $21$, $22$, or $30$
+congruent triangles; and $N=46$, the sharpest test of Zhang's completeness conjecture, is likewise
+excluded, in agreement with that conjecture. The arithmetic and combinatorial layer is
 machine-checked in Lean~4 with Mathlib.
 \end{abstract}
 
@@ -327,15 +329,20 @@ Repeating in the $\beta$-frame (where $\gamma=\frac{2\pi}3$ adds $0$ to $j'$ and
 makes the $a$-edge the odd one out, giving $C_{f_\beta}(t)=\pm(c+b-a)$.
 \end{proof}
 
-\begin{corollary}[Integrality]\label{cor:int}
-Each of $\dfrac{\Phi_{f_\alpha}(\partial ABC)}{c+a-b}$ and $\dfrac{\Phi_{f_\beta}(\partial ABC)}{c+b-a}$
-is an integer. They are separate necessary conditions: each follows from Lemma~\ref{lem:cancel} for
-its own $f$, so a single non-integer value forbids a tiling.
+\begin{corollary}[Integrality and parity]\label{cor:int}
+Each of $M_\alpha=\dfrac{\Phi_{f_\alpha}(\partial ABC)}{c+a-b}$ and
+$M_\beta=\dfrac{\Phi_{f_\beta}(\partial ABC)}{c+b-a}$ is an integer, and moreover
+\[
+M_\alpha\equiv M_\beta\equiv N \pmod 2 .
+\]
+They are separate necessary conditions: each follows from Lemma~\ref{lem:cancel} for its own $f$,
+so a single failure forbids a tiling.
 \end{corollary}
 
 \begin{proof}
 By Lemmas \ref{lem:cancel} and~\ref{lem:value}, $\Phi_{f_\alpha}(\partial ABC)=\sum_t C_{f_\alpha}(t)
-=(c+a-b)\sum_t\varepsilon_t$ with $\varepsilon_t\in\{\pm1\}$, and likewise for $f_\beta$.
+=(c+a-b)\sum_t\varepsilon_t$ with $\varepsilon_t\in\{\pm1\}$, so $M_\alpha=\sum_t\varepsilon_t$
+is a sum of $N$ signs, whence $M_\alpha\equiv N\pmod 2$; likewise for $f_\beta$.
 \end{proof}
 
 \section{The isosceles obstruction}\label{sec:isosceles}
@@ -442,10 +449,10 @@ direction inherits.
 Let $(a,b,c)$ be a primitive $120^\circ$-triple and write $b=de^2$ with $d$ squarefree. Every
 $N$-tiling of the base-$\alpha$ isosceles target has scale $k=dew$ for a positive integer $w$, and
 \[
-N=d\,w^2\,(a+2b),\qquad e\mid w\,(c-a-b).
+N=d\,w^2\,(a+2b),\qquad e\mid w\,(c-a-b),\qquad \frac{w(c-a-b)}{e}\equiv N\pmod 2 .
 \]
-Symmetrically, with $a=d'e'^2$, the base-$\beta$ target forces $N=d'w^2(2a+b)$ and
-$e'\mid w(c-a-b)$.
+Symmetrically, with $a=d'e'^2$, the base-$\beta$ target forces $N=d'w^2(2a+b)$,
+$e'\mid w(c-a-b)$ and the same parity for $w(c-a-b)/e'$.
 \end{theorem}
 
 \begin{proof}
@@ -454,7 +461,7 @@ $p\mid d$ the valuation $v_p(b)=2v_p(e)+1\le 2v_p(k)$ forces $v_p(k)\ge v_p(e)+1
 $p\nmid d$, $v_p(k)\ge v_p(e)$; hence $de\mid k$, say $k=dew$, and substituting back,
 $N=dw^2(a+2b)$. By Corollary~\ref{cor:int} and the identity $(c-a-b)(c+a-b)=b(2b+a-2c)$, the
 invariant value is $M=k(c-a-b)/b$, so $b\mid k(c-a-b)$, i.e.\ $de^2\mid dew(c-a-b)$, i.e.\
-$e\mid w(c-a-b)$.
+$e\mid w(c-a-b)$; and $M=w(c-a-b)/e\equiv N\pmod2$ by Corollary~\ref{cor:int}.
 \end{proof}
 
 \noindent Theorem~\ref{thm:iso} is the degenerate case: $N$ prime forces $d=w=1$, so $b=e^2$ and
@@ -486,12 +493,16 @@ $a+b-c=e(de-t)$ is divisible by $e$.
 Admissibility is necessary, not sufficient. The smallest admissible value is $N=33=3\cdot 11$ on
 the tile $(5,3,7)$ (where $d=3$, $e=1$, so the divisibility is vacuous); it is nevertheless
 excluded by Beeson's boundary analysis, which rules out $N<36$~\cite{BeesonIso}, while Herdt's
-$2673$-tile tiling is the member $w=9$ of the same family $33w^2$. On the tile $(7,8,13)$ (where
-$d=2$, $e=2$, $c-a-b=-2$) all $N=46w^2$ are admissible; the smallest, $N=46=2\cdot 23$, survives
-every necessary condition known to us and has no known tiling. Zhang's
-constructions~\cite{Zhang} realize $N=m^2b(a+2b)$ for $m$ in certain residue classes, a proper
-subset of the admissible spectrum; his conjecture, restricted to this branch, says the realized
-set is exactly his. The spectrum above bounds it from outside.
+$2673$-tile tiling is the member $w=9$ of the same family $33w^2$. The parity clause bites hard: on the tile $(7,8,13)$ (where $d=2$, $e=2$, $c-a-b=-2$) the
+divisibility admits all $N=2w^2\cdot23$, but the count $M=-w$ must have the parity of
+$N=2w^2\cdot 23$, which is even --- forcing $w$ even, say $w=2m$; the refined spectrum is exactly
+$N=184m^2=m^2\,b(a+2b)$ --- \emph{precisely} Zhang's
+constructed family~\cite{Zhang} for this tile. In particular $N=46$, previously the smallest value
+passing every known necessary condition on this branch, is \emph{excluded} (Section~\ref{sub:frontier}
+checks the remaining branches), in exact agreement with the prediction of Zhang's conjecture.
+Zhang's constructions realize $N=m^2b(a+2b)$ for $m$ in certain residue classes; the refined
+spectrum above bounds the realized set from outside, and on tiles such as $(7,8,13)$ and
+$(5,16,19)$ the two now coincide as families.
 \end{remark}
 
 \begin{proposition}[The other branches]\label{prop:otherspectra}
@@ -519,7 +530,7 @@ criterion.
 Let an equilateral triangle of side $S$ be $N$-tiled by a $2\pi/3$ tile $(a,b,c)$, and put
 $X=c+a-b$, $Y=c+b-a$. Then $XY=3ab$, and $s:=3S/X$, $t:=3S/Y$ are positive integers with
 \[
-st=3N,\qquad (t-s)^2+16N=q^2\ \text{ for an integer } q;
+st=3N,\qquad s\equiv t\equiv N\pmod 2,\qquad (t-s)^2+16N=q^2\ \text{ for an integer } q;
 \]
 conversely $(s,t,q)$ determine the instance:
 $(a,b,c)$ is proportional to $\bigl(q+(t-s),\,q-(t-s),\,2(s+t)\bigr)$, and primitivity pins the
@@ -528,7 +539,9 @@ scale, hence $S$.
 
 \begin{proof}
 $XY=c^2-(a-b)^2=3ab$ by~\eqref{eq:tile}. By Proposition~\ref{prop:otherspectra}, $X\mid 3S$ and
-$Y\mid 3S$, so $s,t\in\Z_{\ge1}$, and $st=9S^2/(XY)=9\,Nab/(3ab)=3N$. From $X-Y=2(a-b)$ we get
+$Y\mid 3S$, so $s,t\in\Z_{\ge1}$; indeed $s=M_\alpha$ and $t=M_\beta$ are the two invariant
+counts, so $s\equiv t\equiv N\pmod2$ by Corollary~\ref{cor:int}, and
+$st=9S^2/(XY)=9\,Nab/(3ab)=3N$. From $X-Y=2(a-b)$ we get
 $a-b=\tfrac{3S}{2}\bigl(\tfrac1s-\tfrac1t\bigr)=\tfrac{S(t-s)}{2N}$, and $4ab=4S^2/N$ gives
 $(a+b)^2=(a-b)^2+4ab=\tfrac{S^2}{4N^2}\bigl[(t-s)^2+16N\bigr]$; as $a+b$ is an integer,
 $q:=2N(a+b)/S$ is a rational with integer square, hence an integer, and
@@ -606,6 +619,45 @@ dependencies are those of Theorem~\ref{thm:main} together with \cite[Thms.~3, 7,
 complete branching, independently validated).
 \end{proof}
 
+\subsection*{The values $21$, $22$, $30$, and the instance $46$.}
+The same sweep, sharpened by the parity clause of Corollary~\ref{cor:int}, extends further
+(\texttt{verify\_frontier.py}). Three remarks carry the new weight. First, the invariant
+applies to the \emph{scalene} $F_1$ target: its sides $k(a{+}b),ka,kc$ have
+$\frac\pi3$-coefficients $0,2,3$ (the same turning computation as Lemma~\ref{lem:value}), so
+\[
+M_\alpha=\frac{k(2a+b-c)}{c+a-b},\qquad M_\beta=\frac{k(2a+b+c)}{c+b-a}
+\]
+must be integers of the parity of $N$. For $N=21$ this destroys the unique structural candidate,
+the genuine tile $(5,16,19)$ with $k=4$: $M_\alpha=28/8\notin\Z$ --- while Zhang's constructed
+$F_1$ family $N=m^2b(a+b)$ passes, so the invariant separates the candidate from the constructions.
+(For $N=30$ the candidate $(7,8,13)$, $k=4$ has $M_\alpha=3$, killed by parity.) Second, for
+$N=22$ and $N=30$ \emph{every} branch dies arithmetically --- the two isosceles-$(\alpha{+}\beta)$
+candidates of $22$ fall to the boundary congruence, those of $30$ likewise --- so no search is
+needed at all. Third, for $N=21$ exactly two instances survive, both isosceles-$(\alpha{+}\beta)$:
+$M=1$, tile $(110,21,121)$ on $(231,231,210)$, and $M=3$, tile $(10,21,25)$ on $(105,105,42)$;
+both live in $\Q(\sqrt6)$, and the engine exhausts both:
+\begin{center}
+\begin{tabular}{lllll}
+instance & tile & target & verdict & nodes\\
+\hline
+$N{=}21$, iso-$(\alpha{+}\beta)$, $M{=}1$ & $(110,21,121)$ & $(231,231,210)$ & exhausted & $107$ ($4266$)\\
+$N{=}21$, iso-$(\alpha{+}\beta)$, $M{=}3$ & $(10,21,25)$ & $(105,105,42)$ & exhausted & $15$ ($102$)\\
+\end{tabular}
+\end{center}
+Finally, the parity clause settles the value that Remark~\ref{rem:necessary} identified as the
+sharpest test of Zhang's conjecture: $N=46$ passes the divisibility spectrum on $(7,8,13)$ but not
+the parity, and the sweep excludes every other branch, so $46$ is not realizable --- exactly as
+Zhang's conjecture predicts.
+
+\begin{theorem}\label{thm:frontier2}
+No triangle can be cut into $21$, into $22$, into $30$, or into $46$ congruent triangles.
+\end{theorem}
+
+\begin{proof}
+The sweep above; for $21$, additionally the two exhaustive searches. Dependencies as in
+Theorem~\ref{thm:frontier}.
+\end{proof}
+
 \subsection*{State of the full problem.}
 Assembling: the commensurable branch is completely determined (squares, sums of two squares, and
 $2,3,6$ times squares, all realized \cite{BeesonSeven}); the similar-tile and right-angle branches
@@ -615,9 +667,11 @@ $2\pi/3$ branches (Zhang's completeness conjecture~\cite{Zhang}; the admissible 
 the outer bounds), the $3\alpha+2\beta=\pi$ and $\gamma=2\alpha$ branches beyond the partial
 results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommensurable tiles,
 where Laczkovich has connected the possible $N$ to rational points on elliptic
-curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, $19$ and $23$ by
-Theorem~\ref{thm:main}, and $14$ and $15$ by Theorem~\ref{thm:frontier}, the smallest values
-whose membership remains undetermined, to our knowledge, are $N=21$ and $N=22$.
+curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, the primes by Theorem~\ref{thm:primefull},
+and $14,15,21,22,30,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2}, the membership
+of every $N\le 32$ is now determined; the smallest undetermined value, to our knowledge, is
+$N=33$, whose sweep leaves two isosceles-$(\alpha{+}\beta)$ instances (tiles $(272,33,289)$ and
+$(28,33,49)$) for the same treatment.
 
 \subsection*{Standing of the inputs.}
 For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:
@@ -651,7 +705,7 @@ Herdt~\cite{BeesonIso}: for its tile $(5,3,7)$ and scale $k=27$, $N=k^2(a+2b)/b=
 $M=k(2b+a-2c)/(c+a-b)=-9$ are integers, as they must be on any true tiling.
 
 The entire \emph{arithmetic and combinatorial} layer of the proof is formalized and machine-checked
-in Lean~4 with Mathlib (\texttt{lean/Erdos634.lean}, twenty theorems); every theorem depends only
+in Lean~4 with Mathlib (\texttt{lean/Erdos634.lean}, twenty-three theorems); every theorem depends only
 on the standard axioms \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}, with no
 \texttt{sorry}:
 \begin{itemize}
@@ -680,7 +734,9 @@ $e\mid w(c-a-b)$;
 theorems: the $\pi/3$-equilateral square criterion fails at $14$ and $15$; the first tiling
 equation has no admissible solution; the two equilateral factor-pair uniqueness statements; and the
 boundary congruence that kills the $N=14$ isosceles candidate
-(\texttt{pi3\_equilateral\_fails\_14\_15} through \texttt{iso\_ab\_congruence\_kills\_14}).
+(\texttt{pi3\_equilateral\_fails\_14\_15} through \texttt{iso\_ab\_congruence\_kills\_14}), and of
+the $N=21,22,46$ sweep (\texttt{F1\_invariant\_kills\_21}, \texttt{parity\_kills\_46},
+\texttt{iso\_ab\_congruence\_kills\_22}).
 \end{itemize}
 What is \emph{not} formalized is exactly the geometry: the direction grid of
 Section~\ref{sec:prelim} and Lemmas~\ref{lem:cancel} and~\ref{lem:value}, which are proved in the
