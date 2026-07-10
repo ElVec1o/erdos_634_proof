@@ -23,12 +23,18 @@ the large triangle to be isosceles. Within that branch this work:
 - determines the **admissible spectrum** of each sporadic `2π/3` branch — for the isosceles
   target, writing `b = d·e²` with `d` squarefree, every count is `N = d·w²·(a+2b)` with
   `e | w(c−a−b)` — an outer bound on the realizable set (33 and 46 are admissible; no prime is);
+- settles the two smallest previously undetermined values: **no triangle can be cut into 14, or
+  into 15, congruent triangles** — a complete branch sweep (published tiling equations, the
+  spectra above, and a new equilateral criterion `st = 3N` with `(t−s)² + 16N` square) reduces
+  each to uniquely-determined finite instances, refuted by an exhaustive exact search
+  (`code/engine/`, validated on positive controls including a non-edge-to-edge tiling, verdicts
+  robust to disabling the strongest prune). The smallest undetermined values are now 21 and 22;
 
 which together complete the exclusion of primes `≡ 3 (mod 4)` exceeding `3`, conditional on the
 cited classification of the remaining branches. As a corollary, no triangle can be cut into 19
 congruent triangles.
 
-The **entire arithmetic and combinatorial layer** is machine-checked in Lean 4 + Mathlib (fifteen
+The **entire arithmetic and combinatorial layer** is machine-checked in Lean 4 + Mathlib (twenty
 theorems, axiom-clean, no `sorry`): the eleven-shape enumeration, the isosceles branch end-to-end
 (non-integrality obstruction, scale-pinning, and a master theorem combining the area equation with
 the invariant's divisibility), the scalene compositeness, and the commensurable-branch exclusion of
@@ -55,7 +61,12 @@ holds for a primitive triple with `c² = a² + ab + b²`.
   positive control.
 - `code/verify_spectrum.py` — the prime dichotomy's achievability half, the scale structure
   `b | k² ⟺ de | k`, the isosceles admissible spectrum, and the `j`-classification.
-- `lean/` — a Lean 4 + Mathlib proof of the entire arithmetic and combinatorial layer (fifteen theorems), axiom-clean.
+- `code/verify_frontier.py` — the complete branch sweep for N = 14, 15 (every branch decided by
+  exact finite computation; outputs the four surviving instances).
+- `code/engine/` — the exhaustive exact search engine (advancing front over `ℚ(√D)`, provably
+  complete corner-anchored branching, sound prunes): `python3 run_all.py validate` then
+  `python3 run_all.py A|B|D|E` (or `noP2-A` etc. for the prune-robustness reruns).
+- `lean/` — a Lean 4 + Mathlib proof of the entire arithmetic and combinatorial layer (twenty theorems), axiom-clean.
 
 ## How to verify
 
@@ -64,6 +75,8 @@ holds for a primitive triple with `c² = a² + ab + b²`.
 python3 code/verify_shapes.py        # eleven shapes; scalene N composite
 python3 code/verify_invariant.py     # tile value; cancellation; non-integrality
 python3 code/verify_spectrum.py      # prime dichotomy; admissible spectrum
+python3 code/verify_frontier.py      # the N = 14, 15 branch sweep
+( cd code/engine && python3 run_all.py validate && for i in A B D E; do python3 run_all.py $i; done )
 
 # the arithmetic layer, machine-checked in Lean (needs elan/lake)
 cd lean && lake exe cache get && lake build
@@ -75,7 +88,7 @@ cd lean && lake exe cache get && lake build
   geometric lemmas (cancellation, tile value); the reduction of the prime `2π/3` case to an
   isosceles target; the exclusion of every prime for the isosceles `2π/3` case; the scalene
   reduction.
-- **Machine-checked (Lean 4 + Mathlib, fifteen theorems, axiom-clean, no `sorry`):** the whole
+- **Machine-checked (Lean 4 + Mathlib, twenty theorems, axiom-clean, no `sorry`):** the whole
   arithmetic and combinatorial layer — the eleven-shape enumeration (`shape_enumeration`); the
   isosceles branch end-to-end (`k_not_dvd_sum_sub`, `M_not_int`, `iso_reduction_identity`,
   `prime_count_forces_scale`, and the master theorem `no_prime_isosceles_count`); the scalene

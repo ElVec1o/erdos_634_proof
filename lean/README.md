@@ -1,7 +1,7 @@
 # Lean formalization — arithmetic layer of the Erdős #634 proof
 
 `Erdos634.lean` machine-checks the entire **arithmetic and combinatorial layer** of the proof:
-fifteen theorems, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; the enumeration
+twenty theorems, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; the enumeration
 needs only `propext`, `Quot.sound`), no `sorry`.
 
 Isosceles branch (end to end):
@@ -32,6 +32,15 @@ Towards the full problem:
   (the achievability half of the prime dichotomy).
 - `iso_admissible` — the general-`N` admissibility theorem: with `b = d·e²`, `d` squarefree, the
   area equation and Φ-divisibility force `k = d·e·w`, `N = d·w²·(a+2b)`, and `e | w(c−a−b)`.
+
+The N = 14, 15 sweep (finite arithmetic of the branch checks):
+- `pi3_equilateral_fails_14_15` — Beeson's square criterion `(9N−M²)(N−M²) = □` fails for every
+  admissible `M` at `N = 14, 15`.
+- `shapeA_fails_14_15` — the tiling equation `N = 2K²−M²` with `K | M²` has no admissible solution.
+- `eq_spectrum_unique_14`, `eq_spectrum_unique_15` — in the equilateral criterion `st = 3N` with
+  `(t−s)² + 16N = □`, the only factor pairs are `(6,7)` and `(5,9)`: the instances are unique.
+- `iso_ab_congruence_kills_14` — the boundary congruence kills the `N = 14` iso-`(α+β)` candidate
+  (no `m ≡ 7 (mod 9)` fits `140 = 45p + 56m + 81q`).
 
 The geometric ingredients (the Φ-invariant's cancellation and tile-value lemmas, the direction
 grid, Laczkovich's case analysis, Beeson's branch inputs) are **not** formalized — there is no

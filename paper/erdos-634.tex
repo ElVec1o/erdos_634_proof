@@ -15,6 +15,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
 \DeclareMathOperator{\Area}{Area}
 
 \title[A signed-direction invariant for triangle tilings]{A signed-direction invariant for triangle tilings, and the exclusion of primes congruent to $3$ modulo $4$}
@@ -39,8 +40,11 @@ $3$, conditional on the cited classification of the remaining branches. Conseque
 of the full problem is complete: a prime $p$ occurs if and only if $p=2$, $p=3$, or
 $p\equiv1\pmod4$. Beyond primes, we determine the admissible spectrum of each sporadic $2\pi/3$
 branch --- for the isosceles target, writing $b=de^2$ with $d$ squarefree, every count has the form
-$N=dw^2(a+2b)$ with $e\mid w(c-a-b)$ --- bounding the realizable set from outside. The arithmetic
-and combinatorial layer is machine-checked in Lean~4 with Mathlib.
+$N=dw^2(a+2b)$ with $e\mid w(c-a-b)$ --- bounding the realizable set from outside; and, combining
+the spectra with the published branch theorems and an exhaustive exact search of the four surviving
+finite instances, we settle the two smallest previously undetermined values: no triangle can be cut
+into $14$, or into $15$, congruent triangles. The arithmetic and combinatorial layer is
+machine-checked in Lean~4 with Mathlib.
 \end{abstract}
 
 \maketitle
@@ -507,6 +511,101 @@ so $f$ takes one sign on all three and $\Phi_f(\partial ABC)=\pm3S$ for both inv
 Corollary~\ref{cor:int} gives the two divisibilities, and the area identity gives $N\,ab=S^2$.
 \end{proof}
 
+\subsection*{The equilateral $2\pi/3$ spectrum.}
+The equilateral divisibilities of Proposition~\ref{prop:otherspectra} reduce to a clean finite
+criterion.
+
+\begin{proposition}[Equilateral admissibility]\label{prop:eqspec}
+Let an equilateral triangle of side $S$ be $N$-tiled by a $2\pi/3$ tile $(a,b,c)$, and put
+$X=c+a-b$, $Y=c+b-a$. Then $XY=3ab$, and $s:=3S/X$, $t:=3S/Y$ are positive integers with
+\[
+st=3N,\qquad (t-s)^2+16N=q^2\ \text{ for an integer } q;
+\]
+conversely $(s,t,q)$ determine the instance:
+$(a,b,c)$ is proportional to $\bigl(q+(t-s),\,q-(t-s),\,2(s+t)\bigr)$, and primitivity pins the
+scale, hence $S$.
+\end{proposition}
+
+\begin{proof}
+$XY=c^2-(a-b)^2=3ab$ by~\eqref{eq:tile}. By Proposition~\ref{prop:otherspectra}, $X\mid 3S$ and
+$Y\mid 3S$, so $s,t\in\Z_{\ge1}$, and $st=9S^2/(XY)=9\,Nab/(3ab)=3N$. From $X-Y=2(a-b)$ we get
+$a-b=\tfrac{3S}{2}\bigl(\tfrac1s-\tfrac1t\bigr)=\tfrac{S(t-s)}{2N}$, and $4ab=4S^2/N$ gives
+$(a+b)^2=(a-b)^2+4ab=\tfrac{S^2}{4N^2}\bigl[(t-s)^2+16N\bigr]$; as $a+b$ is an integer,
+$q:=2N(a+b)/S$ is a rational with integer square, hence an integer, and
+$(t-s)^2+16N=q^2$. Then $a-b$, $a+b$ and $c=(X+Y)/2=\tfrac{S(s+t)}{2N}$ give the displayed
+proportions.
+\end{proof}
+
+\subsection*{The values $14$ and $15$.}\label{sub:frontier}
+The machinery above, combined with the published branch theorems, decides every branch of the
+classification for $N=14$ and $N=15$ by finite computations
+(\texttt{verify\_frontier.py}): the commensurable, tile-similar, right-angle and
+$\gamma=2\alpha$ branches exclude both values by their known $N$-forms; the sporadic
+$2\pi/3$ shapes exclude both by the admissible spectra of
+Theorems~\ref{thm:admissible} and Proposition~\ref{prop:otherspectra}; the $\pi/3$-tile equilateral
+case excludes both by Beeson's square criterion ($(9N-M^2)(N-M^2)$ is a perfect square for some
+$M<\sqrt N$~\cite[Thm.~3]{BeesonEq}, which fails for every admissible $M$); and of the five target
+shapes of the $3\alpha+2\beta=\pi$ branch~\cite{BeesonIII}, four exclude both values through their
+published tiling equations (checked by exact rational-root enumeration), while the isosceles target
+with base angles $\alpha+\beta$ admits, for $N=14$, the single candidate tile $(45,56,81)$ with
+$M=2$ --- which is destroyed by Beeson's boundary congruence $M\equiv-m\pmod{\gcd(a,c)}$ (it forces
+at least seven $b$-edges of length $56$ on a base of length $140$).
+
+What survives everything is four fully explicit finite instances:
+\begin{center}
+\begin{tabular}{llll}
+$N$ & branch & tile & target\\
+\hline
+$14$ & equilateral, $2\pi/3$ & $(7,8,13)$ & equilateral, $S=28$\\
+$15$ & equilateral, $2\pi/3$ & $(3,5,7)$ & equilateral, $S=15$\\
+$15$ & $3\alpha+2\beta=\pi$, iso-$(\alpha{+}\beta)$, $M=1$ & $(56,15,64)$ & $(120,120,105)$\\
+$15$ & $3\alpha+2\beta=\pi$, iso-$(\alpha{+}\beta)$, $M=3$ & $(4,15,16)$ & $(60,60,15)$\\
+\end{tabular}
+\end{center}
+In each, the tile is \emph{uniquely determined} (Proposition~\ref{prop:eqspec} for the equilateral
+rows; the tiling equation $N/M^2=(1+s)/(1-s)$ of~\cite[Thm.~17]{BeesonIII} for the isosceles rows),
+so each is a single bounded existence question: can $14$ (resp.\ $15$) congruent copies of the
+stated tile fill the stated triangle?
+
+Each instance was settled by an exhaustive, exact search (\texttt{code/engine/}). The engine is an
+advancing-front algorithm over $\Q(\sqrt D)$ ($D=3,23,7$; every geometric decision exact, no
+floating point) whose branching rule is provably complete: at the lexicographically least vertex
+$v$ of the unfilled region --- necessarily convex --- every tile of any tiling whose closure
+contains $v$ has a corner there (an edge through $v$ would subtend angle $\pi$), so the
+clockwise-most of them has a corner at $v$ with one side along the clockwise boundary ray; this
+leaves at most six placements (three corner types, two adjacent sides each, the two choices being
+mirror images). An exhausted search is therefore a proof of non-existence. Two prunes are used,
+each a theorem about completable states: the area of every region component is a positive integer
+multiple of the tile area; and a maximal straight boundary run with \emph{convex} endpoints has
+length in $\N a+\N b+\N c$ (whole tile edges cannot pass a convex corner --- runs with a reflex
+endpoint are not pruned, as an edge may continue past a reflex corner into the region). The engine
+passes positive controls --- it finds the $N=4$ reptile subdivisions in both tile families and a
+hand-built non-edge-to-edge two-tile configuration with T-junctions, each found tiling re-verified
+by an independent checker --- and, as a robustness check, all four verdicts below are unchanged
+when the run prune is disabled entirely (node counts without it in parentheses).
+\begin{center}
+\begin{tabular}{lllll}
+instance & tile & target & verdict & nodes\\
+\hline
+$N=14$, equilateral & $(7,8,13)$ & $S=28$ & exhausted, no tiling & $133$ \ ($482$)\\
+$N=15$, equilateral & $(3,5,7)$ & $S=15$ & exhausted, no tiling & $156$ \ ($604$)\\
+$N=15$, iso-$(\alpha{+}\beta)$ & $(56,15,64)$ & $(120,120,105)$ & exhausted, no tiling & $37$ \ ($526$)\\
+$N=15$, iso-$(\alpha{+}\beta)$ & $(4,15,16)$ & $(60,60,15)$ & exhausted, no tiling & $2$ \ ($10$)\\
+\end{tabular}
+\end{center}
+
+\begin{theorem}\label{thm:frontier}
+No triangle can be cut into $14$ congruent triangles, and none into $15$.
+\end{theorem}
+
+\begin{proof}
+By the branch sweep above, any $14$- or $15$-tiling would live in one of the four listed instances,
+each with its tile and target uniquely determined; the exhaustive searches refute all four. The
+dependencies are those of Theorem~\ref{thm:main} together with \cite[Thms.~3, 7, 11, 14, 17,
+19]{BeesonIII}, \cite[Thm.~3]{BeesonEq}, and the declared computer assistance (exact arithmetic,
+complete branching, independently validated).
+\end{proof}
+
 \subsection*{State of the full problem.}
 Assembling: the commensurable branch is completely determined (squares, sums of two squares, and
 $2,3,6$ times squares, all realized \cite{BeesonSeven}); the similar-tile and right-angle branches
@@ -516,9 +615,9 @@ $2\pi/3$ branches (Zhang's completeness conjecture~\cite{Zhang}; the admissible 
 the outer bounds), the $3\alpha+2\beta=\pi$ and $\gamma=2\alpha$ branches beyond the partial
 results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommensurable tiles,
 where Laczkovich has connected the possible $N$ to rational points on elliptic
-curves~\cite{LaczkovichEll}. To our knowledge the smallest undetermined values are
-$N=14,15,21,22$ ($7$ and $11$ are excluded by \cite{BeesonSeven}, and $19,23$ by
-Theorem~\ref{thm:main}).
+curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, $19$ and $23$ by
+Theorem~\ref{thm:main}, and $14$ and $15$ by Theorem~\ref{thm:frontier}, the smallest values
+whose membership remains undetermined, to our knowledge, are $N=21$ and $N=22$.
 
 \subsection*{Standing of the inputs.}
 For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:
@@ -552,7 +651,7 @@ Herdt~\cite{BeesonIso}: for its tile $(5,3,7)$ and scale $k=27$, $N=k^2(a+2b)/b=
 $M=k(2b+a-2c)/(c+a-b)=-9$ are integers, as they must be on any true tiling.
 
 The entire \emph{arithmetic and combinatorial} layer of the proof is formalized and machine-checked
-in Lean~4 with Mathlib (\texttt{lean/Erdos634.lean}, fifteen theorems); every theorem depends only
+in Lean~4 with Mathlib (\texttt{lean/Erdos634.lean}, twenty theorems); every theorem depends only
 on the standard axioms \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}, with no
 \texttt{sorry}:
 \begin{itemize}
@@ -576,7 +675,12 @@ Section~\ref{sec:prelim}), via Fermat's two-squares theorem;
 \emph{positive} squares (the achievability half of Theorem~\ref{thm:primefull});
 \item[] \texttt{iso\_admissible}: Theorem~\ref{thm:admissible} --- given $b=de^2$ with $d$
 squarefree, the area equation and $\Phi$-divisibility force $k=dew$, $N=dw^2(a+2b)$ and
-$e\mid w(c-a-b)$.
+$e\mid w(c-a-b)$;
+\item[] the finite arithmetic of the $N=14,15$ sweep of Section~\ref{sub:frontier}, in five
+theorems: the $\pi/3$-equilateral square criterion fails at $14$ and $15$; the first tiling
+equation has no admissible solution; the two equilateral factor-pair uniqueness statements; and the
+boundary congruence that kills the $N=14$ isosceles candidate
+(\texttt{pi3\_equilateral\_fails\_14\_15} through \texttt{iso\_ab\_congruence\_kills\_14}).
 \end{itemize}
 What is \emph{not} formalized is exactly the geometry: the direction grid of
 Section~\ref{sec:prelim} and Lemmas~\ref{lem:cancel} and~\ref{lem:value}, which are proved in the

@@ -540,6 +540,105 @@ theorem iso_admissible (a b c k N d e : ℤ)
       · linarith
     exact ⟨M, mul_left_cancel₀ (mul_ne_zero (ne_of_gt he) (ne_of_gt hd)) hcancel⟩
 
+/-- **Frontier check (π/3-equilateral).** Beeson's square criterion — an equilateral triangle
+`N`-tiled by a `(α, β, π/3)` tile forces `(9N − M²)(N − M²)` to be a perfect square for some
+positive `M` with `M² < N` — fails for every admissible `M` at `N = 14` and `N = 15`. -/
+theorem pi3_equilateral_fails_14_15 :
+    (∀ M : ℕ, 0 < M → M ^ 2 < 14 → ¬ ∃ q, q * q = (9 * 14 - M ^ 2) * (14 - M ^ 2)) ∧
+    (∀ M : ℕ, 0 < M → M ^ 2 < 15 → ¬ ∃ q, q * q = (9 * 15 - M ^ 2) * (15 - M ^ 2)) := by
+  constructor
+  all_goals
+    intro M h1 h2
+    have hM : M ≤ 3 := by nlinarith
+    interval_cases M
+    all_goals
+      rintro ⟨q, hqq⟩
+      have hqb : q ≤ 43 := by
+        by_contra hc
+        push_neg at hc
+        have h44 : 44 ≤ q := hc
+        have := Nat.mul_le_mul h44 h44
+        omega
+      interval_cases q <;> omega
+
+/-- **Frontier check (`3α+2β=π`, shape with the first tiling equation).** The complete
+characterization `N = 2K² − M²` with `K ∣ M²` (Beeson) has no admissible solution at
+`N = 14` or `N = 15`. -/
+theorem shapeA_fails_14_15 :
+    (∀ M K : ℕ, 0 < M → 0 < K → M ^ 2 < 14 → 2 * K ^ 2 = 14 + M ^ 2 → ¬ (K ∣ M ^ 2)) ∧
+    (∀ M K : ℕ, 0 < M → 0 < K → M ^ 2 < 15 → 2 * K ^ 2 = 15 + M ^ 2 → False) := by
+  constructor <;> intro M K hM hK h1 h2
+  · have hMb : M ≤ 3 := by nlinarith
+    have hKb : K ≤ 3 := by nlinarith
+    interval_cases M <;> interval_cases K <;> omega
+  · have hMb : M ≤ 3 := by nlinarith
+    have hKb : K ≤ 3 := by nlinarith
+    interval_cases M <;> interval_cases K <;> omega
+
+/-- **Frontier check (`2π/3`-equilateral, `N = 14`).** In the criterion of the paper
+(`st = 3N`, `(t−s)² + 16N` a square), the only factor pair for `N = 14` is `(s,t) = (6,7)`:
+the unique admissible instance is the tile `(7,8,13)` on the equilateral triangle of side 28. -/
+theorem eq_spectrum_unique_14 :
+    ∀ s t : ℕ, 0 < s → s * t = 42 → s ≤ t →
+      (∃ q, q * q = (t - s) ^ 2 + 224) → s = 6 ∧ t = 7 := by
+  intro s t hs hst hle hq
+  have hsb : s ≤ 6 := by
+    by_contra h
+    push_neg at h
+    have h7 : 7 ≤ s := h
+    have := Nat.mul_le_mul h7 (le_trans h7 hle)
+    omega
+  have hpairs : (s = 1 ∧ t = 42) ∨ (s = 2 ∧ t = 21) ∨ (s = 3 ∧ t = 14) ∨
+      (s = 6 ∧ t = 7) := by
+    interval_cases s <;> omega
+  obtain ⟨q, hqq⟩ := hq
+  have hqb : q ≤ 45 := by
+    by_contra hc
+    push_neg at hc
+    have h46 : 46 ≤ q := hc
+    have := Nat.mul_le_mul h46 h46
+    rcases hpairs with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;> omega
+  rcases hpairs with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+  · exact absurd hqq (by interval_cases q <;> omega)
+  · exact absurd hqq (by interval_cases q <;> omega)
+  · exact absurd hqq (by interval_cases q <;> omega)
+  · exact ⟨rfl, rfl⟩
+
+/-- **Frontier check (`2π/3`-equilateral, `N = 15`).** For `N = 15` the only factor pair is
+`(s,t) = (5,9)`: the unique admissible instance is the tile `(3,5,7)` on side 15. -/
+theorem eq_spectrum_unique_15 :
+    ∀ s t : ℕ, 0 < s → s * t = 45 → s ≤ t →
+      (∃ q, q * q = (t - s) ^ 2 + 240) → s = 5 ∧ t = 9 := by
+  intro s t hs hst hle hq
+  have hsb : s ≤ 6 := by
+    by_contra h
+    push_neg at h
+    have h7 : 7 ≤ s := h
+    have := Nat.mul_le_mul h7 (le_trans h7 hle)
+    omega
+  have hpairs : (s = 1 ∧ t = 45) ∨ (s = 3 ∧ t = 15) ∨ (s = 5 ∧ t = 9) := by
+    interval_cases s <;> omega
+  obtain ⟨q, hqq⟩ := hq
+  have hqb : q ≤ 47 := by
+    by_contra hc
+    push_neg at hc
+    have h48 : 48 ≤ q := hc
+    have := Nat.mul_le_mul h48 h48
+    rcases hpairs with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;> omega
+  rcases hpairs with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+  · exact absurd hqq (by interval_cases q <;> omega)
+  · exact absurd hqq (by interval_cases q <;> omega)
+  · exact ⟨rfl, rfl⟩
+
+/-- **Frontier check (`3α+2β=π`, iso-`(α+β)`, `N = 14`).** The unique tiling-equation candidate,
+tile `(45,56,81)` with `M = 2`, dies on Beeson's boundary congruence: `M ≡ −m (mod gcd(a,c))`
+forces the base `140 = 45p + 56m + 81q` to carry `m ≡ 7 (mod 9)` edges of length 56 —
+impossible. -/
+theorem iso_ab_congruence_kills_14 :
+    ¬ ∃ p m q : ℕ, 140 = 45 * p + 56 * m + 81 * q ∧ (2 + m) % 9 = 0 := by
+  rintro ⟨p, m, q, h1, h2⟩
+  omega
+
 end Erdos634
 
 #print axioms Erdos634.k_not_dvd_sum_sub
@@ -557,3 +656,8 @@ end Erdos634
 #print axioms Erdos634.shape_enumeration
 #print axioms Erdos634.prime_sum_two_pos_squares
 #print axioms Erdos634.iso_admissible
+#print axioms Erdos634.pi3_equilateral_fails_14_15
+#print axioms Erdos634.shapeA_fails_14_15
+#print axioms Erdos634.eq_spectrum_unique_14
+#print axioms Erdos634.eq_spectrum_unique_15
+#print axioms Erdos634.iso_ab_congruence_kills_14
