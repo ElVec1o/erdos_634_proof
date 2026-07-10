@@ -23,16 +23,22 @@ the large triangle to be isosceles. Within that branch this work:
 - determines the **admissible spectrum** of each sporadic `2π/3` branch — for the isosceles
   target, writing `b = d·e²` with `d` squarefree, every count is `N = d·w²·(a+2b)` with
   `e | w(c−a−b)` — an outer bound on the realizable set (33 and 46 are admissible; no prime is);
-- settles **every previously undetermined value up to 32**: no triangle can be cut into **14, 15,
-  21, 22, or 30** congruent triangles — a complete branch sweep (published tiling equations, the
-  spectra above with a **parity refinement** of the invariant counts (M ≡ N mod 2), and a new
-  equilateral criterion `st = 3N` with `(t−s)² + 16N` square) reduces each value to
-  uniquely-determined finite instances (22 and 30 die by arithmetic alone), refuted by an
-  exhaustive exact search (`code/engine/`, validated on positive controls including a
-  non-edge-to-edge tiling, verdicts robust to disabling the strongest prune);
-- excludes **N = 46**, previously the sharpest open test of Zhang's completeness conjecture: the
-  parity refinement kills it, and on tiles like (7,8,13) and (5,16,19) the refined spectrum
-  coincides exactly with Zhang's constructed family. The smallest undetermined value is now 33;
+- settles **every previously undetermined value up to 41**: no triangle can be cut into **14, 15,
+  21, 22, 30, 33, 35, 38, or 39** congruent triangles — a complete branch sweep (published tiling
+  equations, the spectra with a **parity refinement** M ≡ N (mod 2) of the invariant counts, and a
+  new equilateral criterion `st = 3N` with `(t−s)² + 16N` square) reduces each value to
+  uniquely-determined finite instances (22, 30 and 38 die by arithmetic alone), refuted by an
+  exhaustive exact search (`code/engine/`, ten instances exhausted, validated on positive controls
+  including a non-edge-to-edge tiling, all verdicts robust to disabling the strongest prune);
+- proves the **lattice theorem**: the parity-refined spectrum of each isosceles tile is exactly
+  `N = d(Eu)²(a+2b)` for an explicit lattice constant E — coinciding with Zhang's constructed
+  family exactly when E = e, and exhibiting **admissible values beyond Zhang's families**
+  (smallest: N = 354 on (11,24,31)), the new sharpest tests of sufficiency;
+- excludes **N = 46**, previously the sharpest open test of Zhang's completeness conjecture,
+  by the parity refinement — in agreement with the conjecture;
+- proves **decidability**: membership in the tile-count set is algorithmically decidable (every
+  branch reduces per-N to finitely many fully-determined instances, each settled by the provably
+  complete search). The smallest undetermined values are now 42 and 44;
 
 which together complete the exclusion of primes `≡ 3 (mod 4)` exceeding `3`, conditional on the
 cited classification of the remaining branches. As a corollary, no triangle can be cut into 19

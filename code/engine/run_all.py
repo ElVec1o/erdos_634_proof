@@ -36,6 +36,66 @@ def make_instance(name):
         tile.area2 = qd(0, F(315, 2))                # 56*15*(3/16) = 315/2  (x sqrt23)
         target = [(qd(0), qd(0)), (qd(105), qd(0)), (qd(F(105, 2)), qd(0, F(45, 2)))]
         return tile, target, N
+    if name == 'J1':
+        QD.D = 1239
+        a, b, c, N = 380, 39, 400, 39
+        tile = Tile(a, b, c,
+                    qd(F(439, 800)), qd(0, F(19, 800)),
+                    qd(F(302879, 304000)), qd(0, F(741, 304000)),
+                    qd(F(-19, 40)), qd(0, F(1, 40)))
+        tile.area2 = qd(0, F(741, 2))
+        target = [(qd(0), qd(0)), (qd(741), qd(0)), (qd(F(741, 2)), qd(0, F(39, 2)))]
+        return tile, target, N
+    if name == 'J2':
+        QD.D = 231
+        a, b, c, N = 40, 39, 64, 39
+        tile = Tile(a, b, c,
+                    qd(F(103, 128)), qd(0, F(5, 128)),
+                    qd(F(835, 1024)), qd(0, F(39, 1024)),
+                    qd(F(-5, 16)), qd(0, F(1, 16)))
+        tile.area2 = qd(0, F(195, 2))
+        target = [(qd(0), qd(0)), (qd(195), qd(0)), (qd(F(195, 2)), qd(0, F(39, 2)))]
+        return tile, target, N
+    if name == 'I1':
+        QD.D = 1007
+        a, b, c, N = 306, 35, 324, 35
+        tile = Tile(a, b, c,
+                    qd(F(359, 648)), qd(0, F(17, 648)),
+                    qd(F(197387, 198288)), qd(0, F(595, 198288)),
+                    qd(F(-17, 36)), qd(0, F(1, 36)))
+        tile.area2 = qd(0, F(595, 2))                # 306*35/36 x sqrt1007
+        target = [(qd(0), qd(0)), (qd(595), qd(0)), (qd(F(595, 2)), qd(0, F(35, 2)))]
+        return tile, target, N
+    if name == 'I2':
+        QD.D = 143
+        a, b, c, N = 6, 35, 36, 35
+        tile = Tile(a, b, c,
+                    qd(F(71, 72)), qd(0, F(1, 72)),
+                    qd(F(107, 432)), qd(0, F(35, 432)),
+                    qd(F(-1, 12)), qd(0, F(1, 12)))
+        tile.area2 = qd(0, F(35, 2))                 # 6*35/12 x sqrt143
+        target = [(qd(0), qd(0)), (qd(35), qd(0)), (qd(F(35, 2)), qd(0, F(35, 2)))]
+        return tile, target, N
+    if name == 'H1':
+        QD.D = 5
+        a, b, c, N = 272, 33, 289, 33
+        tile = Tile(a, b, c,
+                    qd(F(161, 289)), qd(F(240, 289)),
+                    qd(F(4888, 4913)), qd(F(495, 4913)),
+                    qd(F(-8, 17)), qd(F(15, 17)))
+        tile.area2 = qd(7920)                        # 272*33*(15/17) — rational (Heronian)
+        target = [(qd(0), qd(0)), (qd(528), qd(0)), (qd(264), qd(495))]
+        return tile, target, N
+    if name == 'H2':
+        QD.D = 5
+        a, b, c, N = 28, 33, 49, 33
+        tile = Tile(a, b, c,
+                    qd(F(41, 49)), qd(0, F(12, 49)),
+                    qd(F(262, 343)), qd(0, F(99, 343)),
+                    qd(F(-2, 7)), qd(0, F(3, 7)))
+        tile.area2 = qd(0, 396)                      # 28*33*(3/7) x sqrt5
+        target = [(qd(0), qd(0)), (qd(132), qd(0)), (qd(66), qd(0, 99))]
+        return tile, target, N
     if name == 'F':
         QD.D = 6
         a, b, c, N = 110, 21, 121, 21

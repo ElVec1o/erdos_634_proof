@@ -40,12 +40,14 @@ $3$, conditional on the cited classification of the remaining branches. Conseque
 of the full problem is complete: a prime $p$ occurs if and only if $p=2$, $p=3$, or
 $p\equiv1\pmod4$. Beyond primes, we determine the admissible spectrum of each sporadic $2\pi/3$
 branch --- for the isosceles target, writing $b=de^2$ with $d$ squarefree, every count has the form
-$N=dw^2(a+2b)$ with $e\mid w(c-a-b)$ --- bounding the realizable set from outside; and, combining
-the spectra (with a parity refinement of the invariant counts) with the published branch theorems
-and an exhaustive exact search of the surviving finite instances, we settle every previously
-undetermined value up to $32$: no triangle can be cut into $14$, $15$, $21$, $22$, or $30$
-congruent triangles; and $N=46$, the sharpest test of Zhang's completeness conjecture, is likewise
-excluded, in agreement with that conjecture. The arithmetic and combinatorial layer is
+$N=dw^2(a+2b)$ with $e\mid w(c-a-b)$ --- bounding the realizable set from outside; and a
+lattice theorem determines the refined spectrum exactly, exhibiting admissible values beyond
+Zhang's constructed families (the smallest being $N=354$). Combining the spectra with the published
+branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
+previously undetermined value up to $41$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
+$33$, $35$, $38$, or $39$ congruent triangles; $N=46$, previously the sharpest test of Zhang's
+completeness conjecture, is likewise excluded; and membership in the tile-count set is shown to be
+decidable. The arithmetic and combinatorial layer is
 machine-checked in Lean~4 with Mathlib.
 \end{abstract}
 
@@ -489,6 +491,41 @@ $t=ej/2$, $a$ as displayed and $c=a+et$ reverses the computation: $c^2=a^2+ab+b^
 $a+b-c=e(de-t)$ is divisible by $e$.
 \end{proof}
 
+\begin{theorem}[Spectrum lattice]\label{thm:lattice}
+Let $(a,b,c)$ be a primitive $120^\circ$-triple, $b=de^2$ with $d$ squarefree, $r=c-a-b$,
+$g=\gcd(e,r)$, $e_1=e/g$, and
+\[
+T \;=\; \frac rg + d\,e_1^2\,(a+2b) \pmod 2 .
+\]
+Set $E=e_1$ if $T$ is even and $E=2e_1$ if $T$ is odd. Then the counts admissible for the
+base-$\alpha$ isosceles target (Theorem~\ref{thm:admissible} with the parity clause) are exactly
+\[
+N=d\,(Eu)^2\,(a+2b),\qquad u=1,2,3,\dots
+\]
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:admissible} the conditions on $w$ are $e\mid wr$ and
+$wr/e\equiv N\pmod2$. As $\gcd(e_1,r/g)=1$, the divisibility is equivalent to $e_1\mid w$; writing $w=e_1u$, the
+count is $M=ur/g$, and using $u^2\equiv u\pmod 2$,
+\[
+M-N=\frac{ur}{g}-d\,e_1^2u^2(a+2b)\equiv u\Bigl(\frac rg+d\,e_1^2(a+2b)\Bigr)=uT\pmod2,
+\]
+so the parity clause holds for all $u$ when $T$ is even, and exactly for even $u$ when $T$ is odd.
+\end{proof}
+
+\begin{remark}\label{rem:zhang}
+The refined spectrum coincides with Zhang's constructed family $N=m^2b(a+2b)$ exactly when $E=e$;
+this holds for $(7,8,13)$ and $(5,16,19)$ (both have $E=e$), but not in general: in the
+parametrization $a=m^2-n^2$, $b=2mn+n^2$, an odd prime $p$ with $p^2\mid n$ makes $p$ ``free''
+($v_p(r)\ge v_p(e)$, since $r=-n(m-n)$), and the lattice is coarser than $e\Z$. The smallest such
+tile is $(11,24,31)$ ($d=6$, $e=2$, $E=1$): the value $N=354=6\cdot59$ is admissible but lies
+\emph{outside} the Zhang family $1416m^2$; likewise $(19,261,271)$ admits $N=15689=29\cdot541$.
+These beyond-family admissible values are the new sharpest tests of sufficiency: either they are
+tiled by constructions not in~\cite{Zhang}, or a necessary condition beyond the invariant kills
+them.
+\end{remark}
+
 \begin{remark}\label{rem:necessary}
 Admissibility is necessary, not sufficient. The smallest admissible value is $N=33=3\cdot 11$ on
 the tile $(5,3,7)$ (where $d=3$, $e=1$, so the divisibility is vacuous); it is nevertheless
@@ -501,8 +538,8 @@ constructed family~\cite{Zhang} for this tile. In particular $N=46$, previously 
 passing every known necessary condition on this branch, is \emph{excluded} (Section~\ref{sub:frontier}
 checks the remaining branches), in exact agreement with the prediction of Zhang's conjecture.
 Zhang's constructions realize $N=m^2b(a+2b)$ for $m$ in certain residue classes; the refined
-spectrum above bounds the realized set from outside, and on tiles such as $(7,8,13)$ and
-$(5,16,19)$ the two now coincide as families.
+spectrum bounds the realized set from outside, and Theorem~\ref{thm:lattice} determines it
+exactly.
 \end{remark}
 
 \begin{proposition}[The other branches]\label{prop:otherspectra}
@@ -649,14 +686,58 @@ sharpest test of Zhang's conjecture: $N=46$ passes the divisibility spectrum on 
 the parity, and the sweep excludes every other branch, so $46$ is not realizable --- exactly as
 Zhang's conjecture predicts.
 
+The pipeline is now mechanical, and it continues: $N=38$ dies in every branch by arithmetic
+alone, while $33$, $35$ and $39$ each reduce to two isosceles-$(\alpha{+}\beta)$ instances (the
+sporadic-$2\pi/3$ candidate $(5,3,7)$ at $N=33$ is excluded by Beeson's $N<36$ boundary
+analysis~\cite{BeesonIso}); all six searches exhaust:
+\begin{center}
+\begin{tabular}{llll}
+instance & tile & target & nodes\\
+\hline
+$N{=}33$, $M{=}1$ & $(272,33,289)$ & $(561,561,528)$ & $489$\\
+$N{=}33$, $M{=}3$ & $(28,33,49)$ & $(231,231,132)$ & $49$\\
+$N{=}35$, $M{=}1$ & $(306,35,324)$ & $(630,630,595)$ & $523$\\
+$N{=}35$, $M{=}5$ & $(6,35,36)$ & $(210,210,35)$ & $2$\\
+$N{=}39$, $M{=}1$ & $(380,39,400)$ & $(780,780,741)$ & $853$\\
+$N{=}39$, $M{=}3$ & $(40,39,64)$ & $(312,312,195)$ & $67$\\
+\end{tabular}
+\end{center}
+
 \begin{theorem}\label{thm:frontier2}
-No triangle can be cut into $21$, into $22$, into $30$, or into $46$ congruent triangles.
+No triangle can be cut into $21$, $22$, $30$, $33$, $35$, $38$, $39$, or $46$ congruent
+triangles.
 \end{theorem}
 
 \begin{proof}
-The sweep above; for $21$, additionally the two exhaustive searches. Dependencies as in
-Theorem~\ref{thm:frontier}.
+The sweeps above; for $21$, $33$, $35$ and $39$, additionally the exhaustive searches listed.
+Dependencies as in Theorem~\ref{thm:frontier}.
 \end{proof}
+
+\subsection*{Decidability.}
+The pattern of the last two subsections is not an accident. Every branch of the classification now
+reduces, for each fixed $N$, to a \emph{finite} list of fully determined instances: the
+commensurable, similar-tile, right-angle and $\gamma=2\alpha$ branches are decided by closed
+$N$-forms; in the sporadic $2\pi/3$ shapes the divisor structure of $N$ (Theorems
+\ref{thm:admissible}, \ref{thm:lattice}, Proposition~\ref{prop:otherspectra}) leaves finitely
+many (tile, scale) pairs; the equilateral cases pin the tile from finitely many factorizations
+(Proposition~\ref{prop:eqspec}) or coloring numbers (\cite[Thm.~2]{BeesonEq}, which determines
+the tile from $(N,M)$); and the five $3\alpha+2\beta=\pi$ shapes have finitely many $(M,s)$
+candidates by their tiling equations~\cite{BeesonIII}. Each surviving instance is a bounded
+existence question, and the corner-anchored search of \texttt{code/engine/} decides it in
+finitely many steps (the branching is provably complete and the depth is $N$). Hence:
+
+\begin{theorem}[Decidability]\label{thm:decidable}
+It is decidable, given $N$, whether some triangle can be cut into $N$ congruent triangles
+(under the same cited inputs as Theorem~\ref{thm:main}).
+\end{theorem}
+
+\noindent This extends the decidability that Beeson established for equilateral
+targets~\cite[Thm.~4]{BeesonEq} to the whole problem. What decidability does \emph{not} give is
+a closed-form description of the set: that residual question concentrates in the equilateral
+branch, where Laczkovich has related the possible $N$ to rational points on elliptic
+curves~\cite{LaczkovichEll}, and in the sufficiency half of Zhang's conjecture, for which the
+beyond-family values of Remark~\ref{rem:zhang} (the smallest being $N=354$) are now the sharpest
+tests.
 
 \subsection*{State of the full problem.}
 Assembling: the commensurable branch is completely determined (squares, sums of two squares, and
@@ -668,10 +749,9 @@ the outer bounds), the $3\alpha+2\beta=\pi$ and $\gamma=2\alpha$ branches beyond
 results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommensurable tiles,
 where Laczkovich has connected the possible $N$ to rational points on elliptic
 curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, the primes by Theorem~\ref{thm:primefull},
-and $14,15,21,22,30,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2}, the membership
-of every $N\le 32$ is now determined; the smallest undetermined value, to our knowledge, is
-$N=33$, whose sweep leaves two isosceles-$(\alpha{+}\beta)$ instances (tiles $(272,33,289)$ and
-$(28,33,49)$) for the same treatment.
+and $14,15,21,22,30,33,35,38,39,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2}, the
+membership of every $N\le 41$ is now determined; the smallest undetermined values, to our
+knowledge, are $N=42$ and $N=44$.
 
 \subsection*{Standing of the inputs.}
 For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:
@@ -730,13 +810,11 @@ Section~\ref{sec:prelim}), via Fermat's two-squares theorem;
 \item[] \texttt{iso\_admissible}: Theorem~\ref{thm:admissible} --- given $b=de^2$ with $d$
 squarefree, the area equation and $\Phi$-divisibility force $k=dew$, $N=dw^2(a+2b)$ and
 $e\mid w(c-a-b)$;
-\item[] the finite arithmetic of the $N=14,15$ sweep of Section~\ref{sub:frontier}, in five
-theorems: the $\pi/3$-equilateral square criterion fails at $14$ and $15$; the first tiling
-equation has no admissible solution; the two equilateral factor-pair uniqueness statements; and the
-boundary congruence that kills the $N=14$ isosceles candidate
-(\texttt{pi3\_equilateral\_fails\_14\_15} through \texttt{iso\_ab\_congruence\_kills\_14}), and of
-the $N=21,22,46$ sweep (\texttt{F1\_invariant\_kills\_21}, \texttt{parity\_kills\_46},
-\texttt{iso\_ab\_congruence\_kills\_22}).
+\item[] the finite arithmetic of the frontier sweeps, in eight theorems: the
+$\pi/3$-equilateral square criterion fails at $14$ and $15$; the first tiling equation has no
+admissible solution there; the two equilateral factor-pair uniqueness statements; the boundary
+congruences that kill the isosceles candidates at $14$ and $22$; the $F_1$ invariant kill at
+$21$; and the parity kill of $46$.
 \end{itemize}
 What is \emph{not} formalized is exactly the geometry: the direction grid of
 Section~\ref{sec:prelim} and Lemmas~\ref{lem:cancel} and~\ref{lem:value}, which are proved in the

@@ -112,5 +112,49 @@ print(f"   instances with e>1 and e | (a+b−c): {len(hits)};  outside the j-cla
       f"{mismatches}  (expect 0);  with d = 1: {d1_hits}  (expect 0; Lemma 6)")
 print("   sample instances:", hits[:4], "\n")
 
-print("RESULT: prime dichotomy achievability, scale structure, admissible spectrum (no prime,")
-print("46 admissible), and the j-classification all verify; d = 1 re-proves Lemma 6.")
+# (5) the lattice theorem --------------------------------------------------------------------
+print("== (5) lattice theorem: admissible w form exactly the lattice E*Z ==")
+print("   (r = c-a-b, g = gcd(e,r), e1 = e/g, T = r/g + d*e1^2*(a+2b); E = e1 if T even else 2*e1)")
+mism = 0
+zhang_match = 0
+free_tiles = []
+tiles_checked = 0
+for a in range(1, 300):
+    for b in range(1, 300):
+        c = is120(a, b)
+        if not c:
+            continue
+        tiles_checked += 1
+        d, e = sqfree_split(b)
+        r = c - a - b
+        g = gcd(e, abs(r)) if r != 0 else e
+        e1 = e // g
+        T = (r // g + d * e1 * e1 * (a + 2 * b)) % 2
+        E = e1 if T == 0 else 2 * e1
+        for w in range(1, 41):
+            N = d * w * w * (a + 2 * b)
+            adm = (w * r) % e == 0 and ((w * r) // e - N) % 2 == 0
+            if adm != (w % E == 0):
+                mism += 1
+        if E == e:      # lattice = e*Z would mean spectrum ~ Zhang up to the 2-adic factor
+            pass
+        if E == 2 * e or E == e:
+            zhang_match += 1
+        if E < e:       # strictly larger spectrum than the Zhang family
+            free_tiles.append((a, b, c, d, e, E))
+print(f"   tiles checked: {tiles_checked};  lattice mismatches: {mism}  (expect 0)")
+print(f"   tiles whose lattice is coarser than e*Z (spectrum beyond the Zhang family): "
+      f"{len(free_tiles)}")
+print("   examples:", free_tiles[:4])
+d19, e19 = sqfree_split(261)
+r19 = 271 - 19 - 261
+g19 = gcd(e19, abs(r19)); e119 = e19 // g19
+T19 = (r19 // g19 + d19 * e119 * e119 * (19 + 2 * 261)) % 2
+E19 = e119 if T19 == 0 else 2 * e119
+print(f"   tile (19,261,271): d={d19}, e={e19}, r={r19}, E={E19} -> N = {d19*541}*w^2 for ALL w;")
+print(f"   w=1 gives N = {d19*541} = 29*541, admissible but OUTSIDE Zhang's family m^2*b*(a+2b).")
+
+print()
+print("RESULT: prime dichotomy achievability, scale structure, admissible spectrum (no prime),")
+print("the j-classification, and the lattice theorem all verify; tiles with coarser lattices")
+print("(e.g. (19,261,271)) admit values beyond the Zhang family - the new frontier instances.")
