@@ -848,6 +848,30 @@ it is a genuinely combinatorial question, which is why the search of Theorem~\re
 appears to be essential and why Zhang's conjecture is hard at its sharpest point.
 \end{remark}
 
+\begin{remark}[the tiling group collapses as well]\label{rem:tilinggroup}
+The strongest standard combinatorial obstruction is the Conway--Lagarias \emph{tiling group}
+$T=\langle\chi_v\rangle/\langle$ collinear additivity;\ tile boundary words $=1$ in every orientation
+and reflection $\rangle$; a tileable region $R$ has $\chi(\partial R)=1$ in $T$. Writing edge vectors
+as complex numbers in $K=\Q(\sqrt3,i)$ (rotation by $\alpha$ is multiplication by
+$\zeta_\alpha=(11+4\sqrt3\,i)/13$, by $\tfrac\pi3$ by $(1+\sqrt3\,i)/2$, reflection by conjugation)
+and reducing to finite quotients $\mathbb F_{p^2}$ with $p\equiv11\pmod{12}$ --- so $\sqrt3\in\mathbb
+F_p$ but $i\notin\mathbb F_p$ and the plane stays genuinely two-dimensional --- the tile relators,
+\emph{together with} the commutators $[\text{class-1}(\text{tile}),\,\text{generator}]$ that normal
+closure forces (a tile word's class-1 image is itself a relator, hence not central), fill the entire
+commutator layer. So $T$ collapses to its rank-two abelianization $(M_\alpha,M_\beta)$: the class-2
+quotient is trivial while the class-1 layer keeps rank $2$. As $N=105$ is admissible,
+$\chi(\partial_{105})=1$, and the tiling group does not obstruct it. We verified this exactly for
+$p\in\{23,47,59,71,83,107,131\}$ (\texttt{verify\_tiling\_group.py}), and --- extending to the free
+nilpotent quotient through class $4$ and to a range of finite non-abelian groups (through $S_5$,
+$\mathrm{GL}_2(\mathbb F_p)$, $\mathrm{PSL}(2,7)$ and the relevant Frobenius groups, which carry
+genuine non-abelian data: sensitivity controls fire on $92$--$96\%$ of tile-consistent
+representations) --- found \emph{no} tile-consistent quotient sending $\partial_{105}$ off the
+identity, with the reptile controls $N=4,9$ trivial throughout and a $\Phi$-nonadmissible loop not.
+The no-go of Remark~\ref{rem:conserved} therefore extends past the linear invariants to the full
+tiling group: on this tile the tiling-group obstruction is exactly $\Phi$, so deciding realizability
+of $N=105$ lies outside every standard tiling invariant.
+\end{remark}
+
 \subsection*{State of the full problem.}
 Assembling: the commensurable branch is completely determined (squares, sums of two squares, and
 $2,3,6$ times squares, all realized \cite{BeesonSeven}); the similar-tile and right-angle branches

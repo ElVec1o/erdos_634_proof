@@ -46,6 +46,12 @@ the large triangle to be isosceles. Within that branch this work:
   open instance — the smallest family member not already realized by the commensurable
   (sum-of-two-squares) construction — is N = 105 = b(a+b) = 7·15 on the F₁ target (105,56,91) of
   the tile (8,7,13), followed by 120, 132, 154, 184;
+- establishes a **no-go**: no directional/coloring invariant obstructs N = 105 (they are *conserved*
+  by tile placement), and the full **Conway–Lagarias tiling group** of the (8,7,13) tile collapses to
+  its rank-2 abelianization (M_α, M_β) — so it, too, cannot obstruct N = 105. Verified exactly over
+  finite quotients 𝔽_{p²} and across nilpotent (class ≤ 4) and non-abelian finite groups
+  (`verify_no_go.py`, `verify_tiling_group.py`). Deciding realizability of N = 105 lies outside every
+  standard tiling invariant — the open kernel is genuinely combinatorial;
 
 which together complete the exclusion of primes `≡ 3 (mod 4)` exceeding `3`, conditional on the
 cited classification of the remaining branches. As a corollary, no triangle can be cut into 19
