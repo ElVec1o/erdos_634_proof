@@ -2,7 +2,7 @@
 """
 verify_frontier.py  --  the branch sweep for the frontier values (Section 8 of the paper).
 
-For each N in {14, 15, 21, 22, 30, 33, 35, 38, 39, 46}, every branch of the Laczkovich classification is checked by an exact
+For each N in {14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46}, every branch of the Laczkovich classification is checked by an exact
 finite computation. Branches whose published characterizations are equations are decided here;
 the four surviving instances (all equilateral or isosceles targets with a uniquely determined
 tile) are the ones settled by the exhaustive search engine (code/engine/).
@@ -31,10 +31,10 @@ def report(N, branch, verdict, detail=""):
     print(f"  N={N:2d}  {branch:34s} {verdict:10s} {detail}")
 
 print("=" * 96)
-print("Branch sweep for N = 14, 15, 21, 22, 30, 33, 35, 38, 39, 46  (with the parity law M == N mod 2)")
+print("Branch sweep for N = 14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46  (with the parity law M == N mod 2)")
 print("=" * 96)
 
-for N in (14, 15, 21, 22, 30, 33, 35, 38, 39, 46):
+for N in (14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46):
     # ---- commensurable angles: N must be square, sum of two squares, or 2,3,6 x square ----
     forms = (issq(N) or any(issq(N - e * e) for e in range(1, isqrt(N) + 1))
              or (N % 2 == 0 and issq(N // 2)) or (N % 3 == 0 and issq(N // 3))

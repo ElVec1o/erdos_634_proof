@@ -14,7 +14,7 @@ abstract: >-
   classification; in particular no triangle can be cut into 19 congruent triangles. The
   prime case of the full problem is thereby complete (a prime occurs iff p = 2, 3, or 1 mod 4),
   the admissible spectrum of each sporadic branch is determined (with a parity refinement), every
-  value up to 41 is settled (14, 15, 21, 22, 30, 33, 35, 38, 39 are excluded, by branch sweeps
+  value up to 43 is settled (14, 15, 21, 22, 30, 33, 35, 38, 39, 42 are excluded, by branch sweeps
   and exhaustive exact searches), N = 46 is excluded in agreement with Zhang's completeness
   conjecture, the spectrum theorem closes the necessary side of the sporadic branches (equal to Zhang's
   families exactly), the equilateral criteria reduce to divisor conditions, and membership in

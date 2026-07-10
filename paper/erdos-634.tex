@@ -45,8 +45,8 @@ spectrum theorem shows that the counts passing all invariant conditions on the i
 $F_1$ targets are \emph{exactly} Zhang's constructed families, closing the necessary side of
 those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
-previously undetermined value up to $41$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
-$33$, $35$, $38$, or $39$ congruent triangles; $N=46$, previously the sharpest test of Zhang's
+previously undetermined value up to $43$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
+$33$, $35$, $38$, $39$, or $42$ congruent triangles; $N=46$, previously the sharpest test of Zhang's
 completeness conjecture, is likewise excluded; and membership in the tile-count set is shown to be
 decidable. The arithmetic and combinatorial layer is
 machine-checked in Lean~4 with Mathlib.
@@ -575,11 +575,17 @@ mirror invariant eliminates every such value ($354$ by parity, $15689$ on $(19,2
 by integrality), and the fully refined spectrum \emph{coincides with Zhang's family on every
 tile} --- verified exhaustively over all $138$ primitive triples with $a,b<400$. The necessary
 side of the isosceles and $F_1$ branches is therefore closed. What remains open in these branches
-is exactly the realizability of the \emph{small} family members: Zhang's constructions cover
-$m\ge9$ in certain residue classes, so the sharpest open instance is now the $m=1$ member
-itself, e.g.\ $N=184=b(a+2b)$ on $(7,8,13)$ (target $(104,104,184)$), whose membership is not
-decided by any known necessary condition and is exactly the kind of bounded question the engine
-of Section~\ref{sub:frontier} addresses.
+is exactly the realizability of the \emph{small} family members. Not all of them are open:
+a family member that is also a sum of two squares (or $2$, $3$, $6$ times a square) is realized by
+the commensurable construction~\cite{BeesonSeven}, so the genuinely undecided members are precisely
+those with a prime $\equiv3\pmod4$ to an odd power. (Thus $N=40=b(a+b)$ on $(3,5,7)$ is realized
+as $2^2+6^2$, and $N=65=b(a+2b)$ on $(3,5,7)$ as $1^2+8^2$, while $105=3\cdot5\cdot7$ is not a sum
+of two squares.) Zhang's constructions cover $m$ in certain residue classes from some bound onward,
+so the sharpest open instances are the smallest such members: $N=105=b(a+b)=7\cdot15$ on the
+$F_1$ target $(105,56,91)$ of the tile $(8,7,13)$, then $120$, $132$, $154$, $184$. Each has
+membership undecided by any known necessary condition, and is exactly the kind of bounded
+existence question the engine of Section~\ref{sub:frontier} addresses --- though for $N$ of this
+size a complete exhaustive search is not yet computationally in reach.
 \end{remark}
 
 \begin{remark}\label{rem:necessary}
@@ -765,8 +771,10 @@ sharpest test of Zhang's conjecture: $N=46$ passes the divisibility spectrum on 
 the parity, and the sweep excludes every other branch, so $46$ is not realizable --- exactly as
 Zhang's conjecture predicts.
 
-The pipeline is now mechanical, and it continues: $N=38$ dies in every branch by arithmetic
-alone, while $33$, $35$ and $39$ each reduce to two isosceles-$(\alpha{+}\beta)$ instances (the
+The pipeline is now mechanical, and it continues: $N=38$ and $N=42$ die in every branch by
+arithmetic alone (both squarefree, so the $\gamma=2\alpha$ branch is closed by
+\cite[Thm.~11.7]{BeesonIso}, and no sporadic, equilateral or $3\alpha+2\beta$ candidate survives),
+while $33$, $35$ and $39$ each reduce to two isosceles-$(\alpha{+}\beta)$ instances (the
 sporadic-$2\pi/3$ candidate $(5,3,7)$ at $N=33$ is excluded by Beeson's $N<36$ boundary
 analysis~\cite{BeesonIso}); all six searches exhaust:
 \begin{center}
@@ -783,7 +791,7 @@ $N{=}39$, $M{=}3$ & $(40,39,64)$ & $(312,312,195)$ & $67$\\
 \end{center}
 
 \begin{theorem}\label{thm:frontier2}
-No triangle can be cut into $21$, $22$, $30$, $33$, $35$, $38$, $39$, or $46$ congruent
+No triangle can be cut into $21$, $22$, $30$, $33$, $35$, $38$, $39$, $42$, or $46$ congruent
 triangles.
 \end{theorem}
 
@@ -819,8 +827,8 @@ the equilateral cases --- so the entire residual openness of the problem is a si
 \emph{which admissible instances are realized}. Zhang's trapezoid constructions realize the
 sporadic families for $m\ge9$ in residue classes, and Laczkovich's elliptic-curve
 analysis~\cite{LaczkovichEll} governs equilateral realizability; the open kernel is the small
-members --- sharpest $N=184$ on $(7,8,13)$ --- and each such instance is individually decidable
-(Theorem~\ref{thm:decidable}).
+members that are not already realized commensurably --- sharpest $N=105$ on the $F_1$ target of
+$(8,7,13)$ --- and each such instance is individually decidable (Theorem~\ref{thm:decidable}).
 
 \subsection*{State of the full problem.}
 Assembling: the commensurable branch is completely determined (squares, sums of two squares, and
@@ -832,9 +840,10 @@ the outer bounds), the $3\alpha+2\beta=\pi$ and $\gamma=2\alpha$ branches beyond
 results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommensurable tiles,
 where Laczkovich has connected the possible $N$ to rational points on elliptic
 curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, the primes by Theorem~\ref{thm:primefull},
-and $14,15,21,22,30,33,35,38,39,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2}, the
-membership of every $N\le 41$ is now determined; the smallest undetermined values, to our
-knowledge, are $N=42$ and $N=44$.
+and $14,15,21,22,30,33,35,38,39,42,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2}, the
+membership of every $N\le 43$ is now determined ($42$ dies in every branch by the same squarefree
+and arithmetic sweep that excludes $22$, $30$, $38$; $43$ is a prime $\equiv3\pmod4$); the smallest
+undetermined value, to our knowledge, is $N=44$.
 
 \subsection*{Standing of the inputs.}
 For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:
