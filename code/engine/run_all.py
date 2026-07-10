@@ -46,6 +46,18 @@ def make_instance(name):
         tile.area2 = qd(0, F(a * b, 2))
         target = [(qd(0), qd(0)), (qd(184), qd(0)), (qd(92), qd(0, 28))]
         return tile, target, N
+    if name == 'L':
+        # N=105, the smallest STRUCTURAL-open member: F1 target of the tile (8,7,13).
+        # sides k(a+b),ka,kc = (105,56,91), k=7. 60-deg corner at V=(0,0).
+        QD.D = 3
+        a, b, c, N = 8, 7, 13, 105
+        cosA, sinA = qd(F(2 * b + a, 2 * c)), qd(0, F(a, 2 * c))
+        cosB, sinB = qd(F(2 * a + b, 2 * c)), qd(0, F(b, 2 * c))
+        cosC, sinC = qd(F(-1, 2)), qd(0, F(1, 2))
+        tile = Tile(a, b, c, cosA, sinA, cosB, sinB, cosC, sinC)
+        tile.area2 = qd(0, F(a * b, 2))               # 8*7*(1/2) = 28  (x sqrt3)
+        target = [(qd(0), qd(0)), (qd(105), qd(0)), (qd(28), qd(0, 28))]
+        return tile, target, N
     if name == 'J1':
         QD.D = 1239
         a, b, c, N = 380, 39, 400, 39
