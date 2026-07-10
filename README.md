@@ -23,7 +23,7 @@ the large triangle to be isosceles. Within that branch this work:
 - determines the **admissible spectrum** of each sporadic `2π/3` branch — for the isosceles
   target, writing `b = d·e²` with `d` squarefree, every count is `N = d·w²·(a+2b)` with
   `e | w(c−a−b)` — an outer bound on the realizable set (33 and 46 are admissible; no prime is);
-- settles **every previously undetermined value up to 41**: no triangle can be cut into **14, 15,
+- settles **every previously undetermined value** (see below; record N ≤ 59): no triangle can be cut into **14, 15,
   21, 22, 30, 33, 35, 38, or 39** congruent triangles — a complete branch sweep (published tiling
   equations, the spectra with a **parity refinement** M ≡ N (mod 2) of the invariant counts, and a
   new equilateral criterion `st = 3N` with `(t−s)² + 16N` square) reduces each value to
@@ -41,11 +41,13 @@ the large triangle to be isosceles. Within that branch this work:
   by the parity refinement — in agreement with the conjecture;
 - proves **decidability**: membership in the tile-count set is algorithmically decidable (every
   branch reduces per-N to finitely many fully-determined instances, each settled by the provably
-  complete search). Membership of every N ≤ 55 is now determined: 51, 55, 57, 62 are excluded, and **N = 44 is
+  complete search). Membership of every N ≤ 59 is now determined: 51, 55, 56, 57, 62 are excluded, and **N = 44 is
   realizable** — the isosceles (16,16,22) tiles into 44 congruent copies of the (2,3,4) triangle
   (found by the exhaustive search, verified exactly; the first known tiling in the isosceles
   3α+2β=π cases and the smallest known tiling in any incommensurable branch). The smallest
-  undetermined value is N = 56, reduced to a single equilateral instance. The sharpest *structural*
+  undetermined value is N = 60, reduced to a single equilateral instance (56's equilateral instance
+  is exhausted — 156,646 nodes, identically in both engine implementations — settling Zhang's m=1
+  equiconstructibility case for (8,7,13)). The sharpest *structural*
   open instance — the smallest family member not already realized by the commensurable
   (sum-of-two-squares) construction — is N = 105 = b(a+b) = 7·15 on the F₁ target (105,56,91) of
   the tile (8,7,13), followed by 120, 132, 154, 184;

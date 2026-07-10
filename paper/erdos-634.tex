@@ -46,8 +46,8 @@ spectrum theorem shows that the counts passing all invariant conditions on the i
 $F_1$ targets are \emph{exactly} Zhang's constructed families, closing the necessary side of
 those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
-previously undetermined value up to $55$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
-$33$, $35$, $38$, $39$, $42$, $51$, $55$, or $57$ congruent triangles ($46$ and $62$ likewise);
+previously undetermined value up to $59$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
+$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, or $57$ congruent triangles ($46$ and $62$ likewise);
 and \emph{a triangle can be cut into $44$ congruent triangles} --- the isosceles $(16,16,22)$
 into $44$ copies of the $(2,3,4)$ tile, found by the search and verified exactly, to our
 knowledge the first tiling in the isosceles $3\alpha+2\beta=\pi$ cases and the smallest known
@@ -870,8 +870,13 @@ $N{=}55$, $M{=}1$ & $(756,55,784)$ & $(1540,1540,1485)$ & $5911$\\
 $N{=}55$, $M{=}5$ & $(24,55,64)$ & $(440,440,165)$ & $40$\\
 $N{=}57$, $M{=}1$ & $(812,57,841)$ & $(1653,1653,1596)$ & $8961$\\
 $N{=}57$, $M{=}3$ & $(88,57,121)$ & $(627,627,456)$ & $193$\\
+$N{=}63$, $M{=}1$ & $(992,63,1024)$ & $(2016,2016,1953)$ & $15493$\\
+$N{=}63$, $M{=}3$ & $(12,7,16)$ & $(84,84,63)$ & $44859$\\
+$N{=}63$, $M{=}7$ & $(8,63,64)$ & $(504,504,63)$ & $2$\\
 \end{tabular}
 \end{center}
+(The three $N{=}63$ rows close its isosceles-$(\alpha{+}\beta)$ branch; $63$ itself remains open
+through its $\gamma=2\alpha$ instance, see below.)
 
 For values that are \emph{not} squarefree the $\gamma=2\alpha$ branch needs more than
 Theorem~11.7. Beeson's isosceles paper provides exactly the needed machinery: the tile must be
@@ -895,22 +900,32 @@ target $(840,840,728)$, $853$ nodes; $M{=}4$: tile $(45,56,81)$, target $(504,50
 nodes), and every other branch dies arithmetically --- \emph{except} the $2\pi/3$-equilateral
 instance: tile $(8,7,13)$, equilateral target of side $56$, from the factorization
 $(s,t)=(12,14)$ of Proposition~\ref{prop:eqspec}. The membership of $56$ is thus equivalent to
-that single equilateral instance, for which our search remains inconclusive (the tree is large;
-it is the $m{=}1$ member of Zhang's equiconstructibility family for this tile, which his
-construction reaches only from $m\ge9$). Likewise $N=60$ reduces to its equilateral instance
-alone (tile $(5,3,7)$, side $30$): its two isosceles-$(\alpha{+}\beta)$ instances are exhausted
-as well ($M{=}2$: tile $(56,15,64)$, target $(240,240,210)$, $123003$ nodes; $M{=}6$: tile
-$(4,15,16)$, target $(120,120,30)$, $39$ nodes).
+that single equilateral instance --- and the engine \emph{exhausts it}: no tiling exists, at
+$156646$ nodes, identically in both independent engine implementations (node-for-node
+agreement). Likewise $N=60$ reduces to its equilateral instance alone (tile $(5,3,7)$, side
+$30$): its two isosceles-$(\alpha{+}\beta)$ instances are exhausted as well ($M{=}2$: tile
+$(56,15,64)$, target $(240,240,210)$, $123003$ nodes; $M{=}6$: tile $(4,15,16)$, target
+$(120,120,30)$, $39$ nodes); that final search is in progress.
 
 \begin{theorem}\label{thm:frontier3}
-No triangle can be cut into $51$, $55$, $57$, or $62$ congruent triangles.
+No triangle can be cut into $51$, $55$, $56$, $57$, or $62$ congruent triangles.
 \end{theorem}
 
 \begin{proof}
-The branch sweeps and the six exhaustive searches above; dependencies as in
+The branch sweeps and the exhaustive searches above; dependencies as in
 Theorem~\ref{thm:frontier}, together with \cite[Thm.~11.7]{BeesonIso} for the $\gamma=2\alpha$
-branch at $51$, $55$, $57$.
+branch at $51$, $55$, $57$, and the boundary algorithm (Lemmas 11.2--11.17 of \cite{BeesonIso},
+implemented in \texttt{code/gamma2alpha.py}) for the $\gamma=2\alpha$ branch at $56$.
 \end{proof}
+
+\begin{remark}
+The equilateral exhaustion at $56$ settles the $m{=}1$ case of Zhang's equiconstructibility
+family for the tile $(8,7,13)$: the side-$56$ equilateral triangle is \emph{not} tileable by
+$(8,7,13)$, exactly as Zhang's Conjecture~2 predicts (his construction realizes $X=56m$ for
+$m\ge9$). It also closes the $m{=}1$ route of his Proposition~9(1) to the $F_1$ instance
+$N=105$: any $105$-tiling of $(105,56,91)$, if one exists, does not factor through an equilateral
+$56$-block.
+\end{remark}
 
 \subsection*{Decidability.}
 The pattern of the last two subsections is not an accident. Every branch of the classification now
@@ -995,12 +1010,14 @@ results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommen
 where Laczkovich has connected the possible $N$ to rational points on elliptic
 curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, the primes by Theorem~\ref{thm:primefull},
 $14,15,21,22,30,33,35,38,39,42,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2},
-$51,55,57,62$ by Theorem~\ref{thm:frontier3}, \emph{$44$ realizable} by Theorem~\ref{thm:44},
+$51,55,56,57,62$ by Theorem~\ref{thm:frontier3}, \emph{$44$ realizable} by Theorem~\ref{thm:44},
 $28$ realized by Beeson's triquadratic tilings \cite{BeesonIII}, and the remaining values
-$\le55$ commensurably realized ($45,48,49,50,52,53,54$) or prime ($47,53$), the membership of
-\emph{every $N\le55$} is now determined. The smallest undetermined value, to our knowledge, is
-$N=56$, whose membership is equivalent (by the reductions above) to the single
-$2\pi/3$-equilateral instance of side $56$ on the tile $(8,7,13)$.
+commensurably realized ($45,48,49,50,52,53,54,58$) or prime ($47,53,59$), the membership of
+\emph{every $N\le59$} is now determined. The smallest undetermined value, to our knowledge, is
+$N=60$, whose membership is equivalent (by the reductions above) to the single
+$2\pi/3$-equilateral instance of side $30$ on the tile $(5,3,7)$; after it, $63$, equivalent to
+its $\gamma=2\alpha$ instance (tile $(9,7,12)$, target $(63,63,84)$) --- both searches are in
+progress.
 
 \subsection*{Standing of the inputs.}
 For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:
