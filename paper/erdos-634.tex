@@ -800,6 +800,61 @@ The sweeps above; for $21$, $33$, $35$ and $39$, additionally the exhaustive sea
 Dependencies as in Theorem~\ref{thm:frontier}.
 \end{proof}
 
+\subsection*{The values $51$, $55$, $57$, $62$, and the $\gamma=2\alpha$ boundary algorithm.}
+The sweep continues past the forties. The values $51=3\cdot17$, $55=5\cdot11$ and $57=3\cdot19$
+are squarefree, so the $\gamma=2\alpha$ branch is closed by \cite[Thm.~11.7]{BeesonIso}, and every
+branch except isosceles-$(\alpha{+}\beta)$ dies arithmetically; each surviving instance is uniquely
+determined and the engine exhausts all six ($62$ dies in every branch outright, as $42$ did):
+\begin{center}
+\begin{tabular}{llll}
+instance & tile & target & nodes\\
+\hline
+$N{=}51$, $M{=}1$ & $(650,51,676)$ & $(1326,1326,1275)$ & $3649$\\
+$N{=}51$, $M{=}3$ & $(70,51,100)$ & $(510,510,357)$ & $180$\\
+$N{=}55$, $M{=}1$ & $(756,55,784)$ & $(1540,1540,1485)$ & $5911$\\
+$N{=}55$, $M{=}5$ & $(24,55,64)$ & $(440,440,165)$ & $40$\\
+$N{=}57$, $M{=}1$ & $(812,57,841)$ & $(1653,1653,1596)$ & $8961$\\
+$N{=}57$, $M{=}3$ & $(88,57,121)$ & $(627,627,456)$ & $193$\\
+\end{tabular}
+\end{center}
+
+For values that are \emph{not} squarefree the $\gamma=2\alpha$ branch needs more than
+Theorem~11.7. Beeson's isosceles paper provides exactly the needed machinery: the tile must be
+$(k^2,\,m^2{-}k^2,\,mk)$ with $\gcd(k,m)=1$, $2k>m>k$ \cite[Lem.~11.2]{BeesonIso}; $m$ is bounded
+in terms of $N$ \cite[Lem.~11.12]{BeesonIso}; the side $X$ and base $Y$ satisfy $X^2=Nab$,
+$Y=(m/k)X$ and must decompose as $X=pa+qb+rc$ with $q,r\ge1$ and $p+q+r<(N{+}1)/4$
+\cite[Lems.~11.11, 11.13]{BeesonIso} and $Y=ua+vb+wc$ with $v,w\ge1$ (the base version of
+Lemma~11.13, whose pigeonhole proof is stated for the base); and the pair is rejected when every
+$X$-representation has $r=1$ while every $Y$-representation has $w\in\{1,2\}$
+\cite[Lem.~11.17]{BeesonIso}. We implemented this boundary algorithm independently
+(\texttt{code/gamma2alpha.py}) and calibrated it against Beeson's reported results: it excludes
+$20$, $28$ and $44$ and leaves $45$ surviving via the tile $(4,5,6)$, exactly as in
+\cite[Thm.~11.18]{BeesonIso}; at $36$ our filter is strictly weaker than Beeson's direct argument
+(it reports a surviving boundary representation), so we use it only in the sound direction.
+Running it on the undetermined values: \emph{the $\gamma=2\alpha$ branches at $N=56$ and $N=60$
+are empty} --- no possible boundary tiling exists.
+
+Consequently $N=56$ reduces far: $\gamma=2\alpha$ is closed by the algorithm, both
+isosceles-$(\alpha{+}\beta)$ instances are exhausted by the engine ($M{=}2$: tile $(195,56,225)$,
+target $(840,840,728)$, $853$ nodes; $M{=}4$: tile $(45,56,81)$, target $(504,504,280)$, $89$
+nodes), and every other branch dies arithmetically --- \emph{except} the $2\pi/3$-equilateral
+instance: tile $(8,7,13)$, equilateral target of side $56$, from the factorization
+$(s,t)=(12,14)$ of Proposition~\ref{prop:eqspec}. The membership of $56$ is thus equivalent to
+that single equilateral instance, for which our search remains inconclusive (the tree is large;
+it is the $m{=}1$ member of Zhang's equiconstructibility family for this tile, which his
+construction reaches only from $m\ge9$). Likewise $N=60$ reduces to its equilateral instance
+(tile $(5,3,7)$, side $30$) together with one remaining isosceles-$(\alpha{+}\beta)$ instance.
+
+\begin{theorem}\label{thm:frontier3}
+No triangle can be cut into $51$, $55$, $57$, or $62$ congruent triangles.
+\end{theorem}
+
+\begin{proof}
+The branch sweeps and the six exhaustive searches above; dependencies as in
+Theorem~\ref{thm:frontier}, together with \cite[Thm.~11.7]{BeesonIso} for the $\gamma=2\alpha$
+branch at $51$, $55$, $57$.
+\end{proof}
+
 \subsection*{Decidability.}
 The pattern of the last two subsections is not an accident. Every branch of the classification now
 reduces, for each fixed $N$, to a \emph{finite} list of fully determined instances: the
