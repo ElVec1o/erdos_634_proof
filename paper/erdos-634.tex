@@ -830,6 +830,24 @@ analysis~\cite{LaczkovichEll} governs equilateral realizability; the open kernel
 members that are not already realized commensurably --- sharpest $N=105$ on the $F_1$ target of
 $(8,7,13)$ --- and each such instance is individually decidable (Theorem~\ref{thm:decidable}).
 
+\begin{remark}[no invariant decides realizability]\label{rem:conserved}
+The directional invariants are \emph{conserved} by the tiling process: each tile carries value
+$\pm(c+a-b)$ for $f_\alpha$ (resp.\ $\pm(c+b-a)$ for $f_\beta$), so placing one tile changes
+$\Phi_f$ of the unfilled region by $\pm V$ and the number of remaining tiles by one --- in step,
+so that $\Phi_f/V$ stays integral and keeps the parity of the tile count throughout. Hence the
+only conditions such an invariant imposes are the admissibility conditions of
+Theorem~\ref{thm:spectrum}, and \emph{no} additive boundary invariant can distinguish an admissible
+target from a partially tiled one; none can obstruct an admissible instance, and none prunes the
+search below its combinatorial size. For the sharpest open instance $N=105$ we confirmed this
+computationally: searching all directional weights of period $\le4$ in the $\alpha$-winding
+(reflections included), the only invariants are $f_\alpha$ ($M_\alpha=5$) and $f_\beta$
+($M_\beta=21$), both admissible; and the vertex-type balance forced by the angle relations
+$a\alpha+b\beta+c\gamma\in\{\pi,2\pi\}$ admits $42{,}282$ nonnegative integer solutions. Deciding
+realizability of an admissible instance therefore lies beyond every linear or coloring invariant;
+it is a genuinely combinatorial question, which is why the search of Theorem~\ref{thm:decidable}
+appears to be essential and why Zhang's conjecture is hard at its sharpest point.
+\end{remark}
+
 \subsection*{State of the full problem.}
 Assembling: the commensurable branch is completely determined (squares, sums of two squares, and
 $2,3,6$ times squares, all realized \cite{BeesonSeven}); the similar-tile and right-angle branches
