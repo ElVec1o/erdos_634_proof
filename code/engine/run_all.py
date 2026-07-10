@@ -46,6 +46,18 @@ def make_instance(name):
         tile.area2 = qd(0, F(a * b, 2))
         target = [(qd(0), qd(0)), (qd(184), qd(0)), (qd(92), qd(0, 28))]
         return tile, target, N
+    if name == 'N44A':
+        # N=44 iso-(alpha+beta) instance: tile (30,11,36) (s=5/6, Thm 17), target (132,132,110).
+        # The pending engine instance for N=44 (with gamma=2alpha and iso-beta branches also alive).
+        QD.D = 119
+        a, b, c, N = 30, 11, 36, 44
+        tile = Tile(a, b, c,
+                    qd(F(47, 72)), qd(0, F(5, 72)),
+                    qd(F(415, 432)), qd(0, F(11, 432)),
+                    qd(F(-5, 12)), qd(0, F(1, 12)))
+        tile.area2 = qd(0, F(55, 2))                  # 30*11*sqrt119/12 = 55/2 sqrt119
+        target = [(qd(0), qd(0)), (qd(110), qd(0)), (qd(55), qd(0, 11))]
+        return tile, target, N
     if name == 'M60':
         # N=60, EQUILATERAL 2pi/3 on tile (5,3,7): equilateral target side 30. New open instance.
         QD.D = 3
