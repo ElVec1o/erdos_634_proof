@@ -41,8 +41,9 @@ of the full problem is complete: a prime $p$ occurs if and only if $p=2$, $p=3$,
 $p\equiv1\pmod4$. Beyond primes, we determine the admissible spectrum of each sporadic $2\pi/3$
 branch --- for the isosceles target, writing $b=de^2$ with $d$ squarefree, every count has the form
 $N=dw^2(a+2b)$ with $e\mid w(c-a-b)$ --- bounding the realizable set from outside; and a
-lattice theorem determines the refined spectrum exactly, exhibiting admissible values beyond
-Zhang's constructed families (the smallest being $N=354$). Combining the spectra with the published
+spectrum theorem shows that the counts passing all invariant conditions on the isosceles and
+$F_1$ targets are \emph{exactly} Zhang's constructed families, closing the necessary side of
+those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
 previously undetermined value up to $41$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
 $33$, $35$, $38$, or $39$ congruent triangles; $N=46$, previously the sharpest test of Zhang's
@@ -514,16 +515,71 @@ M-N=\frac{ur}{g}-d\,e_1^2u^2(a+2b)\equiv u\Bigl(\frac rg+d\,e_1^2(a+2b)\Bigr)=uT
 so the parity clause holds for all $u$ when $T$ is even, and exactly for even $u$ when $T$ is odd.
 \end{proof}
 
+Theorem~\ref{thm:lattice} uses only the base-aligned invariant. The mirror invariant is also a
+necessary condition on the same target, and it closes the spectrum completely.
+
+\begin{theorem}[Spectrum theorem]\label{thm:spectrum}
+Let $(a,b,c)$ be a primitive $120^\circ$-triple. The tile counts satisfying \emph{all} the
+invariant conditions on the base-$\alpha$ isosceles target --- integrality and parity of both
+$M_\alpha$ and $M_\beta$, together with the area equation --- are exactly Zhang's family
+\[
+N \;=\; m^2\, b\,(a+2b),\qquad m=1,2,3,\dots
+\]
+Symmetrically, the base-$\beta$ target admits exactly $N=m^2a(2a+b)$, and the $F_1$ target
+exactly $N=m^2b(a+b)$.
+\end{theorem}
+
+\begin{proof}
+Write $X=c+a-b$, $Y=c+b-a$, so $XY=3ab$ by~\eqref{eq:tile}. On the base-$\alpha$ target with
+scale $k$, $M_\alpha=k(2b+a-2c)/X$ and $M_\beta=k(2b+a+2c)/Y$ (the equal sides carry
+$\frac\pi3$-coefficient $3$ in the $\alpha$-frame and $2$ in the $\beta$-frame). Since
+$(2b+a-2c)+2X=3a$ and $(2b+a+2c)-2Y=3a$, the two integralities are equivalent to
+\[
+X\mid 3ak \qquad\text{and}\qquad Y\mid 3ak,
+\]
+and, setting $A=3ak/X$, $B=3ak/Y$, the parity clauses of Corollary~\ref{cor:int} read
+$A\equiv B\equiv N\pmod 2$. Recall $k=dew$ and $N=dw^2(a+2b)$, with $b=de^2$.
+
+If $e\mid w$, say $w=em$, then $k=de^2m=bm$, so $A=Ym$ and $B=Xm$ are integers, and
+$A-N\equiv m\bigl(Y+b(a+2b)\bigr)\pmod 2$ using $m^2\equiv m$; now
+$Y+b(a+2b)\equiv c+a+b+ab\equiv 0\pmod2$, because~\eqref{eq:tile} gives $c\equiv a+b+ab$;
+likewise for $B$. So every member of Zhang's family is admissible.
+
+Conversely, fix a prime $p$ and let $x,y,\sigma,\varepsilon,\delta,\omega$ be the $p$-adic
+valuations of $X,Y,3a,e,d,w$; then $x+y=\sigma+\delta+2\varepsilon$ and the divisibilities give
+$\max(x,y)\le\sigma+\delta+\varepsilon+\omega$, so
+$\omega\ge\varepsilon-\min(x,y)$. A common prime of $X$ and $Y$ divides $X+Y=2c$ and
+$Y-X=2(b-a)$; for odd $p$ this forces $p\mid c$ and $p\mid b-a$, whence $3\mid c$ or
+$p\mid\gcd(a,b)$ --- both impossible ($3\nmid c$ as in Proposition~\ref{prop:reduction}). So
+$\min(x,y)=0$ for every odd $p$, and $\omega\ge\varepsilon$ there. At $p=2$: if $ab$ is odd
+then $X,Y$ are odd and the same argument applies. If $b$ is even (so $a$ is odd), a two-line
+computation modulo $8$ shows $v_2(b)\notin\{1,2\}$: $b\equiv2\pmod4$ gives
+$c^2\equiv1+2\equiv3\pmod4$, and $v_2(b)=2$ gives $c^2\equiv1+4\equiv5\pmod8$, both
+impossible. So $v_2(b)\ge3$. Here $v_2(X+Y)=v_2(2c)=1$ forces $\min(x,y)=1$, and the
+divisibilities alone allow $\omega=\varepsilon-1$; but then exactly one of $A,B$ is odd
+(their $2$-valuations are $0$ and $v_2(b)-2$), while
+$v_2(N)=\delta_2+2\omega=v_2(b)-2\ge1$ makes $N$ even --- so the parity clause fails, and
+$\omega\ge\varepsilon$ at $p=2$ as well. Hence $e\mid w$, i.e.\ $N=m^2b(a+2b)$.
+The base-$\beta$ case is the mirror $a\leftrightarrow b$. For $F_1$ the counts are
+$M_\alpha=3ak/X-k$ and $M_\beta=3ak/Y+k$ (Section~\ref{sub:frontier}), so the same
+divisibilities appear, the parity clauses read $A\equiv B\equiv N+k\pmod2$, and in the
+boundary case $v_2(k)=\delta_2+2\varepsilon_2-1\ge2$ makes $N+k$ even against an odd count;
+the argument is otherwise identical, giving $N=m^2b(a+b)$.
+\end{proof}
+
 \begin{remark}\label{rem:zhang}
-The refined spectrum coincides with Zhang's constructed family $N=m^2b(a+2b)$ exactly when $E=e$;
-this holds for $(7,8,13)$ and $(5,16,19)$ (both have $E=e$), but not in general: in the
-parametrization $a=m^2-n^2$, $b=2mn+n^2$, an odd prime $p$ with $p^2\mid n$ makes $p$ ``free''
-($v_p(r)\ge v_p(e)$, since $r=-n(m-n)$), and the lattice is coarser than $e\Z$. The smallest such
-tile is $(11,24,31)$ ($d=6$, $e=2$, $E=1$): the value $N=354=6\cdot59$ is admissible but lies
-\emph{outside} the Zhang family $1416m^2$; likewise $(19,261,271)$ admits $N=15689=29\cdot541$.
-These beyond-family admissible values are the new sharpest tests of sufficiency: either they are
-tiled by constructions not in~\cite{Zhang}, or a necessary condition beyond the invariant kills
-them.
+The single-invariant lattice of Theorem~\ref{thm:lattice} can be strictly coarser than $e\Z$
+(the smallest example is $(11,24,31)$, whose lattice admits $N=354$), which briefly suggested
+admissible values beyond Zhang's constructions. Theorem~\ref{thm:spectrum} corrects this: the
+mirror invariant eliminates every such value ($354$ by parity, $15689$ on $(19,261,271)$ already
+by integrality), and the fully refined spectrum \emph{coincides with Zhang's family on every
+tile} --- verified exhaustively over all $138$ primitive triples with $a,b<400$. The necessary
+side of the isosceles and $F_1$ branches is therefore closed. What remains open in these branches
+is exactly the realizability of the \emph{small} family members: Zhang's constructions cover
+$m\ge9$ in certain residue classes, so the sharpest open instance is now the $m=1$ member
+itself, e.g.\ $N=184=b(a+2b)$ on $(7,8,13)$ (target $(104,104,184)$), whose membership is not
+decided by any known necessary condition and is exactly the kind of bounded question the engine
+of Section~\ref{sub:frontier} addresses.
 \end{remark}
 
 \begin{remark}\label{rem:necessary}
@@ -585,6 +641,29 @@ $q:=2N(a+b)/S$ is a rational with integer square, hence an integer, and
 $(t-s)^2+16N=q^2$. Then $a-b$, $a+b$ and $c=(X+Y)/2=\tfrac{S(s+t)}{2N}$ give the displayed
 proportions.
 \end{proof}
+
+\subsection*{The equilateral criteria as divisor conditions.}
+Both equilateral square criteria --- ours and Beeson's --- complete the square.
+
+\begin{proposition}[Conic form]\label{prop:conic}
+For an equilateral target: a $2\pi/3$ tile requires a factorization $uv=16N^2$ with
+$u+v\equiv0\pmod2$ and $\tfrac{u+v}2-5N=s^2$ for a divisor $s$ of $3N$ with
+$s\equiv 3N/s\equiv N\pmod2$; a $\pi/3$ tile requires a factorization $uv=16N^2$ with
+$\tfrac{u+v}2 = 5N-M^2$ for some $0<M<\sqrt N$, $M\equiv N\pmod 2$. These are equivalent to
+the criteria of Proposition~\ref{prop:eqspec} and of~\cite[Thm.~3]{BeesonEq} respectively.
+\end{proposition}
+
+\begin{proof}
+For the $2\pi/3$ case, with $t=3N/s$ the condition $(t-s)^2+16N=q^2$ becomes, after multiplying
+by $s^2$, $(qs)^2=(3N-s^2)^2+16Ns^2=(s^2+N)(s^2+9N)$, i.e.\
+$(s^2+5N)^2-(qs)^2=16N^2$; factor the difference of squares. For the $\pi/3$ case,
+$(9N-M^2)(N-M^2)=y^2$ is $(5N-M^2)^2-16N^2=y^2$, i.e.\ $(5N-M^2-y)(5N-M^2+y)=16N^2$.
+\end{proof}
+
+\noindent The necessary side of the equilateral branch is thus elementary --- a divisor
+condition on $16N^2$ --- and, per $N$, pins finitely many fully determined instances. The
+elliptic curves of Laczkovich~\cite{LaczkovichEll} concern the \emph{realizability} of such
+instances, not their enumeration.
 
 \subsection*{The values $14$ and $15$.}\label{sub:frontier}
 The machinery above, combined with the published branch theorems, decides every branch of the
@@ -733,11 +812,15 @@ It is decidable, given $N$, whether some triangle can be cut into $N$ congruent 
 
 \noindent This extends the decidability that Beeson established for equilateral
 targets~\cite[Thm.~4]{BeesonEq} to the whole problem. What decidability does \emph{not} give is
-a closed-form description of the set: that residual question concentrates in the equilateral
-branch, where Laczkovich has related the possible $N$ to rational points on elliptic
-curves~\cite{LaczkovichEll}, and in the sufficiency half of Zhang's conjecture, for which the
-beyond-family values of Remark~\ref{rem:zhang} (the smallest being $N=354$) are now the sharpest
-tests.
+a closed-form description of the set. After Theorem~\ref{thm:spectrum} and
+Proposition~\ref{prop:conic}, the necessary side is closed in \emph{every} branch --- the
+admissible values are Zhang's families in the sporadic shapes and explicit divisor-instances in
+the equilateral cases --- so the entire residual openness of the problem is a single question:
+\emph{which admissible instances are realized}. Zhang's trapezoid constructions realize the
+sporadic families for $m\ge9$ in residue classes, and Laczkovich's elliptic-curve
+analysis~\cite{LaczkovichEll} governs equilateral realizability; the open kernel is the small
+members --- sharpest $N=184$ on $(7,8,13)$ --- and each such instance is individually decidable
+(Theorem~\ref{thm:decidable}).
 
 \subsection*{State of the full problem.}
 Assembling: the commensurable branch is completely determined (squares, sums of two squares, and

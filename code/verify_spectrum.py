@@ -14,6 +14,9 @@ Checks, in exact arithmetic:
       there are none (Lemma 6 re-proved).
 """
 from math import isqrt, gcd
+
+def issq2(n):
+    return n >= 0 and isqrt(n) ** 2 == n
 from sympy import isprime, factorint
 
 
@@ -154,7 +157,72 @@ E19 = e119 if T19 == 0 else 2 * e119
 print(f"   tile (19,261,271): d={d19}, e={e19}, r={r19}, E={E19} -> N = {d19*541}*w^2 for ALL w;")
 print(f"   w=1 gives N = {d19*541} = 29*541, admissible but OUTSIDE Zhang's family m^2*b*(a+2b).")
 
-print()
-print("RESULT: prime dichotomy achievability, scale structure, admissible spectrum (no prime),")
-print("the j-classification, and the lattice theorem all verify; tiles with coarser lattices")
-print("(e.g. (19,261,271)) admit values beyond the Zhang family - the new frontier instances.")
+# (6) THE SPECTRUM THEOREM: both invariants together give exactly Zhang's family --------------
+print("== (6) spectrum theorem: full admissibility (both invariants) == Zhang family ==")
+mism6 = beta_kills = 0
+tiles6 = 0
+for a in range(1, 400):
+    for b in range(1, 400):
+        c = is120(a, b)
+        if not c:
+            continue
+        tiles6 += 1
+        d, e = sqfree_split(b)
+        X, Y = c + a - b, c + b - a
+        for w in range(1, 3 * e + 2):
+            k = d * e * w
+            N = d * w * w * (a + 2 * b)
+            MA = k * (2 * b + a - 2 * c)
+            MB = k * (2 * b + a + 2 * c)
+            condA = MA % X == 0 and (MA // X - N) % 2 == 0
+            condB = MB % Y == 0 and (MB // Y - N) % 2 == 0
+            if (condA and condB) != (w % e == 0):
+                mism6 += 1
+            if condA and not condB:
+                beta_kills += 1
+print(f"   tiles: {tiles6};  (tile,w) with full-admissible != Zhang: {mism6}  (expect 0)")
+print(f"   f_alpha-passing pairs killed by f_beta: {beta_kills}  (the closed gap;")
+print("    includes the retracted instances 354, 1694, 15689)\n")
+
+# (7) conic form of the equilateral criteria ---------------------------------------------------
+print("== (7) equilateral criteria as divisor conditions on 16N^2 (conic form) ==")
+bad_p = bad_q = 0
+for N in range(1, 300):
+    d_pi3 = any(M * M < N and (N - M) % 2 == 0 and issq2((9 * N - M * M) * (N - M * M))
+                for M in range(1, isqrt(N) + 1))
+    d_2pi3 = False
+    for sdiv in range(1, 3 * N + 1):
+        if (3 * N) % sdiv:
+            continue
+        t = 3 * N // sdiv
+        if sdiv > t or (sdiv - N) % 2 or (t - N) % 2:
+            continue
+        if issq2((t - sdiv) ** 2 + 16 * N):
+            d_2pi3 = True
+    c_pi3 = c_2pi3 = False
+    T = 16 * N * N
+    u = 1
+    while u * u <= T:
+        if T % u == 0:
+            v = T // u
+            if (u + v) % 2 == 0:
+                M2 = 5 * N - (u + v) // 2
+                if M2 > 0 and issq2(M2):
+                    M = isqrt(M2)
+                    if M * M < N and (N - M) % 2 == 0 and M > 0:
+                        c_pi3 = True
+                s2 = (u + v) // 2 - 5 * N
+                if s2 > 0 and issq2(s2):
+                    sdiv = isqrt(s2)
+                    if (3 * N) % sdiv == 0:
+                        t = 3 * N // sdiv
+                        if (sdiv - N) % 2 == 0 and (t - N) % 2 == 0:
+                            c_2pi3 = True
+        u += 1
+    bad_p += d_pi3 != c_pi3
+    bad_q += d_2pi3 != c_2pi3
+print(f"   N < 300: pi/3 mismatches {bad_p}, 2pi/3 mismatches {bad_q}  (expect 0, 0)\n")
+
+print("RESULT: prime dichotomy, scale structure, spectra, j-classification, lattice theorem,")
+print("SPECTRUM THEOREM (full admissibility = Zhang family, every tile), and the conic form of")
+print("the equilateral criteria all verify.")

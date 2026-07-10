@@ -16,8 +16,9 @@ abstract: >-
   the admissible spectrum of each sporadic branch is determined (with a parity refinement), every
   value up to 41 is settled (14, 15, 21, 22, 30, 33, 35, 38, 39 are excluded, by branch sweeps
   and exhaustive exact searches), N = 46 is excluded in agreement with Zhang's completeness
-  conjecture, a lattice theorem determines each tile's refined spectrum exactly, and membership
-  in the tile-count set is shown to be decidable. The arithmetic and combinatorial layer is machine-checked in
+  conjecture, the spectrum theorem closes the necessary side of the sporadic branches (equal to Zhang's
+  families exactly), the equilateral criteria reduce to divisor conditions, and membership in
+  the tile-count set is shown to be decidable. The arithmetic and combinatorial layer is machine-checked in
   Lean 4 with Mathlib. Developed with AI assistance
   (Anthropic Claude); presented for peer review.
 keywords:

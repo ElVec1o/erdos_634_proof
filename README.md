@@ -30,15 +30,19 @@ the large triangle to be isosceles. Within that branch this work:
   uniquely-determined finite instances (22, 30 and 38 die by arithmetic alone), refuted by an
   exhaustive exact search (`code/engine/`, ten instances exhausted, validated on positive controls
   including a non-edge-to-edge tiling, all verdicts robust to disabling the strongest prune);
-- proves the **lattice theorem**: the parity-refined spectrum of each isosceles tile is exactly
-  `N = d(Eu)²(a+2b)` for an explicit lattice constant E — coinciding with Zhang's constructed
-  family exactly when E = e, and exhibiting **admissible values beyond Zhang's families**
-  (smallest: N = 354 on (11,24,31)), the new sharpest tests of sufficiency;
+- proves the **spectrum theorem**: the counts passing ALL invariant conditions (both invariants,
+  integrality + parity) on the isosceles and F1 targets are **exactly Zhang's constructed
+  families** `m²·b(a+2b)` and `m²·b(a+b)` — the necessary side of these branches is closed
+  (verified over all 138 tiles with a,b < 400; the one-invariant lattice's extra values such as
+  N = 354 are killed by the mirror invariant);
+- reduces both **equilateral square criteria to elementary divisor conditions** on `16N²` (the
+  conic form) — the elliptic curves of the literature concern realizability only;
 - excludes **N = 46**, previously the sharpest open test of Zhang's completeness conjecture,
   by the parity refinement — in agreement with the conjecture;
 - proves **decidability**: membership in the tile-count set is algorithmically decidable (every
   branch reduces per-N to finitely many fully-determined instances, each settled by the provably
-  complete search). The smallest undetermined values are now 42 and 44;
+  complete search). The smallest undetermined values are now 42 and 44; the sharpest structural instance is
+  N = 184 = b(a+2b) on (7,8,13), the m = 1 member of its family;
 
 which together complete the exclusion of primes `≡ 3 (mod 4)` exceeding `3`, conditional on the
 cited classification of the remaining branches. As a corollary, no triangle can be cut into 19

@@ -36,6 +36,16 @@ def make_instance(name):
         tile.area2 = qd(0, F(315, 2))                # 56*15*(3/16) = 315/2  (x sqrt23)
         target = [(qd(0), qd(0)), (qd(105), qd(0)), (qd(F(105, 2)), qd(0, F(45, 2)))]
         return tile, target, N
+    if name == 'K':
+        QD.D = 3
+        a, b, c, N = 7, 8, 13, 184
+        cosA, sinA = qd(F(2 * b + a, 2 * c)), qd(0, F(a, 2 * c))
+        cosB, sinB = qd(F(2 * a + b, 2 * c)), qd(0, F(b, 2 * c))
+        cosC, sinC = qd(F(-1, 2)), qd(0, F(1, 2))
+        tile = Tile(a, b, c, cosA, sinA, cosB, sinB, cosC, sinC)
+        tile.area2 = qd(0, F(a * b, 2))
+        target = [(qd(0), qd(0)), (qd(184), qd(0)), (qd(92), qd(0, 28))]
+        return tile, target, N
     if name == 'J1':
         QD.D = 1239
         a, b, c, N = 380, 39, 400, 39
@@ -195,9 +205,9 @@ def validate():
     print("ALL VALIDATIONS PASSED", flush=True)
 
 
-def run_instance(name):
+def run_instance(name, cap=30000000):
     tile, target, N = make_instance(name)
-    s = Search(tile, target, N, name, log_every=100000)
+    s = Search(tile, target, N, name, log_every=100000, node_cap=cap)
     t0 = time.time()
     r = s.run()
     dt = time.time() - t0
@@ -227,4 +237,5 @@ if __name__ == '__main__':
     elif arg.startswith('noP2-'):
         run_noP2(arg[5:])
     else:
-        run_instance(arg)
+        cap = int(sys.argv[2]) if len(sys.argv) > 2 else 30000000
+        run_instance(arg, cap)
