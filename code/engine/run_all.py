@@ -58,6 +58,78 @@ def make_instance(name):
         tile.area2 = qd(0, F(55, 2))                  # 30*11*sqrt119/12 = 55/2 sqrt119
         target = [(qd(0), qd(0)), (qd(110), qd(0)), (qd(55), qd(0, 11))]
         return tile, target, N
+    if name.startswith('ISO:'):
+        # general iso-(alpha+beta) instance from (N, M) via Beeson III Thm 17:
+        # s=(N-M^2)/(N+M^2)=e/f, tile (ef, f^2-e^2, f^2) reduced, target (X, X, Y),
+        # X^2 = N b c, Y = (a/c) X. All exact; D = squarefree kernel of the sines.
+        from math import gcd as _gcd, isqrt as _isqrt
+        _, sN, sM = name.split(':')
+        N, M = int(sN), int(sM)
+        sfrac = F(N - M * M, N + M * M)
+        e, f = sfrac.numerator, sfrac.denominator
+        a0, b0, c0 = e * f, f * f - e * e, f * f
+        g0 = _gcd(_gcd(a0, b0), c0)
+        a, b, c = a0 // g0, b0 // g0, c0 // g0
+        def sqfree(n):
+            d = 1; m = n; p = 2
+            while p * p <= m:
+                while m % (p * p) == 0: m //= p * p
+                if m % p == 0: d *= p; m //= p
+                p += 1
+            return d * m
+        cosA = F(b * b + c * c - a * a, 2 * b * c)
+        cosB = F(a * a + c * c - b * b, 2 * a * c)
+        cosC = F(a * a + b * b - c * c, 2 * a * b)
+        s2 = 1 - cosA * cosA                    # = num/den; sinA = sqrt(num*den)/den
+        Dker = sqfree(s2.numerator * s2.denominator)
+        QD.D = Dker
+        def sin_qd(cs):
+            s2 = 1 - cs * cs
+            nd = s2.numerator * s2.denominator
+            k2 = nd // Dker
+            k = _isqrt(k2)
+            assert k * k == k2 and k2 * Dker == nd, f"sin not in Q(sqrt{Dker})"
+            return qd(0, F(k, s2.denominator))
+        tile = Tile(a, b, c, qd(cosA), sin_qd(cosA), qd(cosB), sin_qd(cosB),
+                    qd(cosC), sin_qd(cosC))
+        sinC = sin_qd(cosC)
+        tile.area2 = qd(F(a * b, 1)) * sinC             # 2*area = a*b*sinC (rational x sqrtD)
+        X2 = N * b * c
+        X = _isqrt(X2); assert X * X == X2, "X not integer"
+        Y = F(a, c) * X; assert Y.denominator == 1, "Y not integer"
+        Y = int(Y)
+        # apex height h: X^2 = (Y/2)^2 + h^2, h = k*sqrt(D)/den exact
+        h2 = F(X * X) - F(Y * Y, 4)
+        ndh = h2.numerator * h2.denominator
+        kh2 = ndh // Dker
+        kh = _isqrt(kh2); assert kh * kh == kh2 and kh2 * Dker == ndh, "apex not in field"
+        target = [(qd(0), qd(0)), (qd(Y), qd(0)), (qd(F(Y, 2)), qd(0, F(kh, h2.denominator)))]
+        return tile, target, N
+    if name == 'G63':
+        # N=63 gamma=2alpha instance (Beeson Lemma 11.2 family, (k,m)=(3,4)): tile (9,7,12)
+        # with angles (alpha,beta,2alpha), target (63,63,84) from the surviving boundary
+        # representation X=63=a+6b+c, Y=84=a+9b+c of the boundary algorithm. D=5.
+        QD.D = 5
+        a, b, c, N = 9, 7, 12, 63
+        tile = Tile(a, b, c,
+                    qd(F(2, 3)), qd(0, F(1, 3)),
+                    qd(F(22, 27)), qd(0, F(7, 27)),
+                    qd(F(-1, 9)), qd(0, F(4, 9)))
+        tile.area2 = qd(0, 28)                        # 9*7*(4sqrt5/9) = 28 sqrt5
+        target = [(qd(0), qd(0)), (qd(84), qd(0)), (qd(42), qd(0, 21))]
+        return tile, target, N
+    if name == 'N44B':
+        # N=44 iso-beta instance (Beeson III Thm 14, M=6, s=1/2): tile (2,3,4) (3a+2b=pi,
+        # gamma=2a+b, cos gamma=-1/4), target (16,16,22) with base angles beta (cos=11/16).
+        QD.D = 15
+        a, b, c, N = 2, 3, 4, 44
+        tile = Tile(a, b, c,
+                    qd(F(7, 8)), qd(0, F(1, 8)),
+                    qd(F(11, 16)), qd(0, F(3, 16)),
+                    qd(F(-1, 4)), qd(0, F(1, 4)))
+        tile.area2 = qd(0, F(3, 2))                   # 2*3*sqrt15/4 = 3/2 sqrt15
+        target = [(qd(0), qd(0)), (qd(22), qd(0)), (qd(11), qd(0, 3))]
+        return tile, target, N
     if name == 'M60':
         # N=60, EQUILATERAL 2pi/3 on tile (5,3,7): equilateral target side 30. New open instance.
         QD.D = 3

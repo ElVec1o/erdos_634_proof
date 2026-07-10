@@ -670,6 +670,19 @@ static bool make_instance(const std::string& name, Tile& tile, Poly& target, lon
         target = {P(QD(0), QD(0)), P(QD(105), QD(0)), P(QD(28), qd_sq3(28, 1))};
         return true;
     }
+    if (name == "N44B") {
+        // N=44 iso-beta (Beeson III Thm 14, M=6, s=1/2): tile (2,3,4), target (16,16,22), D=15
+        QD_D = 15;
+        Tile t;
+        t.a = 2; t.b = 3; t.c = 4;
+        t.area2 = qd_sq3(3, 2);
+        t.corners[0] = {qd_frac(7, 8), qd_sq3(1, 8), 3, 4, 4, 3};
+        t.corners[1] = {qd_frac(11, 16), qd_sq3(3, 16), 2, 4, 4, 2};
+        t.corners[2] = {qd_frac(-1, 4), qd_sq3(1, 4), 2, 3, 3, 2};
+        tile = t; N = 44;
+        target = {P(QD(0), QD(0)), P(QD(22), QD(0)), P(QD(11), qd_sq3(3, 1))};
+        return true;
+    }
     if (name == "N44A") {
         QD_D = 119;
         Tile t;

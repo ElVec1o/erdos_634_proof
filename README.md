@@ -41,8 +41,11 @@ the large triangle to be isosceles. Within that branch this work:
   by the parity refinement — in agreement with the conjecture;
 - proves **decidability**: membership in the tile-count set is algorithmically decidable (every
   branch reduces per-N to finitely many fully-determined instances, each settled by the provably
-  complete search). With N = 42 excluded (squarefree, dead in every branch), membership of every
-  N ≤ 43 is now determined and the smallest undetermined value is N = 44. The sharpest *structural*
+  complete search). Membership of every N ≤ 55 is now determined: 51, 55, 57, 62 are excluded, and **N = 44 is
+  realizable** — the isosceles (16,16,22) tiles into 44 congruent copies of the (2,3,4) triangle
+  (found by the exhaustive search, verified exactly; the first known tiling in the isosceles
+  3α+2β=π cases and the smallest known tiling in any incommensurable branch). The smallest
+  undetermined value is N = 56, reduced to a single equilateral instance. The sharpest *structural*
   open instance — the smallest family member not already realized by the commensurable
   (sum-of-two-squares) construction — is N = 105 = b(a+b) = 7·15 on the F₁ target (105,56,91) of
   the tile (8,7,13), followed by 120, 132, 154, 184;

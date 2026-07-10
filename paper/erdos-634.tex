@@ -1,6 +1,7 @@
 \documentclass[11pt,reqno]{amsart}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage[margin=1.1in]{geometry}
+\usepackage{graphicx}
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
 
@@ -45,9 +46,12 @@ spectrum theorem shows that the counts passing all invariant conditions on the i
 $F_1$ targets are \emph{exactly} Zhang's constructed families, closing the necessary side of
 those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
-previously undetermined value up to $43$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
-$33$, $35$, $38$, $39$, or $42$ congruent triangles; $N=46$, previously the sharpest test of Zhang's
-completeness conjecture, is likewise excluded; and membership in the tile-count set is shown to be
+previously undetermined value up to $55$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
+$33$, $35$, $38$, $39$, $42$, $51$, $55$, or $57$ congruent triangles ($46$ and $62$ likewise);
+and \emph{a triangle can be cut into $44$ congruent triangles} --- the isosceles $(16,16,22)$
+into $44$ copies of the $(2,3,4)$ tile, found by the search and verified exactly, to our
+knowledge the first tiling in the isosceles $3\alpha+2\beta=\pi$ cases and the smallest known
+tiling in any incommensurable branch. Membership in the tile-count set is shown to be
 decidable. The arithmetic and combinatorial layer is
 machine-checked in Lean~4 with Mathlib.
 \end{abstract}
@@ -800,6 +804,57 @@ The sweeps above; for $21$, $33$, $35$ and $39$, additionally the exhaustive sea
 Dependencies as in Theorem~\ref{thm:frontier}.
 \end{proof}
 
+\subsection*{$N=44$ is realizable.}
+The value $44$, the smallest undetermined after Theorem~\ref{thm:frontier2}, has three live
+branches. Two die: the isosceles-$(\alpha{+}\beta)$ instance (tile $(30,11,36)$, target
+$(132,132,110)$, from Theorem~17 of \cite{BeesonIII} at $M=2$) is exhausted by the engine
+($15654$ nodes, independently in both engine implementations), and the $\gamma=2\alpha$ branch
+is excluded by Beeson's Theorem~11.18~\cite{BeesonIso} ($N\ge45$ for that branch; his Table~3
+lists and eliminates the unique $N=44$ boundary candidate $(25,11,30)$). The third branch is the
+isosceles-base-$\beta$ case of \cite[Thm.~14]{BeesonIII}: at $(N,M)=(44,6)$ the tiling equation
+gives $s=a/c=\tfrac12$, hence the tile $(2,3,4)$ --- angles $(\alpha,\beta,2\alpha{+}\beta)$ with
+$3\alpha+2\beta=\pi$, $\cos\alpha=\tfrac78$, $\cos\beta=\tfrac{11}{16}$,
+$\cos\gamma=-\tfrac14$ --- and the target $(16,16,22)$ with base angles $\beta$. Here the
+exhaustive search does not exhaust: \emph{it finds a tiling}, at node $858163$.
+
+\begin{theorem}\label{thm:44}
+A triangle can be cut into $44$ congruent triangles: the isosceles triangle with sides
+$(16,16,22)$ is tiled by $44$ congruent copies of the $(2,3,4)$ triangle (Fig.~\ref{fig:44}).
+Consequently $44m^2$ is a tile count for every $m\ge1$.
+\end{theorem}
+
+\begin{proof}
+The tiling is exhibited explicitly (\texttt{code/engine/tiling\_N44B.txt}: exact coordinates in
+$\Q(\sqrt{15})$). It is verified independently of the search: all $44$ triangles have squared
+side multiset exactly $\{4,9,16\}$; they are pairwise interior-disjoint; every vertex lies in the
+closed target and no tile edge crosses the target boundary; and the areas sum exactly to the
+target's. Disjointness with exact equality of total area and containment forces coverage, so this
+is an $N$-tiling in the strict sense. The consequence follows by subdividing each tile into $m^2$
+similar copies.
+\end{proof}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.72\linewidth]{tiling44.pdf}
+\caption{The $44$-tiling of $(16,16,22)$ by the tile $(2,3,4)$, found by exhaustive search and
+verified exactly. To our knowledge the first tiling in any of the three isosceles
+$3\alpha+2\beta=\pi$ cases, and the smallest known triangle tiling in any incommensurable
+branch (the previously smallest was Herdt's $1215$).}
+\label{fig:44}
+\end{figure}
+
+Three remarks. First, $44$ is not a square, not a sum of two squares ($11\equiv3\bmod4$), and
+not $2,3,6$ times a square: it is the first tile count \emph{outside the commensurable families}
+to be certified realizable at small size, and the first new member of the tile-count set
+discovered by these methods --- every other frontier value was excluded. Second, Beeson's
+constructions in \cite{BeesonIII} cover the two scalene $3\alpha+2\beta=\pi$ shapes (his
+triquadratic tilings, smallest $N=28$ --- which, we note, settles $28$'s membership and is used
+in our accounting below); the isosceles cases had, to our knowledge, no known tiling, and the
+smallest known tiling in any incommensurable branch was Herdt's $1215$. Third, the value
+demonstrates that the small members of the $3\alpha+2\beta=\pi$ tables are not uniformly
+impossible: each must be searched, and Theorem~\ref{thm:decidable}'s per-instance decision is
+genuinely two-sided.
+
 \subsection*{The values $51$, $55$, $57$, $62$, and the $\gamma=2\alpha$ boundary algorithm.}
 The sweep continues past the forties. The values $51=3\cdot17$, $55=5\cdot11$ and $57=3\cdot19$
 are squarefree, so the $\gamma=2\alpha$ branch is closed by \cite[Thm.~11.7]{BeesonIso}, and every
@@ -939,10 +994,13 @@ the outer bounds), the $3\alpha+2\beta=\pi$ and $\gamma=2\alpha$ branches beyond
 results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommensurable tiles,
 where Laczkovich has connected the possible $N$ to rational points on elliptic
 curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, the primes by Theorem~\ref{thm:primefull},
-and $14,15,21,22,30,33,35,38,39,42,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2}, the
-membership of every $N\le 43$ is now determined ($42$ dies in every branch by the same squarefree
-and arithmetic sweep that excludes $22$, $30$, $38$; $43$ is a prime $\equiv3\pmod4$); the smallest
-undetermined value, to our knowledge, is $N=44$.
+$14,15,21,22,30,33,35,38,39,42,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2},
+$51,55,57,62$ by Theorem~\ref{thm:frontier3}, \emph{$44$ realizable} by Theorem~\ref{thm:44},
+$28$ realized by Beeson's triquadratic tilings \cite{BeesonIII}, and the remaining values
+$\le55$ commensurably realized ($45,48,49,50,52,53,54$) or prime ($47,53$), the membership of
+\emph{every $N\le55$} is now determined. The smallest undetermined value, to our knowledge, is
+$N=56$, whose membership is equivalent (by the reductions above) to the single
+$2\pi/3$-equilateral instance of side $56$ on the tile $(8,7,13)$.
 
 \subsection*{Standing of the inputs.}
 For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:

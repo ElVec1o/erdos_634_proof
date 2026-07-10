@@ -13,7 +13,7 @@ N = int(N)
 def target_for(name):
     m = {'V1A': ('A', 2), 'V1B': ('B', 2), 'V1E': ('E', 2), 'V2B': ('B', 1), 'V2E': ('E', 1),
          'A': ('A', None), 'B': ('B', None), 'M56': ('M', None), 'M60': ('M60', None),
-         'L105': ('L', None), 'N44A': ('N44A', None), 'I2': ('G', None)}
+         'L105': ('L', None), 'N44A': ('N44A', None), 'N44B': ('N44B', None), 'I2': ('G', None)}
     rn, scale = m[name]
     tile, target, Nfull = run_all.make_instance(rn)
     if scale:
