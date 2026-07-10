@@ -458,6 +458,7 @@ class Search(object):
         self.maxdepth = 0
         self.prune_area = 0
         self.prune_run = 0
+        self.prune_dir = 0
         self.placements_tried = 0
         self.found = None
         self.log_every = log_every
@@ -468,6 +469,26 @@ class Search(object):
         assert ta2.sign() > 0, "target must be CCW"
         r = (ta2 / tile.area2)
         assert r.q == 0 and r.p == N, f"root area: target/tile = {r}, want {N}"
+        # P4 setup: cos^2 of the smallest tile angle (opposite the smallest side). A CONVEX region
+        # corner sharper than this cannot be filled by any tile corner -> untileable (sound).
+        s = sorted(tile.sides); s1, s2 = s[1], s[2]
+        cmin = Fraction(s1 * s1 + s2 * s2 - s[0] * s[0], 2 * s1 * s2)
+        self.cosmin2 = QD(cmin * cmin)
+
+    def corner_ok(self, poly):
+        """P4: no convex corner is sharper than the smallest tile angle."""
+        n = len(poly)
+        for i in range(n):
+            pv = poly[(i - 1) % n]; v = poly[i]; nx = poly[(i + 1) % n]
+            if cross(pv, v, nx).sign() <= 0:
+                continue                                        # reflex/straight
+            u = (pv[0] - v[0], pv[1] - v[1]); w = (nx[0] - v[0], nx[1] - v[1])
+            uw = dot(u, w)
+            if uw.sign() <= 0:
+                continue                                        # angle >= 90 deg, never too sharp
+            if (uw * uw - self.cosmin2 * dot(u, u) * dot(w, w)).sign() > 0:
+                return False                                    # cos^2 > cos^2(min) => angle < min
+        return True
 
     def area_multiple(self, poly):
         r = poly_area2(poly) / self.tile.area2
@@ -597,6 +618,11 @@ class Search(object):
         for poly in polys:
             if not self.runs_ok(poly):
                 self.prune_run += 1
+                return
+        # P4 corner-angle: a convex corner sharper than the smallest tile angle is unfillable
+        for poly in polys:
+            if not self.corner_ok(poly):
+                self.prune_dir += 1
                 return
         pi, vi = self.lowest_vertex(polys)
         poly = polys[pi]

@@ -46,6 +46,29 @@ def make_instance(name):
         tile.area2 = qd(0, F(a * b, 2))
         target = [(qd(0), qd(0)), (qd(184), qd(0)), (qd(92), qd(0, 28))]
         return tile, target, N
+    if name == 'M60':
+        # N=60, EQUILATERAL 2pi/3 on tile (5,3,7): equilateral target side 30. New open instance.
+        QD.D = 3
+        a, b, c, N = 5, 3, 7, 60
+        cosA, sinA = qd(F(2 * b + a, 2 * c)), qd(0, F(a, 2 * c))
+        cosB, sinB = qd(F(2 * a + b, 2 * c)), qd(0, F(b, 2 * c))
+        cosC, sinC = qd(F(-1, 2)), qd(0, F(1, 2))
+        tile = Tile(a, b, c, cosA, sinA, cosB, sinB, cosC, sinC)
+        tile.area2 = qd(0, F(a * b, 2))               # 15/2 sqrt3
+        target = [(qd(0), qd(0)), (qd(30), qd(0)), (qd(15), qd(0, 15))]   # equilateral side 30
+        return tile, target, N
+    if name == 'M':
+        # N=56, EQUILATERAL 2pi/3 instance on the tile (8,7,13): equilateral target of side 56.
+        # A genuinely new open instance (not sporadic-family, not commensurable), smaller than 105.
+        QD.D = 3
+        a, b, c, N = 8, 7, 13, 56
+        cosA, sinA = qd(F(2 * b + a, 2 * c)), qd(0, F(a, 2 * c))
+        cosB, sinB = qd(F(2 * a + b, 2 * c)), qd(0, F(b, 2 * c))
+        cosC, sinC = qd(F(-1, 2)), qd(0, F(1, 2))
+        tile = Tile(a, b, c, cosA, sinA, cosB, sinB, cosC, sinC)
+        tile.area2 = qd(0, F(a * b, 2))               # 28 sqrt3
+        target = [(qd(0), qd(0)), (qd(56), qd(0)), (qd(28), qd(0, 28))]   # equilateral side 56
+        return tile, target, N
     if name == 'L':
         # N=105, the smallest STRUCTURAL-open member: F1 target of the tile (8,7,13).
         # sides k(a+b),ka,kc = (105,56,91), k=7. 60-deg corner at V=(0,0).
