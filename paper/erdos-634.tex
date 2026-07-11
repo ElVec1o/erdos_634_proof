@@ -97,11 +97,14 @@ settles the question, excluding \emph{every} prime. The adjacent Erd\H{o}s Probl
 into a square number of triangles, was recently settled by Beeson, Laczkovich and
 Zhang~\cite{Erdos633}.
 
-Two reductions prepare it. First, by the rationality theorem of Beeson and
-Zhang~\cite{BeesonZhang}, such a tile has commensurable sides, so after scaling we may take it
-integer-sided with $c^2=a^2+ab+b^2$. Second, an elementary area-and-incidence argument shows that a
-\emph{prime} number of such tiles forces $ABC$ to be \emph{isosceles}
-(Section~\ref{sec:reduction}).
+Two reductions prepare it. First, such a tile has commensurable sides, so after scaling we may take
+it integer-sided with $c^2=a^2+ab+b^2$; for the \emph{isosceles} targets to which the theorem
+reduces, this is Beeson's \emph{accepted} isosceles paper (\cite[Thm.~12.5]{BeesonIso}: any
+isosceles triangle tiled by a $2\pi/3$-tile with $\alpha/\pi$ irrational forces the tile rational),
+so the prime theorem's rationality input is refereed; the general-tile rationality of
+Beeson--Zhang~\cite{BeesonZhang} gives the same uniformly. Second, an elementary
+area-and-incidence argument shows that a \emph{prime} number of such tiles forces $ABC$ to be
+\emph{isosceles} (Section~\ref{sec:reduction}).
 
 The heart of the paper is Section~\ref{sec:invariant}. The natural parity argument for a $2\pi/3$
 tile (a black/white colouring of the tiles) fails, because a vertex of the tiling may be surrounded
@@ -143,8 +146,9 @@ already covered; so the sole remaining branch is a $2\pi/3$ tile, which we now f
 \subsection*{The tile.}
 Throughout, $T$ has angles $(\alpha,\beta,\gamma)$ opposite sides $(a,b,c)$, with
 $\gamma=2\pi/3$, hence $\alpha+\beta=\pi/3$; we treat the incommensurable case, $\alpha$ an
-irrational multiple of $\pi$. By Beeson--Zhang~\cite{BeesonZhang}, $T$ has commensurable sides, so
-we scale to
+irrational multiple of $\pi$. Once the target is known isosceles
+(Section~\ref{sec:reduction}), $T$ has commensurable sides by \cite[Thm.~12.5]{BeesonIso}
+(refereed); we scale to
 \begin{equation}\label{eq:tile}
 (a,b,c)\in\Z^3,\qquad \gcd(a,b,c)=1,\qquad c^2=a^2+ab+b^2
 \end{equation}

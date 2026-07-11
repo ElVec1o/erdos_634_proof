@@ -82,14 +82,17 @@ def make_instance(name):
         cosC = F(a * a + b * b - c * c, 2 * a * b)
         s2 = 1 - cosA * cosA                    # = num/den; sinA = sqrt(num*den)/den
         Dker = sqfree(s2.numerator * s2.denominator)
-        QD.D = Dker
+        # Heronian tile (rational sines): Dker == 1 makes Z[sqrt(1)] degenerate (zero divisors,
+        # non-unique representation) -- keep ALL data rational under an arbitrary non-square D.
+        rational = (Dker == 1)
+        QD.D = 2 if rational else Dker
         def sin_qd(cs):
             s2 = 1 - cs * cs
             nd = s2.numerator * s2.denominator
             k2 = nd // Dker
             k = _isqrt(k2)
             assert k * k == k2 and k2 * Dker == nd, f"sin not in Q(sqrt{Dker})"
-            return qd(0, F(k, s2.denominator))
+            return qd(F(k, s2.denominator)) if rational else qd(0, F(k, s2.denominator))
         tile = Tile(a, b, c, qd(cosA), sin_qd(cosA), qd(cosB), sin_qd(cosB),
                     qd(cosC), sin_qd(cosC))
         sinC = sin_qd(cosC)
@@ -103,7 +106,81 @@ def make_instance(name):
         ndh = h2.numerator * h2.denominator
         kh2 = ndh // Dker
         kh = _isqrt(kh2); assert kh * kh == kh2 and kh2 * Dker == ndh, "apex not in field"
-        target = [(qd(0), qd(0)), (qd(Y), qd(0)), (qd(F(Y, 2)), qd(0, F(kh, h2.denominator)))]
+        apex_y = qd(F(kh, h2.denominator)) if rational else qd(0, F(kh, h2.denominator))
+        target = [(qd(0), qd(0)), (qd(Y), qd(0)), (qd(F(Y, 2)), apex_y)]
+        return tile, target, N
+    if name in ('T28', 'T77'):
+        # tile (2,3,4), 3a+2b=pi. T28: triquadratic (2a,b,a+b) target (14,12,16), N=28.
+        # T77: four-component (2a,a,2b) target (28,16,33), N=77.
+        QD.D = 15
+        a, b, c = 2, 3, 4
+        tile = Tile(a, b, c,
+                    qd(F(7, 8)), qd(0, F(1, 8)),
+                    qd(F(11, 16)), qd(0, F(3, 16)),
+                    qd(F(-1, 4)), qd(0, F(1, 4)))
+        tile.area2 = qd(0, F(3, 2))
+        if name == 'T28':
+            N = 28
+            target = [(qd(0), qd(0)), (qd(16), qd(0)), (qd(F(51, 8)), qd(0, F(21, 8)))]
+        else:
+            N = 77
+            target = [(qd(0), qd(0)), (qd(33), qd(0)), (qd(F(17, 2)), qd(0, F(7, 2)))]
+        return tile, target, N
+    if name == 'A84':
+        # N=84 iso-ALPHA instance (Beeson III Thm 19, (M,s)=(10,1/2)): tile (2,3,4),
+        # target (24,24,42) with base angles alpha (cos=7/8). Coloring 10*9=2*24+42 ✓.
+        QD.D = 15
+        a, b, c, N = 2, 3, 4, 84
+        tile = Tile(a, b, c,
+                    qd(F(7, 8)), qd(0, F(1, 8)),
+                    qd(F(11, 16)), qd(0, F(3, 16)),
+                    qd(F(-1, 4)), qd(0, F(1, 4)))
+        tile.area2 = qd(0, F(3, 2))
+        target = [(qd(0), qd(0)), (qd(42), qd(0)), (qd(21), qd(0, 3))]
+        return tile, target, N
+    if name == 'G96':
+        # N=96 gamma=2alpha: tile (25,24,35) ((k,m)=(5,7)), target (240,240,336), D=51
+        QD.D = 51
+        a, b, c, N = 25, 24, 35, 96
+        tile = Tile(a, b, c,
+                    qd(F(7, 10)), qd(0, F(1, 10)),
+                    qd(F(91, 125)), qd(0, F(12, 125)),
+                    qd(F(-1, 50)), qd(0, F(7, 50)))
+        tile.area2 = qd(0, 84)                        # 25*24*(7sqrt51/50) = 84 sqrt51
+        target = [(qd(0), qd(0)), (qd(336), qd(0)), (qd(168), qd(0, 24))]
+        return tile, target, N
+    if name == 'G99':
+        # N=99 gamma=2alpha: tile (25,11,30) ((k,m)=(5,6)), HERONIAN (rational), target (165,165,198)
+        QD.D = 2                                       # arbitrary non-square; all data rational
+        a, b, c, N = 25, 11, 30, 99
+        tile = Tile(a, b, c,
+                    qd(F(3, 5)), qd(F(4, 5)),
+                    qd(F(117, 125)), qd(F(44, 125)),
+                    qd(F(-7, 25)), qd(F(24, 25)))
+        tile.area2 = qd(264)                           # 25*11*(24/25) = 264, rational
+        target = [(qd(0), qd(0)), (qd(198), qd(0)), (qd(99), qd(132))]
+        return tile, target, N
+    if name == 'F96':
+        # N=96 sporadic F1 (Zhang family m=2 member on (5,3,7)): target (30,42,48)
+        QD.D = 3
+        a, b, c, N = 5, 3, 7, 96
+        cosA, sinA = qd(F(2 * b + a, 2 * c)), qd(0, F(a, 2 * c))
+        cosB, sinB = qd(F(2 * a + b, 2 * c)), qd(0, F(b, 2 * c))
+        cosC, sinC = qd(F(-1, 2)), qd(0, F(1, 2))
+        tile = Tile(a, b, c, cosA, sinA, cosB, sinB, cosC, sinC)
+        tile.area2 = qd(0, F(a * b, 2))
+        target = [(qd(0), qd(0)), (qd(48), qd(0)), (qd(15), qd(0, 15))]
+        return tile, target, N
+    if name == 'E96':
+        # N=96 pi/3-equilateral: tile (3,8,7) (gamma=pi/3 opposite c=7), equilateral side 48, D=3
+        QD.D = 3
+        a, b, c, N = 3, 8, 7, 96
+        tile = Tile(a, b, c,
+                    qd(F(13, 14)), qd(0, F(3, 14)),
+                    qd(F(-1, 7)), qd(0, F(4, 7)),
+                    qd(F(1, 2)), qd(0, F(1, 2)))
+        tile.area2 = qd(0, 12)                         # 3*8*(sqrt3/2) = 12 sqrt3
+        target = [(qd(0), qd(0)), (qd(48), qd(0)), (qd(24), qd(0, 24))]
         return tile, target, N
     if name == 'G63':
         # N=63 gamma=2alpha instance (Beeson Lemma 11.2 family, (k,m)=(3,4)): tile (9,7,12)

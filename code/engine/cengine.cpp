@@ -670,6 +670,19 @@ static bool make_instance(const std::string& name, Tile& tile, Poly& target, lon
         target = {P(QD(0), QD(0)), P(QD(105), QD(0)), P(QD(28), qd_sq3(28, 1))};
         return true;
     }
+    if (name == "N76") {
+        // N=76 iso-(alpha+beta) (Thm 17, M=2): tile (90,19,100), target (380,380,342), D=319
+        QD_D = 319;
+        Tile t;
+        t.a = 90; t.b = 19; t.c = 100;
+        t.area2 = qd_sq3(171, 2);
+        t.corners[0] = {qd_frac(119, 200), qd_sq3(9, 200), 19, 100, 100, 19};
+        t.corners[1] = {qd_frac(1971, 2000), qd_sq3(19, 2000), 90, 100, 100, 90};
+        t.corners[2] = {qd_frac(-9, 20), qd_sq3(1, 20), 90, 19, 19, 90};
+        tile = t; N = 76;
+        target = {P(QD(0), QD(0)), P(QD(342), QD(0)), P(QD(171), qd_sq3(19, 1))};
+        return true;
+    }
     if (name == "G63") {
         // N=63 gamma=2alpha instance: tile (9,7,12) angles (alpha,beta,2alpha), target (63,63,84)
         QD_D = 5;
@@ -681,6 +694,34 @@ static bool make_instance(const std::string& name, Tile& tile, Poly& target, lon
         t.corners[2] = {qd_frac(-1, 9), qd_sq3(4, 9), 9, 7, 7, 9};
         tile = t; N = 63;
         target = {P(QD(0), QD(0)), P(QD(84), QD(0)), P(QD(42), qd_sq3(21, 1))};
+        return true;
+    }
+    if (name == "T77") {
+        // N=77: tile (2,3,4) tiling the (2a,a,2b) triangle (28,16,33). Beeson four-component
+        // (second tiling eq (M,s)=(5,1/2)). If FOUND -> unconditional realizability certificate.
+        QD_D = 15;
+        Tile t;
+        t.a = 2; t.b = 3; t.c = 4;
+        t.area2 = qd_sq3(3, 2);
+        t.corners[0] = {qd_frac(7, 8), qd_sq3(1, 8), 3, 4, 4, 3};
+        t.corners[1] = {qd_frac(11, 16), qd_sq3(3, 16), 2, 4, 4, 2};
+        t.corners[2] = {qd_frac(-1, 4), qd_sq3(1, 4), 2, 3, 3, 2};
+        tile = t; N = 77;
+        target = {P(QD(0), QD(0)), P(QD(33), QD(0)), P(qd_frac(17, 2), qd_sq3(7, 2))};
+        return true;
+    }
+    if (name == "T28") {
+        // N=28: tile (2,3,4) tiling the (2a,b,a+b) triangle (14,12,16). Beeson triquadratic
+        // (tiling eq (K,M)=(4,2)). Smallest triquadratic. FOUND -> unconditional certificate.
+        QD_D = 15;
+        Tile t;
+        t.a = 2; t.b = 3; t.c = 4;
+        t.area2 = qd_sq3(3, 2);
+        t.corners[0] = {qd_frac(7, 8), qd_sq3(1, 8), 3, 4, 4, 3};
+        t.corners[1] = {qd_frac(11, 16), qd_sq3(3, 16), 2, 4, 4, 2};
+        t.corners[2] = {qd_frac(-1, 4), qd_sq3(1, 4), 2, 3, 3, 2};
+        tile = t; N = 28;
+        target = {P(QD(0), QD(0)), P(QD(16), QD(0)), P(qd_frac(51, 8), qd_sq3(21, 8))};
         return true;
     }
     if (name == "N44B") {
