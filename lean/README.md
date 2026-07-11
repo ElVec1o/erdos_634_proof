@@ -13,6 +13,12 @@ core of the gamma=2alpha branch (Beeson's Lemma 11.2): if `c^2 = a^2 + a*b` with
 `(a,b,c) = (k^2, m^2-k^2, k*m)` for coprime `k<m`. Proved from scratch (coprime factors of a square
 are squares), so that branch's tile classification no longer depends on any citation.
 
+`EquilateralConic.lean` machine-checks, axiom-clean, the **necessary side of the equilateral branch**
+(paper Prop. "Conic form") as pure integer algebra: for a `2π/3` tile the invariant counts `s,t` with
+`t*s = 3N` and `(t-s)^2+16N = q^2` eliminate to `(q*s)^2 = (s^2+N)(s^2+9N)`, hence the divisor
+condition `(s^2+5N-q*s)(s^2+5N+q*s) = 16N^2`; the `π/3` companion is the identity
+`(5N-M^2)^2-16N^2 = (9N-M^2)(N-M^2)`. No tiling theory, no preprint.
+
 `Erdos634.lean` machine-checks the entire **arithmetic and combinatorial layer** of the proof:
 twenty-three theorems, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; the enumeration
 needs only `propext`, `Quot.sound`), no `sorry`.

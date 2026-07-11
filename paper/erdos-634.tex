@@ -677,9 +677,13 @@ $(9N-M^2)(N-M^2)=y^2$ is $(5N-M^2)^2-16N^2=y^2$, i.e.\ $(5N-M^2-y)(5N-M^2+y)=16N
 \end{proof}
 
 \noindent The necessary side of the equilateral branch is thus elementary --- a divisor
-condition on $16N^2$ --- and, per $N$, pins finitely many fully determined instances. The
-elliptic curves of Laczkovich~\cite{LaczkovichEll} concern the \emph{realizability} of such
-instances, not their enumeration.
+condition on $16N^2$ --- and, per $N$, pins finitely many fully determined instances. Both
+square-completions of Proposition~\ref{prop:conic} are formalized and machine-checked in Lean
+(\texttt{lean/EquilateralConic.lean}): the elimination of $t$ giving $(qs)^2=(s^2+N)(s^2+9N)$, the
+resulting factorization $(s^2+5N-qs)(s^2+5N+qs)=16N^2$, and the $\pi/3$ identity
+$(5N-M^2)^2-16N^2=(9N-M^2)(N-M^2)$, all over $\Z$. The elliptic curves of
+Laczkovich~\cite{LaczkovichEll} concern the \emph{realizability} of such instances, not their
+enumeration.
 
 \subsection*{The values $14$ and $15$.}\label{sub:frontier}
 The machinery above, combined with the published branch theorems, decides every branch of the
@@ -952,10 +956,14 @@ $63$; and \cite[Thm.~7]{BeesonEq} at $66$.
 \end{proof}
 
 \begin{remark}
-The equilateral exhaustion at $56$ settles the $m{=}1$ case of Zhang's equiconstructibility
-family for the tile $(8,7,13)$: the side-$56$ equilateral triangle is \emph{not} tileable by
-$(8,7,13)$, exactly as Zhang's Conjecture~2 predicts (his construction realizes $X=56m$ for
-$m\ge9$). It also closes the $m{=}1$ route of his Proposition~9(1) to the $F_1$ instance
+The $2\pi/3$-equilateral exhaustions at $N=56$ (tile $(8,7,13)$, side $56$) and $N=60$ (tile
+$(5,3,7)$, side $30$) lie strictly inside the range $12<N<1215$ that Beeson leaves \emph{open} for
+this case --- he proves only $N\ge12$ \cite[\S5]{BeesonEq} --- and, cross-checked to the node in
+two independent engine implementations ($156\,646$ and $853\,731$ nodes respectively), are to our
+knowledge the first rigorous exclusions inside it. The value $56$ moreover settles the $m{=}1$ case
+of Zhang's equiconstructibility family for $(8,7,13)$: the side-$56$ equilateral is \emph{not}
+tileable by $(8,7,13)$, exactly as Zhang's Conjecture~2 predicts (his construction realizes $X=56m$
+only for $m\ge9$). It also closes the $m{=}1$ route of his Proposition~9(1) to the $F_1$ instance
 $N=105$: any $105$-tiling of $(105,56,91)$, if one exists, does not factor through an equilateral
 $56$-block.
 \end{remark}
