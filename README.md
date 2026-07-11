@@ -41,13 +41,13 @@ the large triangle to be isosceles. Within that branch this work:
   by the parity refinement — in agreement with the conjecture;
 - proves **decidability**: membership in the tile-count set is algorithmically decidable (every
   branch reduces per-N to finitely many fully-determined instances, each settled by the provably
-  complete search). Membership of every N ≤ 59 is now determined: 51, 55, 56, 57, 62 are excluded, and **N = 44 is
+  complete search). Membership of every N ≤ 62 is now determined: 51, 55, 56, 57, 60, 62 are excluded, and **N = 44 is
   realizable** — the isosceles (16,16,22) tiles into 44 congruent copies of the (2,3,4) triangle
   (found by the exhaustive search, verified exactly; the first known tiling in the isosceles
   3α+2β=π cases and the smallest known tiling in any incommensurable branch). The smallest
-  undetermined value is N = 60, reduced to a single equilateral instance (56's equilateral instance
-  is exhausted — 156,646 nodes, identically in both engine implementations — settling Zhang's m=1
-  equiconstructibility case for (8,7,13)). The sharpest *structural*
+  undetermined value is N = 63, reduced to a single γ=2α instance (56's and 60's equilateral
+  instances are exhausted — 156,646 and 853,731 nodes — settling Zhang's m=1 case for (8,7,13)
+  and the m=2 case for (5,3,7)). The sharpest *structural*
   open instance — the smallest family member not already realized by the commensurable
   (sum-of-two-squares) construction — is N = 105 = b(a+b) = 7·15 on the F₁ target (105,56,91) of
   the tile (8,7,13), followed by 120, 132, 154, 184;

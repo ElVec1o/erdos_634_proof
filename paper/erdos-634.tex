@@ -46,8 +46,8 @@ spectrum theorem shows that the counts passing all invariant conditions on the i
 $F_1$ targets are \emph{exactly} Zhang's constructed families, closing the necessary side of
 those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
-previously undetermined value up to $59$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
-$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, or $57$ congruent triangles ($46$ and $62$ likewise);
+previously undetermined value up to $62$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
+$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, or $60$ congruent triangles ($46$ and $62$ likewise);
 and \emph{a triangle can be cut into $44$ congruent triangles} --- the isosceles $(16,16,22)$
 into $44$ copies of the $(2,3,4)$ tile, found by the search and verified exactly, to our
 knowledge the first tiling in the isosceles $3\alpha+2\beta=\pi$ cases and the smallest known
@@ -905,10 +905,13 @@ $156646$ nodes, identically in both independent engine implementations (node-for
 agreement). Likewise $N=60$ reduces to its equilateral instance alone (tile $(5,3,7)$, side
 $30$): its two isosceles-$(\alpha{+}\beta)$ instances are exhausted as well ($M{=}2$: tile
 $(56,15,64)$, target $(240,240,210)$, $123003$ nodes; $M{=}6$: tile $(4,15,16)$, target
-$(120,120,30)$, $39$ nodes); that final search is in progress.
+$(120,120,30)$, $39$ nodes) --- and the equilateral instance itself is exhausted at $853731$
+nodes: $N=60$ is excluded. (This also settles the $m{=}2$ member $X=30$ of Zhang's
+equiconstructibility family for $(5,3,7)$ by exact arithmetic; Beeson had reported $X<105$
+unrealizable for this tile in unpublished floating-point work.)
 
 \begin{theorem}\label{thm:frontier3}
-No triangle can be cut into $51$, $55$, $56$, $57$, or $62$ congruent triangles.
+No triangle can be cut into $51$, $55$, $56$, $57$, $60$, or $62$ congruent triangles.
 \end{theorem}
 
 \begin{proof}
@@ -1010,13 +1013,12 @@ results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommen
 where Laczkovich has connected the possible $N$ to rational points on elliptic
 curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, the primes by Theorem~\ref{thm:primefull},
 $14,15,21,22,30,33,35,38,39,42,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2},
-$51,55,56,57,62$ by Theorem~\ref{thm:frontier3}, \emph{$44$ realizable} by Theorem~\ref{thm:44},
+$51,55,56,57,60,62$ by Theorem~\ref{thm:frontier3}, \emph{$44$ realizable} by Theorem~\ref{thm:44},
 $28$ realized by Beeson's triquadratic tilings \cite{BeesonIII}, and the remaining values
-commensurably realized ($45,48,49,50,52,53,54,58$) or prime ($47,53,59$), the membership of
-\emph{every $N\le59$} is now determined. The smallest undetermined value, to our knowledge, is
-$N=60$, whose membership is equivalent (by the reductions above) to the single
-$2\pi/3$-equilateral instance of side $30$ on the tile $(5,3,7)$; after it, $63$, equivalent to
-its $\gamma=2\alpha$ instance (tile $(9,7,12)$, target $(63,63,84)$) --- both searches are in
+commensurably realized ($45,48,49,50,52,53,54,58,61$) or prime ($47,53,59$), the membership of
+\emph{every $N\le62$} is now determined. The smallest undetermined value, to our knowledge, is
+$N=63$, whose membership is equivalent (by the reductions above) to its single
+$\gamma=2\alpha$ instance (tile $(9,7,12)$, target $(63,63,84)$) --- that search is in
 progress.
 
 \subsection*{Standing of the inputs.}

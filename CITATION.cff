@@ -14,7 +14,7 @@ abstract: >-
   classification; in particular no triangle can be cut into 19 congruent triangles. The
   prime case of the full problem is thereby complete (a prime occurs iff p = 2, 3, or 1 mod 4),
   the admissible spectrum of each sporadic branch is determined (with a parity refinement), every
-  value up to 59 is settled (14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 51, 55, 56, 57, 62 are excluded, by
+  value up to 62 is settled (14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 51, 55, 56, 57, 60, 62 are excluded, by
   branch sweeps and exhaustive exact searches, and 44 IS REALIZABLE: the isosceles (16,16,22) tiles
   into 44 congruent (2,3,4) triangles, found by the search and verified exactly), N = 46 is excluded in agreement with Zhang's completeness
   conjecture, the spectrum theorem closes the necessary side of the sporadic branches (equal to Zhang's
