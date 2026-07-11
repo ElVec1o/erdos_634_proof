@@ -8,6 +8,11 @@ sum. `#print axioms` reports no axioms. With the one-paragraph convexity/measure
 paper, THEOREMS (unconditional): a triangle can be cut into 28, and into 44, congruent triangles. Build:
 `lean Tiling44.lean` (any Lean 4 toolchain; no dependencies).
 
+`Gamma2Alpha.lean` proves, axiom-clean (`propext, Classical.choice, Quot.sound`), the number-theory
+core of the gamma=2alpha branch (Beeson's Lemma 11.2): if `c^2 = a^2 + a*b` with `gcd(a,b,c)=1` then
+`(a,b,c) = (k^2, m^2-k^2, k*m)` for coprime `k<m`. Proved from scratch (coprime factors of a square
+are squares), so that branch's tile classification no longer depends on any citation.
+
 `Erdos634.lean` machine-checks the entire **arithmetic and combinatorial layer** of the proof:
 twenty-three theorems, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; the enumeration
 needs only `propext`, `Quot.sound`), no `sorry`.
