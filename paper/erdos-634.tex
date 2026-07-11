@@ -46,8 +46,8 @@ spectrum theorem shows that the counts passing all invariant conditions on the i
 $F_1$ targets are \emph{exactly} Zhang's constructed families, closing the necessary side of
 those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
-previously undetermined value up to $68$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
-$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $66$, or $70$ congruent triangles
+previously undetermined value up to $75$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
+$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $66$, $69$, or $70$ congruent triangles
 ($46$, $62$, $78$ likewise); triangles \emph{can} be cut into $44$ and (by Beeson's four-component
 construction) $77$ congruent triangles;
 and \emph{a triangle can be cut into $44$ congruent triangles} --- the isosceles $(16,16,22)$
@@ -875,6 +875,8 @@ $N{=}57$, $M{=}3$ & $(88,57,121)$ & $(627,627,456)$ & $193$\\
 $N{=}63$, $M{=}1$ & $(992,63,1024)$ & $(2016,2016,1953)$ & $15493$\\
 $N{=}63$, $M{=}3$ & $(12,7,16)$ & $(84,84,63)$ & $44859$\\
 $N{=}63$, $M{=}7$ & $(8,63,64)$ & $(504,504,63)$ & $2$\\
+$N{=}69$, $M{=}1$ & $(1190,69,1225)$ & $(2415,2415,2346)$ & $37995$\\
+$N{=}69$, $M{=}3$ & $(130,69,169)$ & $(897,897,690)$ & $523$\\
 \end{tabular}
 \end{center}
 The three $N{=}63$ rows close its isosceles-$(\alpha{+}\beta)$ branch. The value $63$ itself then
@@ -925,14 +927,14 @@ equiconstructibility family for $(5,3,7)$ by exact arithmetic; Beeson had report
 unrealizable for this tile in unpublished floating-point work.)
 
 \begin{theorem}\label{thm:frontier3}
-No triangle can be cut into $51$, $55$, $56$, $57$, $60$, $62$, $63$, $66$, $70$, or $78$
+No triangle can be cut into $51$, $55$, $56$, $57$, $60$, $62$, $63$, $66$, $69$, $70$, or $78$
 congruent triangles.
 \end{theorem}
 
 \begin{proof}
 The branch sweeps and the exhaustive searches above; dependencies as in
 Theorem~\ref{thm:frontier}, together with \cite[Thm.~11.7]{BeesonIso} for the $\gamma=2\alpha$
-branch at the squarefree values $51$, $55$, $57$; the boundary algorithm (Lemmas 11.2--11.17 of
+branch at the squarefree values $51$, $55$, $57$, $69$; the boundary algorithm (Lemmas 11.2--11.17 of
 \cite{BeesonIso}, \texttt{code/gamma2alpha.py}) for the $\gamma=2\alpha$ branch at $56$ and
 $60$; the boundary algorithm's single surviving candidate plus its $884921$-node exhaustion at
 $63$; and \cite[Thm.~7]{BeesonEq} at $66$.
@@ -1030,15 +1032,15 @@ results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommen
 where Laczkovich has connected the possible $N$ to rational points on elliptic
 curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, the primes by Theorem~\ref{thm:primefull},
 $14,15,21,22,30,33,35,38,39,42,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2},
-$51,55,56,57,60,62,63,66,70,78$ by Theorem~\ref{thm:frontier3}, \emph{$44$ realizable} by
+$51,55,56,57,60,62,63,66,69,70,78$ by Theorem~\ref{thm:frontier3}, \emph{$44$ realizable} by
 Theorem~\ref{thm:44}, $77$ realized by Beeson's four-component construction \cite{BeesonIII},
 $28$ realized by his triquadratic tilings \cite{BeesonIII}, and the remaining values
-commensurably realized ($45,48,49,50,52,53,54,58,61,64,65,68$) or prime ($47,53,59,67$), the
-membership of \emph{every $N\le68$} is now determined. The smallest undetermined values are
-$N=69$ (two isosceles-$(\alpha{+}\beta)$ instances, one exhausted at $523$ nodes, the other in
-progress) and $N=76$ ($\gamma=2\alpha$ empty by the boundary algorithm; one
-isosceles-$(\alpha{+}\beta)$ instance in progress); after them every value through $80$ is
-determined ($71,79$ prime, $72$--$75$ and $80$ realized, $77$ realized, $78$ excluded).
+commensurably realized ($45,48,49,50,52,53,54,58,61,64,65,68,72,73,74,75$) or prime
+($47,53,59,67,71$), the membership of \emph{every $N\le75$} is now determined. The single
+undetermined value through $80$ is $N=76$ ($\gamma=2\alpha$ empty by the boundary algorithm;
+its one isosceles-$(\alpha{+}\beta)$ instance, tile $(90,19,100)$, target $(380,380,342)$, is
+being searched); $79$ is prime and $80$ is realized, so its resolution determines everything
+through $80$.
 
 \subsection*{Standing of the inputs.}
 For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:
