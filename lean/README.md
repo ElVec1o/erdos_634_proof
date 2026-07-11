@@ -1,5 +1,12 @@
 # Lean formalization — arithmetic layer of the Erdős #634 proof
 
+`Tiling44.lean` machine-checks the **44-tiling certificate with zero axioms**: pure kernel
+computation over Z[sqrt15] (no imports, not even Mathlib) verifies congruence of all 44 tiles to
+(2,3,4), containment, an explicit separating line for each of the 946 pairs, and the exact area
+sum. `#print axioms` reports no axioms. With the one-paragraph convexity/measure bridge in the
+paper, THEOREM (unconditional): a triangle can be cut into 44 congruent triangles. Build:
+`lean Tiling44.lean` (any Lean 4 toolchain; no dependencies).
+
 `Erdos634.lean` machine-checks the entire **arithmetic and combinatorial layer** of the proof:
 twenty-three theorems, all axiom-clean (`propext`, `Classical.choice`, `Quot.sound`; the enumeration
 needs only `propext`, `Quot.sound`), no `sorry`.

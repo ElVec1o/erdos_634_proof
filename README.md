@@ -46,8 +46,10 @@ the large triangle to be isosceles. Within that branch this work:
   and 77 is realized by Beeson's four-component construction (second tiling equation at (M,s)=(5,1/2),
   same (2,3,4) tile as our 44), and **N = 44 is
   realizable** — the isosceles (16,16,22) tiles into 44 congruent copies of the (2,3,4) triangle
-  (found by the exhaustive search, verified exactly; the first known tiling in the isosceles
-  3α+2β=π cases and the smallest known tiling in any incommensurable branch). The single
+  (found by the exhaustive search; certificate **machine-verified in Lean 4 with zero axioms** —
+  `lean/Tiling44.lean`, kernel-only — making this theorem UNCONDITIONAL on all cited inputs; the
+  first known tiling in the isosceles 3α+2β=π cases and the smallest known tiling in any
+  incommensurable branch). The single
   undetermined value through 80 is N = 76 — one engine search from determination. The sharpest *structural*
   open instance — the smallest family member not already realized by the commensurable
   (sum-of-two-squares) construction — is N = 105 = b(a+b) = 7·15 on the F₁ target (105,56,91) of

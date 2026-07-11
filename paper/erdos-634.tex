@@ -827,12 +827,19 @@ Consequently $44m^2$ is a tile count for every $m\ge1$.
 
 \begin{proof}
 The tiling is exhibited explicitly (\texttt{code/engine/tiling\_N44B.txt}: exact coordinates in
-$\Q(\sqrt{15})$). It is verified independently of the search: all $44$ triangles have squared
-side multiset exactly $\{4,9,16\}$; they are pairwise interior-disjoint; every vertex lies in the
-closed target and no tile edge crosses the target boundary; and the areas sum exactly to the
-target's. Disjointness with exact equality of total area and containment forces coverage, so this
-is an $N$-tiling in the strict sense. The consequence follows by subdividing each tile into $m^2$
-similar copies.
+$\Q(\sqrt{15})$), and its certificate is \emph{machine-verified in Lean~4 with no axioms
+whatsoever} (\texttt{lean/Tiling44.lean}: the kernel checks, by pure computation over
+$\Z[\sqrt{15}]$ after scaling by $8$, that all $44$ triangles have squared side multiset exactly
+$\{256,576,1024\}=(8\cdot(2,3,4))^2$, are positively oriented, lie in the closed target via
+half-plane checks, admit an explicit separating edge-line for each of the $946$ pairs, and have
+signed areas summing exactly to the target's; \texttt{\#print axioms} reports the theorem
+depends on no axioms). The bridge from the certificate to the tiling statement is classical:
+closed half-plane separation gives pairwise disjoint interiors (convexity), the vertices-in-target
+checks give containment (convexity of the target), and then exact equality of total area forces
+the union of the closed tiles to be the whole target, since the complement is open with measure
+zero. So this is an $N$-tiling in the strict sense --- \emph{unconditionally}: this theorem
+depends on none of the cited classification inputs. The consequence follows by subdividing each
+tile into $m^2$ similar copies.
 \end{proof}
 
 \begin{figure}[ht]
