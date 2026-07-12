@@ -158,7 +158,16 @@ $a=N-M^2,\ c=N+M^2,\ b=c-a^2/c$ one has $bc=c^2-a^2=4NM^2$, so $c^2b=4NM^2(N+M^2
 \emph{identically} (no primality used), not the $M^4(M^2+1)$ his argument needs --- a dropped factor
 of $a$; the residue is already false on genuine composite tilings ($N=48,\,M=4$ gives $c^2b\equiv0$
 while $M^4(M^2+1)\equiv32$), so the step forcing $N=M^2+1$ is vacuous. The conclusion is nonetheless
-correct, by the base-length obstruction of Proposition~\ref{prop:b3prime}.
+correct, by the base-length obstruction of Proposition~\ref{prop:b3prime}. For the isosceles
+base-$\beta$ target the prime exclusion is likewise machine-checked
+(\texttt{isobeta\_square\_not\_prime}): with $s=e/f$ in lowest terms the tile is
+$(ef,\,f^2-e^2,\,f^2)$, and the Theorem-14 equation $N(e+f)^2=M^2(3f^2-e^2)$ forces
+$N\mid 3f^2-e^2$ (an exponent-parity descent), while integrality of the equal side
+($X^2=Nbc$, so $N(f^2-e^2)$ is a square) forces $N\mid f^2-e^2$; together $N\mid 2f^2$,
+impossible for an odd prime with $\gcd(e,f)=1$. For the base-$\alpha$ target no prime candidate
+satisfies the analogous equation-plus-square pair (verified for $f<300$); its exclusion in our
+sweeps additionally uses Beeson's divisibility $g\mid M$ (Theorem~19), an independent necessity
+unaffected by the Theorem-18 flaw.
 \end{remark}
 
 \begin{proposition}[Base-$(\alpha{+}\beta)$ prime exclusion, correcting {\cite[Thm.~18]{BeesonIII}}]\label{prop:b3prime}

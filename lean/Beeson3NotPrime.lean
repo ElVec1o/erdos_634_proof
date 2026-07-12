@@ -66,7 +66,93 @@ theorem fourcomp_not_prime (e f k : ℕ) (he : 1 ≤ e) (hef : e < f) (hk : 1 �
   · omega
   · nlinarith [hself, hA, hBk]
 
+/-- Exponent-parity descent: for a prime `N` and `D` not divisible by `N`, the equation
+`N·A² = M²·D` has no solution with `A > 0` (the exponent of `N` is odd on the left, even on the
+right; here proved by descent on `M`, no factorization API). -/
+theorem prime_mul_sq_ne (N D : ℕ) (hN : N.Prime) (hND : ¬ N ∣ D)
+    (M A : ℕ) (hA : 0 < A) : N * A ^ 2 ≠ M ^ 2 * D := by
+  have key : ∀ k M A : ℕ, M ≤ k → 0 < A → N * A ^ 2 ≠ M ^ 2 * D := by
+    intro k
+    induction k with
+    | zero =>
+      intro M A hMk hA heq
+      obtain rfl : M = 0 := Nat.le_zero.mp hMk
+      exact absurd (by simpa using heq) (Nat.mul_pos hN.pos (pow_pos hA 2)).ne'
+    | succ k ih =>
+      intro M A hMk hA heq
+      have hNM : N ∣ M := by
+        have h1 : N ∣ M ^ 2 * D := ⟨A ^ 2, heq.symm⟩
+        rcases (Nat.Prime.dvd_mul hN).mp h1 with h2 | h2
+        · exact hN.dvd_of_dvd_pow h2
+        · exact absurd h2 hND
+      obtain ⟨m, rfl⟩ := hNM
+      rcases Nat.eq_zero_or_pos m with rfl | hm0
+      · exact absurd (by simpa using heq) (Nat.mul_pos hN.pos (pow_pos hA 2)).ne'
+      have h3 : N * A ^ 2 = N * (N * (m ^ 2 * D)) := by rw [heq]; ring
+      have h4 : A ^ 2 = N * (m ^ 2 * D) := Nat.eq_of_mul_eq_mul_left hN.pos h3
+      have hNA : N ∣ A := hN.dvd_of_dvd_pow ⟨m ^ 2 * D, h4⟩
+      obtain ⟨u, rfl⟩ := hNA
+      rcases Nat.eq_zero_or_pos u with rfl | hu0
+      · simp at hA
+      have h5 : N * (N * u ^ 2) = N * (m ^ 2 * D) := by rw [← h4]; ring
+      have h6 : N * u ^ 2 = m ^ 2 * D := Nat.eq_of_mul_eq_mul_left hN.pos h5
+      have hlt : m < N * m := by nlinarith [hN.two_le, hm0]
+      have hmk : m ≤ k := by
+        have := lt_of_lt_of_le hlt hMk
+        omega
+      exact ih m u hmk hu0 h6
+  exact key M M A le_rfl hA
+
+/-- Isosceles base-`β` target (Beeson III, Theorem 14 family): the tiling equation
+`N(e+f)² = M²(3f²−e²)` (`s = e/f` in lowest terms) together with integrality of the equal side —
+`X² = N·b·c` with primitive tile `(ef, f²−e², f²)`, i.e. `N(f²−e²)` a perfect square — excludes
+every **odd prime** `N`.  The equation forces `N ∣ 3f²−e²` (else `prime_mul_sq_ne`), the square
+forces `N ∣ f²−e²`, so `N ∣ 2f²`, and for odd `N` this drives `N ∣ gcd(e,f) = 1`.  Subtraction-free
+formulation: `D = 3f²−e²` and `K = f²−e²` are given by `e² + D = 3f²`, `e² + K = f²`. -/
+theorem isobeta_square_not_prime (N e f M Y D K : ℕ) (hN : N.Prime) (hodd : Odd N)
+    (he : 1 ≤ e) (_hef : e < f) (hcop : Nat.Coprime e f)
+    (hD : e ^ 2 + D = 3 * f ^ 2) (hK : e ^ 2 + K = f ^ 2)
+    (heq : N * (e + f) ^ 2 = M ^ 2 * D) (hsq : N * K = Y ^ 2) : False := by
+  -- the tiling equation forces N ∣ D
+  have hA : N ∣ D := by
+    by_contra hND
+    exact prime_mul_sq_ne N D hN hND M (e + f) (by omega) heq
+  -- the square condition forces N ∣ K
+  have hNY : N ∣ Y := hN.dvd_of_dvd_pow ⟨K, hsq.symm⟩
+  obtain ⟨y, rfl⟩ := hNY
+  have hK' : N * K = N * (N * y ^ 2) := by rw [hsq]; ring
+  have hB : N ∣ K := ⟨y ^ 2, Nat.eq_of_mul_eq_mul_left hN.pos hK'⟩
+  -- D = K + 2f², hence N ∣ 2f²
+  have h3 : D = K + 2 * f ^ 2 := by linarith
+  have h2f : N ∣ 2 * f ^ 2 := (Nat.dvd_add_right hB).mp (h3 ▸ hA)
+  -- N odd ⟹ N ∣ f
+  have hN2 : ¬ N ∣ 2 := by
+    intro h
+    have hle : N ≤ 2 := Nat.le_of_dvd (by norm_num) h
+    have h2 : N = 2 := le_antisymm hle hN.two_le
+    rw [Nat.odd_iff, h2] at hodd
+    omega
+  have hNf : N ∣ f := by
+    rcases (Nat.Prime.dvd_mul hN).mp h2f with h | h
+    · exact absurd h hN2
+    · exact hN.dvd_of_dvd_pow h
+  -- N ∣ e via e² = f² − K
+  have hNf2 : N ∣ f ^ 2 := dvd_pow hNf (by norm_num)
+  have hsum : N ∣ K + e ^ 2 := by
+    have h : N ∣ e ^ 2 + K := by rw [hK]; exact hNf2
+    rwa [Nat.add_comm] at h
+  have hNe : N ∣ e := hN.dvd_of_dvd_pow ((Nat.dvd_add_right hB).mp hsum)
+  -- N ∣ gcd(e,f) = 1: contradiction
+  have hg : N ∣ Nat.gcd e f := Nat.dvd_gcd hNe hNf
+  have h1 : Nat.gcd e f = 1 := hcop
+  rw [h1] at hg
+  have hle1 := Nat.le_of_dvd one_pos hg
+  have h2le := hN.two_le
+  omega
+
 end Erdos634.Beeson3
 
 #print axioms Erdos634.Beeson3.triquadratic_not_prime
 #print axioms Erdos634.Beeson3.fourcomp_not_prime
+#print axioms Erdos634.Beeson3.prime_mul_sq_ne
+#print axioms Erdos634.Beeson3.isobeta_square_not_prime

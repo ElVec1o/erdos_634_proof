@@ -19,8 +19,13 @@ given the first tiling equation `N + M² = 2K²` with `K ∣ N`, no **odd prime*
 (`K ∣ N` ⟹ `K ∈ {1,N}`; `K=1` ⟹ `N ≤ 2`; `K=N` ⟹ `M² = N(2N−1)` ⟹ `N ∣ 1`).
 `fourcomp_not_prime` (Theorem 12, `(2α,α,2β)`): the second tiling equation forces the count to
 `N = (2f²−e²)(3f²−e²)k²` (`1 ≤ e < f`), a product of two factors `≥ 7` and `≥ 11`, hence composite
-(e.g. `(2,3,4)→77=7·11`, `(3,8,9)→442=17·26`). These remove the *arithmetic* half of the prime
-dichotomy's `3α+2β` citation for both scalene targets. No tiling theory.
+(e.g. `(2,3,4)→77=7·11`, `(3,8,9)→442=17·26`). `prime_mul_sq_ne`: exponent-parity descent — for
+prime `N ∤ D`, `N·A² = M²·D` has no solution with `A > 0`. `isobeta_square_not_prime` (Theorem 14
+family, isosceles base-`β`): the tiling equation `N(e+f)² = M²(3f²−e²)` forces `N ∣ 3f²−e²` (by the
+descent), integrality of the equal side (`N(f²−e²)` a perfect square) forces `N ∣ f²−e²`, so
+`N ∣ 2f²` — impossible for an odd prime with `gcd(e,f)=1`. These remove the *arithmetic* half of the
+prime dichotomy's `3α+2β` citation for the two scalene targets and the base-`β` isosceles target.
+No tiling theory.
 
 `BaseAlphaBetaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct** proof
 that no base-`(α+β)` isosceles triangle is `N`-tiled for prime `N` — **replacing Beeson III's
