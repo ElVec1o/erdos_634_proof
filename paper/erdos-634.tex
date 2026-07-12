@@ -135,15 +135,53 @@ $p\not\equiv3\pmod4$, and $2n^2,3n^2,6n^2$ only if $p$ is even or $3\mid p$ (her
 $p>3$), so $p$ is none of these (it is precisely for $p=3=3\cdot1^2$ that this step would fail).
 If the angles are not commensurable, then, after the right-angle and similar-tile cases, which give
 $N$ a sum of two squares or $N=n^2$ \cite{BeesonI, SWW}, the tile has a special angle and falls into
-one of: $3\alpha+2\beta=\pi$, for which $N$ is not prime \cite{BeesonIII} (for the $(2\alpha,\beta,\alpha{+}\beta)$
-target the arithmetic core --- Beeson's first tiling equation $N+M^2=2K^2$ with $K\mid N$ admits no
-odd prime --- is re-proved and machine-checked in Lean, \texttt{lean/Beeson3NotPrime.lean}); an isosceles tile with
+one of: $3\alpha+2\beta=\pi$, for which $N$ is not prime (\cite{BeesonIII}, but see
+Remark~\ref{rem:b3prime} and Proposition~\ref{prop:b3prime}, which machine-check the
+$(2\alpha,\beta,\alpha{+}\beta)$ core in Lean and supply a correct proof for the
+base-$(\alpha{+}\beta)$ target in place of Beeson's flawed Theorem~18); an isosceles tile with
 $\gamma=2\alpha$, for which $N$ is not squarefree \cite[Thm.~11.7]{BeesonIso}; or the tile has an
 angle equal to $\pi/3$ or $2\pi/3$. The case of a $\pi/3$ or $2\pi/3$ tile on an \emph{equilateral}
 triangle gives $N$ not prime \cite{BeesonEq}. What remains for a prime $N$ is a tile with a $\pi/3$
 or $2\pi/3$ angle on a \emph{non-equilateral} triangle. The vertex enumeration of
 Section~\ref{sub:shapes} shows the $\pi/3$ case admits only equilateral or tile-similar $ABC$,
 already covered; so the sole remaining branch is a $2\pi/3$ tile, which we now fix.
+
+\begin{remark}[The $3\alpha+2\beta=\pi$ prime exclusion]\label{rem:b3prime}
+The step above invokes \cite{BeesonIII} for the claim that a $3\alpha+2\beta=\pi$ tiling has $N$
+composite. For the two scalene targets $(2\alpha,\beta,\alpha{+}\beta)$ and $(2\alpha,\alpha,2\beta)$
+this is Beeson's Theorems~8 and~12; the arithmetic core of the former --- the first tiling equation
+$N+M^2=2K^2$ with $K\mid N$ admits no odd prime --- we machine-check in Lean
+(\texttt{lean/Beeson3NotPrime.lean}). The isosceles target with base angles $\alpha{+}\beta$ is
+Beeson's Theorem~18, but its published proof is \emph{unsound}: under Beeson's scaling
+$a=N-M^2,\ c=N+M^2,\ b=c-a^2/c$ one has $bc=c^2-a^2=4NM^2$, so $c^2b=4NM^2(N+M^2)\equiv0\pmod N$
+\emph{identically} (no primality used), not the $M^4(M^2+1)$ his argument needs --- a dropped factor
+of $a$; the residue is already false on genuine composite tilings ($N=48,\,M=4$ gives $c^2b\equiv0$
+while $M^4(M^2+1)\equiv32$), so the step forcing $N=M^2+1$ is vacuous. The conclusion is nonetheless
+correct, by the base-length obstruction of Proposition~\ref{prop:b3prime}.
+\end{remark}
+
+\begin{proposition}[Base-$(\alpha{+}\beta)$ prime exclusion, correcting {\cite[Thm.~18]{BeesonIII}}]\label{prop:b3prime}
+No isosceles triangle with base angles $\alpha+\beta$, where $3\alpha+2\beta=\pi$ and
+$\alpha\notin\Q\pi$, is $N$-tiled for $N$ prime.
+\end{proposition}
+
+\begin{proof}
+Fix a putative tiling with coloring number $M$; by \cite[Cor.~3]{BeesonIII}, $0<M^2<N$. Put
+$d=\gcd(N-M^2,N+M^2)$. As $d\mid2N$, $d\mid2M^2$, and $\gcd(N,M^2)=1$ (a prime $N>M^2$ cannot divide
+$M^2$), $d\mid2$. Writing $g=(N+M^2)/d$ and $\hat a=(N-M^2)/d$, the primitive tile is
+$(a,b,c)=(g\hat a,\ g^2-\hat a^2,\ g^2)$ with $0<\hat a<g$ (\cite[Thm.~17, Lem.~8]{BeesonIII}), and the
+base $AC$ has integer length $Y=M\hat a(g+\hat a)$ (\cite[Lem.~42]{BeesonIII}). A tiling forces the
+base to carry at least two $c$-edges (\cite[Lem.~6]{BeesonIII}) and a number of $b$-edges
+$\equiv-M\pmod g$, hence at least $g-M>0$ (\cite[Lem.~45(iii)]{BeesonIII}); so $Y\ge(g-M)b+2c$. But
+$d\mid2$ gives $\hat a+M\le g$, and the identity
+\[
+(g-M)(g^2-\hat a^2)-M\hat a(g+\hat a)=g\,(g+\hat a)\,(g-\hat a-M)\ \ge\ 0
+\]
+gives $Y\le(g-M)b<(g-M)b+2c$, a contradiction. (E.g.\ $N=79,\ M=1$: $d=2$, $g=40$, $\hat a=39$,
+$b=79$, $c=1600$, so $Y=3081$ while $(g-M)b+2c=6281$.) The two arithmetic facts used --- $d\mid2$ and
+the identity together with $\hat a+M\le g$ --- are machine-checked in Lean
+(\texttt{lean/BaseAlphaBetaPrime.lean}, axiom-clean); only the covering bounds are cited.
+\end{proof}
 
 \subsection*{The tile.}
 Throughout, $T$ has angles $(\alpha,\beta,\gamma)$ opposite sides $(a,b,c)$, with

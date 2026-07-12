@@ -19,6 +19,15 @@ when `3α+2β=π`" (Theorem 8, the `(2α,β,α+β)` target): given Beeson's firs
 `N ≤ 2`; `K=N` ⟹ `M² = N(2N−1)` ⟹ `N ∣ 1`). This removes the *arithmetic* half of the prime
 dichotomy's `3α+2β` citation for that target. No tiling theory.
 
+`BaseAlphaBetaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct** proof
+that no base-`(α+β)` isosceles triangle is `N`-tiled for prime `N` — **replacing Beeson III's
+Theorem 18, whose printed mod-`N` proof is unsound** (under his scaling `bc = c²−a² = 4NM²`, so
+`c²b ≡ 0 (mod N)` identically, not the `M⁴(M²+1)` he needs; a dropped factor of `a`). `gcd_dvd_two`:
+for prime `N`, `1≤M`, `M²<N`, `gcd(N−M², N+M²) ∣ 2`. `base_obstruction`: with reduced data
+`g > â ≥ 1`, `â + M ≤ g`, the base-length lower bound `(g−M)(g²−â²) + 2g² ≤ M·â·(g+â)` a tiling
+forces is impossible (identity `(g−M)(g²−â²) − Mâ(g+â) = g(g+â)(g−â−M) ≥ 0`). Only Beeson's
+geometric covering lemmas (6, 42, 45(iii), Thm 17) are cited; the arithmetic is proved here.
+
 `EquilateralConic.lean` machine-checks, axiom-clean, the **necessary side of the equilateral branch**
 (paper Prop. "Conic form") as pure integer algebra: for a `2π/3` tile the invariant counts `s,t` with
 `t*s = 3N` and `(t-s)^2+16N = q^2` eliminate to `(q*s)^2 = (s^2+N)(s^2+9N)`, hence the divisor
