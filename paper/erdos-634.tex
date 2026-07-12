@@ -46,10 +46,12 @@ spectrum theorem shows that the counts passing all invariant conditions on the i
 $F_1$ targets are \emph{exactly} Zhang's constructed families, closing the necessary side of
 those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
-previously undetermined value up to $80$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
-$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $66$, $69$, $70$, or $76$ congruent triangles
+previously undetermined value up to $80$ with one pending exception: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
+$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $66$, $69$, or $76$ congruent triangles
 ($46$, $62$, $78$ likewise, and $79$ --- a prime --- by the main theorem); triangles \emph{can} be cut
-into $44$, $77$ (by Beeson's four-component construction), and $80$ (a sum of two squares) congruent triangles;
+into $44$, $77$ (by Beeson's four-component construction), and $80$ (a sum of two squares) congruent
+triangles; the value $70$, previously excluded via a theorem of \cite{BeesonIII} whose proof we show
+to be unsound, is undetermined pending a direct exhaustive search of its single surviving instance;
 and \emph{a triangle can be cut into $44$ congruent triangles} --- the isosceles $(16,16,22)$
 into $44$ copies of the $(2,3,4)$ tile, found by the search and verified exactly, to our
 knowledge the first tiling in the isosceles $3\alpha+2\beta=\pi$ cases and the smallest known
@@ -135,10 +137,10 @@ $p\not\equiv3\pmod4$, and $2n^2,3n^2,6n^2$ only if $p$ is even or $3\mid p$ (her
 $p>3$), so $p$ is none of these (it is precisely for $p=3=3\cdot1^2$ that this step would fail).
 If the angles are not commensurable, then, after the right-angle and similar-tile cases, which give
 $N$ a sum of two squares or $N=n^2$ \cite{BeesonI, SWW}, the tile has a special angle and falls into
-one of: $3\alpha+2\beta=\pi$, for which $N$ is not prime (\cite{BeesonIII}, but see
-Remark~\ref{rem:b3prime} and Proposition~\ref{prop:b3prime}, which machine-check the
-$(2\alpha,\beta,\alpha{+}\beta)$ core in Lean and supply a correct proof for the
-base-$(\alpha{+}\beta)$ target in place of Beeson's flawed Theorem~18); an isosceles tile with
+one of: $3\alpha+2\beta=\pi$, for which $N$ is not prime (originally \cite{BeesonIII}; see
+Remark~\ref{rem:b3prime} and Propositions~\ref{prop:b3prime} and~\ref{prop:isoalphaprime} ---
+the arithmetic core is machine-checked in Lean for \emph{all five} target shapes, with our own
+proofs replacing Beeson's Theorems~18 and~20, whose printed arguments are unsound); an isosceles tile with
 $\gamma=2\alpha$, for which $N$ is not squarefree \cite[Thm.~11.7]{BeesonIso}; or the tile has an
 angle equal to $\pi/3$ or $2\pi/3$. The case of a $\pi/3$ or $2\pi/3$ tile on an \emph{equilateral}
 triangle gives $N$ not prime \cite{BeesonEq}. What remains for a prime $N$ is a tile with a $\pi/3$
@@ -164,11 +166,40 @@ base-$\beta$ target the prime exclusion is likewise machine-checked
 $(ef,\,f^2-e^2,\,f^2)$, and the Theorem-14 equation $N(e+f)^2=M^2(3f^2-e^2)$ forces
 $N\mid 3f^2-e^2$ (an exponent-parity descent), while integrality of the equal side
 ($X^2=Nbc$, so $N(f^2-e^2)$ is a square) forces $N\mid f^2-e^2$; together $N\mid 2f^2$,
-impossible for an odd prime with $\gcd(e,f)=1$. For the base-$\alpha$ target no prime candidate
-satisfies the analogous equation-plus-square pair (verified for $f<300$); its exclusion in our
-sweeps additionally uses Beeson's divisibility $g\mid M$ (Theorem~19), an independent necessity
-unaffected by the Theorem-18 flaw.
+impossible for an odd prime with $\gcd(e,f)=1$.
+
+Two further defects of \cite{BeesonIII} affect the base-$\alpha$ target. First, the squarefree
+assertion of its Lemma~8 (``$g=\gcd(a,c)$ is squarefree'') is \emph{false}: the tile $(4,15,16)$
+--- a genuine $3\alpha+2\beta$ tile, $e=1$, $f=4$ --- has $g=4$ (its proof breaks at the inference
+$p^2\mid a\Rightarrow p^2\mid\hat a$); the parametrized family $(ef,\,f^2-e^2,\,f^2)$ realizes
+\emph{every} $f$ coprime to $e$, squarefree or not. Second, Theorem~19's claim $g\mid M$ rests on
+that lemma \emph{and} on the assertion that $bc^3(a+c)$ is not divisible by $g^5$ --- but with
+$c=g^2$ it carries $g^7$ identically, so the argument collapses, and with it the proof of the
+base-$\alpha$ prime exclusion (Theorem~20). Proposition~\ref{prop:isoalphaprime} repairs the
+latter without any appeal to $g\mid M$.
 \end{remark}
+
+\begin{proposition}[Base-$\alpha$ prime exclusion, replacing {\cite[Thm.~20]{BeesonIII}}]\label{prop:isoalphaprime}
+No isosceles triangle with base angles $\alpha$, where $3\alpha+2\beta=\pi$ and
+$\alpha\notin\Q\pi$, is $N$-tiled for $N$ prime.
+\end{proposition}
+
+\begin{proof}
+Write $s=e/f$ in lowest terms, so the tile is $(ef,\,f^2-e^2,\,f^2)$. Two necessary conditions
+suffice: the tiling equation $N(f-e)(2f+e)^2=M^2(f+e)(2f^2-e^2)$ (the sound half of
+\cite[Thm.~19]{BeesonIII}) and the integrality of the equal side $X$, where
+$X^2=Nbc/(2-s^2)$. Substituting the tiling equation into $X^2$ gives the exact value
+$X=M(f+e)f^2/(2f+e)$; as $\gcd(2f+e,f)=\gcd(2f+e,f+e)=1$, integrality forces $(2f+e)\mid M$.
+Writing $M=(2f+e)m$ reduces the tiling equation to
+\[
+N(f-e)\;=\;m^2\,(f+e)\,(2f^2-e^2).
+\]
+Put $d=f-e$ and $Q=2f^2-e^2=e^2+4ed+2d^2$. Then $\gcd(d,Q)=1$ (a common prime would divide $e^2$,
+hence $e$, hence $\gcd(e,f)$), so the minimal prime factor of $Q\ge7$ divides $N$ and equals $N$;
+writing $Q=NQ_1$ and cancelling $N$ leaves $d=m^2(f+e)Q_1\ge f+e>f-e=d$, a contradiction. Both
+arithmetic pillars are machine-checked in Lean (\texttt{lean/IsoAlphaPrime.lean}, axiom-clean:
+\texttt{isoalpha\_X\_forces}, \texttt{isoalpha\_not\_prime}).
+\end{proof}
 
 \begin{proposition}[Base-$(\alpha{+}\beta)$ prime exclusion, correcting {\cite[Thm.~18]{BeesonIII}}]\label{prop:b3prime}
 No isosceles triangle with base angles $\alpha+\beta$, where $3\alpha+2\beta=\pi$ and
@@ -992,7 +1023,7 @@ equiconstructibility family for $(5,3,7)$ by exact arithmetic; Beeson had report
 unrealizable for this tile in unpublished floating-point work.)
 
 \begin{theorem}\label{thm:frontier3}
-No triangle can be cut into $51$, $55$, $56$, $57$, $60$, $62$, $63$, $66$, $69$, $70$, or $78$
+No triangle can be cut into $51$, $55$, $56$, $57$, $60$, $62$, $63$, $66$, $69$, or $78$
 congruent triangles.
 \end{theorem}
 
@@ -1004,6 +1035,19 @@ branch at the squarefree values $51$, $55$, $57$, $69$; the boundary algorithm (
 $60$; the boundary algorithm's single surviving candidate plus its $884921$-node exhaustion at
 $63$; and \cite[Thm.~7]{BeesonEq} at $66$.
 \end{proof}
+
+\begin{remark}[The value $70$ --- retracted to pending]\label{rem:seventy}
+An earlier version of this theorem included $N=70$. Its single surviving instance is
+isosceles-$\alpha$: tile $(6,5,9)$, $M=8$, target $(45,45,70)$, which passes the tiling equation
+\emph{and} side-integrality ($X=45$, and indeed $(2f+e)=8\mid M$); the exclusion rested solely on
+$g\mid M$ from \cite[Thm.~19]{BeesonIII} ($g=3\nmid8$), whose proof is unsound
+(Remark~\ref{rem:b3prime}); Beeson's own Table~5 marks this very instance ``?''. We therefore
+regard $70$ as \emph{undetermined} pending the direct exhaustive search of the instance, which is
+in progress. The value $21$, whose analogous isosceles-$\alpha$ candidate (tile $(2,3,4)$, $M=5$,
+target $(12,12,21)$) was likewise previously killed only by the unsound $g\mid M$, \emph{is}
+excluded: the engine exhausts the instance ($13\,659$ nodes, no tiling), so
+Theorem~\ref{thm:frontier2} stands with its dependence on \cite[Thm.~19]{BeesonIII} removed.
+\end{remark}
 
 \begin{remark}
 The $2\pi/3$-equilateral exhaustions at $N=56$ (tile $(8,7,13)$, side $56$) and $N=60$ (tile
@@ -1030,14 +1074,17 @@ construction \cite{BeesonIII}, and $80=4^2+8^2$ by the biquadratic (commensurabl
 \cite{BeesonSeven}.
 
 \begin{theorem}\label{thm:frontier4}
-No triangle can be cut into $76$ congruent triangles. Every $N\le 80$ is thereby determined: the
-realizable values are exactly $1$--$13$'s known members together with $44,77,80$ and the standard
-commensurable and prime\,$\equiv1\!\pmod4$ values, and all others are excluded.
+No triangle can be cut into $76$ congruent triangles. Every $N\le 80$ except $N=70$
+(Remark~\ref{rem:seventy}) is thereby determined: the realizable values are exactly $1$--$13$'s
+known members together with $44,77,80$ and the standard commensurable and
+prime\,$\equiv1\!\pmod4$ values, and all others are excluded; in particular the contiguous
+record is every $N\le 69$, extending through $80$ once the pending $70$-instance search completes.
 \end{theorem}
 \begin{proof}
 The branch sweep and $\gamma=2\alpha$ boundary algorithm above settle $76$; Theorem~\ref{thm:main}
 excludes the prime $79$; Theorems~\ref{thm:frontier2}--\ref{thm:frontier3} give the composite
-exclusions through $78$; and the four-component and biquadratic constructions realize $77$ and $80$.
+exclusions through $78$ other than $70$; and the four-component and biquadratic constructions
+realize $77$ and $80$.
 \end{proof}
 
 \subsection*{Decidability.}
@@ -1123,7 +1170,8 @@ results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommen
 where Laczkovich has connected the possible $N$ to rational points on elliptic
 curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, the primes by Theorem~\ref{thm:primefull},
 $14,15,21,22,30,33,35,38,39,42,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2},
-$51,55,56,57,60,62,63,66,69,70,78$ by Theorem~\ref{thm:frontier3}, \emph{$44$ realizable} by
+$51,55,56,57,60,62,63,66,69,78$ by Theorem~\ref{thm:frontier3} ($70$ pending,
+Remark~\ref{rem:seventy}), \emph{$44$ realizable} by
 Theorem~\ref{thm:44}, $77$ realized by Beeson's four-component construction \cite{BeesonIII},
 $28$ realized by his triquadratic tilings \cite{BeesonIII}, and the remaining values
 commensurably realized ($45,48,49,50,52,53,54,58,61,64,65,68,72,73,74,75$) or prime
@@ -1131,7 +1179,7 @@ commensurably realized ($45,48,49,50,52,53,54,58,61,64,65,68,72,73,74,75$) or pr
 likewise excluded ($\gamma=2\alpha$ empty by the boundary algorithm; its one
 isosceles-$(\alpha{+}\beta)$ instance, tile $(90,19,100)$ on $(380,380,342)$, exhausted by the
 engine at $955\,474$ nodes); with $79$ prime (Theorem~\ref{thm:main}) and $80=4^2+8^2$ realized,
-\emph{every $N\le80$} is now determined (Theorem~\ref{thm:frontier4}).
+\emph{every $N\le80$ except the pending $70$} is now determined (Theorem~\ref{thm:frontier4}).
 
 \subsection*{Standing of the inputs.}
 For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:

@@ -27,6 +27,14 @@ descent), integrality of the equal side (`N(f²−e²)` a perfect square) forces
 prime dichotomy's `3α+2β` citation for the two scalene targets and the base-`β` isosceles target.
 No tiling theory.
 
+`IsoAlphaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct replacement**
+for Beeson III's Theorem 20 (base-`α` no-prime), whose proof depends on Theorem 19's `g ∣ M` — itself
+unsound (its `bc³(a+c)` bookkeeping is false: with `c=g²` it carries `g⁷`), resting further on the
+**false** squarefree half of Lemma 8 (counterexample tile `(4,15,16)`, `g=4`). The replacement needs
+no `g ∣ M`: `isoalpha_X_forces` (side-integrality `X(2f+e) = M(f+e)f²` forces `(2f+e) ∣ M` by
+coprimality) and `isoalpha_not_prime` (the reduced equation `N·d = m²(2e+d)Q`, `Q = e²+4ed+2d²`,
+has `gcd(d,Q)=1`, so `N ∣ Q`, and cancelling `N` gives `d ≥ 2e+d` — absurd).
+
 `BaseAlphaBetaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct** proof
 that no base-`(α+β)` isosceles triangle is `N`-tiled for prime `N` — **replacing Beeson III's
 Theorem 18, whose printed mod-`N` proof is unsound** (under his scaling `bc = c²−a² = 4NM²`, so
