@@ -46,10 +46,10 @@ spectrum theorem shows that the counts passing all invariant conditions on the i
 $F_1$ targets are \emph{exactly} Zhang's constructed families, closing the necessary side of
 those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
-previously undetermined value up to $75$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
-$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $66$, $69$, or $70$ congruent triangles
-($46$, $62$, $78$ likewise); triangles \emph{can} be cut into $44$ and (by Beeson's four-component
-construction) $77$ congruent triangles;
+previously undetermined value up to $80$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
+$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $66$, $69$, $70$, or $76$ congruent triangles
+($46$, $62$, $78$ likewise, and $79$ --- a prime --- by the main theorem); triangles \emph{can} be cut
+into $44$, $77$ (by Beeson's four-component construction), and $80$ (a sum of two squares) congruent triangles;
 and \emph{a triangle can be cut into $44$ congruent triangles} --- the isosceles $(16,16,22)$
 into $44$ copies of the $(2,3,4)$ tile, found by the search and verified exactly, to our
 knowledge the first tiling in the isosceles $3\alpha+2\beta=\pi$ cases and the smallest known
@@ -135,7 +135,9 @@ $p\not\equiv3\pmod4$, and $2n^2,3n^2,6n^2$ only if $p$ is even or $3\mid p$ (her
 $p>3$), so $p$ is none of these (it is precisely for $p=3=3\cdot1^2$ that this step would fail).
 If the angles are not commensurable, then, after the right-angle and similar-tile cases, which give
 $N$ a sum of two squares or $N=n^2$ \cite{BeesonI, SWW}, the tile has a special angle and falls into
-one of: $3\alpha+2\beta=\pi$, for which $N$ is not prime \cite{BeesonIII}; an isosceles tile with
+one of: $3\alpha+2\beta=\pi$, for which $N$ is not prime \cite{BeesonIII} (for the $(2\alpha,\beta,\alpha{+}\beta)$
+target the arithmetic core --- Beeson's first tiling equation $N+M^2=2K^2$ with $K\mid N$ admits no
+odd prime --- is re-proved and machine-checked in Lean, \texttt{lean/Beeson3NotPrime.lean}); an isosceles tile with
 $\gamma=2\alpha$, for which $N$ is not squarefree \cite[Thm.~11.7]{BeesonIso}; or the tile has an
 angle equal to $\pi/3$ or $2\pi/3$. The case of a $\pi/3$ or $2\pi/3$ tile on an \emph{equilateral}
 triangle gives $N$ not prime \cite{BeesonEq}. What remains for a prime $N$ is a tile with a $\pi/3$
@@ -968,6 +970,28 @@ $N=105$: any $105$-tiling of $(105,56,91)$, if one exists, does not factor throu
 $56$-block.
 \end{remark}
 
+\subsection*{The values $76$ to $80$.}
+The same branch sweep (\texttt{verify\_frontier.py}) extends the determined initial segment past
+$75$. For $N=76=4\cdot19$ the only live branches are $\gamma=2\alpha$ (excluded by the boundary
+algorithm of Lemmas 11.2--11.17 of \cite{BeesonIso}, \texttt{code/gamma2alpha.py}) and the
+$3\alpha+2\beta=\pi$ isosceles-$(\alpha{+}\beta)$ target with tile $(90,19,100)$ on the isosceles
+$(380,380,342)$, which the engine exhausts ($955\,474$ nodes); every other branch is dead by its
+$N$-form. Hence $76$ is not realizable. The prime $79\equiv3\pmod4$ is excluded by
+Theorem~\ref{thm:main}; and $77$, $80$ are realizable --- $77$ by Beeson's four-component
+construction \cite{BeesonIII}, and $80=4^2+8^2$ by the biquadratic (commensurable) tiling
+\cite{BeesonSeven}.
+
+\begin{theorem}\label{thm:frontier4}
+No triangle can be cut into $76$ congruent triangles. Every $N\le 80$ is thereby determined: the
+realizable values are exactly $1$--$13$'s known members together with $44,77,80$ and the standard
+commensurable and prime\,$\equiv1\!\pmod4$ values, and all others are excluded.
+\end{theorem}
+\begin{proof}
+The branch sweep and $\gamma=2\alpha$ boundary algorithm above settle $76$; Theorem~\ref{thm:main}
+excludes the prime $79$; Theorems~\ref{thm:frontier2}--\ref{thm:frontier3} give the composite
+exclusions through $78$; and the four-component and biquadratic constructions realize $77$ and $80$.
+\end{proof}
+
 \subsection*{Decidability.}
 The pattern of the last two subsections is not an accident. Every branch of the classification now
 reduces, for each fixed $N$, to a \emph{finite} list of fully determined instances: the
@@ -1055,11 +1079,11 @@ $51,55,56,57,60,62,63,66,69,70,78$ by Theorem~\ref{thm:frontier3}, \emph{$44$ re
 Theorem~\ref{thm:44}, $77$ realized by Beeson's four-component construction \cite{BeesonIII},
 $28$ realized by his triquadratic tilings \cite{BeesonIII}, and the remaining values
 commensurably realized ($45,48,49,50,52,53,54,58,61,64,65,68,72,73,74,75$) or prime
-($47,53,59,67,71$), the membership of \emph{every $N\le75$} is now determined. The single
-undetermined value through $80$ is $N=76$ ($\gamma=2\alpha$ empty by the boundary algorithm;
-its one isosceles-$(\alpha{+}\beta)$ instance, tile $(90,19,100)$, target $(380,380,342)$, is
-being searched); $79$ is prime and $80$ is realized, so its resolution determines everything
-through $80$.
+($47,53,59,67,71$), the membership of \emph{every $N\le75$} is now determined. The value $N=76$ is
+likewise excluded ($\gamma=2\alpha$ empty by the boundary algorithm; its one
+isosceles-$(\alpha{+}\beta)$ instance, tile $(90,19,100)$ on $(380,380,342)$, exhausted by the
+engine at $955\,474$ nodes); with $79$ prime (Theorem~\ref{thm:main}) and $80=4^2+8^2$ realized,
+\emph{every $N\le80$} is now determined (Theorem~\ref{thm:frontier4}).
 
 \subsection*{Standing of the inputs.}
 For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:

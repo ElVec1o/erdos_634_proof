@@ -13,6 +13,12 @@ core of the gamma=2alpha branch (Beeson's Lemma 11.2): if `c^2 = a^2 + a*b` with
 `(a,b,c) = (k^2, m^2-k^2, k*m)` for coprime `k<m`. Proved from scratch (coprime factors of a square
 are squares), so that branch's tile classification no longer depends on any citation.
 
+`Beeson3NotPrime.lean` machine-checks, axiom-clean, the arithmetic core of Beeson III's "no prime `N`
+when `3α+2β=π`" (Theorem 8, the `(2α,β,α+β)` target): given Beeson's first tiling equation
+`N + M² = 2K²` with `K ∣ N`, no **odd prime** `N` is possible (`K ∣ N` ⟹ `K ∈ {1,N}`; `K=1` ⟹
+`N ≤ 2`; `K=N` ⟹ `M² = N(2N−1)` ⟹ `N ∣ 1`). This removes the *arithmetic* half of the prime
+dichotomy's `3α+2β` citation for that target. No tiling theory.
+
 `EquilateralConic.lean` machine-checks, axiom-clean, the **necessary side of the equilateral branch**
 (paper Prop. "Conic form") as pure integer algebra: for a `2π/3` tile the invariant counts `s,t` with
 `t*s = 3N` and `(t-s)^2+16N = q^2` eliminate to `(q*s)^2 = (s^2+N)(s^2+9N)`, hence the divisor
