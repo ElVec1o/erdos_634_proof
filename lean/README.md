@@ -20,12 +20,13 @@ given the first tiling equation `N + M² = 2K²` with `K ∣ N`, no **odd prime*
 `fourcomp_not_prime` (Theorem 12, `(2α,α,2β)`): the second tiling equation forces the count to
 `N = (2f²−e²)(3f²−e²)k²` (`1 ≤ e < f`), a product of two factors `≥ 7` and `≥ 11`, hence composite
 (e.g. `(2,3,4)→77=7·11`, `(3,8,9)→442=17·26`). `prime_mul_sq_ne`: exponent-parity descent — for
-prime `N ∤ D`, `N·A² = M²·D` has no solution with `A > 0`. `isobeta_square_not_prime` (Theorem 14
-family, isosceles base-`β`): the tiling equation `N(e+f)² = M²(3f²−e²)` forces `N ∣ 3f²−e²` (by the
-descent), integrality of the equal side (`N(f²−e²)` a perfect square) forces `N ∣ f²−e²`, so
-`N ∣ 2f²` — impossible for an odd prime with `gcd(e,f)=1`. These remove the *arithmetic* half of the
-prime dichotomy's `3α+2β` citation for the two scalene targets and the base-`β` isosceles target.
-No tiling theory.
+prime `N ∤ D`, `N·A² = M²·D` has no solution with `A > 0` (a general lemma). `isobeta_square_not_prime`
+is a **true implication** but its perfect-square hypothesis is *not* a genuine iso-`β` necessity
+(the real side-integrality is `(f+e) ∣ M`, giving `N = m²(3f²−e²)`, which admits primes), so it does
+**not** establish the base-`β` prime exclusion — that shape is the one genuine gap (Beeson's Thm 14
+`g ∣ M` is unsound like Thm 19), handled per-value by the engine; see the paper's honest remark.
+The scalene targets (Thm 8, Thm 12) and the base-`(α+β)`/base-`α` targets (`BaseAlphaBetaPrime`,
+`IsoAlphaPrime`) are the four soundly machine-checked shapes. No tiling theory.
 
 `IsoAlphaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct replacement**
 for Beeson III's Theorem 20 (base-`α` no-prime), whose proof depends on Theorem 19's `g ∣ M` — itself

@@ -103,12 +103,11 @@ theorem prime_mul_sq_ne (N D : ℕ) (hN : N.Prime) (hND : ¬ N ∣ D)
       exact ih m u hmk hu0 h6
   exact key M M A le_rfl hA
 
-/-- Isosceles base-`β` target (Beeson III, Theorem 14 family): the tiling equation
-`N(e+f)² = M²(3f²−e²)` (`s = e/f` in lowest terms) together with integrality of the equal side —
-`X² = N·b·c` with primitive tile `(ef, f²−e², f²)`, i.e. `N(f²−e²)` a perfect square — excludes
-every **odd prime** `N`.  The equation forces `N ∣ 3f²−e²` (else `prime_mul_sq_ne`), the square
-forces `N ∣ f²−e²`, so `N ∣ 2f²`, and for odd `N` this drives `N ∣ gcd(e,f) = 1`.  Subtraction-free
-formulation: `D = 3f²−e²` and `K = f²−e²` are given by `e² + D = 3f²`, `e² + K = f²`. -/
+/-- ⚠️ NOTE (do not use as an iso-`β` prime exclusion).  This is a TRUE arithmetic implication, but
+its hypothesis `hsq : N·(f²−e²) = Y²` is **not** a genuine necessary condition of an iso-`β` tiling:
+the equal side is `X = f³M/(f+e)` (not `X² = Nbc`), so side-integrality is `(f+e) ∣ M`, and the real
+reduction is `N = m²(3f²−e²)`, which admits primes (`N = 11,23,47,59,71,…`).  See paper
+Remark "The base-`β` target: an honest gap".  Kept only as the descent lemma's first application. -/
 theorem isobeta_square_not_prime (N e f M Y D K : ℕ) (hN : N.Prime) (hodd : Odd N)
     (he : 1 ≤ e) (_hef : e < f) (hcop : Nat.Coprime e f)
     (hD : e ^ 2 + D = 3 * f ^ 2) (hK : e ^ 2 + K = f ^ 2)
