@@ -149,9 +149,10 @@ already covered; so the sole remaining branch is a $2\pi/3$ tile, which we now f
 \begin{remark}[The $3\alpha+2\beta=\pi$ prime exclusion]\label{rem:b3prime}
 The step above invokes \cite{BeesonIII} for the claim that a $3\alpha+2\beta=\pi$ tiling has $N$
 composite. For the two scalene targets $(2\alpha,\beta,\alpha{+}\beta)$ and $(2\alpha,\alpha,2\beta)$
-this is Beeson's Theorems~8 and~12; the arithmetic core of the former --- the first tiling equation
-$N+M^2=2K^2$ with $K\mid N$ admits no odd prime --- we machine-check in Lean
-(\texttt{lean/Beeson3NotPrime.lean}). The isosceles target with base angles $\alpha{+}\beta$ is
+this is Beeson's Theorems~8 and~12, whose arithmetic cores we machine-check in Lean
+(\texttt{lean/Beeson3NotPrime.lean}): the first tiling equation $N+M^2=2K^2$ with $K\mid N$ admits no
+odd prime, and the second forces $N=(2f^2-e^2)(3f^2-e^2)k^2$ --- a product of two factors exceeding
+$1$, hence composite. The isosceles target with base angles $\alpha{+}\beta$ is
 Beeson's Theorem~18, but its published proof is \emph{unsound}: under Beeson's scaling
 $a=N-M^2,\ c=N+M^2,\ b=c-a^2/c$ one has $bc=c^2-a^2=4NM^2$, so $c^2b=4NM^2(N+M^2)\equiv0\pmod N$
 \emph{identically} (no primality used), not the $M^4(M^2+1)$ his argument needs --- a dropped factor

@@ -43,6 +43,30 @@ theorem triquadratic_not_prime (N K M : ℕ) (hN : N.Prime) (hodd : Odd N)
       by_contra h; rw [not_lt] at h; nlinarith [ht2, h]
     interval_cases t <;> omega
 
+/-- Four-component `(2α,α,2β)` target (Beeson III, Theorem 12): the second tiling equation
+`N/M² = (2−s²)(3−s²)/((1−s)²(2+s)²)` with `s = e/f` and `(f−e)(2f+e) ∣ M` forces the tile count to
+the shape `N = (2f²−e²)(3f²−e²)k²` (`k = M/((f−e)(2f+e))`).  Every such `N` is composite: for
+`1 ≤ e < f` both factors satisfy `2f²−e² ≥ 7` and `3f²−e² ≥ 11`, so `N` is a product of two integers
+`> 1`.  Hence no four-component `3α+2β` tiling has prime `N`.  (E.g.\ `(2,3,4)→77=7·11`,
+`(3,8,9)→442=17·26`.) -/
+theorem fourcomp_not_prime (e f k : ℕ) (he : 1 ≤ e) (hef : e < f) (hk : 1 ≤ k) :
+    ¬ ((2 * f ^ 2 - e ^ 2) * ((3 * f ^ 2 - e ^ 2) * k ^ 2)).Prime := by
+  have hf : 2 ≤ f := by omega
+  have hAe : e ^ 2 + 2 ≤ 2 * f ^ 2 := by nlinarith [hef, he, hf]
+  have hBe : e ^ 2 + 2 ≤ 3 * f ^ 2 := by nlinarith [hef, he, hf]
+  have hA : 2 ≤ 2 * f ^ 2 - e ^ 2 := by omega
+  have hB : 2 ≤ 3 * f ^ 2 - e ^ 2 := by omega
+  have hk2 : 1 ≤ k ^ 2 := Nat.one_le_iff_ne_zero.mpr (pow_ne_zero 2 (by omega))
+  have hBk : 2 ≤ (3 * f ^ 2 - e ^ 2) * k ^ 2 :=
+    le_trans hB (Nat.le_mul_of_pos_right _ (by omega))
+  intro hp
+  have hdvd : (2 * f ^ 2 - e ^ 2) ∣ (2 * f ^ 2 - e ^ 2) * ((3 * f ^ 2 - e ^ 2) * k ^ 2) :=
+    Dvd.intro _ rfl
+  rcases hp.eq_one_or_self_of_dvd _ hdvd with h1 | hself
+  · omega
+  · nlinarith [hself, hA, hBk]
+
 end Erdos634.Beeson3
 
 #print axioms Erdos634.Beeson3.triquadratic_not_prime
+#print axioms Erdos634.Beeson3.fourcomp_not_prime

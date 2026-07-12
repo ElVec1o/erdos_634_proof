@@ -13,11 +13,14 @@ core of the gamma=2alpha branch (Beeson's Lemma 11.2): if `c^2 = a^2 + a*b` with
 `(a,b,c) = (k^2, m^2-k^2, k*m)` for coprime `k<m`. Proved from scratch (coprime factors of a square
 are squares), so that branch's tile classification no longer depends on any citation.
 
-`Beeson3NotPrime.lean` machine-checks, axiom-clean, the arithmetic core of Beeson III's "no prime `N`
-when `3α+2β=π`" (Theorem 8, the `(2α,β,α+β)` target): given Beeson's first tiling equation
-`N + M² = 2K²` with `K ∣ N`, no **odd prime** `N` is possible (`K ∣ N` ⟹ `K ∈ {1,N}`; `K=1` ⟹
-`N ≤ 2`; `K=N` ⟹ `M² = N(2N−1)` ⟹ `N ∣ 1`). This removes the *arithmetic* half of the prime
-dichotomy's `3α+2β` citation for that target. No tiling theory.
+`Beeson3NotPrime.lean` machine-checks, axiom-clean, the arithmetic cores of Beeson III's "no prime
+`N` when `3α+2β=π`" for both **scalene** targets. `triquadratic_not_prime` (Theorem 8, `(2α,β,α+β)`):
+given the first tiling equation `N + M² = 2K²` with `K ∣ N`, no **odd prime** `N` is possible
+(`K ∣ N` ⟹ `K ∈ {1,N}`; `K=1` ⟹ `N ≤ 2`; `K=N` ⟹ `M² = N(2N−1)` ⟹ `N ∣ 1`).
+`fourcomp_not_prime` (Theorem 12, `(2α,α,2β)`): the second tiling equation forces the count to
+`N = (2f²−e²)(3f²−e²)k²` (`1 ≤ e < f`), a product of two factors `≥ 7` and `≥ 11`, hence composite
+(e.g. `(2,3,4)→77=7·11`, `(3,8,9)→442=17·26`). These remove the *arithmetic* half of the prime
+dichotomy's `3α+2β` citation for both scalene targets. No tiling theory.
 
 `BaseAlphaBetaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct** proof
 that no base-`(α+β)` isosceles triangle is `N`-tiled for prime `N` — **replacing Beeson III's
