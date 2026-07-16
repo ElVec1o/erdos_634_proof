@@ -240,7 +240,70 @@ $(125,125,198)$) and $N=70$ (base-$\alpha$, Remark~\ref{rem:seventy}) --- are st
 their values are treated as pending. We flag this plainly: for the base-$\beta$ target our
 $3\alpha+2\beta$ prime argument rests on either \cite[Thm.~14]{BeesonIII} (whose printed proof is
 unsound) or a per-value search, \emph{not} on a machine-checked general theorem --- the one genuine
-gap remaining in the prime dichotomy.
+gap remaining in the prime dichotomy --- though Theorem~\ref{thm:basebeta-e1} below now removes an
+infinite sub-family of it, and Remark~\ref{rem:nogo} explains why the method \cite{BeesonIII} used
+cannot repair the rest.
+\end{remark}
+
+\begin{theorem}[The base-$\beta$ family at $e=1$ does not tile]\label{thm:basebeta-e1}
+Let $f\ge2$ and let the tile be $(a,b,c)=(f,\,f^2-1,\,f^2)$ (the primitive $3\alpha+2\beta=\pi$ tile
+at $e=1$). Then the isosceles triangle with base angles $\beta$ and sides
+$(X,X,Y)=(f^3,\,f^3,\,3f^2-1)$ admits \emph{no} tiling by $N=3f^2-1$ copies of the tile. In
+particular the base-$\beta$ branch is closed for
+\[
+N=3f^2-1=11,\ 26,\ 47,\ 74,\ 107,\ 146,\ 191,\ 242,\dots
+\]
+--- an infinite family containing infinitely many of the at-risk primes; and for each such $N$,
+$(e,f,m)=(1,f,1)$ is the \emph{only} solution of $N=m^2(3f^2-e^2)$ with $1\le e<f$, $\gcd(e,f)=1$,
+so the entire base-$\beta$ sub-branch closes for those $N$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Write $\omega=\alpha/2$. The law of cosines gives $\cos\alpha=(2f^2-e^2)/(2f^2)$, hence
+$\sin\omega=e/(2f)$; as $1\le e<f$ places this strictly in $(0,\tfrac12)$, \emph{Niven's theorem}
+forces $\alpha/\pi$ irrational --- for every $(e,f)$, with no appeal to \cite{Laczkovich1995}
+(\texttt{tile\_alpha\_irrational}). Irrationality pins the vertex figures: a vertex
+$x\alpha+y\beta+z\gamma=k\pi$ forces $y+z=2k$ and $2x+z=3y$, so a $\pi$-vertex is $\{3\alpha,2\beta\}$
+or $\{\alpha,\beta,\gamma\}$, each base corner carries \emph{exactly one} tile (its $\beta$-vertex) and
+the apex \emph{exactly three} (\texttt{vertex\_pi}, \texttt{vertex\_beta\_corner},
+\texttt{vertex\_apex}). Each side of $ABC$ is partitioned into whole tile edges (a supporting line
+meets a convex tile in a face). At $e=1$, $m=1$ the base $Y=3f^2-1$ then admits, among coverings with
+at least two $c$-edges, the unique multiset $\{b,c,c\}$ (\texttt{base\_composition\_e1}); since the
+corner tile's $\beta$-vertex is flanked by $a$ and $c$ and $a\notin\{b,c\}$, the base reads $c,b,c$
+and each corner tile puts its $a$-edge on the equal side. Let $P_1,P_3$ be the interior base division
+points and $T_2$ the tile on the middle $b$-edge; $T_2$ carries $\alpha$ at exactly one of $P_1,P_3$
+and $\gamma$ at the other. But the corner tile's own $b$-edge has both endpoints on $\partial ABC$
+and is transversal there, so by the same edge arithmetic mod $f$ it is matched by a \emph{single}
+tile $T^*$ whose $b$-edge is exactly that segment; the type at $P_1$ cannot be
+$\{\alpha,\beta,\gamma\}$ (none of the three tiles meeting there can carry $\beta$), hence is
+$\{3\alpha,2\beta\}$, which contains no $\gamma$ --- forcing $T_2$ to carry $\alpha$ at $P_1$. The
+mirror argument at $P_3$ forces $\alpha$ there too, a contradiction.
+
+The four arithmetic/analytic pillars (irrationality via Niven, the three vertex enumerations, and the
+base composition) are machine-checked in Lean (\texttt{lean/BaseBetaE1.lean}, axiom-clean). The
+argument is sharp: it does \emph{not} touch the genuine $44$-tiling, which is this same family at
+$m=2$ --- there the base walk is $a,a,a,a,c,c,c,a$ and carries \emph{no} $b$-edge, so the driver of
+the contradiction is absent. One citation remains load-bearing at a single point
+(\cite[Lem.~6]{BeesonIII}, ``each side carries at least two $c$-edges'', used only to eliminate the
+one-$c$-edge base composition); for $f=2,3,4$ ($N=11,26,47$) the conclusion is independently
+confirmed by exhaustive search.
+\end{proof}
+
+\begin{remark}[Why the colouring method cannot close the rest]\label{rem:nogo}
+The residual gap ($e\ge2$) is not merely unproved by \cite[Thm.~14]{BeesonIII}: it is
+\emph{unprovable by that method}. Let $\eta=e^{i(\omega+\pi/2)}$, so that $f\eta^2+e\eta+f=0$ and
+every edge direction of every such tiling lies in $\langle\eta,-1\rangle$. Any $T$-junction-proof
+invariant of the shape $\sum_{\text{edges}}L\cdot\chi(\theta)$ with $\chi(-w)=-\chi(w)$ --- i.e.\
+exactly the $\Phi$/colouring method, and exactly Beeson's --- is equivalent to the master identity
+\[
+m\bigl(-c\,z^4+a\,z^3+b\,z^2+a\,z-c\bigr)=z^3(f-ez)P(z)+(fz-e)Q(z),
+\qquad P,Q\in\Z[z,z^{-1}],
+\]
+whose $z=\pm1$ specializations return exactly $M=m(f+e)$ and $-m(f-e)$. But that identity is
+\emph{solvable for every} $m$, with the explicit witness $P_0=mf(z^{-1}-z^{-3})$,
+$Q_0=m(ez^2-fz^3)$. Hence no invariant in this class can force $g\mid M$, for any $(e,f,m)$: the
+$\Phi$-method --- the engine of both Beeson's argument and of our own $2\pi/3$ theorem --- provably
+cannot decide the base-$\beta$ residue. Closing it requires genuinely non-linear input.
 \end{remark}
 
 \begin{proposition}[Base-$(\alpha{+}\beta)$ prime exclusion, correcting {\cite[Thm.~18]{BeesonIII}}]\label{prop:b3prime}

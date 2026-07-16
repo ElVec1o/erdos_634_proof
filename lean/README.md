@@ -28,6 +28,14 @@ is a **true implication** but its perfect-square hypothesis is *not* a genuine i
 The scalene targets (Thm 8, Thm 12) and the base-`(α+β)`/base-`α` targets (`BaseAlphaBetaPrime`,
 `IsoAlphaPrime`) are the four soundly machine-checked shapes. No tiling theory.
 
+`BaseBetaE1.lean` machine-checks, axiom-clean, the pillars of the **new base-`β` `e=1` no-go theorem**
+(paper Thm "The base-β family at e=1 does not tile", killing N = 3f²−1 = 11, 26, 47, 74, 107, 191, …):
+`tile_alpha_irrational` — **the Laczkovich citation is not needed**: `sin(α/2) = e/(2f)` lies strictly
+in (0,½) for 1≤e<f, so Niven's theorem (Mathlib) forces α/π irrational for *every* valid tile;
+`vertex_pi`, `vertex_beta_corner`, `vertex_apex` — the vertex-figure enumeration (each base corner
+carries exactly one tile, the apex exactly three); `base_composition_e1` — at e=1,m=1 the base
+`3f²−1` has the unique covering `{b,c,c}` among those with ≥2 c-edges.
+
 `IsoAlphaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct replacement**
 for Beeson III's Theorem 20 (base-`α` no-prime), whose proof depends on Theorem 19's `g ∣ M` — itself
 unsound (its `bc³(a+c)` bookkeeping is false: with `c=g²` it carries `g⁷`), resting further on the
