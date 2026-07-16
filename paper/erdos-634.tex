@@ -326,6 +326,30 @@ $\Phi$-method --- the engine of both Beeson's argument and of our own $2\pi/3$ t
 cannot decide the base-$\beta$ residue. Closing it requires genuinely non-linear input.
 \end{remark}
 
+\begin{remark}[Beeson's Theorem~14 is \emph{false}, not merely unsound]\label{rem:thm14false}
+The exhaustive engine settles the status of $g\mid M$ outright. The isosceles triangle
+$(24,24,33)$ with base angles $\beta$ \emph{is} tiled by $99$ copies of the tile $(2,3,4)$: this is
+the base-$\beta$ family at $(e,f,m)=(1,2,3)$, so $X=f^3m=24$, $Y=em(3f^2-e^2)=33$,
+$N=m^2(3f^2-e^2)=99$ and $M=(f+e)m=9$. The tiling was found by exact search and re-verified
+independently (congruence of all $99$ tiles, disjointness, containment, exact area) against a
+separately constructed instance. Its boundary base walk is the multiset $\{a^2,b^7,c^2\}$
+($2\cdot2+7\cdot3+2\cdot4=33$), consistent with $q_{\mathrm{base}}\equiv em\equiv1 \pmod 2$.
+
+But $g=\gcd(a,c)=\gcd(2,4)=2$ and $M=9$, so $g\nmid M$. Hence
+\[
+\textbf{\cite[Thm.~14]{BeesonIII}'s conclusion } g\mid M \textbf{ is FALSE},
+\]
+not merely unsoundly proved (Remark~\ref{rem:isobeta}); equivalently $f\mid m$ fails, here $2\nmid3$.
+Three consequences. (i) The base-$\beta$ prime exclusion cannot rest on Theorem~14 \emph{at all};
+only a per-value search remains, which is what we do. (ii) Our own base-$(\alpha{+}\beta)$ and
+base-$\alpha$ replacements (Propositions~\ref{prop:b3prime}, \ref{prop:isoalphaprime}) are unaffected:
+both were deliberately built to use \emph{no} $g\mid M$. (iii) The values whose exclusion had rested
+only on $g\mid M$ ($21,39,66,70$) were right to be demoted (Remarks~\ref{rem:seventy},
+\ref{rem:isobeta}); $21$ and $39$ are now excluded by exhaustive search instead, and had we trusted
+Theorem~14 the record would have been \emph{wrong}. Finally $N=99$ is itself a new realization: $99$
+is not a square, a sum of two squares, nor $2n^2,3n^2,6n^2$, so it is not commensurably realizable.
+\end{remark}
+
 \begin{remark}[What the $e\ge2$ residue costs, and where it now sits]\label{rem:e2}
 The $e\ge2$ residue ($N=23,59,71,83,131,167,\dots$) resists all three natural methods, and in two
 cases \emph{provably}:
@@ -354,11 +378,14 @@ $q_{\mathrm{equal}}\equiv0$, we have:
 \textbf{if the base carries no } b\textbf{-edge, then } f\mid em,\ \text{hence } f\mid m,
 \ \text{hence no tiling with } m=1 \ \text{--- for every } e\ \text{at once.}
 \]
-The only known member of the family, the $44$-tiling ($m=2$), indeed carries \emph{zero} $b$-edges on
-its entire boundary, consistent with this. Proving ``the base of a base-$\beta$ tiling never carries a
-$b$-edge'' would close the whole gap --- including the $e=1$ cases now resting on
-\cite[Lem.~6]{BeesonIII} --- and by Remark~\ref{rem:nogo} it cannot be proved by any linear
-edge-direction invariant. We leave it as the sharp open problem.
+The $44$-tiling ($m=2$) indeed carries \emph{zero} $b$-edges on its entire boundary, consistent with
+this. But Remark~\ref{rem:thm14false} now shows the converse direction is a dead end: the
+$99$-tiling has $f\nmid m$ and its base carries seven $b$-edges, so ``the base never carries a
+$b$-edge'' is \emph{false} in general, and the displayed implication --- whose hypothesis is
+equivalent to $f\mid m$ --- cannot be used to exclude $m=1$ without already knowing $f\mid m$, which
+is false. The $e\ge2$ residue therefore has \emph{no} known route: linear invariants, the census and
+Euler are provably vacuous, and the one arithmetic statement that would settle it is now known to be
+false. We record it as genuinely open and settle its members one at a time by exhaustive search.
 \end{remark}
 
 \begin{remark}[The colouring theorem is citation-free]\label{rem:colouring}
