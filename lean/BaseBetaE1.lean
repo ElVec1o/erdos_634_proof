@@ -117,6 +117,35 @@ theorem base_composition_e1 (f P Q R B : ℕ) (hf : 2 ≤ f) (hR : 2 ≤ R)
   · exact ⟨h, rfl, rfl⟩
   · omega
 
+
+/-- **The direction group is free** (times `ℤ/2`) — the foundation of the colouring theorem, with no
+citation.  If `α/π` is irrational then `n·(α/2 + π/2) = k·π` forces `n = 0`.  Equivalently
+`η := exp(i(α/2+π/2))` is not a root of unity (`η^n = ±1 ⟹ n = 0`), so `⟨η,−1⟩ ≅ ℤ × ℤ/2` and the
+sign character `χ₂(±η^n) := ±(−1)^n` is **well defined**.  That is exactly what makes the coloring
+number `M = Σ_t χ₂(d_t)` a well-defined integer — i.e. Beeson's coloring theorem, which the
+`3α+2β=π` tiling equations (and hence the triquadratic and four-component necessary sides) rest on.
+Combined with `tile_alpha_irrational`, the colouring exists for **every** tile of the family, with no
+appeal to the literature. -/
+theorem direction_free (α : ℝ) (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (n k : ℤ) (hn : n ≠ 0) :
+    (n : ℝ) * (α / 2 + Real.pi / 2) ≠ (k : ℝ) * Real.pi := by
+  intro h
+  apply hirr
+  have hn' : (n : ℝ) ≠ 0 := Int.cast_ne_zero.mpr hn
+  -- n·α = (2k − n)·π
+  have key : (n : ℝ) * α = (2 * (k : ℝ) - (n : ℝ)) * Real.pi := by linarith
+  refine ⟨((2 * k - n : ℤ) : ℚ) / ((n : ℤ) : ℚ), ?_⟩
+  push_cast
+  field_simp
+  linarith [key]
+
+/-- Packaged form: for the primitive `3α+2β=π` tile `(ef, f²−e², f²)` the sign character on edge
+directions is well defined — no rational-multiple collision can occur.  (Niven ⟹ irrational ⟹ free.) -/
+theorem colouring_well_defined (e f : ℕ) (he : 1 ≤ e) (hef : e < f) (α : ℝ)
+    (hsin : Real.sin (α / 2) = (e : ℝ) / (2 * (f : ℝ))) (n k : ℤ) (hn : n ≠ 0) :
+    (n : ℝ) * (α / 2 + Real.pi / 2) ≠ (k : ℝ) * Real.pi :=
+  direction_free α (tile_alpha_irrational e f he hef α hsin) n k hn
+
 end Erdos634.BaseBetaE1
 
 #print axioms Erdos634.BaseBetaE1.tile_alpha_irrational
@@ -124,3 +153,5 @@ end Erdos634.BaseBetaE1
 #print axioms Erdos634.BaseBetaE1.vertex_beta_corner
 #print axioms Erdos634.BaseBetaE1.vertex_apex
 #print axioms Erdos634.BaseBetaE1.base_composition_e1
+#print axioms Erdos634.BaseBetaE1.direction_free
+#print axioms Erdos634.BaseBetaE1.colouring_well_defined

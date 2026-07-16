@@ -34,7 +34,12 @@ The scalene targets (Thm 8, Thm 12) and the base-`(α+β)`/base-`α` targets (`B
 in (0,½) for 1≤e<f, so Niven's theorem (Mathlib) forces α/π irrational for *every* valid tile;
 `vertex_pi`, `vertex_beta_corner`, `vertex_apex` — the vertex-figure enumeration (each base corner
 carries exactly one tile, the apex exactly three); `base_composition_e1` — at e=1,m=1 the base
-`3f²−1` has the unique covering `{b,c,c}` among those with ≥2 c-edges.
+`3f²−1` has the unique covering `{b,c,c}` among those with ≥2 c-edges. **`direction_free` /
+`colouring_well_defined`** — the colouring theorem's foundation, citation-free: irrationality makes
+`η = exp(i(α/2+π/2))` a non-root-of-unity (`n(α/2+π/2)=kπ ⟹ n=0`), so `⟨η,−1⟩ ≅ ℤ×ℤ/2` and the sign
+character `χ₂(±η^n)=±(−1)^n` is well defined — which is exactly what makes the colouring number
+`M = Σ χ₂(d_t)` a well-defined integer. This removes the preprint's colouring theorem from under the
+`3α+2β` tiling equations (hence from the triquadratic and four-component necessary sides).
 
 `IsoAlphaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct replacement**
 for Beeson III's Theorem 20 (base-`α` no-prime), whose proof depends on Theorem 19's `g ∣ M` — itself

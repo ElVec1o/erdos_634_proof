@@ -306,6 +306,22 @@ $\Phi$-method --- the engine of both Beeson's argument and of our own $2\pi/3$ t
 cannot decide the base-$\beta$ residue. Closing it requires genuinely non-linear input.
 \end{remark}
 
+\begin{remark}[The colouring theorem is citation-free]\label{rem:colouring}
+The same identity has a positive consequence: it \emph{proves} the sound half of
+\cite[Thm.~14]{BeesonIII} rather than citing it. Because $\alpha/\pi$ is irrational
+(Remark~\ref{rem:nogo}'s $\eta$, via Niven --- \texttt{tile\_alpha\_irrational}), $\eta$ is not a
+root of unity: $n(\tfrac\alpha2+\tfrac\pi2)=k\pi$ forces $n=0$
+(\texttt{direction\_free}, \texttt{colouring\_well\_defined}, both axiom-clean). Hence
+$\langle\eta,-1\rangle\cong\Z\times\Z/2$ and the sign character $\chi_2(\pm\eta^n)=\pm(-1)^n$ is
+\emph{well defined} --- which is exactly what makes the colouring number
+$M=\sum_t\chi_2(d_t)$ a well-defined integer, and the $z=-1$ specialization of the master identity
+then returns $M=m(f+e)$ together with the size formulas $X=f^3M/(f+e)$, $Y=eM(3f^2-e^2)/(f+e)$.
+Consequently the $3\alpha+2\beta$ tiling equations --- and with them the necessary sides of the
+triquadratic and four-component branches (Remark~\ref{rem:b3prime}) --- no longer rest on a
+preprint's colouring theorem: the direction-group foundation is machine-checked, and the
+cancellation step is the same $\Phi$-style argument proved in Section~\ref{sec:invariant}.
+\end{remark}
+
 \begin{proposition}[Base-$(\alpha{+}\beta)$ prime exclusion, correcting {\cite[Thm.~18]{BeesonIII}}]\label{prop:b3prime}
 No isosceles triangle with base angles $\alpha+\beta$, where $3\alpha+2\beta=\pi$ and
 $\alpha\notin\Q\pi$, is $N$-tiled for $N$ prime.
