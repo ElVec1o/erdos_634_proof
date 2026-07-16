@@ -47,11 +47,12 @@ $F_1$ targets are \emph{exactly} Zhang's constructed families, closing the neces
 those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
 previously undetermined value up to $80$ with one pending exception: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
-$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $66$, $69$, or $76$ congruent triangles
+$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $69$, or $76$ congruent triangles
 ($46$, $62$, $78$ likewise, and $79$ --- a prime --- by the main theorem); triangles \emph{can} be cut
 into $44$, $77$ (by Beeson's four-component construction), and $80$ (a sum of two squares) congruent
-triangles; the value $70$, previously excluded via a theorem of \cite{BeesonIII} whose proof we show
-to be unsound, is undetermined pending a direct exhaustive search of its single surviving instance;
+triangles; the values $66$ and $70$, previously excluded via theorems of \cite{BeesonIII} whose proofs
+we show to be unsound, are undetermined pending direct exhaustive searches of their single surviving
+instances (in progress);
 and \emph{a triangle can be cut into $44$ congruent triangles} --- the isosceles $(16,16,22)$
 into $44$ copies of the $(2,3,4)$ tile, found by the search and verified exactly, to our
 knowledge the first tiling in the isosceles $3\alpha+2\beta=\pi$ cases and the smallest known
@@ -214,16 +215,32 @@ and is killed only by the unsound $g\mid M$. Unlike the base-$\alpha$ case
 (Proposition~\ref{prop:isoalphaprime}), no arithmetic contradiction follows; \emph{a general proof
 that these candidates do not tile is open}, and to our knowledge is not supplied by a correct
 argument in the literature. For the finitely many instances that bear on the values settled in this
-paper we resort to the direct corner-anchored search: for $N\le80$ the affected base-$\beta$
-candidates are $N=11$ (tile $(2,3,4)$, exhausted, $135$ nodes) and, sharing the same status as their
-Theorem-19 counterparts, $N=23,47,59,71$ (primes) and $N=39,66$ (composite); these searches are
-straightforward but were run only after the defect surfaced, and at the time of writing $N=11$ and
-$N=21$ (base-$\alpha$) have returned \textsc{exhausted}, with the remainder in progress. Any value
-whose sole surviving branch is base-$\beta$ (or base-$\alpha$) and whose search has not returned is
-deferred to the pending list (Remark~\ref{rem:seventy}). We flag this plainly: for the base-$\beta$
-target our $3\alpha+2\beta$ prime argument rests on either \cite[Thm.~14]{BeesonIII} (whose printed
-proof is unsound) or a per-value search, \emph{not} on a machine-checked general theorem --- the one
-genuine gap remaining in the prime dichotomy.
+paper we resort to the direct corner-anchored search. An exhaustive audit of $N\le80$ --- computing
+the equal side $X$ and base $Y$ exactly and retaining every candidate that passes all \emph{sound}
+necessary conditions ($X,Y\in\Z$, parity, range) --- shows the affected set is precisely
+\[
+\text{primes } \{11,23,47,59,71\}\ \text{(base-}\beta\text{)}\quad\text{and}\quad
+\text{composites } \{21,70\}\ \text{(base-}\alpha\text{)},\ \{39,66\}\ \text{(base-}\beta\text{)} .
+\]
+The engine settles them one at a time; all searches are exact and exhaustive:
+\begin{center}
+\begin{tabular}{llllr}
+$N$ & branch & tile & target & nodes\\ \hline
+$11$ & base-$\beta$  & $(2,3,4)$    & $(8,8,11)$      & $135$\\
+$21$ & base-$\alpha$ & $(2,3,4)$    & $(12,12,21)$    & $13\,659$\\
+$23$ & base-$\beta$  & $(6,5,9)$    & $(27,27,46)$    & $19\,677$\\
+$47$ & base-$\beta$  & $(4,15,16)$  & $(64,64,47)$    & $12\,440$\\
+$39$ & base-$\beta$  & $(12,7,16)$  & $(64,64,117)$   & $825\,724$\\
+$71$ & base-$\beta$  & $(10,21,25)$ & $(125,125,142)$ & $553\,417$\\
+\end{tabular}
+\end{center}
+\noindent each returning \textsc{exhausted, no tiling}. The remaining three --- $N=59$
+(base-$\beta$, $(20,9,25)$ on $(125,125,236)$), $N=66$ (base-$\beta$, $(15,16,25)$ on
+$(125,125,198)$) and $N=70$ (base-$\alpha$, Remark~\ref{rem:seventy}) --- are still searching, and
+their values are treated as pending. We flag this plainly: for the base-$\beta$ target our
+$3\alpha+2\beta$ prime argument rests on either \cite[Thm.~14]{BeesonIII} (whose printed proof is
+unsound) or a per-value search, \emph{not} on a machine-checked general theorem --- the one genuine
+gap remaining in the prime dichotomy.
 \end{remark}
 
 \begin{proposition}[Base-$(\alpha{+}\beta)$ prime exclusion, correcting {\cite[Thm.~18]{BeesonIII}}]\label{prop:b3prime}
@@ -1048,7 +1065,7 @@ equiconstructibility family for $(5,3,7)$ by exact arithmetic; Beeson had report
 unrealizable for this tile in unpublished floating-point work.)
 
 \begin{theorem}\label{thm:frontier3}
-No triangle can be cut into $51$, $55$, $56$, $57$, $60$, $62$, $63$, $66$, $69$, or $78$
+No triangle can be cut into $51$, $55$, $56$, $57$, $60$, $62$, $63$, $69$, or $78$
 congruent triangles.
 \end{theorem}
 
@@ -1058,7 +1075,7 @@ Theorem~\ref{thm:frontier}, together with \cite[Thm.~11.7]{BeesonIso} for the $\
 branch at the squarefree values $51$, $55$, $57$, $69$; the boundary algorithm (Lemmas 11.2--11.17 of
 \cite{BeesonIso}, \texttt{code/gamma2alpha.py}) for the $\gamma=2\alpha$ branch at $56$ and
 $60$; the boundary algorithm's single surviving candidate plus its $884921$-node exhaustion at
-$63$; and \cite[Thm.~7]{BeesonEq} at $66$.
+$63$. (The value $66$, previously listed here, is pending: Remark~\ref{rem:isobeta}.)
 \end{proof}
 
 \begin{remark}[The value $70$ --- retracted to pending]\label{rem:seventy}
@@ -1071,7 +1088,11 @@ regard $70$ as \emph{undetermined} pending the direct exhaustive search of the i
 in progress. The value $21$, whose analogous isosceles-$\alpha$ candidate (tile $(2,3,4)$, $M=5$,
 target $(12,12,21)$) was likewise previously killed only by the unsound $g\mid M$, \emph{is}
 excluded: the engine exhausts the instance ($13\,659$ nodes, no tiling), so
-Theorem~\ref{thm:frontier2} stands with its dependence on \cite[Thm.~19]{BeesonIII} removed.
+Theorem~\ref{thm:frontier2} stands with its dependence on \cite[Thm.~19]{BeesonIII} removed. The
+same applies to $N=39$, whose base-$\beta$ candidate (tile $(12,7,16)$ on $(64,64,117)$) the engine
+exhausts in $825\,724$ nodes: Theorem~\ref{thm:frontier2} therefore stands for $39$ as well,
+independently of \cite[Thm.~14]{BeesonIII}. Of the values whose exclusion rested on an unsound
+divisibility, only $66$ and $70$ remain pending (Remark~\ref{rem:isobeta}).
 \end{remark}
 
 \begin{remark}
@@ -1195,8 +1216,8 @@ results of \cite{BeesonIII, BeesonIso}, and the equilateral targets for incommen
 where Laczkovich has connected the possible $N$ to rational points on elliptic
 curves~\cite{LaczkovichEll}. With $7$ and $11$ excluded by \cite{BeesonSeven}, the primes by Theorem~\ref{thm:primefull},
 $14,15,21,22,30,33,35,38,39,42,46$ by Theorems \ref{thm:frontier} and~\ref{thm:frontier2},
-$51,55,56,57,60,62,63,66,69,78$ by Theorem~\ref{thm:frontier3} ($70$ pending,
-Remark~\ref{rem:seventy}), \emph{$44$ realizable} by
+$51,55,56,57,60,62,63,69,78$ by Theorem~\ref{thm:frontier3} ($66$ and $70$ pending,
+Remarks~\ref{rem:isobeta} and~\ref{rem:seventy}), \emph{$44$ realizable} by
 Theorem~\ref{thm:44}, $77$ realized by Beeson's four-component construction \cite{BeesonIII},
 $28$ realized by his triquadratic tilings \cite{BeesonIII}, and the remaining values
 commensurably realized ($45,48,49,50,52,53,54,58,61,64,65,68,72,73,74,75$) or prime
