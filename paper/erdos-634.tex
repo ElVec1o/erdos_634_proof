@@ -245,17 +245,21 @@ infinite sub-family of it, and Remark~\ref{rem:nogo} explains why the method \ci
 cannot repair the rest.
 \end{remark}
 
-\begin{theorem}[The base-$\beta$ family at $e=1$ does not tile]\label{thm:basebeta-e1}
+\begin{theorem}[The base-$\beta$ family at $e=1$]\label{thm:basebeta-e1}
 Let $f\ge2$ and let the tile be $(a,b,c)=(f,\,f^2-1,\,f^2)$ (the primitive $3\alpha+2\beta=\pi$ tile
 at $e=1$). Then the isosceles triangle with base angles $\beta$ and sides
-$(X,X,Y)=(f^3,\,f^3,\,3f^2-1)$ admits \emph{no} tiling by $N=3f^2-1$ copies of the tile. In
-particular the base-$\beta$ branch is closed for
-\[
-N=3f^2-1=11,\ 26,\ 47,\ 74,\ 107,\ 146,\ 191,\ 242,\dots
-\]
---- an infinite family containing infinitely many of the at-risk primes; and for each such $N$,
-$(e,f,m)=(1,f,1)$ is the \emph{only} solution of $N=m^2(3f^2-e^2)$ with $1\le e<f$, $\gcd(e,f)=1$,
-so the entire base-$\beta$ sub-branch closes for those $N$.
+$(X,X,Y)=(f^3,\,f^3,\,3f^2-1)$ admits \emph{no} tiling by $N=3f^2-1$ copies of the tile, in each of
+the following cases:
+\begin{enumerate}
+\item[(i)] $f=2$ (i.e.\ $N=11$) --- \emph{unconditionally};
+\item[(ii)] $f\ge3$ --- \emph{conditionally on} \cite[Lem.~6]{BeesonIII} (``every side of $ABC$
+carries at least two $c$-edges''), which we have not verified and which we flag as a real risk in
+Remark~\ref{rem:lem6}.
+\end{enumerate}
+In case (ii) the family is $N=3f^2-1=26,\,47,\,74,\,107,\,146,\,191,\,242,\dots$, and for each such
+$N$ the triple $(e,f,m)=(1,f,1)$ is the \emph{only} solution of $N=m^2(3f^2-e^2)$ with $1\le e<f$,
+$\gcd(e,f)=1$, so the whole base-$\beta$ sub-branch closes for those $N$ --- conditionally.
+Independently, $N=11,26,47$ are confirmed by exhaustive search.
 \end{theorem}
 
 \begin{proof}[Proof sketch]
@@ -283,11 +287,27 @@ The four arithmetic/analytic pillars (irrationality via Niven, the three vertex 
 base composition) are machine-checked in Lean (\texttt{lean/BaseBetaE1.lean}, axiom-clean). The
 argument is sharp: it does \emph{not} touch the genuine $44$-tiling, which is this same family at
 $m=2$ --- there the base walk is $a,a,a,a,c,c,c,a$ and carries \emph{no} $b$-edge, so the driver of
-the contradiction is absent. One citation remains load-bearing at a single point
-(\cite[Lem.~6]{BeesonIII}, ``each side carries at least two $c$-edges'', used only to eliminate the
-one-$c$-edge base composition); for $f=2,3,4$ ($N=11,26,47$) the conclusion is independently
-confirmed by exhaustive search.
+the contradiction is absent.
 \end{proof}
+
+\begin{remark}[Exactly where the $e=1$ argument is conditional]\label{rem:lem6}
+The step ``the base is $\{b,c,c\}$'' is where \cite[Lem.~6]{BeesonIII} enters, and it is
+load-bearing. At $e=1$, $m=1$ the congruence $Q\equiv1\pmod f$ and the length $Y=3f^2-1$ leave
+\emph{three} compositions, not one:
+\[
+\{b,c,c\},\qquad \{a^{f},b,c\},\qquad \{a^{2f},b\}.
+\]
+A $\gamma$-trap argument (no boundary junction carries $\gamma$ on both sides, so only a $c$-edge can
+leave the $\gamma$-state) shows citation-free that every side carries \emph{at least one} $c$-edge,
+killing $\{a^{2f},b\}$; and for $f=2$ the corner-chord forcing kills the rest, giving case (i)
+unconditionally. But $\{a^{f},b,c\}$ --- e.g.\ the word $a\,c\,b\,a\,a$ at $f=3$, of length
+$3+9+8+3+3=26=Y$ --- survives every citation-free constraint we have; only Lemma~6's ``at least
+\emph{two} $c$-edges'' removes it. We flag this prominently: \cite{BeesonIII} is the paper whose
+Lemma~8 we show to be \emph{false} (Remark~\ref{rem:b3prime}) and whose Theorems~14, 18, 19, 20 we
+show to be unsound. We therefore do not regard case (ii) as settled, and record $N=107,191,\dots$
+(the $f\ge5$ primes of this family) as resting on an unverified citation rather than on a proof of
+ours.
+\end{remark}
 
 \begin{remark}[Why the colouring method cannot close the rest]\label{rem:nogo}
 The residual gap ($e\ge2$) is not merely unproved by \cite[Thm.~14]{BeesonIII}: it is
@@ -304,6 +324,41 @@ whose $z=\pm1$ specializations return exactly $M=m(f+e)$ and $-m(f-e)$. But that
 $Q_0=m(ez^2-fz^3)$. Hence no invariant in this class can force $g\mid M$, for any $(e,f,m)$: the
 $\Phi$-method --- the engine of both Beeson's argument and of our own $2\pi/3$ theorem --- provably
 cannot decide the base-$\beta$ residue. Closing it requires genuinely non-linear input.
+\end{remark}
+
+\begin{remark}[What the $e\ge2$ residue costs, and where it now sits]\label{rem:e2}
+The $e\ge2$ residue ($N=23,59,71,83,131,167,\dots$) resists all three natural methods, and in two
+cases \emph{provably}:
+\begin{itemize}
+\item \textbf{Linear/colouring invariants} --- dead by Remark~\ref{rem:nogo}.
+\item \textbf{$b$-edge census.} On a maximal segment of length $L$ the two sides carry $q_1\equiv q_2
+\pmod f$ (both $\equiv -e^{-2}L$), and the entire census --- in \emph{every} modulus, and in its
+per-direction refinement --- is a formal consequence of the single parity identity
+$N(a+b+c)\equiv2X+Y \pmod 2$, valid for all $(e,f,m)$. So no congruence of this type can bite.
+\item \textbf{Euler / vertex counting.} For any such tiling $V-E+F=2$ is \emph{identically} the sum
+of the three corner identities $\#\alpha=\#\beta=\#\gamma=N$; the vertex-type system collapses to
+$Q_{013}=1+P_{320}+2Q_{640}+Q_{431}$ and $3P_{320}+P_{111}+6Q_{640}+4Q_{431}+2Q_{222}=N-3$, which is
+feasible for every $e\ge2$, $m=1$ target. So Euler carries no information here.
+\end{itemize}
+What \emph{is} gained is citation-free structure, valid for all $(e,f,m)$ and validated against the
+$44$-tiling: (a) \emph{$\gamma$-trap} --- no boundary junction carries $\gamma$ on both sides, hence
+every side of $ABC$ carries at least one $c$-edge, and at $m=1$ \emph{neither equal side carries any
+$b$-edge}, so all boundary $b$-edges lie on the base; (b) \emph{corner parallelogram} --- the unique
+$\beta$-corner tile $T_B$ has its $b$-edge a chord $[P,Q]$ matched by a single tile $T_3$ whose
+$\alpha,\gamma$ are swapped, so $T_B\cup T_3$ is a parallelogram with sides $a,c$; consequently the
+first two and last two base edges, and the first two edges of each equal side, lie in $\{a,c\}$.
+
+This isolates the residue to one clean statement. Since $q_{\mathrm{base}}\equiv em \pmod f$ while
+$q_{\mathrm{equal}}\equiv0$, we have:
+\[
+\textbf{if the base carries no } b\textbf{-edge, then } f\mid em,\ \text{hence } f\mid m,
+\ \text{hence no tiling with } m=1 \ \text{--- for every } e\ \text{at once.}
+\]
+The only known member of the family, the $44$-tiling ($m=2$), indeed carries \emph{zero} $b$-edges on
+its entire boundary, consistent with this. Proving ``the base of a base-$\beta$ tiling never carries a
+$b$-edge'' would close the whole gap --- including the $e=1$ cases now resting on
+\cite[Lem.~6]{BeesonIII} --- and by Remark~\ref{rem:nogo} it cannot be proved by any linear
+edge-direction invariant. We leave it as the sharp open problem.
 \end{remark}
 
 \begin{remark}[The colouring theorem is citation-free]\label{rem:colouring}
