@@ -240,29 +240,18 @@ $(125,125,198)$) and $N=70$ (base-$\alpha$, Remark~\ref{rem:seventy}) --- are st
 their values are treated as pending. We flag this plainly: for the base-$\beta$ target our
 $3\alpha+2\beta$ prime argument rests on either \cite[Thm.~14]{BeesonIII} (whose printed proof is
 unsound) or a per-value search, \emph{not} on a machine-checked general theorem --- the one genuine
-gap remaining in the prime dichotomy --- though Theorem~\ref{thm:basebeta-e1} below now removes an
-infinite sub-family of it, and Remark~\ref{rem:nogo} explains why the method \cite{BeesonIII} used
-cannot repair the rest.
+gap remaining in the prime dichotomy --- Theorem~\ref{thm:basebeta-e1} removes $N=11$
+unconditionally, Remark~\ref{rem:lem6} isolates the $e=1$, $f\ge3$ structure, and
+Remark~\ref{rem:nogo} explains why the method \cite{BeesonIII} used cannot repair the rest.
 \end{remark}
 
-\begin{theorem}[The base-$\beta$ family at $e=1$]\label{thm:basebeta-e1}
-Let $f\ge2$ and let the tile be $(a,b,c)=(f,\,f^2-1,\,f^2)$ (the primitive $3\alpha+2\beta=\pi$ tile
-at $e=1$). Then the isosceles triangle with base angles $\beta$ and sides
-$(X,X,Y)=(f^3,\,f^3,\,3f^2-1)$ admits \emph{no} tiling by $N=3f^2-1$ copies of the tile, in each of
-the following cases:
-\begin{enumerate}
-\item[(i)] $f=2$ (i.e.\ $N=11$) --- \emph{unconditionally};
-\item[(ii)] $f\ge3$ --- \emph{conditionally on} \cite[Lem.~6]{BeesonIII} (``every side of $ABC$
-carries at least two $c$-edges''), which we have not verified and which we flag as a real risk in
-Remark~\ref{rem:lem6}.
-\end{enumerate}
-In case (ii) the family is $N=3f^2-1=26,\,47,\,74,\,107,\,146,\,191,\,242,\dots$, and for each such
-$N$ the triple $(e,f,m)=(1,f,1)$ is the \emph{only} solution of $N=m^2(3f^2-e^2)$ with $1\le e<f$,
-$\gcd(e,f)=1$, so the whole base-$\beta$ sub-branch closes for those $N$ --- conditionally.
-Independently, $N=11,26,47$ are confirmed by exhaustive search.
+\begin{theorem}[The base-$\beta$ family at $e=1$, $f=2$]\label{thm:basebeta-e1}
+The isosceles triangle with base angles $\beta$ and sides $(8,8,11)$ admits no tiling by $N=11$
+copies of the tile $(2,3,4)$. Consequently the base-$\beta$ branch is closed for $N=11$,
+unconditionally.
 \end{theorem}
 
-\begin{proof}[Proof sketch]
+\begin{proof}
 Write $\omega=\alpha/2$. The law of cosines gives $\cos\alpha=(2f^2-e^2)/(2f^2)$, hence
 $\sin\omega=e/(2f)$; as $1\le e<f$ places this strictly in $(0,\tfrac12)$, \emph{Niven's theorem}
 forces $\alpha/\pi$ irrational --- for every $(e,f)$, with no appeal to \cite{Laczkovich1995}
@@ -270,44 +259,45 @@ forces $\alpha/\pi$ irrational --- for every $(e,f)$, with no appeal to \cite{La
 $x\alpha+y\beta+z\gamma=k\pi$ forces $y+z=2k$ and $2x+z=3y$, so a $\pi$-vertex is $\{3\alpha,2\beta\}$
 or $\{\alpha,\beta,\gamma\}$, each base corner carries \emph{exactly one} tile (its $\beta$-vertex) and
 the apex \emph{exactly three} (\texttt{vertex\_pi}, \texttt{vertex\_beta\_corner},
-\texttt{vertex\_apex}). Each side of $ABC$ is partitioned into whole tile edges (a supporting line
-meets a convex tile in a face). At $e=1$, $m=1$ the base $Y=3f^2-1$ then admits, among coverings with
-at least two $c$-edges, the unique multiset $\{b,c,c\}$ (\texttt{base\_composition\_e1}); since the
-corner tile's $\beta$-vertex is flanked by $a$ and $c$ and $a\notin\{b,c\}$, the base reads $c,b,c$
-and each corner tile puts its $a$-edge on the equal side. Let $P_1,P_3$ be the interior base division
-points and $T_2$ the tile on the middle $b$-edge; $T_2$ carries $\alpha$ at exactly one of $P_1,P_3$
-and $\gamma$ at the other. But the corner tile's own $b$-edge has both endpoints on $\partial ABC$
-and is transversal there, so by the same edge arithmetic mod $f$ it is matched by a \emph{single}
-tile $T^*$ whose $b$-edge is exactly that segment; the type at $P_1$ cannot be
-$\{\alpha,\beta,\gamma\}$ (none of the three tiles meeting there can carry $\beta$), hence is
-$\{3\alpha,2\beta\}$, which contains no $\gamma$ --- forcing $T_2$ to carry $\alpha$ at $P_1$. The
-mirror argument at $P_3$ forces $\alpha$ there too, a contradiction.
+\texttt{vertex\_apex}); in particular a $\pi$-vertex carries at most one $\gamma$, since
+$2\gamma=\pi+\alpha>\pi$. Each side of $ABC$ is partitioned into whole tile edges (a supporting line
+meets a convex tile in a face).
 
-The four arithmetic/analytic pillars (irrationality via Niven, the three vertex enumerations, and the
-base composition) are machine-checked in Lean (\texttt{lean/BaseBetaE1.lean}, axiom-clean). The
-argument is sharp: it does \emph{not} touch the genuine $44$-tiling, which is this same family at
-$m=2$ --- there the base walk is $a,a,a,a,c,c,c,a$ and carries \emph{no} $b$-edge, so the driver of
-the contradiction is absent.
+Two citation-free constraints now cut the base. (a) \emph{Corner parallelogram}: the unique
+$\beta$-corner tile $T_B$ has its $b$-edge a chord $[P,Q]$, matched (by the mod-$f$ edge arithmetic)
+by a single tile $T'$ whose $\alpha,\gamma$ are swapped, so $T_B\cup T'$ is a parallelogram with sides
+$a,c$; hence $P,Q$ are $(1,1,1)$-vertices whose third tile carries $\beta$, and the second base edge
+from each corner lies in $\{a,c\}$. So a $b$-edge can occupy only positions $3,\dots,k-2$ of a base of
+$k$ edges. (b) \emph{$\gamma$-trap}: no boundary junction carries $\gamma$ on both sides, and only a
+$c$-edge leaves the $\gamma$-state, so every side carries at least one $c$-edge.
+
+At $e=1$, $m=1$ the base $Y=3f^2-1$ has $q_{\mathrm{base}}\equiv1\pmod f$, and the only compositions
+are $B_0=\{b,c,c\}$ ($k=3$), $B_1=(a^{f},b,c)$ ($k=f+2$) and $B_2=(a^{2f},b)$ ($k=2f+1$). $B_2$ dies
+by (b). $B_0$ dies by (a) for \emph{every} $f$: its single $b$ would need a position in
+$3,\dots,1$. At $f=2$, $B_1$ also dies by (a): $k=4$ leaves positions $3,\dots,2$. So no base
+survives, and $N=11$ admits no tiling. \qedhere
 \end{proof}
 
-\begin{remark}[Exactly where the $e=1$ argument is conditional]\label{rem:lem6}
-The step ``the base is $\{b,c,c\}$'' is where \cite[Lem.~6]{BeesonIII} enters, and it is
-load-bearing. At $e=1$, $m=1$ the congruence $Q\equiv1\pmod f$ and the length $Y=3f^2-1$ leave
-\emph{three} compositions, not one:
-\[
-\{b,c,c\},\qquad \{a^{f},b,c\},\qquad \{a^{2f},b\}.
-\]
-A $\gamma$-trap argument (no boundary junction carries $\gamma$ on both sides, so only a $c$-edge can
-leave the $\gamma$-state) shows citation-free that every side carries \emph{at least one} $c$-edge,
-killing $\{a^{2f},b\}$; and for $f=2$ the corner-chord forcing kills the rest, giving case (i)
-unconditionally. But $\{a^{f},b,c\}$ --- e.g.\ the word $a\,c\,b\,a\,a$ at $f=3$, of length
-$3+9+8+3+3=26=Y$ --- survives every citation-free constraint we have; only Lemma~6's ``at least
-\emph{two} $c$-edges'' removes it. We flag this prominently: \cite{BeesonIII} is the paper whose
-Lemma~8 we show to be \emph{false} (Remark~\ref{rem:b3prime}) and whose Theorems~14, 18, 19, 20 we
-show to be unsound. We therefore do not regard case (ii) as settled, and record $N=107,191,\dots$
-(the $f\ge5$ primes of this family) as resting on an unverified citation rather than on a proof of
-ours.
+\begin{remark}[The $e=1$, $f\ge3$ cases are \emph{not} settled]\label{rem:lem6}
+For $f\ge3$ the composition $B_1=(a^{f},b,c)$ survives every citation-free constraint above, and it is
+then the \emph{unique} possible base. Two consequences, which we state plainly against our own earlier
+claim. First, $B_1$ carries exactly \emph{one} $c$-edge; so \cite[Lem.~6]{BeesonIII} (``every side
+carries at least two $c$-edges'') removes it at a stroke --- but that citation is doing \emph{all} of
+the work, and any tiling of this family would \emph{refute} Lemma~6 rather than be excluded by it, so
+invoking it is tantamount to assuming the conclusion. Given that \cite{BeesonIII} is the source whose
+Lemma~8 we show false, whose Theorems~18--20 we show unsound, and whose Theorem~14 we show to be
+outright \emph{false} (Remark~\ref{rem:thm14false}), we do not invoke it. Second, our own forcing
+argument targets $B_0$, which cannot occur in any case, so it says nothing about $f\ge3$. We
+therefore record $N=26,47,74,107,146,191,\dots$ as \emph{open} in this branch, with $N=26,47,74$
+independently excluded by exhaustive search.
+
+What survives citation-free is a sharp structure theorem: \emph{if} an $e=1$, $m=1$, $f\ge3$
+base-$\beta$ tiling exists, then $q_{\mathrm{equal}}=0$, its base is exactly $(a^{f},b,c)$ with
+$E_1=E_k=a$ and the $c$-edge interior, both equal sides begin and end with $c$, and every base
+junction is a $(1,1,1)$-vertex. This is the object to attack.
 \end{remark}
+
+
 
 \begin{remark}[Why the colouring method cannot close the rest]\label{rem:nogo}
 The residual gap ($e\ge2$) is not merely unproved by \cite[Thm.~14]{BeesonIII}: it is
@@ -383,9 +373,18 @@ this. But Remark~\ref{rem:thm14false} now shows the converse direction is a dead
 $99$-tiling has $f\nmid m$ and its base carries seven $b$-edges, so ``the base never carries a
 $b$-edge'' is \emph{false} in general, and the displayed implication --- whose hypothesis is
 equivalent to $f\mid m$ --- cannot be used to exclude $m=1$ without already knowing $f\mid m$, which
-is false. The $e\ge2$ residue therefore has \emph{no} known route: linear invariants, the census and
-Euler are provably vacuous, and the one arithmetic statement that would settle it is now known to be
-false. We record it as genuinely open and settle its members one at a time by exhaustive search.
+is false. A fourth method also fails, and provably: \emph{boundary counting}. Each side $S$ of $ABC$, cut into
+$k_S$ whole edges, forces at least $2k_S-1$ tiles to meet it (the $k_S$ inner tiles, plus a distinct
+``middle'' tile at each of the $k_S-1$ junctions, since a triangle has no two collinear edges); this
+is exactly tight on the $44$-tiling (base $k=8$, $15=2\cdot8-1$ tiles). But at $m=1$ the boundary is
+\emph{minimal} --- for $e=1$ the least feasible total is $\sum k_S=3f+2$ --- so counting sees only
+$O(f)$ of the $N=\Theta(f^2)$ tiles, and $\sum(2k_S-1)=6f+1$ exceeds $N=3f^2-1$ only at $f=2$, the
+case already closed. The ratio $(6f+1)/(3f^2-1)\to0$: $m=1$ is the case \emph{least} constrained by
+counting, not the most.
+
+So the residue has \emph{no} known route: linear invariants, the census, Euler and counting are all
+provably vacuous, and the one arithmetic statement that would settle it ($f\mid m$) is now known to
+be false. We record it as genuinely open and settle its members one at a time by exhaustive search.
 \end{remark}
 
 \begin{remark}[The colouring theorem is citation-free]\label{rem:colouring}
