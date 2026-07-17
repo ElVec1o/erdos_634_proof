@@ -76,7 +76,12 @@ distance `b` — and the `e²` leftover of that `c`-edge is never exactly covera
 far-side edge pierces the middle tile's far `β`-corner, with continuation `{α,γ}` or `{3α,β}`.
 Validated positionally on the genuine 44-tiling: `V = (10, 2√15)` is pierced by a straight `b`-edge,
 sector `β + {α,γ}`. The first *interior* forcing in the branch — every hypothetical thick-regime
-tiling (`N = 59` included) must contain it. The step that fails at `m ≥ 2` is the first
+tiling (`N = 59` included) must contain it. **`far_near_disjoint` / `far_is_bpow` / `b_not_dvd_fsq`**
+machine-check the **alignment theorem**: at `e ≥ 2, m = 1` the mismatch ray's near side is `T2`'s single
+unsplittable `c`-edge `[0, f²]`, its far side is exactly `b^f` (no common junction in `(0, f²)`; the
+only rep of `f·b` with `n_b ≥ 1` is `(0,f,0)`), and `V = f²` is strictly pierced (`b ∤ f²`). So the
+entire interior mismatch ray of any hypothetical thick tiling is pinned to `b^f` out to length `f·b`,
+uniform in `(e,f)` — the first *extended interior* forcing. The step that fails at `m ≥ 2` is the first
 one (`Q ≡ em mod f`, so `j` may be negative): the genuine 44-tiling has base walk `aaaaccca`,
 i.e. `j = −1`, and the 99-tiling has `aabbbbbbbcc`, i.e. `j = 2`. Both satisfy `R ≥ 1`. So the branch
 is now reduced to the **thick regime `f ≤ 2e`**, where the smallest open members (`N = 59`, `(4,5)`)
