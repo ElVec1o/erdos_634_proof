@@ -537,7 +537,9 @@ parallelogram have the multiset corollaries $R\ge1$ on every side, $Q_{\mathrm{b
 $Q_{\mathrm{side}}\le k-2$ ($k$ the number of edges of the walk), and the engine now prunes any
 partial boundary walk that fits no surviving multiset (prune P5). The rule was validated positionally
 on all six sides of the two genuine tilings before use --- the $44$-tiling's base $aaaaccca$ and the
-$99$-tiling's base $aabbbbbbbcc$, which is exactly tight for $Q\le k-4$ --- and the corner rule is
+$99$-tiling's base $aabbbbbbbcc$, which is exactly tight for $Q\le k-4$ --- the strengthened engine
+re-finds the $44$-tiling from scratch ($852{,}093$ nodes; the found tiling passes the independent
+verifier: congruence, exact area, containment, pairwise disjointness) --- and the corner rule is
 applied only after checking that the tile's $b$-edge is unsplittable ($n_a a + n_c c = b$ has no
 solution), which is what forces the parallelogram. For $N=59$ this cuts the admissible bases from
 seven to four, for $N=66$ from four to three.
