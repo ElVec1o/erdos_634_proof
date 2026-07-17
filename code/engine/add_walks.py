@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Append the P5 walk section (gamma-trap + corner-parallelogram rule) to an exact instance file.
 
+The section carries the BASE SIDE INDEX, because the apex-down flip (flip_inst.py) permutes which
+side of `target` is the base: standard orientation => base is side 0; flipped => base is side 1.
+
 A side of the target is partitioned into whole tile edges, so its edge multiset (#a,#b,#c) is a
 "walk" solving P*a + Q*b + R*c = |side|.  The gamma-injection lemma (paper; BaseBetaWalks.lean)
 forces R >= 1 on EVERY side, at every scale m: each a-edge tile and each b-edge tile puts a gamma at
@@ -15,7 +18,7 @@ theorems, which are corollaries of it:
   base_b_bound  -- the base's b-count Q = e+f*j has j(f-e) <= e-1
 Both are asserted below against the emitted lists, so a bug in either direction is caught here.
 
-Usage:  add_walks.py <in.txt> <out.txt> <Ybase> <Xside> <a> <b> <c> [e f m]
+Usage:  add_walks.py <in.txt> <out.txt> <Ybase> <Xside> <a> <b> <c> [e f m] [--baseside K]
 """
 import sys
 
@@ -32,9 +35,16 @@ def walks(target, a, b, c):
 
 
 def main():
-    if len(sys.argv) not in (8, 11):
+    argv = list(sys.argv)
+    baseside = 0
+    if "--baseside" in argv:
+        i = argv.index("--baseside")
+        baseside = int(argv[i + 1])
+        del argv[i:i + 2]
+    if len(argv) not in (8, 11):
         print(__doc__)
         sys.exit(1)
+    sys.argv = argv
     src, dst = sys.argv[1], sys.argv[2]
     Y, X, a, b, c = (int(v) for v in sys.argv[3:8])
     efm = tuple(int(v) for v in sys.argv[8:11]) if len(sys.argv) == 11 else None
@@ -83,14 +93,15 @@ def main():
         body = fh.read().rstrip()
     with open(dst, "w") as fh:
         fh.write(body + "\nWALKS\n")
+        fh.write("%d\n" % baseside)
         fh.write("%d\n" % len(base))
         for w in base:
             fh.write("%d %d %d\n" % w)
         fh.write("%d\n" % len(side))
         for w in side:
             fh.write("%d %d %d\n" % w)
-    print("  base walks %d -> %d kept   side walks %d -> %d kept"
-          % (len(allb), len(base), len(alls), len(side)))
+    print("  baseside=%d   base walks %d -> %d kept   side walks %d -> %d kept"
+          % (baseside, len(allb), len(base), len(alls), len(side)))
     print("  base kept: %s" % (base,))
     print("  side kept: %s" % (side,))
 

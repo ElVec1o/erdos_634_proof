@@ -393,6 +393,7 @@ static bool containment_ok(const Poly& tri, const Poly& poly) {
 // of their sides satisfy #c >= 1.  Absent from the instance file => prune disabled (bit-identical to
 // the previous engine).
 static bool WALK_PRUNE = false;
+static int WALK_BASESIDE = 0;   // which side index of `target` is the BASE (flip permutes it)
 static std::vector<std::array<long, 3>> WALK_BASE, WALK_SIDE;
 
 // ------------------------------------------------------------------------------ search ------
@@ -410,9 +411,10 @@ struct Search {
     bool has_found = false;
     time_t t0 = 0, last_log = 0;
 
-    // side 0 = (target[0],target[1]) = the base; sides 1,2 = the equal sides
+    // side WALK_BASESIDE = the base; the other two are the equal sides (the apex-down flip
+    // permutes these, so the index is carried in the instance file rather than assumed)
     bool walk_ok(int s) const {
-        const std::vector<std::array<long, 3>>& allowed = (s == 0) ? WALK_BASE : WALK_SIDE;
+        const std::vector<std::array<long, 3>>& allowed = (s == WALK_BASESIDE) ? WALK_BASE : WALK_SIDE;
         for (size_t i = 0; i < allowed.size(); i++)
             if (walk[s][0] <= allowed[i][0] && walk[s][1] <= allowed[i][1] &&
                 walk[s][2] <= allowed[i][2])
@@ -681,6 +683,7 @@ static bool make_instance_file(const std::string& path, Tile& tile, Poly& target
     // optional trailing "WALKS <nb> <nb triples> <ns> <ns triples>" section (P5)
     char tok[4096];
     if (fscanf(fp, "%4095s", tok) == 1 && std::string(tok) == "WALKS") {
+        WALK_BASESIDE = (int)rd_long();
         long nb = rd_long();
         for (long i = 0; i < nb; i++) {
             long p = rd_long(), q = rd_long(), r = rd_long();
@@ -692,7 +695,7 @@ static bool make_instance_file(const std::string& path, Tile& tile, Poly& target
             WALK_SIDE.push_back({p, q, r});
         }
         WALK_PRUNE = true;
-        fprintf(stderr, "P5 walk prune ON: %ld base walks, %ld side walks\n", nb, ns);
+        fprintf(stderr, "P5 walk prune ON: baseside=%d, %ld base walks, %ld side walks\n", WALK_BASESIDE, nb, ns);
     }
     fclose(fp);
     return true;
