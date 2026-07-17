@@ -41,6 +41,28 @@ character `χ₂(±η^n)=±(−1)^n` is well defined — which is exactly what m
 `M = Σ χ₂(d_t)` a well-defined integer. This removes the preprint's colouring theorem from under the
 `3α+2β` tiling equations (hence from the triquadratic and four-component necessary sides).
 
+`BaseBetaWalks.lean` machine-checks, axiom-clean, the **boundary-walk classification of the base-`β`
+target at `m = 1`** (paper Thm "Boundary walks…"), the first statement in this branch that is uniform
+in `e`. A walk along a side is a triple `(P,Q,R)` with `P·a + Q·b + R·c = (side length)`. Both walk
+sets are cut out by the *same* linear form `⟨e,f,1⟩` — the base at level `2e`, the equal side at
+level `f`: `base_walk_param` (`Q = e+fj`, `P = je+fp`, `pe+jf+R = 2e`) and `side_walk_param`
+(`Q = fq`, `P = qe+fp`, `pe+qf+R = f`). Since a level bounds its solutions, the walk set is finite
+and explicit for every `(e,f)`. In the **thin regime `f > 2e`** it collapses: `base_trichotomy` — the
+base is exactly one of `{b^e, c^{2e}}`, `{a^f, b^e, c^e}`, `{a^{2f}, b^e}`, so it carries **exactly
+`e` `b`-edges**; `side_dichotomy` — each equal side is `{a^e, b^f}` or `{a^{fp}, c^{f−pe}}`. This
+generalizes `BaseBetaE1.base_composition_e1` (the case `e = 1`, and there only under an extra
+"≥ 2 `c`-edges" hypothesis) to the infinite family `e=1, f≥3`; `e=2, f≥5`; `e=4, f≥9`; … covering the
+primes `N = 47, 71, 107, 191, 227, 239, 359, …`. Feeding in the paper's **γ-trap** (`R ≥ 1`: every
+side carries a `c`-edge, since each `a`- and `b`-edge tile puts a `γ` at a junction, no `γ` sits at a
+base corner or the apex, and a `π`-vertex admits at most one `γ` — `BaseBetaE1.vertex_pi/
+vertex_beta_corner/vertex_apex`) gives `base_trichotomy_cfree` and `side_no_b`: for `f > 2e` at
+`m = 1` the base is `{b^e, c^{2e}}` or `{a^f, b^e, c^e}` and **the equal sides carry no `b`-edge** —
+the `e ≥ 2` analogue of the `e = 1` structure theorem. The step that fails at `m ≥ 2` is the first
+one (`Q ≡ em mod f`, so `j` may be negative): the genuine 44-tiling has base walk `aaaaccca`,
+i.e. `j = −1`, and the 99-tiling has `aabbbbbbbcc`, i.e. `j = 2`. Both satisfy `R ≥ 1`. So the branch
+is now reduced to the **thick regime `f ≤ 2e`**, where the smallest open members (`N = 59`, `(4,5)`)
+sit; those are settled per value by the search engine.
+
 `IsoAlphaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct replacement**
 for Beeson III's Theorem 20 (base-`α` no-prime), whose proof depends on Theorem 19's `g ∣ M` — itself
 unsound (its `bc³(a+c)` bookkeeping is false: with `c=g²` it carries `g⁷`), resting further on the
