@@ -369,6 +369,55 @@ so $R\ge1$ forces $j(f-e)\le e-1$, which is (iv) (and it holds trivially at $j=0
 $e=1$ this reads $j(f-1)\le0$, so $j=0$; for $f>2e$ we get $je<j(f-e)\le e-1$, so $j=0$.
 \end{proof}
 
+\begin{theorem}[Apex mismatch: the pierced corner]\label{thm:pierce}
+Let a base-$\beta$ target be tiled at any scale $m$ such that both equal sides end (at the apex) with
+a $c$-edge --- automatic at $m=1$, where the sides are $b$-free. Then, writing $T_2$ for the middle
+of the three apex tiles:
+\begin{enumerate}
+\item[\textup{(i)}] the outer apex tiles carry $c$ on the boundary and $b$ inward, and $T_2$ carries
+$b$ and $c$ inward, so exactly one inner apex ray carries $T_2$'s $c$-edge against a neighbour's
+$b$-edge: a T-junction at distance $b$ from the apex, whose vertex figure on the neighbour's side is
+$(1,1,1)$ (one $\alpha$, one $\beta$, plus the neighbour's $\gamma$);
+\item[\textup{(ii)}] the remaining segment of $T_2$'s $c$-edge has length $c-b=e^2$, and
+$n_a\,ef+n_b(f^2-e^2)+n_c f^2=e^2$ has \emph{no} solution in nonnegative integers, for any
+$1\le e<f$ with $\gcd(e,f)=1$;
+\item[\textup{(iii)}] hence some far-side edge crosses the far endpoint of $T_2$'s $c$-edge
+\emph{straight through}: every such tiling contains a \textbf{pierced $\beta$-corner} at distance
+$f^2$ along an inner apex ray, and the angles on $T_2$'s side of the piercing line beyond the corner
+form $\{\alpha,\gamma\}$ or $\{3\alpha,\beta\}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) The apex is $3\alpha$ (three tiles, each $\alpha$ there); the two edges of an $\alpha$-corner are
+$b$ and $c$. The boundary edges at the apex are the sides' last edges, $c$ by hypothesis, so the outer
+tiles point $b$ inward and $T_2$ has $\{b,c\}$ inward. Whichever inner ray pairs $T_2$'s $c$ with an
+outer $b$, the $b$-edge ends at distance $b$: its far endpoint is the $\gamma$-corner of its tile
+($b$ joins $\alpha$ to $\gamma$), and the vertex figure on that side of the straight $c$-edge sums to
+$\pi$ with a $\gamma$ present, hence is $(1,1,1)$ by the vertex classification. (ii) Any solution has
+$n_a=n_c=0$ since $ef,f^2>e^2$; then $n_b(f^2-e^2)=e^2$ gives $n_b f^2=(n_b+1)e^2$, and
+$\gcd(e,f)=1$ forces $f^2\mid n_b+1$, so $n_b\ge f^2-1$ and
+$e^2=n_b(f^2-e^2)\ge f^2-1\ge e^2$, with equality forcing $f^2-e^2=1$ --- impossible, as
+$f^2-e^2\ge 2e+1\ge 3$. (iii) The far side of the leftover segment is covered by consecutive whole
+tile edges starting at the T-junction; by (ii) no partial sum lands exactly on the segment's far
+endpoint, so some edge strictly crosses it. That endpoint is the $\beta$-corner of $T_2$ ($c$ joins
+$\alpha$ to $\beta$). The angles on $T_2$'s side of the crossing line beyond the corner fill
+$\pi-\beta$; writing them as $x\alpha+y\beta+z\gamma$ and clearing $\beta,\gamma$, irrationality of
+$\alpha/\pi$ forces $y+z=1$, $2x+z=3y+3$, whose only solutions are $(3,1,0)$ and $(1,0,1)$.
+\end{proof}
+
+\begin{remark}[Validation, and what the pierced corner is for]\label{rem:pierce}
+The theorem is falsifiable on the genuine $44$-tiling ($m=2$; its equal sides do end with $c$), and
+holds there exactly: the apex rays pair one clean $b\,|\,b$ and one mismatch $c\,|\,b$; the middle
+tile's $c$-endpoint $V=(10,2\sqrt{15})$ is pierced by a straight $b$-edge, and the sector on the
+middle tile's side is $\beta+\{\alpha,\gamma\}$ --- the first continuation type. Parts (ii) and the
+vertex figures in (i), (iii) are machine-checked (\texttt{apex\_leftover\_nonrepresentable},
+\texttt{pierced\_corner\_types}, \texttt{BaseBetaWalks.lean}). This is the first \emph{interior}
+forcing in the branch, uniform in $(e,f)$ and unconditional at $m=1$: every hypothetical thick-regime
+tiling --- $N=59$ included --- must contain this configuration. The two continuation types are where a
+full forcing attack on the thick regime now stands.
+\end{remark}
+
 \begin{remark}[Scope, and why $m=1$ is the rigid case]\label{rem:walkscope}
 Theorem~\ref{thm:walks}(i) generalizes the $e=1$ base analysis used for
 Theorem~\ref{thm:basebeta-e1} to the infinite family $f>2e$ --- $e=1$, $f\ge3$; $e=2$, $f\ge5$;

@@ -402,6 +402,62 @@ remain geometric. -/
 theorem c_edge_exists (P Q R : ℕ) (hk : 1 ≤ P + Q + R)
     (hinj : P + Q ≤ (P + Q + R) - 1) : 1 ≤ R := by omega
 
+/-- **The apex-mismatch core: the `e²` leftover is never exactly coverable.**  At `m = 1` (indeed
+whenever both equal sides end with a `c`-edge) the three apex tiles are `α`-vertices; the outer two
+carry `c` on the boundary and `b` inward, the middle one carries `b` and `c` inward.  So exactly one
+inner apex ray carries the middle tile's `c` against a neighbour's `b`: a T-junction at distance `b`,
+leaving a segment of length `c − b = e²` of the middle tile's `c`-edge.  This lemma shows the leftover
+can never be exactly covered by whole tile edges — `n_a·ef + n_b·(f²−e²) + n_c·f² = e²` has **no**
+solution — so some far-side edge must cross the middle tile's far `β`-corner: **every such tiling
+contains a pierced `β`-corner at distance `f²` along an apex ray**.  (Killing `n_a, n_c` uses
+`ef, f² > e²`; then `n_b·B = e²` gives `n_b·f² = (n_b+1)·e²`, coprimality forces `f² ∣ n_b + 1`,
+hence `n_b ≥ f² − 1`, hence `e² = n_b·B ≥ f² − 1 ≥ e²` with equality forcing `B = 1` —
+impossible since `B = f² − e² ≥ 2e + 1 ≥ 3`.)  Verified positionally on the genuine 44-tiling:
+`V = (10, 2√15)` is pierced by a straight `b`-edge, sector `β + {α + γ}`. -/
+theorem apex_leftover_nonrepresentable (e f na nb nc B : ℕ) (he : 1 ≤ e) (hef : e < f)
+    (hcop : Nat.Coprime e f) (hB : B + e ^ 2 = f ^ 2) :
+    na * (e * f) + nb * B + nc * f ^ 2 ≠ e ^ 2 := by
+  intro h
+  have hef2 : e ^ 2 < f ^ 2 := by nlinarith [hef, he]
+  have hB1 : 1 ≤ B := by omega
+  -- kill n_a : e·f > e²
+  have hna : na = 0 := by
+    by_contra hc
+    have h1 : 1 ≤ na := Nat.one_le_iff_ne_zero.mpr hc
+    have : e * f ≤ na * (e * f) := Nat.le_mul_of_pos_left _ (by omega)
+    nlinarith [hef, he]
+  -- kill n_c : f² > e²
+  have hnc : nc = 0 := by
+    by_contra hc
+    have h1 : 1 ≤ nc := Nat.one_le_iff_ne_zero.mpr hc
+    have : f ^ 2 ≤ nc * f ^ 2 := Nat.le_mul_of_pos_left _ (by omega)
+    omega
+  subst hna; subst hnc
+  simp only [Nat.zero_mul, Nat.zero_add, Nat.add_zero] at h
+  -- n_b·B = e², so n_b·f² = (n_b+1)·e²
+  have hkey : nb * f ^ 2 = (nb + 1) * e ^ 2 := by
+    have h2 : nb * f ^ 2 = nb * B + nb * e ^ 2 := by rw [← Nat.mul_add, hB]
+    have h3 : (nb + 1) * e ^ 2 = nb * e ^ 2 + e ^ 2 := by ring
+    omega
+  -- coprimality: f² ∣ n_b + 1
+  have hcop2 : Nat.Coprime (f ^ 2) (e ^ 2) := (hcop.symm.pow (n := 2) (m := 2))
+  have hdvd : f ^ 2 ∣ (nb + 1) := by
+    have h1 : f ^ 2 ∣ (nb + 1) * e ^ 2 := ⟨nb, by rw [← hkey]; ring⟩
+    exact (Nat.Coprime.dvd_of_dvd_mul_right hcop2) h1
+  have hge : f ^ 2 ≤ nb + 1 := Nat.le_of_dvd (by omega) hdvd
+  -- e² = n_b·B ≥ n_b ≥ f²−1 ≥ e², equality forces B = 1: impossible since B ≥ 2e+1 ≥ 3
+  have hBe : 2 * e + 1 ≤ B := by nlinarith [hef, he]
+  have hnb : nb * 1 ≤ nb * B := Nat.mul_le_mul_left _ hB1
+  omega
+
+/-- **The pierced-corner vertex figure.**  On the middle tile's side of the piercing line the angles
+fill `π − β`; writing the figure as `x·α + y·β + z·γ` and using `β = (π−3α)/2`, `γ = (π+α)/2`,
+irrationality of `α/π` forces `y + z = 1` and `2x + z = 3y + 3`, whose only solutions are
+`{3α, β}` and `{α, γ}` — the two continuation types of the pierced corner.  (The genuine 44-tiling
+realizes `{α, γ}`.) -/
+theorem pierced_corner_types (x y z : ℕ) (h1 : y + z = 1) (h2 : 2 * x + z = 3 * y + 3) :
+    (x = 3 ∧ y = 1 ∧ z = 0) ∨ (x = 1 ∧ y = 0 ∧ z = 1) := by omega
+
 end Erdos634.BaseBetaWalks
 
 #print axioms Erdos634.BaseBetaWalks.exists_of_dvd_sub
@@ -414,3 +470,5 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.base_b_bound
 #print axioms Erdos634.BaseBetaWalks.gamma_injection
 #print axioms Erdos634.BaseBetaWalks.c_edge_exists
+#print axioms Erdos634.BaseBetaWalks.apex_leftover_nonrepresentable
+#print axioms Erdos634.BaseBetaWalks.pierced_corner_types

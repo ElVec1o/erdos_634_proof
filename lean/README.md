@@ -66,7 +66,17 @@ boundary `b`-edges lie on the base. `base_b_bound`: the same computation on the 
 (injective edge → γ-junction map on a side with `k−1` interior junctions gives `#a+#b ≤ k−1`, i.e.
 `R ≥ 1`), so the hypothesis `hR` consumed by `side_no_b`/`base_b_bound` is now derived, with geometry
 entering only through the vertex-figure hypotheses (`vertex_pi`, `vertex_beta_corner`, `vertex_apex`)
-— the same interface pattern as the rest of the file. The step that fails at `m ≥ 2` is the first
+— the same interface pattern as the rest of the file. **`apex_leftover_nonrepresentable` /
+`pierced_corner_types`** machine-check the arithmetic cores of the **apex-mismatch theorem** (paper
+Thm "Apex mismatch: the pierced corner"): whenever both equal sides end with `c` (automatic at
+`m = 1`), one inner apex ray pairs the middle tile's `c` against a neighbour's `b` — a T-junction at
+distance `b` — and the `e²` leftover of that `c`-edge is never exactly coverable
+(`n_a·ef + n_b·(f²−e²) + n_c·f² = e²` has no solution: `n_a = n_c = 0` forced by size, then
+`n_b·f² = (n_b+1)·e²` + coprimality force `f² ∣ n_b+1`, collapsing to `f²−e² = 1`, impossible), so a
+far-side edge pierces the middle tile's far `β`-corner, with continuation `{α,γ}` or `{3α,β}`.
+Validated positionally on the genuine 44-tiling: `V = (10, 2√15)` is pierced by a straight `b`-edge,
+sector `β + {α,γ}`. The first *interior* forcing in the branch — every hypothetical thick-regime
+tiling (`N = 59` included) must contain it. The step that fails at `m ≥ 2` is the first
 one (`Q ≡ em mod f`, so `j` may be negative): the genuine 44-tiling has base walk `aaaaccca`,
 i.e. `j = −1`, and the 99-tiling has `aabbbbbbbcc`, i.e. `j = 2`. Both satisfy `R ≥ 1`. So the branch
 is now reduced to the **thick regime `f ≤ 2e`**, where the smallest open members (`N = 59`, `(4,5)`)
