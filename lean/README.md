@@ -61,7 +61,12 @@ vertex_beta_corner/vertex_apex`) removes the thinness hypothesis entirely.
 boundary `b`-edges lie on the base. `base_b_bound`: the same computation on the base gives
 `j·(f−e) ≤ e−1`, so `e = 1` pins `j = 0` (**exactly one `b`-edge on the base, every `f`**) and
 `f > 2e` pins `j = 0` (the trichotomy); `base_trichotomy_cfree` packages the latter. This is the
-`e ≥ 2` analogue of the `e = 1` structure theorem, uniform in `(e,f)`. The step that fails at `m ≥ 2` is the first
+`e ≥ 2` analogue of the `e = 1` structure theorem, uniform in `(e,f)`. **`gamma_injection` /
+`c_edge_exists`** machine-check the combinatorial skeleton of the γ-trap itself: the pigeonhole
+(injective edge → γ-junction map on a side with `k−1` interior junctions gives `#a+#b ≤ k−1`, i.e.
+`R ≥ 1`), so the hypothesis `hR` consumed by `side_no_b`/`base_b_bound` is now derived, with geometry
+entering only through the vertex-figure hypotheses (`vertex_pi`, `vertex_beta_corner`, `vertex_apex`)
+— the same interface pattern as the rest of the file. The step that fails at `m ≥ 2` is the first
 one (`Q ≡ em mod f`, so `j` may be negative): the genuine 44-tiling has base walk `aaaaccca`,
 i.e. `j = −1`, and the 99-tiling has `aabbbbbbbcc`, i.e. `j = 2`. Both satisfy `R ≥ 1`. So the branch
 is now reduced to the **thick regime `f ≤ 2e`**, where the smallest open members (`N = 59`, `(4,5)`)

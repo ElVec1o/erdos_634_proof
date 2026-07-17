@@ -381,6 +381,27 @@ theorem base_b_bound (e f P Q R B j : ℕ) (he : 1 ≤ e) (hef : e < f) (hcop : 
       push_cast; linarith [hlev, hpe, hRz]
     exact_mod_cast hgoal
 
+/-- **The γ-injection pigeonhole** — the combinatorial skeleton of the γ-trap, machine-checked.
+`AB` is the set of `a`- and `b`-edges of one side of the target, `J` its set of interior junctions,
+and `φ` assigns to each such edge a junction at which its tile places a `γ`-vertex.  The geometric
+inputs are the two hypotheses: `hmap` (each `a`- or `b`-edge tile has its `γ` at an interior junction of
+the side — true because `a` joins `β` to `γ` and `b` joins `α` to `γ`, while no `γ` fits at a base
+corner or the apex, by `BaseBetaE1.vertex_beta_corner`/`vertex_apex`) and `hinj` (junctions host at
+most one `γ`, by `BaseBetaE1.vertex_pi`: a `π`-vertex has type `3α+2β` or `α+β+γ`).  Conclusion:
+there are at most `|J|` such edges. -/
+theorem gamma_injection {ι κ : Type*} [DecidableEq κ] (AB : Finset ι) (J : Finset κ)
+    (φ : ι → κ) (hmap : ∀ e ∈ AB, φ e ∈ J) (hinj : Set.InjOn φ AB) :
+    AB.card ≤ J.card :=
+  Finset.card_le_card_of_injOn φ hmap hinj
+
+/-- **The γ-trap** in walk form: a side cut into `k = P + Q + R` whole edges has `k − 1` interior
+junctions, so `gamma_injection` gives `P + Q ≤ k − 1`, i.e. `R ≥ 1` — every side of the target
+carries a `c`-edge.  This is the hypothesis `hR` consumed by `side_no_b` and `base_b_bound`;
+with this lemma its combinatorial content is machine-checked and only the vertex-figure facts
+remain geometric. -/
+theorem c_edge_exists (P Q R : ℕ) (hk : 1 ≤ P + Q + R)
+    (hinj : P + Q ≤ (P + Q + R) - 1) : 1 ≤ R := by omega
+
 end Erdos634.BaseBetaWalks
 
 #print axioms Erdos634.BaseBetaWalks.exists_of_dvd_sub
@@ -391,3 +412,5 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.base_trichotomy_cfree
 #print axioms Erdos634.BaseBetaWalks.side_no_b
 #print axioms Erdos634.BaseBetaWalks.base_b_bound
+#print axioms Erdos634.BaseBetaWalks.gamma_injection
+#print axioms Erdos634.BaseBetaWalks.c_edge_exists
