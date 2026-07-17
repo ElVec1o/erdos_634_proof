@@ -55,9 +55,13 @@ generalizes `BaseBetaE1.base_composition_e1` (the case `e = 1`, and there only u
 primes `N = 47, 71, 107, 191, 227, 239, 359, …`. Feeding in the paper's **γ-trap** (`R ≥ 1`: every
 side carries a `c`-edge, since each `a`- and `b`-edge tile puts a `γ` at a junction, no `γ` sits at a
 base corner or the apex, and a `π`-vertex admits at most one `γ` — `BaseBetaE1.vertex_pi/
-vertex_beta_corner/vertex_apex`) gives `base_trichotomy_cfree` and `side_no_b`: for `f > 2e` at
-`m = 1` the base is `{b^e, c^{2e}}` or `{a^f, b^e, c^e}` and **the equal sides carry no `b`-edge** —
-the `e ≥ 2` analogue of the `e = 1` structure theorem. The step that fails at `m ≥ 2` is the first
+vertex_beta_corner/vertex_apex`) removes the thinness hypothesis entirely.
+`side_no_b`: at `m = 1`, for **every** `(e,f)`, no equal side carries a `b`-edge (if `q ≥ 1` then
+`P = qe+fp ≥ 0` forces `fp ≥ -qe > -qf`, so `p ≥ 1-q`, so `R = f-pe-qf ≤ (1-q)(f-e) ≤ 0`) — all
+boundary `b`-edges lie on the base. `base_b_bound`: the same computation on the base gives
+`j·(f−e) ≤ e−1`, so `e = 1` pins `j = 0` (**exactly one `b`-edge on the base, every `f`**) and
+`f > 2e` pins `j = 0` (the trichotomy); `base_trichotomy_cfree` packages the latter. This is the
+`e ≥ 2` analogue of the `e = 1` structure theorem, uniform in `(e,f)`. The step that fails at `m ≥ 2` is the first
 one (`Q ≡ em mod f`, so `j` may be negative): the genuine 44-tiling has base walk `aaaaccca`,
 i.e. `j = −1`, and the 99-tiling has `aabbbbbbbcc`, i.e. `j = 2`. Both satisfy `R ≥ 1`. So the branch
 is now reduced to the **thick regime `f ≤ 2e`**, where the smallest open members (`N = 59`, `(4,5)`)

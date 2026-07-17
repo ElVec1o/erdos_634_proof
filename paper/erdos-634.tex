@@ -321,9 +321,15 @@ $\{b^{e},c^{2e}\}$, $\{a^{f},b^{e},c^{e}\}$, $\{a^{2f},b^{e}\}$; in particular i
 \item[\textup{(ii)}] \textup{(dichotomy)} each equal side is $\{a^{e},b^{f}\}$ or
 $\{a^{fp},c^{\,f-pe}\}$ for some $p\ge0$.
 \end{enumerate}
-Feeding in the $\gamma$-trap ($R\ge1$ on every side, Remark~\ref{rem:e2}) kills the third base and the
-first side: \emph{for $f>2e$ at $m=1$ the base is $\{b^{e},c^{2e}\}$ or $\{a^{f},b^{e},c^{e}\}$, and
-neither equal side carries a $b$-edge.}
+Feeding in the $\gamma$-trap ($R\ge1$ on every side, Remark~\ref{rem:e2}) removes the thinness
+hypothesis altogether. For \emph{every} $(e,f)$ at $m=1$:
+\begin{enumerate}
+\item[\textup{(iii)}] \emph{no equal side carries a $b$-edge} --- each is $\{a^{fp},c^{\,f-pe}\}$,
+$p\ge0$; so \emph{all} boundary $b$-edges lie on the base;
+\item[\textup{(iv)}] the base's $b$-count $Q=e+fj$ obeys $j(f-e)\le e-1$.
+\end{enumerate}
+In particular $e=1$ forces $j=0$ for every $f$ --- \emph{the base carries exactly one $b$-edge} --- and
+$f>2e$ forces $j=0$, recovering \textup{(i)} minus its $R=0$ member.
 \end{theorem}
 
 \begin{proof}
@@ -348,16 +354,28 @@ say $P=qe+fp$, and cancelling $f$ again gives $pe+qf+R=f$. For $f>2e$: $q\ge2$ w
 $2(f^2-e^2)\le f^2$, i.e. $f^2\le 2e^2<f^2$, absurd. If $q=1$ then $Pe+Rf=e^2$ and $f\mid P-e$ force
 $P=e$, $R=0$; if $q=0$ then $f\mid P$, $P=fp$ and $pe+R=f$.
 
-The final sentence is immediate: $\{a^{2f},b^{e}\}$ and $\{a^{e},b^{f}\}$ are exactly the walks with
-$R=0$.
+(iii) and (iv) are one computation, and need no thinness. Suppose a side walk has $q\ge1$. From
+$P=qe+fp\ge0$ we get $fp\ge-qe>-qf$ (using $e<f$ and $q\ge1$), so $p>-q$, i.e. $p\ge1-q$. The level
+equation then gives
+\[
+R \;=\; f-pe-qf \;\le\; f-(1-q)e-qf \;=\; (1-q)(f-e)\;\le\;0,
+\]
+contradicting $R\ge1$. Hence $q=0$, which is (iii). Identically for the base with $P=je+fp\ge0$: if
+$j\ge1$ then $p\ge1-j$ and
+\[
+R \;=\; 2e-pe-jf \;\le\; 2e-(1-j)e-jf \;=\; e-j(f-e),
+\]
+so $R\ge1$ forces $j(f-e)\le e-1$, which is (iv) (and it holds trivially at $j=0$ since $e\ge1$). For
+$e=1$ this reads $j(f-1)\le0$, so $j=0$; for $f>2e$ we get $je<j(f-e)\le e-1$, so $j=0$.
 \end{proof}
 
 \begin{remark}[Scope, and why $m=1$ is the rigid case]\label{rem:walkscope}
 Theorem~\ref{thm:walks}(i) generalizes the $e=1$ base analysis used for
 Theorem~\ref{thm:basebeta-e1} to the infinite family $f>2e$ --- $e=1$, $f\ge3$; $e=2$, $f\ge5$;
-$e=4$, $f\ge9$; \dots --- covering the primes $N=47,71,107,191,227,239,359,\dots$, and it delivers the
-$e\ge2$ analogue of the $e=1$ structure theorem of Remark~\ref{rem:lem6}: the base is one of two
-walks and the equal sides are $b$-free. The step that fails for $m\ge2$ is the very first one: there
+$e=4$, $f\ge9$; \dots --- covering the primes $N=47,71,107,191,227,239,359,\dots$, and its parts (iii)--(iv),
+which need no thinness, deliver the $e\ge2$ analogue of the $e=1$ structure theorem of
+Remark~\ref{rem:lem6} for \emph{every} $(e,f)$: the equal sides are $b$-free and the base's $b$-count
+is bounded by $j(f-e)\le e-1$. The step that fails for $m\ge2$ is the very first one: there
 $Q\equiv em\pmod f$, so $j$ may be \emph{negative} and the level rises to $2em$. This is not an
 artifact. The genuine $44$-tiling ($e{=}1,f{=}2,m{=}2$) has base walk $aaaaccca$, i.e.
 $(P,Q,R)=(5,0,3)$, which is the parameter $j=-1$, $p=3$; and the $99$-tiling
@@ -455,10 +473,14 @@ provably vacuous, and the one arithmetic statement that would settle it ($f\mid 
 be false. What does survive is \emph{structure}. Theorem~\ref{thm:walks} classifies the boundary walks
 for every $(e,f)$ at $m=1$, and in the thin regime $f>2e$ reduces the whole branch to two possible
 bases and $b$-free equal sides --- the $e\ge2$ analogue of Remark~\ref{rem:lem6}, and the first
-statement in this branch that is uniform in $e$. It does not yet close the branch: what it shows is
-that the difficulty is concentrated in the \emph{thick} regime $f\le2e$, where the level $2e$ admits
-up to $\lfloor 2ef/(f^2-e^2)\rfloor+1$ values of $j$ and the trichotomy dissolves. That is precisely
-where the smallest open members sit: $N=59$ is $(e,f)=(4,5)$ with $f\le2e$, as are
+statement in this branch that is uniform in $e$. Parts (iii)--(iv) need no thinness at all: at $m=1$ \emph{no equal side carries a $b$-edge}, for every
+$(e,f)$, so all boundary $b$-edges lie on the base; and the base's $b$-count $Q=e+fj$ obeys
+$j(f-e)\le e-1$. It does not close the branch, but it does locate the difficulty exactly. The bound
+$j\le(e-1)/(f-e)$ is uniform, and it degrades precisely as $f$ falls towards $e$: at $e=1$ it pins
+$j=0$ for every $f$ (one $b$-edge on the base, the $e=1$ rigidity of Remark~\ref{rem:lem6},
+now a corollary); at $f>2e$ it still pins $j=0$; but in the \emph{thick} regime $f\le2e$ it leaves
+$\lfloor(e-1)/(f-e)\rfloor+1$ values of $j$ and the trichotomy dissolves. That is precisely where the
+open members sit --- $N=59$ is $(e,f)=(4,5)$, so $j\le3$; $N=66$ is $(3,5)$, so $j\le1$; likewise
 $N=23,83,131,167$. We record the branch as open and settle its members one at a time by exhaustive
 search; every member below $110$ has now been settled that way (Table~\ref{tab:basebeta}).
 \end{remark}

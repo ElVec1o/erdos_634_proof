@@ -297,15 +297,89 @@ theorem base_trichotomy_cfree (e f P Q R B : ℕ) (he : 1 ≤ e) (h2e : 2 * e < 
   · exact Or.inr h1
   · omega
 
-/-- **The equal sides carry no `b`-edge** (γ-injection, paper).  Feeding `R ≥ 1` into the dichotomy
-kills `{a^e, b^f}`: at `m = 1` with `f > 2e` every equal side is `{a^{fu}, c^{f−ue}}`.  This is the
-`q_equal = 0` conclusion of the `e = 1` structure theorem, now for all `e` with `f > 2e`. -/
-theorem side_no_b (e f P Q R B : ℕ) (he : 1 ≤ e) (h2e : 2 * e < f) (hcop : Nat.Coprime e f)
+/-- **The equal sides carry no `b`-edge — for EVERY `(e,f)`** (γ-injection, paper).  No thinness
+hypothesis: if a side carried `q ≥ 1` blocks of `b`-edges then `P = qe+fp ≥ 0` forces `fp ≥ -qe > -qf`
+(as `e < f`), hence `p ≥ 1-q`, hence `R = f - pe - qf ≤ (1-q)(f-e) ≤ 0` — contradicting the γ-trap
+`R ≥ 1`.  So at `m = 1` every equal side is `{a^{fu}, c^{f−ue}}`, and *all* boundary `b`-edges lie on
+the base.  This is the `q_equal = 0` conclusion of the `e = 1` structure theorem, now for all `e`. -/
+theorem side_no_b (e f P Q R B : ℕ) (he : 1 ≤ e) (hef : e < f) (hcop : Nat.Coprime e f)
     (hB : B + e ^ 2 = f ^ 2) (hR : 1 ≤ R) (h : P * (e * f) + Q * B + R * f ^ 2 = f ^ 3) :
     Q = 0 ∧ ∃ u : ℕ, P = f * u ∧ u * e + R = f := by
-  rcases side_dichotomy e f P Q R B he h2e hcop hB h with h1 | ⟨u, h1, h2, h3⟩
-  · omega
-  · exact ⟨h1, u, h2, h3⟩
+  have hf0 : 0 < f := by omega
+  have hf0' : (0 : ℤ) < (f : ℤ) := by exact_mod_cast hf0
+  have hez : (1 : ℤ) ≤ (e : ℤ) := by exact_mod_cast he
+  have hefz : (e : ℤ) < (f : ℤ) := by exact_mod_cast hef
+  have hRz : (1 : ℤ) ≤ (R : ℤ) := by exact_mod_cast hR
+  obtain ⟨q, p, hQ, hP, hlev, hhalf⟩ := side_walk_param e f P Q R B he hef hcop hB h
+  have hq0 : q = 0 := by
+    by_contra hc
+    have hq1z : (1 : ℤ) ≤ (q : ℤ) := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hc
+    have hPn : (0 : ℤ) ≤ (P : ℤ) := Int.natCast_nonneg P
+    -- `f*p > f*(-q)` : from `0 ≤ q*e + f*p` and `q*e < q*f`
+    have hqef : (q : ℤ) * e < (q : ℤ) * f := by
+      exact mul_lt_mul_of_pos_left hefz (by linarith)
+    have hstep : (f : ℤ) * (-(q : ℤ)) < (f : ℤ) * p := by nlinarith [hPn, hP, hqef]
+    have hp : -(q : ℤ) < p := lt_of_mul_lt_mul_left hstep (le_of_lt hf0')
+    have hp1 : (1 : ℤ) - (q : ℤ) ≤ p := by omega
+    -- `R ≤ (1-q)*(f-e) ≤ 0`
+    have hpe : ((1 : ℤ) - (q : ℤ)) * e ≤ p * e := by
+      exact mul_le_mul_of_nonneg_right hp1 (by linarith)
+    have hprod : (0 : ℤ) ≤ ((q : ℤ) - 1) * ((f : ℤ) - e) := by
+      exact mul_nonneg (by linarith) (by linarith)
+    linarith [hlev, hpe, hprod, hRz]
+  subst hq0
+  have hp0 : 0 ≤ p := by
+    by_contra hc
+    push_neg at hc
+    have hpm : p ≤ -1 := by omega
+    have hmul : (f : ℤ) * p ≤ (f : ℤ) * (-1) := mul_le_mul_of_nonneg_left hpm (le_of_lt hf0')
+    have hPn : (0 : ℤ) ≤ (P : ℤ) := Int.natCast_nonneg P
+    push_cast at hP
+    linarith
+  lift p to ℕ using hp0 with u
+  refine ⟨by omega, u, ?_, ?_⟩
+  · have hc : (P : ℤ) = ((f * u : ℕ) : ℤ) := by push_cast at hP ⊢; linarith
+    exact_mod_cast hc
+  · have hc : ((u * e + R : ℕ) : ℤ) = ((f : ℕ) : ℤ) := by push_cast at hlev ⊢; linarith
+    exact_mod_cast hc
+
+/-- **The base's `b`-count is bounded — for EVERY `(e,f)`** (γ-injection, paper).  Writing the base's
+`b`-count as `Q = e + f·j` (`base_walk_param`), the γ-trap `R ≥ 1` forces `j·(f−e) ≤ e−1`, stated
+subtraction-free as `j·f + 1 ≤ j·e + e`.  Two consequences, both uniform in `f`:
+
+* `e = 1` ⟹ `j·(f−1) ≤ 0` ⟹ `j = 0`: **the base carries exactly one `b`-edge**, for every `f`;
+* `f > 2e` ⟹ `j·e < j·(f−e) ≤ e−1` ⟹ `j = 0`: the trichotomy of `base_trichotomy`.
+
+The bound degrades exactly as `f` approaches `2e` — which is why the thick regime `f ≤ 2e` is where
+the difficulty concentrates. -/
+theorem base_b_bound (e f P Q R B j : ℕ) (he : 1 ≤ e) (hef : e < f) (hcop : Nat.Coprime e f)
+    (hB : B + e ^ 2 = f ^ 2) (hR : 1 ≤ R) (hQ : Q = e + f * j)
+    (h : P * (e * f) + Q * B + R * f ^ 2 = e * (2 * f ^ 2 + B)) :
+    j * f + 1 ≤ j * e + e := by
+  have hf0 : 0 < f := by omega
+  have hf0' : (0 : ℤ) < (f : ℤ) := by exact_mod_cast hf0
+  have hez : (1 : ℤ) ≤ (e : ℤ) := by exact_mod_cast he
+  have hefz : (e : ℤ) < (f : ℤ) := by exact_mod_cast hef
+  have hRz : (1 : ℤ) ≤ (R : ℤ) := by exact_mod_cast hR
+  obtain ⟨j', p, hQ', hP, hlev, hhalf⟩ := base_walk_param e f P Q R B he hef hcop hB h
+  -- `j` is determined by `Q`
+  have hjj : j' = j := by
+    have : f * j' = f * j := by omega
+    exact Nat.eq_of_mul_eq_mul_left hf0 this
+  subst hjj
+  rcases Nat.eq_zero_or_pos j' with hz | hpos
+  · subst hz; simpa using hez
+  · have hjz : (1 : ℤ) ≤ (j' : ℤ) := by exact_mod_cast hpos
+    have hPn : (0 : ℤ) ≤ (P : ℤ) := Int.natCast_nonneg P
+    have hqef : (j' : ℤ) * e < (j' : ℤ) * f := mul_lt_mul_of_pos_left hefz (by linarith)
+    have hstep : (f : ℤ) * (-(j' : ℤ)) < (f : ℤ) * p := by nlinarith [hPn, hP, hqef]
+    have hp : -(j' : ℤ) < p := lt_of_mul_lt_mul_left hstep (le_of_lt hf0')
+    have hp1 : (1 : ℤ) - (j' : ℤ) ≤ p := by omega
+    have hpe : ((1 : ℤ) - (j' : ℤ)) * e ≤ p * e := mul_le_mul_of_nonneg_right hp1 (by linarith)
+    -- `1 ≤ R = 2e - p·e - j·f ≤ e - j(f-e)`
+    have hgoal : ((j' * f + 1 : ℕ) : ℤ) ≤ ((j' * e + e : ℕ) : ℤ) := by
+      push_cast; linarith [hlev, hpe, hRz]
+    exact_mod_cast hgoal
 
 end Erdos634.BaseBetaWalks
 
@@ -316,3 +390,4 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.side_dichotomy
 #print axioms Erdos634.BaseBetaWalks.base_trichotomy_cfree
 #print axioms Erdos634.BaseBetaWalks.side_no_b
+#print axioms Erdos634.BaseBetaWalks.base_b_bound
