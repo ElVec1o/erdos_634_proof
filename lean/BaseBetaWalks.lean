@@ -574,6 +574,120 @@ theorem edge_ab_unsplittable (e f na nb nc B : ℕ) (he : 1 ≤ e) (hef : e < f)
       have h2 : B < (1 + f) * B := by nlinarith [hBe, he, hf1]
       omega
 
+/-- **No common junction on `[0, f²)`** (alignment lemma, arithmetic half; unconditional).  On the
+mismatch apex ray the far side advances by whole `b`-edges (junctions at `k·b`) while the near side is
+`T2`'s single `c`-edge; this lemma shows the two never share a junction strictly inside the near
+`c`-edge: `k·b` (`1 ≤ k ≤ f−1`) is never `n_a·ef + n_b·b + n_c·f²` with `n_c ≥ 1`.  Size-free:
+`f ∣ (k−n_b)` (mod-`f`, coprime), and then the equation forces the quotient `s ≥ 1`, so `k ≥ f`. -/
+theorem far_near_disjoint (e f k na nb nc B : ℕ) (hcop : Nat.Coprime e f) (hef : e < f)
+    (hk1 : 1 ≤ k) (hk2 : k + 1 ≤ f) (hB : B + e ^ 2 = f ^ 2) (hnc : 1 ≤ nc) :
+    k * B ≠ na * (e * f) + nb * B + nc * f ^ 2 := by
+  intro h
+  have hf0 : 0 < f := by omega
+  have hf0' : (0 : ℤ) < (f : ℤ) := by exact_mod_cast hf0
+  have hzc : IsCoprime (f : ℤ) (e : ℤ) := Int.isCoprime_iff_gcd_eq_one.mpr hcop.symm
+  have hBz : (B : ℤ) = (f : ℤ) ^ 2 - (e : ℤ) ^ 2 := by
+    have hc : ((B : ℤ)) + (e : ℤ) ^ 2 = (f : ℤ) ^ 2 := by exact_mod_cast hB
+    linarith
+  have hz : (k : ℤ) * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2)
+      = (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2) + (nc : ℤ) * (f : ℤ) ^ 2 := by
+    have h' : (k : ℤ) * (B : ℤ)
+        = (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * (B : ℤ) + (nc : ℤ) * (f : ℤ) ^ 2 := by
+      exact_mod_cast h
+    rw [hBz] at h'; exact h'
+  have hdvd : (f : ℤ) ∣ ((k : ℤ) - nb) := by
+    refine (hzc.pow_right (n := 2)).dvd_of_dvd_mul_right ?_
+    exact ⟨((k : ℤ) - nb) * f - na * e - nc * f, by linear_combination -hz⟩
+  obtain ⟨s, hs⟩ := hdvd
+  -- `s·B = na·e + nc·f`
+  have hef' : (e : ℤ) < (f : ℤ) := by exact_mod_cast hef
+  have hBpos : (0 : ℤ) < (f : ℤ) ^ 2 - (e : ℤ) ^ 2 := by nlinarith [hef', Int.natCast_nonneg e]
+  have hsB : s * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2) = (na : ℤ) * e + (nc : ℤ) * f := by
+    have hkeq : (k : ℤ) = nb + f * s := by linarith
+    have h2 : (f : ℤ) * (s * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2)) = (f : ℤ) * ((na : ℤ) * e + (nc : ℤ) * f) := by
+      rw [hkeq] at hz; linear_combination hz
+    exact mul_left_cancel₀ (ne_of_gt hf0') h2
+  have hncz : (1 : ℤ) ≤ (nc : ℤ) := by exact_mod_cast hnc
+  have hrhs : (0 : ℤ) < (na : ℤ) * e + (nc : ℤ) * f := by
+    have h0 : (0 : ℤ) ≤ (na : ℤ) * e := mul_nonneg (Int.natCast_nonneg na) (Int.natCast_nonneg e)
+    nlinarith [hncz, hf0']
+  have hspos : 0 < s := by
+    by_contra hc
+    push_neg at hc
+    have : s * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2) ≤ 0 :=
+      mul_nonpos_of_nonpos_of_nonneg (by omega) (le_of_lt hBpos)
+    linarith [hsB]
+  have hkf : (k : ℤ) + 1 ≤ (f : ℤ) := by exact_mod_cast hk2
+  nlinarith [hspos, Int.natCast_nonneg nb, hf0', hs]
+
+/-- **`V = f²` is always pierced** (alignment lemma, corner half; `e ≥ 2`).  The far side's junctions
+sit at multiples of `b = f²−e²`, and `b ∤ f²`: `b ∣ f²` would give `b ∣ e²`, so `b ∣ \gcd(f²,e²)=1`,
+forcing `b = 1`, impossible as `b ≥ 2e+1 ≥ 5`.  Hence no far junction lands on `V`. -/
+theorem b_not_dvd_fsq (e f B : ℕ) (hcop : Nat.Coprime e f) (hef : e < f) (he : 2 ≤ e)
+    (hB : B + e ^ 2 = f ^ 2) : ¬ B ∣ f ^ 2 := by
+  intro hdvd
+  have hBe : B ∣ e ^ 2 := by
+    have h1 : B ∣ (B + e ^ 2) := hB ▸ hdvd
+    exact (Nat.dvd_add_right (dvd_refl B)).mp h1
+  have hcop2 : Nat.Coprime (f ^ 2) (e ^ 2) := Nat.Coprime.pow 2 2 hcop.symm
+  have hg : B ∣ Nat.gcd (f ^ 2) (e ^ 2) := Nat.dvd_gcd hdvd hBe
+  have hg1 : B ∣ 1 := hcop2 ▸ hg
+  have hBle : B ≤ 1 := Nat.le_of_dvd one_pos hg1
+  nlinarith [hef, he]
+
+/-- **The far side is `b^f`** (alignment lemma, uniqueness; `e ≥ 2`).  Given the first far edge is
+`T1`'s `b`-edge (`thm:pierce`), the whole far side is `f` copies of `b`: the only representation of the
+ray length `f·b` as `n_a·ef + n_b·b + n_c·f²` with `n_b ≥ 1` is `(0, f, 0)`.  (`f ∣ n_b`, and `n_b ≤ f`
+by size, so `n_b ∈ {0,f}`; `n_b ≥ 1` gives `n_b = f`, then the rest vanishes.) -/
+theorem far_is_bpow (e f na nb nc B : ℕ) (hcop : Nat.Coprime e f) (hef : e < f) (he : 2 ≤ e)
+    (hB : B + e ^ 2 = f ^ 2) (hb1 : 1 ≤ nb)
+    (h : f * B = na * (e * f) + nb * B + nc * f ^ 2) :
+    na = 0 ∧ nb = f ∧ nc = 0 := by
+  have hf0 : 0 < f := by omega
+  have hzc : IsCoprime (f : ℤ) (e : ℤ) := Int.isCoprime_iff_gcd_eq_one.mpr hcop.symm
+  have hBz : (B : ℤ) = (f : ℤ) ^ 2 - (e : ℤ) ^ 2 := by
+    have hc : ((B : ℤ)) + (e : ℤ) ^ 2 = (f : ℤ) ^ 2 := by exact_mod_cast hB
+    linarith
+  have hz : (f : ℤ) * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2)
+      = (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2) + (nc : ℤ) * (f : ℤ) ^ 2 := by
+    have h' : (f : ℤ) * (B : ℤ)
+        = (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * (B : ℤ) + (nc : ℤ) * (f : ℤ) ^ 2 := by
+      exact_mod_cast h
+    rw [hBz] at h'; exact h'
+  have hdvd : (f : ℤ) ∣ (nb : ℤ) := by
+    refine (hzc.pow_right (n := 2)).dvd_of_dvd_mul_right ?_
+    exact ⟨(nb : ℤ) * f - ((f : ℤ) ^ 2 - (e : ℤ) ^ 2) + na * e + nc * f, by linear_combination hz⟩
+  obtain ⟨t, ht⟩ := exists_of_dvd_sub f nb 0 hf0 (by simpa using hdvd)
+  rw [Nat.zero_add] at ht
+  have hBpos : 0 < B := by nlinarith [hB, hef, he]
+  have hnbf : nb ≤ f := by
+    by_contra hc
+    push_neg at hc
+    have h1 : (f + 1) * B ≤ nb * B := Nat.mul_le_mul_right _ (by omega)
+    have h2 : f * B < (f + 1) * B := by nlinarith [hBpos]
+    have h3 : nb * B ≤ na * (e * f) + nb * B + nc * f ^ 2 := by omega
+    omega
+  have hnbeq : nb = f := by
+    rcases Nat.eq_zero_or_pos t with h0 | hp
+    · subst h0; simp only [Nat.mul_zero] at ht; omega
+    · have hge : f ≤ f * t := Nat.le_mul_of_pos_right f hp
+      omega
+  -- with `n_b = f` the whole `B` term matches the LHS, so `na·ef + nc·f² = 0`
+  have hrest : na * (e * f) + nc * f ^ 2 = 0 := by
+    have hnbz : (nb : ℤ) = (f : ℤ) := by exact_mod_cast hnbeq
+    rw [hnbz] at hz
+    have : ((na * (e * f) + nc * f ^ 2 : ℕ) : ℤ) = 0 := by push_cast; linarith
+    exact_mod_cast this
+  have hef2 : 0 < e * f := Nat.mul_pos (by omega) hf0
+  have hf2 : 0 < f ^ 2 := by positivity
+  refine ⟨?_, hnbeq, ?_⟩
+  · rcases Nat.eq_zero_or_pos na with h0 | hp
+    · exact h0
+    · exfalso; have : e * f ≤ na * (e * f) := Nat.le_mul_of_pos_left _ hp; omega
+  · rcases Nat.eq_zero_or_pos nc with h0 | hp
+    · exact h0
+    · exfalso; have : f ^ 2 ≤ nc * f ^ 2 := Nat.le_mul_of_pos_left _ hp; omega
+
 end Erdos634.BaseBetaWalks
 
 #print axioms Erdos634.BaseBetaWalks.exists_of_dvd_sub
@@ -590,3 +704,6 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.pierced_corner_types
 #print axioms Erdos634.BaseBetaWalks.pre_pierce_dichotomy
 #print axioms Erdos634.BaseBetaWalks.edge_ab_unsplittable
+#print axioms Erdos634.BaseBetaWalks.far_near_disjoint
+#print axioms Erdos634.BaseBetaWalks.b_not_dvd_fsq
+#print axioms Erdos634.BaseBetaWalks.far_is_bpow

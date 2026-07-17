@@ -493,6 +493,45 @@ $N=47$ the flip \emph{loses} (there the base, with its single $b$-edge, is the r
 as the classification predicts). The record-critical thick searches ($N=59,66$) now run apex-down.
 \end{remark}
 
+\begin{theorem}[Alignment of the mismatch ray]\label{thm:align}
+Let $m=1$, $e\ge2$, and let $r$ be the mismatch inner apex ray of Theorem~\ref{thm:pierce}, of inner
+length $f\cdot b$ (Proposition~\ref{prop:rung2}, $b=f^2-e^2$). Along $r$, the near side is $T2$'s
+single unsplittable $c$-edge covering $[0,f^2]$, and the far side begins with $T1$'s $b$-edge. Then:
+\begin{enumerate}
+\item[\textup{(i)}] \emph{no common junction} lies in $(0,f^2)$: for $1\le k\le f-1$, $k\cdot b$ is
+never $n_a\,ef+n_b\,b+n_c f^2$ with $n_c\ge1$ (so every far-side junction is a genuine T-junction,
+the near $c$-edge passing straight through it);
+\item[\textup{(ii)}] the far side is exactly $b^{f}$: the only representation of $f\cdot b$ as
+$n_a\,ef+n_b\,b+n_c f^2$ with $n_b\ge1$ is $(0,f,0)$;
+\item[\textup{(iii)}] $V=f^2$ is pierced: $b\nmid f^2$, so no far-side junction $k\cdot b$ equals $f^2$
+and a far $b$-edge straddles $T2$'s $\beta$-corner.
+\end{enumerate}
+All three are machine-checked (\texttt{far\_near\_disjoint}, \texttt{far\_is\_bpow},
+\texttt{b\_not\_dvd\_fsq}); (ii) alone uses $\gamma$-vertex induction (\emph{via} the walk arithmetic)
+to fix the first far edge, the rest is pure number theory.
+\end{theorem}
+
+\begin{proof}
+(i) If $k b = n_a ef + n_b b + n_c f^2$ then $(k-n_b)b = f(n_a e + n_c f)$, so $f\mid(k-n_b)e^2$ and
+$\gcd(e,f)=1$ give $f\mid k-n_b$; writing $k-n_b=fs$, the equation reads $sb=n_a e+n_c f\ge f>0$
+(as $n_c\ge1$), so $s\ge1$ and $k\ge n_b+f\ge f$, against $k\le f-1$. (ii) $f\mid n_b$ by the same
+reduction, and $n_b\le f$ by size, so $n_b\in\{0,f\}$; $n_b\ge1$ forces $n_b=f$, and then
+$n_a ef+n_c f^2=0$ gives $n_a=n_c=0$. (iii) $b\mid f^2$ would give $b\mid e^2$, hence
+$b\mid\gcd(f^2,e^2)=1$, so $b=1$, impossible as $b\ge2e+1\ge5$. The far junctions are the multiples
+$kb$, none equal to $f^2$, so the $b$-edge containing $f^2$ straddles it.
+\end{proof}
+
+\begin{remark}[What the alignment pins, uniformly]\label{rem:align}
+For every open thick member the mismatch ray is now completely determined out to length $f\cdot b$: its
+far wall is $b^{f}$, terminating transverse to the opposite side, and $V=f^2$ falls strictly inside the
+$\lceil f^2/b\rceil$-th $b$-edge. Explicitly (all exact): $N=23$ far side $b^3=5^3$, $V=9\in(5,10)$;
+$N=59$ $b^5=9^5$, $V=25\in(18,27)$; $N=66$ $b^5=16^5$, $V=25\in(16,32)$; $N=83$ $b^6=11^6$,
+$V=36\in(33,44)$. This is the first result that pins an extended \emph{interior} structure of a
+hypothetical thick tiling, uniformly in $(e,f)$; it is the natural root prune for the apex-down search
+and the base for a rung-three attack (the forced $b^f$ wall must land on the base at coordinate
+$e\cdot f^2$, whose $b$-count is bounded by base\_b\_bound). It does not, on its own, close any member.
+\end{remark}
+
 \begin{remark}[Scope, and why $m=1$ is the rigid case]\label{rem:walkscope}
 Theorem~\ref{thm:walks}(i) generalizes the $e=1$ base analysis used for
 Theorem~\ref{thm:basebeta-e1} to the infinite family $f>2e$ --- $e=1$, $f\ge3$; $e=2$, $f\ge5$;
