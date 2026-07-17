@@ -52,9 +52,8 @@ $33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $69$, or $76$ 
 into $44$, $77$ (by Beeson's four-component construction), and $80$ (a sum of two squares) congruent
 triangles; the values $66$ and $70$, previously excluded via theorems of \cite{BeesonIII} whose proofs
 we show to be unsound, are undetermined pending direct exhaustive searches of their single surviving
-instances (in progress);
-and \emph{a triangle can be cut into $44$ congruent triangles} --- the isosceles $(16,16,22)$
-into $44$ copies of the $(2,3,4)$ tile, found by the search and verified exactly, to our
+instances. The $44$-tiling is exhibited explicitly --- the isosceles $(16,16,22)$
+cut into $44$ copies of the $(2,3,4)$ tile, found by search and verified exactly, to our
 knowledge the first tiling in the isosceles $3\alpha+2\beta=\pi$ cases and the smallest known
 tiling in any incommensurable branch. Membership in the tile-count set is shown to be
 decidable. The arithmetic and combinatorial layer is
@@ -82,22 +81,20 @@ into which some triangle can be cut. In particular, since $19$ is not of that fo
 cut into $19$ congruent triangles.
 \end{theorem}
 
-\begin{remark}[The scope of Theorem~\ref{thm:main}, stated exactly --- a correction]\label{rem:mainscope}
-The exception is not cosmetic, and earlier versions of this paper did not carry it; we correct that
-here. The base-$\beta$ candidates are exactly the $N=3f^2-e^2$ with $\gcd(e,f)=1$, $1\le e<f$; they are
-automatically $\equiv3\pmod4$, and the smallest are
+\begin{remark}[The scope of Theorem~\ref{thm:main}]\label{rem:mainscope}
+The base-$\beta$ exception is essential. The base-$\beta$ candidates are exactly the $N=3f^2-e^2$ with
+$\gcd(e,f)=1$, $1\le e<f$; they are automatically $\equiv3\pmod4$, and the smallest are
 \[ 11,\ 23,\ 47,\ 59,\ 71,\ 83,\ 107,\ 131,\ 167,\ 179,\ 191,\ \dots \]
 For each, the tile $(ef,\,f^2-e^2,\,f^2)$ and the target $(f^3,f^3,e(3f^2-e^2))$ pass every
 \emph{sound} necessary condition (Remark~\ref{rem:isobeta}); the only published exclusion is
 \cite[Thm.~14]{BeesonIII}, whose $g\mid M$ is not merely unproven but \textbf{false}
 (Remark~\ref{rem:thm14false}), so we cannot invoke it, and no general replacement is known
-(Remark~\ref{rem:e2}). Asserting Theorem~\ref{thm:main} without the exception --- as we previously
-did, on the strength of that citation --- is exactly the error this paper documents in
-\cite{BeesonIII}, and it would be no better for being ours. The candidates are therefore settled one
-at a time by exhaustive search (Table~\ref{tab:basebeta}): at present $11,23,47,71,107$ are excluded
-and $59,83$ are under search. So Theorem~\ref{thm:main} is unconditional for every prime
+(Remark~\ref{rem:e2}). The theorem therefore cannot drop the exception without appealing to that
+false citation. The candidates are settled one at a time by exhaustive search
+(Table~\ref{tab:basebeta}): $11,23,47,71,107$ are excluded and $59,83$ remain under search. Thus
+Theorem~\ref{thm:main} is unconditional for every prime
 $N\equiv3\pmod4$, $N>3$, outside the sequence above, and for $11,23,47,71,107$ besides. The
-headline consequence is unaffected: $19\ne3f^2-e^2$, and more generally the two frontier claims of
+principal consequence is unaffected: $19\ne3f^2-e^2$, and the two frontier claims of
 Section~\ref{sec:full} rest only on candidates that have been searched.
 \end{remark}
 
@@ -110,7 +107,7 @@ BeesonIso, BeesonSeven, BeesonEq}. For a prime number of tiles every branch of t
 is excluded by an existing theorem, with one exception: a tile having a $2\pi/3$ angle, tiling a
 non-equilateral triangle. We treat that branch.
 
-This branch is the active frontier. Zhang~\cite{Zhang} classifies the non-equilateral
+Zhang~\cite{Zhang} classifies the non-equilateral
 $2\pi/3$ shapes into six sporadic similarity types (Section~\ref{sub:shapes} below), constructs
 families of tilings for each, and conjectures that the constructed $N$, all composite, are the only
 ones; the present results prove the no-prime half of that conjecture for the isosceles type, and
@@ -130,7 +127,7 @@ Beeson--Zhang~\cite{BeesonZhang} gives the same uniformly. Second, an elementary
 area-and-incidence argument shows that a \emph{prime} number of such tiles forces $ABC$ to be
 \emph{isosceles} (Section~\ref{sec:reduction}).
 
-The heart of the paper is Section~\ref{sec:invariant}. The natural parity argument for a $2\pi/3$
+The main construction is in Section~\ref{sec:invariant}. The natural parity argument for a $2\pi/3$
 tile (a black/white colouring of the tiles) fails, because a vertex of the tiling may be surrounded
 by an even number of tiles, so no consistent two-colouring exists. We replace it by a functional
 $\Phi$ that assigns to a directed edge of direction $\theta=j\frac\pi3+k\alpha$ the weight
@@ -163,7 +160,7 @@ one of: $3\alpha+2\beta=\pi$, for which $N$ is not prime (originally \cite{Beeso
 Remark~\ref{rem:b3prime} and Propositions~\ref{prop:b3prime} and~\ref{prop:isoalphaprime} ---
 the arithmetic core is machine-checked in Lean for \emph{four} of the five target shapes, with our
 own proofs replacing Beeson's Theorems~18 and~20, whose printed arguments are unsound; the fifth,
-the base-$\beta$ isosceles target, is the exception and is discussed honestly in
+the base-$\beta$ isosceles target, is the exception, treated in
 Remark~\ref{rem:isobeta}); an isosceles tile with
 $\gamma=2\alpha$, for which $N$ is not squarefree \cite[Thm.~11.7]{BeesonIso}; or the tile has an
 angle equal to $\pi/3$ or $2\pi/3$. The case of a $\pi/3$ or $2\pi/3$ tile on an \emph{equilateral}
@@ -219,7 +216,7 @@ arithmetic pillars are machine-checked in Lean (\texttt{lean/IsoAlphaPrime.lean}
 \texttt{isoalpha\_X\_forces}, \texttt{isoalpha\_not\_prime}).
 \end{proof}
 
-\begin{remark}[The base-$\beta$ target: an honest gap]\label{rem:isobeta}
+\begin{remark}[The base-$\beta$ target]\label{rem:isobeta}
 The fifth target, isosceles with base angles $\beta$, is the one shape where we cannot replace
 Beeson's argument with a sound one. Beeson's Theorem~14 also asserts $g\mid M$, by a proof of the
 same broken shape as Theorem~19's (it claims $abc^5M^2$ is not divisible by $g^7$, but with $c=g^2$
@@ -258,10 +255,10 @@ $71$ & base-$\beta$  & $(10,21,25)$ & $(125,125,142)$ & $553\,417$\\
 \noindent each returning \textsc{exhausted, no tiling}. The remaining three --- $N=59$
 (base-$\beta$, $(20,9,25)$ on $(125,125,236)$), $N=66$ (base-$\beta$, $(15,16,25)$ on
 $(125,125,198)$) and $N=70$ (base-$\alpha$, Remark~\ref{rem:seventy}) --- are still searching, and
-their values are treated as pending. We flag this plainly: for the base-$\beta$ target our
+their values are treated as pending. For the base-$\beta$ target the
 $3\alpha+2\beta$ prime argument rests on either \cite[Thm.~14]{BeesonIII} (whose printed proof is
-unsound) or a per-value search, \emph{not} on a machine-checked general theorem --- the one genuine
-gap remaining in the prime dichotomy --- Theorem~\ref{thm:basebeta-e1} removes $N=11$
+unsound) or a per-value search, \emph{not} on a machine-checked general theorem; this is the one
+remaining gap in the prime dichotomy. Theorem~\ref{thm:basebeta-e1} removes $N=11$
 unconditionally, Remark~\ref{rem:lem6} isolates the $e=1$, $f\ge3$ structure, and
 Remark~\ref{rem:nogo} explains why the method \cite{BeesonIII} used cannot repair the rest.
 \end{remark}
@@ -301,8 +298,7 @@ survives, and $N=11$ admits no tiling. \qedhere
 
 \begin{remark}[The $e=1$, $f\ge3$ cases are \emph{not} settled]\label{rem:lem6}
 For $f\ge3$ the composition $B_1=(a^{f},b,c)$ survives every citation-free constraint above, and it is
-then the \emph{unique} possible base. Two consequences, which we state plainly against our own earlier
-claim. First, $B_1$ carries exactly \emph{one} $c$-edge; so \cite[Lem.~6]{BeesonIII} (``every side
+then the \emph{unique} possible base. Two consequences follow. First, $B_1$ carries exactly \emph{one} $c$-edge; so \cite[Lem.~6]{BeesonIII} (``every side
 carries at least two $c$-edges'') removes it at a stroke --- but that citation is doing \emph{all} of
 the work, and any tiling of this family would \emph{refute} Lemma~6 rather than be excluded by it, so
 invoking it is tantamount to assuming the conclusion. Given that \cite{BeesonIII} is the source whose
@@ -315,7 +311,7 @@ independently excluded by exhaustive search.
 What survives citation-free is a sharp structure theorem: \emph{if} an $e=1$, $m=1$, $f\ge3$
 base-$\beta$ tiling exists, then $q_{\mathrm{equal}}=0$, its base is exactly $(a^{f},b,c)$ with
 $E_1=E_k=a$ and the $c$-edge interior, both equal sides begin and end with $c$, and every base
-junction is a $(1,1,1)$-vertex. This is the object to attack.
+junction is a $(1,1,1)$-vertex.
 \end{remark}
 
 The next theorem replaces the $e=1$ case analysis by a classification valid for \emph{every} $e$, and
@@ -427,16 +423,15 @@ $\pi-\beta$; writing them as $x\alpha+y\beta+z\gamma$ and clearing $\beta,\gamma
 $\alpha/\pi$ forces $y+z=1$, $2x+z=3y+3$, whose only solutions are $(3,1,0)$ and $(1,0,1)$.
 \end{proof}
 
-\begin{remark}[Validation, and what the pierced corner is for]\label{rem:pierce}
-The theorem is falsifiable on the genuine $44$-tiling ($m=2$; its equal sides do end with $c$), and
-holds there exactly: the apex rays pair one clean $b\,|\,b$ and one mismatch $c\,|\,b$; the middle
+\begin{remark}[Validation on the $44$-tiling]\label{rem:pierce}
+The theorem can be checked against the genuine $44$-tiling ($m=2$; its equal sides do end with $c$),
+where it holds exactly: the apex rays pair one $b\,|\,b$ and one mismatch $c\,|\,b$; the middle
 tile's $c$-endpoint $V=(10,2\sqrt{15})$ is pierced by a straight $b$-edge, and the sector on the
 middle tile's side is $\beta+\{\alpha,\gamma\}$ --- the first continuation type. Parts (ii) and the
 vertex figures in (i), (iii) are machine-checked (\texttt{apex\_leftover\_nonrepresentable},
-\texttt{pierced\_corner\_types}, \texttt{BaseBetaWalks.lean}). This is the first \emph{interior}
-forcing in the branch, uniform in $(e,f)$ and unconditional at $m=1$: every hypothetical thick-regime
-tiling --- $N=59$ included --- must contain this configuration. The two continuation types are where a
-full forcing attack on the thick regime now stands.
+\texttt{pierced\_corner\_types}, \texttt{BaseBetaWalks.lean}). The configuration is an interior
+constraint, uniform in $(e,f)$ and unconditional at $m=1$: every hypothetical thick-regime tiling,
+$N=59$ included, must contain it.
 \end{remark}
 
 \begin{proposition}[Unsplittability, and the rigidity of the thick regime]\label{prop:unsplit}
@@ -454,17 +449,15 @@ the total is $1$, never $\ge2$. For $L=c$: $f\mid n_b$ forces $n_b=0$ as before,
 gives $n_c=0$ and $e\mid f$, i.e.\ $e=1$, $n_a=f$.
 \end{proof}
 
-\begin{remark}[The golden ratio, and a correction to our own reflex]\label{rem:golden}
-Two consequences worth stating, both against expectation. First, Proposition~\ref{prop:unsplit} is
-exactly the hypothesis the corner parallelogram needs, so Remark~\ref{rem:e2}(b) now holds with
-\emph{no} proviso. Second, the case that looks easy is the loose one: $e=1$ --- which is what both
-genuine tilings realize --- is the only case where an edge splits at all, while the open $e\ge2$
-regime is perfectly rigid. Relatedly, one must never compare $a$ with $b$ without care:
-$b>a\iff f^2-ef-e^2>0\iff f/e>\varphi$, the golden ratio. The thick regime straddles that threshold
---- $N=66$ $(3,5)$ and $N=131$ $(4,7)$ are super-golden, while $N=23$ $(2,3)$, $N=59$ $(4,5)$,
-$N=83$ $(5,6)$ and $N=167$ $(5,8)$ have $b<a$ --- so any argument that silently assumes $b>a$
-(which the $e=1$ intuition invites) is false exactly where it is needed. Our first attempt at
-Proposition~\ref{prop:unsplit} did assume it; the proof above does not.
+\begin{remark}[The golden ratio]\label{rem:golden}
+Two consequences. First, Proposition~\ref{prop:unsplit} is exactly the hypothesis the corner
+parallelogram needs, so Remark~\ref{rem:e2}(b) holds with \emph{no} proviso. Second, $e=1$ --- which
+both genuine tilings realize --- is the only case in which an edge splits at all, while the open
+$e\ge2$ regime is rigid. The comparison of $a$ with $b$ must be made with care:
+$b>a\iff f^2-ef-e^2>0\iff f/e>\varphi$, the golden ratio. The thick regime straddles that threshold:
+$N=66$ $(3,5)$ and $N=131$ $(4,7)$ are super-golden, while $N=23$ $(2,3)$, $N=59$ $(4,5)$,
+$N=83$ $(5,6)$ and $N=167$ $(5,8)$ have $b<a$. Proposition~\ref{prop:unsplit} above assumes no
+inequality between $a$ and $b$.
 \end{remark}
 
 \begin{proposition}[Rung two: the pre-piercer chain]\label{prop:rung2}
@@ -478,19 +471,16 @@ $N=59$ ($(e,f)=(4,5)$, super-thick: $25\le32$) the piercer starts at distance $9
 every non-super-thick member it starts at the T-junction itself.
 \end{proposition}
 
-\begin{remark}[Validation, and the search consequence]\label{rem:rung2}
-On the genuine $44$-tiling ($f^2=4>2e^2=2$, so $t=0$): the piercer spans exactly $[3,6]$ --- it
-starts at the T-junction --- and its corner there is $\alpha$ to numerical precision, as forced.
-The arithmetic core is machine-checked (\texttt{pre\_pierce\_dichotomy}). Beyond its intrinsic
-content, the rung has an operational consequence: the apex neighbourhood is \emph{near-rigid}
-(three forced $\alpha$-tiles, a forced mismatch ray, a forced T-junction, a forced piercer start),
-while the base admits several walks. The exhaustive search anchors at the lowest vertex, so in the
-standard orientation it explores the fat part first and meets the rigid apex last --- backwards.
-Re-anchoring by \emph{flipping the target apex-down} (a reflection, so verdicts transfer verbatim)
-lets the forced chain prune at the root: on the settled thick member $N=23$ the flipped search
-exhausts in $3{,}954$ nodes against $19{,}677$ --- a five-fold collapse --- while on the thin member
-$N=47$ the flip \emph{loses} (there the base, with its single $b$-edge, is the rigid side, exactly
-as the classification predicts). The record-critical thick searches ($N=59,66$) now run apex-down.
+\begin{remark}[Validation on the $44$-tiling]\label{rem:rung2}
+On the genuine $44$-tiling ($f^2=4>2e^2=2$, so $t=0$) the piercer spans exactly $[3,6]$, starting at
+the T-junction, with corner $\alpha$ there to numerical precision, as forced; the arithmetic core is
+machine-checked (\texttt{pre\_pierce\_dichotomy}). The rung also has a computational consequence: the
+apex neighbourhood is rigid (three forced $\alpha$-tiles, a forced mismatch ray, a forced T-junction,
+a forced piercer start), while the base admits several walks. Since the corner-anchored search
+anchors at the lowest vertex, orienting the target apex-down (a reflection, under which verdicts are
+preserved) places the rigid chain at the root of the search tree: on $N=23$ the apex-down search
+exhausts in $3{,}954$ nodes against $19{,}677$, whereas on the thin member $N=47$, where the base is
+the rigid side, the apex-down orientation is slower. The thick searches $N=59,66$ are run apex-down.
 \end{remark}
 
 \begin{theorem}[Alignment of the mismatch ray]\label{thm:align}
@@ -526,10 +516,10 @@ For every open thick member the mismatch ray is now completely determined out to
 far wall is $b^{f}$, terminating transverse to the opposite side, and $V=f^2$ falls strictly inside the
 $\lceil f^2/b\rceil$-th $b$-edge. Explicitly (all exact): $N=23$ far side $b^3=5^3$, $V=9\in(5,10)$;
 $N=59$ $b^5=9^5$, $V=25\in(18,27)$; $N=66$ $b^5=16^5$, $V=25\in(16,32)$; $N=83$ $b^6=11^6$,
-$V=36\in(33,44)$. This is the first result that pins an extended \emph{interior} structure of a
-hypothetical thick tiling, uniformly in $(e,f)$; it is the natural root prune for the apex-down search
-and the base for a rung-three attack (the forced $b^f$ wall must land on the base at coordinate
-$e\cdot f^2$, whose $b$-count is bounded by base\_b\_bound). It does not, on its own, close any member.
+$V=36\in(33,44)$. This pins an extended \emph{interior} structure of a
+hypothetical thick tiling, uniformly in $(e,f)$; it serves as a root prune for the apex-down search; the forced $b^f$ wall must land on the base at
+coordinate $e\cdot f^2$, whose $b$-count is bounded (\texttt{base\_b\_bound}). It does not, on its
+own, close any member.
 \end{remark}
 
 \begin{remark}[Scope, and why $m=1$ is the rigid case]\label{rem:walkscope}
@@ -583,13 +573,12 @@ Three consequences. (i) The base-$\beta$ prime exclusion cannot rest on Theorem~
 only a per-value search remains, which is what we do. (ii) Our own base-$(\alpha{+}\beta)$ and
 base-$\alpha$ replacements (Propositions~\ref{prop:b3prime}, \ref{prop:isoalphaprime}) are unaffected:
 both were deliberately built to use \emph{no} $g\mid M$. (iii) The values whose exclusion had rested
-only on $g\mid M$ ($21,39,66,70$) were right to be demoted (Remarks~\ref{rem:seventy},
-\ref{rem:isobeta}); $21$ and $39$ are now excluded by exhaustive search instead, and had we trusted
-Theorem~14 the record would have been \emph{wrong}. Finally $N=99$ is itself a new realization: $99$
+only on $g\mid M$ ($21,39,66,70$) are demoted (Remarks~\ref{rem:seventy},
+\ref{rem:isobeta}); $21$ and $39$ are now excluded by exhaustive search instead. Finally $N=99$ is itself a new realization: $99$
 is not a square, a sum of two squares, nor $2n^2,3n^2,6n^2$, so it is not commensurably realizable.
 \end{remark}
 
-\begin{remark}[What the $e\ge2$ residue costs, and where it now sits]\label{rem:e2}
+\begin{remark}[The $e\ge2$ residue]\label{rem:e2}
 The $e\ge2$ residue ($N=23,59,71,83,131,167,\dots$; the members $23$ and $71$ are now settled by search, Table~\ref{tab:basebeta}) resists all three natural invariant methods, and in two
 cases \emph{provably}:
 \begin{itemize}
@@ -646,9 +635,8 @@ $\lfloor(e-1)/(f-e)\rfloor+1$ values of $j$ and the trichotomy dissolves. That i
 open members sit --- $N=59$ is $(e,f)=(4,5)$, so $j\le3$; $N=66$ is $(3,5)$, so $j\le1$; likewise
 $N=23,83,131,167$. We record the branch as open and settle its members one at a time by exhaustive
 search. Table~\ref{tab:basebeta} lists every member below $110$; of the eleven, eight are settled and
-$59$, $66$, $83$ are under search. (An earlier version of this table omitted $N=83$ and claimed all
-eleven were settled; both errors are corrected here. $N=83$, $(e,f)=(5,6)$, is the smallest
-base-$\beta$ prime never yet searched.)
+$59$, $66$, $83$ remain under search. ($N=83$, $(e,f)=(5,6)$, is the smallest base-$\beta$ prime not
+yet searched.)
 The walk classification also feeds back into the search: the $\gamma$-trap and the corner
 parallelogram have the multiset corollaries $R\ge1$ on every side, $Q_{\mathrm{base}}\le k-4$ and
 $Q_{\mathrm{side}}\le k-2$ ($k$ the number of edges of the walk), and the engine now prunes any
@@ -1174,9 +1162,9 @@ the argument is otherwise identical, giving $N=m^2b(a+b)$.
 
 \begin{remark}\label{rem:zhang}
 The single-invariant lattice of Theorem~\ref{thm:lattice} can be strictly coarser than $e\Z$
-(the smallest example is $(11,24,31)$, whose lattice admits $N=354$), which briefly suggested
-admissible values beyond Zhang's constructions. Theorem~\ref{thm:spectrum} corrects this: the
-mirror invariant eliminates every such value ($354$ by parity, $15689$ on $(19,261,271)$ already
+(the smallest example is $(11,24,31)$, whose lattice admits $N=354$), so the single invariant alone
+does not confine the admissible counts to Zhang's constructions. The
+mirror invariant of Theorem~\ref{thm:spectrum} eliminates every such value ($354$ by parity, $15689$ on $(19,261,271)$ already
 by integrality), and the fully refined spectrum \emph{coincides with Zhang's family on every
 tile} --- verified exhaustively over all $138$ primitive triples with $a,b<400$. The necessary
 side of the isosceles and $F_1$ branches is therefore closed. What remains open in these branches
@@ -1197,7 +1185,7 @@ size a complete exhaustive search is not yet computationally in reach.
 Admissibility is necessary, not sufficient. The smallest admissible value is $N=33=3\cdot 11$ on
 the tile $(5,3,7)$ (where $d=3$, $e=1$, so the divisibility is vacuous); it is nevertheless
 excluded by Beeson's boundary analysis, which rules out $N<36$~\cite{BeesonIso}, while Herdt's
-$2673$-tile tiling is the member $w=9$ of the same family $33w^2$. The parity clause bites hard: on the tile $(7,8,13)$ (where $d=2$, $e=2$, $c-a-b=-2$) the
+$2673$-tile tiling is the member $w=9$ of the same family $33w^2$. The parity clause is decisive: on the tile $(7,8,13)$ (where $d=2$, $e=2$, $c-a-b=-2$) the
 divisibility admits all $N=2w^2\cdot23$, but the count $M=-w$ must have the parity of
 $N=2w^2\cdot 23$, which is even --- forcing $w$ even, say $w=2m$; the refined spectrum is exactly
 $N=184m^2=m^2\,b(a+2b)$ --- \emph{precisely} Zhang's
@@ -1380,7 +1368,7 @@ sharpest test of Zhang's conjecture: $N=46$ passes the divisibility spectrum on 
 the parity, and the sweep excludes every other branch, so $46$ is not realizable --- exactly as
 Zhang's conjecture predicts.
 
-The pipeline is now mechanical, and it continues: $N=38$ and $N=42$ die in every branch by
+The sweep continues: $N=38$ and $N=42$ die in every branch by
 arithmetic alone (both squarefree, so the $\gamma=2\alpha$ branch is closed by
 \cite[Thm.~11.7]{BeesonIso}, and no sporadic, equilateral or $3\alpha+2\beta$ candidate survives),
 while $33$, $35$ and $39$ each reduce to two isosceles-$(\alpha{+}\beta)$ instances (the
@@ -1550,14 +1538,14 @@ $60$; the boundary algorithm's single surviving candidate plus its $884921$-node
 $63$. (The value $66$, previously listed here, is pending: Remark~\ref{rem:isobeta}.)
 \end{proof}
 
-\begin{remark}[The value $70$ --- retracted to pending]\label{rem:seventy}
-An earlier version of this theorem included $N=70$. Its single surviving instance is
+\begin{remark}[The value $70$ and the unsound $g\mid M$ exclusions]\label{rem:seventy}
+The value $N=70$ is undetermined. Its single surviving instance is
 isosceles-$\alpha$: tile $(6,5,9)$, $M=8$, target $(45,45,70)$, which passes the tiling equation
 \emph{and} side-integrality ($X=45$, and indeed $(2f+e)=8\mid M$); the exclusion rested solely on
 $g\mid M$ from \cite[Thm.~19]{BeesonIII} ($g=3\nmid8$), whose proof is unsound
 (Remark~\ref{rem:b3prime}); Beeson's own Table~5 marks this very instance ``?''. We therefore
-regard $70$ as \emph{undetermined} pending the direct exhaustive search of the instance, which is
-in progress. The value $21$, whose analogous isosceles-$\alpha$ candidate (tile $(2,3,4)$, $M=5$,
+regard $70$ as \emph{undetermined} pending the direct exhaustive search of this instance. The value
+$21$, whose analogous isosceles-$\alpha$ candidate (tile $(2,3,4)$, $M=5$,
 target $(12,12,21)$) was likewise previously killed only by the unsound $g\mid M$, \emph{is}
 excluded: the engine exhausts the instance ($13\,659$ nodes, no tiling), so
 Theorem~\ref{thm:frontier2} stands with its dependence on \cite[Thm.~19]{BeesonIII} removed. The
@@ -1595,8 +1583,7 @@ construction \cite{BeesonIII}, and $80=4^2+8^2$ by the biquadratic (commensurabl
 No triangle can be cut into $76$ congruent triangles. Every $N\le 80$ except $N=70$
 (Remark~\ref{rem:seventy}) is thereby determined: the realizable values are exactly $1$--$13$'s
 known members together with $44,77,80$ and the standard commensurable and
-prime\,$\equiv1\!\pmod4$ values, and all others are excluded; in particular the contiguous
-record is every $N\le 69$, extending through $80$ once the pending $70$-instance search completes.
+prime\,$\equiv1\!\pmod4$ values, and all others are excluded; in particular every $N\le 69$ is determined without exception.
 \end{theorem}
 \begin{proof}
 The branch sweep and $\gamma=2\alpha$ boundary algorithm above settle $76$; Theorem~\ref{thm:main}
@@ -1650,7 +1637,7 @@ computationally: searching all directional weights of period $\le4$ in the $\alp
 $a\alpha+b\beta+c\gamma\in\{\pi,2\pi\}$ admits $42{,}282$ nonnegative integer solutions. Deciding
 realizability of an admissible instance therefore lies beyond every linear or coloring invariant;
 it is a genuinely combinatorial question, which is why the search of Theorem~\ref{thm:decidable}
-appears to be essential and why Zhang's conjecture is hard at its sharpest point.
+appears to be essential.
 \end{remark}
 
 \begin{remark}[the tiling group collapses as well]\label{rem:tilinggroup}
@@ -1700,7 +1687,7 @@ engine at $955\,474$ nodes); with $79$ prime (Theorem~\ref{thm:main}) and $80=4^
 \emph{every $N\le80$ except the pending $70$} is now determined (Theorem~\ref{thm:frontier4}).
 
 \subsection*{Standing of the inputs.}
-For the record, the external inputs to Theorem~\ref{thm:main} and their publication status:
+The external inputs to Theorem~\ref{thm:main} and their publication status are as follows:
 Laczkovich's classification papers \cite{Laczkovich1995,Laczkovich2012} and the rep-tiling theorem
 of Snover--Waiveris--Williams \cite{SWW} are refereed journal articles, and Beeson's isosceles
 paper \cite{BeesonIso} is accepted (to appear in \emph{Integers}); Beeson's remaining branch papers

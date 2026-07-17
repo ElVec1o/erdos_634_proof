@@ -6,22 +6,24 @@ authors:
     given-names: Vico
     email: vicobonfioli@gmail.com
 abstract: >-
-  A translation-invariant, signed-direction tiling functional that, within the 2pi/3 branch of
-  Laczkovich's classification of triangle tilings, proves that no prime number of 2pi/3 tiles tiles
-  an isosceles triangle (for every prime, where only a finite bound was previously known). With a
-  self-contained reduction of the scalene shapes, this completes the exclusion of primes congruent
-  to 3 modulo 4 as numbers of congruent triangles tiling a triangle, conditional on the cited
-  classification; in particular no triangle can be cut into 19 congruent triangles. The
-  prime case of the full problem is thereby complete (a prime occurs iff p = 2, 3, or 1 mod 4),
-  the admissible spectrum of each sporadic branch is determined (with a parity refinement), every
-  value up to 75 is settled (14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 51, 55, 56, 57, 60, 62, 63, 66, 69, 70, 78 are excluded, by
-  branch sweeps and exhaustive exact searches, and 44 IS REALIZABLE: the isosceles (16,16,22) tiles
-  into 44 congruent (2,3,4) triangles, found by the search and verified exactly), N = 46 is excluded in agreement with Zhang's completeness
-  conjecture, the spectrum theorem closes the necessary side of the sporadic branches (equal to Zhang's
-  families exactly), the equilateral criteria reduce to divisor conditions, and membership in
-  the tile-count set is shown to be decidable. The arithmetic and combinatorial layer is machine-checked in
-  Lean 4 with Mathlib. Developed with AI assistance
-  (Anthropic Claude); presented for peer review.
+  Within the 2pi/3 branch of Laczkovich's classification of triangle tilings, a translation-invariant
+  signed-direction functional proves that no prime number of 2pi/3 tiles tiles an isosceles triangle
+  (for every prime; previously only a finite lower bound was known). With a self-contained reduction of
+  the scalene shapes and machine-checked replacements for four of the five 3-alpha-2-beta targets, this
+  excludes primes N congruent to 3 modulo 4 as numbers of congruent triangles into which a triangle can
+  be cut, with one explicit exception: the base-beta candidates N = 3f^2 - e^2 (gcd(e,f)=1), an infinite
+  family (11, 23, 47, 59, 71, 83, 107, ...) all congruent to 3 modulo 4, for which the only published
+  exclusion (Beeson's Theorem 14) rests on a divisibility shown here to be false. These candidates satisfy
+  every sound necessary condition and are settled individually by exact search; those searched up to 110
+  (11, 23, 47, 71, 107) are excluded, and 59, 83 remain under search. In particular no triangle can be cut
+  into 19 congruent triangles (19 is not of the exceptional form). The admissible spectrum of each sporadic
+  branch is determined, the contiguous initial segment of the spectrum is settled, and realizations are
+  exhibited: a triangle can be cut into 28 and into 44 congruent triangles, each certified by a zero-axiom
+  Lean kernel computation; the 44-tiling of the (16,16,22) isosceles triangle by the (2,3,4) tile is the
+  smallest known tiling in an incommensurable branch. The equilateral criteria reduce to divisor conditions
+  and membership in the tile-count set is decidable. The arithmetic and combinatorial layer is machine-checked
+  in Lean 4 with Mathlib (axiom-clean, no sorry). Developed with AI assistance (Anthropic Claude); presented
+  for peer review.
 keywords:
   - triangle tiling
   - Erdős problem 634
