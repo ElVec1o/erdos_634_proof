@@ -458,6 +458,25 @@ realizes `{α, γ}`.) -/
 theorem pierced_corner_types (x y z : ℕ) (h1 : y + z = 1) (h2 : 2 * x + z = 3 * y + 3) :
     (x = 3 ∧ y = 1 ∧ z = 0) ∨ (x = 1 ∧ y = 0 ∧ z = 1) := by omega
 
+/-- **Rung 2 of the pierced-corner chase: the pre-piercer edges are `b`'s, and only in the
+super-thick regime.**  On the mismatch ray every full far-side edge strictly before the piercer lies
+inside `[b, f²]`, so its length is at most `e²`.  Among the tile edges `{ef, f²−e², f²}` only
+`b = f²−e²` can be `≤ e²`, and that requires `f² ≤ 2e²` (the *super-thick* regime, e.g.
+`(e,f) = (4,5)`, `N = 59`).  Consequently the piercer starts at `(t+1)·b` with `t·b < e²`, and
+`t = 0` outside super-thick; moreover at the first T-junction the `(1,1,1)` figure offers only
+`{α, β}` corners while a `b`-piercer demands `{α, γ}` — so a `b`-piercer's corner there is exactly
+`α`.  (All three claims verified positionally on the genuine 44-tiling: `t = 0`, piercer spans
+`[3,6]`, corner `α` to numerical precision.) -/
+theorem pre_pierce_dichotomy (e f ℓ B : ℕ) (he : 1 ≤ e) (hef : e < f)
+    (hB : B + e ^ 2 = f ^ 2) (hmem : ℓ = e * f ∨ ℓ = B ∨ ℓ = f ^ 2) (hle : ℓ ≤ e ^ 2) :
+    ℓ = B ∧ f ^ 2 ≤ 2 * e ^ 2 := by
+  rcases hmem with h | h | h
+  · exfalso; subst h; nlinarith [hef, he]
+  · subst h; constructor
+    · rfl
+    · omega
+  · exfalso; subst h; nlinarith [hef, he]
+
 end Erdos634.BaseBetaWalks
 
 #print axioms Erdos634.BaseBetaWalks.exists_of_dvd_sub
@@ -472,3 +491,4 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.c_edge_exists
 #print axioms Erdos634.BaseBetaWalks.apex_leftover_nonrepresentable
 #print axioms Erdos634.BaseBetaWalks.pierced_corner_types
+#print axioms Erdos634.BaseBetaWalks.pre_pierce_dichotomy

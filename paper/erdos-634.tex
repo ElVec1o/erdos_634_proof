@@ -418,6 +418,32 @@ tiling --- $N=59$ included --- must contain this configuration. The two continua
 full forcing attack on the thick regime now stands.
 \end{remark}
 
+\begin{proposition}[Rung two: the pre-piercer chain]\label{prop:rung2}
+In the configuration of Theorem~\ref{thm:pierce}, every full far-side edge strictly between the
+T-junction and the piercer lies inside $[b,f^2]$, hence has length $\le e^2$; among the tile edges
+only $b=f^2-e^2$ can satisfy this, and only in the \emph{super-thick} regime $f^2\le 2e^2$. So the
+piercer starts at $(t+1)b$ with $tb<e^2$, where $t=0$ outside super-thick; and if the piercer is
+itself a $b$-edge, its corner at its starting junction is exactly $\alpha$ (the $(1,1,1)$ figure
+offers $\{\alpha,\beta\}$, while a $b$-edge's endpoints are $\{\alpha,\gamma\}$). In particular for
+$N=59$ ($(e,f)=(4,5)$, super-thick: $25\le32$) the piercer starts at distance $9$ or $18$, and for
+every non-super-thick member it starts at the T-junction itself.
+\end{proposition}
+
+\begin{remark}[Validation, and the search consequence]\label{rem:rung2}
+On the genuine $44$-tiling ($f^2=4>2e^2=2$, so $t=0$): the piercer spans exactly $[3,6]$ --- it
+starts at the T-junction --- and its corner there is $\alpha$ to numerical precision, as forced.
+The arithmetic core is machine-checked (\texttt{pre\_pierce\_dichotomy}). Beyond its intrinsic
+content, the rung has an operational consequence: the apex neighbourhood is \emph{near-rigid}
+(three forced $\alpha$-tiles, a forced mismatch ray, a forced T-junction, a forced piercer start),
+while the base admits several walks. The exhaustive search anchors at the lowest vertex, so in the
+standard orientation it explores the fat part first and meets the rigid apex last --- backwards.
+Re-anchoring by \emph{flipping the target apex-down} (a reflection, so verdicts transfer verbatim)
+lets the forced chain prune at the root: on the settled thick member $N=23$ the flipped search
+exhausts in $3{,}954$ nodes against $19{,}677$ --- a five-fold collapse --- while on the thin member
+$N=47$ the flip \emph{loses} (there the base, with its single $b$-edge, is the rigid side, exactly
+as the classification predicts). The record-critical thick searches ($N=59,66$) now run apex-down.
+\end{remark}
+
 \begin{remark}[Scope, and why $m=1$ is the rigid case]\label{rem:walkscope}
 Theorem~\ref{thm:walks}(i) generalizes the $e=1$ base analysis used for
 Theorem~\ref{thm:basebeta-e1} to the infinite family $f>2e$ --- $e=1$, $f\ge3$; $e=2$, $f\ge5$;
