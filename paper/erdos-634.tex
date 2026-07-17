@@ -76,9 +76,30 @@ primes $\equiv 3\pmod 4$ that exceed $3$, which are exactly the odd primes that 
 two squares nor of the form $3n^2$, are excluded.
 
 \begin{theorem}\label{thm:main}
-No prime $N\equiv 3\pmod 4$ with $N>3$ is a number of congruent triangles into which some triangle
-can be cut. In particular, no triangle can be cut into $19$ congruent triangles.
+Let $N>3$ be a prime with $N\equiv 3\pmod 4$ which is \emph{not} a base-$\beta$ candidate --- that is,
+$N\ne 3f^2-e^2$ for every coprime pair $1\le e<f$. Then $N$ is not a number of congruent triangles
+into which some triangle can be cut. In particular, since $19$ is not of that form, no triangle can be
+cut into $19$ congruent triangles.
 \end{theorem}
+
+\begin{remark}[The scope of Theorem~\ref{thm:main}, stated exactly --- a correction]\label{rem:mainscope}
+The exception is not cosmetic, and earlier versions of this paper did not carry it; we correct that
+here. The base-$\beta$ candidates are exactly the $N=3f^2-e^2$ with $\gcd(e,f)=1$, $1\le e<f$; they are
+automatically $\equiv3\pmod4$, and the smallest are
+\[ 11,\ 23,\ 47,\ 59,\ 71,\ 83,\ 107,\ 131,\ 167,\ 179,\ 191,\ \dots \]
+For each, the tile $(ef,\,f^2-e^2,\,f^2)$ and the target $(f^3,f^3,e(3f^2-e^2))$ pass every
+\emph{sound} necessary condition (Remark~\ref{rem:isobeta}); the only published exclusion is
+\cite[Thm.~14]{BeesonIII}, whose $g\mid M$ is not merely unproven but \textbf{false}
+(Remark~\ref{rem:thm14false}), so we cannot invoke it, and no general replacement is known
+(Remark~\ref{rem:e2}). Asserting Theorem~\ref{thm:main} without the exception --- as we previously
+did, on the strength of that citation --- is exactly the error this paper documents in
+\cite{BeesonIII}, and it would be no better for being ours. The candidates are therefore settled one
+at a time by exhaustive search (Table~\ref{tab:basebeta}): at present $11,23,47,71,107$ are excluded
+and $59,83$ are under search. So Theorem~\ref{thm:main} is unconditional for every prime
+$N\equiv3\pmod4$, $N>3$, outside the sequence above, and for $11,23,47,71,107$ besides. The
+headline consequence is unaffected: $19\ne3f^2-e^2$, and more generally the two frontier claims of
+Section~\ref{sec:full} rest only on candidates that have been searched.
+\end{remark}
 
 \noindent The restriction $N>3$ is necessary: an equilateral triangle joined to its centre splits
 into $3$ congruent triangles, so $N=3$ occurs.
@@ -557,7 +578,10 @@ now a corollary); at $f>2e$ it still pins $j=0$; but in the \emph{thick} regime 
 $\lfloor(e-1)/(f-e)\rfloor+1$ values of $j$ and the trichotomy dissolves. That is precisely where the
 open members sit --- $N=59$ is $(e,f)=(4,5)$, so $j\le3$; $N=66$ is $(3,5)$, so $j\le1$; likewise
 $N=23,83,131,167$. We record the branch as open and settle its members one at a time by exhaustive
-search; every member below $110$ has now been settled that way (Table~\ref{tab:basebeta}).
+search. Table~\ref{tab:basebeta} lists every member below $110$; of the eleven, eight are settled and
+$59$, $66$, $83$ are under search. (An earlier version of this table omitted $N=83$ and claimed all
+eleven were settled; both errors are corrected here. $N=83$, $(e,f)=(5,6)$, is the smallest
+base-$\beta$ prime never yet searched.)
 The walk classification also feeds back into the search: the $\gamma$-trap and the corner
 parallelogram have the multiset corollaries $R\ge1$ on every side, $Q_{\mathrm{base}}\le k-4$ and
 $Q_{\mathrm{side}}\le k-2$ ($k$ the number of edges of the walk), and the engine now prunes any
@@ -589,6 +613,7 @@ $59$  & $(4,5)$ & $(20,9,25)$  & thick & searching\\
 $66$  & $(3,5)$ & $(15,16,25)$ & thick & searching\\
 $71$  & $(2,5)$ & $(10,21,25)$ & thin  & no tiling \hfill $553\,417$\\
 $74$  & $(1,5)$ & $(5,24,25)$  & thin  & no tiling \hfill $132\,519$\\
+$83$  & $(5,6)$ & $(30,11,36)$ & thick & searching\\
 $107$ & $(1,6)$ & $(6,35,36)$  & thin  & no tiling \hfill $1\,251\,382$\\
 \hline
 \end{tabular}
@@ -917,12 +942,21 @@ integer.
 \section{Resolution of the problem}\label{sec:assembly}
 
 \begin{proof}[Proof of Theorem~\ref{thm:main}]
-Let $p>3$ be prime with $p\equiv3\pmod4$, and suppose some triangle is $p$-tiled. By the
-classification (Section~\ref{sec:prelim}) the tile is in one of the listed types, and every type
-other than a $2\pi/3$ tile on a non-equilateral triangle excludes such a $p$ by an existing theorem
-\cite{SWW, BeesonI, BeesonSeven, BeesonIII, BeesonIso, BeesonEq}. For a $2\pi/3$ tile,
+Let $p>3$ be prime with $p\equiv3\pmod4$ and $p\ne3f^2-e^2$ for every coprime $1\le e<f$, and
+suppose some triangle is $p$-tiled. By the classification (Section~\ref{sec:prelim}) the tile is in
+one of the listed types. Consider the types other than a $2\pi/3$ tile on a non-equilateral triangle.
+For the $3\alpha+2\beta$ branch, four of its five targets are excluded outright --- the two scalene
+ones by the machine-checked cores of \cite[Thms.~8, 12]{BeesonIII}, the base-$(\alpha{+}\beta)$ target
+by Proposition~\ref{prop:b3prime} and the base-$\alpha$ target by
+Proposition~\ref{prop:isoalphaprime} (the last two replacing \cite[Thms.~18, 20]{BeesonIII}, whose
+printed proofs are unsound). Its fifth target, base-$\beta$, is \emph{not} excluded by any sound
+general argument (Remark~\ref{rem:isobeta}); but its candidate counts are exactly the $3f^2-e^2$ with
+$\gcd(e,f)=1$, which the hypothesis excludes. The remaining branches exclude such a $p$ by existing
+theorems \cite{SWW, BeesonI, BeesonSeven, BeesonIso, BeesonEq}. For a $2\pi/3$ tile,
 Proposition~\ref{prop:reduction} forces $ABC$ isosceles and not equilateral, and
-Theorem~\ref{thm:iso} excludes that. Hence no such tiling exists. Finally $19>3$ is prime and $\equiv3\pmod4$, so no triangle is cut into
+Theorem~\ref{thm:iso} excludes that. Hence no such tiling exists. Finally $19>3$ is prime,
+$\equiv3\pmod4$, and is not a base-$\beta$ candidate: for $f\le2$ one has $3f^2-e^2\le11$; for $f=3$,
+$3f^2-e^2\in\{26,23,18\}$; and for $f\ge4$, $3f^2-e^2\ge2f^2+2f-1\ge39$. So no triangle is cut into
 $19$ congruent triangles.
 \end{proof}
 
@@ -933,9 +967,13 @@ primes; this section records what the present methods contribute to the full det
 complete answer for primes, and, for each sporadic $2\pi/3$ branch, a determination of its
 \emph{admissible spectrum} --- the set of counts compatible with the area and invariant conditions.
 
-\begin{theorem}[The prime case, complete]\label{thm:primefull}
-A prime $p$ is a number of congruent triangles into which some triangle can be cut if and only if
-$p=2$, $p=3$, or $p\equiv 1\pmod 4$.
+\begin{theorem}[The prime case]\label{thm:primefull}
+A prime $p$ that is not a base-$\beta$ candidate ($p\ne3f^2-e^2$ for all coprime $1\le e<f$) is a
+number of congruent triangles into which some triangle can be cut if and only if $p=2$, $p=3$, or
+$p\equiv 1\pmod 4$. The same holds for the base-$\beta$ candidates that have been settled by search,
+currently $11,23,47,71,107$ (Table~\ref{tab:basebeta}); for the remaining candidates
+$59,83,131,167,179,191,\dots$ the ``only if'' direction is open
+(Remark~\ref{rem:mainscope}).
 \end{theorem}
 
 \begin{proof}
