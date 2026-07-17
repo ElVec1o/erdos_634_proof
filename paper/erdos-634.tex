@@ -439,6 +439,34 @@ tiling --- $N=59$ included --- must contain this configuration. The two continua
 full forcing attack on the thick regime now stands.
 \end{remark}
 
+\begin{proposition}[Unsplittability, and the rigidity of the thick regime]\label{prop:unsplit}
+For every coprime $1\le e<f$, neither $a=ef$ nor $b=f^2-e^2$ is a sum of two or more tile edges; and
+$c=f^2$ is such a sum if and only if $e=1$, in which case uniquely $c=a^{f}$. Consequently \emph{in the
+entire open thick regime, where $e\ge2$, no tile edge splits at all}.
+\end{proposition}
+
+\begin{proof}
+Reduce $n_a\,ef+n_b(f^2-e^2)+n_c f^2=L$ modulo $f$. For $L=a$: $f\mid n_b e^2$, so $f\mid n_b$ by
+$\gcd(e,f)=1$; $n_b\ge f$ overshoots since $fB>ef$ (as $B=f^2-e^2\ge2e+1>e$), so $n_b=0$, and
+cancelling $f$ leaves $n_a e+n_c f=e$, forcing $n_c=0$ and $n_a=1$. For $L=b$: $f\mid(n_b-1)e^2$, so
+$n_b\equiv1$; $n_b\ge1+f$ overshoots, so $n_b=1$ and the rest vanishes, giving $n_a=n_c=0$. Either way
+the total is $1$, never $\ge2$. For $L=c$: $f\mid n_b$ forces $n_b=0$ as before, and $n_a e=f(1-n_c)$
+gives $n_c=0$ and $e\mid f$, i.e.\ $e=1$, $n_a=f$.
+\end{proof}
+
+\begin{remark}[The golden ratio, and a correction to our own reflex]\label{rem:golden}
+Two consequences worth stating, both against expectation. First, Proposition~\ref{prop:unsplit} is
+exactly the hypothesis the corner parallelogram needs, so Remark~\ref{rem:e2}(b) now holds with
+\emph{no} proviso. Second, the case that looks easy is the loose one: $e=1$ --- which is what both
+genuine tilings realize --- is the only case where an edge splits at all, while the open $e\ge2$
+regime is perfectly rigid. Relatedly, one must never compare $a$ with $b$ without care:
+$b>a\iff f^2-ef-e^2>0\iff f/e>\varphi$, the golden ratio. The thick regime straddles that threshold
+--- $N=66$ $(3,5)$ and $N=131$ $(4,7)$ are super-golden, while $N=23$ $(2,3)$, $N=59$ $(4,5)$,
+$N=83$ $(5,6)$ and $N=167$ $(5,8)$ have $b<a$ --- so any argument that silently assumes $b>a$
+(which the $e=1$ intuition invites) is false exactly where it is needed. Our first attempt at
+Proposition~\ref{prop:unsplit} did assume it; the proof above does not.
+\end{remark}
+
 \begin{proposition}[Rung two: the pre-piercer chain]\label{prop:rung2}
 In the configuration of Theorem~\ref{thm:pierce}, every full far-side edge strictly between the
 T-junction and the piercer lies inside $[b,f^2]$, hence has length $\le e^2$; among the tile edges

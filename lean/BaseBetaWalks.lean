@@ -477,6 +477,103 @@ theorem pre_pierce_dichotomy (e f ℓ B : ℕ) (he : 1 ≤ e) (hef : e < f)
     · omega
   · exfalso; subst h; nlinarith [hef, he]
 
+/-- **Unsplittability of `a` and `b`** — for *every* coprime `1 ≤ e < f`, with no size assumption.
+Neither tile edge is a sum of two or more tile edges.  The proof is two mod-`f` reductions, and it must
+avoid comparing `a = ef` with `b = f²−e²`: which is larger flips at the golden ratio (`b > a ⟺ f > φe`),
+and the open *thick* regime is precisely where `b < a`.
+For `= a`: mod `f` gives `f ∣ n_b·e²`, so `f ∣ n_b`; `n_b ≥ f` overshoots (`f·B > e·f` since `B > e`),
+so `n_b = 0`, and cancelling `f` leaves `n_a·e + n_c·f = e`, forcing `n_c = 0`, `n_a = 1`.
+For `= b`: mod `f` gives `f ∣ (n_b−1)·e²`, so `n_b ≡ 1`; `n_b ≥ 1+f` overshoots, so `n_b = 1` and the
+rest vanishes, giving `n_a = n_c = 0`.  Either way the total is `1`, never `≥ 2`.
+This is the exact hypothesis the corner-parallelogram rule needs, so that rule stands with **no
+proviso**; and since the whole open thick regime has `e ≥ 2`, where `c` is unsplittable too
+(`c = a^f` needs `e = 1`), **no tile edge splits at all there**. -/
+theorem edge_ab_unsplittable (e f na nb nc B : ℕ) (he : 1 ≤ e) (hef : e < f) (hcop : Nat.Coprime e f)
+    (hB : B + e ^ 2 = f ^ 2) (hn : 2 ≤ na + nb + nc) :
+    na * (e * f) + nb * B + nc * f ^ 2 ≠ e * f ∧ na * (e * f) + nb * B + nc * f ^ 2 ≠ B := by
+  have hf0 : 0 < f := by omega
+  have hf1 : 1 < f := by omega
+  have hef0 : 0 < e * f := by positivity
+  have hBe : e < B := by nlinarith [hef, he]
+  have hzc : IsCoprime (f : ℤ) (e : ℤ) := Int.isCoprime_iff_gcd_eq_one.mpr hcop.symm
+  have hBz : (B : ℤ) = (f : ℤ) ^ 2 - (e : ℤ) ^ 2 := by
+    have hc : ((B : ℤ)) + (e : ℤ) ^ 2 = (f : ℤ) ^ 2 := by exact_mod_cast hB
+    linarith
+  constructor
+  · -- `= a` : mod `f` gives `f ∣ n_b`; `n_b ≥ f` overshoots; `n_b = 0` leaves `n_a·e + n_c·f = e`
+    intro h
+    have hz : (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2)
+        + (nc : ℤ) * (f : ℤ) ^ 2 = (e : ℤ) * f := by
+      have h' : (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * (B : ℤ) + (nc : ℤ) * (f : ℤ) ^ 2
+          = (e : ℤ) * f := by exact_mod_cast h
+      rw [hBz] at h'; exact h'
+    have hdvd : (f : ℤ) ∣ (nb : ℤ) := by
+      refine (hzc.pow_right (n := 2)).dvd_of_dvd_mul_right ?_
+      exact ⟨(nb : ℤ) * f + na * e + nc * f - e, by linear_combination -hz⟩
+    obtain ⟨k, hk⟩ := exists_of_dvd_sub f nb 0 hf0 (by simpa using hdvd)
+    rw [Nat.zero_add] at hk
+    rcases Nat.eq_zero_or_pos k with hk0 | hkp
+    · subst hk0
+      simp only [Nat.mul_zero] at hk
+      subst hk
+      simp only [Nat.zero_mul, Nat.add_zero] at h
+      have hcan : f * (na * e + nc * f) = f * e := by
+        have h1 : f * (na * e + nc * f) = na * (e * f) + nc * f ^ 2 := by ring
+        have h2 : f * e = e * f := by ring
+        rw [h1, h2]; exact h
+      have hlev : na * e + nc * f = e := Nat.eq_of_mul_eq_mul_left hf0 hcan
+      have hnc : nc = 0 := by
+        by_contra hc2
+        have : f ≤ nc * f := Nat.le_mul_of_pos_left _ (by omega)
+        omega
+      subst hnc
+      simp only [Nat.zero_mul, Nat.add_zero] at hlev
+      have hna : na = 1 := by
+        rcases Nat.lt_or_ge na 2 with h2 | h2
+        · interval_cases na <;> omega
+        · exfalso
+          have : 2 * e ≤ na * e := Nat.mul_le_mul_right _ h2
+          omega
+      omega
+    · have hnbf : f ≤ nb := by
+        have : f * 1 ≤ f * k := Nat.mul_le_mul_left _ hkp
+        omega
+      have h1 : f * B ≤ nb * B := Nat.mul_le_mul_right _ hnbf
+      have h2 : e * f < f * B := by nlinarith [hBe, hf0]
+      omega
+  · -- `= b` : mod `f` gives `f ∣ n_b − 1`; `n_b ≥ 1+f` overshoots; `n_b = 1` kills the rest
+    intro h
+    have hz : (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2)
+        + (nc : ℤ) * (f : ℤ) ^ 2 = (f : ℤ) ^ 2 - (e : ℤ) ^ 2 := by
+      have h' : (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * (B : ℤ) + (nc : ℤ) * (f : ℤ) ^ 2
+          = (B : ℤ) := by exact_mod_cast h
+      rw [hBz] at h'; exact h'
+    have hdvd : (f : ℤ) ∣ ((nb : ℤ) - 1) := by
+      refine (hzc.pow_right (n := 2)).dvd_of_dvd_mul_right ?_
+      exact ⟨(nb : ℤ) * f + na * e + nc * f - f, by linear_combination -hz⟩
+    obtain ⟨k, hk⟩ := exists_of_dvd_sub f nb 1 hf1 hdvd
+    rcases Nat.eq_zero_or_pos k with hk0 | hkp
+    · subst hk0
+      simp only [Nat.mul_zero, Nat.add_zero] at hk
+      subst hk
+      simp only [Nat.one_mul] at h
+      have hna : na = 0 := by
+        by_contra hcc
+        have : e * f ≤ na * (e * f) := Nat.le_mul_of_pos_left _ (by omega)
+        omega
+      have hnc : nc = 0 := by
+        by_contra hcc
+        have h1 : f ^ 2 ≤ nc * f ^ 2 := Nat.le_mul_of_pos_left _ (by omega)
+        have h2 : 0 < f ^ 2 := by positivity
+        omega
+      omega
+    · have hnbf : 1 + f ≤ nb := by
+        have : f * 1 ≤ f * k := Nat.mul_le_mul_left _ hkp
+        omega
+      have h1 : (1 + f) * B ≤ nb * B := Nat.mul_le_mul_right _ hnbf
+      have h2 : B < (1 + f) * B := by nlinarith [hBe, he, hf1]
+      omega
+
 end Erdos634.BaseBetaWalks
 
 #print axioms Erdos634.BaseBetaWalks.exists_of_dvd_sub
@@ -492,3 +589,4 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.apex_leftover_nonrepresentable
 #print axioms Erdos634.BaseBetaWalks.pierced_corner_types
 #print axioms Erdos634.BaseBetaWalks.pre_pierce_dichotomy
+#print axioms Erdos634.BaseBetaWalks.edge_ab_unsplittable
