@@ -882,9 +882,19 @@ int main(int argc, char** argv) {
     const char* r = S.run();
     printf("RESULT %s nodes=%lld maxdepth=%ld pruneA=%lld pruneR=%lld pruneP4=%lld pruneP5=%lld\n", r, S.nodes,
            S.maxdepth, S.prune_area, S.prune_run, S.prune_dir, S.prune_walk);
+    fflush(stdout);  // never lose a verdict to a buffered stream
     if (S.has_found) {
-        std::string fn = "tiling_" + name + ".txt";
+        // sanitize: FILE:-instance names contain '/' and ':', which made fopen fail (NULL) and the
+        // gmp_fprintf below segfault -- losing the buffered RESULT line with it
+        std::string safe = name;
+        for (size_t i = 0; i < safe.size(); i++)
+            if (safe[i] == '/' || safe[i] == ':') safe[i] = '_';
+        std::string fn = "tiling_" + safe + ".txt";
         FILE* f = fopen(fn.c_str(), "w");
+        if (!f) {
+            fprintf(stderr, "WARNING: cannot open %s -- dumping tiling to stdout\n", fn.c_str());
+            f = stdout;
+        }
         gmp_fprintf(f, "%s %ld %Zd\n", name.c_str(), S.N, QD_D.get_mpz_t());
         for (const Poly& t : S.found) {
             for (const Pt& p : t) {
@@ -893,7 +903,7 @@ int main(int argc, char** argv) {
             }
             fprintf(f, "\n");
         }
-        fclose(f);
+        if (f != stdout) fclose(f); else fflush(stdout);
         printf("tiling written to %s (verify with python3 reverify_c.py %s)\n", fn.c_str(), fn.c_str());
     }
     return 0;
