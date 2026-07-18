@@ -1118,10 +1118,21 @@ conjecture was formulated --- $N=59$ $(4,5)$, all three exhausted. Both realized
 $99$, are super-golden (family $(1,2)$, $M^2/N=9/11$). The condition is necessary only, not
 sufficient: $N=11,26,47,66,71,74,107$ are super-golden and excluded.
 
+The conjecture is not a repackaging of anything already available. For the base-$(\alpha{+}\beta)$
+target the analogous bound is automatic: \cite[Thm.~17]{BeesonIII} gives $N/M^2=(f+e)/(f-e)>1$. For
+the base-$\beta$ target the corresponding equation, $N(e+f)^2=M^2(3f^2-e^2)$, becomes an identity on
+substituting $M=(f+e)m$ and $N=m^2(3f^2-e^2)$, so it carries no information; the trivial bound
+$|M|\le N$ is never binding (the largest ratio at $m=1$ is $3/11$); and none of the structural results
+of Section~\ref{sec:prelim} --- the walk classification, the $\gamma$-trap, unsplittability, the
+alignment theorem --- refers to $M$ at all. Moreover, since $M^2/N$ is scale-invariant, no bound whose
+strength grows with $m$ can prove it: any proof must come from the shape of the tile.
+
 If the conjecture holds it removes an infinite family at a stroke --- every base-$\beta$ target with
 $f/e<\varphi$, at every scale --- including the open primes $83$ $(5,6)$, $167$ $(5,8)$, $179$ $(8,9)$
 and $\dots$, and it would reduce the thick regime to its super-golden part. It is falsifiable: a
-tiling of any sub-golden target refutes it. The search at $N=83$, sub-golden, is the current test.
+tiling of any sub-golden target refutes it. Two searches are live tests: $N=83$, the sub-golden family
+$(5,6)$ at $m=1$, and $N=92$, the sub-golden family $(2,3)$ at $m=2$ --- the latter also testing
+whether a family barred at $m=1$ can tile higher up, as $(1,2)$ does.
 \end{remark}
 
 \begin{theorem}[Scaling ladder]\label{thm:ladder}
@@ -1170,13 +1181,31 @@ with $N=92$, $156$ and $188$.
 \end{remark}
 
 \begin{theorem}[The prime case]\label{thm:primefull}
-A prime $p$ that is not a base-$\beta$ candidate ($p\ne3f^2-e^2$ for all coprime $1\le e<f$) is a
-number of congruent triangles into which some triangle can be cut if and only if $p=2$, $p=3$, or
-$p\equiv 1\pmod 4$. The same holds for the base-$\beta$ candidates that have been settled by search,
-currently $11,23,47,71,107$ (Table~\ref{tab:basebeta}); for the remaining candidates
-$59,83,131,167,179,191,\dots$ the ``only if'' direction is open
-(Remark~\ref{rem:mainscope}).
+Let $p$ be a prime with $p\not\equiv11\pmod{12}$. Then $p$ is a number of congruent triangles into
+which some triangle can be cut if and only if
+\[
+p=2,\qquad p=3,\qquad\text{or}\qquad p\equiv1\pmod4 .
+\]
+The same equivalence holds for those $p\equiv11\pmod{12}$ that have been settled by exhaustive search,
+currently $11,23,47,59,71,107$ (Table~\ref{tab:basebeta}); for the remaining primes
+$\equiv11\pmod{12}$ --- the smallest being $83$ --- the ``only if'' direction is open.
 \end{theorem}
+
+\begin{remark}[The prime case of Erd\H os's problem, in one line]\label{rem:primeline}
+Combining Theorem~\ref{thm:mod12} with the branch analysis, the prime part of the problem has been
+reduced to a single congruence class. A prime $p$ lies in the spectrum if $p=2$, $p=3$ or
+$p\equiv1\pmod4$ (classical constructions), and does not if $p\equiv7\pmod{12}$
+(Corollary~\ref{cor:mod12}); the class $3\pmod{12}$ contains only $p=3$. What remains is exactly
+\[
+p\equiv11\pmod{12},
+\]
+which is precisely the set of base-$\beta$ candidates, conjecturally empty of tile counts, and
+verified so for $11,23,47,59,71,107$. By Dirichlet the resolved and unresolved halves of the primes
+$\equiv3\pmod4$ have equal density, so the prime problem is settled for a set of primes of density
+$\tfrac34$ among all primes, and open on a set of density $\tfrac14$. If
+Conjecture~\ref{conj:golden} holds, the sub-golden members of the open class --- an infinite subset
+including $83$, $167$ and $179$ --- are excluded as well.
+\end{remark}
 
 \begin{proof}
 \emph{If.} For $p=2$, the altitude from the right angle splits an isosceles right triangle into two
