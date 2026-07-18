@@ -1022,6 +1022,51 @@ primes; this section records what the present methods contribute to the full det
 complete answer for primes, and, for each sporadic $2\pi/3$ branch, a determination of its
 \emph{admissible spectrum} --- the set of counts compatible with the area and invariant conditions.
 
+\begin{theorem}[Scaling ladder]\label{thm:ladder}
+Let a triangle $T$ be cut into $N$ copies of a tile $t$. Then for every integer $k\ge1$ the scaled
+triangle $kT$ is cut into $k^2N$ copies of $t$.
+\end{theorem}
+
+\begin{proof}
+Subdivide $kT$ by the triangular grid of side $k$: it decomposes into $k^2$ triangles, of which
+$\binom{k+1}{2}$ are translates of $T$ and $\binom{k}{2}$ are its point-reflections, all congruent to
+$T$. Cut each into $N$ copies of $t$.
+\end{proof}
+
+\begin{corollary}[The realizable set of a base-$\beta$ family is a union of multiples]\label{cor:ladder}
+Fix coprime $1\le e<f$ and put $N_0=3f^2-e^2$. Since the base-$\beta$ target at scale $m$ is
+$m\cdot(f^3,f^3,eN_0)$ --- the same shape for every $m$ --- the set
+\[
+S(e,f)=\{\,m\ge1:\ \text{the scale-$m$ target is cut into } m^2N_0 \text{ copies of } (ef,f^2-e^2,f^2)\,\}
+\]
+satisfies $m\in S(e,f)\Rightarrow km\in S(e,f)$ for every $k\ge1$. Hence $S(e,f)$ is the union of the
+multiples of its minimal elements, and $1\in S(e,f)$ is \emph{not} implied by $S(e,f)\ne\emptyset$.
+\end{corollary}
+
+\begin{corollary}[An infinite family of tilings in an incommensurable branch]\label{cor:elevenm}
+For $(e,f)=(1,2)$, tile $(2,3,4)$ and $N_0=11$: $1\notin S$ (Table~\ref{tab:basebeta}: the target
+$(8,8,11)$ is exhausted at $135$ nodes), while $2\in S$ and $3\in S$ by the explicit $44$- and
+$99$-tilings. Therefore $S\supseteq 2\Z_{\ge1}\cup 3\Z_{\ge1}$, and
+\[
+N=11m^2 \ \text{is a number of congruent triangles for every } m \text{ divisible by } 2 \text{ or } 3:
+\quad 44,\ 99,\ 176,\ 396,\ 704,\ 891,\ 1100,\ \dots
+\]
+Moreover the $44$- and $99$-tilings are \emph{primitive}: neither arises from Theorem~\ref{thm:ladder}
+applied to a smaller member of its own family, because that would require $1\in S$. The values
+$N=11m^2$ with $\gcd(m,6)=1$ --- the smallest being $275$ --- are undetermined.
+\end{corollary}
+
+\begin{remark}\label{rem:ladder}
+Two points. First, the exclusion of $11$ together with the realizability of $11\cdot2^2$ and
+$11\cdot3^2$ shows that a base-$\beta$ family can be empty at scale $1$ and non-empty above it; the
+obstruction at $m=1$ is genuinely a small-scale phenomenon and not a property of the family. Second,
+before this the smallest tiling known in any incommensurable branch had $1215$ tiles; the corollary
+supplies infinitely many, of which $44$ is the smallest. Whether $S(e,f)\ne\emptyset$ for every
+$(e,f)$ --- equivalently, whether every base-$\beta$ family tiles at \emph{some} scale --- is open;
+the first untested instances are the scale-$2$ targets of the families $(2,3)$, $(3,4)$ and $(1,4)$,
+with $N=92$, $156$ and $188$.
+\end{remark}
+
 \begin{theorem}[The prime case]\label{thm:primefull}
 A prime $p$ that is not a base-$\beta$ candidate ($p\ne3f^2-e^2$ for all coprime $1\le e<f$) is a
 number of congruent triangles into which some triangle can be cut if and only if $p=2$, $p=3$, or

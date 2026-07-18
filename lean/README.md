@@ -87,6 +87,24 @@ i.e. `j = −1`, and the 99-tiling has `aabbbbbbbcc`, i.e. `j = 2`. Both satisfy
 is now reduced to the **thick regime `f ≤ 2e`**, where the smallest open members (`N = 59`, `(4,5)`)
 sit; those are settled per value by the search engine.
 
+`InvariantCore.lean` machine-checks, axiom-clean, the **combinatorial engines of the two geometric
+lemmas** behind the signed-direction invariant (paper Lemmas "Cancellation" and "Tile value").
+Neither lemma is formalizable end to end — both quantify over tilings, and Mathlib has no dissection
+theory — so the geometry is isolated into explicit hypotheses, the same interface discipline as
+`gamma_injection` in `BaseBetaWalks.lean`. `sum_antisym_of_involution` / `cancellation_core`: if the
+direction set carries an involution `neg` (`θ ↦ θ+π`), the interior length `Λ_int` is `neg`-invariant
+and the sign `f` is `neg`-antisymmetric, then `∑ Λ_int·f = 0` and the tile sum equals the boundary
+functional. The single geometric input is `Λ_int (neg d) = Λ_int d` — "each interior segment is
+covered once from each side" — which is exactly where non-edge-to-edge incidences must be handled;
+everything downstream is proved here. (No fixed-point-freeness is needed: at a fixed point
+`f d = −f d` forces `f d = 0`.) `sign_shift_two`, `sign_shift_three`, `tile_value_core`,
+`tile_value_pm`: the turning-angle bookkeeping — the exterior turns `π−β` and `π−γ` add `2` and `1`
+to the `π/3`-coefficient, so the three edge coefficients are `j₀, j₀+2, j₀+3`; `+2` preserves the
+sign and `+3` flips it, giving `C = ±(c+a−b)` with lengths `c,a,b`. `tile_value_rotation` and
+`tile_value_reflection` give the covariance that upgrades one placement to all placements, and
+`integrality_parity` proves `M ≡ N (mod 2)` for a sum of `N` signs. This replaces a Python check that
+located directions by floating-point nearest-neighbour search with a `1e-6` tolerance.
+
 `IsoAlphaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct replacement**
 for Beeson III's Theorem 20 (base-`α` no-prime), whose proof depends on Theorem 19's `g ∣ M` — itself
 unsound (its `bc³(a+c)` bookkeeping is false: with `c=g²` it carries `g⁷`), resting further on the
