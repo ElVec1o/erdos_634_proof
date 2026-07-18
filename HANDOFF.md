@@ -54,7 +54,9 @@ equal sides  X = f³ m,   base  Y = e m (3f² − e²),   number of tiles  N = m
 ```
 **`N` is prime exactly when `m = 1`.** So the prime question lives entirely at `m = 1`, where
 `N = 3f² − e²`. These candidate counts are exactly the integers of the form `3f² − e²` with
-`gcd(e,f)=1`, `1 ≤ e < f`; **they are all `≡ 3 (mod 4)`**, and the smallest are
+`gcd(e,f)=1`, `1 ≤ e < f`; the **prime** ones are exactly the primes **`≡ 11 (mod 12)`** (machine-checked,
+`BaseBetaMod12.lean`); composite candidates with `e,f` both odd are `≡ 2 (mod 4)` (e.g. 26, 66, 74).
+Equivalently **every prime `≡ 7 (mod 12)` is excluded unconditionally**. The smallest prime candidates are
 ```
 11, 23, 47, 59, 71, 83, 107, 131, 167, 179, 191, …
 ```

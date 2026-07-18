@@ -29,8 +29,11 @@ forces the large triangle to be isosceles.
   congruent triangles into which a triangle can be cut. In particular **no triangle can be cut into 19
   congruent triangles** (`19` is not of the exceptional form).
 
-- **The exception is genuine.** The base-`β` candidates `N = 3f² − e²` (an infinite family, all
-  `≡ 3 (mod 4)`: `11, 23, 47, 59, 71, 83, 107, …`) satisfy every *sound* necessary condition. The only
+- **The exception is genuine, and it is one congruence class.** The prime base-`β` candidates
+  `N = 3f² − e²` are **exactly the primes `≡ 11 (mod 12)`** (`11, 23, 47, 59, 71, 83, 107, …`;
+  machine-checked in `lean/BaseBetaMod12.lean`). Equivalently, **every prime `≡ 7 (mod 12)` is
+  excluded unconditionally** — half of all primes `≡ 3 (mod 4)` — and `19 ≡ 7 (mod 12)`. The `≡ 11`
+  candidates satisfy every *sound* necessary condition; the only
   published exclusion, Beeson's Theorem 14, rests on a divisibility `g | M` that is **false** — refuted
   by an explicit `99`-tiling of the `(24,24,33)` triangle by `(2,3,4)` tiles. These candidates are
   settled individually by exact search; those searched up to `N = 110` (`11, 23, 47, 71, 107`) are

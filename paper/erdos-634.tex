@@ -81,9 +81,73 @@ into which some triangle can be cut. In particular, since $19$ is not of that fo
 cut into $19$ congruent triangles.
 \end{theorem}
 
+\begin{theorem}[The exceptional set is a congruence class]\label{thm:mod12}
+Let $p>3$ be prime with $p=3f^2-e^2$ for some coprime $e,f$. Then $p\equiv11\pmod{12}$. Conversely
+every prime $p\equiv11\pmod{12}$ is of that form. Hence the base-$\beta$ candidates among the primes
+are exactly the primes $\equiv11\pmod{12}$.
+\end{theorem}
+
+\begin{proof}
+($\Rightarrow$) If $3\mid e$ then $3\mid p$, impossible for a prime $p>3$; so $e^2\equiv1\pmod 3$ and
+$p\equiv-1\equiv2\pmod3$. Next, $e,f$ are not both even (coprimality) and not both odd, since then
+$p=3f^2-e^2\equiv3-1=2\pmod4$ would be an even prime exceeding $3$; in either remaining case
+$p\equiv3\pmod4$. Combining, $p\equiv11\pmod{12}$.
+($\Leftarrow$) For $p\equiv11\pmod{12}$ we have $p\equiv3\pmod4$ and $p\equiv2\pmod3$, so by
+reciprocity $\left(\frac3p\right)=1$ and $p$ splits in $\Q(\sqrt3)$. The discriminant-$12$ form class
+group has order two, represented by $x^2-3y^2$ and $3y^2-x^2$; the first forces $p\equiv1\pmod3$ and
+the second $p\equiv2\pmod3$, so $p$ is represented by $3y^2-x^2$. Primitivity is automatic for
+prime $p$.
+\end{proof}
+
+\begin{corollary}[Theorem~\ref{thm:main}, congruence form]\label{cor:mod12}
+No prime $p\equiv7\pmod{12}$ is a number of congruent triangles into which a triangle can be cut.
+Equivalently: a prime $p>3$ with $p\equiv3\pmod4$ is excluded unconditionally unless
+$p\equiv11\pmod{12}$.
+\end{corollary}
+
+\begin{proof}
+A prime $p>3$ with $p\equiv3\pmod4$ satisfies $p\equiv7$ or $p\equiv11\pmod{12}$, the class
+$3\pmod{12}$ forcing $3\mid p$. If $p\equiv7\pmod{12}$ then by Theorem~\ref{thm:mod12} it is not a
+base-$\beta$ candidate, so Theorem~\ref{thm:main} applies with no exception.
+\end{proof}
+
+\begin{remark}[Why the forms, and what the reformulation buys]\label{rem:forms}
+Every tile count in the classification is a value of a binary quadratic form: $e^2+f^2$
+(discriminant $-4$) on the commensurable branch, the Eisenstein norm $a^2+ab+b^2$ (discriminant
+$-3$) for a $2\pi/3$ tile, $3f^2-e^2$ (discriminant $12$) and $2f^2-e^2$ (discriminant $8$) on the
+$3\alpha+2\beta$ branch. The classical exclusion of primes $\equiv3\pmod4$ on the commensurable
+branch is exactly Fermat's two-squares theorem for the first form; Theorem~\ref{thm:mod12} is its
+analogue for the third. Two consequences. First, the exception in Theorem~\ref{thm:main} is not a
+Diophantine side condition but a single arithmetic progression, and by Dirichlet it carries half of
+the primes $\equiv3\pmod4$: the theorem is unconditional on the other half. Second,
+$19\equiv7\pmod{12}$, so the value in Erd\H os's question lies in the unconditional class.
+The forward implication is machine-checked (\texttt{basebeta\_prime\_mod\_twelve},
+\texttt{BaseBetaMod12.lean}); it is the direction the corollary uses. The converse was checked for
+all $109$ primes $\equiv11\pmod{12}$ below $3000$ with no exception.
+\end{remark}
+
+\begin{remark}[The quoted form of {\cite[Lem.~6]{BeesonIII}} is false]\label{rem:lem6false}
+That lemma is usually quoted as ``every side of $ABC$ carries at least two $c$-edges''. In that form
+it is false. Take the tile $(2,3,4)$ and let $ABC=(4,6,8)$, its double; the four-fold midpoint
+subdivision is a genuine tiling by four congruent copies, and its sides decompose as $b^2$, $c^2$,
+$a^2$ --- two of the three carry \emph{no} $c$-edge. Here $ABC$ is similar to the tile, a case treated
+separately in \cite{BeesonIII}, so the true statement must carry hypotheses that the usual quotation
+omits. We therefore do not use it: Proposition~\ref{prop:b3prime} now invokes only the $\gamma$-trap
+(at least \emph{one} $c$-edge per side), which is proved here from the vertex figures and
+machine-checked, and which suffices because the base length identity gives $Y\le(g-M)b$
+unconditionally --- a single $c$-edge already contradicts. An exhaustive check over all
+$11{,}338$ admissible pairs $(N,M)$ with $N<2500$ prime found \emph{no} decomposition of the base
+containing even one $c$-edge, so the margin is not delicate; the citation
+\cite[Lem.~45(iii)]{BeesonIII} is likewise not needed for the conclusion.
+\end{remark}
+
 \begin{remark}[The scope of Theorem~\ref{thm:main}]\label{rem:mainscope}
 The base-$\beta$ exception is essential. The base-$\beta$ candidates are exactly the $N=3f^2-e^2$ with
-$\gcd(e,f)=1$, $1\le e<f$; they are automatically $\equiv3\pmod4$, and the smallest are
+$\gcd(e,f)=1$, $1\le e<f$. Those with $e,f$ of opposite parity are $\equiv3\pmod4$; those with $e,f$
+both odd are $\equiv2\pmod4$, hence even, so among the \emph{primes} only the former occur --- and by
+Theorem~\ref{thm:mod12} they are exactly the primes $\equiv11\pmod{12}$. (Composite candidates of
+either parity occur and appear in Table~\ref{tab:basebeta}: $26$, $66$ and $74$ are $\equiv2\pmod4$.)
+The smallest prime candidates are
 \[ 11,\ 23,\ 47,\ 59,\ 71,\ 83,\ 107,\ 131,\ 167,\ 179,\ 191,\ \dots \]
 For each, the tile $(ef,\,f^2-e^2,\,f^2)$ and the target $(f^3,f^3,e(3f^2-e^2))$ pass every
 \emph{sound} necessary condition (Remark~\ref{rem:isobeta}); the only published exclusion is
@@ -122,7 +186,10 @@ Two reductions prepare it. First, such a tile has commensurable sides, so after 
 it integer-sided with $c^2=a^2+ab+b^2$; for the \emph{isosceles} targets to which the theorem
 reduces, this is Beeson's \emph{accepted} isosceles paper (\cite[Thm.~12.5]{BeesonIso}: any
 isosceles triangle tiled by a $2\pi/3$-tile with $\alpha/\pi$ irrational forces the tile rational),
-so the prime theorem's rationality input is refereed; the general-tile rationality of
+so that citation covers the isosceles targets; but the reduction to an isosceles
+target (Section~\ref{sec:reduction}) already works with an integer-sided tile, so the rationality
+input actually used in that order is the general-target theorem of Beeson--Zhang, a preprint --- we
+record this plainly rather than claim a refereed input; the general-tile rationality of
 Beeson--Zhang~\cite{BeesonZhang} gives the same uniformly. Second, an elementary
 area-and-incidence argument shows that a \emph{prime} number of such tiles forces $ABC$ to be
 \emph{isosceles} (Section~\ref{sec:reduction}).
@@ -701,8 +768,10 @@ $d=\gcd(N-M^2,N+M^2)$. As $d\mid2N$, $d\mid2M^2$, and $\gcd(N,M^2)=1$ (a prime $
 $M^2$), $d\mid2$. Writing $g=(N+M^2)/d$ and $\hat a=(N-M^2)/d$, the primitive tile is
 $(a,b,c)=(g\hat a,\ g^2-\hat a^2,\ g^2)$ with $0<\hat a<g$ (\cite[Thm.~17, Lem.~8]{BeesonIII}), and the
 base $AC$ has integer length $Y=M\hat a(g+\hat a)$ (\cite[Lem.~42]{BeesonIII}). A tiling forces the
-base to carry at least two $c$-edges (\cite[Lem.~6]{BeesonIII}) and a number of $b$-edges
-$\equiv-M\pmod g$, hence at least $g-M>0$ (\cite[Lem.~45(iii)]{BeesonIII}); so $Y\ge(g-M)b+2c$. But
+base to carry at least \emph{one} $c$-edge --- this is the $\gamma$-trap of Remark~\ref{rem:e2},
+proved here from the vertex figures alone and machine-checked
+(\texttt{gamma\_injection}, \texttt{c\_edge\_exists}) --- and a number of $b$-edges
+$\equiv-M\pmod g$, hence at least $g-M>0$ (\cite[Lem.~45(iii)]{BeesonIII}); so $Y\ge(g-M)b+c$. But
 $d\mid2$ gives $\hat a+M\le g$, and the identity
 \[
 (g-M)(g^2-\hat a^2)-M\hat a(g+\hat a)=g\,(g+\hat a)\,(g-\hat a-M)\ \ge\ 0
