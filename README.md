@@ -51,9 +51,10 @@ forces the large triangle to be isosceles.
   exactly Zhang's constructed families. The equilateral square criteria reduce to elementary divisor
   conditions on `16N²`. Membership in the tile-count set is decidable.
 
-- The contiguous initial segment of the spectrum is determined: every `N ≤ 58`, and `60–65`, `67–80`,
-  are settled (`14, 15, 21, 22, 30, 33, 35, 38, 39, …` are excluded; `28, 44, 77, 80` are realizable).
-  The record extends once the open base-`β` searches at `59`, `66`, `83` resolve.
+- **The contiguous initial segment of the spectrum is every `N ≤ 69`.** The last two gaps below `70`
+  — `59` (prime) and `66` — were closed by exhaustive search (1,838,175 and 7,232,464 nodes). `70` is
+  the sole remaining gap below `80`; `71–80` are settled, so the record extends to `≤ 80` once it
+  resolves. (`28, 44, 77, 80` are realizable.)
 
 ## What is open
 

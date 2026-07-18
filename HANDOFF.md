@@ -168,8 +168,8 @@ An `EXHAUSTED_NO_TILING` verdict is a **proof of non-existence** (the branching 
 | 26 | (1,3) | thin | EXHAUSTED (2,025) — composite |
 | 39 | (3,4) | thick | EXHAUSTED (825,724) — composite |
 | 47 | (1,4) | thin | EXHAUSTED (12,440) |
-| 59 | (4,5) | thick, super-thick | **SEARCHING** — prime, record-critical |
-| 66 | (3,5) | thick | **SEARCHING** — composite |
+| 59 | (4,5) | thick, super-thick | EXHAUSTED (1,838,175) — prime, closed |
+| 66 | (3,5) | thick | EXHAUSTED (7,232,464) — composite, closed |
 | 71 | (2,5) | thin | EXHAUSTED (553,417) |
 | 74 | (1,5) | thin | EXHAUSTED (132,519) — composite |
 | 83 | (5,6) | thick, super-thick | **SEARCHING** — prime |
@@ -179,9 +179,9 @@ An `EXHAUSTED_NO_TILING` verdict is a **proof of non-existence** (the branching 
 structurally** (see §6). The open general problem is the thick regime.
 
 ### Record (contiguous determination of the spectrum)
-Every `N ≤ 58` is determined. `60–65` and `67–80` are determined. The contiguous record extends to
-**`N ≤ 80`** once `59`, `66`, and (for `≤ 80` this is not required, but for the branch) the searches
-resolve. `28`, `44`, `77`, `80` are realizable; `59`, `83`, `131`, `167`, … are the base-β primes
+**Every `N ≤ 69` is determined** (`59` and `66` closed by search this cycle). `71–80` are
+determined, so `70` is the sole gap below `80` and the record extends to **`N ≤ 80`** when its search
+resolves. `28`, `44`, `77`, `80` are realizable; `59`, `83`, `131`, `167`, … are the base-β primes
 whose only current route is search.
 
 ---

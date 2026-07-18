@@ -12,6 +12,7 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \theoremstyle{definition}
 \newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
@@ -155,7 +156,7 @@ For each, the tile $(ef,\,f^2-e^2,\,f^2)$ and the target $(f^3,f^3,e(3f^2-e^2))$
 (Remark~\ref{rem:thm14false}), so we cannot invoke it, and no general replacement is known
 (Remark~\ref{rem:e2}). The theorem therefore cannot drop the exception without appealing to that
 false citation. The candidates are settled one at a time by exhaustive search
-(Table~\ref{tab:basebeta}): $11,23,47,71,107$ are excluded and $59,83$ remain under search. Thus
+(Table~\ref{tab:basebeta}): $11,23,47,59,71,107$ are excluded and $83$ remains under search. Thus
 Theorem~\ref{thm:main} is unconditional for every prime
 $N\equiv3\pmod4$, $N>3$, outside the sequence above, and for $11,23,47,71,107$ besides. The
 principal consequence is unaffected: $19\ne3f^2-e^2$, and the two frontier claims of
@@ -702,8 +703,9 @@ $\lfloor(e-1)/(f-e)\rfloor+1$ values of $j$ and the trichotomy dissolves. That i
 open members sit --- $N=59$ is $(e,f)=(4,5)$, so $j\le3$; $N=66$ is $(3,5)$, so $j\le1$; likewise
 $N=23,83,131,167$. We record the branch as open and settle its members one at a time by exhaustive
 search. Table~\ref{tab:basebeta} lists every member below $110$; of the eleven, eight are settled and
-$59$, $66$, $83$ remain under search. ($N=83$, $(e,f)=(5,6)$, is the smallest base-$\beta$ prime not
-yet searched.)
+$59$ and $66$ are now excluded by exhaustive search (apex-down with the walk prune; $1\,838\,175$ and
+$7\,232\,464$ nodes), leaving $83$ under search. ($N=83$, $(e,f)=(5,6)$, is the smallest base-$\beta$
+prime not yet settled.)
 The walk classification also feeds back into the search: the $\gamma$-trap and the corner
 parallelogram have the multiset corollaries $R\ge1$ on every side, $Q_{\mathrm{base}}\le k-4$ and
 $Q_{\mathrm{side}}\le k-2$ ($k$ the number of edges of the walk), and the engine now prunes any
@@ -731,8 +733,8 @@ $23$  & $(2,3)$ & $(6,5,9)$    & thick & no tiling \hfill $19\,677$\\
 $26$  & $(1,3)$ & $(3,8,9)$    & thin  & no tiling \hfill $2\,025$\\
 $39$  & $(3,4)$ & $(12,7,16)$  & thick & no tiling \hfill $825\,724$\\
 $47$  & $(1,4)$ & $(4,15,16)$  & thin  & no tiling \hfill $12\,440$\\
-$59$  & $(4,5)$ & $(20,9,25)$  & thick & searching\\
-$66$  & $(3,5)$ & $(15,16,25)$ & thick & searching\\
+$59$  & $(4,5)$ & $(20,9,25)$  & thick & no tiling \hfill $1\,838\,175$\\
+$66$  & $(3,5)$ & $(15,16,25)$ & thick & no tiling \hfill $7\,232\,464$\\
 $71$  & $(2,5)$ & $(10,21,25)$ & thin  & no tiling \hfill $553\,417$\\
 $74$  & $(1,5)$ & $(5,24,25)$  & thin  & no tiling \hfill $132\,519$\\
 $83$  & $(5,6)$ & $(30,11,36)$ & thick & searching\\
@@ -1090,6 +1092,37 @@ Erd\H{o}s's question asks for \emph{all} $N$. Theorem~\ref{thm:main} settles the
 primes; this section records what the present methods contribute to the full determination: a
 complete answer for primes, and, for each sporadic $2\pi/3$ branch, a determination of its
 \emph{admissible spectrum} --- the set of counts compatible with the area and invariant conditions.
+
+\begin{conjecture}[Golden-ratio criterion]\label{conj:golden}
+A base-$\beta$ target with parameters $(e,f)$ admits a tiling at some scale only if
+$f/e>\varphi=\tfrac{1+\sqrt5}2$; equivalently, only if $M^2<N$.
+\end{conjecture}
+
+\begin{remark}[Why the two forms agree, and the evidence]\label{rem:golden2}
+At scale $m$ the colouring number is $M=(f+e)m$ and the count is $N=m^2(3f^2-e^2)$, so
+\[
+\frac{M^2}{N}=\frac{(f+e)^2}{3f^2-e^2}
+\]
+is \emph{scale-invariant} --- a function of the family alone --- and
+\[
+M^2<N\iff (f+e)^2<3f^2-e^2\iff f^2-ef-e^2>0\iff f/e>\varphi .
+\]
+The same threshold governs $b>a$ (Remark~\ref{rem:golden}), so the golden ratio separates the
+base-$\beta$ families in two independent ways. The condition $0<M^2<N$ is asserted for another target
+in \cite[Cor.~3]{BeesonIII}; whether it holds for the base-$\beta$ target is exactly
+Conjecture~\ref{conj:golden}, and we do not claim it.
+
+The evidence is that every sub-golden member ever tested is excluded, and the conjecture made a
+successful prediction. Sub-golden members tested: $N=23$ $(2,3)$, $N=39$ $(3,4)$ and --- after this
+conjecture was formulated --- $N=59$ $(4,5)$, all three exhausted. Both realized tilings, $44$ and
+$99$, are super-golden (family $(1,2)$, $M^2/N=9/11$). The condition is necessary only, not
+sufficient: $N=11,26,47,66,71,74,107$ are super-golden and excluded.
+
+If the conjecture holds it removes an infinite family at a stroke --- every base-$\beta$ target with
+$f/e<\varphi$, at every scale --- including the open primes $83$ $(5,6)$, $167$ $(5,8)$, $179$ $(8,9)$
+and $\dots$, and it would reduce the thick regime to its super-golden part. It is falsifiable: a
+tiling of any sub-golden target refutes it. The search at $N=83$, sub-golden, is the current test.
+\end{remark}
 
 \begin{theorem}[Scaling ladder]\label{thm:ladder}
 Let a triangle $T$ be cut into $N$ copies of a tile $t$. Then for every integer $k\ge1$ the scaled
