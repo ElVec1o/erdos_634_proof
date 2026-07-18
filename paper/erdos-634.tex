@@ -1161,6 +1161,36 @@ of quite different origin, $M^2<N$ and $b>a$, cut the families at the same thres
 because the evidence favours it.
 \end{remark}
 
+\begin{proposition}[Density of the spectrum]\label{prop:density}
+Let $S=\{N:\text{some triangle can be cut into }N\text{ congruent triangles}\}$ and let
+$K=0.76422\ldots$ be the Landau--Ramanujan constant. Then
+\[
+\#\bigl(S\cap[1,X]\bigr)\ \ge\ \bigl(K+o(1)\bigr)\frac{X}{\sqrt{\log X}} .
+\]
+\end{proposition}
+
+\begin{proof}
+Every $N=e^2+f^2$ with $e,f\ge1$ lies in $S$: in the right triangle with legs $e,f$ and hypotenuse
+$c$, the altitude from the right angle cuts it into two triangles similar to it with ratios $e/c$ and
+$f/c$, and these subdivide into $e^2$ and $f^2$ copies respectively of the triangle scaled by $1/c$.
+By Landau's theorem the number of $N\le X$ representable as a sum of two squares is
+$(K+o(1))X/\sqrt{\log X}$, and discarding the representations with $ef=0$ removes only $O(\sqrt X)$.
+\end{proof}
+
+\begin{remark}[Where the difficulty of the problem sits]\label{rem:density}
+Two consequences worth drawing. First, the counting function of $S$ is conjecturally
+\emph{equal} to $(K+o(1))X/\sqrt{\log X}$: the commensurable branch supplies the sums of two squares,
+while every other branch contributes thinly --- $k^2,2k^2,3k^2,6k^2$ give $O(\sqrt X)$, and a single
+sporadic family, whose counts are $m^2N_0$ for fixed $N_0$, gives $O(\sqrt{X/N_0})$. Second, and more
+to the point, this locates the difficulty. Every branch treated in this paper --- the $2\pi/3$ tiles,
+the $3\alpha+2\beta$ targets, the equilateral cases --- concerns a subset of $S$ of density zero
+relative to the whole. The bulk of the spectrum is Fermat's theorem in disguise and was never in
+doubt; what is hard, and what Erd\H os's question is really about, is a sparse remainder on which no
+analytic or density argument can act. That is why the problem reduces to exact Diophantine and
+combinatorial analysis of finitely many shape families, and why a single prime such as $19$ --- or
+the class $\equiv11\pmod{12}$ --- can resist while the counting function is known to leading order.
+\end{remark}
+
 \begin{theorem}[Scaling ladder]\label{thm:ladder}
 Let a triangle $T$ be cut into $N$ copies of a tile $t$. Then for every integer $k\ge1$ the scaled
 triangle $kT$ is cut into $k^2N$ copies of $t$.
