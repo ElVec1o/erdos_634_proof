@@ -744,6 +744,19 @@ theorem near_side_unique (e f na nc B : ℕ) (he : 2 ≤ e) (hef : e < f) (hthic
     (show (nc + 1 + e) * f = f * f by nlinarith [hnc])
   omega
 
+/-- **The T-junction count on the mismatch ray.**  With the ray determined on both sides
+(`far_is_bpow` gives `f` edges, `near_side_unique` gives `2(f−e)` edges) and no junction shared
+(`far_near_disjoint`), the interior junctions number
+`(f−1) + (2(f−e)−1) = 3f − 2e − 2`.  Each is a `π`-vertex, so a hypothetical thick tiling carries
+exactly this many `π`-vertices along the ray.  Subtraction-free: `nf` is the far edge count `f` and
+`nn` the near edge count `2(f−e)`, given as `nn + 2*e = 2*f`. -/
+theorem ray_junction_count (e f nf nn : ℕ) (he : 2 ≤ e) (hef : e < f)
+    (hfar : nf = f) (hnear : nn + 2 * e = 2 * f) :
+    (nf - 1) + (nn - 1) + 2 * e + 2 = 3 * f := by
+  have h1 : 1 ≤ nf := by omega
+  have h2 : 1 ≤ nn := by omega
+  omega
+
 end Erdos634.BaseBetaWalks
 
 #print axioms Erdos634.BaseBetaWalks.exists_of_dvd_sub
@@ -764,3 +777,4 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.b_not_dvd_fsq
 #print axioms Erdos634.BaseBetaWalks.far_is_bpow
 #print axioms Erdos634.BaseBetaWalks.near_side_unique
+#print axioms Erdos634.BaseBetaWalks.ray_junction_count
