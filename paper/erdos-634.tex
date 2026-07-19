@@ -580,6 +580,44 @@ $b\mid\gcd(f^2,e^2)=1$, so $b=1$, impossible as $b\ge2e+1\ge5$. The far junction
 $kb$, none equal to $f^2$, so the $b$-edge containing $f^2$ straddles it.
 \end{proof}
 
+\begin{theorem}[The mismatch ray is completely determined]\label{thm:ray}
+Let $m=1$, $e\ge2$, and let the family be thick, $f\le2e$. Then along the mismatch inner apex ray,
+of inner length $f\,b$:
+\[
+\text{far side}=b^{\,f}\ (f\text{ edges}),\qquad
+\text{near side}=\{a^{\,f-e},\,c^{\,f-e}\}\ (2(f-e)\text{ edges}),
+\]
+and the near side is the \emph{unique} possibility. In particular the near side carries equally many
+$a$- and $c$-edges, and no $b$-edge.
+\end{theorem}
+
+\begin{proof}
+The far side is Theorem~\ref{thm:align}(ii). For the near side, $T2$'s $c$-edge covers $[0,f^2]$ and
+the remainder $f\,b-f^2=f(b-f)$ is covered by whole edges, say $n_a$ of length $a$, $n_b$ of length
+$b$ and $n_c$ of length $c$. Reducing modulo $f$ kills $n_b$ as in Theorem~\ref{thm:align}(i), and
+cancelling one factor $f$ leaves
+\[
+n_a e+n_c f+f=b .
+\]
+Now $(n_a,n_c)=(f-e,\,f-e-1)$ solves it, since $(f-e)e+(f-e-1)f=f^2-e^2-f=b-f$. For uniqueness,
+$\gcd(e,f)=1$ and the equation give $f\mid n_a+e$, so $n_a+e=ft$; $t=0$ is impossible and $t\ge2$
+would force $n_ae\ge(2f-e)e$, whence $2ef\le f^2-f$, i.e. $f\ge2e+1$, contradicting thickness. Hence
+$t=1$, $n_a=f-e$, and then $n_cf=f(f-1-e)$ gives $n_c=f-e-1$. Adding $T2$'s own $c$-edge produces the
+multiset $\{a^{f-e},c^{f-e}\}$, whose total length is $(f-e)(ef+f^2)=f(f-e)(e+f)=f\,b$ as required.
+\end{proof}
+
+\begin{remark}[Scope and consequences]\label{rem:ray}
+Thickness is used exactly once, and sharply: the next solution would be $n_a=2f-e$, which needs
+$f\ge2e+1$ --- the thin regime. So in the regime that is open, the entire mismatch ray is now pinned
+on \emph{both} sides, with no freedom beyond the order of the near-side edges. Explicitly:
+$N=23$ has far $5^3$, near $\{6,9\}$; $N=59$ far $9^5$, near $\{20,25\}$; $N=66$ far $16^5$, near
+$\{15^2,25^2\}$; $N=83$ far $11^6$, near $\{30,36\}$; $N=167$ far $39^8$, near $\{40^3,64^3\}$.
+The count of interior junctions is therefore also determined --- $f-1$ on the far side and
+$2(f-e)-1$ on the near side, none shared (Theorem~\ref{thm:align}(i)) --- so a hypothetical thick
+tiling carries exactly $3f-2e-2$ T-junctions along this ray, each a $\pi$-vertex. The arithmetic is
+machine-checked (\texttt{near\_side\_unique}, \texttt{BaseBetaWalks.lean}).
+\end{remark}
+
 \begin{remark}[What the alignment pins, uniformly]\label{rem:align}
 For every open thick member the mismatch ray is now completely determined out to length $f\cdot b$: its
 far wall is $b^{f}$, terminating transverse to the opposite side, and $V=f^2$ falls strictly inside the

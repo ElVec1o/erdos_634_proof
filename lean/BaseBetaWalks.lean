@@ -688,6 +688,62 @@ theorem far_is_bpow (e f na nb nc B : ℕ) (hcop : Nat.Coprime e f) (hef : e < f
     · exact h0
     · exfalso; have : f ^ 2 ≤ nc * f ^ 2 := Nat.le_mul_of_pos_left _ hp; omega
 
+/-- **The near side of the mismatch ray is determined** (`m = 1`, `e ≥ 2`, thick regime `f ≤ 2e`).
+The alignment theorem fixes the far side of the mismatch apex ray to `b^f`.  This fixes the near
+side.  Beyond `T2`'s own `c`-edge the remainder is covered by whole edges; the mod-`f` reduction
+kills the `b`-count and, after cancelling `f`, leaves `n_a·e + n_c·f + f = B`.  In the thick regime
+the unique nonnegative solution is `n_a = f−e`, `n_c = f−e−1`, so the near side --- counting `T2`'s
+`c`-edge --- is exactly the multiset `{a^{f−e}, c^{f−e}}`, with equally many `a`- and `c`-edges.
+
+Both statements are subtraction-free: `hB : B + e² = f²` is `B = f²−e²`, and the conclusion
+`n_a + e = f`, `n_c + e + 1 = f` is `n_a = f−e`, `n_c = f−e−1`.
+
+Uniqueness is exactly where thickness enters: the next solution would be `n_a = 2f−e`, requiring
+`2ef ≤ f²−f`, i.e. `f ≥ 2e+1` --- the thin regime. -/
+theorem near_side_unique (e f na nc B : ℕ) (he : 2 ≤ e) (hef : e < f) (hthick : f ≤ 2 * e)
+    (hcop : Nat.Coprime e f) (hB : B + e ^ 2 = f ^ 2)
+    (h : na * e + nc * f + f = B) :
+    na + e = f ∧ nc + e + 1 = f := by
+  have hf0 : 0 < f := by omega
+  -- `f ∣ na + e` : reduce `na·e ≡ B − f` modulo `f`
+  have hdvd : f ∣ na + e := by
+    have hz : ((na : ℤ) + e) * e = (f : ℤ) * ((f : ℤ) - 1 - nc) := by
+      have h1 : ((na * e + nc * f + f : ℕ) : ℤ) = (B : ℤ) := by exact_mod_cast h
+      have h2 : ((B + e ^ 2 : ℕ) : ℤ) = ((f ^ 2 : ℕ) : ℤ) := by exact_mod_cast hB
+      push_cast at h1 h2
+      linear_combination h1 + h2
+    have hzc : IsCoprime (f : ℤ) (e : ℤ) := Int.isCoprime_iff_gcd_eq_one.mpr hcop.symm
+    have hd : (f : ℤ) ∣ ((na : ℤ) + e) :=
+      hzc.dvd_of_dvd_mul_right ⟨(f : ℤ) - 1 - nc, hz⟩
+    exact_mod_cast hd
+  obtain ⟨t, ht⟩ := hdvd
+  -- `t = 0` is impossible (`e ≥ 2 > 0`), and `t ≥ 2` contradicts thickness
+  have ht0 : t ≠ 0 := by rintro rfl; omega
+  have ht1 : t = 1 := by
+    by_contra hc
+    have h2t : 2 ≤ t := by omega
+    have hge : 2 * f ≤ na + e := by
+      calc 2 * f ≤ f * t := by
+            have : f * 2 ≤ f * t := Nat.mul_le_mul_left _ h2t
+            omega
+      _ = na + e := ht.symm
+    -- then `na·e ≥ (2f−e)e = 2ef − e²`, while `na·e + nc·f + f = B = f²−e²` forces `2ef ≤ f²−f`
+    have hna : 2 * f ≤ na + e := hge
+    have hmul : (2 * f - e) * e ≤ na * e := Nat.mul_le_mul_right _ (by omega)
+    have hexp : (2 * f - e) * e + e ^ 2 = 2 * (e * f) := by
+      have : e ≤ 2 * f := by omega
+      cases' Nat.exists_eq_add_of_le this with k hk
+      nlinarith [hk]
+    nlinarith [hmul, hexp, hB, h, hthick, he, hef]
+  subst ht1
+  have hna : na + e = f := by omega
+  refine ⟨hna, ?_⟩
+  -- `nc·f = f(f−1−e)`
+  have hnc : nc * f + f + e * f = f * f := by nlinarith [h, hB, hna]
+  have := Nat.eq_of_mul_eq_mul_right hf0
+    (show (nc + 1 + e) * f = f * f by nlinarith [hnc])
+  omega
+
 end Erdos634.BaseBetaWalks
 
 #print axioms Erdos634.BaseBetaWalks.exists_of_dvd_sub
@@ -707,3 +763,4 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.far_near_disjoint
 #print axioms Erdos634.BaseBetaWalks.b_not_dvd_fsq
 #print axioms Erdos634.BaseBetaWalks.far_is_bpow
+#print axioms Erdos634.BaseBetaWalks.near_side_unique
