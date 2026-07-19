@@ -618,8 +618,8 @@ does not forbid a \emph{straddle}: a longer edge may contain a $b$-edge in its i
 it at one or both ends, and then the $b$-edge has no partner. Indeed the apex-mismatch configuration
 of Theorem~\ref{thm:pierce} is built on precisely such a straddle. The genuine tilings confirm the
 failure: in the $44$-tiling six $b$-edges belong to a single tile although \emph{no} $b$-edge lies on
-the boundary, and in the $99$-tiling thirty-three $b$-edges are unmatched against eleven on the
-boundary --- twenty-two interior straddles. The correct relation is
+the boundary, and the $99$-tiling has thirty-three matched pairs, eleven boundary $b$-edges and
+twenty-two interior straddles. The correct relation is
 \[
 N=2\cdot\#\{\text{matched pairs}\}+\#\{\text{boundary}\}+\#\{\text{straddled}\},
 \]
@@ -631,36 +631,46 @@ explicitly because the argument is natural, its conclusion is correct on every e
 and it is nevertheless not a proof.
 \end{remark}
 
-\begin{corollary}[The clean apex ray]\label{cor:cleanray}
-Under the hypotheses of Theorem~\ref{thm:ray}, the other inner apex ray --- the one pairing $T2$'s
-$b$-edge against a neighbour's $b$-edge --- is $b^{\,f}$ against $b^{\,f}$, perfectly edge-to-edge.
-Its $f-1$ interior points are therefore genuine $2\pi$-vertices, not T-junctions, and at each of them
-the type $\beta+3\gamma$ is impossible.
-\end{corollary}
+\begin{theorem}[The $b$-run orientation lemma]\label{thm:chain}
+Let a run of $b$-edges be laid end to end along a ray, seeded at an apex tile. Then every $b$-edge of
+the run carries $\alpha$ at its apex end and $\gamma$ at its far end, and every junction interior to
+the run is an $(\alpha,\beta,\gamma)$ $\pi$-vertex. In particular the $3\alpha+2\beta$ figure never
+occurs along such a run.
+\end{theorem}
 
 \begin{proof}
-Both sides begin with an edge of length $b$ and match there. By the symmetry of the isosceles target
-both inner rays have the same inner length $f\,b$, so Theorem~\ref{thm:align}(ii) applies to each side
-separately: a chain totalling $f\,b$ with at least one $b$-edge is uniquely $b^{\,f}$. At an interior
-point the two $b$-edges from each side contribute four corners lying in $\{\alpha,\gamma\}$, since $b$
-joins the $\alpha$- and $\gamma$-corners; a $2\pi$-vertex of type $(n_\alpha,n_\beta,n_\gamma)$ can
-supply them only if $n_\alpha+n_\gamma\ge4$, which excludes $(0,1,3)$ among the four admissible types
-$(6,4,0)$, $(4,3,1)$, $(2,2,2)$, $(0,1,3)$.
+A $b$-edge joins its tile's $\alpha$- and $\gamma$-corners, so at a junction the incoming tile
+presents $\alpha$ or $\gamma$, and likewise the outgoing one. The $3\alpha+2\beta$ figure contains no
+$\gamma$, and two $\gamma$'s cannot share a side of a straight line since $2\gamma=\pi+\alpha>\pi$.
+Hence if the incoming corner is $\gamma$ the figure is $(1,1,1)$, whose single $\alpha$ must be the
+outgoing corner, so the next edge again ends in $\gamma$. An apex tile has $\alpha$ at the apex, hence
+$\gamma$ at the far end of its $b$-edge, which seeds the induction; it proceeds with no branching.
 \end{proof}
 
-\begin{remark}[The apex neighbourhood is now completely pinned]\label{rem:apexdone}
-Theorem~\ref{thm:ray} and Corollary~\ref{cor:cleanray} together determine \emph{both} inner apex rays
-of any thick tiling at $m=1$:
-\[
-\text{clean ray } b^{\,f}\mid b^{\,f},\qquad
-\text{mismatch ray } b^{\,f}\mid\{a^{\,f-e},c^{\,f-e}\},
-\]
-with $f-1$ interior $2\pi$-vertices on the first and $3f-2e-2$ T-junctions on the second
-(\texttt{ray\_junction\_count}). For $N=59$ that is $9^5\mid9^5$ and $9^5\mid\{20,25\}$; for $N=83$,
-$11^6\mid11^6$ and $11^6\mid\{30,36\}$. Since the vertex census forces $M_4\ge1$ --- every
-base-$\beta$ tiling contains a $\beta+3\gamma$ vertex --- and Corollary~\ref{cor:cleanray} bars it
-from the clean ray, that vertex is localized away from the apex. The arithmetic of both statements is
-machine-checked (\texttt{clean\_ray\_bpow}, \texttt{no\_beta\_three\_gamma\_on\_clean\_ray}).
+\begin{remark}[Two corrections this forces]\label{rem:cleanfail}
+Theorem~\ref{thm:chain} is uniform in $(e,f)$ and in $m$, and is confirmed on the genuine
+$44$-tiling, where all four far $b$-edges of the mismatch ray and both sides of the clean ray read
+$\alpha\to\gamma$. It strictly generalizes Proposition~\ref{prop:rung2}, which established only the
+first step. But it also refutes two statements of an earlier version, which we withdraw.
+
+First, the assertion that the \emph{clean} apex ray is $b^{f}$ against $b^{f}$. Its justification ---
+``by the symmetry of the isosceles target both inner rays have the same inner length $f\,b$'' ---
+conflates two objects. The symmetry does apply to the geometric rays; it does not apply to the
+tiling's maximal edge \emph{segment} along a ray, which may terminate early at a vertex where the
+edges turn away. In fact the clean ray's segment can never reach the base: if it did, both final
+$b$-edges would contribute $\gamma$ at an interior point of the base, where the tiles above sum to
+$\pi$, contradicting $2\gamma>\pi$. On the $44$-tiling the two segments have lengths $12$ and $9$
+respectively, and the clean ray terminates at an interior $\beta+3\gamma$ vertex --- which is
+precisely the $M_4$ vertex the census forces.
+
+Second, and more seriously, the same objection applies to the hypothesis under which
+Theorems~\ref{thm:align} and~\ref{thm:ray} were stated: that the \emph{mismatch} ray's maximal
+segment attains the full length $f\,b$. That too was justified by symmetry, and it too now requires a
+genuine proof. The arithmetic of those theorems is unaffected --- given a chain of total length
+$f\,b$ containing a $b$-edge, the conclusions stand and remain machine-checked --- but their
+geometric hypothesis must be stated explicitly. Establishing that the mismatch segment reaches the
+base is the single highest-value open step in this branch: it would restore Theorems~\ref{thm:align}
+and~\ref{thm:ray} unconditionally for every thick member.
 \end{remark}
 
 \begin{remark}[Scope and consequences]\label{rem:ray}

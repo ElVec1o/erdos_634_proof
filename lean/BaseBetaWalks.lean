@@ -757,14 +757,23 @@ theorem ray_junction_count (e f nf nn : ℕ) (he : 2 ≤ e) (hef : e < f)
   have h2 : 1 ≤ nn := by omega
   omega
 
-/-- **The clean apex ray is `b^f` on both sides.**  The apex carries three tiles, each contributing
-`α`; the outer two have `c` on the boundary and `b` inward, the middle one has `{b,c}` inward.  One
-inner ray therefore pairs the middle tile's `c` against a neighbour's `b` (the mismatch ray), and the
-other pairs `b` against `b` --- the *clean* ray, on which both sides begin with an edge of length `b`
-and the junction at `b` is shared.  Both rays have the same inner length `f·b` by the symmetry of the
-isosceles target, so `far_is_bpow` applies to each side of the clean ray separately: a chain totalling
-`f·b` with `n_b ≥ 1` is uniquely `b^f`.  Hence the clean ray is `b^f` against `b^f`, perfectly
-edge-to-edge, and its `f−1` interior points are genuine `2π`-vertices rather than T-junctions. -/
+/-- **Arithmetic only — the geometric reading of this statement was FALSE and is withdrawn.**
+This is a restatement of `far_is_bpow`: *given* that a chain along a ray totals `f·b` and contains at
+least one `b`-edge, it is `b^f`.  It was previously applied to the *clean* apex ray (the one pairing
+the middle apex tile's `b`-edge against a neighbour's `b`), on the ground that "by the symmetry of the
+isosceles target both inner rays have the same inner length `f·b`".  That is wrong: the symmetry
+applies to the geometric rays, not to the tiling's maximal edge *segments* along them, which may
+terminate early at a vertex where the edges turn away.
+
+In fact the clean ray's segment can **never** reach the base: if it did, both final `b`-edges would
+contribute their `γ`-corner at an interior point of the base, where the tiles sum to `π` — but
+`2γ = π + α > π`.  On the genuine 44-tiling the two segments indeed have different lengths, `12` for
+the mismatch ray and `9` for the clean one, and the clean ray terminates at an interior `β+3γ` vertex
+— which is the `M₄` vertex the census forces.
+
+The same objection applies to the geometric hypothesis behind `far_is_bpow` and `near_side_unique` as
+used for the *mismatch* ray: that its segment attains the full length `f·b` now requires a genuine
+proof rather than a symmetry appeal.  The arithmetic below is unaffected. -/
 theorem clean_ray_bpow (e f na nb nc B : ℕ) (hcop : Nat.Coprime e f) (hef : e < f) (he : 2 ≤ e)
     (hB : B + e ^ 2 = f ^ 2) (hb1 : 1 ≤ nb)
     (h : f * B = na * (e * f) + nb * B + nc * f ^ 2) :
@@ -801,6 +810,34 @@ even.  The same objection defeats the analogous arguments for `a` and `c`.
 
 Nothing below depended on it; `edge_ab_unsplittable` and the ray theorems are unaffected. -/
 
+/-- **The b-run orientation (chain) lemma.**  Along a run of `b`-edges laid end to end on a ray,
+seeded at an apex tile, every `b`-edge carries `α` at its apex end and `γ` at its far end, and every
+interior junction of the run is an `(1,1,1)` `π`-vertex.
+
+The mechanism: a `b`-edge joins its tile's `α`- and `γ`-corners, so at a junction the incoming tile
+presents `α` or `γ` and likewise the outgoing one.  Two `γ`'s cannot share a side of a straight line
+(`2γ = π + α > π`), and the `3α+2β` figure contains no `γ` at all.  So if the incoming corner is `γ`
+the figure must be `(1,1,1)`, whose single `α` is then the outgoing corner.  An apex tile has `α` at
+the apex, hence `γ` at the far end of its `b`-edge, and the induction runs with no branching.
+
+Stated as the induction step, subtraction-free: `inc` and `out` encode the incoming and outgoing
+corner types (`0 = α`, `2 = γ`), and `nγ` the number of `γ`'s in the junction figure. -/
+theorem b_run_step (inc out ng : ℕ)
+    (hinc : inc = 0 ∨ inc = 2) (hout : out = 0 ∨ out = 2)
+    (hfig : (ng = 0 ∧ inc ≠ 2 ∧ out ≠ 2) ∨ ng = 1)
+    (hincg : inc = 2) (hng : ng ≤ 1) (htwo : inc = 2 → out = 2 → 2 ≤ ng) :
+    out = 0 := by
+  rcases hout with h | h
+  · exact h
+  · exfalso; have := htwo hincg h; omega
+
+/-- Consequence, in the form the ray analysis uses: along such a run every junction figure is
+`(1,1,1)` — one `α`, one `β`, one `γ` — never `3α+2β`. -/
+theorem b_run_figure_is_111 (x y z : ℕ) (hpi : y + z = 2 ∧ 2 * x + z = 3 * y) (hgamma : 1 ≤ z) :
+    x = 1 ∧ y = 1 ∧ z = 1 := by
+  obtain ⟨h1, h2⟩ := hpi
+  omega
+
 end Erdos634.BaseBetaWalks
 
 #print axioms Erdos634.BaseBetaWalks.exists_of_dvd_sub
@@ -823,4 +860,6 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.near_side_unique
 #print axioms Erdos634.BaseBetaWalks.ray_junction_count
 #print axioms Erdos634.BaseBetaWalks.clean_ray_bpow
+#print axioms Erdos634.BaseBetaWalks.b_run_step
+#print axioms Erdos634.BaseBetaWalks.b_run_figure_is_111
 #print axioms Erdos634.BaseBetaWalks.no_beta_three_gamma_on_clean_ray
