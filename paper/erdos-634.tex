@@ -1207,6 +1207,47 @@ whether the second is nonempty above $m=1$ is precisely the search at $N=92=2^2\
 $(2,3)$ at $m=2$.
 \end{remark}
 
+\begin{conjecture}[Universal colouring bound]\label{conj:MN}
+If a triangle is cut into $N$ copies of a $3\alpha+2\beta$ tile, with colouring number $M$, then
+$M^2<N$.
+\end{conjecture}
+
+\begin{remark}[Status, evidence, and why it is the right statement]\label{rem:MN}
+This single inequality subsumes and explains the golden-ratio criterion, and it is not new on every
+target --- it is a \emph{theorem} on one of them.
+
+\emph{Base-$(\alpha{+}\beta)$: proved.} \cite[Thm.~17]{BeesonIII} gives $N/M^2=(f+e)/(f-e)$, which
+exceeds $1$ because $f>e$. (This is the scope of \cite[Cor.~3]{BeesonIII}; the corollary is quoted
+without scope in the literature, and cannot be general in the form ``$0<M^2<N$ for the
+$3\alpha+2\beta$ branch'' unless the present conjecture is true.)
+
+\emph{Base-$\beta$: equivalent to Conjecture~\ref{conj:golden}}, since $M=(f+e)m$ and
+$N=m^2(3f^2-e^2)$ give $M^2<N\iff(f+e)^2<3f^2-e^2\iff f/e>\varphi$.
+
+\emph{Base-$\alpha$: conjectural}, and it forbids $N=21$ (there $(e,f)=(1,2)$, $M=5$, $M^2=25>21$),
+which is independently excluded by search.
+
+The scorecard over every instance where $M$ is known: no realized tiling violates it --- the $28$-,
+$44$- and $99$-tilings have $(N,M)=(28,2),(44,6),(99,9)$, all with $M^2<N$ --- while it forbids the
+five independently excluded values $21,23,39,59$ and predicts $83$. It makes no prediction at $N=70$,
+where $M=8$ and $64<70$.
+
+The reason to expect it is that $M$ and $N$ measure different things. By Lemma~\ref{lem:cancel} the
+colouring number is a \emph{boundary} functional, $M=\Phi(\partial ABC)/(c+a-b)$, whereas $N$ is an
+\emph{area} count. Hence $|M|\le\operatorname{per}(ABC)/(c+a-b)$ and $N=\lvert
+ABC\rvert/\lvert T\rvert$, so for a fixed pair of shapes
+\[
+\frac{M^2}{N}\ \le\ C^2\,\frac{\lvert T\rvert}{(c+a-b)^2},
+\]
+with $C$ the isoperimetric constant of the target shape --- a quantity depending only on the
+similarity classes and \emph{not} on the scale. This is precisely the scale-invariance observed for
+base-$\beta$, where $M^2/N=(f+e)^2/(3f^2-e^2)$ exactly. The conjecture asserts that this shape
+constant is $<1$ whenever a tiling exists: the colouring signs of a tiling can never be more aligned
+than the isoperimetric scale permits. Proving it for the base-$\beta$ target would close the
+sub-golden families at every scale --- an infinite set including the open primes $83$, $167$, $179$
+--- and would do so by an argument already known to work on a neighbouring target.
+\end{remark}
+
 \begin{conjecture}[Golden-ratio criterion]\label{conj:golden}
 A base-$\beta$ target with parameters $(e,f)$ admits a tiling at some scale only if
 $f/e>\varphi=\tfrac{1+\sqrt5}2$; equivalently, only if $M^2<N$.
@@ -1271,8 +1312,11 @@ claims that precisely the families with the most room fail at every scale, which
 what a naive count suggests. Relatedly, $b<a$ is equivalent to $M^2>N$, and since $M$ is a sum of $N$
 signs this says only that the signs are more aligned than a random walk --- not obviously impossible
 for a structured tiling. We state the conjecture because the coincidence is exact --- two conditions
-of quite different origin, $M^2<N$ and $b>a$, cut the families at the same threshold $\varphi$ --- not
-because the evidence favours it.
+of quite different origin, $M^2<N$ and $b>a$, cut the families at the same threshold $\varphi$ --- and
+because, as Conjecture~\ref{conj:MN} makes clear, its content is not special to this target: it is the
+base-$\beta$ case of an inequality that is a \emph{theorem} on the base-$(\alpha{+}\beta)$ target. That
+reframing also blunts the objection above, since the same inequality holds where it is proved,
+irrespective of how much room the boundary walks leave.
 \end{remark}
 
 \begin{definition}[The exceptional spectrum]\label{def:exc}
