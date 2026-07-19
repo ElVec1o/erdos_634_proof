@@ -1119,6 +1119,75 @@ characterisation: the solutions of $x^2-xy-y^2=\pm1$ in positive integers are ex
 Fibonacci pairs. Then $M=F_n+F_{n+1}=F_{n+2}$ and $f^2-ef-e^2=(-1)^n$ give the displayed formula.
 \end{proof}
 
+\begin{proposition}[Field of definition of a base-$\beta$ tiling]\label{prop:field}
+For the primitive $3\alpha+2\beta$ tile $(ef,\,f^2-e^2,\,f^2)$,
+\[
+\cos\alpha=\frac{2f^2-e^2}{2f^2},\qquad
+\sin\alpha=\frac{e\sqrt{D}}{2f^2},\qquad\text{where }\ D=4f^2-e^2=(2f-e)(2f+e).
+\]
+Consequently every vertex of a base-$\beta$ tiling has coordinates in $\Q(\sqrt D)$, and
+$D-N_0=f^2$.
+\end{proposition}
+
+\begin{proof}
+$4f^4-(2f^2-e^2)^2=\bigl(2f^2-(2f^2-e^2)\bigr)\bigl(2f^2+(2f^2-e^2)\bigr)=e^2(4f^2-e^2)$, so
+$\sin^2\alpha=1-\cos^2\alpha=e^2D/(4f^4)$. The target's vertices and the tile's are obtained from
+rational data by rotations through multiples of $\alpha$ and $\beta$, whose sines and cosines lie in
+$\Q(\sqrt D)$. Finally $D-N_0=(4f^2-e^2)-(3f^2-e^2)=f^2$.
+\end{proof}
+
+\begin{remark}[Verification against the search data]\label{rem:field}
+This is the field the exact search actually works in, and it matches the instances: $(e,f)=(1,2)$
+gives $D=3\cdot5=15$, which is the ring $\Z[\sqrt{15}]$ of the $28$-, $44$- and $99$-tiling
+certificates; $(2,3)$ gives $D=4\cdot8=32$, squarefree part $2$, matching the $N=92$ instance;
+$(1,6)$ gives $D=11\cdot13=143$, matching the $N=107$ instance; and $(3,5)$ gives $D=7\cdot13=91$,
+the field in which the $N=66$ configurations were computed.
+\end{remark}
+
+\begin{theorem}[Arithmetic of the Fibonacci families]\label{thm:fibarith}
+Let $(e,f)=(F_n,F_{n+1})$ with $n\ge2$, and let $L_n$ denote the Lucas numbers. Then
+\[
+2f-e=L_n,\qquad 2f+e=F_{n+3},\qquad M=f+e=F_{n+2},
+\]
+and both the tile count and the field discriminant are a Fibonacci quantity displaced by $2(-1)^n$:
+\[
+N_0=F_{n+2}^{\,2}+2(-1)^n,\qquad
+D=L_n\,F_{n+3}=F_{2n+3}+2(-1)^n .
+\]
+Moreover $D-N_0=F_{n+1}^{\,2}=f^2$, consistently with $F_{2n+3}=F_{n+1}^{\,2}+F_{n+2}^{\,2}$.
+\end{theorem}
+
+\begin{proof}
+$2F_{n+1}-F_n=F_{n+1}+(F_{n+1}-F_n)=F_{n+1}+F_{n-1}=L_n$, and
+$2F_{n+1}+F_n=F_{n+1}+F_{n+2}=F_{n+3}$; the formula for $M$ is $F_n+F_{n+1}=F_{n+2}$. The expression
+for $N_0$ is Theorem~\ref{thm:fib}. For $D$, Proposition~\ref{prop:field} gives $D=(2f-e)(2f+e)=
+L_nF_{n+3}$, and the identity $L_aF_b=F_{a+b}+(-1)^aF_{b-a}$ with $a=n$, $b=n+3$ yields
+$F_{2n+3}+(-1)^nF_3=F_{2n+3}+2(-1)^n$ since $F_3=2$. Finally $D-N_0=f^2$ by
+Proposition~\ref{prop:field}, and subtracting the two displayed formulas gives
+$F_{2n+3}-F_{n+2}^{\,2}$, which equals $F_{n+1}^{\,2}$ by $F_{2m+1}=F_m^{\,2}+F_{m+1}^{\,2}$ with
+$m=n+1$.
+\end{proof}
+
+\begin{remark}[The table]\label{rem:fibtable}
+\[
+\begin{array}{c|cccccc}
+n & 2 & 3 & 4 & 5 & 6 & 7\\\hline
+(e,f) & (1,2) & (2,3) & (3,5) & (5,8) & (8,13) & (13,21)\\
+M=F_{n+2} & 3 & 5 & 8 & 13 & 21 & 34\\
+N_0 & 11 & 23 & 66 & 167 & 443 & 1154\\
+D & 15 & 32 & 91 & 231 & 612 & 1595
+\end{array}
+\]
+The first row of counts is $3^2{+}2,\ 5^2{-}2,\ 8^2{+}2,\ 13^2{-}2,\ 21^2{+}2,\ 34^2{-}2$ and the
+discriminants are $F_7{+}2,\ F_9{-}2,\ F_{11}{+}2,\ F_{13}{-}2,\ F_{15}{+}2,\ F_{17}{-}2$. At $n=2$
+one has $D=15=3\cdot5$, so the tile $(2,3,4)$ has coordinate field
+$\Q(\sqrt{15})=\Q(\sqrt3,\sqrt5)$ --- the compositum of the field of the count form $3x^2-y^2$
+(discriminant $12$) and the field of the form $x^2-xy-y^2$ (discriminant $5$) that measures
+$M^2-N_0$. We record this because $(2,3,4)$ is the tile realizing every known member of $S^\ast$, but
+we do not claim it characterizes that tile: $\Q(\sqrt{15})$ occurs again, for instance at
+$(e,f)=(14,17)$, where $D=960$ has squarefree part $15$.
+\end{remark}
+
 \begin{remark}[Why these are the critical cases]\label{rem:fib}
 Since $M^2<N_0\iff f^2-ef-e^2>0\iff f/e>\varphi$, the quantity $M^2-N_0$ measures the distance of the
 family from the golden threshold, and Theorem~\ref{thm:fib} says the Fibonacci families sit as close
