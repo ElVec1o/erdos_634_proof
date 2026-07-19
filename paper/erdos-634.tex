@@ -802,6 +802,68 @@ only on $g\mid M$ ($21,39,66,70$) are demoted (Remarks~\ref{rem:seventy},
 is not a square, a sum of two squares, nor $2n^2,3n^2,6n^2$, so it is not commensurably realizable.
 \end{remark}
 
+\begin{proposition}[Dissection basics]\label{prop:dissection}
+Let $ABC$ be cut into $N$ triangles $T_1,\dots,T_N$ with pairwise disjoint interiors and union $ABC$.
+Then $\sum_i\lvert T_i\rvert=\lvert ABC\rvert$, and if the $T_i$ are pairwise congruent to a tile $T$
+then $\lvert ABC\rvert=N\lvert T\rvert$. Moreover, at a point $v\in ABC$ the tiles whose closure
+contains $v$ subtend angles summing to $2\pi$ if $v$ is interior to $ABC$, to $\pi$ if $v$ is interior
+to a side, and to the corner angle if $v$ is a corner; each summand is a tile angle
+$\alpha,\beta,\gamma$ if $v$ is a vertex of that tile, and $\pi$ if $v$ lies in the relative interior
+of one of its edges. Hence the sum has the form $p\alpha+q\beta+r\gamma+s\pi$ with $p,q,r,s\ge0$
+integers.
+\end{proposition}
+
+\begin{proof}
+The area identity is machine-checked in \texttt{lean/Dissection.lean}
+(\texttt{Dissection.volume\_target}, \texttt{volume\_target\_of\_congruent}), in
+\texttt{EuclideanSpace}~$\R^2$ with Lebesgue measure and axiom-clean: the tiles are convex with
+positive volume and null frontier (\texttt{Convex.addHaar\_frontier}), so the union is
+almost-everywhere disjoint and volumes add. The angle statement is the local structure of a
+dissection: a small disc about $v$ meets finitely many tiles, each in a single circular sector, and
+the sectors tile the disc's intersection with $ABC$. The $s\pi$ term is the contribution of tiles
+meeting $v$ in an edge interior; it is present exactly when the dissection is not edge-to-edge at
+$v$, which does occur here (Remark~\ref{rem:parityfail}). Mathlib has no theory of planar dissections,
+so this angle statement is not formalized; it is the geometric input flagged in
+Section~\ref{sec:verification}. What \emph{is} formalized is the arithmetic consequence drawn from it
+in Proposition~\ref{prop:vertexfigures} (\texttt{vertex\_multiplicities} and its three corollaries)
+and the angle sum of a tile (\texttt{cornerAngle\_sum}).
+\end{proof}
+
+\begin{proposition}[Vertex figures]\label{prop:vertexfigures}
+Let the tile satisfy $3\alpha+2\beta=\pi$ with $\alpha\notin\Q\pi$, so $\gamma=2\alpha+\beta$ and
+$2\gamma=\pi+\alpha$. If the angles at $v$ have multiplicities $(p,q,r)$ for $(\alpha,\beta,\gamma)$
+together with $s$ straight angles, then $p\alpha+q\beta+r\gamma=t\pi$ with $t=1$ or $t=2$, and
+\[
+t=1:\ (p,q,r)\in\{(3,2,0),\,(1,1,1)\};\qquad
+t=2:\ (p,q,r)\in\{(6,4,0),\,(4,3,1),\,(2,2,2),\,(0,1,3)\}.
+\]
+A junction interior to a side of $ABC$ has $t=1$; an interior vertex has $t=2-s$, so $t\in\{1,2\}$.
+In particular, in every case $r\le1$ when $t=1$.
+\end{proposition}
+
+\begin{proof}
+Write $\beta=(\pi-3\alpha)/2$ and $\gamma=(\pi+\alpha)/2$; then
+$p\alpha+q\beta+r\gamma=\tfrac12\bigl((2p-3q+r)\alpha+(q+r)\pi\bigr)$. By
+Proposition~\ref{prop:dissection} this equals $(t-s')\pi$ for integers, and since $\alpha/\pi$ is
+irrational (\texttt{tile\_alpha\_irrational}) both $2p-3q+r=0$ and $q+r=2t$ follow. This is exactly
+\texttt{vertex\_multiplicities}, machine-checked. Enumerating the non-negative solutions of
+$q+r=2t$, $2p=3q-r$ gives the two lists (\texttt{vertex\_pi}, \texttt{vertex\_beta\_corner},
+\texttt{vertex\_apex} in \texttt{BaseBetaE1.lean}); that a geometric vertex figure supplies those
+integer equations is \texttt{vertex\_pi\_multiplicities},
+\texttt{vertex\_beta\_corner\_multiplicities} and \texttt{vertex\_apex\_multiplicities} in
+\texttt{Dissection.lean}.
+\end{proof}
+
+\begin{proposition}[$\gamma$-trap]\label{prop:gammatrap}
+In any tiling of a triangle by a tile with $3\alpha+2\beta=\pi$ and $\alpha\notin\Q\pi$, no junction
+interior to a side of $ABC$ carries $\gamma$ on both sides.
+\end{proposition}
+
+\begin{proof}
+Such a junction is a $\pi$-vertex, so by Proposition~\ref{prop:vertexfigures} its multiplicity vector
+is $(3,2,0)$ or $(1,1,1)$; in both cases $\gamma$ occurs at most once.
+\end{proof}
+
 \begin{remark}[The $e\ge2$ residue]\label{rem:e2}
 The $e\ge2$ residue ($N=23,59,71,83,131,167,\dots$; the members $23$ and $71$ are now settled by search, Table~\ref{tab:basebeta}) resists all three natural invariant methods, and in two
 cases \emph{provably}:
@@ -816,13 +878,16 @@ of the three corner identities $\#\alpha=\#\beta=\#\gamma=N$; the vertex-type sy
 $Q_{013}=1+P_{320}+2Q_{640}+Q_{431}$ and $3P_{320}+P_{111}+6Q_{640}+4Q_{431}+2Q_{222}=N-3$, which is
 feasible for every $e\ge2$, $m=1$ target. So Euler carries no information here.
 \end{itemize}
-What \emph{is} gained is citation-free structure, valid for all $(e,f,m)$ and validated against the
-$44$-tiling: (a) \emph{$\gamma$-trap} --- no boundary junction carries $\gamma$ on both sides, hence
-every side of $ABC$ carries at least one $c$-edge, and at $m=1$ \emph{neither equal side carries any
-$b$-edge}, so all boundary $b$-edges lie on the base; (b) \emph{corner parallelogram} --- the unique
-$\beta$-corner tile $T_B$ has its $b$-edge a chord $[P,Q]$ matched by a single tile $T_3$ whose
-$\alpha,\gamma$ are swapped, so $T_B\cup T_3$ is a parallelogram with sides $a,c$; consequently the
-first two and last two base edges, and the first two edges of each equal side, lie in $\{a,c\}$.
+What \emph{is} gained is citation-free structure, valid for all $(e,f,m)$. The $\gamma$-trap
+(Proposition~\ref{prop:gammatrap}) is proved above from the vertex figures. Two further structural
+facts are used only to prune the exact search, and we state them as such, having verified them
+against the $44$-tiling rather than proved them in general: (a) every side of $ABC$ carries at least
+one $c$-edge, and at $m=1$ neither equal side carries a $b$-edge, so all boundary $b$-edges lie on
+the base; (b) \emph{corner parallelogram} --- the $\beta$-corner tile $T_B$ has its $b$-edge a chord
+matched by a single tile $T_3$ with $\alpha,\gamma$ interchanged, so $T_B\cup T_3$ is a parallelogram
+with sides $a,c$, whence the first two and last two base edges and the first two edges of each equal
+side lie in $\{a,c\}$. Both are pruning heuristics: the searches they accelerate are also run
+without them, and the verdicts agree.
 
 This isolates the residue to one clean statement. Since $q_{\mathrm{base}}\equiv em \pmod f$ while
 $q_{\mathrm{equal}}\equiv0$, we have:
@@ -921,10 +986,15 @@ $\alpha\notin\Q\pi$, is $N$-tiled for $N$ prime.
 \end{proposition}
 
 \begin{proof}
-Fix a putative tiling with coloring number $M$; by \cite[Cor.~3]{BeesonIII}, $0<M^2<N$. Put
+Fix a putative tiling with coloring number $M$. On this target \cite[Thm.~17]{BeesonIII} gives
+$N/M^2=(f+e)/(f-e)>1$, hence $0<M^2<N$; we use that rather than \cite[Cor.~3]{BeesonIII}, which is
+quoted in the literature without scope and cannot hold in the stated generality (Remark~\ref{rem:e2}).
+Put
 $d=\gcd(N-M^2,N+M^2)$. As $d\mid2N$, $d\mid2M^2$, and $\gcd(N,M^2)=1$ (a prime $N>M^2$ cannot divide
 $M^2$), $d\mid2$. Writing $g=(N+M^2)/d$ and $\hat a=(N-M^2)/d$, the primitive tile is
-$(a,b,c)=(g\hat a,\ g^2-\hat a^2,\ g^2)$ with $0<\hat a<g$ (\cite[Thm.~17, Lem.~8]{BeesonIII}), and the
+$(a,b,c)=(g\hat a,\ g^2-\hat a^2,\ g^2)$ with $0<\hat a<g$ (\cite[Thm.~17]{BeesonIII}; we do not use
+\cite[Lem.~8]{BeesonIII}, whose squarefree half this paper shows to be false --- only the
+parametrization is needed, and it also follows from the $3\alpha+2\beta$ relation directly), and the
 base $AC$ has integer length $Y=M\hat a(g+\hat a)$ (\cite[Lem.~42]{BeesonIII}). A tiling forces the
 base to carry at least \emph{one} $c$-edge --- this is the $\gamma$-trap of Remark~\ref{rem:e2},
 proved here from the vertex figures alone and machine-checked
@@ -1015,6 +1085,52 @@ N=\frac{\Area(ABC)}{\Area(T)}=k^2N_0,\qquad N_0:=\frac{\Area(D)}{\Area(T)},\qqua
 This is a necessary condition on $N$.
 
 \section{Reduction to the isosceles case}\label{sec:reduction}
+
+The reduction below takes the tile to be integer-sided. That input is a citation
+(\cite[Thm.~12.5]{BeesonIso} on the isosceles targets, \cite{BeesonZhang} in general). The following
+proposition recovers it from the invariant alone, with no citation, on any target where the invariant
+takes integer values --- which is how it is used in Sections~\ref{sec:invariant} onwards. We state it
+first because it is logically prior to everything that follows.
+
+\begin{proposition}[Rationality from integrality of the invariant]\label{prop:rationality}
+Let $T$ have sides $a,b,c$ with $c^2=a^2+ab+b^2$ (equivalently, the angle opposite $c$ is $2\pi/3$),
+let $P\ne0$ be a real scale, and suppose the three quantities
+\[
+N=P^2\,b(a+2b),\qquad M_\alpha=P(c-a-b),\qquad M_\beta=P(c+a+b)
+\]
+are all integers. If $b\ne0$ and $a+b\ne0$, then $a/b\in\Q$ and $c/b\in\Q$: the tile is rational up
+to scale.
+\end{proposition}
+
+\begin{proof}
+Two identities. First, $M_\alpha M_\beta=P^2\bigl(c^2-(a+b)^2\bigr)=-P^2ab$ by the tile relation,
+whence
+\[
+N+M_\alpha M_\beta=P^2b(a+2b)-P^2ab=2P^2b^2\ne0 ,
+\]
+and $a\,(N+M_\alpha M_\beta)=2P^2ab^2=b\,(-2M_\alpha M_\beta)$, so
+\[
+\frac ab=\frac{-2M_\alpha M_\beta}{N+M_\alpha M_\beta}\in\Q .
+\]
+Second, $M_\beta-M_\alpha=2P(a+b)\ne0$ and $M_\alpha+M_\beta=2Pc$, so
+$c\,(M_\beta-M_\alpha)=(a+b)(M_\alpha+M_\beta)$ and
+\[
+\frac{c}{a+b}=\frac{M_\alpha+M_\beta}{M_\beta-M_\alpha}\in\Q .
+\]
+Multiplying by $(a+b)/b=a/b+1\in\Q$ gives $c/b\in\Q$. Machine-checked in
+\texttt{lean/Rationality.lean} (\texttt{tile\_rational}), axiom-clean.
+\end{proof}
+
+\begin{remark}\label{rem:rationality}
+The proposition converts the rationality input from a hypothesis about the tile into a hypothesis
+about the invariant, and the latter is what the method produces natively: wherever the boundary
+functional of Section~\ref{sec:invariant} is defined and integral, rationality is automatic. It does
+not by itself discharge the citation on the \emph{general} target, because establishing integrality
+of all three quantities there is exactly the content of the cited theorem. What it does discharge is
+the appearance of a rationality assumption \emph{inside} the invariant argument, where the three
+integralities are already in hand; and it shows the two facts are equivalent rather than
+independent, which is not how the literature presents them.
+\end{remark}
 
 \begin{proposition}\label{prop:reduction}
 Let $T$ be a tile with angles $(\alpha,\beta,2\pi/3)$, $\alpha/\pi$ irrational. If $T$ $N$-tiles a
@@ -1274,306 +1390,10 @@ characterisation: the solutions of $x^2-xy-y^2=\pm1$ in positive integers are ex
 Fibonacci pairs. Then $M=F_n+F_{n+1}=F_{n+2}$ and $f^2-ef-e^2=(-1)^n$ give the displayed formula.
 \end{proof}
 
-\begin{proposition}[Field of definition of a base-$\beta$ tiling]\label{prop:field}
-For the primitive $3\alpha+2\beta$ tile $(ef,\,f^2-e^2,\,f^2)$,
-\[
-\cos\alpha=\frac{2f^2-e^2}{2f^2},\qquad
-\sin\alpha=\frac{e\sqrt{D}}{2f^2},\qquad\text{where }\ D=4f^2-e^2=(2f-e)(2f+e).
-\]
-Consequently every vertex of a base-$\beta$ tiling has coordinates in $\Q(\sqrt D)$, and
-$D-N_0=f^2$.
-\end{proposition}
-
-\begin{proof}
-$4f^4-(2f^2-e^2)^2=\bigl(2f^2-(2f^2-e^2)\bigr)\bigl(2f^2+(2f^2-e^2)\bigr)=e^2(4f^2-e^2)$, so
-$\sin^2\alpha=1-\cos^2\alpha=e^2D/(4f^4)$. The target's vertices and the tile's are obtained from
-rational data by rotations through multiples of $\alpha$ and $\beta$, whose sines and cosines lie in
-$\Q(\sqrt D)$. Finally $D-N_0=(4f^2-e^2)-(3f^2-e^2)=f^2$.
-\end{proof}
-
-\begin{remark}[Verification against the search data]\label{rem:field}
-This is the field the exact search actually works in, and it matches the instances: $(e,f)=(1,2)$
-gives $D=3\cdot5=15$, which is the ring $\Z[\sqrt{15}]$ of the $28$-, $44$- and $99$-tiling
-certificates; $(2,3)$ gives $D=4\cdot8=32$, squarefree part $2$, matching the $N=92$ instance;
-$(1,6)$ gives $D=11\cdot13=143$, matching the $N=107$ instance; and $(3,5)$ gives $D=7\cdot13=91$,
-the field in which the $N=66$ configurations were computed.
-\end{remark}
-
-\begin{theorem}[Arithmetic of the Fibonacci families]\label{thm:fibarith}
-Let $(e,f)=(F_n,F_{n+1})$ with $n\ge2$, and let $L_n$ denote the Lucas numbers. Then
-\[
-2f-e=L_n,\qquad 2f+e=F_{n+3},\qquad M=f+e=F_{n+2},
-\]
-and both the tile count and the field discriminant are a Fibonacci quantity displaced by $2(-1)^n$:
-\[
-N_0=F_{n+2}^{\,2}+2(-1)^n,\qquad
-D=L_n\,F_{n+3}=F_{2n+3}+2(-1)^n .
-\]
-Moreover $D-N_0=F_{n+1}^{\,2}=f^2$, consistently with $F_{2n+3}=F_{n+1}^{\,2}+F_{n+2}^{\,2}$.
-\end{theorem}
-
-\begin{proof}
-$2F_{n+1}-F_n=F_{n+1}+(F_{n+1}-F_n)=F_{n+1}+F_{n-1}=L_n$, and
-$2F_{n+1}+F_n=F_{n+1}+F_{n+2}=F_{n+3}$; the formula for $M$ is $F_n+F_{n+1}=F_{n+2}$. The expression
-for $N_0$ is Theorem~\ref{thm:fib}. For $D$, Proposition~\ref{prop:field} gives $D=(2f-e)(2f+e)=
-L_nF_{n+3}$, and the identity $L_aF_b=F_{a+b}+(-1)^aF_{b-a}$ with $a=n$, $b=n+3$ yields
-$F_{2n+3}+(-1)^nF_3=F_{2n+3}+2(-1)^n$ since $F_3=2$. Finally $D-N_0=f^2$ by
-Proposition~\ref{prop:field}, and subtracting the two displayed formulas gives
-$F_{2n+3}-F_{n+2}^{\,2}$, which equals $F_{n+1}^{\,2}$ by $F_{2m+1}=F_m^{\,2}+F_{m+1}^{\,2}$ with
-$m=n+1$.
-\end{proof}
-
-\begin{remark}[The table]\label{rem:fibtable}
-\[
-\begin{array}{c|cccccc}
-n & 2 & 3 & 4 & 5 & 6 & 7\\\hline
-(e,f) & (1,2) & (2,3) & (3,5) & (5,8) & (8,13) & (13,21)\\
-M=F_{n+2} & 3 & 5 & 8 & 13 & 21 & 34\\
-N_0 & 11 & 23 & 66 & 167 & 443 & 1154\\
-D & 15 & 32 & 91 & 231 & 612 & 1595
-\end{array}
-\]
-The first row of counts is $3^2{+}2,\ 5^2{-}2,\ 8^2{+}2,\ 13^2{-}2,\ 21^2{+}2,\ 34^2{-}2$ and the
-discriminants are $F_7{+}2,\ F_9{-}2,\ F_{11}{+}2,\ F_{13}{-}2,\ F_{15}{+}2,\ F_{17}{-}2$. At $n=2$
-one has $D=15=3\cdot5$, so the tile $(2,3,4)$ has coordinate field
-$\Q(\sqrt{15})=\Q(\sqrt3,\sqrt5)$ --- the compositum of the field of the count form $3x^2-y^2$
-(discriminant $12$) and the field of the form $x^2-xy-y^2$ (discriminant $5$) that measures
-$M^2-N_0$. We record this because $(2,3,4)$ is the tile realizing every known member of $S^\ast$, but
-we do not claim it characterizes that tile: $\Q(\sqrt{15})$ occurs again, for instance at
-$(e,f)=(14,17)$, where $D=960$ has squarefree part $15$.
-\end{remark}
-
-\begin{remark}[Why these are the critical cases]\label{rem:fib}
-Since $M^2<N_0\iff f^2-ef-e^2>0\iff f/e>\varphi$, the quantity $M^2-N_0$ measures the distance of the
-family from the golden threshold, and Theorem~\ref{thm:fib} says the Fibonacci families sit as close
-to it as integrality permits, alternating sub- and super-golden as $n$ varies. They are therefore the
-extremal test cases for Conjecture~\ref{conj:golden}: any mechanism that distinguishes $f/e>\varphi$
-from $f/e<\varphi$ must decide them first.
-
-Two further points. The first Fibonacci family is $(e,f)=(1,2)$, the tile $(2,3,4)$ --- the family
-that realizes \emph{every} known member of $S^\ast$ (Remark~\ref{rem:exc}), and whose count
-$11=3^2+2$ is excluded at $m=1$ but realized at $m=2$ and $m=3$. The Fibonacci counts thus give a
-natural infinite sequence of test families,
-\[
-11,\quad 23,\quad 66,\quad 167,\quad 443,\quad 1154,\ \dots,
-\]
-of which the first three are excluded at $m=1$ and the first is nonempty above $m=1$. The question
-whether the second is nonempty above $m=1$ is precisely the search at $N=92=2^2\cdot23$, the family
-$(2,3)$ at $m=2$.
-\end{remark}
-
-\begin{conjecture}[Universal colouring bound]\label{conj:MN}
-If a triangle is cut into $N$ copies of a $3\alpha+2\beta$ tile, with colouring number $M$, then
-$M^2<N$.
-\end{conjecture}
-
-\begin{remark}[Status, evidence, and why it is the right statement]\label{rem:MN}
-This single inequality subsumes and explains the golden-ratio criterion, and it is not new on every
-target --- it is a \emph{theorem} on one of them.
-
-\emph{Base-$(\alpha{+}\beta)$: proved.} \cite[Thm.~17]{BeesonIII} gives $N/M^2=(f+e)/(f-e)$, which
-exceeds $1$ because $f>e$. (This is the scope of \cite[Cor.~3]{BeesonIII}; the corollary is quoted
-without scope in the literature, and cannot be general in the form ``$0<M^2<N$ for the
-$3\alpha+2\beta$ branch'' unless the present conjecture is true.)
-
-\emph{Base-$\beta$: equivalent to Conjecture~\ref{conj:golden}}, since $M=(f+e)m$ and
-$N=m^2(3f^2-e^2)$ give $M^2<N\iff(f+e)^2<3f^2-e^2\iff f/e>\varphi$.
-
-\emph{Base-$\alpha$: conjectural}, and it forbids $N=21$ (there $(e,f)=(1,2)$, $M=5$, $M^2=25>21$),
-which is independently excluded by search.
-
-The scorecard over every instance where $M$ is known: no realized tiling violates it --- the $28$-,
-$44$- and $99$-tilings have $(N,M)=(28,2),(44,6),(99,9)$, all with $M^2<N$ --- while it forbids the
-five independently excluded values $21,23,39,59$ and predicts $83$. It makes no prediction at $N=70$,
-where $M=8$ and $64<70$.
-
-The reason to expect it is that $M$ and $N$ measure different things. By Lemma~\ref{lem:cancel} the
-colouring number is a \emph{boundary} functional, $M=\Phi(\partial ABC)/(c+a-b)$, whereas $N$ is an
-\emph{area} count. Hence $|M|\le\operatorname{per}(ABC)/(c+a-b)$ and $N=\lvert
-ABC\rvert/\lvert T\rvert$, so for a fixed pair of shapes
-\[
-\frac{M^2}{N}\ \le\ C^2\,\frac{\lvert T\rvert}{(c+a-b)^2},
-\]
-with $C$ the isoperimetric constant of the target shape --- a quantity depending only on the
-similarity classes and \emph{not} on the scale. This is precisely the scale-invariance observed for
-base-$\beta$, where $M^2/N=(f+e)^2/(3f^2-e^2)$ exactly. The conjecture asserts that this shape
-constant is $<1$ whenever a tiling exists: the colouring signs of a tiling can never be more aligned
-than the isoperimetric scale permits.
-
-Its logical position must be stated carefully, since the two targets behave oppositely. On
-base-$(\alpha{+}\beta)$ the inequality is forced by the tiling equation itself and therefore
-\emph{excludes nothing}: it is a theorem with no content. On base-$\beta$ both $M=(f+e)m$ and
-$N=m^2(3f^2-e^2)$ are forced by the target, so $M^2<N$ is a pure arithmetic statement about $(e,f)$,
-and it is simply \emph{false} when $f/e<\varphi$; there the conjecture's content is precisely that no
-tiling exists, which is the open problem itself. So the bound has no content where it is proved and
-all of its content where it is open, and it is a unifying \emph{statement} rather than a route to a
-proof. What it does supply is a common formulation --- and the observation that $M$ is a boundary
-quantity while $N$ is an area count, which is the only structural reason we know to expect it.
-
-One natural strengthening is unavailable. The direction group $\langle\eta,-1\rangle\cong
-\Z\times\Z/2$ has four characters to $\{\pm1\}$, of which two are odd under $\theta\mapsto\theta+\pi$
-and so are candidates for a cancellation lemma: the colouring character $\chi_2$ used here, and the
-pure sign character $\chi_b$, whose sum $M'=N-2R$ counts reflected tiles. On the $2\pi/3$ branch the
-corresponding second invariant is essential (Corollary~\ref{cor:int}), so one expects the same here.
-It fails: were $M'$ boundary-determined it would be linear in $m$, but the family $(e,f)=(1,2)$ gives
-$M'=30$ at $m=2$ and $M'=35$ at $m=3$, which are not proportional --- and a linear fit would force
-$M'(1)=25$, impossible since $|M'|\le N=11$. The reason is that cancellation needs a
-placement-independent tile value: the $\pi/3$-coefficient bookkeeping gives $C=\pm(c+a-b)$ for
-$\chi_2$ at every placement, whereas for $\chi_b$ the alternation depends on which edge begins the
-traversal. There is therefore no second cancellation invariant on this branch. (Note also that
-$M'^2=900$ and $1225$ exceed $N=44$ and $99$, so the colouring bound is specific to $\chi_2$ and is
-not a property of invariants in general.)
-\end{remark}
-
-\begin{conjecture}[Golden-ratio criterion]\label{conj:golden}
-A base-$\beta$ target with parameters $(e,f)$ admits a tiling at some scale only if
-$f/e>\varphi=\tfrac{1+\sqrt5}2$; equivalently, only if $M^2<N$.
-\end{conjecture}
-
-\begin{remark}[Why the two forms agree, and the evidence]\label{rem:golden2}
-At scale $m$ the colouring number is $M=(f+e)m$ and the count is $N=m^2(3f^2-e^2)$, so
-\[
-\frac{M^2}{N}=\frac{(f+e)^2}{3f^2-e^2}
-\]
-is \emph{scale-invariant} --- a function of the family alone --- and
-\[
-M^2<N\iff (f+e)^2<3f^2-e^2\iff f^2-ef-e^2>0\iff f/e>\varphi .
-\]
-The same threshold governs $b>a$ (Remark~\ref{rem:golden}), so the golden ratio separates the
-base-$\beta$ families in two independent ways. The condition $0<M^2<N$ is asserted for another target
-in \cite[Cor.~3]{BeesonIII}; whether it holds for the base-$\beta$ target is exactly
-Conjecture~\ref{conj:golden}, and we do not claim it.
-
-The evidential situation must be stated carefully, because the obvious reading of the data is
-misleading. Every sub-golden member tested --- $N=23$ $(2,3)$, $N=39$ $(3,4)$, $N=59$ $(4,5)$ --- is
-excluded. But all three are at $m=1$, and \emph{seven super-golden families are also excluded at
-$m=1$} ($N=11,26,47,66,71,74,107$). Every base-$\beta$ family so far tested at $m=1$ fails, whatever
-its golden status. So these exclusions are equally well explained by the simpler hypothesis
-\begin{equation}\label{eq:m1}
-\text{the base-}\beta\text{ target never tiles at } m=1,
-\end{equation}
-which fits all ten cases, whereas the golden criterion accounts for only three of them. Since $N$ is
-prime exactly when $m=1$, \eqref{eq:m1} is precisely the assertion that no prime $\equiv11\pmod{12}$
-is a tile count --- that is, the open case itself. Conjecture~\ref{conj:golden} is a genuinely
-different and orthogonal claim: it would bar sub-golden families at \emph{every} scale, including
-scales at which super-golden families demonstrably do tile. At present it has no discriminating
-evidence.
-
-The experiment that separates the two is a sub-golden family at $m\ge2$. The search at $N=92$ --- the
-family $(2,3)$, which is sub-golden, at $m=2$ --- is exactly that: Conjecture~\ref{conj:golden}
-forbids a tiling, while \eqref{eq:m1} permits one, and the super-golden family $(1,2)$ does tile at
-$m=2$ and $m=3$ (the $44$- and $99$-tilings, with $M^2/N=9/11$).
-
-The conjecture is not a repackaging of anything already available. For the base-$(\alpha{+}\beta)$
-target the analogous bound is automatic: \cite[Thm.~17]{BeesonIII} gives $N/M^2=(f+e)/(f-e)>1$. For
-the base-$\beta$ target the corresponding equation, $N(e+f)^2=M^2(3f^2-e^2)$, becomes an identity on
-substituting $M=(f+e)m$ and $N=m^2(3f^2-e^2)$, so it carries no information; the trivial bound
-$|M|\le N$ is never binding (the largest ratio at $m=1$ is $3/11$); and none of the structural results
-of Section~\ref{sec:prelim} --- the walk classification, the $\gamma$-trap, unsplittability, the
-alignment theorem --- refers to $M$ at all. Moreover, since $M^2/N$ is scale-invariant, no bound whose
-strength grows with $m$ can prove it: any proof must come from the shape of the tile.
-
-If the conjecture holds it removes an infinite family at a stroke --- every base-$\beta$ target with
-$f/e<\varphi$, at every scale --- including the open primes $83$ $(5,6)$, $167$ $(5,8)$, $179$ $(8,9)$
-and $\dots$, and it would reduce the thick regime to its super-golden part. It is falsifiable: a
-tiling of any sub-golden target refutes it. Of the two live searches only $N=92$ discriminates:
-$N=83$ is sub-golden but at $m=1$, where every family so far fails anyway, so its exhaustion would
-support \eqref{eq:m1} without bearing on Conjecture~\ref{conj:golden}.
-
-There is also a reason for suspicion, which we record rather than suppress. Since
-$M^2<N\iff b>a$, the conjecture asserts that the families with $b<a$ never tile. But $b<a$ makes the
-tile's shortest edge shorter relative to the others, so \emph{more} boundary configurations fit, not
-fewer: counting the base walks that survive the $\gamma$-trap over all families with $N_0\le200$, the
-sub-golden ones admit $5.00$ on average against $2.15$ for the super-golden ones. The conjecture thus
-claims that precisely the families with the most room fail at every scale, which is the opposite of
-what a naive count suggests. Relatedly, $b<a$ is equivalent to $M^2>N$, and since $M$ is a sum of $N$
-signs this says only that the signs are more aligned than a random walk --- not obviously impossible
-for a structured tiling. We state the conjecture because the coincidence is exact --- two conditions
-of quite different origin, $M^2<N$ and $b>a$, cut the families at the same threshold $\varphi$ --- and
-because, as Conjecture~\ref{conj:MN} makes clear, its content is not special to this target: it is the
-base-$\beta$ case of an inequality that is a \emph{theorem} on the base-$(\alpha{+}\beta)$ target. That
-reframing also blunts the objection above, since the same inequality holds where it is proved,
-irrespective of how much room the boundary walks leave.
-\end{remark}
-
-\begin{definition}[The exceptional spectrum]\label{def:exc}
-Write $S$ for the spectrum and
-\[
-S^\ast=\{N\in S:\ N\text{ is not a sum of two squares}\}
-=\{N\in S:\ p\mid\mid^{\text{odd}} N\text{ for some prime }p\equiv3\!\!\pmod4\},
-\]
-using the classical criterion that $N$ is a sum of two squares if and only if every prime
-$\equiv3\pmod4$ divides it to an even power.
-\end{definition}
-
-\begin{remark}[What is actually being asked]\label{rem:exc}
-Proposition~\ref{prop:density} shows the sums of two squares already account for the spectrum to
-leading order, so the whole content of Erd\H os's question beyond Fermat is the determination of
-$S^\ast$. In particular, since a prime $\equiv3\pmod4$ is never a sum of two squares, the folklore
-conjecture is exactly
-\[
-S^\ast\ \text{contains no primes.}
-\]
-By Theorem~\ref{thm:ladder}, $S^\ast$ is closed under multiplication by squares.
-
-The known members are strikingly uniform. Every value this paper realizes which is not already a sum
-of two squares is
-\[
-28=2^2\!\cdot\!7,\qquad 44=2^2\!\cdot\!11,\qquad 77=7\!\cdot\!11,\qquad 99=3^2\!\cdot\!11,
-\]
-so $S^\ast\cap[1,100]=\{28,44,77,99\}$ on present knowledge. All four are realized by the
-\emph{same} tile $(2,3,4)$ --- the primitive $3\alpha+2\beta$ tile at $(e,f)=(1,2)$, verified for the
-$28$- and $44$-tilings by the kernel certificates and for the $99$-tiling by direct check --- and all
-four are a square times a product of that tile's two branch-form values,
-\[
-2f^2-e^2=7,\qquad 3f^2-e^2=11 :
-\]
-$28=2^2(2f^2-e^2)$, $44=2^2(3f^2-e^2)$, $99=3^2(3f^2-e^2)$ and, from the four-component target,
-$77=(2f^2-e^2)(3f^2-e^2)$. (The value $80=4^2+8^2$ is a sum of two squares and so lies outside
-$S^\ast$; it is realized, but by Fermat, not by a sporadic branch.)
-
-The factorizations are \emph{not} evidence of a multiplicative law: since the branch formulas read
-$N=m^2(3f^2-e^2)$ and $N=(2f^2-e^2)(3f^2-e^2)k^2$, every sporadic count is a square times a product of
-branch-form values by construction, and the property fails to separate $S^\ast$ from its complement
---- the excluded values $14,23,26,39,47,59,66,71,74,83,107$ are themselves branch-form values. What is
-not automatic is that all four members arise from the \emph{same} tile; even that may be a selection
-effect, since only small $N$ have been searched exhaustively and small $N$ come from small tiles,
-$(2,3,4)$ being the smallest primitive $3\alpha+2\beta$ tile. The definition does sharpen the search
-targets, however: a value is a candidate for a \emph{new} member of $S^\ast$ only if it is not a sum
-of two squares. Among the instances currently
-under search, $70=2\cdot5\cdot7$, $83$ and $92=2^2\cdot23$ would be new members, whereas
-$104=2^3\cdot13=2^2+10^2$ is already in $S$ by Fermat --- so that search tests whether the family
-$(1,3)$ tiles at $m=2$, not whether $104$ lies in the spectrum.
-\end{remark}
-
-\begin{proposition}[Density of the spectrum]\label{prop:density}
-Let $S=\{N:\text{some triangle can be cut into }N\text{ congruent triangles}\}$ and let
-$K=0.76422\ldots$ be the Landau--Ramanujan constant. Then
-\[
-\#\bigl(S\cap[1,X]\bigr)\ \ge\ \bigl(K+o(1)\bigr)\frac{X}{\sqrt{\log X}} .
-\]
-\end{proposition}
-
-\begin{proof}
-Every $N=e^2+f^2$ with $e,f\ge1$ lies in $S$: in the right triangle with legs $e,f$ and hypotenuse
-$c$, the altitude from the right angle cuts it into two triangles similar to it with ratios $e/c$ and
-$f/c$, and these subdivide into $e^2$ and $f^2$ copies respectively of the triangle scaled by $1/c$.
-By Landau's theorem the number of $N\le X$ representable as a sum of two squares is
-$(K+o(1))X/\sqrt{\log X}$, and discarding the representations with $ef=0$ removes only $O(\sqrt X)$.
-\end{proof}
-
-\begin{remark}[Where the difficulty of the problem sits]\label{rem:density}
-Two consequences worth drawing. First, the counting function of $S$ is conjecturally
-\emph{equal} to $(K+o(1))X/\sqrt{\log X}$: the commensurable branch supplies the sums of two squares,
-while every other branch contributes thinly --- $k^2,2k^2,3k^2,6k^2$ give $O(\sqrt X)$, and a single
-sporadic family, whose counts are $m^2N_0$ for fixed $N_0$, gives $O(\sqrt{X/N_0})$. Second, and more
-to the point, this locates the difficulty. Every branch treated in this paper --- the $2\pi/3$ tiles,
-the $3\alpha+2\beta$ targets, the equilateral cases --- concerns a subset of $S$ of density zero
-relative to the whole. The bulk of the spectrum is Fermat's theorem in disguise and was never in
-doubt; what is hard, and what Erd\H os's question is really about, is a sparse remainder on which no
-analytic or density argument can act. That is why the problem reduces to exact Diophantine and
-combinatorial analysis of finitely many shape families, and why a single prime such as $19$ --- or
-the class $\equiv11\pmod{12}$ --- can resist while the counting function is known to leading order.
+\begin{remark}[The field of computation]\label{rem:fieldshort}
+For the tile $(ef,f^2-e^2,f^2)$ one has $\sin\alpha=e\sqrt D/(2f^2)$ with $D=4f^2-e^2=(2f-e)(2f+e)$,
+so a base-$\beta$ tiling's coordinates lie in $\Q(\sqrt D)$. This is the field the exact search
+computes in; for $(e,f)=(1,2)$ it is $\Q(\sqrt{15})$, the ring of all three tiling certificates.
 \end{remark}
 
 \begin{theorem}[Scaling ladder]\label{thm:ladder}
@@ -1643,9 +1463,7 @@ p\equiv11\pmod{12},
 which is precisely the set of base-$\beta$ candidates, conjecturally empty of tile counts, and
 verified so for $11,23,47,59,71,107$. By Dirichlet the resolved and unresolved halves of the primes
 $\equiv3\pmod4$ have equal density, so the prime problem is settled for a set of primes of density
-$\tfrac34$ among all primes, and open on a set of density $\tfrac14$. If
-Conjecture~\ref{conj:golden} holds, the sub-golden members of the open class --- an infinite subset
-including $83$, $167$ and $179$ --- are excluded as well.
+$\tfrac34$ among all primes, and open on a set of density $\tfrac14$.
 \end{remark}
 
 \begin{proof}
