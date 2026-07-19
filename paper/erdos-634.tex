@@ -157,8 +157,7 @@ The smallest prime candidates are
 For each, the tile $(ef,\,f^2-e^2,\,f^2)$ and the target $(f^3,f^3,e(3f^2-e^2))$ pass every
 \emph{sound} necessary condition (Remark~\ref{rem:isobeta}); the only published exclusion is
 \cite[Thm.~14]{BeesonIII}, whose $g\mid M$ is not merely unproven but \textbf{false}
-(Remark~\ref{rem:thm14false}), so we cannot invoke it, and no general replacement is known
-(Remark~\ref{rem:e2}). The theorem therefore cannot drop the exception without appealing to that
+(Remark~\ref{rem:thm14false}), so we cannot invoke it, and no general replacement is known \cite{Companion}. The theorem therefore cannot drop the exception without appealing to that
 false citation. The candidates are settled one at a time by exhaustive search
 (Table~\ref{tab:basebeta}): $11,23,47,59,71,107$ are excluded and $83$ remains under search. Thus
 Theorem~\ref{thm:main} is unconditional for every prime
@@ -330,43 +329,12 @@ $(125,125,198)$) and $N=70$ (base-$\alpha$, Remark~\ref{rem:seventy}) --- are st
 their values are treated as pending. For the base-$\beta$ target the
 $3\alpha+2\beta$ prime argument rests on either \cite[Thm.~14]{BeesonIII} (whose printed proof is
 unsound) or a per-value search, \emph{not} on a machine-checked general theorem; this is the one
-remaining gap in the prime dichotomy. Theorem~\ref{thm:basebeta-e1} removes $N=11$
+remaining gap in the prime dichotomy. The companion note \cite{Companion} removes $N=11$
 unconditionally, Remark~\ref{rem:lem6} isolates the $e=1$, $f\ge3$ structure, and
 Remark~\ref{rem:nogo} explains why the method \cite{BeesonIII} used cannot repair the rest.
 \end{remark}
 
-\begin{theorem}[The base-$\beta$ family at $e=1$, $f=2$]\label{thm:basebeta-e1}
-The isosceles triangle with base angles $\beta$ and sides $(8,8,11)$ admits no tiling by $N=11$
-copies of the tile $(2,3,4)$. Consequently the base-$\beta$ branch is closed for $N=11$,
-unconditionally.
-\end{theorem}
 
-\begin{proof}
-Write $\omega=\alpha/2$. The law of cosines gives $\cos\alpha=(2f^2-e^2)/(2f^2)$, hence
-$\sin\omega=e/(2f)$; as $1\le e<f$ places this strictly in $(0,\tfrac12)$, \emph{Niven's theorem}
-forces $\alpha/\pi$ irrational --- for every $(e,f)$, with no appeal to \cite{Laczkovich1995}
-(\texttt{tile\_alpha\_irrational}). Irrationality pins the vertex figures: a vertex
-$x\alpha+y\beta+z\gamma=k\pi$ forces $y+z=2k$ and $2x+z=3y$, so a $\pi$-vertex is $\{3\alpha,2\beta\}$
-or $\{\alpha,\beta,\gamma\}$, each base corner carries \emph{exactly one} tile (its $\beta$-vertex) and
-the apex \emph{exactly three} (\texttt{vertex\_pi}, \texttt{vertex\_beta\_corner},
-\texttt{vertex\_apex}); in particular a $\pi$-vertex carries at most one $\gamma$, since
-$2\gamma=\pi+\alpha>\pi$. Each side of $ABC$ is partitioned into whole tile edges (a supporting line
-meets a convex tile in a face).
-
-Two citation-free constraints now cut the base. (a) \emph{Corner parallelogram}: the unique
-$\beta$-corner tile $T_B$ has its $b$-edge a chord $[P,Q]$, matched (by the mod-$f$ edge arithmetic)
-by a single tile $T'$ whose $\alpha,\gamma$ are swapped, so $T_B\cup T'$ is a parallelogram with sides
-$a,c$; hence $P,Q$ are $(1,1,1)$-vertices whose third tile carries $\beta$, and the second base edge
-from each corner lies in $\{a,c\}$. So a $b$-edge can occupy only positions $3,\dots,k-2$ of a base of
-$k$ edges. (b) \emph{$\gamma$-trap}: no boundary junction carries $\gamma$ on both sides, and only a
-$c$-edge leaves the $\gamma$-state, so every side carries at least one $c$-edge.
-
-At $e=1$, $m=1$ the base $Y=3f^2-1$ has $q_{\mathrm{base}}\equiv1\pmod f$, and the only compositions
-are $B_0=\{b,c,c\}$ ($k=3$), $B_1=(a^{f},b,c)$ ($k=f+2$) and $B_2=(a^{2f},b)$ ($k=2f+1$). $B_2$ dies
-by (b). $B_0$ dies by (a) for \emph{every} $f$: its single $b$ would need a position in
-$3,\dots,1$. At $f=2$, $B_1$ also dies by (a): $k=4$ leaves positions $3,\dots,2$. So no base
-survives, and $N=11$ admits no tiling. \qedhere
-\end{proof}
 
 \begin{remark}[The $e=1$, $f\ge3$ cases are \emph{not} settled]\label{rem:lem6}
 For $f\ge3$ the composition $B_1=(a^{f},b,c)$ survives every citation-free constraint above, and it is
@@ -390,121 +358,11 @@ The next theorem replaces the $e=1$ case analysis by a classification valid for 
 shows why $m=1$ --- the prime case --- is the rigid one. It is machine-checked
 (\texttt{BaseBetaWalks.lean}, axiom-clean).
 
-\begin{theorem}[Boundary walks of the base-$\beta$ target at $m=1$]\label{thm:walks}
-Let $(a,b,c)=(ef,\,f^2-e^2,\,f^2)$ be the primitive $3\alpha+2\beta$ tile ($1\le e<f$,
-$\gcd(e,f)=1$) and let $m=1$, so that the target is $(f^3,f^3,e(3f^2-e^2))$ and $N=3f^2-e^2$. Write a
-walk along a side as $P\cdot a+Q\cdot b+R\cdot c$ equal to that side's length. Then both walk sets are
-cut out by the \emph{same} linear form $\langle e,f,1\rangle$, the base at level $2e$ and the equal
-side at level $f$:
-\[
-\begin{array}{llll}
-\text{base:} & (P,Q,R)=(je+fp,\;e+fj,\;R), &\quad pe+jf+R=2e, &\quad j\in\mathbb{Z}_{\ge0},\\[2pt]
-\text{side:} & (P,Q,R)=(qe+fp,\;fq,\;R), &\quad pe+qf+R=f,  &\quad q\in\mathbb{Z}_{\ge0},
-\end{array}
-\]
-with $p\in\mathbb{Z}$ and $P,R\ge0$. In the thin regime $f>2e$ the levels force short lists:
-\begin{enumerate}
-\item[\textup{(i)}] \textup{(trichotomy)} the base is exactly one of
-$\{b^{e},c^{2e}\}$, $\{a^{f},b^{e},c^{e}\}$, $\{a^{2f},b^{e}\}$; in particular it carries
-\emph{exactly $e$} $b$-edges;
-\item[\textup{(ii)}] \textup{(dichotomy)} each equal side is $\{a^{e},b^{f}\}$ or
-$\{a^{fp},c^{\,f-pe}\}$ for some $p\ge0$.
-\end{enumerate}
-Feeding in the $\gamma$-trap ($R\ge1$ on every side, Remark~\ref{rem:e2}) removes the thinness
-hypothesis altogether. For \emph{every} $(e,f)$ at $m=1$:
-\begin{enumerate}
-\item[\textup{(iii)}] \emph{no equal side carries a $b$-edge} --- each is $\{a^{fp},c^{\,f-pe}\}$,
-$p\ge0$; so \emph{all} boundary $b$-edges lie on the base;
-\item[\textup{(iv)}] the base's $b$-count $Q=e+fj$ obeys $j(f-e)\le e-1$.
-\end{enumerate}
-In particular $e=1$ forces $j=0$ for every $f$ --- \emph{the base carries exactly one $b$-edge} --- and
-$f>2e$ forces $j=0$, recovering \textup{(i)} minus its $R=0$ member.
-\end{theorem}
 
-\begin{proof}
-Base. Reducing $P\cdot ef+Q(f^2-e^2)+R f^2=e(3f^2-e^2)$ mod $f$ gives $Qe^2\equiv e^3$, so
-$f\mid Q-e$ by $\gcd(e,f)=1$; as $0\le Q$ and $0<e<f$, the least nonnegative residue is $e$, whence
-$Q=e+fj$ with $j\ge0$. Substituting and cancelling one factor $f$ leaves the \emph{halved equation}
-\begin{equation}\label{eq:halfbase}
-Pe+j(f^2-e^2)+Rf=2ef .
-\end{equation}
-Reducing \eqref{eq:halfbase} mod $f$ gives $e(P-je)\equiv0$, so $f\mid P-je$, say $P=je+fp$,
-$p\in\mathbb{Z}$; substituting into \eqref{eq:halfbase} and cancelling $f$ gives $pe+jf+R=2e$.
-Conversely every such triple solves the original equation. For $f>2e$: from \eqref{eq:halfbase},
-$j(f^2-e^2)\le2ef$; if $j\ge2$ then $f^2-e^2\le ef$, i.e. $f^2-ef-e^2\le0$, whereas
-$(f-2e)(f+e)=f^2-ef-2e^2>0$ gives $f^2-ef-e^2>e^2>0$ --- contradiction.
-If $j=1$ then $f\mid P-e$ forces $P\ge e$, and \eqref{eq:halfbase} gives
-$e^2+(f^2-e^2)\le2ef$, i.e. $f^2\le2ef$, i.e. $f\le2e$ --- contradiction. So $j=0$, whence $f\mid P$,
-$P=fp$ with $p\ge0$, and $pe+R=2e$ forces $p\in\{0,1,2\}$ and $R=e(2-p)$, giving the three walks.
 
-Side. The same reduction on $P\cdot ef+Q(f^2-e^2)+Rf^2=f^3$ gives $Qe^2\equiv0$, so $f\mid Q$,
-$Q=fq$; cancelling $f$ leaves $Pe+q(f^2-e^2)+Rf=f^2$, whose reduction mod $f$ gives $f\mid P-qe$,
-say $P=qe+fp$, and cancelling $f$ again gives $pe+qf+R=f$. For $f>2e$: $q\ge2$ would give
-$2(f^2-e^2)\le f^2$, i.e. $f^2\le 2e^2<f^2$, absurd. If $q=1$ then $Pe+Rf=e^2$ and $f\mid P-e$ force
-$P=e$, $R=0$; if $q=0$ then $f\mid P$, $P=fp$ and $pe+R=f$.
 
-(iii) and (iv) are one computation, and need no thinness. Suppose a side walk has $q\ge1$. From
-$P=qe+fp\ge0$ we get $fp\ge-qe>-qf$ (using $e<f$ and $q\ge1$), so $p>-q$, i.e. $p\ge1-q$. The level
-equation then gives
-\[
-R \;=\; f-pe-qf \;\le\; f-(1-q)e-qf \;=\; (1-q)(f-e)\;\le\;0,
-\]
-contradicting $R\ge1$. Hence $q=0$, which is (iii). Identically for the base with $P=je+fp\ge0$: if
-$j\ge1$ then $p\ge1-j$ and
-\[
-R \;=\; 2e-pe-jf \;\le\; 2e-(1-j)e-jf \;=\; e-j(f-e),
-\]
-so $R\ge1$ forces $j(f-e)\le e-1$, which is (iv) (and it holds trivially at $j=0$ since $e\ge1$). For
-$e=1$ this reads $j(f-1)\le0$, so $j=0$; for $f>2e$ we get $je<j(f-e)\le e-1$, so $j=0$.
-\end{proof}
 
-\begin{theorem}[Apex mismatch: the pierced corner]\label{thm:pierce}
-Let a base-$\beta$ target be tiled at any scale $m$ such that both equal sides end (at the apex) with
-a $c$-edge --- automatic at $m=1$, where the sides are $b$-free. Then, writing $T_2$ for the middle
-of the three apex tiles:
-\begin{enumerate}
-\item[\textup{(i)}] the outer apex tiles carry $c$ on the boundary and $b$ inward, and $T_2$ carries
-$b$ and $c$ inward, so exactly one inner apex ray carries $T_2$'s $c$-edge against a neighbour's
-$b$-edge: a T-junction at distance $b$ from the apex, whose vertex figure on the neighbour's side is
-$(1,1,1)$ (one $\alpha$, one $\beta$, plus the neighbour's $\gamma$);
-\item[\textup{(ii)}] the remaining segment of $T_2$'s $c$-edge has length $c-b=e^2$, and
-$n_a\,ef+n_b(f^2-e^2)+n_c f^2=e^2$ has \emph{no} solution in nonnegative integers, for any
-$1\le e<f$ with $\gcd(e,f)=1$;
-\item[\textup{(iii)}] hence some far-side edge crosses the far endpoint of $T_2$'s $c$-edge
-\emph{straight through}: every such tiling contains a \textbf{pierced $\beta$-corner} at distance
-$f^2$ along an inner apex ray, and the angles on $T_2$'s side of the piercing line beyond the corner
-form $\{\alpha,\gamma\}$ or $\{3\alpha,\beta\}$.
-\end{enumerate}
-\end{theorem}
 
-\begin{proof}
-(i) The apex is $3\alpha$ (three tiles, each $\alpha$ there); the two edges of an $\alpha$-corner are
-$b$ and $c$. The boundary edges at the apex are the sides' last edges, $c$ by hypothesis, so the outer
-tiles point $b$ inward and $T_2$ has $\{b,c\}$ inward. Whichever inner ray pairs $T_2$'s $c$ with an
-outer $b$, the $b$-edge ends at distance $b$: its far endpoint is the $\gamma$-corner of its tile
-($b$ joins $\alpha$ to $\gamma$), and the vertex figure on that side of the straight $c$-edge sums to
-$\pi$ with a $\gamma$ present, hence is $(1,1,1)$ by the vertex classification. (ii) Any solution has
-$n_a=n_c=0$ since $ef,f^2>e^2$; then $n_b(f^2-e^2)=e^2$ gives $n_b f^2=(n_b+1)e^2$, and
-$\gcd(e,f)=1$ forces $f^2\mid n_b+1$, so $n_b\ge f^2-1$ and
-$e^2=n_b(f^2-e^2)\ge f^2-1\ge e^2$, with equality forcing $f^2-e^2=1$ --- impossible, as
-$f^2-e^2\ge 2e+1\ge 3$. (iii) The far side of the leftover segment is covered by consecutive whole
-tile edges starting at the T-junction; by (ii) no partial sum lands exactly on the segment's far
-endpoint, so some edge strictly crosses it. That endpoint is the $\beta$-corner of $T_2$ ($c$ joins
-$\alpha$ to $\beta$). The angles on $T_2$'s side of the crossing line beyond the corner fill
-$\pi-\beta$; writing them as $x\alpha+y\beta+z\gamma$ and clearing $\beta,\gamma$, irrationality of
-$\alpha/\pi$ forces $y+z=1$, $2x+z=3y+3$, whose only solutions are $(3,1,0)$ and $(1,0,1)$.
-\end{proof}
-
-\begin{remark}[Validation on the $44$-tiling]\label{rem:pierce}
-The theorem can be checked against the genuine $44$-tiling ($m=2$; its equal sides do end with $c$),
-where it holds exactly: the apex rays pair one $b\,|\,b$ and one mismatch $c\,|\,b$; the middle
-tile's $c$-endpoint $V=(10,2\sqrt{15})$ is pierced by a straight $b$-edge, and the sector on the
-middle tile's side is $\beta+\{\alpha,\gamma\}$ --- the first continuation type. Parts (ii) and the
-vertex figures in (i), (iii) are machine-checked (\texttt{apex\_leftover\_nonrepresentable},
-\texttt{pierced\_corner\_types}, \texttt{BaseBetaWalks.lean}). The configuration is an interior
-constraint, uniform in $(e,f)$ and unconditional at $m=1$: every hypothetical thick-regime tiling,
-$N=59$ included, must contain it.
-\end{remark}
 
 \begin{proposition}[Unsplittability, and the rigidity of the thick regime]\label{prop:unsplit}
 For every coprime $1\le e<f$, neither $a=ef$ nor $b=f^2-e^2$ is a sum of two or more tile edges; and
@@ -523,7 +381,7 @@ gives $n_c=0$ and $e\mid f$, i.e.\ $e=1$, $n_a=f$.
 
 \begin{remark}[The golden ratio]\label{rem:golden}
 Two consequences. First, Proposition~\ref{prop:unsplit} is exactly the hypothesis the corner
-parallelogram needs, so Remark~\ref{rem:e2}(b) holds with \emph{no} proviso. Second, $e=1$ --- which
+parallelogram needs, so Proposition~\ref{prop:cornerpara} holds with \emph{no} proviso. Second, $e=1$ --- which
 both genuine tilings realize --- is the only case in which an edge splits at all, while the open
 $e\ge2$ regime is rigid. The comparison of $a$ with $b$ must be made with care:
 $b>a\iff f^2-ef-e^2>0\iff f/e>\varphi$, the golden ratio. The thick regime straddles that threshold:
@@ -532,16 +390,7 @@ $N=83$ $(5,6)$ and $N=167$ $(5,8)$ have $b<a$. Proposition~\ref{prop:unsplit} ab
 inequality between $a$ and $b$.
 \end{remark}
 
-\begin{proposition}[Rung two: the pre-piercer chain]\label{prop:rung2}
-In the configuration of Theorem~\ref{thm:pierce}, every full far-side edge strictly between the
-T-junction and the piercer lies inside $[b,f^2]$, hence has length $\le e^2$; among the tile edges
-only $b=f^2-e^2$ can satisfy this, and only in the \emph{super-thick} regime $f^2\le 2e^2$. So the
-piercer starts at $(t+1)b$ with $tb<e^2$, where $t=0$ outside super-thick; and if the piercer is
-itself a $b$-edge, its corner at its starting junction is exactly $\alpha$ (the $(1,1,1)$ figure
-offers $\{\alpha,\beta\}$, while a $b$-edge's endpoints are $\{\alpha,\gamma\}$). In particular for
-$N=59$ ($(e,f)=(4,5)$, super-thick: $25\le32$) the piercer starts at distance $9$ or $18$, and for
-every non-super-thick member it starts at the T-junction itself.
-\end{proposition}
+
 
 \begin{remark}[Validation on the $44$-tiling]\label{rem:rung2}
 On the genuine $44$-tiling ($f^2=4>2e^2=2$, so $t=0$) the piercer spans exactly $[3,6]$, starting at
@@ -555,59 +404,9 @@ exhausts in $3{,}954$ nodes against $19{,}677$, whereas on the thin member $N=47
 the rigid side, the apex-down orientation is slower. The thick searches $N=59,66$ are run apex-down.
 \end{remark}
 
-\begin{theorem}[Alignment of the mismatch ray]\label{thm:align}
-Let $m=1$, $e\ge2$, and let $r$ be the mismatch inner apex ray of Theorem~\ref{thm:pierce}, of inner
-length $f\cdot b$ (Proposition~\ref{prop:rung2}, $b=f^2-e^2$). Along $r$, the near side is $T2$'s
-single unsplittable $c$-edge covering $[0,f^2]$, and the far side begins with $T1$'s $b$-edge. Then:
-\begin{enumerate}
-\item[\textup{(i)}] \emph{no common junction} lies in $(0,f^2)$: for $1\le k\le f-1$, $k\cdot b$ is
-never $n_a\,ef+n_b\,b+n_c f^2$ with $n_c\ge1$ (so every far-side junction is a genuine T-junction,
-the near $c$-edge passing straight through it);
-\item[\textup{(ii)}] the far side is exactly $b^{f}$: the only representation of $f\cdot b$ as
-$n_a\,ef+n_b\,b+n_c f^2$ with $n_b\ge1$ is $(0,f,0)$;
-\item[\textup{(iii)}] $V=f^2$ is pierced: $b\nmid f^2$, so no far-side junction $k\cdot b$ equals $f^2$
-and a far $b$-edge straddles $T2$'s $\beta$-corner.
-\end{enumerate}
-All three are machine-checked (\texttt{far\_near\_disjoint}, \texttt{far\_is\_bpow},
-\texttt{b\_not\_dvd\_fsq}); (ii) alone uses $\gamma$-vertex induction (\emph{via} the walk arithmetic)
-to fix the first far edge, the rest is pure number theory.
-\end{theorem}
 
-\begin{proof}
-(i) If $k b = n_a ef + n_b b + n_c f^2$ then $(k-n_b)b = f(n_a e + n_c f)$, so $f\mid(k-n_b)e^2$ and
-$\gcd(e,f)=1$ give $f\mid k-n_b$; writing $k-n_b=fs$, the equation reads $sb=n_a e+n_c f\ge f>0$
-(as $n_c\ge1$), so $s\ge1$ and $k\ge n_b+f\ge f$, against $k\le f-1$. (ii) $f\mid n_b$ by the same
-reduction, and $n_b\le f$ by size, so $n_b\in\{0,f\}$; $n_b\ge1$ forces $n_b=f$, and then
-$n_a ef+n_c f^2=0$ gives $n_a=n_c=0$. (iii) $b\mid f^2$ would give $b\mid e^2$, hence
-$b\mid\gcd(f^2,e^2)=1$, so $b=1$, impossible as $b\ge2e+1\ge5$. The far junctions are the multiples
-$kb$, none equal to $f^2$, so the $b$-edge containing $f^2$ straddles it.
-\end{proof}
 
-\begin{theorem}[The mismatch ray is completely determined]\label{thm:ray}
-Let $m=1$, $e\ge2$, and let the family be thick, $f\le2e$. Then along the mismatch inner apex ray,
-of inner length $f\,b$:
-\[
-\text{far side}=b^{\,f}\ (f\text{ edges}),\qquad
-\text{near side}=\{a^{\,f-e},\,c^{\,f-e}\}\ (2(f-e)\text{ edges}),
-\]
-and the near side is the \emph{unique} possibility. In particular the near side carries equally many
-$a$- and $c$-edges, and no $b$-edge.
-\end{theorem}
 
-\begin{proof}
-The far side is Theorem~\ref{thm:align}(ii). For the near side, $T2$'s $c$-edge covers $[0,f^2]$ and
-the remainder $f\,b-f^2=f(b-f)$ is covered by whole edges, say $n_a$ of length $a$, $n_b$ of length
-$b$ and $n_c$ of length $c$. Reducing modulo $f$ kills $n_b$ as in Theorem~\ref{thm:align}(i), and
-cancelling one factor $f$ leaves
-\[
-n_a e+n_c f+f=b .
-\]
-Now $(n_a,n_c)=(f-e,\,f-e-1)$ solves it, since $(f-e)e+(f-e-1)f=f^2-e^2-f=b-f$. For uniqueness,
-$\gcd(e,f)=1$ and the equation give $f\mid n_a+e$, so $n_a+e=ft$; $t=0$ is impossible and $t\ge2$
-would force $n_ae\ge(2f-e)e$, whence $2ef\le f^2-f$, i.e. $f\ge2e+1$, contradicting thickness. Hence
-$t=1$, $n_a=f-e$, and then $n_cf=f(f-1-e)$ gives $n_c=f-e-1$. Adding $T2$'s own $c$-edge produces the
-multiset $\{a^{f-e},c^{f-e}\}$, whose total length is $(f-e)(ef+f^2)=f(f-e)(e+f)=f\,b$ as required.
-\end{proof}
 
 \begin{remark}[A parity argument that fails, and why]\label{rem:parityfail}
 It is tempting to argue as follows. Every tile has exactly one $b$-edge; by
@@ -619,7 +418,7 @@ is \emph{false}, because the middle step does not follow.
 Unsplittability forbids an edge from being \emph{exactly partitioned} by two or more tile edges. It
 does not forbid a \emph{straddle}: a longer edge may contain a $b$-edge in its interior and overhang
 it at one or both ends, and then the $b$-edge has no partner. Indeed the apex-mismatch configuration
-of Theorem~\ref{thm:pierce} is built on precisely such a straddle. The genuine tilings confirm the
+of \cite{Companion} is built on precisely such a straddle. The genuine tilings confirm the
 failure: in the $44$-tiling six $b$-edges belong to a single tile although \emph{no} $b$-edge lies on
 the boundary, and the $99$-tiling has thirty-three matched pairs, eleven boundary $b$-edges and
 twenty-two interior straddles. The correct relation is
@@ -634,112 +433,21 @@ explicitly because the argument is natural, its conclusion is correct on every e
 and it is nevertheless not a proof.
 \end{remark}
 
-\begin{theorem}[Unique representation of $k\,b$]\label{thm:kbrep}
-For $1\le k\le f-1$ the only way to write $k\,b$ as $n_a\,ef+n_b\,b+n_c f^2$ in nonnegative integers
-is $b^{k}$. \textup{(}Machine-checked, \texttt{kb\_unique\_rep}; it generalizes
-Theorem~\ref{thm:align}\textup{(ii)}, which needed $n_b\ge1$.\textup{)}
-\end{theorem}
 
-\begin{theorem}[The angle $(\pi-\alpha)/2$]\label{thm:halfangle}
-A vertex figure filling $(\pi-\alpha)/2$ is $\alpha+\beta$, and nothing else.
-\textup{(}Machine-checked, \texttt{halfpi\_minus\_alpha\_unique}.\textup{)}
-\end{theorem}
 
-\begin{theorem}[The $b$-run orientation lemma]\label{thm:chain}
-Let a run of $b$-edges be laid end to end along a ray, seeded at an apex tile. Then every $b$-edge of
-the run carries $\alpha$ at its apex end and $\gamma$ at its far end, and every junction interior to
-the run is an $(\alpha,\beta,\gamma)$ $\pi$-vertex. In particular the $3\alpha+2\beta$ figure never
-occurs along such a run.
-\end{theorem}
 
-\begin{proof}
-A $b$-edge joins its tile's $\alpha$- and $\gamma$-corners, so at a junction the incoming tile
-presents $\alpha$ or $\gamma$, and likewise the outgoing one. The $3\alpha+2\beta$ figure contains no
-$\gamma$, and two $\gamma$'s cannot share a side of a straight line since $2\gamma=\pi+\alpha>\pi$.
-Hence if the incoming corner is $\gamma$ the figure is $(1,1,1)$, whose single $\alpha$ must be the
-outgoing corner, so the next edge again ends in $\gamma$. An apex tile has $\alpha$ at the apex, hence
-$\gamma$ at the far end of its $b$-edge, which seeds the induction; it proceeds with no branching.
-\end{proof}
 
-\begin{theorem}[The far region is a scaled tile]\label{thm:farregion}
-Suppose the mismatch apex ray is a complete wall, of inner length $f\,b$. Then it cuts off a triangle
-with angle $\alpha$ at the apex, $\beta$ at the base corner and hence $\gamma$ at its third vertex,
-and with sides $f\,c,\ f\,a,\ f\,b$ --- that is, \emph{the tile scaled by $f$}. It therefore has area
-$f^2$ times the tile's and is tiled by the standard $f$-subdivision into $f^2$ copies, whose ray side
-is exactly $b^{f}$ with the junction chain of Theorem~\ref{thm:chain}.
-\end{theorem}
 
-\begin{corollary}[The far side can never give a contradiction]\label{cor:farvacuous}
-\emph{Under the hypothesis of Theorem~\textup{\ref{thm:farregion}}} --- that the mismatch apex ray is
-a complete wall --- no obstruction to a base-$\beta$ tiling can be derived from the far side of that
-ray, at any $(e,f)$: that side admits a genuine tiling. The hypothesis may not be dropped; if the ray
-is not a complete wall the far region is not a scaled copy of the tile and the conclusion does not
-follow.
-\end{corollary}
 
-\begin{remark}[Where the obstruction must instead live]\label{rem:live}
-Corollary~\ref{cor:farvacuous} is a negative result and an important one: it explains why the
-pierced-corner analysis resisted three independent attempts. The configuration it pins down is not
-contradictory but \emph{realizable}, so no amount of further chasing on that side can close the
-branch. The check is exact for every family --- for $(e,f)=(4,5)$ the far region has sides
-$(45,100,125)=5\cdot(9,20,25)$ and contains $25=f^2$ of the $59$ tiles --- and it is confirmed on the
-genuine $44$-tiling, whose mismatch ray has \emph{no} straddling tile and whose far region contains
-$16=(mf)^2$ tiles with sides $4\cdot(c,a,b)$.
 
-The live direction is the other ray. For every thick member with $m=1$, $e\ge2$, the \emph{matched}
-inner apex ray is \emph{not} a wall. Indeed if it were, the target would split into $f^2+f^2+(f^2-e^2)$
-tiles, the last a middle triangle $M$ with apex $\alpha$, legs $f\,b$ and base $e\,b$. Since $k\,b$
-has the unique representation $b^{k}$ for $1\le k\le f-1$ (Theorem~\ref{thm:kbrep}), both edges of $M$
-at its far corner are $b$-edges; but the angle there is $(\pi-\alpha)/2$, whose only decomposition is
-$\alpha+\beta$ (Theorem~\ref{thm:halfangle}), and a $b$-edge endpoint is an $\alpha$- or
-$\gamma$-corner, so no tile present can supply the $\beta$. This is the precise mechanism behind the
-failure of the clean-ray corollary retracted in Remark~\ref{rem:cleanfail}, and it is confirmed on the
-$44$-tiling, whose matched ray carries exactly three straddling tiles against the mismatch ray's zero.
 
-Consequently the branch now reduces to a single question: \emph{can the residual region --- the
-target minus the far wall, containing $N-f^2$ tiles and crossed by a necessarily straddled matched
-ray --- be tiled?} Every tool developed here (walk arithmetic, vertex figures, unsplittability) is
-wall-based and goes silent once a tile straddles. What is needed is a bound on where a tile may
-straddle a ray whose two ends are pinned by $b$-edges.
-\end{remark}
 
-\begin{remark}[Two corrections this forces]\label{rem:cleanfail}
-Theorem~\ref{thm:chain} is uniform in $(e,f)$ and in $m$, and is confirmed on the genuine
-$44$-tiling, where all four far $b$-edges of the mismatch ray and both sides of the clean ray read
-$\alpha\to\gamma$. It strictly generalizes Proposition~\ref{prop:rung2}, which established only the
-first step. But it also refutes two statements of an earlier version, which we withdraw.
 
-First, the assertion that the \emph{clean} apex ray is $b^{f}$ against $b^{f}$. Its justification ---
-``by the symmetry of the isosceles target both inner rays have the same inner length $f\,b$'' ---
-conflates two objects. The symmetry does apply to the geometric rays; it does not apply to the
-tiling's maximal edge \emph{segment} along a ray, which may terminate early at a vertex where the
-edges turn away. In fact the clean ray's segment can never reach the base: if it did, both final
-$b$-edges would contribute $\gamma$ at an interior point of the base, where the tiles above sum to
-$\pi$, contradicting $2\gamma>\pi$. On the $44$-tiling the two segments have lengths $12$ and $9$
-respectively, and the clean ray terminates at an interior $\beta+3\gamma$ vertex --- which is
-precisely the $M_4$ vertex the census forces.
 
-Second, and more seriously, the same objection applies to the hypothesis under which
-Theorems~\ref{thm:align} and~\ref{thm:ray} were stated: that the \emph{mismatch} ray's maximal
-segment attains the full length $f\,b$. That too was justified by symmetry, and it too now requires a
-genuine proof. The arithmetic of those theorems is unaffected --- given a chain of total length
-$f\,b$ containing a $b$-edge, the conclusions stand and remain machine-checked --- but their
-geometric hypothesis must be stated explicitly. Establishing that the mismatch segment reaches the
-base is the single highest-value open step in this branch: it would restore Theorems~\ref{thm:align}
-and~\ref{thm:ray} unconditionally for every thick member.
-\end{remark}
 
-\begin{remark}[Scope and consequences]\label{rem:ray}
-Thickness is used exactly once, and sharply: the next solution would be $n_a=2f-e$, which needs
-$f\ge2e+1$ --- the thin regime. So in the regime that is open, the entire mismatch ray is now pinned
-on \emph{both} sides, with no freedom beyond the order of the near-side edges. Explicitly:
-$N=23$ has far $5^3$, near $\{6,9\}$; $N=59$ far $9^5$, near $\{20,25\}$; $N=66$ far $16^5$, near
-$\{15^2,25^2\}$; $N=83$ far $11^6$, near $\{30,36\}$; $N=167$ far $39^8$, near $\{40^3,64^3\}$.
-The count of interior junctions is therefore also determined --- $f-1$ on the far side and
-$2(f-e)-1$ on the near side, none shared (Theorem~\ref{thm:align}(i)) --- so a hypothetical thick
-tiling carries exactly $3f-2e-2$ T-junctions along this ray, each a $\pi$-vertex. The arithmetic is
-machine-checked (\texttt{near\_side\_unique}, \texttt{BaseBetaWalks.lean}).
-\end{remark}
+
+
+
 
 \begin{remark}[What the alignment pins, uniformly]\label{rem:align}
 For every open thick member the mismatch ray is now completely determined out to length $f\cdot b$: its
@@ -752,19 +460,7 @@ coordinate $e\cdot f^2$, whose $b$-count is bounded (\texttt{base\_b\_bound}). I
 own, close any member.
 \end{remark}
 
-\begin{remark}[Scope, and why $m=1$ is the rigid case]\label{rem:walkscope}
-Theorem~\ref{thm:walks}(i) generalizes the $e=1$ base analysis used for
-Theorem~\ref{thm:basebeta-e1} to the infinite family $f>2e$ --- $e=1$, $f\ge3$; $e=2$, $f\ge5$;
-$e=4$, $f\ge9$; \dots --- covering the primes $N=47,71,107,191,227,239,359,\dots$, and its parts (iii)--(iv),
-which need no thinness, deliver the $e\ge2$ analogue of the $e=1$ structure theorem of
-Remark~\ref{rem:lem6} for \emph{every} $(e,f)$: the equal sides are $b$-free and the base's $b$-count
-is bounded by $j(f-e)\le e-1$. The step that fails for $m\ge2$ is the very first one: there
-$Q\equiv em\pmod f$, so $j$ may be \emph{negative} and the level rises to $2em$. This is not an
-artifact. The genuine $44$-tiling ($e{=}1,f{=}2,m{=}2$) has base walk $aaaaccca$, i.e.
-$(P,Q,R)=(5,0,3)$, which is the parameter $j=-1$, $p=3$; and the $99$-tiling
-($e{=}1,f{=}2,m{=}3$) has base walk $aabbbbbbbcc$, i.e. $(2,7,2)$, the parameter $j=2$, $p=0$. Both
-satisfy $R\ge1$, as the $\gamma$-trap requires.
-\end{remark}
+
 
 
 
@@ -948,205 +644,20 @@ tile owns $E_2$ and presents $\beta$, whose incident edges are $a$ and $c$. The 
 handles the other side.
 \end{proof}
 
-\begin{theorem}[Walk structure at $m=1$]\label{thm:walkstruct}
-Let $m=1$, $\gcd(e,f)=1$, $1\le e<f$, and consider a tiling of the base-$\beta$ target.
-\begin{enumerate}
-\item[\textup{(i)}] If $f^2>2e^2$, then each equal side carries \emph{no} $b$-edge. Its edges are
-$a$'s and $c$'s with $n_a=fk$ and $n_c=f-ke\ge1$, and it ends with a $c$-edge at the apex.
-\item[\textup{(ii)}] If $f^2>2ef+e^2$ --- equivalently $f/e>1+\sqrt2$ --- then the base carries
-\emph{exactly} $e$ $b$-edges, and $n_a=f\ell$, $n_c=e(2-\ell)$ with $\ell\in\{0,1\}$. In particular
-\[
-R_{\mathrm{base}}\in\{e,\,2e\}.
-\]
-\end{enumerate}
-\end{theorem}
 
-\begin{proof}
-A side of length $L$ is exactly partitioned by the tile edges on it, giving
-$n_a\,ef+n_b\,b+n_c\,f^2=L$ with $n_a,n_b,n_c\ge0$, and $n_c\ge1$ by
-Proposition~\ref{prop:gammatrap}.
 
-\emph{(i)} Here $L=f^3$. Rearranging with $b=f^2-e^2$ gives
-$n_b e^2=f\,(n_a e+n_b f+n_c f-f^2)$, so $f\mid n_b e^2$ and hence $f\mid n_b$ by coprimality;
-write $n_b=ft$. If $t\ge2$ the $b$-edges alone cost at least $2fb=2f^3-2fe^2$, which together with
-$n_cf^2\ge f^2$ exceeds $f^3$ unless $f^2\le2e^2$. If $t=1$, cancelling $f$ leaves
-$n_ae+n_cf=e^2$, so $n_a\le e$ and $f\mid e(e-n_a)$; coprimality with $0\le e-n_a\le e<f$ forces
-$n_a=e$ and then $n_c=0$, contradicting $n_c\ge1$. So $t=0$. With $n_b=0$ the equation is
-$n_ae+n_cf=f^2$, whence $f\mid n_a$; writing $n_a=fk$ gives $n_c=f-ke$. Finally, the apex tile on
-that side presents $\alpha$ (Proposition~\ref{prop:cornerfig}), whose incident edges are $b$ and
-$c$; as the side has no $b$-edge, it ends with a $c$-edge.
 
-\emph{(ii)} Here $L=e(3f^2-e^2)$, and the same rearrangement gives
-$(n_b-e)e^2=f\,(n_ae+n_bf+n_cf-3ef)$, so $f\mid n_b-e$; write $n_b=e+ft$. Negative $t$ makes
-$n_b<0$. For $t\ge1$ the $b$-edges alone cost at least
-\[
-(e+f)b=(f+e)^2(f-e)=e(3f^2-e^2)+f\,(f^2-2ef-e^2),
-\]
-which already exceeds $L$ under the hypothesis, before the mandatory $c$-edge is placed. So
-$n_b=e$; subtracting and cancelling $f$ leaves $n_ae+n_cf=2ef$, whence $f\mid n_a$, and writing
-$n_a=f\ell$ gives $n_c=e(2-\ell)$. Then $n_c\ge1$ forces $\ell\le1$.
 
-Machine-checked (\texttt{equal\_side\_no\_b}, \texttt{equal\_side\_shape}, \texttt{base\_b\_count}
-in \texttt{lean/BaseBetaWalkArith.lean}), and cross-checked by enumerating all walk solutions for
-the $198$ coprime pairs with $f\le25$: no discrepancies.
-\end{proof}
 
-\begin{remark}\label{rem:walkscope2}
-Both hypotheses are sharp: $n_b=2f$ on an equal side is admissible exactly when $f^2\le2e^2$, and
-$n_b=e+f$ on the base exactly when $f^2\le2ef+e^2$, by the displayed identity. Of the $42$
-base-$\beta$ prime candidates below $1000$, $28$ satisfy \textup{(i)} --- including the thick values
-$23$, $131$ and $167$, since \textup{(i)} needs only $f/e>\sqrt2$ --- and $17$ satisfy
-\textup{(ii)}. The theorem structures those cases; it does not by itself exclude any of them.
-\end{remark}
 
-\begin{theorem}[The $e=1$ subfamily reduces to one walk]\label{thm:e1reduce}
-Let $e=1$, $m=1$ and $f\ge3$, so the target is $(f^3,f^3,3f^2-1)$, the tile is $(f,f^2-1,f^2)$ and
-$N=3f^2-1$. Both hypotheses of Theorem~\ref{thm:walkstruct} hold ($f^2>2$ and $f^2>2f+1$). In any
-tiling:
-\begin{enumerate}
-\item[\textup{(i)}] neither equal side carries a $b$-edge; each equal side begins and ends with a
-$c$-edge, and therefore carries at least two;
-\item[\textup{(ii)}] the base carries exactly one $b$-edge and exactly one $c$-edge --- so
-$R_{\mathrm{base}}=1$ --- and its first and last edges are $a$-edges.
-\end{enumerate}
-Thus the base walk is a permutation of $(a^f,b,c)$ beginning and ending with $a$, with the $b$ in
-position $3,\dots,f$.
-\end{theorem}
 
-\begin{proof}
-\emph{(i)} An equal side has length $f^3$ and its edges lie in $\{f,\ f^2-1,\ f^2\}$. Reducing
-$n_af+n_b(f^2-1)+n_cf^2=f^3$ modulo $f$ gives $f\mid n_b$. If $n_b\ge2f$ then
-$n_b(f^2-1)\ge2f^3-2f>f^3$ for $f\ge2$. If $n_b=f$ then $f(f^2-1)=f^3-f$ leaves $f$, forcing
-$n_c=0$ and $n_a=1$, hence no $c$-edge on that side --- contradicting
-Proposition~\ref{prop:gammatrap}. So $n_b=0$, and then $n_a+n_cf=f^2$, so $f\mid n_a$; write
-$n_a=fk$, $n_c=f-k$.
 
-By Proposition~\ref{prop:cornerfig} the apex tile on that side presents $\alpha$, whose incident
-edges are $b$ and $c$; since the side carries no $b$-edge, it ends with a $c$-edge. Its other end is
-handled in \emph{(ii)}: there we show the base begins and ends with $a$-edges, so the base-corner
-tile's $c$-edge lies on the equal side, which therefore begins with a $c$-edge. Were $n_c=1$ the
-single $c$-edge would be both the first and the last, forcing the side to consist of one edge and
-$f^3=f^2$; so $n_c\ge2$.
 
-\emph{(ii)} The base has length $3f^2-1$. Reducing modulo $f$ gives $n_b\equiv1$. If $n_b\ge f+1$
-then $n_b(f^2-1)\ge f^3+f^2-f-1>3f^2-1$ for $f\ge3$, so $n_b=1$. Subtracting,
-$2f^2=n_af+n_cf^2$, so $n_a=f(2-n_c)$ with $n_c\in\{0,1,2\}$, and $n_c\ge1$ by
-Proposition~\ref{prop:gammatrap}.
-
-If $n_c=2$ then $n_a=0$ and the base is three edges, a permutation of $(b,c,c)$. By
-Proposition~\ref{prop:cornerpara} the first two edges lie in $\{a,c\}$ and so do the last two; with
-no $a$-edge available this forces all three to be $c$-edges, contradicting $n_b=1$. Hence $n_c=1$
-and $n_a=f$, so the base is a permutation of $(a^f,b,c)$ with $n=f+2$ edges, and
-Proposition~\ref{prop:cornerpara} places the $b$ away from the first two and last two positions.
-
-It remains to exclude $E_1=c$. Suppose it. Then the unique $c$-edge is $E_1$, so every one of
-$E_2,\dots,E_n$ is an $a$- or $b$-edge and places a $\gamma$ at one of its endpoints; there are
-$f+1$ of them and $f+1$ interior junctions $J_1,\dots,J_{n-1}$. The corner tile $T_A$ has its
-$c$-edge on the base, so its $\alpha$ vertex is $J_1$ and its $\gamma$ vertex lies on the equal
-side; by Proposition~\ref{prop:cornerpara} its partner $T_3$ presents $\gamma$ at $J_1$. So $J_1$
-already carries a $\gamma$, and since a $\pi$-vertex carries at most one
-(Proposition~\ref{prop:vertexfigures}), $E_2$ must place its $\gamma$ at $J_2$; inductively $E_i$
-places at $J_i$, and $E_n$ places at $J_n$, a corner --- contradicting
-Proposition~\ref{prop:cornerfig}. Hence $E_1$ is an $a$-edge, and the same argument at $B$ gives
-$E_n$ an $a$-edge. This is what \emph{(i)} used.
-\end{proof}
-
-\begin{remark}\label{rem:e1status}
-Theorem~\ref{thm:e1reduce} reduces the whole $e=1$, $m=1$ subfamily --- which contains the base-$\beta$
-prime candidates $N=3f^2-1$, among them $11$, $47$, $107$, $191$, $431$, $587$ and $971$ below
-$1000$ --- to the single question of whether that one base walk is realizable. It also corrects a
-plausible-looking plan: one might hope to close the subfamily by proving $R\ge2$ on every side. That
-is false for the base. The walk with $R_{\mathrm{base}}=2$ is exactly the one the corner
-parallelogram kills, and the survivor has $R_{\mathrm{base}}=1$; on the base, ``$R\ge2$'' is not a
-lemma reducing the problem but a restatement of it. On the two equal sides $R\ge2$ does hold, and is
-proved above.
-\end{remark}
-
-\begin{remark}[The $e\ge2$ residue]\label{rem:e2}
-The $e\ge2$ residue ($N=23,59,71,83,131,167,\dots$; the members $23$ and $71$ are now settled by search, Table~\ref{tab:basebeta}) resists all three natural invariant methods, and in two
-cases \emph{provably}:
-\begin{itemize}
-\item \textbf{Linear/colouring invariants} --- dead by Remark~\ref{rem:nogo}.
-\item \textbf{$b$-edge census.} On a maximal segment of length $L$ the two sides carry $q_1\equiv q_2
-\pmod f$ (both $\equiv -e^{-2}L$), and the entire census --- in \emph{every} modulus, and in its
-per-direction refinement --- is a formal consequence of the single parity identity
-$N(a+b+c)\equiv2X+Y \pmod 2$, valid for all $(e,f,m)$. So no congruence of this type can bite.
-\item \textbf{Euler / vertex counting.} For any such tiling $V-E+F=2$ is \emph{identically} the sum
-of the three corner identities $\#\alpha=\#\beta=\#\gamma=N$; the vertex-type system collapses to
-$Q_{013}=1+P_{320}+2Q_{640}+Q_{431}+W_{320}$ and
-$3P_{320}+P_{111}+6Q_{640}+4Q_{431}+2Q_{222}+3W_{320}+W_{111}=N-3$, which is
-feasible for every $e\ge2$, $m=1$ target. So Euler carries no information here.
-Here $W_{320}$ and $W_{111}$ count the interior vertices at which some tile is met in the
-\emph{relative interior} of one of its edges: such a tile contributes a straight angle, so the
-remaining tile angles sum to $\pi$ rather than $2\pi$ and the figure is $(3,2,0)$ or $(1,1,1)$
-(Proposition~\ref{prop:vertexfigures}). These types are not optional --- the dissections here are
-not edge-to-edge (Remark~\ref{rem:parityfail}) --- and an earlier version of this census omitted
-them. Their presence only enlarges the feasible set, so the conclusion is unaffected.
-\end{itemize}
-What \emph{is} gained is citation-free structure, valid for all $(e,f,m)$: the $\gamma$-trap
-(Proposition~\ref{prop:gammatrap}) and the corner parallelogram
-(Proposition~\ref{prop:cornerpara}), both proved above from the corner figures and the
-unsplittability of $b$, and both used by the exact search as prunes. They were checked against the
-two genuine certificates before being proved: the first-two-edges rule of
-Proposition~\ref{prop:cornerpara} holds on all six sides of the $44$- and $99$-tilings, and at each
-of the four base corners exactly one of the two sides begins with a $c$-edge.
-
-This isolates the residue to one clean statement. Since $q_{\mathrm{base}}\equiv em \pmod f$ while
-$q_{\mathrm{equal}}\equiv0$, we have:
-\[
-\textbf{if the base carries no } b\textbf{-edge, then } f\mid em,\ \text{hence } f\mid m,
-\ \text{hence no tiling with } m=1 \ \text{--- for every } e\ \text{at once.}
-\]
-The $44$-tiling ($m=2$) indeed carries \emph{zero} $b$-edges on its entire boundary, consistent with
-this. But Remark~\ref{rem:thm14false} now shows the converse direction is a dead end: the
-$99$-tiling has $f\nmid m$ and its base carries seven $b$-edges, so ``the base never carries a
-$b$-edge'' is \emph{false} in general, and the displayed implication --- whose hypothesis is
-equivalent to $f\mid m$ --- cannot be used to exclude $m=1$ without already knowing $f\mid m$, which
-is false. A fourth method also fails, and provably: \emph{boundary counting}. Each side $S$ of $ABC$, cut into
-$k_S$ whole edges, forces at least $2k_S-1$ tiles to meet it (the $k_S$ inner tiles, plus a distinct
-``middle'' tile at each of the $k_S-1$ junctions, since a triangle has no two collinear edges); this
-is exactly tight on the $44$-tiling (base $k=8$, $15=2\cdot8-1$ tiles). But at $m=1$ the boundary is
-\emph{minimal} --- for $e=1$ the least feasible total is $\sum k_S=3f+2$ --- so counting sees only
-$O(f)$ of the $N=\Theta(f^2)$ tiles, and $\sum(2k_S-1)=6f+1$ exceeds $N=3f^2-1$ only at $f=2$, the
-case already closed. The ratio $(6f+1)/(3f^2-1)\to0$: $m=1$ is the case \emph{least} constrained by
-counting, not the most.
-
-So no \emph{invariant} route survives: linear invariants, the census, Euler and counting are all
-provably vacuous, and the one arithmetic statement that would settle it ($f\mid m$) is now known to
-be false. What does survive is \emph{structure}. Theorem~\ref{thm:walks} classifies the boundary walks
-for every $(e,f)$ at $m=1$, and in the thin regime $f>2e$ reduces the whole branch to two possible
-bases and $b$-free equal sides --- the $e\ge2$ analogue of Remark~\ref{rem:lem6}, and the first
-statement in this branch that is uniform in $e$. Parts (iii)--(iv) need no thinness at all: at $m=1$ \emph{no equal side carries a $b$-edge}, for every
-$(e,f)$, so all boundary $b$-edges lie on the base; and the base's $b$-count $Q=e+fj$ obeys
-$j(f-e)\le e-1$. It does not close the branch, but it does locate the difficulty exactly. The bound
-$j\le(e-1)/(f-e)$ is uniform, and it degrades precisely as $f$ falls towards $e$: at $e=1$ it pins
-$j=0$ for every $f$ (one $b$-edge on the base, the $e=1$ rigidity of Remark~\ref{rem:lem6},
-now a corollary); at $f>2e$ it still pins $j=0$; but in the \emph{thick} regime $f\le2e$ it leaves
-$\lfloor(e-1)/(f-e)\rfloor+1$ values of $j$ and the trichotomy dissolves. That is precisely where the
-open members sit --- $N=59$ is $(e,f)=(4,5)$, so $j\le3$; $N=66$ is $(3,5)$, so $j\le1$; likewise
-$N=23,83,131,167$. We record the branch as open and settle its members one at a time by exhaustive
-search. Table~\ref{tab:basebeta} lists every member below $110$; of the eleven, eight are settled and
-$59$ and $66$ are now excluded by exhaustive search (apex-down with the walk prune; $1\,838\,175$ and
-$7\,232\,464$ nodes), leaving $83$ under search. ($N=83$, $(e,f)=(5,6)$, is the smallest base-$\beta$
-prime not yet settled.)
-The walk classification also feeds back into the search: the $\gamma$-trap and the corner
-parallelogram have the multiset corollaries $R\ge1$ on every side, $Q_{\mathrm{base}}\le k-4$ and
-$Q_{\mathrm{side}}\le k-2$ ($k$ the number of edges of the walk), and the engine now prunes any
-partial boundary walk that fits no surviving multiset (prune P5). The rule was validated positionally
-on all six sides of the two genuine tilings before use --- the $44$-tiling's base $aaaaccca$ and the
-$99$-tiling's base $aabbbbbbbcc$, which is exactly tight for $Q\le k-4$ --- the strengthened engine
-re-finds the $44$-tiling from scratch ($852{,}093$ nodes; the found tiling passes the independent
-verifier: congruence, exact area, containment, pairwise disjointness) --- and the corner rule is
-applied only after checking that the tile's $b$-edge is unsplittable ($n_a a + n_c c = b$ has no
-solution), which is what forces the parallelogram. For $N=59$ this cuts the admissible bases from
-seven to four, for $N=66$ from four to three.
-\end{remark}
 
 \begin{table}[h]\centering
 \caption{Base-$\beta$ members with $N\le110$: every one is settled by exhaustive search
 (corner-anchored exact search over $\mathbb{Q}(\sqrt{D})$, C\texttt{++} engine, node-for-node
-validated against the independent Python engine). ``thin'' means $f>2e$, the regime of
-Theorem~\ref{thm:walks}.}\label{tab:basebeta}
+validated against the independent Python engine). ``thin'' means $f>2e$.}\label{tab:basebeta}
 \begin{tabular}{rlllr}
 \hline
 $N$ & $(e,f)$ & tile & regime & search verdict (nodes)\\
@@ -1190,7 +701,7 @@ $\alpha\notin\Q\pi$, is $N$-tiled for $N$ prime.
 \begin{proof}
 Fix a putative tiling with coloring number $M$. On this target \cite[Thm.~17]{BeesonIII} gives
 $N/M^2=(f+e)/(f-e)>1$, hence $0<M^2<N$; we use that rather than \cite[Cor.~3]{BeesonIII}, which is
-quoted in the literature without scope and cannot hold in the stated generality (Remark~\ref{rem:e2}).
+quoted in the literature without scope and cannot hold in the stated generality \cite[Rem.~2.1]{Companion}.
 Put
 $d=\gcd(N-M^2,N+M^2)$. As $d\mid2N$, $d\mid2M^2$, and $\gcd(N,M^2)=1$ (a prime $N>M^2$ cannot divide
 $M^2$), $d\mid2$. Writing $g=(N+M^2)/d$ and $\hat a=(N-M^2)/d$, the primitive tile is
@@ -1198,7 +709,7 @@ $(a,b,c)=(g\hat a,\ g^2-\hat a^2,\ g^2)$ with $0<\hat a<g$ (\cite[Thm.~17]{Beeso
 \cite[Lem.~8]{BeesonIII}, whose squarefree half this paper shows to be false --- only the
 parametrization is needed, and it also follows from the $3\alpha+2\beta$ relation directly), and the
 base $AC$ has integer length $Y=M\hat a(g+\hat a)$ (\cite[Lem.~42]{BeesonIII}). A tiling forces the
-base to carry at least \emph{one} $c$-edge --- this is the $\gamma$-trap of Remark~\ref{rem:e2},
+base to carry at least \emph{one} $c$-edge --- this is the $\gamma$-trap, Proposition~\ref{prop:gammatrap},
 proved here from the vertex figures alone and machine-checked
 (\texttt{gamma\_injection}, \texttt{c\_edge\_exists}) --- and a number of $b$-edges
 $\equiv-M\pmod g$, hence at least $g-M>0$ (\cite[Lem.~45(iii)]{BeesonIII}); so $Y\ge(g-M)b+c$. But
@@ -1410,14 +921,19 @@ double sum $\sum_t C_f(t)$ by direction,
 \begin{equation}\label{eq:lambda}
 \sum_{\text{tiles}}C_f(t)=\sum_{\theta}\Lambda(\theta)\,f(\theta).
 \end{equation}
-Split each tile-edge into its maximal sub-segments that are either interior to $ABC$ or contained in
-$\partial ABC$; this only refines the sums and changes nothing. Consider the finite set of maximal
-straight segments $S$ carved out on the tiling's edges. If $S$ lies in the interior of $ABC$, a
+Take the \emph{common refinement}: cut every tile-edge at every point where any other tile-edge
+meets it, so that the edges of all tiles are subdivided into finitely many \emph{minimal pieces},
+each of which is either interior to $ABC$ or contained in $\partial ABC$, and no two of which
+overlap partially. Refining the sums in this way changes nothing, since the weight is linear in
+length. (Working with minimal pieces rather than with maximal straight segments is what makes the
+next step airtight: a minimal piece is covered by whole tile-edge pieces on each side, with no
+overhang.) Let $S$ be a minimal piece. If $S$ lies in the interior of $ABC$, a
 neighbourhood of a generic point of $S$ is a disc split by $S$ into two half-discs, each tiled; the
 tiles on one side meet $S$ in directed edges of total length $|S|$ pointing one way, say $\theta$,
-and those on the other side in directed edges of total length $|S|$ pointing $\theta+\pi$ (the two
-subdivisions may differ, a non-edge-to-edge incidence, but each side covers $S$ exactly once because
-the tiles cover $ABC$ with disjoint interiors). If instead $S\subseteq\partial ABC$, only the single
+and those on the other side in directed edges of total length $|S|$ pointing $\theta+\pi$ (the two subdivisions of
+the ambient segment may differ --- that is exactly a non-edge-to-edge incidence --- but each side
+covers the minimal piece $S$ exactly once, because the tiles cover $ABC$ with disjoint interiors and
+$S$ is not partially overlapped by construction). If instead $S\subseteq\partial ABC$, only the single
 tile inside $ABC$ meets it, contributing length $|S|$ in the counterclockwise direction of
 $\partial ABC$. Writing $\Lambda=\Lambda_{\mathrm{int}}+\Lambda_{\mathrm{bd}}$ accordingly,
 interior segments give $\Lambda_{\mathrm{int}}(\theta)=\Lambda_{\mathrm{int}}(\theta+\pi)$ for every
@@ -1970,9 +1486,14 @@ No triangle can be cut into $14$ congruent triangles, and none into $15$.
 \begin{proof}
 By the branch sweep above, any $14$- or $15$-tiling would live in one of the four listed instances,
 each with its tile and target uniquely determined; the exhaustive searches refute all four. The
-dependencies are those of Theorem~\ref{thm:main} together with \cite[Thms.~3, 7, 11, 14, 17,
-19]{BeesonIII}, \cite[Thm.~3]{BeesonEq}, and the declared computer assistance (exact arithmetic,
-complete branching, independently validated).
+dependencies are those of Theorem~\ref{thm:main} together with \cite[Thm.~3]{BeesonEq} and the
+declared computer assistance (exact arithmetic, complete branching, independently validated). From
+\cite{BeesonIII} we use only the \emph{tiling equations} of Theorems~3, 7, 11, 14, 17 and~19 ---
+that is, the Diophantine relations each derives between the tile and its target --- and \emph{not}
+their $g\mid M$ conclusions. This distinction is not cosmetic: Remark~\ref{rem:thm14false} shows
+that Theorem~14's conclusion is false, and Remark~\ref{rem:b3prime} that Theorem~19's proof is
+unsound. The equations we use are re-derived citation-free in Remark~\ref{rem:colouring}, so the
+present theorem does not rest on the defective steps.
 \end{proof}
 
 \subsection*{The values $21$, $22$, $30$, and the instance $46$.}
@@ -2407,6 +1928,8 @@ on written proofs supported by numerical checks, and the whole is offered for in
 refereeing.
 
 \begin{thebibliography}{99}
+
+\bibitem{Companion} V.~Bonfioli, \emph{The base-$\beta$ branch of $3\alpha+2\beta=\pi$: boundary walks, corrections to Triangle Tiling III, and the frontier searches}, companion note to the present paper, 2026.
 
 \bibitem{BeesonI} M.~Beeson, \emph{Triangle tiling I: The tile is similar to ABC or has a right
 angle}, arXiv:1206.2231.
