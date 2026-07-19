@@ -631,6 +631,17 @@ explicitly because the argument is natural, its conclusion is correct on every e
 and it is nevertheless not a proof.
 \end{remark}
 
+\begin{theorem}[Unique representation of $k\,b$]\label{thm:kbrep}
+For $1\le k\le f-1$ the only way to write $k\,b$ as $n_a\,ef+n_b\,b+n_c f^2$ in nonnegative integers
+is $b^{k}$. \textup{(}Machine-checked, \texttt{kb\_unique\_rep}; it generalizes
+Theorem~\ref{thm:align}\textup{(ii)}, which needed $n_b\ge1$.\textup{)}
+\end{theorem}
+
+\begin{theorem}[The angle $(\pi-\alpha)/2$]\label{thm:halfangle}
+A vertex figure filling $(\pi-\alpha)/2$ is $\alpha+\beta$, and nothing else.
+\textup{(}Machine-checked, \texttt{halfpi\_minus\_alpha\_unique}.\textup{)}
+\end{theorem}
+
 \begin{theorem}[The $b$-run orientation lemma]\label{thm:chain}
 Let a run of $b$-edges be laid end to end along a ray, seeded at an apex tile. Then every $b$-edge of
 the run carries $\alpha$ at its apex end and $\gamma$ at its far end, and every junction interior to
@@ -646,6 +657,45 @@ Hence if the incoming corner is $\gamma$ the figure is $(1,1,1)$, whose single $
 outgoing corner, so the next edge again ends in $\gamma$. An apex tile has $\alpha$ at the apex, hence
 $\gamma$ at the far end of its $b$-edge, which seeds the induction; it proceeds with no branching.
 \end{proof}
+
+\begin{theorem}[The far region is a scaled tile]\label{thm:farregion}
+Suppose the mismatch apex ray is a complete wall, of inner length $f\,b$. Then it cuts off a triangle
+with angle $\alpha$ at the apex, $\beta$ at the base corner and hence $\gamma$ at its third vertex,
+and with sides $f\,c,\ f\,a,\ f\,b$ --- that is, \emph{the tile scaled by $f$}. It therefore has area
+$f^2$ times the tile's and is tiled by the standard $f$-subdivision into $f^2$ copies, whose ray side
+is exactly $b^{f}$ with the junction chain of Theorem~\ref{thm:chain}.
+\end{theorem}
+
+\begin{corollary}[The far side can never give a contradiction]\label{cor:farvacuous}
+No obstruction to a thick base-$\beta$ tiling can be derived from the far side of the mismatch ray, at
+any $(e,f)$: that side admits a genuine tiling.
+\end{corollary}
+
+\begin{remark}[Where the obstruction must instead live]\label{rem:live}
+Corollary~\ref{cor:farvacuous} is a negative result and an important one: it explains why the
+pierced-corner analysis resisted three independent attempts. The configuration it pins down is not
+contradictory but \emph{realizable}, so no amount of further chasing on that side can close the
+branch. The check is exact for every family --- for $(e,f)=(4,5)$ the far region has sides
+$(45,100,125)=5\cdot(9,20,25)$ and contains $25=f^2$ of the $59$ tiles --- and it is confirmed on the
+genuine $44$-tiling, whose mismatch ray has \emph{no} straddling tile and whose far region contains
+$16=(mf)^2$ tiles with sides $4\cdot(c,a,b)$.
+
+The live direction is the other ray. For every thick member with $m=1$, $e\ge2$, the \emph{matched}
+inner apex ray is \emph{not} a wall. Indeed if it were, the target would split into $f^2+f^2+(f^2-e^2)$
+tiles, the last a middle triangle $M$ with apex $\alpha$, legs $f\,b$ and base $e\,b$. Since $k\,b$
+has the unique representation $b^{k}$ for $1\le k\le f-1$ (Theorem~\ref{thm:kbrep}), both edges of $M$
+at its far corner are $b$-edges; but the angle there is $(\pi-\alpha)/2$, whose only decomposition is
+$\alpha+\beta$ (Theorem~\ref{thm:halfangle}), and a $b$-edge endpoint is an $\alpha$- or
+$\gamma$-corner, so no tile present can supply the $\beta$. This is the precise mechanism behind the
+failure of the clean-ray corollary retracted in Remark~\ref{rem:cleanfail}, and it is confirmed on the
+$44$-tiling, whose matched ray carries exactly three straddling tiles against the mismatch ray's zero.
+
+Consequently the branch now reduces to a single question: \emph{can the residual region --- the
+target minus the far wall, containing $N-f^2$ tiles and crossed by a necessarily straddled matched
+ray --- be tiled?} Every tool developed here (walk arithmetic, vertex figures, unsplittability) is
+wall-based and goes silent once a tile straddles. What is needed is a bound on where a tile may
+straddle a ray whose two ends are pinned by $b$-edges.
+\end{remark}
 
 \begin{remark}[Two corrections this forces]\label{rem:cleanfail}
 Theorem~\ref{thm:chain} is uniform in $(e,f)$ and in $m$, and is confirmed on the genuine

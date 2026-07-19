@@ -838,6 +838,87 @@ theorem b_run_figure_is_111 (x y z : ℕ) (hpi : y + z = 2 ∧ 2 * x + z = 3 * y
   obtain ⟨h1, h2⟩ := hpi
   omega
 
+/-- **`k·b` has the unique representation `b^k`**, for `1 ≤ k ≤ f−1`.  Generalizes `far_is_bpow`
+(the case `k = f` needs `n_b ≥ 1`; here no such hypothesis is needed because `k < f`).  Mod-`f`
+reduction gives `f ∣ n_b − k`, and `0 ≤ n_b` with the size bound forces `n_b = k`; the remainder then
+vanishes.  This supplies both `e·b = b^e` and `(f−1)·b = b^{f−1}`, which is what pins the two legs of
+the middle region in `matched_ray_straddled`. -/
+theorem kb_unique_rep (e f k na nb nc B : ℕ) (hcop : Nat.Coprime e f) (hef : e < f) (he : 2 ≤ e)
+    (hk1 : 1 ≤ k) (hk2 : k + 1 ≤ f) (hB : B + e ^ 2 = f ^ 2)
+    (h : k * B = na * (e * f) + nb * B + nc * f ^ 2) :
+    na = 0 ∧ nb = k ∧ nc = 0 := by
+  have hf0 : 0 < f := by omega
+  have hBpos : 0 < B := by nlinarith [hB, hef, he]
+  -- `n_c = 0` : one `f²` already exceeds `k·B` since `k ≤ f−1` and `f² > (f−1)B` fails only if ...
+  -- we argue instead via `far_near_disjoint`, which forbids `n_c ≥ 1` outright.
+  have hnc : nc = 0 := by
+    by_contra hc
+    have h1 : 1 ≤ nc := Nat.one_le_iff_ne_zero.mpr hc
+    exact far_near_disjoint e f k na nb nc B hcop hef hk1 hk2 hB h1 h
+  subst hnc
+  simp only [Nat.zero_mul, Nat.add_zero] at h
+  -- now `k·B = n_a·ef + n_b·B`, and mod-`f` reduction gives `f ∣ k − n_b`
+  have hzc : IsCoprime (f : ℤ) (e : ℤ) := Int.isCoprime_iff_gcd_eq_one.mpr hcop.symm
+  have hBz : (B : ℤ) = (f : ℤ) ^ 2 - (e : ℤ) ^ 2 := by
+    have hc : ((B : ℤ)) + (e : ℤ) ^ 2 = (f : ℤ) ^ 2 := by exact_mod_cast hB
+    linarith
+  have hz : (k : ℤ) * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2)
+      = (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * ((f : ℤ) ^ 2 - (e : ℤ) ^ 2) := by
+    have h' : (k : ℤ) * (B : ℤ) = (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * (B : ℤ) := by
+      exact_mod_cast h
+    rw [hBz] at h'; exact h'
+  have hdvd : (f : ℤ) ∣ ((k : ℤ) - nb) := by
+    refine (hzc.pow_right (n := 2)).dvd_of_dvd_mul_right ?_
+    exact ⟨((k : ℤ) - nb) * f - (na : ℤ) * e, by linear_combination -hz⟩
+  obtain ⟨t, ht⟩ := hdvd
+  -- `|k − n_b| < f` forces `t = 0`
+  have hnbk : nb ≤ k := by
+    by_contra hc
+    push_neg at hc
+    have h1 : (k : ℤ) < (nb : ℤ) := by exact_mod_cast hc
+    have hBz2 : (0 : ℤ) < (f : ℤ) ^ 2 - (e : ℤ) ^ 2 := by
+      have : (e : ℤ) < (f : ℤ) := by exact_mod_cast hef
+      nlinarith [this, Int.natCast_nonneg e]
+    have hna : (0 : ℤ) ≤ (na : ℤ) * ((e : ℤ) * f) :=
+      mul_nonneg (Int.natCast_nonneg na) (by positivity)
+    nlinarith [hz, h1, hBz2, hna]
+  have hkf : (k : ℤ) - nb < (f : ℤ) := by
+    have h1 : (k : ℤ) + 1 ≤ (f : ℤ) := by exact_mod_cast hk2
+    have h2 : (0 : ℤ) ≤ (nb : ℤ) := Int.natCast_nonneg nb
+    linarith
+  have ht0 : t = 0 := by
+    rcases lt_trichotomy t 0 with h | h | h
+    · exfalso
+      have hnbk' : (nb : ℤ) ≤ (k : ℤ) := by exact_mod_cast hnbk
+      have hf0' : (0 : ℤ) < (f : ℤ) := by exact_mod_cast hf0
+      nlinarith [ht, h, hf0', hnbk']
+    · exact h
+    · exfalso
+      have hf0' : (0 : ℤ) < (f : ℤ) := by exact_mod_cast hf0
+      nlinarith [ht, h, hf0', hkf]
+  rw [ht0, mul_zero] at ht
+  have hnbeq : nb = k := by omega
+  subst hnbeq
+  refine ⟨?_, rfl, rfl⟩
+  have hz2 : (na : ℤ) * ((e : ℤ) * f) = 0 := by linarith [hz]
+  have hef0 : (0 : ℤ) < (e : ℤ) * (f : ℤ) := by
+    have h1 : (0 : ℤ) < (e : ℤ) := by exact_mod_cast (by omega : 0 < e)
+    have h2 : (0 : ℤ) < (f : ℤ) := by exact_mod_cast hf0
+    positivity
+  have : (na : ℤ) = 0 := by
+    rcases mul_eq_zero.mp hz2 with h | h
+    · exact h
+    · exact absurd h (ne_of_gt hef0)
+  exact_mod_cast this
+
+/-- **The angle `(π−α)/2` decomposes only as `α+β`.**  Writing a vertex figure filling `(π−α)/2` as
+`x·α + y·β + z·γ` and clearing `β = (π−3α)/2`, `γ = (π+α)/2` against irrationality of `α/π` gives
+`y + z = 1` and `2x + z + 1 = 3y`, whose only solution is `(1,1,0)`.  Since a `b`-edge endpoint is an
+`α`- or `γ`-corner, no tile at such a vertex can supply the `β` — which is the contradiction behind
+`matched_ray_straddled`. -/
+theorem halfpi_minus_alpha_unique (x y z : ℕ) (h1 : y + z = 1) (h2 : 2 * x + z + 1 = 3 * y) :
+    x = 1 ∧ y = 1 ∧ z = 0 := by omega
+
 end Erdos634.BaseBetaWalks
 
 #print axioms Erdos634.BaseBetaWalks.exists_of_dvd_sub
@@ -862,4 +943,6 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.clean_ray_bpow
 #print axioms Erdos634.BaseBetaWalks.b_run_step
 #print axioms Erdos634.BaseBetaWalks.b_run_figure_is_111
+#print axioms Erdos634.BaseBetaWalks.kb_unique_rep
+#print axioms Erdos634.BaseBetaWalks.halfpi_minus_alpha_unique
 #print axioms Erdos634.BaseBetaWalks.no_beta_three_gamma_on_clean_ray
