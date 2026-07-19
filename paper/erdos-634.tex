@@ -860,15 +860,155 @@ integer equations is \texttt{vertex\_pi\_multiplicities},
 \texttt{Dissection.lean}.
 \end{proof}
 
-\begin{proposition}[$\gamma$-trap]\label{prop:gammatrap}
-In any tiling of a triangle by a tile with $3\alpha+2\beta=\pi$ and $\alpha\notin\Q\pi$, no junction
-interior to a side of $ABC$ carries $\gamma$ on both sides.
+\begin{proposition}[Corner figures]\label{prop:cornerfig}
+On a base-$\beta$ target, the vertex figure at each base corner is a \emph{single} tile presenting
+$\beta$, and the figure at the apex is \emph{exactly three} tiles, each presenting $\alpha$. In
+particular no corner of $ABC$ carries a $\gamma$. The two edges of the base-corner tile at that
+corner are $a$ and $c$; the edges of the apex tiles at the apex are $b$ and $c$.
 \end{proposition}
 
 \begin{proof}
-Such a junction is a $\pi$-vertex, so by Proposition~\ref{prop:vertexfigures} its multiplicity vector
-is $(3,2,0)$ or $(1,1,1)$; in both cases $\gamma$ occurs at most once.
+By Proposition~\ref{prop:vertexfigures}, an angle relation $p\alpha+q\beta+r\gamma=t$ at a corner
+splits into $2p-3q+r=\sigma$ and $q+r=\tau$ for integers determined by $t$. A base corner has
+$t=\beta$, giving $\sigma=-3$, $\tau=1$; the case $(q,r)=(0,1)$ would need $2p=-4$, so
+$(p,q,r)=(0,1,0)$. The apex has $t=3\alpha$, giving $\sigma=6$, $\tau=0$, hence $q=r=0$ and $p=3$.
+The edge assertions are the incidence rule: $a$ joins the $\beta,\gamma$ corners, $b$ joins
+$\alpha,\gamma$, $c$ joins $\alpha,\beta$. Machine-checked (\texttt{corner\_beta\_unique},
+\texttt{corner\_apex\_unique} in \texttt{lean/BaseBetaCorners.lean}).
 \end{proof}
+
+\begin{proposition}[$\gamma$-trap]\label{prop:gammatrap}
+Every side of a base-$\beta$ target carries at least one $c$-edge.
+\end{proposition}
+
+\begin{proof}
+A junction interior to a side is a $\pi$-vertex, so by Proposition~\ref{prop:vertexfigures} its
+multiplicity vector is $(3,2,0)$ or $(1,1,1)$: it carries \emph{at most one} $\gamma$
+(\texttt{pi\_vertex\_gamma\_le\_one}).
+
+Let a side of $ABC$ be partitioned by the tile edges $E_1,\dots,E_n$ lying on it, with junctions
+$J_0,\dots,J_n$, where $J_0$ and $J_n$ are corners of $ABC$. (The partition is exact: the tiles
+cover $ABC$ with disjoint interiors, so each point of the side lies in exactly one tile edge. This
+is a statement about the boundary and is unaffected by non-edge-to-edge incidence in the interior.)
+
+Suppose the side carries no $c$-edge, so every $E_i$ is an $a$- or a $b$-edge. Both are incident to
+$\gamma$ at exactly one endpoint, so each $E_i$ places a $\gamma$ at $J_{i-1}$ or at $J_i$, and by
+the previous paragraph no junction receives two. By Proposition~\ref{prop:cornerfig} neither $J_0$
+nor $J_n$ carries a $\gamma$ at all. Hence $E_1$ must place its $\gamma$ at $J_1$; that junction is
+then full, so $E_2$ must place at $J_2$; inductively $E_i$ places at $J_i$, and finally $E_n$ places
+at $J_n$ --- a corner. Contradiction.
+\end{proof}
+
+\begin{remark}\label{rem:gammascope}
+The hypothesis that the corner angles are $\beta,\beta,3\alpha$ is essential, and this is why
+\cite[Lem.~6]{BeesonIII} is false as quoted (Remark~\ref{rem:lem6false}): on the tile-similar target
+a corner \emph{is} a $\gamma$, the chain terminates harmlessly, and the counterexample there has two
+sides with no $c$-edge. On a base-$\beta$ target no corner is a $\gamma$, and the argument runs.
+\end{remark}
+
+\begin{proposition}[$b$ is unsplittable]\label{prop:bunsplit}
+$b$ is not a sum of two or more tile edges: if $n_a\,a+n_b\,b+n_c\,c=b$ with $n_a,n_b,n_c\ge0$, then
+$(n_a,n_b,n_c)=(0,1,0)$.
+\end{proposition}
+
+\begin{proof}
+If $n_b=0$ the remaining terms are divisible by $f$, so $f\mid b$; with $b+e^2=f^2$ this gives
+$f\mid e^2$, and $\gcd(e,f)=1$ forces $f=1$, contradicting $1\le e<f$. If $n_b\ge2$ then
+$n_b\,b>b$ already, as $b>0$. So $n_b=1$, the remaining terms sum to zero, and $a,c>0$ give
+$n_a=n_c=0$. Machine-checked (\texttt{b\_unsplittable}).
+\end{proof}
+
+\begin{proposition}[Corner parallelogram]\label{prop:cornerpara}
+Let $T_A$ be the tile at a base corner $A$. Its $b$-edge is a chord $[P,Q]$ with both endpoints on
+$\partial ABC$, matched by exactly one tile $T_3$, which presents $\alpha$ where $T_A$ presents
+$\gamma$ and conversely; so $T_A\cup T_3$ is a parallelogram with sides $a$ and $c$. Consequently
+the first \emph{two} edges of each of the two sides meeting at $A$ lie in $\{a,c\}$.
+\end{proposition}
+
+\begin{proof}
+By Proposition~\ref{prop:cornerfig}, $T_A$ is the unique tile at $A$ and its two edges there are $a$
+and $c$, one along each side of $ABC$; so its other two vertices $P$ (the $\gamma$ corner) and $Q$
+(the $\alpha$ corner) lie one on each of those two sides. Its third edge is the chord $[P,Q]$.
+
+The tiles on the far side of $[P,Q]$ have edges covering it. No such edge can straddle: a straddling
+edge would extend beyond $P$ or beyond $Q$ along the line $PQ$, and both $P$ and $Q$ lie on
+$\partial ABC$, so the extension leaves $ABC$. Hence the far-side edges partition $[P,Q]$ exactly,
+and by Proposition~\ref{prop:bunsplit} the partition is trivial: a single tile $T_3$ with $b$-edge
+$[P,Q]$.
+
+$T_A$ presents $\gamma$ at $P$ and $\alpha$ at $Q$. Both $P$ and $Q$ are interior to sides of $ABC$,
+hence $\pi$-vertices, which carry at most one $\gamma$; since $T_3$'s $b$-edge is incident to
+$\alpha$ and $\gamma$, it must present $\alpha$ at $P$ and $\gamma$ at $Q$. Two congruent triangles
+glued along $b$ with $\alpha,\gamma$ interchanged form a parallelogram with sides $a,c$.
+
+For the last assertion, take the side on which $Q$ lies and let $E_1$ be its first edge (an edge of
+$T_A$). At $Q$ the angles are $T_A$'s $\alpha$, $T_3$'s $\gamma$, and, since
+$\alpha+\gamma=\pi/2+3\theta$, a remaining $\beta=\pi/2-3\theta$ carried by one further tile. That
+tile owns $E_2$ and presents $\beta$, whose incident edges are $a$ and $c$. The same argument at $P$
+handles the other side.
+\end{proof}
+
+\begin{theorem}[The $e=1$ subfamily reduces to one walk]\label{thm:e1reduce}
+Let $e=1$, $m=1$ and $f\ge3$, so the target is $(f^3,f^3,3f^2-1)$, the tile is $(f,f^2-1,f^2)$ and
+$N=3f^2-1$. In any tiling:
+\begin{enumerate}
+\item[\textup{(i)}] neither equal side carries a $b$-edge; each equal side begins and ends with a
+$c$-edge, and therefore carries at least two;
+\item[\textup{(ii)}] the base carries exactly one $b$-edge and exactly one $c$-edge --- so
+$R_{\mathrm{base}}=1$ --- and its first and last edges are $a$-edges.
+\end{enumerate}
+Thus the base walk is a permutation of $(a^f,b,c)$ beginning and ending with $a$, with the $b$ in
+position $3,\dots,f$.
+\end{theorem}
+
+\begin{proof}
+\emph{(i)} An equal side has length $f^3$ and its edges lie in $\{f,\ f^2-1,\ f^2\}$. Reducing
+$n_af+n_b(f^2-1)+n_cf^2=f^3$ modulo $f$ gives $f\mid n_b$. If $n_b\ge2f$ then
+$n_b(f^2-1)\ge2f^3-2f>f^3$ for $f\ge2$. If $n_b=f$ then $f(f^2-1)=f^3-f$ leaves $f$, forcing
+$n_c=0$ and $n_a=1$, hence no $c$-edge on that side --- contradicting
+Proposition~\ref{prop:gammatrap}. So $n_b=0$, and then $n_a+n_cf=f^2$, so $f\mid n_a$; write
+$n_a=fk$, $n_c=f-k$.
+
+By Proposition~\ref{prop:cornerfig} the apex tile on that side presents $\alpha$, whose incident
+edges are $b$ and $c$; since the side carries no $b$-edge, it ends with a $c$-edge. Its other end is
+handled in \emph{(ii)}: there we show the base begins and ends with $a$-edges, so the base-corner
+tile's $c$-edge lies on the equal side, which therefore begins with a $c$-edge. Were $n_c=1$ the
+single $c$-edge would be both the first and the last, forcing the side to consist of one edge and
+$f^3=f^2$; so $n_c\ge2$.
+
+\emph{(ii)} The base has length $3f^2-1$. Reducing modulo $f$ gives $n_b\equiv1$. If $n_b\ge f+1$
+then $n_b(f^2-1)\ge f^3+f^2-f-1>3f^2-1$ for $f\ge3$, so $n_b=1$. Subtracting,
+$2f^2=n_af+n_cf^2$, so $n_a=f(2-n_c)$ with $n_c\in\{0,1,2\}$, and $n_c\ge1$ by
+Proposition~\ref{prop:gammatrap}.
+
+If $n_c=2$ then $n_a=0$ and the base is three edges, a permutation of $(b,c,c)$. By
+Proposition~\ref{prop:cornerpara} the first two edges lie in $\{a,c\}$ and so do the last two; with
+no $a$-edge available this forces all three to be $c$-edges, contradicting $n_b=1$. Hence $n_c=1$
+and $n_a=f$, so the base is a permutation of $(a^f,b,c)$ with $n=f+2$ edges, and
+Proposition~\ref{prop:cornerpara} places the $b$ away from the first two and last two positions.
+
+It remains to exclude $E_1=c$. Suppose it. Then the unique $c$-edge is $E_1$, so every one of
+$E_2,\dots,E_n$ is an $a$- or $b$-edge and places a $\gamma$ at one of its endpoints; there are
+$f+1$ of them and $f+1$ interior junctions $J_1,\dots,J_{n-1}$. The corner tile $T_A$ has its
+$c$-edge on the base, so its $\alpha$ vertex is $J_1$ and its $\gamma$ vertex lies on the equal
+side; by Proposition~\ref{prop:cornerpara} its partner $T_3$ presents $\gamma$ at $J_1$. So $J_1$
+already carries a $\gamma$, and since a $\pi$-vertex carries at most one
+(Proposition~\ref{prop:vertexfigures}), $E_2$ must place its $\gamma$ at $J_2$; inductively $E_i$
+places at $J_i$, and $E_n$ places at $J_n$, a corner --- contradicting
+Proposition~\ref{prop:cornerfig}. Hence $E_1$ is an $a$-edge, and the same argument at $B$ gives
+$E_n$ an $a$-edge. This is what \emph{(i)} used.
+\end{proof}
+
+\begin{remark}\label{rem:e1status}
+Theorem~\ref{thm:e1reduce} reduces the whole $e=1$, $m=1$ subfamily --- which contains the base-$\beta$
+prime candidates $N=3f^2-1$, among them $11$, $47$, $107$, $191$, $431$, $587$ and $971$ below
+$1000$ --- to the single question of whether that one base walk is realizable. It also corrects a
+plausible-looking plan: one might hope to close the subfamily by proving $R\ge2$ on every side. That
+is false for the base. The walk with $R_{\mathrm{base}}=2$ is exactly the one the corner
+parallelogram kills, and the survivor has $R_{\mathrm{base}}=1$; on the base, ``$R\ge2$'' is not a
+lemma reducing the problem but a restatement of it. On the two equal sides $R\ge2$ does hold, and is
+proved above.
+\end{remark}
 
 \begin{remark}[The $e\ge2$ residue]\label{rem:e2}
 The $e\ge2$ residue ($N=23,59,71,83,131,167,\dots$; the members $23$ and $71$ are now settled by search, Table~\ref{tab:basebeta}) resists all three natural invariant methods, and in two
@@ -884,16 +1024,13 @@ of the three corner identities $\#\alpha=\#\beta=\#\gamma=N$; the vertex-type sy
 $Q_{013}=1+P_{320}+2Q_{640}+Q_{431}$ and $3P_{320}+P_{111}+6Q_{640}+4Q_{431}+2Q_{222}=N-3$, which is
 feasible for every $e\ge2$, $m=1$ target. So Euler carries no information here.
 \end{itemize}
-What \emph{is} gained is citation-free structure, valid for all $(e,f,m)$. The $\gamma$-trap
-(Proposition~\ref{prop:gammatrap}) is proved above from the vertex figures. Two further structural
-facts are used only to prune the exact search, and we state them as such, having verified them
-against the $44$-tiling rather than proved them in general: (a) every side of $ABC$ carries at least
-one $c$-edge, and at $m=1$ neither equal side carries a $b$-edge, so all boundary $b$-edges lie on
-the base; (b) \emph{corner parallelogram} --- the $\beta$-corner tile $T_B$ has its $b$-edge a chord
-matched by a single tile $T_3$ with $\alpha,\gamma$ interchanged, so $T_B\cup T_3$ is a parallelogram
-with sides $a,c$, whence the first two and last two base edges and the first two edges of each equal
-side lie in $\{a,c\}$. Both are pruning heuristics: the searches they accelerate are also run
-without them, and the verdicts agree.
+What \emph{is} gained is citation-free structure, valid for all $(e,f,m)$: the $\gamma$-trap
+(Proposition~\ref{prop:gammatrap}) and the corner parallelogram
+(Proposition~\ref{prop:cornerpara}), both proved above from the corner figures and the
+unsplittability of $b$, and both used by the exact search as prunes. They were checked against the
+two genuine certificates before being proved: the first-two-edges rule of
+Proposition~\ref{prop:cornerpara} holds on all six sides of the $44$- and $99$-tilings, and at each
+of the four base corners exactly one of the two sides begins with a $c$-edge.
 
 This isolates the residue to one clean statement. Since $q_{\mathrm{base}}\equiv em \pmod f$ while
 $q_{\mathrm{equal}}\equiv0$, we have:
