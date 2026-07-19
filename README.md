@@ -36,8 +36,8 @@ forces the large triangle to be isosceles.
   candidates satisfy every *sound* necessary condition; the only
   published exclusion, Beeson's Theorem 14, rests on a divisibility `g | M` that is **false** — refuted
   by an explicit `99`-tiling of the `(24,24,33)` triangle by `(2,3,4)` tiles. These candidates are
-  settled individually by exact search; those searched up to `N = 110` (`11, 23, 47, 71, 107`) are
-  excluded, and `59`, `83` remain under search. See the paper's `rem:isobeta`, `rem:thm14false`, and
+  settled individually by exact search. Six are settled — `11, 23, 47, 59, 71, 107` — **all by
+  search, none by theorem**; `83` was under search. There are `42` candidates below `1000`. See the paper's `rem:isobeta`, `rem:thm14false`, and
   `rem:mainscope`.
 
 - **Realizations, machine-verified with zero axioms.** A triangle can be cut into **28** and into
@@ -58,12 +58,14 @@ forces the large triangle to be isosceles.
 
 ## What is open
 
-The base-`β` **thick regime** (`f ≤ 2e`, `m = 1`, `e ≥ 2`) has no sound general exclusion; individual
-members are settled by search. The interior structure of any hypothetical such tiling is pinned
+The **whole** base-`β` branch at `m = 1` has no sound general exclusion — thin (`f > 2e`) and thick
+alike. Of the 42 prime candidates below `1000`, 19 are thin and 23 thick, and only six are settled,
+all by exhaustive search. An earlier version of this README said the thin regime was understood;
+that was wrong. The interior structure of any hypothetical such tiling is pinned
 (`lean/BaseBetaWalks.lean`: the boundary-walk classification, the apex-mismatch theorem, and the
 alignment theorem, which forces the mismatch apex ray to `b^f`), but a general no-go is not yet proved.
 Zhang's sufficiency conjecture and the equilateral general realizability laws are open in the
-literature. See `HANDOFF.md` in the `634` bundle for a complete account of the state of the research.
+literature. See `HANDOFF.md` for a complete account of the state of the research.
 
 ## The invariant in one line
 
@@ -76,21 +78,23 @@ target this forces `(c−a−b)/√b ∈ ℤ`, which never holds for a primitive
 ## Contents
 
 - `paper/erdos-634.tex`, `paper/erdos-634.pdf` — the paper.
-- `lean/` — a Lean 4 + Mathlib formalization of the arithmetic and combinatorial layer, across ten
-  files (axiom-clean, no `sorry`); `lean/README.md` describes every theorem. The two `Tiling*.lean`
+- `lean/` — a Lean 4 + Mathlib formalization of the arithmetic and combinatorial layer, across eighteen
+  files (138 theorems, no `sorry`, axiom-clean) (axiom-clean, no `sorry`); `lean/README.md` describes every theorem. The two `Tiling*.lean`
   certificates are kernel-only (no Mathlib) and report no axioms.
-- `code/` — the machine-verification scripts (Python, exact arithmetic) and the exact search engine
-  (`code/engine/`).
+- `engine/` — the exact corner-anchored search engine (C++ with GMP, the Python reference
+  implementation, instance builders) and `engine/tilings/` with the verified 28-, 44- and 99-tiling
+  certificates.
+- **`STATUS_TABLE.md` — the ledger: what is proved, what is cited, what is open, what was
+  once overclaimed, and what is a known dead end. READ THIS FIRST.**
+- `HANDOFF.md` — operational detail: what was done, banked, and left to do.
+- `archive/zenodo-v1/` — the superseded earlier Zenodo/referee package, kept for provenance.
+  It contains a **false claim** that the folklore conjecture was resolved; see
+  `archive/zenodo-v1/SUPERSEDED.md`.
 
 ## How to verify
 
 ```bash
 # combinatorial and numerical checks (needs python3 + sympy)
-python3 code/verify_shapes.py        # eleven shapes; scalene N composite
-python3 code/verify_invariant.py     # tile value; cancellation; non-integrality
-python3 code/verify_spectrum.py      # prime dichotomy; admissible spectrum
-python3 code/verify_frontier.py      # the N = 14, 15 branch sweep
-
 # the arithmetic layer, machine-checked in Lean (needs elan/lake; Lean 4.30.0, Mathlib v4.30.0)
 cd lean && lake exe cache get && lake build
 ```

@@ -1,3 +1,8 @@
+> **NOTE (2026-07-19).** `STATUS_TABLE.md` in this folder supersedes this file as the
+> top-level ledger. Two claims previously made here are now known to be wrong and are
+> corrected there: the thin regime (`f > 2e`) of base-`β` is **not** closed structurally,
+> and the far-side chase is a **closed branch**, not a live next action.
+
 # Erdős Problem #634 — research handoff
 
 This document is the single source of truth for the state of this project. It is written for a
