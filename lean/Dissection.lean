@@ -5,6 +5,8 @@ import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 import Mathlib.Geometry.Euclidean.Triangle
 import Mathlib.Tactic
 
+open scoped ENNReal
+
 /-!
 # The geometric layer: dissections of a triangle
 
@@ -189,15 +191,20 @@ because the tiles are convex (`Tri.volume_frontier`).  This is the step at which
 incidence stops mattering. -/
 theorem aedisjoint (D : Dissection N) {i j : Fin N} (hij : i ≠ j) :
     AEDisjoint volume (D.tile i).carrier (D.tile j).carrier := by
-  have hae : interior (D.tile i).carrier ∩ interior (D.tile j).carrier
-      =ᵐ[volume] (D.tile i).carrier ∩ (D.tile j).carrier :=
-    ((D.tile i).interior_ae_eq).inter ((D.tile j).interior_ae_eq)
-  have h0 : volume (interior (D.tile i).carrier ∩ interior (D.tile j).carrier) = 0 := by
-    rw [(D.interiors_disjoint hij).inter_eq]
-    exact measure_empty
-  show volume ((D.tile i).carrier ∩ (D.tile j).carrier) = 0
-  rw [← measure_congr hae]
-  exact h0
+  -- a point in both tiles lies in the frontier of at least one of them
+  have hsub : (D.tile i).carrier ∩ (D.tile j).carrier ⊆
+      frontier (D.tile i).carrier ∪ frontier (D.tile j).carrier := by
+    rintro x ⟨hxi, hxj⟩
+    by_cases h1 : x ∈ interior (D.tile i).carrier
+    · by_cases h2 : x ∈ interior (D.tile j).carrier
+      · exfalso
+        have hd : Disjoint (interior (D.tile i).carrier) (interior (D.tile j).carrier) :=
+          D.interiors_disjoint hij
+        exact Set.disjoint_left.mp hd h1 h2
+      · exact Or.inr ⟨subset_closure hxj, h2⟩
+    · exact Or.inl ⟨subset_closure hxi, h1⟩
+  refine measure_mono_null hsub ?_
+  exact measure_union_null (D.tile i).volume_frontier (D.tile j).volume_frontier
 
 /-- **The area identity.**  `|T| = Σᵢ |tᵢ|`.
 

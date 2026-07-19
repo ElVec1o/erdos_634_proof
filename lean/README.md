@@ -87,6 +87,27 @@ i.e. `j = −1`, and the 99-tiling has `aabbbbbbbcc`, i.e. `j = 2`. Both satisfy
 is now reduced to the **thick regime `f ≤ 2e`**, where the smallest open members (`N = 59`, `(4,5)`)
 sit; those are settled per value by the search engine.
 
+`Dissection.lean` is the **first formalization of the geometric layer** — the step "a tiling exists
+⟹ these equations hold", which every other file takes as hypotheses. Ambient plane
+`EuclideanSpace ℝ (Fin 2)`; a `Tri` is three affinely independent points with carrier the convex hull;
+a `Dissection N` records `covers` (the union of tiles is the target) and `interiors_disjoint`
+(pairwise disjoint interiors) — the faithful combinatorial reading, with the measure-theoretic version
+*derived*, not assumed. Proved: `Tri.volume_pos` (a nondegenerate tile has positive finite area, via
+affine independence → `affineSpan = ⊤` → nonempty interior); `Dissection.aedisjoint` (disjoint
+interiors ⟹ a.e. disjoint, because a point in two tiles lies in a frontier and convex frontiers are
+null — `Convex.addHaar_frontier`; this is what makes **non-edge-to-edge** incidences harmless);
+`Dissection.volume_target` (**the area identity `|T| = Σ|tᵢ|`, derived not assumed**);
+`volume_target_of_congruent` (`|T| = N·|t|`, the paper's area equation); `Dissection.pos`;
+`cornerAngle_sum`; and — the most valuable item — `vertex_multiplicities` with its three corollaries
+`vertex_pi_multiplicities`, `vertex_beta_corner_multiplicities`, `vertex_apex_multiplicities`, which
+derive the **integer** multiplicity equations from the **real** angle equations using irrationality of
+`α/π`. Their conclusions are verbatim the hypotheses that `BaseBetaE1.vertex_pi`,
+`vertex_beta_corner` and `vertex_apex` consume, so they plug into the existing interfaces with no
+restatement. That derivation — real angle relation to integer multiplicities — was the single place a
+silent error was most plausible. Remaining geometric facts (the 2π-vertex sum, the interior maximal
+segment decomposition, and the directed-length balance behind cancellation) are documented as
+hypotheses; see the file docstring for an honest costing.
+
 `InvariantCore.lean` machine-checks, axiom-clean, the **combinatorial engines of the two geometric
 lemmas** behind the signed-direction invariant (paper Lemmas "Cancellation" and "Tile value").
 Neither lemma is formalizable end to end — both quantify over tilings, and Mathlib has no dissection
