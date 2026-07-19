@@ -785,49 +785,21 @@ theorem no_beta_three_gamma_on_clean_ray (na nb ng : ℕ)
   rintro ⟨h1, h2, h3⟩
   omega
 
-/-! ### The `b`-edge parity theorem -/
+/-! ### A parity argument that fails
 
-/-- **`b`-edge parity.**  Every tile has exactly one `b`-edge (the side opposite `β`), and `b` is
-unsplittable for every `(e,f)` (`edge_ab_unsplittable`), so an *interior* `b`-edge is covered on its
-far side by whole edges summing to `b` — hence by exactly one edge, necessarily another `b`-edge.
-Interior `b`-edges therefore pair the tiles two at a time, and
-  `N = (tiles whose b-edge lies on the boundary) + 2·(interior pairs)`,
-so `N ≡ Q∂ (mod 2)` where `Q∂` is the number of `b`-edges on the boundary of the target.  At `m = 1`
-no equal side carries a `b`-edge (`side_no_b`), so `Q∂` is exactly the base's `b`-count.
+Every tile has exactly one `b`-edge, and `b` is never a sum of two or more tile edges
+(`edge_ab_unsplittable`).  It is tempting to conclude that an interior `b`-edge is matched by exactly
+one further `b`-edge, so that interior `b`-edges pair the tiles and `N ≡ Q∂ (mod 2)`.
 
-The geometric input is isolated in the hypothesis `hpair` — "the interior `b`-edges pair up" — which
-is what unsplittability plus the chain lemma supply; everything after it is the arithmetic here. -/
-theorem b_edge_parity (N Qb k : ℕ) (hpair : N = Qb + 2 * k) : N % 2 = Qb % 2 := by omega
+**This does not follow, and the theorem is withdrawn.**  Unsplittability forbids an exact partition
+of an edge; it does not forbid a *straddle*, in which a longer edge contains the `b`-edge in its
+interior and overhangs it.  The apex-mismatch configuration is itself built on such a straddle.  The
+genuine tilings confirm the failure: the 44-tiling has six unmatched `b`-edges but **no** boundary
+`b`-edge, and the 99-tiling has thirty-three unmatched against eleven on the boundary.  The correct
+relation is `N = 2·(matched) + (boundary) + (straddled)`, and nothing forces the straddle count to be
+even.  The same objection defeats the analogous arguments for `a` and `c`.
 
-/-- Contrapositive, in the form the search uses: a base walk whose `b`-count has the wrong parity
-cannot occur. -/
-theorem walk_parity_excluded (N Q : ℕ) (hpar : N % 2 ≠ Q % 2) :
-    ¬ ∃ k : ℕ, N = Q + 2 * k := by
-  rintro ⟨k, hk⟩
-  exact hpar (b_edge_parity N Q k hk)
-
-/-- **`N = 23` admits no base walk.**  For `(e,f) = (2,3)` the tile is `(6,5,9)`, the base is
-`Y = 46`, and the walks surviving the `γ`-trap (`R ≥ 1`) and the corner rule are `(3,2,2)` and
-`(0,2,4)` — both with `Q = 2`, even, while `N = 23` is odd.  By `walk_parity_excluded` neither can
-occur, so the base admits no covering at all and the target does not tile.  This closes the first
-thick base-`β` member by forcing rather than by exhaustive search.
-
-Stated as the finite check: every `(P,Q,R)` with `6P + 5Q + 9R = 46`, `R ≥ 1`, and the corner-rule
-bound `Q + 4 ≤ P + Q + R`, has `Q` even. -/
-theorem base_walks_23_all_even_Q (P Q R : ℕ)
-    (heq : 6 * P + 5 * Q + 9 * R = 46) (hR : 1 ≤ R) (hcorner : Q + 4 ≤ P + Q + R) :
-    Q % 2 = 0 := by
-  have hQ : Q ≤ 9 := by omega
-  have hR9 : R ≤ 5 := by omega
-  have hP : P ≤ 7 := by omega
-  interval_cases Q <;> interval_cases R <;> omega
-
-/-- Hence `N = 23` is excluded: no admissible base walk has `Q` odd, but parity requires it. -/
-theorem N23_excluded (P Q R : ℕ)
-    (heq : 6 * P + 5 * Q + 9 * R = 46) (hR : 1 ≤ R) (hcorner : Q + 4 ≤ P + Q + R)
-    (hpar : 23 % 2 = Q % 2) : False := by
-  have h := base_walks_23_all_even_Q P Q R heq hR hcorner
-  omega
+Nothing below depended on it; `edge_ab_unsplittable` and the ray theorems are unaffected. -/
 
 end Erdos634.BaseBetaWalks
 
@@ -852,7 +824,3 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.ray_junction_count
 #print axioms Erdos634.BaseBetaWalks.clean_ray_bpow
 #print axioms Erdos634.BaseBetaWalks.no_beta_three_gamma_on_clean_ray
-#print axioms Erdos634.BaseBetaWalks.b_edge_parity
-#print axioms Erdos634.BaseBetaWalks.walk_parity_excluded
-#print axioms Erdos634.BaseBetaWalks.base_walks_23_all_even_Q
-#print axioms Erdos634.BaseBetaWalks.N23_excluded
