@@ -26,7 +26,8 @@ Because a level bounds its solutions, this makes the walk set *finite and explic
 
 `base_trichotomy` generalizes `BaseBetaE1.base_composition_e1` (the case `e = 1`, and there only
 under an extra "at least two `c`-edges" hypothesis) to **every** `e` with `f > 2e`: an infinite
-family — `e=1, f≥3`; `e=2, f≥5`; `e=3, f≥7`; … — covering the primes `N = 47, 71, 107, 143, …`.
+family — `e=1, f≥3`; `e=2, f≥5`; `e=3, f≥7`; … — covering the base-`β` prime candidates `N = 47, 71, 107, 191, …` (note `143 = 11·13` is *not*
+prime; it is a base-`β` candidate but a composite one).
 
 The geometric companion is the *γ-injection lemma* (paper): on any side, each `a`-edge tile and each
 `b`-edge tile carries a `γ`-vertex at one endpoint (`a` joins `β` to `γ`, `b` joins `α` to `γ`,
