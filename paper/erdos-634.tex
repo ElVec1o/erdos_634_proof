@@ -948,9 +948,61 @@ tile owns $E_2$ and presents $\beta$, whose incident edges are $a$ and $c$. The 
 handles the other side.
 \end{proof}
 
+\begin{theorem}[Walk structure at $m=1$]\label{thm:walkstruct}
+Let $m=1$, $\gcd(e,f)=1$, $1\le e<f$, and consider a tiling of the base-$\beta$ target.
+\begin{enumerate}
+\item[\textup{(i)}] If $f^2>2e^2$, then each equal side carries \emph{no} $b$-edge. Its edges are
+$a$'s and $c$'s with $n_a=fk$ and $n_c=f-ke\ge1$, and it ends with a $c$-edge at the apex.
+\item[\textup{(ii)}] If $f^2>2ef+e^2$ --- equivalently $f/e>1+\sqrt2$ --- then the base carries
+\emph{exactly} $e$ $b$-edges, and $n_a=f\ell$, $n_c=e(2-\ell)$ with $\ell\in\{0,1\}$. In particular
+\[
+R_{\mathrm{base}}\in\{e,\,2e\}.
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+A side of length $L$ is exactly partitioned by the tile edges on it, giving
+$n_a\,ef+n_b\,b+n_c\,f^2=L$ with $n_a,n_b,n_c\ge0$, and $n_c\ge1$ by
+Proposition~\ref{prop:gammatrap}.
+
+\emph{(i)} Here $L=f^3$. Rearranging with $b=f^2-e^2$ gives
+$n_b e^2=f\,(n_a e+n_b f+n_c f-f^2)$, so $f\mid n_b e^2$ and hence $f\mid n_b$ by coprimality;
+write $n_b=ft$. If $t\ge2$ the $b$-edges alone cost at least $2fb=2f^3-2fe^2$, which together with
+$n_cf^2\ge f^2$ exceeds $f^3$ unless $f^2\le2e^2$. If $t=1$, cancelling $f$ leaves
+$n_ae+n_cf=e^2$, so $n_a\le e$ and $f\mid e(e-n_a)$; coprimality with $0\le e-n_a\le e<f$ forces
+$n_a=e$ and then $n_c=0$, contradicting $n_c\ge1$. So $t=0$. With $n_b=0$ the equation is
+$n_ae+n_cf=f^2$, whence $f\mid n_a$; writing $n_a=fk$ gives $n_c=f-ke$. Finally, the apex tile on
+that side presents $\alpha$ (Proposition~\ref{prop:cornerfig}), whose incident edges are $b$ and
+$c$; as the side has no $b$-edge, it ends with a $c$-edge.
+
+\emph{(ii)} Here $L=e(3f^2-e^2)$, and the same rearrangement gives
+$(n_b-e)e^2=f\,(n_ae+n_bf+n_cf-3ef)$, so $f\mid n_b-e$; write $n_b=e+ft$. Negative $t$ makes
+$n_b<0$. For $t\ge1$ the $b$-edges alone cost at least
+\[
+(e+f)b=(f+e)^2(f-e)=e(3f^2-e^2)+f\,(f^2-2ef-e^2),
+\]
+which already exceeds $L$ under the hypothesis, before the mandatory $c$-edge is placed. So
+$n_b=e$; subtracting and cancelling $f$ leaves $n_ae+n_cf=2ef$, whence $f\mid n_a$, and writing
+$n_a=f\ell$ gives $n_c=e(2-\ell)$. Then $n_c\ge1$ forces $\ell\le1$.
+
+Machine-checked (\texttt{equal\_side\_no\_b}, \texttt{equal\_side\_shape}, \texttt{base\_b\_count}
+in \texttt{lean/BaseBetaWalkArith.lean}), and cross-checked by enumerating all walk solutions for
+the $198$ coprime pairs with $f\le25$: no discrepancies.
+\end{proof}
+
+\begin{remark}\label{rem:walkscope2}
+Both hypotheses are sharp: $n_b=2f$ on an equal side is admissible exactly when $f^2\le2e^2$, and
+$n_b=e+f$ on the base exactly when $f^2\le2ef+e^2$, by the displayed identity. Of the $42$
+base-$\beta$ prime candidates below $1000$, $28$ satisfy \textup{(i)} --- including the thick values
+$23$, $131$ and $167$, since \textup{(i)} needs only $f/e>\sqrt2$ --- and $17$ satisfy
+\textup{(ii)}. The theorem structures those cases; it does not by itself exclude any of them.
+\end{remark}
+
 \begin{theorem}[The $e=1$ subfamily reduces to one walk]\label{thm:e1reduce}
 Let $e=1$, $m=1$ and $f\ge3$, so the target is $(f^3,f^3,3f^2-1)$, the tile is $(f,f^2-1,f^2)$ and
-$N=3f^2-1$. In any tiling:
+$N=3f^2-1$. Both hypotheses of Theorem~\ref{thm:walkstruct} hold ($f^2>2$ and $f^2>2f+1$). In any
+tiling:
 \begin{enumerate}
 \item[\textup{(i)}] neither equal side carries a $b$-edge; each equal side begins and ends with a
 $c$-edge, and therefore carries at least two;
@@ -1021,8 +1073,15 @@ per-direction refinement --- is a formal consequence of the single parity identi
 $N(a+b+c)\equiv2X+Y \pmod 2$, valid for all $(e,f,m)$. So no congruence of this type can bite.
 \item \textbf{Euler / vertex counting.} For any such tiling $V-E+F=2$ is \emph{identically} the sum
 of the three corner identities $\#\alpha=\#\beta=\#\gamma=N$; the vertex-type system collapses to
-$Q_{013}=1+P_{320}+2Q_{640}+Q_{431}$ and $3P_{320}+P_{111}+6Q_{640}+4Q_{431}+2Q_{222}=N-3$, which is
+$Q_{013}=1+P_{320}+2Q_{640}+Q_{431}+W_{320}$ and
+$3P_{320}+P_{111}+6Q_{640}+4Q_{431}+2Q_{222}+3W_{320}+W_{111}=N-3$, which is
 feasible for every $e\ge2$, $m=1$ target. So Euler carries no information here.
+Here $W_{320}$ and $W_{111}$ count the interior vertices at which some tile is met in the
+\emph{relative interior} of one of its edges: such a tile contributes a straight angle, so the
+remaining tile angles sum to $\pi$ rather than $2\pi$ and the figure is $(3,2,0)$ or $(1,1,1)$
+(Proposition~\ref{prop:vertexfigures}). These types are not optional --- the dissections here are
+not edge-to-edge (Remark~\ref{rem:parityfail}) --- and an earlier version of this census omitted
+them. Their presence only enlarges the feasible set, so the conclusion is unaffected.
 \end{itemize}
 What \emph{is} gained is citation-free structure, valid for all $(e,f,m)$: the $\gamma$-trap
 (Proposition~\ref{prop:gammatrap}) and the corner parallelogram
