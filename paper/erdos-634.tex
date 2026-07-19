@@ -1094,6 +1094,50 @@ primes; this section records what the present methods contribute to the full det
 complete answer for primes, and, for each sporadic $2\pi/3$ branch, a determination of its
 \emph{admissible spectrum} --- the set of counts compatible with the area and invariant conditions.
 
+\begin{theorem}[Fibonacci families are the extremal ones]\label{thm:fib}
+For a base-$\beta$ family $(e,f)$ with $\gcd(e,f)=1$, $1\le e<f$, write $M=f+e$ and
+$N_0=3f^2-e^2$. Then
+\[
+M^2-N_0=-2\,(f^2-ef-e^2),
+\]
+so $|M^2-N_0|\ge2$, with equality if and only if $f^2-ef-e^2=\pm1$, that is, if and only if $(e,f)$
+are consecutive Fibonacci numbers. In that case, writing $(e,f)=(F_n,F_{n+1})$,
+\[
+M=F_{n+2},\qquad N_0=F_{n+2}^{\,2}-2(-1)^{n+1},
+\]
+so the counts are exactly a Fibonacci square displaced by $2$:
+\[
+11=3^2{+}2,\quad 23=5^2{-}2,\quad 66=8^2{+}2,\quad 167=13^2{-}2,\quad 443=21^2{+}2,\quad
+1154=34^2{-}2,\ \dots
+\]
+\end{theorem}
+
+\begin{proof}
+$(f+e)^2-(3f^2-e^2)=-2f^2+2ef+2e^2=-2(f^2-ef-e^2)$. For coprime $e<f$ the integer $f^2-ef-e^2$ is
+nonzero, whence $|M^2-N_0|\ge2$. Equality means $f^2-ef-e^2=\pm1$, which is the Fibonacci
+characterisation: the solutions of $x^2-xy-y^2=\pm1$ in positive integers are exactly the consecutive
+Fibonacci pairs. Then $M=F_n+F_{n+1}=F_{n+2}$ and $f^2-ef-e^2=(-1)^n$ give the displayed formula.
+\end{proof}
+
+\begin{remark}[Why these are the critical cases]\label{rem:fib}
+Since $M^2<N_0\iff f^2-ef-e^2>0\iff f/e>\varphi$, the quantity $M^2-N_0$ measures the distance of the
+family from the golden threshold, and Theorem~\ref{thm:fib} says the Fibonacci families sit as close
+to it as integrality permits, alternating sub- and super-golden as $n$ varies. They are therefore the
+extremal test cases for Conjecture~\ref{conj:golden}: any mechanism that distinguishes $f/e>\varphi$
+from $f/e<\varphi$ must decide them first.
+
+Two further points. The first Fibonacci family is $(e,f)=(1,2)$, the tile $(2,3,4)$ --- the family
+that realizes \emph{every} known member of $S^\ast$ (Remark~\ref{rem:exc}), and whose count
+$11=3^2+2$ is excluded at $m=1$ but realized at $m=2$ and $m=3$. The Fibonacci counts thus give a
+natural infinite sequence of test families,
+\[
+11,\quad 23,\quad 66,\quad 167,\quad 443,\quad 1154,\ \dots,
+\]
+of which the first three are excluded at $m=1$ and the first is nonempty above $m=1$. The question
+whether the second is nonempty above $m=1$ is precisely the search at $N=92=2^2\cdot23$, the family
+$(2,3)$ at $m=2$.
+\end{remark}
+
 \begin{conjecture}[Golden-ratio criterion]\label{conj:golden}
 A base-$\beta$ target with parameters $(e,f)$ admits a tiling at some scale only if
 $f/e>\varphi=\tfrac{1+\sqrt5}2$; equivalently, only if $M^2<N$.
@@ -1198,9 +1242,15 @@ $28=2^2(2f^2-e^2)$, $44=2^2(3f^2-e^2)$, $99=3^2(3f^2-e^2)$ and, from the four-co
 $77=(2f^2-e^2)(3f^2-e^2)$. (The value $80=4^2+8^2$ is a sum of two squares and so lies outside
 $S^\ast$; it is realized, but by Fermat, not by a sporadic branch.)
 
-This suggests that $S^\ast$ is built multiplicatively from the branch-form values of the sporadic
-tiles together with squares, and it sharpens the search targets: a value is a candidate for a
-\emph{new} member of $S^\ast$ only if it is not a sum of two squares. Among the instances currently
+The factorizations are \emph{not} evidence of a multiplicative law: since the branch formulas read
+$N=m^2(3f^2-e^2)$ and $N=(2f^2-e^2)(3f^2-e^2)k^2$, every sporadic count is a square times a product of
+branch-form values by construction, and the property fails to separate $S^\ast$ from its complement
+--- the excluded values $14,23,26,39,47,59,66,71,74,83,107$ are themselves branch-form values. What is
+not automatic is that all four members arise from the \emph{same} tile; even that may be a selection
+effect, since only small $N$ have been searched exhaustively and small $N$ come from small tiles,
+$(2,3,4)$ being the smallest primitive $3\alpha+2\beta$ tile. The definition does sharpen the search
+targets, however: a value is a candidate for a \emph{new} member of $S^\ast$ only if it is not a sum
+of two squares. Among the instances currently
 under search, $70=2\cdot5\cdot7$, $83$ and $92=2^2\cdot23$ would be new members, whereas
 $104=2^3\cdot13=2^2+10^2$ is already in $S$ by Fermat --- so that search tests whether the family
 $(1,3)$ tiles at $m=2$, not whether $104$ lies in the spectrum.
