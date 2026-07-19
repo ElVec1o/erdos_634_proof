@@ -606,6 +606,59 @@ $t=1$, $n_a=f-e$, and then $n_cf=f(f-1-e)$ gives $n_c=f-e-1$. Adding $T2$'s own 
 multiset $\{a^{f-e},c^{f-e}\}$, whose total length is $(f-e)(ef+f^2)=f(f-e)(e+f)=f\,b$ as required.
 \end{proof}
 
+\begin{theorem}[$b$-edge parity]\label{thm:parity}
+In any tiling of a target by the $3\alpha+2\beta$ tile, let $Q_\partial$ be the number of $b$-edges
+lying on the boundary of the target. Then
+\[
+N\equiv Q_\partial\pmod 2 .
+\]
+At $m=1$, where no equal side carries a $b$-edge (Theorem~\ref{thm:walks}), $Q_\partial$ is the base's
+$b$-count $Q$.
+\end{theorem}
+
+\begin{proof}
+Each tile has exactly one $b$-edge, the side opposite $\beta$. Consider a $b$-edge in the interior.
+Its far side is covered by whole tile edges (no vertex of the tiling lies interior to an edge without
+that edge lying along the same line), and those edges have total length $b$; by
+Proposition~\ref{prop:unsplit} the edge $b$ is not a sum of two or more tile edges, so the covering
+consists of a single edge, necessarily of length $b$, belonging to one further tile. Interior
+$b$-edges therefore pair the tiles two at a time, while each boundary $b$-edge accounts for exactly
+one tile. Hence $N=Q_\partial+2k$ for some $k\ge0$.
+\end{proof}
+
+\begin{corollary}[$N=23$ does not tile]\label{cor:n23}
+The base-$\beta$ target of the family $(e,f)=(2,3)$ --- the tile $(6,5,9)$ on $(27,27,46)$ with
+$N=23$ --- admits no tiling.
+\end{corollary}
+
+\begin{proof}
+The base has length $46$, and the walks $6P+5Q+9R=46$ surviving the $\gamma$-trap ($R\ge1$) and the
+corner rule ($Q\le k-4$) are exactly $(3,2,2)$ and $(0,2,4)$, both with $Q=2$. But $N=23$ is odd, so
+Theorem~\ref{thm:parity} requires $Q$ odd. No admissible base walk remains, so the base cannot be
+covered.
+\end{proof}
+
+\begin{remark}[What the parity theorem buys]\label{rem:parity}
+This is the first thick base-$\beta$ member excluded by forcing rather than by exhaustive search
+($N=23$ had previously cost $19{,}677$ nodes). Its effect elsewhere is substantial. Among the base
+walks surviving the earlier constraints:
+\[
+\begin{array}{lll}
+N=23\ (2,3): & 2\to0 & \text{excluded outright}\\
+N=59\ (4,5): & 4\to1 & \text{base forced to }(P,Q,R)=(4,9,3)\\
+N=66\ (3,5): & 3\to1 & \text{base forced to }(3,8,1)\\
+N=131\ (4,7): & 3\to1 & \text{base forced to }(4,11,1)
+\end{array}
+\]
+It gives nothing at $N=83$ or $N=167$, where $Q=e+fj$ has fixed parity across the admissible $j$. The
+theorem is uniform in $(e,f)$ and in $m$, and it is verified on all three genuine tilings: the
+$44$-tiling has $N=44$, $Q_\partial=0$; the $99$-tiling $N=99$, $Q_\partial=11$; the $28$-tiling
+$N=28$, $Q_\partial=0$ --- parities matching in every case. (The $99$-tiling has $m=3$, where equal
+sides may carry $b$-edges, and four of its eleven do; this is consistent, since the theorem counts
+$b$-edges on the whole boundary.) The arithmetic and the $N=23$ enumeration are machine-checked
+(\texttt{b\_edge\_parity}, \texttt{N23\_excluded}).
+\end{remark}
+
 \begin{corollary}[The clean apex ray]\label{cor:cleanray}
 Under the hypotheses of Theorem~\ref{thm:ray}, the other inner apex ray --- the one pairing $T2$'s
 $b$-edge against a neighbour's $b$-edge --- is $b^{\,f}$ against $b^{\,f}$, perfectly edge-to-edge.
