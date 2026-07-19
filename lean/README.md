@@ -105,6 +105,20 @@ sign and `+3` flips it, giving `C = ±(c+a−b)` with lengths `c,a,b`. `tile_val
 `integrality_parity` proves `M ≡ N (mod 2)` for a sum of `N` signs. This replaces a Python check that
 located directions by floating-point nearest-neighbour search with a `1e-6` tolerance.
 
+`FibonacciFamilies.lean` machine-checks, axiom-clean, the exact arithmetic of the base-`β` families
+(paper Prop. "Field of definition", Thms. "Fibonacci families are the extremal ones" and "Arithmetic
+of the Fibonacci families"). `sin_sq_identity`: `4f⁴ − (2f²−e²)² = e²(4f²−e²)`, the identity behind
+`sin α = e√D/(2f²)`, which places a tiling's coordinates in `ℚ(√D)`; `D_factors`:
+`D = 4f²−e² = (2f−e)(2f+e)`; `D_sub_N`: `D − N₀ = f²`. `M_sq_sub_N`: `M² − N₀ = −2(f² − ef − e²)`,
+so `M_sq_lt_N_iff` gives `M² < N₀ ⟺ f² − ef − e² > 0`, which is the golden-ratio criterion;
+`two_le_abs_deficiency`: `|M² − N₀| ≥ 2`, the form being a nonzero integer; and `fib_extremal_iff`:
+equality holds exactly when `f² − ef − e² = ±1` — the condition characterising consecutive Fibonacci
+pairs. For those families `fib_M` (`f + e = F(n+2)`), `fib_two_add` (`2f + e = F(n+3)`) and
+`fib_lucas` (`2f − e = L n`, with `lucas` defined here) give the Lucas/Fibonacci description. The
+number-theoretic input that `x²−xy−y² = ±1` forces consecutive Fibonacci pairs is **not** formalized
+(a Markov-style descent); the criterion is stated in terms of the form itself, which is what the
+paper's proof uses.
+
 `IsoAlphaPrime.lean` machine-checks, axiom-clean, the arithmetic core of the **correct replacement**
 for Beeson III's Theorem 20 (base-`α` no-prime), whose proof depends on Theorem 19's `g ∣ M` — itself
 unsound (its `bc³(a+c)` bookkeeping is false: with `c=g²` it carries `g⁷`), resting further on the
