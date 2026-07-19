@@ -38,10 +38,13 @@ tiling has $2673$ tiles); we settle it. We introduce a translation-invariant, si
 tiling functional, linear in edge length and hence insensitive to non-edge-to-edge incidences, whose
 integrality forces, for an isosceles target, that $(c-a-b)/\sqrt b$ be an integer for a primitive
 triple with $c^2=a^2+ab+b^2$; an elementary lemma shows this never occurs. With a self-contained
-reduction of the scalene shapes, this completes the exclusion of primes $\equiv 3\pmod 4$ exceeding
-$3$, conditional on the cited classification of the remaining branches. Consequently the prime case
-of the full problem is complete: a prime $p$ occurs if and only if $p=2$, $p=3$, or
-$p\equiv1\pmod4$. Beyond primes, we determine the admissible spectrum of each sporadic $2\pi/3$
+reduction of the scalene shapes, this excludes every prime $\equiv 3\pmod 4$ exceeding $3$
+\emph{except} the base-$\beta$ candidates $N=3f^2-e^2$, conditional on the cited classification of
+the remaining branches. Those candidates are exactly the primes $\equiv11\pmod{12}$
+(Theorem~\ref{thm:mod12}), so the exclusion is unconditional on the class $7\pmod{12}$ --- half of
+all primes $\equiv3\pmod4$ by Dirichlet, and the class containing $19$. The class $11\pmod{12}$
+remains open in general; its members are settled individually by exact search, and $42$ of them lie
+below $1000$, of which six are so far resolved. Beyond primes, we determine the admissible spectrum of each sporadic $2\pi/3$
 branch --- for the isosceles target, writing $b=de^2$ with $d$ squarefree, every count has the form
 $N=dw^2(a+2b)$ with $e\mid w(c-a-b)$ --- bounding the realizable set from outside; and a
 spectrum theorem shows that the counts passing all invariant conditions on the isosceles and
@@ -667,8 +670,11 @@ is exactly $b^{f}$ with the junction chain of Theorem~\ref{thm:chain}.
 \end{theorem}
 
 \begin{corollary}[The far side can never give a contradiction]\label{cor:farvacuous}
-No obstruction to a thick base-$\beta$ tiling can be derived from the far side of the mismatch ray, at
-any $(e,f)$: that side admits a genuine tiling.
+\emph{Under the hypothesis of Theorem~\textup{\ref{thm:farregion}}} --- that the mismatch apex ray is
+a complete wall --- no obstruction to a base-$\beta$ tiling can be derived from the far side of that
+ray, at any $(e,f)$: that side admits a genuine tiling. The hypothesis may not be dropped; if the ray
+is not a complete wall the far region is not a scaled copy of the tile and the conclusion does not
+follow.
 \end{corollary}
 
 \begin{remark}[Where the obstruction must instead live]\label{rem:live}
