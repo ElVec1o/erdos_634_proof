@@ -1243,9 +1243,31 @@ with $C$ the isoperimetric constant of the target shape --- a quantity depending
 similarity classes and \emph{not} on the scale. This is precisely the scale-invariance observed for
 base-$\beta$, where $M^2/N=(f+e)^2/(3f^2-e^2)$ exactly. The conjecture asserts that this shape
 constant is $<1$ whenever a tiling exists: the colouring signs of a tiling can never be more aligned
-than the isoperimetric scale permits. Proving it for the base-$\beta$ target would close the
-sub-golden families at every scale --- an infinite set including the open primes $83$, $167$, $179$
---- and would do so by an argument already known to work on a neighbouring target.
+than the isoperimetric scale permits.
+
+Its logical position must be stated carefully, since the two targets behave oppositely. On
+base-$(\alpha{+}\beta)$ the inequality is forced by the tiling equation itself and therefore
+\emph{excludes nothing}: it is a theorem with no content. On base-$\beta$ both $M=(f+e)m$ and
+$N=m^2(3f^2-e^2)$ are forced by the target, so $M^2<N$ is a pure arithmetic statement about $(e,f)$,
+and it is simply \emph{false} when $f/e<\varphi$; there the conjecture's content is precisely that no
+tiling exists, which is the open problem itself. So the bound has no content where it is proved and
+all of its content where it is open, and it is a unifying \emph{statement} rather than a route to a
+proof. What it does supply is a common formulation --- and the observation that $M$ is a boundary
+quantity while $N$ is an area count, which is the only structural reason we know to expect it.
+
+One natural strengthening is unavailable. The direction group $\langle\eta,-1\rangle\cong
+\Z\times\Z/2$ has four characters to $\{\pm1\}$, of which two are odd under $\theta\mapsto\theta+\pi$
+and so are candidates for a cancellation lemma: the colouring character $\chi_2$ used here, and the
+pure sign character $\chi_b$, whose sum $M'=N-2R$ counts reflected tiles. On the $2\pi/3$ branch the
+corresponding second invariant is essential (Corollary~\ref{cor:int}), so one expects the same here.
+It fails: were $M'$ boundary-determined it would be linear in $m$, but the family $(e,f)=(1,2)$ gives
+$M'=30$ at $m=2$ and $M'=35$ at $m=3$, which are not proportional --- and a linear fit would force
+$M'(1)=25$, impossible since $|M'|\le N=11$. The reason is that cancellation needs a
+placement-independent tile value: the $\pi/3$-coefficient bookkeeping gives $C=\pm(c+a-b)$ for
+$\chi_2$ at every placement, whereas for $\chi_b$ the alternation depends on which edge begins the
+traversal. There is therefore no second cancellation invariant on this branch. (Note also that
+$M'^2=900$ and $1225$ exceed $N=44$ and $99$, so the colouring bound is specific to $\chi_2$ and is
+not a property of invariants in general.)
 \end{remark}
 
 \begin{conjecture}[Golden-ratio criterion]\label{conj:golden}
