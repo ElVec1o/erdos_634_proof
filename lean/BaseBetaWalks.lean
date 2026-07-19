@@ -757,6 +757,34 @@ theorem ray_junction_count (e f nf nn : ℕ) (he : 2 ≤ e) (hef : e < f)
   have h2 : 1 ≤ nn := by omega
   omega
 
+/-- **The clean apex ray is `b^f` on both sides.**  The apex carries three tiles, each contributing
+`α`; the outer two have `c` on the boundary and `b` inward, the middle one has `{b,c}` inward.  One
+inner ray therefore pairs the middle tile's `c` against a neighbour's `b` (the mismatch ray), and the
+other pairs `b` against `b` --- the *clean* ray, on which both sides begin with an edge of length `b`
+and the junction at `b` is shared.  Both rays have the same inner length `f·b` by the symmetry of the
+isosceles target, so `far_is_bpow` applies to each side of the clean ray separately: a chain totalling
+`f·b` with `n_b ≥ 1` is uniquely `b^f`.  Hence the clean ray is `b^f` against `b^f`, perfectly
+edge-to-edge, and its `f−1` interior points are genuine `2π`-vertices rather than T-junctions. -/
+theorem clean_ray_bpow (e f na nb nc B : ℕ) (hcop : Nat.Coprime e f) (hef : e < f) (he : 2 ≤ e)
+    (hB : B + e ^ 2 = f ^ 2) (hb1 : 1 ≤ nb)
+    (h : f * B = na * (e * f) + nb * B + nc * f ^ 2) :
+    na = 0 ∧ nb = f ∧ nc = 0 :=
+  far_is_bpow e f na nb nc B hcop hef he hB hb1 h
+
+/-- **The `β+3γ` vertex cannot sit on the clean ray.**  At an interior point of the clean ray the two
+`b`-edges from each side contribute four corners lying in `{α,γ}` (edge `b` joins the `α`- and
+`γ`-corners).  A `2π`-vertex of type `(nα,nβ,nγ)` can supply them only if `nα + nγ ≥ 4`.  Of the four
+admissible interior types `(6,4,0)`, `(4,3,1)`, `(2,2,2)`, `(0,1,3)`, only the last fails.  Since the
+vertex census forces `M₄ ≥ 1` --- every base-`β` tiling has a `β+3γ` vertex --- that vertex is
+localized off the clean ray. -/
+theorem no_beta_three_gamma_on_clean_ray (na nb ng : ℕ)
+    (htype : (na = 6 ∧ nb = 4 ∧ ng = 0) ∨ (na = 4 ∧ nb = 3 ∧ ng = 1) ∨
+             (na = 2 ∧ nb = 2 ∧ ng = 2) ∨ (na = 0 ∧ nb = 1 ∧ ng = 3))
+    (hfour : 4 ≤ na + ng) :
+    ¬ (na = 0 ∧ nb = 1 ∧ ng = 3) := by
+  rintro ⟨h1, h2, h3⟩
+  omega
+
 end Erdos634.BaseBetaWalks
 
 #print axioms Erdos634.BaseBetaWalks.exists_of_dvd_sub
@@ -778,3 +806,5 @@ end Erdos634.BaseBetaWalks
 #print axioms Erdos634.BaseBetaWalks.far_is_bpow
 #print axioms Erdos634.BaseBetaWalks.near_side_unique
 #print axioms Erdos634.BaseBetaWalks.ray_junction_count
+#print axioms Erdos634.BaseBetaWalks.clean_ray_bpow
+#print axioms Erdos634.BaseBetaWalks.no_beta_three_gamma_on_clean_ray

@@ -606,6 +606,38 @@ $t=1$, $n_a=f-e$, and then $n_cf=f(f-1-e)$ gives $n_c=f-e-1$. Adding $T2$'s own 
 multiset $\{a^{f-e},c^{f-e}\}$, whose total length is $(f-e)(ef+f^2)=f(f-e)(e+f)=f\,b$ as required.
 \end{proof}
 
+\begin{corollary}[The clean apex ray]\label{cor:cleanray}
+Under the hypotheses of Theorem~\ref{thm:ray}, the other inner apex ray --- the one pairing $T2$'s
+$b$-edge against a neighbour's $b$-edge --- is $b^{\,f}$ against $b^{\,f}$, perfectly edge-to-edge.
+Its $f-1$ interior points are therefore genuine $2\pi$-vertices, not T-junctions, and at each of them
+the type $\beta+3\gamma$ is impossible.
+\end{corollary}
+
+\begin{proof}
+Both sides begin with an edge of length $b$ and match there. By the symmetry of the isosceles target
+both inner rays have the same inner length $f\,b$, so Theorem~\ref{thm:align}(ii) applies to each side
+separately: a chain totalling $f\,b$ with at least one $b$-edge is uniquely $b^{\,f}$. At an interior
+point the two $b$-edges from each side contribute four corners lying in $\{\alpha,\gamma\}$, since $b$
+joins the $\alpha$- and $\gamma$-corners; a $2\pi$-vertex of type $(n_\alpha,n_\beta,n_\gamma)$ can
+supply them only if $n_\alpha+n_\gamma\ge4$, which excludes $(0,1,3)$ among the four admissible types
+$(6,4,0)$, $(4,3,1)$, $(2,2,2)$, $(0,1,3)$.
+\end{proof}
+
+\begin{remark}[The apex neighbourhood is now completely pinned]\label{rem:apexdone}
+Theorem~\ref{thm:ray} and Corollary~\ref{cor:cleanray} together determine \emph{both} inner apex rays
+of any thick tiling at $m=1$:
+\[
+\text{clean ray } b^{\,f}\mid b^{\,f},\qquad
+\text{mismatch ray } b^{\,f}\mid\{a^{\,f-e},c^{\,f-e}\},
+\]
+with $f-1$ interior $2\pi$-vertices on the first and $3f-2e-2$ T-junctions on the second
+(\texttt{ray\_junction\_count}). For $N=59$ that is $9^5\mid9^5$ and $9^5\mid\{20,25\}$; for $N=83$,
+$11^6\mid11^6$ and $11^6\mid\{30,36\}$. Since the vertex census forces $M_4\ge1$ --- every
+base-$\beta$ tiling contains a $\beta+3\gamma$ vertex --- and Corollary~\ref{cor:cleanray} bars it
+from the clean ray, that vertex is localized away from the apex. The arithmetic of both statements is
+machine-checked (\texttt{clean\_ray\_bpow}, \texttt{no\_beta\_three\_gamma\_on\_clean\_ray}).
+\end{remark}
+
 \begin{remark}[Scope and consequences]\label{rem:ray}
 Thickness is used exactly once, and sharply: the next solution would be $n_a=2f-e$, which needs
 $f\ge2e+1$ --- the thin regime. So in the regime that is open, the entire mismatch ray is now pinned
