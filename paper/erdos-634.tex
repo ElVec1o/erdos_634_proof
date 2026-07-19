@@ -13,6 +13,7 @@
 \theoremstyle{definition}
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}[theorem]{Definition}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
@@ -1159,6 +1160,50 @@ signs this says only that the signs are more aligned than a random walk --- not 
 for a structured tiling. We state the conjecture because the coincidence is exact --- two conditions
 of quite different origin, $M^2<N$ and $b>a$, cut the families at the same threshold $\varphi$ --- not
 because the evidence favours it.
+\end{remark}
+
+\begin{definition}[The exceptional spectrum]\label{def:exc}
+Write $S$ for the spectrum and
+\[
+S^\ast=\{N\in S:\ N\text{ is not a sum of two squares}\}
+=\{N\in S:\ p\mid\mid^{\text{odd}} N\text{ for some prime }p\equiv3\!\!\pmod4\},
+\]
+using the classical criterion that $N$ is a sum of two squares if and only if every prime
+$\equiv3\pmod4$ divides it to an even power.
+\end{definition}
+
+\begin{remark}[What is actually being asked]\label{rem:exc}
+Proposition~\ref{prop:density} shows the sums of two squares already account for the spectrum to
+leading order, so the whole content of Erd\H os's question beyond Fermat is the determination of
+$S^\ast$. In particular, since a prime $\equiv3\pmod4$ is never a sum of two squares, the folklore
+conjecture is exactly
+\[
+S^\ast\ \text{contains no primes.}
+\]
+By Theorem~\ref{thm:ladder}, $S^\ast$ is closed under multiplication by squares.
+
+The known members are strikingly uniform. Every value this paper realizes which is not already a sum
+of two squares is
+\[
+28=2^2\!\cdot\!7,\qquad 44=2^2\!\cdot\!11,\qquad 77=7\!\cdot\!11,\qquad 99=3^2\!\cdot\!11,
+\]
+so $S^\ast\cap[1,100]=\{28,44,77,99\}$ on present knowledge. All four are realized by the
+\emph{same} tile $(2,3,4)$ --- the primitive $3\alpha+2\beta$ tile at $(e,f)=(1,2)$, verified for the
+$28$- and $44$-tilings by the kernel certificates and for the $99$-tiling by direct check --- and all
+four are a square times a product of that tile's two branch-form values,
+\[
+2f^2-e^2=7,\qquad 3f^2-e^2=11 :
+\]
+$28=2^2(2f^2-e^2)$, $44=2^2(3f^2-e^2)$, $99=3^2(3f^2-e^2)$ and, from the four-component target,
+$77=(2f^2-e^2)(3f^2-e^2)$. (The value $80=4^2+8^2$ is a sum of two squares and so lies outside
+$S^\ast$; it is realized, but by Fermat, not by a sporadic branch.)
+
+This suggests that $S^\ast$ is built multiplicatively from the branch-form values of the sporadic
+tiles together with squares, and it sharpens the search targets: a value is a candidate for a
+\emph{new} member of $S^\ast$ only if it is not a sum of two squares. Among the instances currently
+under search, $70=2\cdot5\cdot7$, $83$ and $92=2^2\cdot23$ would be new members, whereas
+$104=2^3\cdot13=2^2+10^2$ is already in $S$ by Fermat --- so that search tests whether the family
+$(1,3)$ tiles at $m=2$, not whether $104$ lies in the spectrum.
 \end{remark}
 
 \begin{proposition}[Density of the spectrum]\label{prop:density}
