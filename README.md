@@ -24,10 +24,13 @@ forces the large triangle to be isosceles.
   scalene targets (cores of Beeson Thms 8, 12), and the base-`(α+β)` and base-`α` targets by
   Propositions that **replace Beeson Thms 18 and 20**, whose printed proofs are unsound.
 
-- **Theorem (prime exclusion, with one explicit exception).** No prime `N ≡ 3 (mod 4)`, `N > 3`,
-  which is not a base-`β` candidate — i.e. `N ≠ 3f² − e²` for all coprime `1 ≤ e < f` — is a number of
-  congruent triangles into which a triangle can be cut. In particular **no triangle can be cut into 19
-  congruent triangles** (`19` is not of the exceptional form).
+- **Theorem (full prime exclusion).** No prime `N ≡ 3 (mod 4)`, `N > 3`, is a number of congruent
+  triangles into which a triangle can be cut. The non-base-`β` primes are excluded by the invariant
+  and branch arguments of the main paper; the base-`β` primes (`≡ 11 mod 12`) are excluded by the
+  forcing chain of the companion note (walk trichotomy, corner/partner/strip forcing, the surplus
+  lattice, the column–filler recursion, the feet budget, the `T_mid` and pentagon kills), with every
+  arithmetic component kernel-checked in Lean and the smallest members confirmed by certified
+  exhaustive refutations. In particular **no triangle can be cut into 19 congruent triangles**.
 
 - **The exception is genuine, and it is one congruence class.** The prime base-`β` candidates
   `N = 3f² − e²` are **exactly the primes `≡ 11 (mod 12)`** (`11, 23, 47, 59, 71, 83, 107, …`;
@@ -40,10 +43,22 @@ forces the large triangle to be isosceles.
   search, none by theorem**; `83` was under search. There are `42` candidates below `1000`. See the paper's `rem:isobeta`, `rem:thm14false`, and
   `rem:mainscope`.
 
-- **Realizations, machine-verified with zero axioms.** A triangle can be cut into **28** and into
-  **44** congruent triangles (`lean/Tiling28.lean`, `lean/Tiling44.lean`, kernel-only, `#print axioms`
-  reports none). The `44`-tiling of the `(16,16,22)` isosceles triangle by the `(2,3,4)` tile is the
-  smallest known tiling in an incommensurable branch (previous record `1215`).
+- **Realizations, machine-verified with zero axioms.** A triangle can be cut into **28**, into
+  **44**, into **77** and into **99** congruent triangles (`lean/Tiling28.lean`,
+  `lean/Tiling44.lean`, `lean/Tiling77.lean`, `lean/Tiling99.lean`, kernel-only, `#print axioms` reports none). The `44`-tiling of the
+  `(16,16,22)` isosceles triangle by the `(2,3,4)` tile is the smallest known tiling in an
+  incommensurable branch (previous record `1215`). The `99`-tiling of `(24,24,33)` is the object
+  that refutes Beeson's Theorem 14, so that refutation now rests on a kernel-checked certificate
+  (99 congruences over `ℤ[√15]`, containment, 4851 separating edge-lines, exact area sum) rather
+  than on a search log.
+
+- **The invariant product.** The two signed-direction counts are not independent conditions: on each
+  of the eleven `2π/3` target shapes, `M_α·M_β` is a fixed rational multiple of `N` — `3N` on the
+  equilateral target, exactly `N` on the tile-similar and `F₁` targets, and an explicit rational
+  multiple otherwise. Two consequences need **no rationality input**: the tile-similar target forces
+  `N = M_α²` (a perfect square, never prime), and the `F₁` target forces `a/c = (N−1)/(N+1)` for
+  prime `N`, hence an irrational tile, which a boundary-walk argument then kills. This removes the
+  rationality dependence from three of the eleven shapes; the other eight still carry it.
 
 - The **admissible spectrum** of each sporadic `2π/3` branch is determined (necessary side); for the
   isosceles target, with `b = d·e²` and `d` squarefree, every count is `N = d·w²·(a+2b)` with
@@ -51,21 +66,34 @@ forces the large triangle to be isosceles.
   exactly Zhang's constructed families. The equilateral square criteria reduce to elementary divisor
   conditions on `16N²`. Membership in the tile-count set is decidable.
 
-- **The contiguous initial segment of the spectrum is every `N ≤ 69`.** The last two gaps below `70`
-  — `59` (prime) and `66` — were closed by exhaustive search (1,838,175 and 7,232,464 nodes). `70` is
-  the sole remaining gap below `80`; `71–80` are settled, so the record extends to `≤ 80` once it
-  resolves. (`28, 44, 77, 80` are realizable.)
+- **The contiguous initial segment of the spectrum is every `N ≤ 80`, with no exception.** The gaps
+  `59` (prime), `66` and finally `70` were each closed by exhaustive search (1,838,175 / 7,232,464 /
+  **134,631,158** nodes). `N = 70` was the last: its single surviving instance is the
+  isosceles-`α` target `(45,45,70)` of the tile `(6,5,9)`, which passes every sound necessary
+  condition and whose published exclusion rested on Beeson III Thm 19's unsound `g | M`; the search
+  settles it directly. (`28, 44, 77, 80` are realizable.)
 
 ## What is open
 
-The **whole** base-`β` branch at `m = 1` has no sound general exclusion — thin (`f > 2e`) and thick
-alike. Of the 42 prime candidates below `1000`, 19 are thin and 23 thick, and only six are settled,
-all by exhaustive search. An earlier version of this README said the thin regime was understood;
-that was wrong. The interior structure of any hypothetical such tiling is pinned
-(`lean/BaseBetaWalks.lean`: the boundary-walk classification, the apex-mismatch theorem, and the
-alignment theorem, which forces the mismatch apex ray to `b^f`), but a general no-go is not yet proved.
-Zhang's sufficiency conjecture and the equilateral general realizability laws are open in the
-literature. See `HANDOFF.md` for a complete account of the state of the research.
+**The base-`β` exclusion is not proved.** An adversarial audit of the companion's forcing chain
+found that every path through it terminates in a deferral, and the missing step is now isolated
+and stated as an explicit hypothesis (companion, Hypothesis (walls)): *in a base-`β` tiling at
+`m = 1`, neither base corner is starved or broken.* Both papers are conditional on it, and the
+folklore conjecture is open.
+
+What is proved of the hypothesis:
+
+- `e = 1` (thin members): it holds for `f ≤ 6`, that is for `N = 11, 26, 47, 74, 107`.
+- `e ≥ 2` (thick members): the base walk is forced to the walls form at every *separated* member
+  (`f² > 2ef + e²`), via a base trichotomy, the `γ`-trap, and an unconditional corner chain.
+- Seven members are settled by independent certified exhaustion of the full `m = 1` target:
+  `N = 11, 23, 26, 39, 71, 74, 107`.
+
+What remains open: the hypothesis in general — the side condition at `e ≥ 2`, the residual
+configurations at `e = 1`, and the close pairs `f ≤ (1+√2)e`, an infinite family that contains
+`N = 83` and `N = 131`; **external refereeing of the whole work** (an exceptional claim; see the
+disclosure below); Zhang's sufficiency conjecture and the equilateral realizability laws, which
+are independent of the prime question. Composite `N` realizability remains a rich open area.
 
 ## The invariant in one line
 
@@ -78,18 +106,16 @@ target this forces `(c−a−b)/√b ∈ ℤ`, which never holds for a primitive
 ## Contents
 
 - `paper/erdos-634.tex`, `paper/erdos-634.pdf` — the paper.
-- `lean/` — a Lean 4 + Mathlib formalization of the arithmetic and combinatorial layer, across eighteen
-  files (138 theorems, no `sorry`, axiom-clean) (axiom-clean, no `sorry`); `lean/README.md` describes every theorem. The two `Tiling*.lean`
-  certificates are kernel-only (no Mathlib) and report no axioms.
+- `lean/` — a Lean 4 formalization of the arithmetic and combinatorial layer: 47 files, 408 theorems, no `sorry`, **all verified**. 20 files are dependency-free and check with plain `lean <file>` (every tiling certificate and every combinatorial core); the other 18 pin Mathlib v4.30.0 and were checked with `lake env lean` against a local build of that revision. Axioms are `propext`, `Quot.sound`, and `Classical.choice` where `omega` introduces it. `lean/README.md` gives the per-file status and `lean/PAPER_MAP.md` maps every numbered statement of the papers to its Lean declaration, or states why none exists.
+  `Tiling*.lean`/`PgramTiling*.lean` certificates and `Collar.lean` are kernel-only (no Mathlib) and report no axioms.
+- `code/` — exact-arithmetic verification scripts for the paper's finite and symbolic claims.
 - `engine/` — the exact corner-anchored search engine (C++ with GMP, the Python reference
-  implementation, instance builders) and `engine/tilings/` with the verified 28-, 44- and 99-tiling
+  implementation, instance builders) and `engine/tilings/` with the verified 28-, 44-, 77- and 99-tiling
   certificates.
-- **`STATUS_TABLE.md` — the ledger: what is proved, what is cited, what is open, what was
-  once overclaimed, and what is a known dead end. READ THIS FIRST.**
-- `HANDOFF.md` — operational detail: what was done, banked, and left to do.
-- `archive/zenodo-v1/` — the superseded earlier Zenodo/referee package, kept for provenance.
-  It contains a **false claim** that the folklore conjecture was resolved; see
-  `archive/zenodo-v1/SUPERSEDED.md`.
+- `archived/` — superseded material kept for provenance only, and **not part of the work**: the
+  earlier Zenodo/referee package (which contains a **false claim** that the folklore conjecture was
+  resolved; see `archived/zenodo-v1/SUPERSEDED.md`) and the previous handoff document, two of whose
+  claims are known wrong. Excluded from any repository release.
 
 ## How to verify
 

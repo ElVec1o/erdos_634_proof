@@ -1,7 +1,7 @@
 """Emit an exact instance file from run_all.make_instance, so cengine and engine.py
 run bit-identical instances (no re-implementation of the number theory in C++)."""
 import sys, os
-sys.path.insert(0,'/Users/vico/Documents/elvec1o/MATH_PAPER_3/634/engine')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from engine import QD
 import run_all
 

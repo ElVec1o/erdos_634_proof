@@ -1,9 +1,18 @@
-lean/.lake/
-lean/lake-packages/
+.DS_Store
 __pycache__/
-*.pyc
-*.olean
 *.aux
 *.log
 *.out
-.DS_Store
+engine/cengine
+engine/cengine_new
+engine/cengine_cc
+engine/cengine_dump
+engine/cengine_tiles
+engine/tiling_*.txt
+private/
+# superseded package containing a FALSE claim; provenance only, never released
+archived/
+# Rust build artifacts
+target/
+rust/tiler/target/
+build/

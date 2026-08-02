@@ -100,6 +100,15 @@ def main():
         fh.write("%d\n" % len(side))
         for w in side:
             fh.write("%d %d %d\n" % w)
+        # P6: forced corner edge types.  Only for e = 1, m = 1, where the companion's Thm
+        # e1reduce pins the ORDER at the ends of every side: the base begins and ends with an
+        # a-edge, each equal side begins and ends with a c-edge.  Emitted in the
+        # orientation-independent form "the edge touching either corner of this side has type t".
+        if efm is not None and efm[0] == 1 and efm[2] == 1:
+            ct = [2, 2, 2]                     # equal sides: c
+            ct[baseside] = 0                   # base: a
+            fh.write("CORNERS\n%d %d %d\n" % tuple(ct))
+            print("  P6 corner types emitted (e=1,m=1): base(side %d)=a, equal sides=c" % baseside)
     print("  baseside=%d   base walks %d -> %d kept   side walks %d -> %d kept"
           % (baseside, len(allb), len(base), len(alls), len(side)))
     print("  base kept: %s" % (base,))

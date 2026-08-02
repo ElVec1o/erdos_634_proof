@@ -4,6 +4,8 @@ from fractions import Fraction as F
 from math import lcm
 
 fn, out, ns = sys.argv[1], sys.argv[2], sys.argv[3]
+# optional 4th arg: the run_all instance name, when it is not simply ns with Tiling->T
+inst = sys.argv[4] if len(sys.argv) > 4 else ns.replace('Tiling', 'T')
 lines = open(fn).read().strip().split('\n')
 N, D = int(lines[0].split()[1]), int(lines[0].split()[2]); assert D == 15
 raw, dens = [], set()
@@ -15,8 +17,10 @@ for ln in lines[1:]:
     raw.append(pts)
 L = lcm(*dens)
 S = [[(int(a*L),int(b*L),int(c*L),int(d*L)) for (a,b,c,d) in tri] for tri in raw]
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'engine'))
 sys.path.insert(0,'.'); from engine import qd; import run_all
-_,tgt,_ = run_all.make_instance(ns.replace('Tiling','T'))
+_,tgt,_ = run_all.make_instance(inst)
 def q2(x): return (int(x.pn*L//x.den), int(x.qn*L//x.den))
 T = [ (q2(px)[0],q2(px)[1],q2(py)[0],q2(py)[1]) for (px,py) in tgt ]
 def sgn(a,b):
@@ -120,8 +124,10 @@ def zsum (l : List Z15) : Z15 := l.foldl zadd ((0:Int),(0:Int))
 def checkAll : Bool :=
   tiles.length == {N} && tiles.all congOK && tiles.all insideOK
   && checkPairs tiles wit && zsum (tiles.map area2) == area2 target
-set_option maxRecDepth 8192 in
+set_option maxRecDepth {max(8192, 128 * N)} in
+set_option maxHeartbeats 0 in
 theorem tiling{N}_certificate : checkAll = true := by decide
+#print axioms tiling{N}_certificate
 end {ns}""")
 open(out,'w').write("\n".join(Ln))
 print(f"{out}: N={N}, L={L}, sq={sq}, {len(pairs)} witnesses -- python checks all pass")

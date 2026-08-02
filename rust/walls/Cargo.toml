@@ -1,0 +1,7 @@
+[package]
+name = "walls"
+version = "0.1.0"
+edition = "2021"
+[[bin]]
+name = "walls"
+path = "src/main.rs"

@@ -58,34 +58,29 @@ section (`HasAngleSums`, `HasEdgeChains`, `InteriorBalanced`), each with a docst
 what it asserts and why it is not available.  They are *definitions*, not axioms: nothing in this
 file assumes them, and any downstream theorem that needs one must take it as a hypothesis.
 
-The single sharpest gap: Mathlib has the triangle angle sum but has **no** statement that the angles
-around an interior point sum to `2π`, and no machinery (no sectors, no angular measure, no winding
-number) to build one.  See `HasAngleSums`.
+The single sharpest gap is `HasAngleSums`.  Its difficulty is narrower than first recorded here:
+Mathlib *does* have oriented angles at a point in an oriented plane (`EuclideanGeometry.oangle`,
+valued in `ℝ/2πℤ`) together with additivity, so the statement "the angles around an interior point
+sum to `2π`" is free MODULO `2π` — the oriented angles telescope around the cycle.  What is missing
+is the lift: that the tiles at the point occupy pairwise disjoint sectors in cyclic order covering
+all directions, which turns a sum that is `0` in `ℝ/2πℤ` into unsigned angles summing to exactly
+`2π`.  See `lean/AngleSumScope.lean`, where the free half is compiled and the remaining half is
+stated.
 
 ## Compile status
 
-Every Mathlib lemma invoked below was verified to exist, with its exact signature and argument
-order, by reading the source of the pinned revision (Lean 4.30.0 / Mathlib v4.30.0 — the same
-revision this project already builds against).  The file has **not** been compiled.  Four steps are
-tactic-level guesses rather than verified applications and should be checked first if it fails:
+**Compiles clean** (verified 2026-07-29, Lean 4.30.0 / Mathlib v4.30.0 — the pinned revision).
+`Tri.volume_pos`, `Dissection.aedisjoint`, `Dissection.volume_target`, `Dissection.pos`,
+`cornerAngle_sum` and `angle_indep` all elaborate, on `propext`, `Classical.choice`, `Quot.sound`
+and nothing else; no `sorry`.
 
-1. `Tri.affineSpan_eq_top` — the closing `by simp` must discharge `Fintype.card (Fin 3) = 2 + 1`.
-   Fallback: `by simp [Fintype.card_fin, finrank_euclideanSpace]` or `by norm_num`.
-2. `Dissection.volume_target` — the anonymous pairwise lambda is elaborated against
-   `Set.Pairwise ↑univ (AEDisjoint volume on _)`, which requires unfolding `Set.Pairwise` and
-   `Function.onFun`.  Fallback: state it as a separate `have` with explicit `∀ i ∈ _, ∀ j ∈ _, …`
-   binders (defeq ignores binder annotation, so that form is accepted).
-3. `Dissection.volume_target_of_congruent` — the closing `simp [hv]`.
-   Fallback: `simp only [hv, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]`.
-4. `cornerAngle_sum` — the three `angle_comm` rewrites are order-sensitive.  The three rewritten
-   terms are checked by hand to be exactly the three summands of `key`; if `rw` misfires, use
-   `simp only [EuclideanGeometry.angle_comm]` plus `linarith`, or `omega`-free `linarith` on a
-   restated `key`.
+This project holds no Mathlib build of its own. To check the file, run from any project that has a
+v4.30.0 build:
 
-The remaining proofs are either single verified lemma applications or `omega`/`linear_combination`
-on hand-checked algebraic identities.
+    lake env lean /path/to/ERDOS/634/lean/Dissection.lean
 
-Axiom-clean apart from the usual `propext`, `Classical.choice`, `Quot.sound`.
+(An earlier version of this header said the file had never been compiled and flagged four tactic
+steps as guesses. That is obsolete: the file compiles as written, and the four steps go through.)
 -/
 
 namespace Erdos634.Geometry
@@ -404,8 +399,17 @@ point configuration, but it needs a usable notion of "edge of a tile" and of "ma
 neither of which Mathlib provides.  This is the input to `BaseBetaWalks`' walk equations
 `P·a + Q·b + R·c = (side length)`. -/
 def HasEdgeChains {N : ℕ} (D : Dissection N) (edgeOf : Fin N → Fin 3 → Set Plane) : Prop :=
-  ∀ (S : Set Plane), S ⊆ frontier D.target.carrier →
-    ∃ (part : Finset (Fin N × Fin 3)), (⋃ e ∈ part, edgeOf e.1 e.2) = S
+  ∀ i : Fin 3, ∃ (part : Finset (Fin N × Fin 3)),
+    (⋃ e ∈ part, edgeOf e.1 e.2) = segment ℝ (D.target.pts i) (D.target.pts (i + 1))
+
+/-!
+NOTE (2026-07-30). The previous form of `HasEdgeChains` quantified over *every* subset `S` of the
+frontier, demanding each be a union of whole tile edges. That is unsatisfiable — a singleton subset
+is not such a union — so any theorem assuming it would have been vacuously true. Nothing in the
+development assumed it, so no result was affected, but the statement is corrected above to the one
+its own docstring describes: each of the target's three sides is a finite union of whole tile edges.
+That is exactly the input the walk equations `P·a + Q·b + R·c = (side length)` need.
+-/
 
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each

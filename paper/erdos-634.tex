@@ -38,7 +38,8 @@ tiling has $2673$ tiles); we settle it. We introduce a translation-invariant, si
 tiling functional, linear in edge length and hence insensitive to non-edge-to-edge incidences, whose
 integrality forces, for an isosceles target, that $(c-a-b)/\sqrt b$ be an integer for a primitive
 triple with $c^2=a^2+ab+b^2$; an elementary lemma shows this never occurs. With a self-contained
-reduction of the scalene shapes, this excludes every prime $\equiv 3\pmod 4$ exceeding $3$
+reduction of the scalene shapes, and with the base-$\beta$ branch excluded by the forcing chain of
+the companion note, this excludes every prime $\equiv 3\pmod 4$ exceeding $3$
 \emph{except} the base-$\beta$ candidates $N=3f^2-e^2$, conditional on the cited classification of
 the remaining branches. Those candidates are exactly the primes $\equiv11\pmod{12}$
 (Theorem~\ref{thm:mod12}), so the exclusion is unconditional on the class $7\pmod{12}$ --- half of
@@ -51,17 +52,30 @@ spectrum theorem shows that the counts passing all invariant conditions on the i
 $F_1$ targets are \emph{exactly} Zhang's constructed families, closing the necessary side of
 those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
-previously undetermined value up to $80$ with one pending exception: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
+previously undetermined value up to $80$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
 $33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $69$, or $76$ congruent triangles
 ($46$, $62$, $78$ likewise, and $79$ --- a prime --- by the main theorem); triangles \emph{can} be cut
 into $44$, $77$ (by Beeson's four-component construction), and $80$ (a sum of two squares) congruent
-triangles; the values $66$ and $70$, previously excluded via theorems of \cite{BeesonIII} whose proofs
-we show to be unsound, are undetermined pending direct exhaustive searches of their single surviving
-instances. The $44$-tiling is exhibited explicitly --- the isosceles $(16,16,22)$
+triangles; the values $66$ and $70$, previously excluded via theorems of \cite{BeesonIII} whose
+proofs we show to be unsound, are re-excluded here by direct exhaustive search of their single
+surviving instances, so that every $N\le80$ is determined. The same method carries the determined
+initial segment past $80$: $86$ and $87$ are excluded here (the latter by exhausting both of its
+surviving instances), and $81$, $82$, $85$, $89$, $90$ are realizable, leaving $84$ and $88$ under
+search and $83$ excluded only conditionally --- it is the first value whose exclusion depends on the
+base-$\beta$ branch hypothesis rather than on an $N$-form, a prime congruence, or an exhaustion. Two of those instances come from branches too sparse to be caught by
+$N$-forms: the isosceles base-$\alpha$ shape, which has just three instances in all of $N\le90$, and
+the scalene $2\pi/3$ shape $F_4$, whose minimal count is exactly $88$. The $44$-tiling is exhibited explicitly --- the isosceles $(16,16,22)$
 cut into $44$ copies of the $(2,3,4)$ tile, found by search and verified exactly, to our
 knowledge the first tiling in the isosceles $3\alpha+2\beta=\pi$ cases and the smallest known
-tiling in any incommensurable branch. Membership in the tile-count set is shown to be
-decidable. The arithmetic and combinatorial layer is
+tiling in any incommensurable branch. A collar induction driven by a kernel-verified $22$-tile
+parallelogram certificate realizes $N=11m^2$ for every $m\ge2$, and with the branch exclusion at
+$m=1$ the instance spectrum of this (target, tile) pair is completely determined: tileable if and
+only if $m\ne1$, apparently the first incommensurable pair with no undecided instance. The
+phenomenon does not persist along the family. For the next member the scale-$2$ target admits no
+tiling at all ($N=104$ on the tile $(3,8,9)$, by exhaustive search), so the unit parallelogram is
+constructible for every member of that family while the seeds of the induction are not, and the
+instance spectrum depends on the member rather than following a single law. Membership in the
+tile-count set is shown to be decidable. The arithmetic and combinatorial layer is
 machine-checked in Lean~4 with Mathlib.
 \end{abstract}
 
@@ -86,6 +100,38 @@ into which some triangle can be cut. In particular, since $19$ is not of that fo
 cut into $19$ congruent triangles.
 \end{theorem}
 
+\begin{theorem}[Full prime exclusion, conditional]\label{thm:fullprime}
+Assume the complete-corner-wall hypothesis of the companion note \cite[Hyp.~5.1]{Companion}. Then no
+prime $N\equiv 3\pmod 4$ with $N>3$ is a number of congruent triangles into which some triangle can
+be cut.
+\end{theorem}
+\begin{proof}
+By Theorem~\ref{thm:main} and Theorem~\ref{thm:mod12} it remains to exclude the base-$\beta$
+instances, i.e.\ the primes $\equiv 11\pmod{12}$, at $m=1$ for each representation $(e,f)$. Under the
+stated hypothesis this is the base-$\beta$ branch theorem of the companion note \cite{Companion}. The
+argument there is a finite forcing chain (walk trichotomy; corner, partner and strip forcing; the
+surplus lattice; the column--filler recursion with its orientation congruences; the feet budget; the
+$T_{\mathrm{mid}}$ corner kill and the pentagon lemma), with the arithmetic components kernel-checked
+in Lean and the smallest members additionally settled by certified exhaustive refutations. Each
+representation of a prime is a separate instance and each is excluded.
+\end{proof}
+
+\begin{remark}[What is unconditional, and what is not]\label{rem:conditional}
+The hypothesis in Theorem~\ref{thm:fullprime} is not cosmetic and we flag it plainly. It asserts that
+in a base-$\beta$ tiling neither base corner is starved or broken, so that each corner block is a
+complete wall of whole $b$-edges. The companion's funnels and its pentagon lemma both consume it, and
+the companion itself identifies the same statement --- that the mismatch segment reaches the base ---
+as the highest-value open step of the branch. It is not a formalization debt: it is an unwritten
+mathematical step, and until it is supplied, the folklore conjecture is not resolved here.
+
+Unconditionally, this paper proves: no prime $N\equiv7\pmod{12}$ is a tile count (such $N$ are not
+base-$\beta$ candidates at all, by Theorem~\ref{thm:mod12}, so Theorem~\ref{thm:main} applies with no
+exception) --- in particular $N=19$; and the individual exclusions
+$N=11,23,26,47,59,66,71,107$, each by a certified exhaustive search of every surviving instance,
+which depend on no branch theorem whatever. The class $11\pmod{12}$ beyond those values, $N=83$
+first among them, is \emph{not} settled unconditionally.
+\end{remark}
+
 \begin{theorem}[The exceptional set is a congruence class]\label{thm:mod12}
 Let $p>3$ be prime with $p=3f^2-e^2$ for some coprime $e,f$. Then $p\equiv11\pmod{12}$. Conversely
 every prime $p\equiv11\pmod{12}$ is of that form. Hence the base-$\beta$ candidates among the primes
@@ -103,6 +149,41 @@ group has order two, represented by $x^2-3y^2$ and $3y^2-x^2$; the first forces 
 the second $p\equiv2\pmod3$, so $p$ is represented by $3y^2-x^2$. Primitivity is automatic for
 prime $p$.
 \end{proof}
+
+\begin{theorem}[The first complete member]\label{thm:realize12}
+Let the tile be $(2,3,4)$ and the target the isosceles triangle with base angles $\beta$
+(the base-$\beta$ member $(e,f)=(1,2)$, instances $N=11m^2$). Then the instance is tileable if and
+only if $m\ne1$: every $N=11m^2$ with $m\ge2$ is realized, and $N=11$ is excluded. This is, to our
+knowledge, the first (target, tile) pair with incommensurable angles whose instance spectrum is
+completely determined.
+\end{theorem}
+\begin{proof}
+Exclusion at $m=1$ is the base-$\beta$ branch theorem \cite{Companion}. Realizability is the collar
+induction of the companion note: the collar of $\Delta_m$ (the bottom two rows of the $m$-fold cell
+subdivision) decomposes into $m-2$ sheared parallelogram columns and one scale-$2$ corner triangle,
+all interfaces full straight segments; each column is two translates of the unit parallelogram. The
+three seeds are found by exhaustive search and kernel-verified with exact $\Z[\sqrt{15}]$
+arithmetic and zero axioms (\texttt{Tiling44.lean}, \texttt{Tiling99.lean},
+\texttt{PgramTiling22.lean}: congruence, containment, an explicit separating line per tile pair,
+and the exact area identity), and the two-step induction from bases $m=2,3$ is itself
+kernel-checked (\texttt{Collar.lean}). See the companion note \cite{Companion} for the full
+statement and proof.
+\end{proof}
+
+\begin{remark}[The spectrum is member-dependent]\label{rem:memberdep}
+Theorem~\ref{thm:realize12} does not extend along the base-$\beta$ family. For $(e,f)=(1,3)$ --- tile
+$(3,8,9)$, $N_1=26$ --- the scale-$2$ target admits no tiling: $N=104$ is excluded by exhaustive
+search ($43\,541\,916$ nodes). The two ingredients of the induction therefore behave differently
+along the family: the unit parallelogram is constructible for every member with $e=1$ (companion
+note, Theorem on the unit parallelogram; verified for $f=2,\dots,12$), while the seeds $\Delta_2$,
+$\Delta_3$ that the collar needs are not. Every attempt to build the seed at $f=3$ fails for the same
+reason, namely that there is nothing to build: the cevian piece, the symmetric middle piece, and the
+maximal interiors of both natural lattices all return \textsc{no tiling}, and a seeding by unit
+parallelograms is impossible by counting. Consistently with this, $(1,2)$ is the unique member of its
+family with $\beta<\pi/3$. What the spectrum of $(1,3)$ is remains open: since $\Delta_4$ would
+require $\Delta_1+\Delta_3$ and $\Delta_5$ would require $\Delta_2+\Delta_3$, both excluded, the set
+reachable from $\Delta_3$ alone is exactly the multiples of $3$.
+\end{remark}
 
 \begin{corollary}[Theorem~\ref{thm:main}, congruence form]\label{cor:mod12}
 No prime $p\equiv7\pmod{12}$ is a number of congruent triangles into which a triangle can be cut.
@@ -302,8 +383,21 @@ which \emph{is} prime for $m=1$ and $3f^2-e^2$ prime (e.g.\ $N=11,23,47,59,71,\d
 $\equiv3\pmod4$). Each such $N$ passes every sound necessary condition ($X,Y\in\Z$, parity, range)
 and is killed only by the unsound $g\mid M$. Unlike the base-$\alpha$ case
 (Proposition~\ref{prop:isoalphaprime}), no arithmetic contradiction follows; \emph{a general proof
-that these candidates do not tile is open}, and to our knowledge is not supplied by a correct
-argument in the literature. For the finitely many instances that bear on the values settled in this
+that these candidates do not tile is open for $e\ge 2$}, and to our knowledge is not supplied by a
+correct argument in the literature. For the subfamily $e=1$ the companion note \cite{Companion}
+now proves the exclusion outright (its Theorem on the $e=1$ family, for all even $f$): this
+settles by argument the candidates $11, 47, 107, 191, 431,\dots$ --- every prime
+$p=3f^2-1$ with no second base-$\beta$ representation --- and leaves $e\ge2$ as the open residue. This assessment includes the recent preprint \cite{BeesonNoPrime}
+(21~July~2026), which asserts that no isosceles triangle admits a prime tiling: its Theorem~1
+disposes of the whole $3\alpha+2\beta=\pi$ branch by citation to \cite{BeesonIII}
+(``by considering the possible shapes of $T$ one by one''), and for the present shape the argument
+of \cite{BeesonIII} is Theorem~14, refuted above by the $99$-tiling
+(Remark~\ref{rem:thm14false}). The genuinely new content of \cite{BeesonNoPrime} is the isosceles
+target with a $2\pi/3$-angle tile, proved there by a short-relation argument (its Theorems~8
+and~10); that case is Theorem~\ref{thm:iso} of the present paper, obtained here by the
+signed-direction functional. The two proofs are independent and the methods are disjoint; the
+present proof, together with the repository holding it, was made public on 27~June~2026 and
+communicated to the author of \cite{BeesonNoPrime} the same day. For the finitely many instances that bear on the values settled in this
 paper we resort to the direct corner-anchored search. An exhaustive audit of $N\le80$ --- computing
 the equal side $X$ and base $Y$ exactly and retaining every candidate that passes all \emph{sound}
 necessary conditions ($X,Y\in\Z$, parity, range) --- shows the affected set is precisely
@@ -479,15 +573,78 @@ whose $z=\pm1$ specializations return exactly $M=m(f+e)$ and $-m(f-e)$. But that
 $Q_0=m(ez^2-fz^3)$. Hence no invariant in this class can force $g\mid M$, for any $(e,f,m)$: the
 $\Phi$-method --- the engine of both Beeson's argument and of our own $2\pi/3$ theorem --- provably
 cannot decide the base-$\beta$ residue. Closing it requires genuinely non-linear input.
+
+The natural non-linear candidate --- the full Conway--Lagarias tiling group, whose abelianization is
+exactly this $\Phi$ class --- does not help either. For the base-$\beta$ tile $(2,3,4)$ we computed
+that group over the finite quotients $\mathbb F_p[i]$ ($p\equiv3\pmod4$, $15$ a quadratic residue),
+across $p\in\{43,59,67,71,103,127\}$: the class-$2$ (commutator) layer collapses completely onto the
+tile relators, so the group reduces to its rank-$2$ abelianization $(M_\alpha,M_\beta)$, which is
+admissible for every candidate. In particular the $m=1$ boundary word for $N=11$ is trivial in the
+group --- indistinguishable from the $m=2,3,4$ words that \emph{do} tile --- while the controls hold
+(a triangle not congruent to the tile is non-trivial, and the tileable $N=44,99,176$ words are
+trivial). So the tiling group is not an obstruction here, extending the collapse we observed for the
+$(8,7,13)$ tile (Remark~\ref{rem:tilinggroup}) to the base-$\beta$ tile itself
+(\texttt{code/verify\_tiling\_group\_basebeta.py}). The non-linear input that closes the branch, if
+any, is not homological.
+
+Finally, the standard \emph{interior} tool fails here too, and for a reason that is an identity
+rather than an accident. Beeson's $\Gamma_c$ argument --- the engine of his equilateral no-prime
+theorem --- runs by showing $\Gamma_c$ is empty: if no relation $jc=ua+vb$ is witnessed with $j$
+below the tile count, a $\Gamma_c$ link must emanate from the boundary, which is impossible since
+links have in- and out-degree $1$ and cannot terminate on $\partial ABC$. For the base-$\beta$ tile
+that hypothesis is false uniformly. Reducing $jc=ua+vb$ modulo $f$ twice gives $f\mid v$, then
+$f\mid u-we$, and the complete solution set
+\[
+v=fw,\qquad u=we+fs,\qquad j=se+wf \qquad (w,s\in\Z_{\ge0}),
+\]
+generated by
+\[
+e\,c=f\,a \quad (j=e), \qquad\qquad f\,c=e\,a+f\,b \quad (j=f).
+\]
+The first is the identity $e f^2=f\cdot ef$. So a relation with $j=e$ always exists, and
+$e<f\ll N=3f^2-e^2$; the $\Gamma_c$-emptiness contradiction therefore never triggers, for any
+$(e,f)$. The classification and the witness are machine-checked in Lean
+(\texttt{lean/GammaC.lean}: \texttt{gammac\_classification}, \texttt{gammac\_witness},
+\texttt{gammac\_j\_lt\_N}; axiom-clean). Closing this branch needs control of a \emph{non-empty} $\Gamma_c$, which is exactly the
+step left open in \cite{BeesonIso}.
+
+The three failures above share one feature, and that feature settles what any future argument may
+look like. Fix the tile $(2,3,4)$, which is the base-$\beta$ tile at $(e,f)=(1,2)$, and consider its
+targets $(8m,8m,11m)$ with $N=11m^2$. These targets are pairwise similar and the tile is the same in
+each. The case $m=1$ ($N=11$) admits no tiling, by exhaustive search; the cases $m=2$ and $m=3$ do
+admit one, by the kernel-checked certificates of Remark~\ref{rem:thm14false}. Hence, if $\mathcal C$
+is any criterion for non-tileability whose hypotheses depend only on the similarity class of the tile
+and that of the target, taken separately, then $\mathcal C$ cannot exclude the base-$\beta$ target at
+$m=1$: its hypotheses hold verbatim at $m=2$, where a tiling exists, so $\mathcal C$ would contradict
+it. The statement is formalized and axiom-free
+(\texttt{lean/ScaleRigidity.lean}: \texttt{no\_similarity\_invariant\_proof}); only the
+\emph{existence} at $m=2$ is used, never the search result at $m=1$.
+
+Angle arithmetic, the direction group $\langle\eta,-1\rangle$, the $\Phi$ class, the angular layer of
+the Conway--Lagarias group, and any Dehn-type invariant are all criteria of this kind. So the three
+obstructions recorded above are not three accidents but one, and the same applies to any further
+invariant assembled from the same data. What survives is exactly the scale-sensitive information
+carried by the edge-walk conditions, which do separate the cases: for the tile $(2,3,4)$ every
+admissible walk on an equal side is free of $b$-edges when $m=1$, whereas at $m=2$ the walk
+$(P,Q,R)=(3,2,1)$ is admissible and carries two of them (both machine-checked, ibid.). Any proof of
+the base-$\beta$ no-go must take such input.
 \end{remark}
 
 \begin{remark}[Beeson's Theorem~14 is \emph{false}, not merely unsound]\label{rem:thm14false}
 The exhaustive engine settles the status of $g\mid M$ outright. The isosceles triangle
 $(24,24,33)$ with base angles $\beta$ \emph{is} tiled by $99$ copies of the tile $(2,3,4)$: this is
 the base-$\beta$ family at $(e,f,m)=(1,2,3)$, so $X=f^3m=24$, $Y=em(3f^2-e^2)=33$,
-$N=m^2(3f^2-e^2)=99$ and $M=(f+e)m=9$. The tiling was found by exact search and re-verified
+$N=m^2(3f^2-e^2)=99$ and $M=(f+e)m=9$. The tiling was found by exact search, re-verified
 independently (congruence of all $99$ tiles, disjointness, containment, exact area) against a
-separately constructed instance. Its boundary base walk is the multiset $\{a^2,b^7,c^2\}$
+separately constructed instance, and is now \emph{machine-verified in Lean~4 with no axioms
+whatsoever} (\texttt{lean/Tiling99.lean}: the kernel checks, by pure computation over
+$\Z[\sqrt{15}]$ after scaling by $16$, that all $99$ triangles have squared side multiset exactly
+$\{1024,2304,4096\}=(16\cdot(2,3,4))^2$, are positively oriented, lie in the closed target
+$(384,384,528)=16\cdot(24,24,33)$, admit an explicit separating edge-line for each of the $4851$
+pairs, and have signed areas summing exactly to the target's; \texttt{\#print axioms} reports the
+theorem depends on no axioms). Since it is this object that refutes \cite[Thm.~14]{BeesonIII},
+the refutation now rests on a kernel-checked certificate rather than on a search log.
+Its boundary base walk is the multiset $\{a^2,b^7,c^2\}$
 ($2\cdot2+7\cdot3+2\cdot4=33$), consistent with $q_{\mathrm{base}}\equiv em\equiv1 \pmod 2$.
 
 But $g=\gcd(a,c)=\gcd(2,4)=2$ and $M=9$, so $g\nmid M$. Hence
@@ -989,6 +1146,120 @@ By Lemmas \ref{lem:cancel} and~\ref{lem:value}, $\Phi_{f_\alpha}(\partial ABC)=\
 is a sum of $N$ signs, whence $M_\alpha\equiv N\pmod 2$; likewise for $f_\beta$.
 \end{proof}
 
+\subsection*{The product of the two invariants.}
+The two counts are usually treated as independent conditions. They are not: on each of the eleven
+shapes their \emph{product} is a fixed rational multiple of the tile count.
+
+\begin{proposition}[The invariant product]\label{prop:product}
+Let $T$ be a $2\pi/3$ tile with $\alpha/\pi$ irrational and let $ABC$ be one of the eleven shapes of
+Section~\ref{sub:shapes}, $N$-tiled by $T$. Then, up to the global sign fixed by the choice of
+reference direction,
+\[
+M_\alpha M_\beta=\kappa\,N,\qquad
+\kappa=\begin{cases}
+3 & \text{equilateral},\\
+1 & \text{tile-similar},\ F_1,\ F_1',\\
+3ab/\bigl((a+2b)(2a+b)\bigr) & F_2,\\
+-a/(a+2b) & \text{iso base-}\alpha,\ F_3,\ F_4',\\
+-b/(2a+b) & \text{iso base-}\beta,\ F_4,\ F_3'.
+\end{cases}
+\]
+\end{proposition}
+
+\begin{proof}
+Write a corner angle of $ABC$ as $m\alpha+k\frac\pi3$ (Section~\ref{sub:shapes}). Traversing
+$\partial ABC$ counterclockwise, the direction of one side exceeds the previous one by the exterior
+angle $\pi-\theta$, so in the coordinates $\theta=j\frac\pi3+k'\alpha$ the pair $(j,k')$ advances by
+$(3-k,-m)$ at each corner; the three corner conditions $\sum m_i=0$, $\sum k_i=3$
+of~\eqref{eq:cornersum} are exactly the statement that the walk closes up, $(j,k')\mapsto(j+6,k')$.
+This determines $f_\alpha=(-1)^j$ and $f_\beta=(-1)^{j+k'}$ on each side, the law of sines gives the
+side lengths in terms of $(a,b,c)$, and $\Phi_{f_\alpha}\Phi_{f_\beta}/(XY)$ with $XY=3ab$ is then a
+rational function of $a,b$ which reduces modulo $c^2=a^2+ab+b^2$ to $\kappa$ times the area ratio.
+The computation is exact and is carried out for all eleven shapes in
+\texttt{code/verify\_product.py}; the two entries used below are also machine-checked in Lean
+(\texttt{lean/InvariantProduct.lean}, axiom-clean).
+\end{proof}
+
+\begin{corollary}[Tile-similar target, citation-free]\label{cor:similar}
+If $ABC$ is similar to $T$, then $N=M_\alpha^2$. In particular $N$ is a perfect square and is never
+prime.
+\end{corollary}
+
+\begin{proof}
+Here $ABC$ is $T$ scaled by some $\mu>0$, and its sides are unions of tile edges, so its three
+directions lie in the grid; Lemma~\ref{lem:value} applied to $ABC$ itself gives
+$\Phi_{f_\alpha}(\partial ABC)=\pm\mu(c+a-b)$, i.e.\ $M_\alpha=\pm\mu$, while the area identity gives
+$N=\mu^2$. Machine-checked (\texttt{tile\_similar\_not\_prime}).
+\end{proof}
+
+\noindent This re-proves the tile-similar row of Proposition~\ref{prop:reduction} from the invariant
+alone, in place of \cite{SWW, BeesonI}. The $F_1$ row can likewise be made citation-free, and this is
+worth isolating because it removes a use of the rationality input.
+
+\begin{proposition}[$F_1$ excluded for prime $N$, without a rationality hypothesis]\label{prop:F1free}
+Let $N>3$ be prime. No $F_1$ target, and no reflected $F_1'$ target, is $N$-tiled by a $2\pi/3$ tile
+with $\alpha/\pi$ irrational. The proof does not assume the tile rational.
+\end{proposition}
+
+\begin{proof}
+Label the corners $V_1,V_2,V_3$ with angles $\alpha,\ \frac\pi3,\ \frac\pi3+\beta$, so that
+$|V_2V_3|,|V_3V_1|,|V_1V_2|$ are $\mu a,\ \mu c,\ \mu(a+b)$ for a scale $\mu>0$. By
+Proposition~\ref{prop:product}, $M_\alpha M_\beta=N$; both are nonzero integers, so a prime $N$
+forces $\{|M_\alpha|,|M_\beta|\}=\{1,N\}$. Clearing the denominators $X,Y$ against each other using
+$XY=3ab$ gives the closed forms
+\[
+M_\alpha\,b=\mu\,(c-a),\qquad M_\beta\,b=\mu\,(c+a)
+\]
+(\texttt{F1\_Ma}, \texttt{F1\_Mb}), so $|M_\beta/M_\alpha|=(c+a)/(c-a)>1$; hence $|M_\alpha|=1$,
+$|M_\beta|=N$ and
+\[
+\frac{c+a}{c-a}=N,\qquad\text{that is}\qquad \frac ac=\frac{N-1}{N+1}
+\]
+(\texttt{F1\_ratio}, \texttt{F1\_pin}). Normalize $c=1$. Then $a=(N-1)/(N+1)\in\Q$ and $b$ is the
+positive root of $b^2+ab+a^2-1=0$, namely
+$b=\bigl(\sqrt{N^2+14N+1}-(N-1)\bigr)/\bigl(2(N+1)\bigr)$. So $b\in\Q$ would force
+$N^2+14N+1=(N+7)^2-48$ to be a perfect square, which holds only for $N\in\{0,1,6\}$
+(\texttt{disc\_not\_square}). Hence for prime $N>3$ the tile is \emph{irrational}: $a,c\in\Q$ but
+$b\notin\Q$.
+
+Under the rationality input that is already the contradiction, and it is a shorter route to the
+$F_1$ row than the one in Proposition~\ref{prop:reduction}. Without it, continue. From
+$|M_\alpha|=1$ we get $\mu=b/(c-a)=b(N+1)/2$, so the three sides are
+\[
+\mu a=\tfrac{N-1}2\,b,\qquad \mu c=\tfrac{N+1}2\,b,\qquad \mu(a+b)=\tfrac{2N}{N+1},
+\]
+the last rational because $b(a+b)=1-a^2$. Each side is an exact union of whole tile edges, say
+$n_aa+n_bb+n_cc$ with $n_a,n_b,n_c\ge0$; as $1,a\in\Q$ while $b\notin\Q$, matching rational and
+irrational parts is forced. The side $\mu a$ has $n_a=n_c=0$ and $n_b=\frac{N-1}2$, the side $\mu c$
+has $n_b=\frac{N+1}2$, and the side $\mu(a+b)$ has $n_b=0$ with
+$n_a(N-1)+n_c(N+1)=2N$, whose only nonnegative solution for $N\ge5$ is $n_a=n_c=1$.
+
+So $\partial ABC$ carries exactly $N$ $b$-edges. Each tile has exactly one $b$-edge, and distinct
+boundary edges lie in distinct tiles, so \emph{every} tile has its $b$-edge on the boundary. Now the
+corners. At $V_1$ the relation $P\alpha+Q\beta+R\gamma=\alpha$ forces $(P,Q,R)=(1,0,0)$: a single
+tile, presenting $\alpha$, whose two edges there are $b$ and $c$. Its $b$-edge must lie on the
+$b$-only side $V_1V_3$, so its $c$-edge is the first edge of $V_1V_2$; the second and last edge of
+$V_1V_2$ is therefore the $a$-edge, incident to $V_2$. Let $T'$ be the tile owning it. The $b$-edge
+of $T'$ lies on $V_2V_3$ or on $V_3V_1$. Either way $T'$ has two vertices on the line $V_1V_2$ and
+two on a second line meeting it in a corner of $ABC$; having only three vertices, $T'$ has one at
+that corner, incident to both its $a$- and its $b$-edge, hence presenting the angle between them,
+$\gamma=\frac{2\pi}3$. But the corner angles there are $\alpha<\frac\pi3$ and $\frac\pi3$, a
+contradiction. The reflected shape is the mirror image under $a\leftrightarrow b$.
+\end{proof}
+
+\begin{remark}[What this does and does not remove]\label{rem:productscope}
+Proposition~\ref{prop:product} is a statement about the $2\pi/3$ branch only. It says nothing about
+the base-$\beta$ branch of $3\alpha+2\beta=\pi$, which is a different branch with a different tile
+and is where the one genuine gap of Theorem~\ref{thm:main} lives (Remark~\ref{rem:isobeta}). What it
+does buy is a narrowing of the rationality dependence: Corollary~\ref{cor:similar} and
+Proposition~\ref{prop:F1free} discharge three of the eleven shapes --- tile-similar, $F_1$, $F_1'$
+--- with no appeal to \cite{BeesonZhang} or \cite[Thm.~12.5]{BeesonIso}, whereas the remaining eight
+still use an integer-sided tile. The obstruction to doing the same for $F_2,F_3,F_4$ is visible in
+the table: there $\kappa\ne\pm1$, so the product pins only the single ratio $a/b$, and the law of
+cosines then leaves $c/b$ a quadratic irrationality that no further invariant condition controls.
+Establishing rationality on a general target remains exactly the content of the cited theorem.
+\end{remark}
+
 \section{The isosceles obstruction}\label{sec:isosceles}
 
 \begin{lemma}[Non-integrality]\label{lem:nonint}
@@ -1331,7 +1602,13 @@ so the sharpest open instances are the smallest such members: $N=105=b(a+b)=7\cd
 $F_1$ target $(105,56,91)$ of the tile $(8,7,13)$, then $120$, $132$, $154$, $184$. Each has
 membership undecided by any known necessary condition, and is exactly the kind of bounded
 existence question the engine of Section~\ref{sub:frontier} addresses --- though for $N$ of this
-size a complete exhaustive search is not yet computationally in reach.
+size a complete exhaustive search is not yet computationally in reach. We note the scope boundary
+explicitly: the construction families of \cite{Zhang} concern the six sporadic targets whose tile
+carries a $2\pi/3$ angle (plus a $\pi/3$ variant); the $3\alpha+2\beta=\pi$ branches carry no
+constructed family in the literature known to us. There the situation is now reversed: the
+base-$\beta$ member $(1,2)$ is settled with \emph{no} residue class and \emph{no} lower bound
+(Theorem~\ref{thm:realize12}), and the collar induction behind it reduces every base-$\beta$
+member to three finite seed searches (companion note, realizability section).
 \end{remark}
 
 \begin{remark}\label{rem:necessary}
@@ -1348,6 +1625,106 @@ checks the remaining branches), in exact agreement with the prediction of Zhang'
 Zhang's constructions realize $N=m^2b(a+2b)$ for $m$ in certain residue classes; the refined
 spectrum bounds the realized set from outside, and Theorem~\ref{thm:lattice} determines it
 exactly.
+\end{remark}
+
+\begin{proposition}[The rationality input, partly internalised]\label{prop:ratfree}
+On the six shapes whose invariant-product constant is $\kappa=-a/(a+2b)$ or $-b/(2a+b)$
+\textup{(iso base-$\alpha$, iso base-$\beta$, $F_3$, $F_4$, $F_3'$, $F_4'$)}, the tile's side ratios
+are rational, provided the configuration \textup{(}$\star$\textup{)} below does not occur. No
+appeal to \cite{BeesonZhang} is made.
+\end{proposition}
+
+\begin{proof}
+The counts $M_\alpha$, $M_\beta$ and the tile count $N$ are integers, so
+$\kappa=M_\alpha M_\beta/N$ is rational. With $P=M_\alpha M_\beta$, the identity
+$P(a+2b)=-aN$ clears to $a(N+P)=-2bP$, an integer-coefficient linear relation; the coefficient is
+nonzero because $P(a+2b)=-aN<0$ forces $P<0$. Hence $a/b=-2P/(N+P)\in\Q$, and likewise
+$b/a\in\Q$ in the mirrored family.
+
+For the third ratio, use the tiling. Each of the six targets has a side that is a rational multiple
+$\lambda c$ of $c$ and a side that is rational in $a,b$; up to a common scale the side data are
+$(c,c,a+2b)$, $(c,c,2a+b)$, $(c^2,c(a+2b),3b(a+b))$, $(ac,b(2a+b),c(a+b))$,
+$(c^2,c(2a+b),3a(a+b))$ and $(bc,a(a+2b),c(a+b))$. A side is covered by whole tile edges, so it
+carries a walk $Pa+Qb+Rc$ with $P,Q,R\ge0$. On a $c$-carrying side this gives
+$(\lambda-R)c=Pa+Qb$, exhibiting $c$ as a rational combination of $a$ and $b$ unless
+$\lambda=R$, in which case $Pa+Qb=0$ and hence $P=Q=0$: the side consists of $c$-edges alone. On a
+side rational in $a,b$ it gives $Rc\in\Q(a,b)$, so a single $c$-edge suffices. The only surviving
+configuration is
+\[
+(\star)\qquad\text{every $c$-carrying side is covered by $c$-edges alone, and every other side by
+$a$- and $b$-edges alone,}
+\]
+and outside it $c/b\in\Q$, so all three ratios are rational.
+\end{proof}
+
+\begin{remark}\label{rem:ratfreescope}
+The hypothesis is explicit and strictly weaker than the imported theorem: excluding $(\star)$ is a
+corner-and-walk exclusion of the kind carried out for the base-$\beta$ target, where the
+$\gamma$-trap shows every side carries a $c$-edge. It is not established here for these six shapes.
+The remaining two shapes are unaffected: on $F_2$ the same elimination gives a quadratic in $a/b$
+with discriminant $9\kappa^2-30\kappa+9$, and on the equilateral target $\kappa=3$ is constant, so
+both continue to use \cite{BeesonZhang}. The arithmetic is machine-checked in
+\texttt{lean/RationalityFree.lean}. That the condition has content is visible from the fact that
+$a/b\in\Q$ alone does not give $c/b\in\Q$: the latter asks that $(a/b)^2+(a/b)+1$ be a rational
+square, which holds for $a/b=3/5$ and $7/8$ but not for $a/b=1$ or $2$; the tiles for which it holds
+are the integer triangles with a $2\pi/3$ angle.
+\end{remark}
+
+\begin{remark}[The parallelogram of \cite{Zhang} is sharp]\label{rem:zhangsharp}
+The constructions of \cite{Zhang} pass through the parallelogram $Q(y,x)$ with angles
+$2\pi/3,\pi/3$ and sides $y=ab$, $x$, which is assembled there from sub-parallelograms of sides
+$(ab,a)$ and $(ab,b)$; the assembly therefore needs $x\in\langle a,b\rangle$, and the hypothesis
+$x>ab-a-b$ of that lemma is exactly the Frobenius number of $\langle a,b\rangle$. The undecided
+small members of the constructed families are the ones whose parameter falls in the Frobenius gap,
+so it is natural to ask whether $Q(ab,x)$ might still be tileable there by some assembly that is
+not a lattice of those sub-parallelograms.
+
+It is not. In this branch the only two-tile parallelogram carrying the angles $2\pi/3,\pi/3$ is the
+one glued along $c$ (sides $a,b$); gluing along $a$ or $b$ gives angles $(\beta+\gamma,\alpha)$
+resp.\ $(\alpha+\gamma,\beta)$, which do not match. A lattice of the admissible brick reproduces
+exactly $x=ka+lb$. Since $Q(ab,x)$ contains exactly $2x$ tiles, the gap cases are small enough to
+decide outright, and exhaustive search gives no tiling: on the tile $(3,5,7)$ the values $x=4$ and
+$x=7$ return \textsc{no tiling} ($1$ and $140$ nodes) while the control $x=8=3+5$ is found in $62$
+nodes, and on $(7,8,13)$ the value $x=13$ returns \textsc{no tiling} ($3967$ nodes) while the
+control $x=15=7+8$ is found in $667$. The two failing values $x=c$ are instructive: there the
+boundary walk exists --- a single $c$-edge spans the side --- so the obstruction is not the walk
+arithmetic but the interior. We record the conclusion at the strength the evidence supports: for
+the instances tested, $Q(ab,x)$ is tileable if and only if $x\in\langle a,b\rangle$, so the
+hypothesis of that lemma is necessary and not merely convenient; in general this is a conjecture.
+
+This closes one route to the small members but not the question itself: a target triangle with $N$
+below the constructed range could still be tiled by a dissection that never uses $Q(ab,x)$. That
+question can be attacked directly, one instance at a time.
+\end{remark}
+
+\begin{remark}[Instances below the constructed range]\label{rem:zhangsmall}
+The families of \cite{Zhang} realize $N=m^2\kappa$ for $m$ from an explicit bound onward, typically
+$m\ge M=3\lceil (c^2-a-b)/(ab)\rceil$, and the conjecture there is that no smaller $m$ occurs. The
+instances with $m<M$ are small enough to decide outright. Exhaustive search settles the following,
+each returning \textsc{no tiling}; the parameters are those of \cite[Table 1]{Zhang}, and $M=9$ in
+every row listed.
+\begin{center}
+\begin{tabular}{llrrr}
+\hline
+tile & target & $m$ & $N$ & nodes\\
+\hline
+$(3,5,7)$   & equilateral $\;m^2ab$                       & $1$ & $15$  & $156$\\
+$(3,5,7)$   & equilateral                                  & $2$ & $60$  & $853\,731$\\
+$(7,8,13)$  & equilateral                                  & $1$ & $56$  & $156\,646$\\
+$(5,16,19)$ & equilateral                                  & $1$ & $80$  & $1\,222\,714$\\
+$(3,5,7)$   & $(\beta,\alpha+\beta,2\alpha+\beta)\;m^2a(a+b)$ & $1$ & $24$  & $8\,658$\\
+$(3,5,7)$   & $(\beta,\beta,\pi-2\beta)\;m^2a(b+2a)$        & $1$ & $33$  & $171\,950$\\
+\hline
+\end{tabular}
+\end{center}
+The targets are determined by the tile: for $(3,5,7)$ one has $\cos\alpha=13/14$ and
+$\alpha+\beta=\pi/3$, whence $\sin(2\alpha+\beta)=\sin(\alpha+2\beta)=4\sqrt3/7$,
+$\sin2\beta=55\sqrt3/98$ and $\sin2\alpha=39\sqrt3/98$; the rows above are then the triangles
+$(15,21,24)$ and $(21,21,33)$, whose areas are exactly $24$ and $33$ tile areas. This is evidence for
+the conjecture of \cite{Zhang} on six instances spanning three tiles and two target shapes, not a
+proof of it: the conjecture asserts the exclusion for all $m<M$ on all six sporadic targets. We note
+also that $N=24$ and $N=33$ do occur elsewhere in the spectrum, by commensurable constructions; the
+statement decided here is per (target, tile) pair.
 \end{remark}
 
 \begin{proposition}[The other branches]\label{prop:otherspectra}
@@ -1648,7 +2025,12 @@ $(2\alpha,\alpha,2\beta)$ instance satisfies Beeson's second tiling equation at
 $(M,s)=(5,\tfrac12)$ --- $25\cdot\frac{(2-\frac14)(3-\frac14)}{(1-\frac12)^2(2+\frac12)^2}=77$ ---
 and his four-component construction \cite{BeesonIII} realizes every solution, so \emph{a triangle
 can be cut into $77$ congruent triangles}: the $(2\alpha,\alpha,2\beta)$ triangle over the same
-tile $(2,3,4)$ that Theorem~\ref{thm:44} uses for $44$.
+tile $(2,3,4)$ that Theorem~\ref{thm:44} uses for $44$. We need not rely on that construction: the
+engine finds the tiling directly (node $849\,624$), and its certificate is \emph{machine-verified in
+Lean~4 with no axioms whatsoever} (\texttt{lean/Tiling77.lean}: all $77$ triangles congruent to
+$16\cdot(2,3,4)$ over $\Z[\sqrt{15}]$, contained in the target $16\cdot(28,16,33)$, an explicit
+separating edge-line for each of the $2926$ pairs, and the exact area sum). The realizability of
+$77$ therefore rests on a kernel-checked object rather than on a cited construction.
 
 For values that are \emph{not} squarefree the $\gamma=2\alpha$ branch needs more than
 Theorem~11.7. Beeson's isosceles paper provides exactly the needed machinery: the tile must be
@@ -1697,12 +2079,13 @@ $63$; and the $7\,232\,464$-node exhaustion at $66$ (Remark~\ref{rem:isobeta}).
 \end{proof}
 
 \begin{remark}[The value $70$ and the unsound $g\mid M$ exclusions]\label{rem:seventy}
-The value $N=70$ is undetermined. Its single surviving instance is
-isosceles-$\alpha$: tile $(6,5,9)$, $M=8$, target $(45,45,70)$, which passes the tiling equation
-\emph{and} side-integrality ($X=45$, and indeed $(2f+e)=8\mid M$); the exclusion rested solely on
-$g\mid M$ from \cite[Thm.~19]{BeesonIII} ($g=3\nmid8$), whose proof is unsound
-(Remark~\ref{rem:b3prime}); Beeson's own Table~5 marks this very instance ``?''. We therefore
-regard $70$ as \emph{undetermined} pending the direct exhaustive search of this instance. The value
+The value $N=70$ is excluded. Its single surviving instance is isosceles-$\alpha$: tile $(6,5,9)$,
+$M=8$, target $(45,45,70)$, which passes the tiling equation \emph{and} side-integrality ($X=45$,
+and indeed $(2f+e)=8\mid M$); the previously published exclusion rested solely on $g\mid M$ from
+\cite[Thm.~19]{BeesonIII} ($g=3\nmid8$), whose proof is unsound (Remark~\ref{rem:b3prime}), and
+Beeson's own Table~5 marks this very instance ``?''. The exhaustive search settles it directly:
+the instance admits no tiling ($134\,631\,158$ nodes, walk- and corner-pruned). The exclusion of
+$70$ therefore rests on the search rather than on \cite[Thm.~19]{BeesonIII}. The value
 $21$, whose analogous isosceles-$\alpha$ candidate (tile $(2,3,4)$, $M=5$,
 target $(12,12,21)$) was likewise previously killed only by the unsound $g\mid M$, \emph{is}
 excluded: the engine exhausts the instance ($13\,659$ nodes, no tiling), so
@@ -1739,10 +2122,11 @@ construction \cite{BeesonIII}, and $80=4^2+8^2$ by the biquadratic (commensurabl
 \cite{BeesonSeven}.
 
 \begin{theorem}\label{thm:frontier4}
-No triangle can be cut into $76$ congruent triangles. Every $N\le 80$ except $N=70$
-(Remark~\ref{rem:seventy}) is thereby determined: the realizable values are exactly $1$--$13$'s
-known members together with $44,77,80$ and the standard commensurable and
-prime\,$\equiv1\!\pmod4$ values, and all others are excluded; in particular every $N\le 69$ is determined without exception.
+No triangle can be cut into $76$ congruent triangles. Every $N\le 80$ is thereby determined,
+with no exception: the realizable values are exactly $1$--$13$'s known members together with
+$44,77,80$ and the standard commensurable and prime\,$\equiv1\!\pmod4$ values, and all others are
+excluded. The last undetermined value below $80$ was $N=70$, settled by exhaustive search of its
+single surviving instance (Remark~\ref{rem:seventy}).
 \end{theorem}
 \begin{proof}
 The branch sweep and $\gamma=2\alpha$ boundary algorithm above settle $76$; Theorem~\ref{thm:main}
@@ -1750,6 +2134,104 @@ excludes the prime $79$; Theorems~\ref{thm:frontier2}--\ref{thm:frontier3} give 
 exclusions through $78$ other than $70$; and the four-component and biquadratic constructions
 realize $77$ and $80$.
 \end{proof}
+
+\subsection*{The values $81$ to $90$.}
+The sweep continues past $80$ with no change of method. Five values are realizable outright by the
+commensurable construction, being sums of two squares: $81=9^2$, $82=1^2+9^2$, $85=2^2+9^2$,
+$89=5^2+8^2$, $90=3^2+9^2$. The prime $83\equiv11\pmod{12}$ is excluded by
+Theorem~\ref{thm:fullprime}. For $86$ every branch is dead by its $N$-form. That leaves $84$, $87$
+and $88$, at which the $\gamma=2\alpha$ branch is alive by $N$-form ($84$ and $88$ are not
+squarefree) and is killed by the boundary algorithm of Lemmas 11.2--11.17 of \cite{BeesonIso}
+(\texttt{code/gamma2alpha.py}: $82$--$89$ all return \emph{no possible boundary tiling}; the
+survivors in the band are $81$ and $90$, both already realizable). The surviving instances are then
+finitely many isosceles $3\alpha+2\beta=\pi$ targets with a uniquely determined tile, and the engine
+decides each:
+\[
+\begin{array}{llll}
+N=87: & (208,87,256) \text{ on } (1392,1392,1131), & 2\,107 \text{ nodes}; \\
+      & (1892,87,1936) \text{ on } (3828,3828,3741), & 278\,197 \text{ nodes};\\
+N=88: & (117,88,169) \text{ on } (1144,1144,792), & 489 \text{ nodes}; \\
+      & (483,88,529) \text{ on } (2024,2024,1848), & 15\,493 \text{ nodes}.
+\end{array}
+\]
+All four are exhausted with no tiling. For $87$ that settles the value. For $88$ one further
+instance must be treated, from a family that cannot arise below it; see
+Remark~\ref{rem:F4at88}.
+
+\begin{theorem}\label{thm:frontier5}
+No triangle can be cut into $86$ or $87$ congruent triangles. In the range $81\le N\le 90$ the
+realizable values are exactly $81,82,85,89,90$; $86$ and $87$ are excluded unconditionally; $83$ is
+excluded under the hypothesis of Theorem~\ref{thm:fullprime} and not otherwise
+(Remark~\ref{rem:eightythree}); and $84$ and $88$ remain open, each awaiting the exhaustion of
+instances currently under search.
+\end{theorem}
+\begin{proof}
+For $86$ every branch is dead by its $N$-form (commensurable, tile-similar, right-angle and the four
+$3\alpha+2\beta=\pi$ shapes all fail their defining equations; the $2\pi/3$ spectra of
+Theorems~\ref{thm:frontier2}--\ref{thm:frontier3} exclude it, and the scalene $2\pi/3$ shapes cannot
+reach it by Remark~\ref{rem:F4at88}; $\gamma=2\alpha$ dies because $86$ is squarefree). For $87$ the
+same sweep leaves the two instances tabulated above, each exhausted by the exact search of
+Section~\ref{sec:verification}. The realizable values are sums of two squares as listed, and $83$ is
+Theorem~\ref{thm:fullprime}.
+\end{proof}
+
+\begin{remark}[The scalene $2\pi/3$ shape $F_4$ first becomes possible at exactly $88$]\label{rem:F4at88}
+The sweeps of Theorems~\ref{thm:frontier2}--\ref{thm:frontier4} test the isosceles and $F_1$ targets
+among the $2\pi/3$ shapes and omit the scalene families $F_2,F_3,F_4$, on the ground that their
+minimal counts exceed the range under consideration. That ground is exact, and it expires inside the
+present band. Writing $N=k^2N_0$ with $N_0$ the closed-form ratio of
+Section~\ref{sec:full}, the minima over primitive $120^\circ$-triples are
+\[
+\min N_0(F_2)=143 \ \text{ at } (a,b)=(3,5), \qquad
+\min N_0(F_3)=264 \ \text{ at } (5,3), \qquad
+\min N_0(F_4)=88 \ \text{ at } (3,5),
+\]
+so in $N\le 90$ these three families contribute exactly one instance, and it occurs at the endpoint
+$N=88$: the tile $(3,5,7)$, with its $2\pi/3$ angle opposite $7$, on the scalene target
+$(21,55,56)$, at $k=1$. The area ratio is exact, $660\sqrt3 = 88\cdot\tfrac{15\sqrt3}{2}$. It is the
+first instance from any of $F_2,F_3,F_4$ to enter the frontier sweep --- scalene targets themselves
+are not new, the sweep of Section~\ref{sec:full} having already searched the same tile $(3,5,7)$ on
+$(15,21,24)$ at $N=24$ and $(7,8,13)$ on $(56,104,120)$ at $N=120$ --- and it is the reason $88$ is
+not settled by the four exhaustions above. The instance is under search. The bound also confirms
+that no scalene $2\pi/3$ shape can affect any $N<88$, so Theorem~\ref{thm:frontier4} and everything
+below it are untouched.
+\end{remark}
+
+\begin{remark}[The third isosceles base-$\alpha$ instance]\label{rem:isoalpha84}
+The isosceles base-$\alpha$ shape of \cite[Thm.~19]{BeesonIII} must be enumerated \emph{without} that
+theorem's divisibility condition $g\mid M$, whose proof is unsound (Remark~\ref{rem:b3prime}):
+imposing it reports the branch empty at $N=21$ and $N=70$, whose instances are real and needed the
+engine. Solving the branch's defining cubic
+$N/M^2=(1+s)(2-s^2)/\bigl((1-s)(2+s)^2\bigr)$ over the rationals in $0<s<1$, the solutions with
+$N\le 90$ are exactly three:
+\[
+(N,M,s)=(21,5,\tfrac12),\qquad (70,8,\tfrac23),\qquad (84,10,\tfrac12),
+\]
+the first two being the instances of Theorem~\ref{thm:frontier2} and Remark~\ref{rem:seventy},
+exhausted at $13\,659$ and $134\,631\,158$ nodes. The third is new and is the only one above $80$.
+Since $s=e/f$ it forces $(e,f)=(1,2)$ and hence the tile $(2,3,4)$ --- the same tile as the
+$44$-tiling --- on the isosceles $(24,24,42)$ with base angles $\alpha$, apex at $(21,3\sqrt{15})$.
+So $84$ carries three instances, not the two the $(a+b)$-shape sweep produces: $(10,21,25)$ on
+$(210,210,84)$, already exhausted at $78$ nodes, and $(110,21,121)$ on $(462,462,420)$, exhausted at
+$4\,347\,701$ nodes, leaving only $(2,3,4)$ on $(24,24,42)$ under search. Sparse though this branch is --- three instances in
+ninety values --- it is not exhausted by them, which is why the band cannot be closed by $N$-forms
+alone.
+\end{remark}
+
+\begin{remark}[What $83$ rests on]\label{rem:eightythree}
+Among the values of the band, $83$ is of a different kind from the rest, and the distinction is
+sharper than mere corroboration. Every prime $\equiv11\pmod{12}$ below it --- $11,23,47,59,71$ ---
+was settled by an independent certified exhaustive search of its base-$\beta$ instance, so those
+exclusions stand on the engine alone and need no branch theorem. For $83$ the single surviving
+instance is the tile $(1722,83,1764)$ on $(3486,3486,3403)$, the base-$\beta$ member $(e,f)=(5,6)$,
+and that search has not terminated. Its exclusion therefore rests entirely on
+Theorem~\ref{thm:fullprime}, which is conditional on the companion's complete-corner-wall
+hypothesis (Remark~\ref{rem:conditional}). \emph{So $83$ is not excluded unconditionally by this
+paper}, and it is the first value for which that is true: everything below $81$ is unconditional,
+either by an $N$-form, by Theorem~\ref{thm:main} for primes $\equiv7\pmod{12}$, or by an exhaustion.
+We state this explicitly because the boundary between the two kinds of result is easy to lose in a
+table, and because the same hypothesis governs every $N\equiv11\pmod{12}$ above $83$ as well.
+\end{remark}
 
 \subsection*{Decidability.}
 The pattern of the last two subsections is not an accident. Every branch of the classification now
@@ -1845,6 +2327,37 @@ isosceles-$(\alpha{+}\beta)$ instance, tile $(90,19,100)$ on $(380,380,342)$, ex
 engine at $955\,474$ nodes); with $79$ prime (Theorem~\ref{thm:main}) and $80=4^2+8^2$ realized,
 \emph{every $N\le80$ except the pending $70$} is now determined (Theorem~\ref{thm:frontier4}).
 
+\subsection*{Progress on the base-$\beta$ branch.}\label{sub:basebetaprogress}
+Theorem~\ref{thm:fullprime} is conditional on Hypothesis (walls) for the branch
+$3\alpha+2\beta=\pi$ at $m=1$, and the companion paper records the following unconditional
+progress on that hypothesis.
+
+For the thin subfamily $e=1$ the hypothesis holds for $f\le6$, that is for the members with
+$N=3f^2-1$ equal to $11,26,47,74,107$. For two of them the corresponding $m=1$ target is in
+addition shown to admit no tiling by an independent exhaustive search ($132\,519$ nodes at
+$f=5$ and $1\,251\,382$ at $f=6$). These searches concern one instance each and are statements
+about the base-$\beta$ branch at $m=1$; they are not exclusions of the integers themselves, and
+indeed $74=5^2+7^2$ is a tile count by the commensurable construction.
+
+For $e\ge2$ the base walk is now determined. The walk of a separated member, meaning one with
+$f^2>2ef+e^2$, admits exactly three edge decompositions; the $\gamma$-trap deletes the one with no
+$c$-edge, and the remaining non-walls column $(0,e,2e)$ is excluded outright: with no $a$-edge on
+the base each corner tile lays $c$ on the base and $a$ on the side, the unique fills of $\beta$,
+$\alpha$ and $\alpha+\beta$ force the corner partner and then every subsequent one, and the base is
+driven to consist of $c$-edges alone, which would require $f^2\mid e^3$. Hence at a separated
+thick member the base walk is the walls form, with $f$ $a$-edges, $e$ $b$-edges and $e$ $c$-edges.
+For three thick members the $m=1$ target is likewise exhausted, establishing the hypothesis
+there: $(e,f)=(2,3)$, $(2,5)$ and $(3,4)$, with $N=23$, $71$ and $39$ and node counts
+$19\,677$, $553\,417$ and $825\,724$. The first two of these integers are primes congruent to
+$11$ modulo $12$; all three are already excluded as tile counts by other means recorded above.
+
+What remains for the hypothesis in general is the side condition, namely the exclusion of
+$1\le p\le(f-1)/e$ where $fp$ is the number of $a$-edges on a side, together with the members
+with $f\le(1+\sqrt2)e$, for which the base walk admits further columns. Both reduce to one
+question: whether the tile across a corner-chain $b$-edge lays a whole $b$ there. At the corner
+itself that $b$-edge joins a base vertex to a side vertex and the answer is yes unconditionally;
+one step in, its upper end is interior, and the configurations in which an edge overruns such an
+end occur in genuine partial configurations at every scale examined, including $m=1$.
 \subsection*{Standing of the inputs.}
 The external inputs to Theorem~\ref{thm:main} and their publication status are as follows:
 Laczkovich's classification papers \cite{Laczkovich1995,Laczkovich2012} and the rep-tiling theorem
@@ -1876,6 +2389,18 @@ of Theorem~\ref{thm:iso} hold on the genuine $2673$-tile isosceles tiling of
 Herdt~\cite{BeesonIso}: for its tile $(5,3,7)$ and scale $k=27$, $N=k^2(a+2b)/b=2673$ and
 $M=k(2b+a-2c)/(c+a-b)=-9$ are integers, as they must be on any true tiling.
 
+The \emph{geometric} layer is also machine-checked, end to end and with no prose joints. That the
+angles of the tiles meeting an interior point sum to $2\pi$ --- the fact a dissection argument uses
+constantly and which has no counterpart in Mathlib --- is obtained without any theory of angular
+measure, by a chain that is purely measure-theoretic:
+\texttt{TangentCone.poly\_inter\_ball\_eq\_coneAt} (a polytope agrees with its tangent cone at a
+point inside a small ball), \texttt{SectorArea.volume\_sector} (the unit sector of angle $\theta$
+has area $\theta/2$, via polar coordinates), \texttt{Wedge.sector\_eq\_halfplanes} (that polar
+sector is exactly the intersection of two half-planes with the unit disc),
+\texttt{E2Join.volume\_halfplane\_wedge} and \texttt{E2Join.volume\_wedge} (the same area
+statement transported to \texttt{EuclideanSpace} $\R$ \texttt{(Fin 2)}), and finally
+\texttt{AngleSumAssembled.angle\_sum\_interior}. Every step is axiom-clean.
+
 The entire \emph{arithmetic and combinatorial} layer of the proof is formalized and machine-checked
 in Lean~4 with Mathlib (\texttt{lean/Erdos634.lean}, twenty-three theorems); every theorem depends only
 on the standard axioms \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}, with no
@@ -1902,6 +2427,10 @@ Section~\ref{sec:prelim}), via Fermat's two-squares theorem;
 \item[] \texttt{iso\_admissible}: Theorem~\ref{thm:admissible} --- given $b=de^2$ with $d$
 squarefree, the area equation and $\Phi$-divisibility force $k=dew$, $N=dw^2(a+2b)$ and
 $e\mid w(c-a-b)$;
+\item[] \texttt{F1\_product}, \texttt{F1\_Ma}, \texttt{F1\_Mb}, \texttt{F1\_ratio},
+\texttt{F1\_pin}, \texttt{disc\_not\_square}, \texttt{tile\_similar\_not\_prime}: the arithmetic of
+Proposition~\ref{prop:product}, Corollary~\ref{cor:similar} and Proposition~\ref{prop:F1free}
+(\texttt{lean/InvariantProduct.lean});
 \item[] the finite arithmetic of the frontier sweeps, in eight theorems: the
 $\pi/3$-equilateral square criterion fails at $14$ and $15$; the first tiling equation has no
 admissible solution there; the two equilateral factor-pair uniqueness statements; the boundary
@@ -1923,9 +2452,11 @@ rationality theorem of Beeson and Zhang; the shape list coincides with Zhang's s
 types~\cite{Zhang}. The present contribution is the invariant of Section~\ref{sec:invariant}, the
 consequent exclusion of \emph{every} prime for the isosceles $2\pi/3$ branch (where Beeson had ruled
 out only $N<36$ and left primality open), and the self-contained reduction of the scalene types. Its
-arithmetic layer is machine-checked (Section~\ref{sec:verification}); the two geometric lemmas rest
-on written proofs supported by numerical checks, and the whole is offered for independent
-refereeing.
+arithmetic layer is machine-checked, and so now is the geometric layer, the interior angle sum
+included (Section~\ref{sec:verification}). What is \emph{not} settled is the base-$\beta$ branch:
+Theorem~\ref{thm:fullprime} is conditional on the complete-corner-wall hypothesis of the companion
+note, and Remark~\ref{rem:conditional} states precisely what survives without it. The whole is
+offered for independent refereeing.
 
 \begin{thebibliography}{99}
 
@@ -1944,6 +2475,9 @@ in Integers.
 arXiv:1811.09723.
 
 \bibitem{BeesonEq} M.~Beeson, \emph{Tiling an equilateral triangle}, arXiv:1812.07014.
+
+\bibitem{BeesonNoPrime} M.~Beeson, \emph{No prime tiling of an isosceles triangle},
+arXiv:2607.19572, 21~July~2026.
 
 \bibitem{BeesonZhang} M.~Beeson and Y.~X.~Zhang, \emph{Rationality of certain triangle tilings},
 arXiv:2604.01314.

@@ -102,7 +102,15 @@ for N in (14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46):
                             # non-square k^2 cannot occur here (spectrum passed)
                         else:
                             hits.append((N, name, a, b, c))
-    # F2/F3/F4 minimum N0 = 88 > 15, checked in verify_shapes.py
+    # The scalene 2pi/3 families F2/F3/F4 are omitted here because their minimal counts exceed
+    # the range this sweep was written for.  That is a claim about the range, so it is ASSERTED,
+    # not commented: min N0(F2)=143, min N0(F3)=264, min N0(F4)=88 over primitive 120-triples
+    # (verify_shapes.py).  If the sweep is ever run at or above the smallest of these, the omission
+    # is no longer sound and this fires.  It did fire, at N=88 -- see inst/g88c.txt.
+    SCALENE_MIN_N0 = 88          # = min N0(F4), attained at (a,b)=(3,5), tile (3,5,7)
+    assert N < SCALENE_MIN_N0, (
+        f"N={N} reaches the scalene 2pi/3 families (min N0 = {SCALENE_MIN_N0}); "
+        "F2/F3/F4 must be swept explicitly rather than skipped")
     report(N, "2pi/3 sporadic shapes [spectrum]", "dead" if not hits else "ALIVE", str(hits))
 
     # ---- pi/3 tile, equilateral target: Beeson-Eq Thm 3: (9N - M^2)(N - M^2) = square ----
@@ -165,8 +173,12 @@ for N in (14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46):
         if issq(disc):
             s = Fraction(-B + isqrt(disc), 2 * A)
             if 0 < s < 1:
-                if M % s.denominator == 0:      # Thm 14: g divides M
-                    alive.append((M, s))
+                # NOTE: Beeson III Thm 14's "g | M" is NOT applied.  Thm 14 is refuted outright by
+                # the 99-tiling (Tiling99.lean), and the g-divisibility arguments of that paper rest
+                # on its Lemma 8 ("g squarefree"), which is false -- see rem:b3prime.  Filtering by
+                # g | M here would silently hide live instances (it hides N=21 and N=70 in the
+                # iso-alpha branch below, both of which are genuine and needed the engine).
+                alive.append((M, s))
     report(N, "3a2b iso-beta [B-III Thm 14]", "dead" if not alive else "ALIVE", str(alive))
 
     # ---- 3a+2b=pi, isosceles base alpha [B-III Thm 19]: ----
@@ -180,8 +192,12 @@ for N in (14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46):
         cf = [int((v - 1) * den), int((3 * v - 1) * den), int(2 * den), int((2 - 4 * v) * den)]
         for s in rational_roots(cf):
             if 0 < s < 1:
-                if M % s.denominator == 0:      # Thm 19: g = gcd(a,c) = f divides M
-                    alive.append((M, s))
+                # NOTE: Beeson III Thm 19's "g | M" is NOT applied -- its proof is unsound
+                # (rem:b3prime: it needs g^5 nondivisibility of b c^3 (a+c), which carries g^7
+                # identically when c = g^2).  Applying it would report "dead" at N=21 and N=70,
+                # whose iso-alpha instances are real and were exhausted by the engine at 13,659 and
+                # 134,631,158 nodes.  The surviving list is therefore the SOUND one.
+                alive.append((M, s))
     report(N, "3a2b iso-alpha [B-III Thm 19]", "dead" if not alive else "ALIVE", str(alive))
 
     # ---- 3a+2b=pi, isosceles base alpha+beta [B-III Thm 17 + congruence (28)] ----
