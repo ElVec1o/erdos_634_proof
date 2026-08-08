@@ -1355,6 +1355,58 @@ further $a$-edges, and the filler's own $a$-edge, whose endpoint is exactly the 
 $E=Q+(c,0)=(20,0)+cu$; the direct-filler sub-case leaves $E$ unblocked and remains open.
 \end{remark}
 
+\begin{proposition}[The double-$c$ kill at any initial block length]\label{prop:doublec}
+Let $e=1$, $m=1$, $f\ge3$, and let an equal side carry an $a$-edge and have initial $c$-block of
+length $j\ge2$. Write $u$ for the unit vector along that side and place the base corner at the
+origin. Then:
+\begin{enumerate}
+\item[\textup{(i)}] $j\le f-1$, and the chord from $j\,c\,u$ to the base point $(jf,0)$ has length
+exactly $jb$, divided into $j$ segments of length $b$ by $Q_i=i\,c\,u+(j-i)(f,0)$;
+\item[\textup{(ii)}] that chord admits exactly one partition into tile edges, namely $j$ $b$-edges;
+\item[\textup{(iii)}] the $\beta$-slot tile at $j\,c\,u$ presents, from its $\beta$-corner, a flank
+of $\{a,c\}$, and each choice leaves a run outside $\langle a,b,c\rangle$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+\emph{(i)} The side begins and ends with a $c$-edge (Theorem~\ref{thm:e1reduce}(i)), so an initial
+block of length $\ge2$ leaves a further $c$ at the far end and $n_c\ge3$; with $n_c=f-k$ and $k\ge1$
+(the side carries an $a$-edge) this gives $j\le n_c=f-k\le f-1$. For the chord, $\cos\beta$ is
+$(3f^2-1)/(2f^3)$ by the law of cosines on $(f,f^2-1,f^2)$, which is the isosceles ratio of the
+target, so with $c\,u=(f^2\cos\beta,f^2\sin\beta)$,
+\[
+|j\,c\,u-(jf,0)|^2=j^2\bigl(f^2-1\bigr)^2=(jb)^2 ,
+\]
+and $Q_i$ is the affine combination dividing the segment in ratio $i:(j-i)$, so consecutive $Q_i$
+are $b$ apart (\texttt{chord\_jb}, \texttt{chord\_jb\_segment}).
+
+\emph{(ii)} Reducing $x a+y b+z c=jb$ modulo $f$ forces $y\equiv j$, while $yb\le jb$ forces $y\le j$;
+as $0\le j\le f-1$ this gives $y=j$, hence $xa+zc=0$ and $x=z=0$ (\texttt{partition\_jb\_gen}, which
+is general in $(e,f)$; \texttt{partition\_30} is its case $f=4$, $j=2$).
+
+\emph{(iii)} $\beta$ is opposite $b$, so its incident edges are $a$ and $c$: the tile in the
+$\beta$-slot lays an $a$-edge (direct) or a $c$-edge (mirrored), never a $b$-edge. Both runs left on
+the chord are gaps, by the uniform statement that $jb-t\notin\langle a,b,c\rangle$ whenever
+$1\le j\le f-1$ and $f\mid t$, $t>0$ (\texttt{gap\_jb\_minus\_multiple}): indeed $a=f$ and $c=f^2$
+are both multiples of $f$. Concretely, if the tile is direct its $a$-edge does not reach $Q_{j-1}$
+and the remainder $b-a$ is a gap, so no edge ends at $Q_{j-1}$ and some edge crosses it; if it is
+mirrored its $c$-edge overshoots $Q_{j-1}$ by $c-b=e^2=1$ and crosses it outright. Either way a
+through-edge occupies the whole half-turn on its side
+(\texttt{through\_edge\_exclusive}), the segment to $(jf,0)$ is a single edge, and the far side must
+partition $jb-a$ resp.\ $jb-c$ --- gaps.
+\end{proof}
+
+\begin{remark}\label{rem:doublecscope}
+Proposition~\ref{prop:doublec} is the $f=4$ argument of Remark~\ref{rem:walls14} with every constant
+replaced by its general form: the three runs $11,26,14$ against $\langle4,15,16\rangle$ are
+$b-a$, $2b-a$, $2b-c$, i.e.\ the cases $(j,t)=(1,a),(2,a),(2,c)$, and the $2b$ chord is $j=2$. The
+bound $j\le f-1$ of \emph{(i)} is sharp for \emph{(iii)}: at $j=f$ both $jb-a=f(f^2-2)$ and
+$jb-c=f(f^2-f-1)$ are multiples of $f$ and lie in the semigroup. What the proposition does not
+supply is the step that forces the west $\alpha$-slot tile $X=T_1+(f,0)$ once an edge crosses
+$Q_{j-1}$; at $f=4$ the mirrored $X$ is excluded by base overshoot, and we have not checked that
+exclusion for general $f$. Escape route 2 of Conjecture~\ref{conj:advance} closes exactly when it is.
+\end{remark}
+
 \begin{conjecture}[Advance-and-collide]\label{conj:advance}
 Let $e=1$, $m=1$, $f\ge3$, and suppose an equal side carries an $a$-edge. Then the corner cascade
 --- the $b$-partner of the corner tile, the $c$-chord dichotomy on successive both-ends-blocked
