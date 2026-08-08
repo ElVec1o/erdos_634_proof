@@ -705,6 +705,13 @@ fn main() {
                     stop.store(true, Ordering::Relaxed);
                     return;
                 }
+                // A deterministic run that finished inside its budget explored everything this
+                // ordering can reach; repeating it verbatim is a busy loop. (It still proves
+                // nothing -- the finder is incomplete.)
+                if !shuffle_on && s.nodes < budget {
+                    stop.store(true, Ordering::Relaxed);
+                    return;
+                }
                 r += 1;
             }
         }));
