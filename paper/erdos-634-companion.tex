@@ -1421,8 +1421,35 @@ $j=2$. The general reason is that the last segment of the chord has length exact
 competing edge has length $c=b+e^2$, and the chord's far end is a base point, so the excess leaves
 the target. Consequently escape route 2 of Conjecture~\ref{conj:advance} is closed at every initial
 block length, for every $f\ge3$. Route 1 --- a deviating $a$-run whose new $c$-chord ends beyond the
-forced region --- is untouched, and is what now stands between this and Hypothesis~\ref{hyp:walls}
-at $e=1$.
+forced region --- is what now stands between this and Hypothesis~\ref{hyp:walls} at $e=1$, and the
+next remark says exactly how it behaves in $f$.
+\end{remark}
+
+\begin{remark}[Route 1 escapes by exactly $a$, uniformly in $f$]\label{rem:route1uniform}
+The escape recorded at $(1,4)$ as ``$25.875>21.875$ exactly'' is not a numerical accident of $f=4$,
+and it does not improve with $f$. Write $A=c\,u$ for the upper end of the side's first $c$-edge and
+$B=(c+a)u$ for the upper end of the run's first $a$-edge. The second side tile carries its $a$-edge
+$AB$ on the side and, being mirrored (Lemma~\ref{lem:firstrun}), presents $\beta$ at $A$, so its
+$c$-edge runs from $A$; its third vertex is
+\[
+V=c\,u+(c,0),\qquad |V-A|=c,\quad |V-B|=b ,
+\]
+so that $c$-edge is \emph{horizontal}, at height $c\sin\beta$. The deviating $a$-run's new $c$-chord
+starts at the base junction $(f+c,0)$ and has upper endpoint $E=(f+c,0)+c\,u$, at the same height.
+Hence
+\[
+x(E)-x(V)=f
+\]
+identically: the chord's endpoint overshoots the blocking edge by exactly one $a$-length, for every
+$f$. At $f=4$ this is $25.875-21.875=4$.
+
+Two consequences. The escape condition $x(E)>x(V)$ reads $f>0$, so it holds in every member: there
+is no analogue here of the sign conditions $f^3-3f^2+1$ and $f^3-3f^2-f+1$ by which
+Lemma~\ref{lem:topjunction} disposes of its case, and no threshold in $f$ beyond which route 1
+closes itself. Any proof must therefore recover the blocking by a different mechanism rather than by
+showing the overshoot absent. Second, the overshoot being exactly $a$ --- and $E$ lying on the same
+horizontal line as a whole $c$-edge, one $a$-length past its end --- is a strong constraint on what
+that mechanism can be, and is the natural place to look next.
 \end{remark}
 
 \begin{conjecture}[Advance-and-collide]\label{conj:advance}
