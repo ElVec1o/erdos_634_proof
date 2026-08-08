@@ -1363,12 +1363,31 @@ collision: a $\beta$-slot, whose tile presents the next base edge from flanks $\
 position where the word of Theorem~\ref{thm:e1reduce} carries its $b$-edge, or a repeated $\gamma$.
 Consequently $p=0$: Hypothesis~\ref{hyp:walls} holds for every $(1,f)$.
 
-The conjecture is proved here for $f=2$ (Lemma~\ref{lem:ple}), $f=3$ (Theorem~\ref{thm:walls13}),
-and at $f=4$ for four of the five base words. The two ways a branch presently escapes the collision
-are exactly: a deviating $a$-run whose new $c$-chord ends beyond the forced region (so that
-tile-interior blocking fails), and an initial side $c$-block of length at least $2$ (so that the
-first-run orientation is not forced). Any proof of the general case must close these two gaps and
-no others.
+The conjecture is proved here for $f=2$ (Lemma~\ref{lem:ple}), $f=3$ (Theorem~\ref{thm:walls13})
+and $f=4$ (Theorem~\ref{thm:walls14}, which exhausts all six admissible base words). The two ways a
+branch escapes the collision in the general argument are exactly: a deviating $a$-run whose new
+$c$-chord ends beyond the forced region (so that tile-interior blocking fails), and an initial side
+$c$-block of length at least $2$ (so that the first-run orientation is not forced). Any proof of the
+general case must close these two gaps and no others.
+
+The second gap is now general except for its enumeration. Its ingredients carry no restriction on
+$f$: \texttt{first\_run\_kill} and \texttt{through\_edge\_exclusive} are statements in
+$(n_\alpha,n_\beta,n_\gamma)$ alone; Lemma~\ref{lem:topjunction} reduces to the signs of
+$f^3-3f^2+1$ and $f^3-3f^2-f+1$; the chord carrying the three runs has length exactly $2b$ with $Q$
+its midpoint for every $f$, since with the base corner at the origin and $u$ the unit vector along
+the equal side,
+\[
+|2c\,u-(2f,0)|^2=4(f^2-1)^2=(2b)^2,\qquad |2c\,u-Q|^2=|Q-(2f,0)|^2=(f^2-1)^2=b^2
+\]
+(\texttt{chord\_two\_b}, \texttt{chord\_two\_b\_half}); and the three runs $b-a=f^2-f-1$,
+$2b-a=2f^2-f-2$, $2b-c=f^2-2$ are gaps of $\langle f,\,f^2-1,\,f^2\rangle$ for every $f\ge3$
+(\texttt{double\_c\_kill}), the values $11,26,14$ against $\langle4,15,16\rangle$ being the case
+$f=4$. At $f=2$ the last two runs lie in the semigroup, which is where the hypothesis $f\ge3$ of
+Theorem~\ref{thm:e1reduce} is used. What is not yet general is the enumeration: a side with initial
+$c$-block at least $2$ begins and ends with a $c$-edge, so $n_c\ge3$ and the double-$c$ walks are
+$(fk,0,f-k)$ with $1\le k\le f-3$; at $f=4$ that is the single word $c\,c\,a^4\,c$ treated in
+Remark~\ref{rem:walls14}, while for $f\ge5$ there are $f-3$ walks and the argument as written
+covers an initial block of exactly $2$ followed by an $a$-run.
 \end{conjecture}
 
 \begin{theorem}[Hypothesis~\ref{hyp:walls} holds at $(1,4)$]\label{thm:walls14}

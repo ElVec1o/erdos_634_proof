@@ -84,6 +84,137 @@ theorem gap_two_b_minus_c {f n : ℕ} (hf : 3 ≤ f) (hn : n + 2 = f * f) :
   simp only [Nat.add_sub_cancel] at h ⊢
   omega
 
+/-- The third run of the double-`c` configuration: a direct `β`-slot tile lays its `a` first along
+the `2b` chord, and the far side must then partition `2b − a`, i.e. `n + f + 2 = 2f²`. A gap for
+every `f ≥ 3`.
+
+With `gap_east_cover` (`b − a`) and `gap_two_b_minus_c` (`2b − c`) this is the full arithmetic core
+of the double-`c` kill. At `f = 4` the three runs are `11`, `26`, `14` against `⟨4,15,16⟩` — the
+machine-checked instance used in the `(1,4)` argument — so the general statement subsumes it. -/
+theorem gap_two_b_minus_a {f n : ℕ} (hf : 3 ≤ f) (hn : n + f + 2 = 2 * (f * f)) :
+    ¬ inSemi 1 f n := by
+  rintro ⟨x, y, z, h⟩
+  simp only [sideA, sideB, sideC, one_mul] at h
+  refine OrderForcing.gap_2b_minus_a (x := x) (y := y) (z := z) hf ?_
+  omega
+
+/-! ## The `2b` chord of the double-`c` configuration
+
+The three gaps above are consumed by one geometric fact, which the `(1,4)` argument states as a
+coordinate computation: with the base corner at the origin, the base along `+x`, and `u` the unit
+vector along the equal side, the points `2c·u`, `Q = c·u + (f,0)` and `(2f,0)` are collinear, the
+outer segment has length exactly `2b`, and `Q` is its midpoint. The runs the `β`-slot tile leaves on
+that chord are then `2b − a` (direct: its `a` is laid first), `b − a` (the stretch remaining to `Q`)
+and `2b − c` (mirrored: its `c` crosses `Q`) — precisely the three gaps.
+
+The target's base angle is `β`: for the tile `(f, f²−1, f²)` the law of cosines gives
+`cos β = (a²+c²−b²)/(2ac) = (3f²−1)/(2f³)`, which is exactly the isosceles ratio
+`((3f²−1)/2)/f³` of the target `(f³, f³, 3f²−1)`. So `u = (cos β, sin β)` and the two hypotheses
+below say just that: `2f³·cb = 3f²−1` fixes `cb = cos β`, and `cb² + sb² = 1` fixes `sb = sin β`.
+
+Both identities are polynomial, hence general in `f` — nothing here is special to `f = 4`. -/
+
+/-- **The chord has length `2b`.** `|2c·u − (2f,0)|² = (2b)²`. -/
+theorem chord_two_b {f cb sb : ℝ} (hcos : 2 * f ^ 3 * cb = 3 * f ^ 2 - 1)
+    (hpyth : cb ^ 2 + sb ^ 2 = 1) :
+    (2 * f ^ 2 * cb - 2 * f) ^ 2 + (2 * f ^ 2 * sb) ^ 2 = (2 * (f ^ 2 - 1)) ^ 2 := by
+  linear_combination (4 * f ^ 4) * hpyth - 4 * hcos
+
+/-- **`Q` is the midpoint.** `|2c·u − Q|² = b² = |Q − (2f,0)|²`; both halves are the *same*
+expression `(f²·cb − f)² + (f²·sb)²`, since `Q − 2c·u = -(f²cb − f, f²sb)` and
+`(2f,0) − Q = (f − f²cb, −f²sb)`. Collinearity is then immediate: `Q` is the average of the two
+endpoints, so the three points lie on a line. -/
+theorem chord_two_b_half {f cb sb : ℝ} (hcos : 2 * f ^ 3 * cb = 3 * f ^ 2 - 1)
+    (hpyth : cb ^ 2 + sb ^ 2 = 1) :
+    (f ^ 2 * cb - f) ^ 2 + (f ^ 2 * sb) ^ 2 = (f ^ 2 - 1) ^ 2 := by
+  linear_combination (f ^ 4) * hpyth - hcos
+
+/-- `Q = c·u + (f,0)` really is the midpoint of `2c·u` and `(2f,0)`, componentwise. Collinearity
+of the three points follows, with no hypothesis on `f` at all. -/
+theorem chord_midpoint (f cb sb : ℝ) :
+    (f ^ 2 * cb + f) = (2 * f ^ 2 * cb + 2 * f) / 2 ∧ (f ^ 2 * sb) = (2 * f ^ 2 * sb + 0) / 2 :=
+  ⟨by ring, by ring⟩
+
+/-- **The double-`c` kill: arithmetic core, general in `f`.**
+
+The three runs a `β`-slot tile can leave on the `2b` chord are exactly `b − a`, `2b − a` and
+`2b − c`, and none lies in the semigroup for `f ≥ 3`. Packaged as one disjunction, this is the
+arithmetic half of escape route 2 of the advance-and-collide conjecture (companion,
+`conj:advance`), which asks that a branch with an initial side `c`-block of length `≥ 2` die.
+
+**Status of route 2, stated exactly.** Its ingredients are now all general:
+
+* `first_run_kill` and `through_edge_exclusive` are vertex-figure statements in `(nα, nβ, nγ)`
+  alone — they never mention `f`;
+* `lem:topjunction` reduces to the signs of `f³ − 3f² + 1` (`f ≥ 3`) and `f³ − 3f² − f + 1`
+  (`f ≥ 4`), so it is general with `f = 3` handled separately;
+* the chord geometry is `chord_two_b` / `chord_two_b_half` above — polynomial identities;
+* the residues are this lemma.
+
+At `f = 4` the residues read `11`, `26`, `14` against `⟨4,15,16⟩`, the machine-checked instance
+`gaps_4_15_16`; nothing above is special to that value.
+
+**What is still missing.** The `f = 4` argument runs the case split on one word, `c c aᶠ c`
+(the `k = 1` side walk `(fk, 0, f−k)`), with the base word starting `a a` so that `(2f,0)` is a
+base junction. For general `f` the double-`c` words are the walks with `1 ≤ k ≤ f−2`, and the base
+word of `thm:e1reduce` places its `b` anywhere in positions `3..f`. Route 2 closes in general only
+once the same split is run over that whole family — the ingredients are in hand, the enumeration
+is not. Route 1 (a deviating `a`-run whose new `c`-chord ends beyond the forced region) is
+untouched. -/
+theorem double_c_kill {f n : ℕ} (hf : 3 ≤ f)
+    (hrun : n + 1 + f = f * f ∨ n + f + 2 = 2 * (f * f) ∨ n + 2 = f * f) :
+    ¬ inSemi 1 f n := by
+  rcases hrun with h | h | h
+  · exact gap_east_cover hf h
+  · exact gap_two_b_minus_a hf h
+  · exact gap_two_b_minus_c hf h
+
+/-! ## The `jb` chord: escape route 2 at every initial block length
+
+A side whose initial `c`-block has length `j` reaches the point `j c·u`, and the chord from there to
+the base point `(jf,0)` has length exactly `jb`, cut into `j` segments of length `b` by the points
+`Q_i = i c·u + (j−i)(f,0)`. The `j = 2` case is the chord of the `f = 4` double-`c` kill.
+
+Both facts below are polynomial identities in `f` and `j`, so neither the chord nor the residues
+depend on the block length being `2`. -/
+
+/-- **The chord has length `jb`.** `|j c·u − (jf,0)|² = (jb)²`. -/
+theorem chord_jb {f j cb sb : ℝ} (hcos : 2 * f ^ 3 * cb = 3 * f ^ 2 - 1)
+    (hpyth : cb ^ 2 + sb ^ 2 = 1) :
+    (j * f ^ 2 * cb - j * f) ^ 2 + (j * f ^ 2 * sb) ^ 2 = (j * (f ^ 2 - 1)) ^ 2 := by
+  linear_combination (j ^ 2 * f ^ 4) * hpyth - j ^ 2 * hcos
+
+/-- **The chord is cut into segments of length `b`.** The point `Q_i = i c·u + (j−i)(f,0)` lies at
+distance `(j−i)b` from `j c·u` and `i b` from `(jf,0)`; here in the form that both interior
+distances are the same expression scaled, so the `j` pieces are equal. -/
+theorem chord_jb_segment {f i cb sb : ℝ} (hcos : 2 * f ^ 3 * cb = 3 * f ^ 2 - 1)
+    (hpyth : cb ^ 2 + sb ^ 2 = 1) :
+    (i * f ^ 2 * cb - i * f) ^ 2 + (i * f ^ 2 * sb) ^ 2 = (i * (f ^ 2 - 1)) ^ 2 :=
+  chord_jb (j := i) hcos hpyth
+
+/-- **The residue on a `jb` chord is a gap.** Whatever edge the `β`-slot tile lays first has length
+divisible by `f` (`a = f`, `c = f²`), and `jb` minus any positive multiple of `f` is outside
+`⟨a,b,c⟩` for every `1 ≤ j < f`.
+
+Stated subtraction-free as `n + t = j(f² − 1)`. Specializing `(j,t)`: `(1,f)` is `gap_east_cover`,
+`(2,f)` is `gap_two_b_minus_a`, `(2,f²)` is `gap_two_b_minus_c`. -/
+theorem gap_jb_minus_multiple {f j t n : ℕ} (hf : 3 ≤ f) (hj : 1 ≤ j) (hjf : j < f)
+    (ht : 0 < t) (htf : f ∣ t) (hn : n + t = j * (f * f - 1)) :
+    ¬ inSemi 1 f n := by
+  rintro ⟨x, y, z, h⟩
+  simp only [sideA, sideB, sideC, one_mul] at h
+  exact OrderForcing.gap_jb_minus_multiple (x := x) (y := y) (z := z) hf hj hjf ht htf (by omega)
+
+/-- The two edges a `β`-slot tile can lay first are `a = f` and `c = f²`, both multiples of `f`, so
+the previous theorem applies to each. This is escape route 2 of `conj:advance` at an arbitrary
+initial `c`-block length `j`, replacing the single length `j = 2` of the `f = 4` argument. -/
+theorem double_c_kill_general {f j n : ℕ} (hf : 3 ≤ f) (hj : 1 ≤ j) (hjf : j < f)
+    (hn : n + f = j * (f * f - 1) ∨ n + f * f = j * (f * f - 1)) :
+    ¬ inSemi 1 f n := by
+  rcases hn with h | h
+  · exact gap_jb_minus_multiple hf hj hjf (by omega) ⟨1, by ring⟩ h
+  · exact gap_jb_minus_multiple hf hj hjf (by nlinarith) ⟨f, rfl⟩ h
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by

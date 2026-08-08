@@ -466,6 +466,106 @@ theorem gap_2b_minus_c {f x y z : ℕ} (hf : 3 ≤ f)
   have h4 : f ∣ 2 := by have h6 := Nat.dvd_sub h3 h2; rwa [h5] at h6
   exact absurd (Nat.le_of_dvd (by norm_num) h4) (by omega)
 
+/-- **The `2b − a` gap.** The third of the three runs left by the double-`c` configuration: when
+the `β`-slot tile is direct its `a`-edge is laid first along the `2b` chord and the whole far side
+must then partition `2b − a = 2f² − f − 2`. Stated subtraction-free, as `n + f + 2 = 2f²`.
+
+Together with `east_cover_gap` (which is `b − a = f² − f − 1`) and `gap_2b_minus_c` (which is
+`f² − 2`) this completes the arithmetic core of the double-`c` kill for **every** `f ≥ 3`. At
+`f = 4` the three read `11`, `26`, `14` against `⟨4,15,16⟩`, which is the machine-checked instance
+`gaps_4_15_16` used in the `(1,4)` argument; the point here is that the pattern is not special to
+`f = 4`. At `f = 2` this run equals `4 = 2a` and the kill genuinely fails — which is exactly why
+the `e = 1` reduction carries the hypothesis `f ≥ 3`. -/
+theorem gap_2b_minus_a {f x y z : ℕ} (hf : 3 ≤ f)
+    (h : x * f + y * (f * f - 1) + z * (f * f) + f + 2 = 2 * (f * f)) : False := by
+  have hff : 9 ≤ f * f := by nlinarith
+  -- Size bounds: three `b`'s already overshoot, and two `c`'s already overshoot.
+  have hy2 : y ≤ 2 := by
+    by_contra hy
+    have h1 : 3 ≤ y := by omega
+    have h2 : 3 * (f * f - 1) ≤ y * (f * f - 1) := Nat.mul_le_mul_right _ h1
+    omega
+  have hz1 : z ≤ 1 := by
+    by_contra hz
+    have h1 : 2 ≤ z := by omega
+    have h2 : 2 * (f * f) ≤ z * (f * f) := Nat.mul_le_mul_right _ h1
+    omega
+  have hxf : f ∣ x * f := ⟨x, Nat.mul_comm x f⟩
+  have hf2 : f ∣ f * f := ⟨f, rfl⟩
+  have hzf : f ∣ z * (f * f) := Dvd.dvd.mul_left hf2 z
+  have hbig : f ∣ 2 * (f * f) := Dvd.dvd.mul_left hf2 2
+  have hsum : f ∣ x * f + z * (f * f) + f := dvd_add (dvd_add hxf hzf) (dvd_refl f)
+  interval_cases y
+  · -- `y = 0`: the residue is `f + 2`, forcing `f ∣ 2`.
+    have heq : 2 * (f * f) - (x * f + z * (f * f) + f) = 2 := by omega
+    have hd : f ∣ 2 := by have h6 := Nat.dvd_sub hbig hsum; rwa [heq] at h6
+    exact absurd (Nat.le_of_dvd (by norm_num) hd) (by omega)
+  · -- `y = 1`: one `b` absorbs `f² − 1`, leaving residue `f + 1`, so `f ∣ 1`.
+    have heq : f * f - (x * f + z * (f * f) + f) = 1 := by omega
+    have hd : f ∣ 1 := by have h6 := Nat.dvd_sub hf2 hsum; rwa [heq] at h6
+    exact absurd (Nat.le_of_dvd (by norm_num) hd) (by omega)
+  · -- `y = 2`: `2b = 2f² − 2` already overshoots the target by `f`, so there is no room at all.
+    omega
+
+/-- **The `jb` chord gap, uniform in the block length.**
+
+A side whose initial `c`-block has length `j` puts a chord of length exactly `jb` from `j c·u` down
+to `(jf,0)`, cut into `j` segments of length `b` (companion; `Frontier.chord_jb`). The `β`-slot tile
+lays one of its edges first along that chord, and every tile edge that can start there has length
+divisible by `f` — `a = f` and `c = f²` both do. The run left over is `jb − t`, and it is never in
+the semigroup.
+
+Proof: reducing `x·f + y·(f²−1) + z·f² + t = j(f²−1)` modulo `f` forces `y ≡ j`, so `y ≥ j` and
+`y(f²−1) ≥ jb > jb − t`, contradicting `y(f²−1) ≤ jb − t`. Carried out below without any modular
+reasoning: the same content appears as `f ∣ s + z` with `0 < s + z ≤ j < f`.
+
+This subsumes the three runs of the double-`c` configuration — `b − a` is `(j,t) = (1,a)`,
+`2b − a` is `(2,a)` and `2b − c` is `(2,c)`, which at `f = 4` read `11`, `26`, `14` against
+`⟨4,15,16⟩` — and extends them to every initial block length at once.
+
+The bound `j < f` is sharp, not an artifact: at `j = f` both `jb − a = f(f²−2)` and
+`jb − c = f(f²−f−1)` are multiples of `f` and so lie in the semigroup. It is also automatic in the
+intended application, since `j ≤ n_c = f − k` and an escaping side carries an `a`-edge, so `k ≥ 1`. -/
+theorem gap_jb_minus_multiple {f j t x y z : ℕ} (hf : 3 ≤ f) (hj : 1 ≤ j) (hjf : j < f)
+    (ht : 0 < t) (htf : f ∣ t)
+    (h : x * f + y * (f * f - 1) + z * (f * f) + t = j * (f * f - 1)) : False := by
+  have hff : 9 ≤ f * f := by nlinarith
+  obtain ⟨B, hB⟩ : ∃ B, f * f = B + 1 := ⟨f * f - 1, by omega⟩
+  rw [hB] at h
+  simp only [Nat.add_sub_cancel] at h
+  -- h : x * f + y * B + z * (B + 1) + t = j * B
+  have hB1 : 8 ≤ B := by omega
+  -- Normalise `z * (B+1)` away first: omega treats it as an atom unrelated to `z * B` otherwise.
+  have hzB : z * (B + 1) = z * B + z := by ring
+  have h' : x * f + y * B + z * B + z + t = j * B := by omega
+  -- Size: `y + z` copies of `B` already fit under `j * B`, with `t > 0` left over.
+  have hyz : y + z < j := by
+    by_contra hc
+    push_neg at hc
+    have hle : j * B ≤ (y + z) * B := Nat.mul_le_mul_right _ hc
+    have hsplit : (y + z) * B = y * B + z * B := by ring
+    omega
+  obtain ⟨s, hs⟩ : ∃ s, j = y + z + s := ⟨j - (y + z), by omega⟩
+  have hs1 : 1 ≤ s := by omega
+  -- Cancel the `y` and `z` copies of `B`: what remains is `x*f + z + t = s*B`.
+  have key : x * f + z + t = s * B := by
+    have e : j * B = y * B + z * B + s * B := by rw [hs]; ring
+    omega
+  -- `s*B = s*f² − s`, so `s*f² = x*f + s + z + t`; `f` divides the two outer terms.
+  have key2 : s * (f * f) = x * f + s + z + t := by rw [hB]; nlinarith [key]
+  have hdvd : f ∣ s + z + t := by
+    have h1 : f ∣ s * (f * f) := ⟨s * f, by ring⟩
+    have h2 : f ∣ x * f := ⟨x, Nat.mul_comm x f⟩
+    have h3 : s * (f * f) - x * f = s + z + t := by omega
+    have h4 := Nat.dvd_sub h1 h2
+    rwa [h3] at h4
+  have hsz : f ∣ s + z := by
+    have h5 := Nat.dvd_sub hdvd htf
+    have h6 : s + z + t - t = s + z := by omega
+    rwa [h6] at h5
+  -- `0 < s + z ≤ j < f`, so `f ∣ s + z` is impossible.
+  exact absurd (Nat.le_of_dvd (by omega) hsz) (by omega)
+
 /-- **The pincer window.** With chain reach 3 on thick-block sides (and full reach on blocks
 `≤ 2`), a base word dies unless it escapes all four kills: left direct-`b` (`bp ≤ 4` when the `b`
 comes first), right direct-`b` (`f+3−bp ≤ 4` when the `c` comes first), right L2 (`cp = bp+1`
