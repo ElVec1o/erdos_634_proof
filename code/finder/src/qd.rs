@@ -64,6 +64,11 @@ impl Qd {
     pub fn zero() -> Qd {
         Qd { p: 0, q: 0, d: 1 }
     }
+    /// Denominators are reduced only when they grow past this. Below it the value is left
+    /// unreduced, which is what removes the i128 divisions from the hot path; correctness is
+    /// unaffected because equality and ordering are value-based, not structural.
+    const NORM_AT: i128 = 1 << 40;
+
     fn norm(&mut self) {
         if self.d < 0 {
             self.p = -self.p;
@@ -72,6 +77,10 @@ impl Qd {
         }
         if self.p == 0 && self.q == 0 {
             self.d = 1;
+            return;
+        }
+        // lazy: only pay gcd + three divisions once the denominator is actually large
+        if self.d < Self::NORM_AT {
             return;
         }
         let g = gcd3(self.p, self.q, self.d);
@@ -155,8 +164,17 @@ impl Qd {
 }
 
 impl PartialEq for Qd {
+    /// Value equality by cross-multiplication. Representations are deliberately not canonical
+    /// (see `norm`), so structural comparison would be wrong.
     fn eq(&self, o: &Qd) -> bool {
-        self.p == o.p && self.q == o.q && self.d == o.d
+        if self.d == o.d {
+            return self.p == o.p && self.q == o.q;
+        }
+        match (self.p.checked_mul(o.d), o.p.checked_mul(self.d),
+               self.q.checked_mul(o.d), o.q.checked_mul(self.d)) {
+            (Some(a), Some(b), Some(c), Some(e)) => a == b && c == e,
+            _ => ovf(None) != 0,
+        }
     }
 }
 impl Eq for Qd {}

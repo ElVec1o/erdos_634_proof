@@ -488,10 +488,16 @@ impl<'a> Search<'a> {
         //   * a corner with exactly ONE placement is forced, and is taken without branching.
         let mut best: Option<(usize, usize, Vec<[Pt; 3]>)> = None;
         let mut buf: Vec<[Pt; 3]> = Vec::with_capacity(6);
+        // Diversification that PRESERVES fail-first: vary only where the corner scan starts, so
+        // different threads settle on different equally-constrained corners. The candidate order
+        // within a corner stays deterministic -- shuffling that was measured to make the search
+        // worse, because the corner-anchored order carries real geometric information.
+        let off = if self.shuffle { self.rng.next() as usize } else { 0 };
         'outer: for (i, p) in polys.iter().enumerate() {
             let n = p.len();
             let bb = bbox(p);
-            for vi in 0..n {
+            for t in 0..n {
+                let vi = (t + off) % n;
                 // convex vertices only (CCW polygon => positive turn)
                 let prv = p[(vi + n - 1) % n];
                 let cur = p[vi];
@@ -543,12 +549,7 @@ impl<'a> Search<'a> {
         // randomized order — the whole point of the restart portfolio.
         // FINDER_SHUFFLE=0 disables it, which recovers the engine's deterministic order and is the
         // control that separates "randomisation hurts" from "the search is wrong".
-        if self.shuffle {
-            for i in (1..cands.len()).rev() {
-                let j = self.rng.below(i + 1);
-                cands.swap(i, j);
-            }
-        }
+        // candidate order is left alone on purpose (see the note at the corner scan)
         for tri in cands {
             let mut pieces: Vec<Vec<Pt>> = Vec::new();
             if !subtract(&poly, &tri, &mut pieces) {
