@@ -420,25 +420,50 @@ impl<'a> Search<'a> {
         if tot != need {
             return false;
         }
-        // pick the component with the lexicographically least vertex; anchor there
-        let mut bi = 0usize;
-        let mut bv = 0usize;
-        for (i, p) in polys.iter().enumerate() {
-            let mut vi = 0;
-            for k in 1..p.len() {
-                if p[k] < p[vi] {
-                    vi = k;
+        // ---- corner selection -------------------------------------------------------------
+        // Correctness needs only SOME convex corner: a tile covering a convex corner must have a
+        // vertex there (covering it mid-edge would make the tile locally a half-plane, which cannot
+        // sit inside a wedge of angle < pi). The engine always takes the lexicographically least
+        // vertex. We are therefore free to take the MOST CONSTRAINED one instead (fail-first,
+        // Haralick & Elliott 1980), which converts a dead end into an immediate refutation rather
+        // than one discovered after descending. Two consequences fall out for free:
+        //   * a convex corner with NO legal placement prunes the node at once;
+        //   * a corner with exactly ONE placement is forced, and is taken without branching.
+        let mut best: Option<(usize, usize, Vec<[Pt; 3]>)> = None;
+        'outer: for (i, p) in polys.iter().enumerate() {
+            let n = p.len();
+            for vi in 0..n {
+                // convex vertices only (CCW polygon => positive turn)
+                let prv = p[(vi + n - 1) % n];
+                let cur = p[vi];
+                let nxt = p[(vi + 1) % n];
+                if cross(prv, cur, nxt).sign() <= 0 {
+                    continue;
+                }
+                let mut c: Vec<[Pt; 3]> = Vec::new();
+                placements(self.inst, p, vi, &mut c);
+                c.retain(|t| contained(p, t));
+                let k = c.len();
+                if k == 0 {
+                    return false; // dead corner: this whole subtree is refuted here
+                }
+                let better = match &best {
+                    None => true,
+                    Some((_, _, bc)) => k < bc.len(),
+                };
+                if better {
+                    best = Some((i, vi, c));
+                    if k == 1 {
+                        break 'outer; // forced move: cannot do better
+                    }
                 }
             }
-            if i == 0 || p[vi] < polys[bi][bv] {
-                bi = i;
-                bv = vi;
-            }
         }
+        let (bi, _bv, mut cands) = match best {
+            Some(v) => v,
+            None => return false, // no convex corner anywhere: not completable
+        };
         let poly = polys[bi].clone();
-        let mut cands: Vec<[Pt; 3]> = Vec::new();
-        placements(self.inst, &poly, bv, &mut cands);
-        cands.retain(|t| contained(&poly, t));
         // randomized order — the whole point of the restart portfolio.
         // FINDER_SHUFFLE=0 disables it, which recovers the engine's deterministic order and is the
         // control that separates "randomisation hurts" from "the search is wrong".
