@@ -11,16 +11,26 @@ pub fn d_val() -> i128 {
     unsafe { D }
 }
 
-fn gcd3(a: i128, b: i128, c: i128) -> i128 {
-    fn g(mut a: i128, mut b: i128) -> i128 {
-        while b != 0 {
-            let t = a % b;
-            a = b;
-            b = t;
-        }
-        a.abs()
+/// Binary GCD (Stein). The Euclidean version's `%` on `i128` dominated the finder's runtime:
+/// normalisation runs on every single arithmetic operation.
+fn g2(mut a: i128, mut b: i128) -> i128 {
+    a = a.abs();
+    b = b.abs();
+    if a == 0 { return b }
+    if b == 0 { return a }
+    let sh = (a | b).trailing_zeros();
+    a >>= a.trailing_zeros();
+    loop {
+        b >>= b.trailing_zeros();
+        if a > b { std::mem::swap(&mut a, &mut b) }
+        b -= a;
+        if b == 0 { break }
     }
-    g(g(a, b), c)
+    a << sh
+}
+
+fn gcd3(a: i128, b: i128, c: i128) -> i128 {
+    g2(g2(a, b), c)
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -60,18 +70,33 @@ impl Qd {
         }
     }
     pub fn add(self, o: Qd) -> Qd {
+        if self.d == 1 && o.d == 1 {
+            return Qd { p: self.p + o.p, q: self.q + o.q, d: 1 }; // already canonical
+        }
+        if self.d == o.d {
+            return Qd::new(self.p + o.p, self.q + o.q, self.d);
+        }
         Qd::new(self.p * o.d + o.p * self.d, self.q * o.d + o.q * self.d, self.d * o.d)
     }
     pub fn sub(self, o: Qd) -> Qd {
+        if self.d == 1 && o.d == 1 {
+            return Qd { p: self.p - o.p, q: self.q - o.q, d: 1 };
+        }
+        if self.d == o.d {
+            return Qd::new(self.p - o.p, self.q - o.q, self.d);
+        }
         Qd::new(self.p * o.d - o.p * self.d, self.q * o.d - o.q * self.d, self.d * o.d)
     }
     pub fn mul(self, o: Qd) -> Qd {
         // (a + b w)(c + e w) = (ac + be D) + (ae + bc) w
-        Qd::new(
+        let (p, q) = (
             self.p * o.p + self.q * o.q * d_val(),
             self.p * o.q + self.q * o.p,
-            self.d * o.d,
-        )
+        );
+        if self.d == 1 && o.d == 1 {
+            return Qd { p, q, d: 1 };
+        }
+        Qd::new(p, q, self.d * o.d)
     }
     pub fn neg(self) -> Qd {
         Qd { p: -self.p, q: -self.q, d: self.d }

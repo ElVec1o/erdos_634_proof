@@ -162,9 +162,37 @@ fn placements(inst: &Instance, poly: &[Pt], vi: usize, out: &mut Vec<[Pt; 3]>) {
     }
 }
 
+/// Axis-aligned bounds of a polygon, computed once per corner scan and reused across the ~36 point
+/// tests that containment performs there. Rejecting on the box first is what makes the
+/// most-constrained-corner scan affordable.
+#[derive(Clone, Copy)]
+pub struct Bbox {
+    xlo: Qd,
+    xhi: Qd,
+    ylo: Qd,
+    yhi: Qd,
+}
+
+fn bbox(poly: &[Pt]) -> Bbox {
+    let mut b = Bbox { xlo: poly[0].x, xhi: poly[0].x, ylo: poly[0].y, yhi: poly[0].y };
+    for p in poly.iter().skip(1) {
+        if p.x < b.xlo { b.xlo = p.x }
+        if p.x > b.xhi { b.xhi = p.x }
+        if p.y < b.ylo { b.ylo = p.y }
+        if p.y > b.yhi { b.yhi = p.y }
+    }
+    b
+}
+
 /// Is the triangle contained in the polygon? Conservative: every triangle vertex must be inside or
 /// on the boundary, and every triangle edge midpoint must be inside or on the boundary.
-fn contained(poly: &[Pt], tri: &[Pt; 3]) -> bool {
+fn contained(poly: &[Pt], bb: &Bbox, tri: &[Pt; 3]) -> bool {
+    // cheap box reject before any winding test
+    for v in tri.iter() {
+        if v.x < bb.xlo || v.x > bb.xhi || v.y < bb.ylo || v.y > bb.yhi {
+            return false;
+        }
+    }
     let inside = |p: Pt| -> bool {
         // winding test on a convex-or-not simple polygon, using the boundary-crossing rule with
         // exact predicates; points on the boundary count as inside.
@@ -405,6 +433,9 @@ impl<'a> Search<'a> {
             return false;
         }
         self.nodes += 1;
+        if self.nodes & 0xFFFF == 0 {
+            self.total.fetch_add(0x10000, Ordering::Relaxed);
+        }
         if polys.is_empty() {
             return left == 0;
         }
@@ -430,8 +461,10 @@ impl<'a> Search<'a> {
         //   * a convex corner with NO legal placement prunes the node at once;
         //   * a corner with exactly ONE placement is forced, and is taken without branching.
         let mut best: Option<(usize, usize, Vec<[Pt; 3]>)> = None;
+        let mut buf: Vec<[Pt; 3]> = Vec::with_capacity(6);
         'outer: for (i, p) in polys.iter().enumerate() {
             let n = p.len();
+            let bb = bbox(p);
             for vi in 0..n {
                 // convex vertices only (CCW polygon => positive turn)
                 let prv = p[(vi + n - 1) % n];
@@ -440,10 +473,9 @@ impl<'a> Search<'a> {
                 if cross(prv, cur, nxt).sign() <= 0 {
                     continue;
                 }
-                let mut c: Vec<[Pt; 3]> = Vec::new();
-                placements(self.inst, p, vi, &mut c);
-                c.retain(|t| contained(p, t));
-                let k = c.len();
+                placements(self.inst, p, vi, &mut buf);
+                buf.retain(|t| contained(p, &bb, t));
+                let k = buf.len();
                 if k == 0 {
                     return false; // dead corner: this whole subtree is refuted here
                 }
@@ -452,9 +484,14 @@ impl<'a> Search<'a> {
                     Some((_, _, bc)) => k < bc.len(),
                 };
                 if better {
-                    best = Some((i, vi, c));
-                    if k == 1 {
-                        break 'outer; // forced move: cannot do better
+                    best = Some((i, vi, buf.clone()));
+                    // Stop as soon as the corner is constrained enough to branch on. k == 1 is a
+                    // forced move and cannot be improved; k == 2 is already tight, and scanning the
+                    // remaining corners to maybe find another 2 costs more than it saves -- the
+                    // scan is ~36n^2 exact point tests per node. Correctness is unaffected: ANY
+                    // convex corner is a legal anchor.
+                    if k <= 2 {
+                        break 'outer;
                     }
                 }
             }
@@ -542,7 +579,8 @@ fn verify(inst: &Instance, tiles: &[[Pt; 3]]) -> Result<(), String> {
     for t in tiles {
         let mut done = false;
         for i in 0..region.len() {
-            if contained(&region[i], t) {
+            let bb = bbox(&region[i]);
+            if contained(&region[i], &bb, t) {
                 let poly = region[i].clone();
                 let mut pieces = Vec::new();
                 if subtract(&poly, t, &mut pieces) {
@@ -621,7 +659,7 @@ fn main() {
                 let mut polys = vec![inst.target.clone()];
                 let mut placed: Vec<[Pt; 3]> = Vec::new();
                 let ok = s.dfs(&mut polys, inst.n, &mut placed);
-                total.fetch_add(s.nodes, Ordering::Relaxed);
+                total.fetch_add(s.nodes & 0xFFFF, Ordering::Relaxed); // the rest was streamed
                 restarts.fetch_add(1, Ordering::Relaxed);
                 if ok {
                     *found.lock().unwrap() = Some(placed);
