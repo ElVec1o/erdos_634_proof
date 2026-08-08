@@ -45,6 +45,9 @@ struct Instance {
     corners: [Corner; 3],
     target: Vec<Pt>,
     area2_tile: Qd,
+    /// cosine of the LARGEST tile angle's complement... in fact: cos of the smallest tile angle.
+    /// A corner whose interior angle is below it admits no placement at all.
+    cos_min: Qd,
 }
 
 fn parse_instance(path: &str) -> Instance {
@@ -81,7 +84,14 @@ fn parse_instance(path: &str) -> Instance {
     if area2(&target).sign() <= 0 {
         target.reverse();
     }
-    Instance { n, corners, target, area2_tile }
+    // the smallest tile angle has the largest cosine
+    let mut cos_min = corners[0].cs;
+    for c in corners.iter() {
+        if c.cs > cos_min {
+            cos_min = c.cs;
+        }
+    }
+    Instance { n, corners, target, area2_tile, cos_min }
 }
 
 // ------------------------------------------------------------------ geometry ---
@@ -121,6 +131,12 @@ fn unit(p: Pt, q: Pt) -> Option<Pt> {
     let l = sqrt_rational(l2)?;
     let inv = Qd::new(l.d, 0, l.p); // 1/l
     Some(Pt::new(d.x.mul(inv), d.y.mul(inv)))
+}
+
+/// Exact rational length of an edge, or `None` when it is irrational.
+fn edge_len(p: Pt, q: Pt) -> Option<Qd> {
+    let d = q.sub(p);
+    sqrt_rational(d.x.mul(d.x).add(d.y.mul(d.y)))
 }
 
 fn rot(cs: Qd, sn: Qd, u: Pt) -> Pt {
@@ -258,7 +274,17 @@ fn subtract(poly: &[Pt], tri: &[Pt; 3], out: &mut Vec<Vec<Pt>>) -> bool {
     pts.dedup();
     let mut split: Vec<Edge> = Vec::new();
     for e in &edges {
-        let mut inner: Vec<Pt> = pts.iter().cloned().filter(|p| strictly_between(*p, e.0, e.1)).collect();
+        // Only points inside the edge's own bounding box can lie on it. Without this the split
+        // scan is O(m^2) exact `strictly_between` tests (six Qd multiplications each) and dominates
+        // the whole node.
+        let (xlo, xhi) = if e.0.x < e.1.x { (e.0.x, e.1.x) } else { (e.1.x, e.0.x) };
+        let (ylo, yhi) = if e.0.y < e.1.y { (e.0.y, e.1.y) } else { (e.1.y, e.0.y) };
+        let mut inner: Vec<Pt> = pts
+            .iter()
+            .cloned()
+            .filter(|p| p.x >= xlo && p.x <= xhi && p.y >= ylo && p.y <= yhi)
+            .filter(|p| strictly_between(*p, e.0, e.1))
+            .collect();
         inner.sort_by(|a, b| {
             dist2(e.0, *a).cmp_to(dist2(e.0, *b))
         });
@@ -472,6 +498,19 @@ impl<'a> Search<'a> {
                 let nxt = p[(vi + 1) % n];
                 if cross(prv, cur, nxt).sign() <= 0 {
                     continue;
+                }
+                // Cheap necessary test before any placement geometry: the interior angle must be at
+                // least the smallest tile angle. With U = nxt-cur, W = prv-cur and |U|,|W| rational,
+                // angle < alpha  <=>  U.W > cos(alpha)*|U||W|, which is exact and needs no
+                // containment test at all.
+                if let (Some(lu), Some(lw)) = (edge_len(cur, nxt), edge_len(cur, prv)) {
+                    let uu = nxt.sub(cur);
+                    let ww = prv.sub(cur);
+                    let dot = uu.x.mul(ww.x).add(uu.y.mul(ww.y));
+                    let rhs = self.inst.cos_min.mul(lu).mul(lw);
+                    if dot.sub(rhs).sign() > 0 {
+                        return false; // corner too sharp for any tile: node refuted
+                    }
                 }
                 placements(self.inst, p, vi, &mut buf);
                 buf.retain(|t| contained(p, &bb, t));

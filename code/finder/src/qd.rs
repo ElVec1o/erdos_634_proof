@@ -33,6 +33,18 @@ fn gcd3(a: i128, b: i128, c: i128) -> i128 {
     g2(g2(a, b), c)
 }
 
+#[inline]
+fn ovf(v: Option<i128>) -> i128 {
+    match v {
+        Some(x) => x,
+        None => {
+            eprintln!("FATAL: i128 overflow in Q(sqrt D) arithmetic -- instance too large for this \
+                       representation. Results would be unsound; aborting rather than continuing.");
+            std::process::abort()
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug)]
 pub struct Qd {
     pub p: i128,
@@ -89,14 +101,16 @@ impl Qd {
     }
     pub fn mul(self, o: Qd) -> Qd {
         // (a + b w)(c + e w) = (ac + be D) + (ae + bc) w
-        let (p, q) = (
-            self.p * o.p + self.q * o.q * d_val(),
-            self.p * o.q + self.q * o.p,
-        );
+        //
+        // Checked throughout. Denominators reach ~1e14 on the larger instances, so an unchecked
+        // i128 product can wrap silently -- and `verify()` runs on this same arithmetic, so a wrap
+        // could make a bad tiling pass. Aborting is the only safe failure here.
+        let p = ovf(ovf(self.p.checked_mul(o.p)).checked_add(ovf(ovf(self.q.checked_mul(o.q)).checked_mul(d_val()))));
+        let q = ovf(ovf(self.p.checked_mul(o.q)).checked_add(ovf(self.q.checked_mul(o.p))));
         if self.d == 1 && o.d == 1 {
             return Qd { p, q, d: 1 };
         }
-        Qd::new(p, q, self.d * o.d)
+        Qd::new(p, q, ovf(self.d.checked_mul(o.d)))
     }
     pub fn neg(self) -> Qd {
         Qd { p: -self.p, q: -self.q, d: self.d }
