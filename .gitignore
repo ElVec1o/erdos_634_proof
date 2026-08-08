@@ -16,3 +16,4 @@ archived/
 target/
 rust/tiler/target/
 build/
+code/finder/target/
