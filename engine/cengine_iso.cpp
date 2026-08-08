@@ -738,6 +738,9 @@ static bool containment_ok(const Poly& tri, const Poly& poly) {
 // of their sides satisfy #c >= 1.  Absent from the instance file => prune disabled (bit-identical to
 // the previous engine).
 static bool WALK_PRUNE = false;
+// Most-constrained-corner anchoring. OFF by default so that every certified run reproduces
+// bit-identically; set CENGINE_MRV=1 to enable it for FINDING, where node identity does not matter.
+static bool g_mrv = false;
 static int WALK_BASESIDE = 0;   // which side index of `target` is the BASE (flip permutes it)
 // ------------------------------------------------------- P6: forced corner edge types (e=1) ---
 // P5 prunes on edge MULTISETS.  For e = 1, m = 1 the companion additionally pins the ORDER at the
@@ -995,6 +998,46 @@ struct Search {
             }
         }
     }
+    // Most-constrained convex corner, the fail-first rule (Haralick & Elliott 1980).
+    //
+    // Correctness needs only SOME convex corner: a tile covering a convex corner must have a vertex
+    // there, since covering it mid-edge would make the tile locally a half-plane, which cannot lie
+    // inside a wedge of angle below pi. `lowest_vertex` takes the globally lowest vertex, which is
+    // one such corner; any other is equally legal. Choosing the corner with the fewest legal
+    // placements adds two things the fixed anchor cannot give:
+    //   * a convex corner with NO legal placement refutes the node immediately;
+    //   * a corner with exactly one placement is forced.
+    // Returns false when some convex corner admits nothing, i.e. the node is dead.
+    //
+    // Only (pi, vi) is returned; `placements` is recomputed by the caller exactly as before, so
+    // candidate indices -- and therefore checkpoint paths -- keep their meaning.
+    bool mrv_vertex(const std::vector<Poly>& polys, int& bpi, int& bvi) {
+        bpi = -1; bvi = -1;
+        size_t best = (size_t)-1;
+        std::vector<Poly> c;
+        for (size_t pi = 0; pi < polys.size(); pi++) {
+            const Poly& p = polys[pi];
+            size_t n = p.size();
+            for (size_t vi = 0; vi < n; vi++) {
+                const Pt& prv = p[(vi + n - 1) % n];
+                const Pt& cur = p[vi];
+                const Pt& nxt = p[(vi + 1) % n];
+                if (qsign(crossv(vsub(cur, prv), vsub(nxt, cur))) <= 0) continue;  // convex only
+                placements(p, (int)vi, c);
+                size_t k = 0;
+                for (size_t i = 0; i < c.size(); i++)
+                    if (containment_ok(c[i], p)) k++;
+                if (k == 0) return false;          // dead corner: the whole node is refuted
+                if (k < best) {
+                    best = k; bpi = (int)pi; bvi = (int)vi;
+                    // constrained enough to branch on; the scan itself is quadratic in the
+                    // boundary size, so looking for a better corner costs more than it saves
+                    if (k <= 2) return true;
+                }
+            }
+        }
+        return bpi >= 0;
+    }
     void placements(const Poly& poly, int vi, std::vector<Poly>& out) {
         out.clear();
         size_t n = poly.size();
@@ -1088,7 +1131,11 @@ struct Search {
         for (const Poly& p : polys)
             if (!corner_ok(p)) { prune_dir++; return; }
         int pi, vi;
-        lowest_vertex(polys, pi, vi);
+        if (g_mrv) {
+            if (!mrv_vertex(polys, pi, vi)) { prune_dir++; return; }
+        } else {
+            lowest_vertex(polys, pi, vi);
+        }
         Poly poly = polys[pi];
         std::vector<Poly> rest;
         for (size_t i = 0; i < polys.size(); i++)
@@ -1715,6 +1762,7 @@ int main(int argc, char** argv) {
     long long cap = (argc > 2) ? atoll(argv[2]) : 2000000000LL;
     int threads = 1;
     if (const char* e = getenv("CENGINE_THREADS")) threads = atoi(e);
+    if (const char* e = getenv("CENGINE_MRV")) g_mrv = (atoi(e) != 0);
     if (threads < 1) threads = 1;
     Search S;
     if (!make_instance(name, S.tile, S.target, S.N)) {
