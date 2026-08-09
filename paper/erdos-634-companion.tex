@@ -2333,10 +2333,51 @@ four. The chord at $V_k$ in Theorem~\ref{thm:n1} is exactly such an edge, so the
 cannot be excluded by any statement about anchoring alone: the exclusion has to consume the cascade's
 forced tiles, and that is precisely what has resisted.
 
-Second, and unexplained, $a$-edges with one anchored end are crossed in none of them --- $0$ out of
-$54$. A whole-edge covering of an $a$-edge is a single $a$ by uniqueness of the representation, so a
-crossing would need the far side's first edge to be a $b$ or a $c$, overrunning the interior end by
-$b-a$ or $c-a$. We have no proof that this cannot happen and record the observation only as that.
+Second, $a$-edges with one anchored end are crossed in none of them. That one is not a coincidence,
+and the next lemma explains it with a sharp constant.
+\end{remark}
+
+\begin{lemma}[Anchored-end clearance]\label{lem:anchorclear}
+Write $m=\min(a,b,c)$ for the shortest tile side. Let $[X,Y]$ be an edge of a tile of the tiling with
+$X\in\partial ABC$. Then no vertex of the tiling lies in the relative interior of $[X,Y]$ within
+distance $m$ of $X$. In particular, if $|XY|=m$ then $[X,Y]$ carries no interior vertex at all: it is
+not crossed.
+\end{lemma}
+
+\begin{proof}
+Let $T$ be the tile having $[X,Y]$ as an edge. On $T$'s side of the segment nothing can contribute an
+interior vertex, since $[X,Y]$ is a single edge of the triangle $T$. So any vertex in the relative
+interior of $[X,Y]$ comes from the opposite side.
+
+The opposite side is covered by tiles abutting $[X,Y]$, each contributing a subsegment of one of its
+own edges, and consecutive contributions meet at points of $[X,Y]$; a vertex in the relative interior
+is exactly such a meeting point. Now $ABC$ is convex and $X\in\partial ABC$, so the continuation of
+the segment beyond $X$ leaves $ABC$; hence no covering edge overruns $X$, and the first covering
+edge begins exactly at $X$. That edge is a whole tile edge, so its length is $a$, $b$ or $c$, in
+particular at least $m$. Its far endpoint --- the first meeting point --- therefore lies at distance
+at least $m$ from $X$, and no meeting point lies nearer. If $|XY|=m$ the whole relative interior is
+at distance less than $m$ from $X$, so it contains no meeting point.
+\end{proof}
+
+\begin{remark}[The constant is attained]\label{lem:anchorclearsharp}
+The bound $m$ cannot be improved. Across all eight kernel-checked tilings, edges of minimal length
+with exactly one anchored end are crossed $0$ times out of $74$; and among the $52$ crossings that do
+occur on one-anchored edges, the least distance from the anchored end to the crossing equals $m$
+\emph{exactly} in every tiling that has such a crossing (squared distances $256$, $1024$, $1024$,
+$256$, $256$, $64$, $324$ against squared minimal sides $256$, $1024$, $1024$, $256$, $256$, $64$,
+$324$). So the lemma is sharp, and no crossing was found violating it.
+
+Which side is minimal depends on the member: $a<b$ exactly when $f>\varphi e$ with $\varphi$ the
+golden ratio, since $a<b$ reads $f^2-ef-e^2>0$. At the members carrying the certified tilings ---
+$(1,2)$ and $(1,3)$ --- one has $a=m$, which is why the observation appeared as a statement about
+$a$-edges.
+
+The lemma is elementary and geometric, and its arithmetic content is only that a tile side is at
+least the least tile side, so we do not formalise it; it carries the label PROVED. It does not touch
+the chord at $V_k$, whose length is $b$ and which is crossed in practice
+(Remark~\ref{rem:onlyanchor}). It is recorded because it is the first general statement we have that
+excludes crossings outright, and because it fixes the exact radius within which the boundary still
+controls the interior.
 \end{remark}
 
 \begin{corollary}[The walls form at $e=1$, $f\ge3$]\label{cor:wallsf2e}
