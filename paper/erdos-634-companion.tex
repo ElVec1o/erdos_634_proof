@@ -2237,6 +2237,46 @@ record this because it reduces the open question to a single configuration, not 
 it: the second branch remains open, and a descent on the first is blocked by the fact that the
 $e^2$-residue may be closed by an edge overrunning its \emph{other}, interior end rather than
 $V_{k-1}$.
+
+Where that surviving branch lands is worth recording, because it is not an accident. The chord's
+direction vector is $a\,u-(c,0)$, which is $T_0$'s own $b$-edge, so
+\[
+W \;=\; V_k+\bigl(a\,u-(c,0)\bigr) \;=\; \bigl((k-1)c,\,0\bigr)+2a\,u .
+\]
+At $k=1$ this is $W=2a\,u$, a point of the equal side, and $R$ then lays an $a$-edge on that side
+from $a\,u$ to $2a\,u$. Far from being absurd, that is exactly the configuration
+Lemma~\ref{lem:ccorner} predicts for this column. So the overrun is geometrically coherent, not
+merely angularly so, and it will not be refuted locally.
+\end{remark}
+
+\begin{remark}[Theorem~\ref{thm:n1} at $e\ge2$, repaired conditionally]\label{rem:n1conditional}
+The previous remark also supplies the honest repair. Lemma~\ref{lem:ccorner} already observes that in
+the column $(0,e,2e)$ the base carries no $a$-edge, so both corner tiles lay $c$ on the base, both
+equal sides begin with an $a$-edge, and by Lemma~\ref{lem:sidequant} each carries at least $f$ of
+them. In the notation of \S\ref{sub:sidep} that is $p\ge1$ on both sides. Hence
+
+\begin{proposition}\label{prop:n1fromwalls}
+Assume Hypothesis~\ref{hyp:walls} at the member $(e,f)$, i.e.\ $p=0$. Then no tiling has base walk
+$(0,e,2e)$, for every $e\ge1$.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:ccorner} the column $(0,e,2e)$ forces $p\ge1$ on each equal side, contradicting
+$p=0$.
+\end{proof}
+
+This is two lines and uses no induction, no chord pinning, and no crossing question. It is weaker
+than Theorem~\ref{thm:n1} as printed, being conditional; but Hypothesis~\ref{hyp:walls} is assumed
+throughout this programme anyway, so for every downstream use the conditional form is as good.
+Corollary~\ref{cor:basewalls} and Corollary~\ref{cor:wallsf2e} may accordingly be read as holding
+under Hypothesis~\ref{hyp:walls} at every member, and unconditionally at $e=1$, where
+Remark~\ref{rem:n1gap}'s three-letter argument applies.
+
+The moral is worth stating. Theorem~\ref{thm:n1}'s induction was attempting to prove, unconditionally
+and by a long chord cascade, a statement that follows from Hypothesis~\ref{hyp:walls} immediately.
+Its gap is therefore not an accident of that particular proof: excluding the overrun at $V_1$ means
+exactly bounding the side's run of $a$-edges, which is Hypothesis~\ref{hyp:walls} again. The two are
+one problem, and the cascade was the long way round.
 \end{remark}
 
 \begin{corollary}[The walls form at $e=1$, $f\ge3$]\label{cor:wallsf2e}
