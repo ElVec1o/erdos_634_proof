@@ -2186,6 +2186,31 @@ pinned. Here the would-be blocking edge at the upper end is $P_k$'s own $c$-edge
 being derived.
 \end{remark}
 
+\begin{remark}[The gap is exactly one crossing, and there is no cheaper repair]\label{rem:n1gapexact}
+The step admits a sharp reduction. Let $Q$ be the tile across $T_k$'s $b$-edge
+$[V_k,\,((k+1)c,0)]$, whose base end lies on $\partial ABC$ and whose end $V_k$ is interior. Measured
+from the anchored base end, $Q$ lays $a$, $b$ or $c$ along that edge:
+\begin{itemize}
+\item $b$: an exact match, so $Q$ is the partner $P_k$ --- the case the induction wants;
+\item $c$: overruns $V_k$ by $c-b=e^2$;
+\item $a$: falls short of $V_k$ by $b-a$, leaving a run of that length still to be covered.
+\end{itemize}
+The third case does not close either, because $b-a$ is representable in $\langle a,b,c\rangle$ for no
+member whatever. Indeed if $xa+yb+zc=b-a$ then $y=0$, since $y\ge1$ would give $yb\ge b>b-a$;
+reducing $x\,ef+z\,f^2=f^2-e^2-ef$ modulo $f$ then gives $f\mid e^2$, hence $f=1$ by coprimality.
+(\texttt{gap\_b\_sub\_a}; checked on all $29435$ coprime members with $e\le200$, $e<f<4e+3$, with no
+representation in any of them.)
+
+So both surviving branches force a tile edge past $V_k$, and the induction step of
+Theorem~\ref{thm:n1} is \emph{equivalent} to the assertion that nothing overruns $V_k$. That is the
+one-end-anchored pinning question in its purest form: the base end cannot be overrun, because the
+continuation would leave the target, while $V_k$ is interior and, as computed in
+Remark~\ref{rem:n1gap}, is not blocked by any tile already forced. Repairing Theorem~\ref{thm:n1} at
+$e\ge2$ is therefore neither more nor less than settling that question, and the same question is what
+stops the corner cascade of Remark~\ref{rem:route1uniform} and the filler dichotomy of
+Section~\ref{sub:sidep}. Three routes, one wall.
+\end{remark}
+
 \begin{corollary}[The walls form at $e=1$, $f\ge3$]\label{cor:wallsf2e}
 Let $e=1$ and $f\ge3$. Then the base walk is the walls form $(f,1,1)$.
 \end{corollary}

@@ -606,6 +606,44 @@ theorem side_p_le_two {e f p : ℕ} (he : 0 < e) (hpe : p * e < f)
   have hf : 3 * e + 1 ≤ f := by omega
   nlinarith
 
+/-! ## Where the `thm:n1` induction actually fails
+
+At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
+that edge, measured from the anchored base end. `b` is the exact match (the partner, which is what
+the induction wants); `c` overruns `V_k` by `c − b = e²`; and `a` falls short by `b − a`, leaving a
+run of that length to be covered. The next lemma kills the third option's whole-edge closure: `b − a`
+is representable in `⟨a,b,c⟩` for no member at all. So the `a`-branch also forces an edge past `V_k`,
+and the induction step is exactly the assertion that nothing overruns `V_k`. -/
+
+/-- **`b − a` is never a sum of tile edges.** With `a = ef`, `b + e² = f²`, `c = f²` and
+`gcd(e,f) = 1`, no `x,y,z ≥ 0` satisfy `xa + yb + zc = b − a`. Size forces `y = 0`, and then
+reduction mod `f` gives `f ∣ e²`, hence `f = 1`. Checked on all 29435 coprime members with
+`e ≤ 200`, `e < f < 4e+3`: no representation in any of them. -/
+theorem gap_b_sub_a {e f a b c d x y z : ℕ}
+    (he : 0 < e) (hf : 2 ≤ f) (hco : Nat.Coprime e f)
+    (ha : a = e * f) (hb : b + e * e = f * f) (hd : d + a = b)
+    (h : x * a + y * b + z * (f * f) = d) : False := by
+  have hbpos : 0 < b := by nlinarith
+  have hapos : 0 < a := by rw [ha]; positivity
+  have hdb : d < b := by omega
+  -- size forces y = 0
+  have hy : y = 0 := by
+    by_contra hy0
+    have h1 : 1 ≤ y := Nat.one_le_iff_ne_zero.mpr hy0
+    have : b ≤ y * b := Nat.le_mul_of_pos_left b (by omega)
+    omega
+  subst hy
+  -- what is left is  x·ef + z·f² = b − a, i.e.  f ∣ e²
+  have hkey : x * (e * f) + z * (f * f) + e * f + e * e = f * f := by
+    rw [ha] at h hd; omega
+  have hlt : x * e + z * f + e < f := by nlinarith
+  obtain ⟨m, hm⟩ : ∃ m, x * e + z * f + e + m = f := ⟨f - (x * e + z * f + e), by omega⟩
+  have hff : f * f = f * (x * e + z * f + e + m) := by rw [hm]
+  have hdvd : f ∣ e * e := ⟨m, by nlinarith [hkey, hff]⟩
+  have hfe : Nat.Coprime f e := hco.symm
+  have hf1 : f = 1 := Nat.Coprime.eq_one_of_dvd (hfe.mul_right hfe) hdvd
+  omega
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by
