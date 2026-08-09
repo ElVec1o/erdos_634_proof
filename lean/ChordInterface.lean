@@ -7,9 +7,12 @@
 -- from it. Nothing here is `sorry`: the geometry is a HYPOTHESIS, not a gap, so the corpus keeps its
 -- zero-sorry property and the outstanding obligation is named instead of hidden.
 --
--- The obligation this file leaves open, to be discharged by a Euclidean construction later:
--- exhibit, for a tile edge whose extension past one end is blocked, the list `run` below.
--- That is the firewall of the invention rules: the arguments use the interface only.
+-- SCOPE. The far-side covering itself is NOT introduced here: it is obligation G3 of
+-- `Dissection.lean`, `HasEdgeChains`, already stated there with its status ("hard but not
+-- research-level; needs a usable notion of edge of a tile and of maximal segment, neither of which
+-- Mathlib provides"). What this file adds is only the arithmetic drawn FROM such a covering, in the
+-- packaged form the chord arguments use. `FarSide` below is the per-chord shadow of G3, not a new
+-- assumption: discharging G3 discharges it.
 
 import Mathlib.Tactic
 
