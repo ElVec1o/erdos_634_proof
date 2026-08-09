@@ -566,6 +566,52 @@ theorem gap_jb_minus_multiple {f j t x y z : ℕ} (hf : 3 ≤ f) (hj : 1 ≤ j) 
   -- `0 < s + z ≤ j < f`, so `f ∣ s + z` is impossible.
   exact absurd (Nat.le_of_dvd (by omega) hsz) (by omega)
 
+/-- **The `jb` chord gap, general in `(e,f)`.**
+
+The `e = 1` case is `gap_jb_minus_multiple`. Nothing in that argument used `e = 1` beyond the
+cancellation of `e^2` modulo `f`, so with `gcd(f, e^2) = 1` it runs verbatim for every member
+`(a,b,c) = (ef,\ f^2-e^2,\ f^2)`.
+
+Reducing `x(ef) + y(f^2-e^2) + z f^2 + t = j(f^2-e^2)` modulo `f`: both `a = ef` and `c = f^2`
+vanish, `b \equiv -e^2`, and `f \mid t`, so `e^2(y-j) \equiv 0`; coprimality gives `y \equiv j`.
+The size bound gives `y < j`, and then `0 < j-y \le j < f` contradicts `f \mid (j-y)`.
+
+Both edges a `β`-slot tile can lay first are multiples of `f` here as well (`a = ef`, `c = f^2`), so
+the lemma applies to each. Checked against every coprime member with `e \le 5`, `f \le e+9`: the
+range is exactly `1 \le j \le f-1` in each, the sole exception being `jb - c` at `(e,f) = (1,2)`,
+where the run is negative. This is the arithmetic the thick (`e \ge 2`) branch needs. -/
+theorem gap_jb_minus_multiple_gen {e f j t x y z B : ℕ} (he : 1 ≤ e) (hef : e < f)
+    (hco : Nat.Coprime f (e * e)) (hj : 1 ≤ j) (hjf : j < f) (ht : 0 < t) (htf : f ∣ t)
+    (hB : f * f = B + e * e)
+    (h : x * (e * f) + y * B + z * (f * f) + t = j * B) : False := by
+  have hBpos : 0 < B := by nlinarith
+  have e1 : z * (f * f) = z * B + z * (e * e) := by rw [hB]; ring
+  -- `y + z` copies of `B` already fit under `j * B`, with `t > 0` left over
+  have hyz : y + z < j := by
+    by_contra hcon
+    push_neg at hcon
+    have h2 : j * B ≤ (y + z) * B := Nat.mul_le_mul_right _ hcon
+    have h3 : (y + z) * B = y * B + z * B := by ring
+    omega
+  obtain ⟨s, hs⟩ : ∃ s, j = y + z + s := ⟨j - (y + z), by omega⟩
+  have hs1 : 1 ≤ s := by omega
+  have key : x * (e * f) + z * (e * e) + t = s * B := by
+    have e2 : j * B = y * B + z * B + s * B := by rw [hs]; ring
+    omega
+  have key2 : s * (f * f) = x * (e * f) + e * e * (s + z) + t := by
+    have e4 : s * (f * f) = s * B + s * (e * e) := by rw [hB]; ring
+    have e3 : e * e * (s + z) = s * (e * e) + z * (e * e) := by ring
+    omega
+  have hdvd : f ∣ e * e * (s + z) := by
+    have h1 : f ∣ s * (f * f) := ⟨s * f, by ring⟩
+    have h2 : f ∣ x * (e * f) := ⟨x * e, by ring⟩
+    have h3 : s * (f * f) - x * (e * f) - t = e * e * (s + z) := by omega
+    have h5 := Nat.dvd_sub (Nat.dvd_sub h1 h2) htf
+    rwa [h3] at h5
+  have hsz : f ∣ (s + z) := (Nat.Coprime.dvd_of_dvd_mul_left hco) hdvd
+  have hpos : 0 < s + z := by omega
+  exact absurd (Nat.le_of_dvd hpos hsz) (by omega)
+
 /-- **The pincer window.** With chain reach 3 on thick-block sides (and full reach on blocks
 `≤ 2`), a base word dies unless it escapes all four kills: left direct-`b` (`bp ≤ 4` when the `b`
 comes first), right direct-`b` (`f+3−bp ≤ 4` when the `c` comes first), right L2 (`cp = bp+1`
