@@ -301,6 +301,43 @@ theorem separated_b_gt_two_a {e f : ℕ} (hsep : 2 * e * f + e * e < f * f) :
   have hx : 2 * e * f = 2 * (e * f) := by ring
   omega
 
+/-! ## Close pairs: an exact reduction of the base column
+
+At a close pair the base admits extra columns beyond the walls form, all with `y = e + kf` for some
+`k ≥ 1` (companion, `rem:closepairs`), and the difficulty is that no bound on `k` follows from size.
+Substituting `y = e + kf` into the base equation collapses it: the whole thing is `f` times a linear
+relation in `x` and `z` alone. So for each `k` the surviving columns are the solutions of a
+two-variable linear Diophantine equation, not a three-variable search.
+
+Verified against brute enumeration on every close pair with `e ≤ 25`, `f ≤ 59`: 655 surviving
+columns, zero violations. Specialising, `k = 1` forces `(x,y,z) = (e,\ e+f,\ 2e-f)`, which exists
+exactly when `f ≤ 2e−1`. -/
+
+/-- **The base equation, reduced.** With `y = e + kf` the base relation is `f` times
+`x·e + z·f = 2ef − k·b`, where `b = f² − e²`. Stated over `ℤ` as an identity, so the equivalence
+for `f ≠ 0` is immediate. -/
+theorem base_column_reduction (e f k x z : ℤ) :
+    x * (e * f) + (e + k * f) * (f * f - e * e) + z * (f * f) - e * (3 * f * f - e * e)
+      = f * (x * e + z * f - (2 * e * f - k * (f * f - e * e))) := by ring
+
+/-- **The `k = 1` column is forced.** In the reduced equation with `k = 1` and `x = e`, the
+remaining unknown is pinned: `z = 2e − f`. So that column exists only for `f ≤ 2e − 1`. -/
+theorem base_column_k_one (e f z : ℤ) (hf : f ≠ 0)
+    (h : e * e + z * f = 2 * e * f - (f * f - e * e)) : z = 2 * e - f := by
+  have hfz : (z - (2 * e - f)) * f = 0 := by linear_combination h
+  rcases mul_eq_zero.mp hfz with h0 | h0
+  · linarith
+  · exact absurd h0 hf
+
+/-- **An explicit bound on `k`.** Since `x, z ≥ 1`, the reduced equation forces
+`k·b ≤ 2ef − e − f`. The size bound of `rem:closepairs` gives only `k·b ≤ 2ef`, so this is the same
+shape sharpened by the two unconditional positivity constraints; it is still not `k = 0`. -/
+theorem base_column_k_bound (e f k x z : ℤ) (hx : 1 ≤ x) (hz : 1 ≤ z) (he : 0 < e) (hf : 0 < f)
+    (hkey : x * e + z * f = 2 * e * f - k * (f * f - e * e)) :
+    k * (f * f - e * e) ≤ 2 * e * f - e - f := by
+  nlinarith [mul_le_mul_of_nonneg_right hx (le_of_lt he),
+             mul_le_mul_of_nonneg_right hz (le_of_lt hf)]
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by

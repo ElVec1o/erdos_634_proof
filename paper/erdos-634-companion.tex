@@ -2085,6 +2085,33 @@ coprime pairs, and among the smallest are $(5,6)$ and $(4,7)$, that is $N=83$ an
 by member certification therefore cannot settle this family.
 \end{remark}
 
+\begin{remark}[The extra base columns, in closed form]\label{rem:columnreduction}
+The extra columns at a close pair all have $y=e+kf$ with $k\ge1$
+(Remark~\ref{rem:closepairs}), and the obstruction is that no bound on $k$ follows from size.
+Substituting $y=e+kf$ into the base equation collapses it: the difference is $f$ times a relation in
+$x$ and $z$ alone,
+\[
+x(ef)+(e+kf)(f^2-e^2)+zf^2-e(3f^2-e^2)\;=\;f\bigl(xe+zf-(2ef-kb)\bigr),\qquad b=f^2-e^2,
+\]
+an identity (\texttt{base\_column\_reduction}). So for each $k$ the surviving columns are the
+solutions of the two-variable linear Diophantine equation
+\[
+xe+zf=2ef-kb ,
+\]
+not of a three-variable search. Verified against brute enumeration on every close pair with
+$e\le25$, $f\le59$: $655$ surviving columns, no exception.
+
+Two consequences. At $k=1$ the column is pinned, $(x,y,z)=(e,\,e+f,\,2e-f)$, so it occurs exactly
+when $f\le 2e-1$ (\texttt{base\_column\_k\_one}). And since $x,z\ge1$ the equation forces
+\[
+kb\;\le\;2ef-e-f
+\qquad(\texttt{base\_column\_k\_bound}),
+\]
+which is the size bound $kb\le 2ef$ of Remark~\ref{rem:closepairs} sharpened by the two positivity
+constraints. It is a bound, not the required $k=0$; what the reduction buys is that the residual
+question is now one linear equation per $k$, with $k$ ranging over an explicitly bounded set.
+\end{remark}
+
 \begin{remark}[The wedge-filler hypothesis, and where it fails]\label{rem:alphamin}
 Several steps of the corner chain fill a wedge of angle exactly $\alpha$ with a single
 $\alpha$-tile, justified in Lemma~\ref{lem:wallclimb} by ``$\alpha$ is the minimal angle''. That is
