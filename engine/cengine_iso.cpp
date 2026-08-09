@@ -802,6 +802,15 @@ static int g_split_k = 4;
 static std::mutex g_qmutex;                              // guards the task queue and the winner slot
 static std::vector<Task> g_queue;
 static size_t g_qhead = 0;
+// Dispatch order.  FIFO (the default, g_lifo=false) drains the queue front-to-back, which is
+// breadth-first over subtrees: every task that blows its budget enqueues g_split_k children that
+// then sit unexplored, so the frontier grows faster than it drains and no finite ETA exists.
+// LIFO takes the most recently enqueued task, i.e. depth-first over subtrees, so a split is worked
+// off immediately and the pending set stays bounded.  The set of nodes explored is identical --
+// only the order changes -- because task paths are deterministic and order-independent (see the
+// comment above Task).  So EXHAUSTED is unaffected; this is a scheduling change, not a search change.
+static bool g_lifo = false;
+static size_t g_dispatched = 0;                          // tasks handed to workers (both modes)
 static bool g_found_any = false;
 static std::vector<Poly> g_found_tiling;
 
@@ -1355,6 +1364,7 @@ struct Search {
         if (const char* e = getenv("CENGINE_BUDGET")) g_budget = atoll(e);
         if (const char* e = getenv("CENGINE_SPLITK")) g_split_k = atoi(e);
         if (const char* e = getenv("CENGINE_QCAP")) g_queue_cap = (size_t)atol(e);
+        if (const char* e = getenv("CENGINE_LIFO")) g_lifo = (atoi(e) != 0);
         long long done_before = par_load_ckpt(cd);
         printf("  parallel: cut depth %d, %zu subtree tasks, %d threads\n",
                cd, g_queue.size(), threads);
@@ -1377,10 +1387,19 @@ struct Search {
                         std::lock_guard<std::mutex> lk(g_qmutex);
                         if (g_stop.load(std::memory_order_relaxed)) break;
                         // skip tasks already completed as leaves in a previous run
-                        while (g_qhead < g_queue.size() &&
-                               g_leafdone.count(path_key(g_queue[g_qhead].path))) g_qhead++;
-                        if (g_qhead >= g_queue.size()) break;
-                        t = std::move(g_queue[g_qhead++]);
+                        if (g_lifo) {
+                            while (!g_queue.empty() &&
+                                   g_leafdone.count(path_key(g_queue.back().path))) g_queue.pop_back();
+                            if (g_queue.empty()) break;
+                            t = std::move(g_queue.back());
+                            g_queue.pop_back();
+                        } else {
+                            while (g_qhead < g_queue.size() &&
+                                   g_leafdone.count(path_key(g_queue[g_qhead].path))) g_qhead++;
+                            if (g_qhead >= g_queue.size()) break;
+                            t = std::move(g_queue[g_qhead++]);
+                        }
+                        g_dispatched++;
                     }
                     std::string key = path_key(t.path);
                     long long n0 = w->nodes, a0 = w->prune_area, r0 = w->prune_run,
@@ -1419,7 +1438,8 @@ struct Search {
                     // machine into swap and was killed).  Past a cap, stop splitting and just run
                     // the task to completion: slower to balance, but bounded.
                     size_t pending;
-                    { std::lock_guard<std::mutex> lk(g_qmutex); pending = g_queue.size() - g_qhead; }
+                    { std::lock_guard<std::mutex> lk(g_qmutex);
+                      pending = g_lifo ? g_queue.size() : (g_queue.size() - g_qhead); }
                     if (pending >= g_queue_cap) {
                         w->nodes = n0; w->prune_area = a0; w->prune_run = r0;
                         w->prune_dir = d0; w->prune_walk = k0; w->maxdepth = md0;
@@ -1481,7 +1501,7 @@ struct Search {
                     { std::lock_guard<std::mutex> lk(g_qmutex); nq = g_queue.size(); }
                     printf("  [%s] par nodes~%lld  leaves %zu  queue %zu/%zu  threads %d  t=%lds\n",
                            name.c_str(), co_nodes + done_before + gn +
-                               g_leafnodes.load(std::memory_order_relaxed), nd, g_qhead, nq, threads,
+                               g_leafnodes.load(std::memory_order_relaxed), nd, g_dispatched, nq, threads,
                            (long)(now - t0));
                     fflush(stdout);
                     if (!ckpt_file.empty() && now - last_ckpt >= ckpt_secs) {
@@ -1510,7 +1530,8 @@ struct Search {
         }
         par_save_ckpt(cd);
         bool all_done;
-        { std::lock_guard<std::mutex> lk(g_qmutex); all_done = (g_qhead >= g_queue.size()); }
+        { std::lock_guard<std::mutex> lk(g_qmutex);
+          all_done = g_lifo ? g_queue.empty() : (g_qhead >= g_queue.size()); }
         if (!g_found_any && !all_done) return "INCONCLUSIVE";   // cap hit / stopped early
         if (g_found_any) { found = g_found_tiling; has_found = true; return "FOUND_TILING"; }
         return "EXHAUSTED_NO_TILING";
