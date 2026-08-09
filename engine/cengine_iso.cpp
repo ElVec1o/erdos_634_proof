@@ -741,6 +741,7 @@ static bool WALK_PRUNE = false;
 // Most-constrained-corner anchoring. OFF by default so that every certified run reproduces
 // bit-identically; set CENGINE_MRV=1 to enable it for FINDING, where node identity does not matter.
 static bool g_mrv = false;
+static bool g_p7 = false;   // opt-in boundary-run tile-count lower bound
 static int WALK_BASESIDE = 0;   // which side index of `target` is the BASE (flip permutes it)
 // ------------------------------------------------------- P6: forced corner edge types (e=1) ---
 // P5 prunes on edge MULTISETS.  For e = 1, m = 1 the companion additionally pins the ORDER at the
@@ -810,12 +811,14 @@ static size_t g_qhead = 0;
 // paths are deterministic and order-independent (see the comment above Task).  So EXHAUSTED is
 // unaffected; this is a scheduling change, not a search change.
 //
-// MEASURED on N=138 (member (3,7)).  LIFO reduces the divergence, it does NOT remove it:
-//     FIFO  407 leaves closed   +16.36 pending per leaf   254 leaves/h   ~4,400 nodes/s
-//     LIFO  134 leaves closed   + 3.19 pending per leaf   423 leaves/h   ~2,253 nodes/s
-// Each closed leaf still creates ~4.19 tasks and removes one, so pending grows and no finite ETA
-// exists under either dispatcher.  An earlier note claiming LIFO "drains" the frontier was read off
-// a window containing a single leaf and was wrong; quote per-leaf rates only from >= ~100 leaves.
+// MEASURED on N=138 (member (3,7)), and the measurement needs a long window to be meaningful.
+//     FIFO  407 leaves closed  +16.36 pending per leaf  254 leaves/h  ~4,400 nodes/s  -> diverges
+//     LIFO, after a startup transient in which pending rose 11,670 -> 12,113 over ~1080s,
+//           386 leaves closed  - 1.77 pending per leaf  901 leaves/h  -> DRAINS, ETA ~7h
+// Two earlier readings of this run were wrong in opposite directions: -1.00 from a window with one
+// closed leaf, then +3.19 taken across the transient.  Only the post-transient figure above is
+// well founded.  Rule for this engine: quote a per-leaf rate only from >= ~300 leaves AND only
+// after the queue has stopped growing.
 // The remaining headroom is in propagation, not scheduling: at N=47 only ~13.5% of nodes die to an
 // explicit prune (11098 nodes vs 1500 prunes) and the rest is raw branching.
 static bool g_lifo = false;
@@ -969,7 +972,20 @@ struct Search {
         if (!qd_p_fits_slong(r)) return -1;
         return qd_p_get_si(r);
     }
-    bool runs_ok(const Poly& poly) {
+    // P7 (opt-in, CENGINE_P7).  A maximal run between two convex corners must be covered by whole
+    // tile edges.  Each edge is at most c long, and two distinct edges on one straight run belong
+    // to distinct tiles, because a triangle has no two collinear edges.  Every such tile is among
+    // the `left` still to be placed, so  left >= ceil(L / c)  for every run.  This is a lower bound
+    // on tiles from the BOUNDARY, which the area test cannot see: a long thin region can satisfy
+    // the area count while needing more tiles than remain.  Sound, so it removes no tilings and
+    // EXHAUSTED verdicts are preserved; it does change node counts, which is why it is gated and
+    // validated by verdict identity rather than node identity.
+    bool run_count_ok(long L, long left_) const {
+        if (tile.c <= 0) return true;
+        long need = (L + tile.c - 1) / tile.c;
+        return need <= left_;
+    }
+    bool runs_ok(const Poly& poly, long left_ = -1) {
         size_t n = poly.size();
         std::vector<int> conv(n);
         for (size_t i = 0; i < n; i++)
@@ -998,6 +1014,7 @@ struct Search {
                 if (den != 1) return false;
                 if (!num.fits_slong_p()) return false;
                 if (!semi.contains_int(num.get_si())) return false;
+                if (g_p7 && left_ >= 0 && !run_count_ok(num.get_si(), left_)) return false;
             }
         }
         return true;
@@ -1145,7 +1162,7 @@ struct Search {
         }
         if (total != left) { prune_area++; return; }
         for (const Poly& p : polys)
-            if (!runs_ok(p)) { prune_run++; return; }
+            if (!runs_ok(p, left)) { prune_run++; return; }
         for (const Poly& p : polys)
             if (!corner_ok(p)) { prune_dir++; return; }
         int pi, vi;
@@ -1793,6 +1810,7 @@ int main(int argc, char** argv) {
     int threads = 1;
     if (const char* e = getenv("CENGINE_THREADS")) threads = atoi(e);
     if (const char* e = getenv("CENGINE_MRV")) g_mrv = (atoi(e) != 0);
+    if (const char* e = getenv("CENGINE_P7")) g_p7 = (atoi(e) != 0);
     if (threads < 1) threads = 1;
     Search S;
     if (!make_instance(name, S.tile, S.target, S.N)) {
