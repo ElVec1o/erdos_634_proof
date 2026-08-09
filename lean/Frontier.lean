@@ -562,6 +562,48 @@ theorem no_extra_column_of_f_gt_two_e {e f k m x z : ℤ}
   -- `f > 2e` and `k ≥ 1` give `2ke < kf ≤ (m+2)e`, hence `2k < m+2`; with `2m ≤ k-1`, `k < 1`
   nlinarith [mul_lt_mul_of_pos_left hf2 (lt_of_lt_of_le zero_lt_one hk)]
 
+/-! ## The side parameter `p`, and where it is bounded
+
+`SideNoB.side_no_b_uncond` says an equal side carries no `b`-edge at any member. A side is then
+`a`-edges and `c`-edges only, and the walk equation quantises the `a`-count: `f ∣ n_a`, say
+`n_a = pf`, whence `n_c + pe = f`. Hypothesis `hyp:walls` is exactly `p = 0`, and the open range is
+`1 ≤ p ≤ (f−1)/e`. At `e = 1` that range grows with `f`; on the close pairs with `f > 2e` it does
+not — it is `{1,2}`, uniformly. -/
+
+/-- **The side parametrisation.** With no `b`-edge on the side, `f ∣ n_a`; writing `n_a = pf` the
+walk equation becomes `n_c + pe = f`. Only coprimality is used. -/
+theorem side_p_parametrisation {e f na nc : ℕ} (hf : 0 < f) (hco : Nat.Coprime f e)
+    (hwalk : na * (e * f) + nc * (f * f) = f * f * f) :
+    ∃ p, na = p * f ∧ nc + p * e = f := by
+  -- divide the walk equation by `f`
+  have key : f * (na * e + nc * f) = f * (f * f) := by
+    have h1 : f * (na * e + nc * f) = na * (e * f) + nc * (f * f) := by ring
+    rw [h1, hwalk]; ring
+  have hstep : na * e + nc * f = f * f := Nat.eq_of_mul_eq_mul_left hf key
+  -- `f ∣ na * e`, hence `f ∣ na` by coprimality
+  have hsum : f ∣ nc * f + na * e := by
+    rw [Nat.add_comm, hstep]; exact ⟨f, rfl⟩
+  have h1 : f ∣ na * e := (Nat.dvd_add_right ⟨nc, by ring⟩).mp hsum
+  obtain ⟨p, hp⟩ := hco.dvd_of_dvd_mul_right h1
+  refine ⟨p, by rw [hp]; ring, ?_⟩
+  have h2 : f * (p * e + nc) = f * f := by
+    have : f * (p * e + nc) = (f * p) * e + nc * f := by ring
+    rw [this, ← hp]; exact hstep
+  have h3 := Nat.eq_of_mul_eq_mul_left hf h2
+  omega
+
+/-- **On a close pair with `f > 2e` the side parameter is at most `2`.** Together with `n_c ≥ 1`
+(the `γ`-trap) and `f > 2e`, which makes `p = 2` size-admissible, the open range is exactly
+`{1,2}` — the same two cases for every member of the family. Checked on all 126003 close pairs with
+`f > 2e` and `e ≤ 1000`: `⌊(f−1)/e⌋ = 2` in every one. -/
+theorem side_p_le_two {e f p : ℕ} (he : 0 < e) (hpe : p * e < f)
+    (hclose : f * f ≤ 2 * e * f + e * e) : p ≤ 2 := by
+  by_contra h
+  push_neg at h
+  have h3 : 3 * e ≤ p * e := Nat.mul_le_mul_right e (by omega)
+  have hf : 3 * e + 1 ≤ f := by omega
+  nlinarith
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by

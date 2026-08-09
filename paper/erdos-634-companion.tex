@@ -2183,6 +2183,62 @@ rather than a new one, Proposition~\ref{prop:n1general} carries the label PROVED
 its geometric steps are the same ones Theorem~\ref{thm:n1} already rests on.
 \end{remark}
 
+\subsection{The side parameter, and where its range is bounded}\label{sub:sidep}
+
+Once the base walk is pinned, what remains is the side. The side question has a single integer
+parameter, and on the family of Corollary~\ref{cor:wallsf2e} that parameter takes only two open
+values, uniformly in the member.
+
+\begin{proposition}[The side parameter]\label{prop:sidep}
+Let $\gcd(e,f)=1$, $1\le e<f$, $m=1$, and let $n_a,n_b,n_c$ be the edge counts of an equal side.
+Then $n_b=0$; moreover $f\mid n_a$, and writing $n_a=pf$ one has
+\[
+n_c+pe=f .
+\]
+The $\gamma$-trap gives $n_c\ge1$, so $0\le p\le(f-1)/e$, and Hypothesis~\ref{hyp:walls} is exactly
+the assertion $p=0$.
+\textup{(\texttt{SideNoB.side\_no\_b\_uncond}, \texttt{side\_p\_parametrisation}.)}
+\end{proposition}
+
+\begin{proof}
+That an equal side carries no $b$-edge is \texttt{side\_no\_b\_uncond}, whose hypotheses are
+$\gcd(e,f)=1$, $e<f$ and $n_c\ge1$; no size condition is involved. The side has length $f^3$, so
+$n_a\,ef+n_c f^2=f^3$; dividing by $f$ gives $n_a e+n_c f=f^2$, whence $f\mid n_a e$ and so
+$f\mid n_a$ by coprimality. Writing $n_a=pf$ and dividing once more gives $pe+n_c=f$. Finally
+$n_c\ge1$ is the $\gamma$-trap.
+\end{proof}
+
+\begin{corollary}[A uniform two-case side problem]\label{cor:ptwo}
+Suppose in addition that $2e<f$ and that $(e,f)$ is a close pair, $f^2\le2ef+e^2$. Then
+$\lfloor(f-1)/e\rfloor=2$. Hence on that family Hypothesis~\ref{hyp:walls} reduces to excluding
+$p\in\{1,2\}$ --- the same two cases for every member.
+\textup{(\texttt{side\_p\_le\_two}.)}
+\end{corollary}
+
+\begin{proof}
+From $f\ge2e+1$ we get $(f-1)/e\ge2$. Conversely $p\ge3$ would give $3e\le pe\le f-1$, so
+$f\ge3e+1$ and then $f^2-2ef-e^2\ge(3e+1)(e+1)-e^2=2e^2+4e+1>0$, contradicting the close-pair
+inequality.
+\end{proof}
+
+\begin{remark}[What this buys, and what it does not]\label{rem:ptwoscope}
+Corollary~\ref{cor:wallsf2e} pins the base walk exactly on the close pairs with $f>2e$, which is
+where Lemma~\ref{lem:basetri} did not apply; there are $203$ such members with $e\le40$, the
+smallest being $(3,7)$ with $N=138$, then $(4,9)$ with $N=227$ and $(5,11)$ with $N=338$. On the same
+family Corollary~\ref{cor:ptwo} bounds the side parameter by $2$. Checked on all $126003$ close
+pairs with $f>2e$ and $e\le1000$: $\lfloor(f-1)/e\rfloor=2$ in every one.
+
+The contrast with $e=1$ is the point. There the range is $1\le p\le f-1$ and grows without bound
+with $f$, which is why the corner cascade of Conjecture~\ref{conj:advance} has to be run as an
+induction over block lengths. Here the range is $\{1,2\}$ for every member of an infinite family, so
+the side question is a fixed finite case analysis rather than an induction. This is the first
+sub-family in which that happens.
+
+At $(3,7)$, concretely: $p=1$ gives a side of $7$ $a$-edges and $4$ $c$-edges, and $p=2$ gives $14$
+$a$-edges and $1$ $c$-edge. Excluding those two remains open; the reduction bounds the problem, it
+does not solve it.
+\end{remark}
+
 \begin{remark}[Close pairs: what the unconditional filters leave]\label{rem:closepairs}
 At a close pair ($f^2\le 2ef+e^2$) Lemma~\ref{lem:basetri} no longer applies and the base admits
 extra columns, all with $y=e+kf$ for some $k\ge1$. Three unconditional filters apply: the
