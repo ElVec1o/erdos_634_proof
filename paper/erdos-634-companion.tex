@@ -1387,8 +1387,12 @@ are $b$ apart (\texttt{chord\_jb}, \texttt{chord\_jb\_segment}).
 as $0\le j\le f-1$ this gives $y=j$, hence $xa+zc=0$ and $x=z=0$ (\texttt{partition\_jb\_gen}, which
 is general in $(e,f)$; \texttt{partition\_30} is its case $f=4$, $j=2$).
 
-\emph{(iii)} $\beta$ is opposite $b$, so its incident edges are $a$ and $c$: the tile in the
-$\beta$-slot lays an $a$-edge (direct) or a $c$-edge (mirrored), never a $b$-edge. Both runs left on
+\emph{(iii)} The $\beta$-slot exists: at the side junction $j\,c\,u$ where the block ends,
+Lemma~\ref{lem:wallclimb} gives $C_j$'s $\alpha$ and $M_j$'s $\gamma$, which force the next side
+tile's corner to $\beta$, and that lemma is unconditional --- it uses no base-letter hypothesis and
+no line closure, so it applies at every block length. Now $\beta$ is opposite $b$, so its incident
+edges are $a$ and $c$: the tile in the $\beta$-slot lays an $a$-edge (direct) or a $c$-edge
+(mirrored), never a $b$-edge. Both runs left on
 the chord are gaps, by the uniform statement that $jb-t\notin\langle a,b,c\rangle$ whenever
 $1\le j\le f-1$ and $f\mid t$, $t>0$ (\texttt{gap\_jb\_minus\_multiple}): indeed $a=f$ and $c=f^2$
 are both multiples of $f$. Concretely, if the tile is direct its $a$-edge does not reach $R_{j-1}$
