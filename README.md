@@ -87,13 +87,28 @@ What is proved of the hypothesis:
 - `e ≥ 2` (thick members): the base walk is forced to the walls form at every *separated* member
   (`f² > 2ef + e²`), via a base trichotomy, the `γ`-trap, and an unconditional corner chain.
 - Seven members are settled by independent certified exhaustion of the full `m = 1` target:
-  `N = 11, 23, 26, 39, 71, 74, 107`.
+  `N = 11, 23, 26, 39, 71, 74, 107`. `N = 146` (the member `(1,7)`) is settled by the same engine
+  with the `γ`-trap and corner-type prunes enabled; that certificate depends on the reduction
+  theorem those prunes encode, so it is not independent of the theory in the way the other seven are.
+- Of the two escapes that the advance-and-collide conjecture names at `e = 1`, the second — an
+  initial side `c`-block of length `≥ 2` — is closed for every `f ≥ 3` and every block length.
+  The first, a deviating `a`-run whose new `c`-chord ends beyond the forced region, is open, and
+  its escape is now known to hold uniformly in `f`: the chord's endpoint overshoots the blocking
+  edge by exactly one `a`, so no threshold in `f` closes it and the blocking must be recovered
+  another way.
+- Close pairs `f ≤ (1+√2)e` are not excluded, but the columns that survive the unconditional
+  filters are now described in closed form: writing the base `b`-count as `y = e + kf`, the base
+  equation reduces to `xe + zf = 2ef − k(f²−e²)`, `x` is pinned modulo `f`, `k` is bounded by
+  `(2ef−3e−f)/(f²−e²)`, and each admissible `k` carries exactly one column.
 
 What remains open: the hypothesis in general — the side condition at `e ≥ 2`, the residual
-configurations at `e = 1`, and the close pairs `f ≤ (1+√2)e`, an infinite family that contains
-`N = 83` and `N = 131`; **external refereeing of the whole work** (an exceptional claim; see the
-disclosure below); Zhang's sufficiency conjecture and the equilateral realizability laws, which
-are independent of the prime question. Composite `N` realizability remains a rich open area.
+configurations at `e = 1` (route 1 above), and the close pairs, an infinite family that contains
+`N = 83` and `N = 131`. No boundary-word argument can settle the close pairs: the base word's
+composition, its congruences, its junction figures and the `γ`-injection are all exhausted, so the
+bound on `y` must come from the interior. Also open: **external refereeing of the whole work** (an
+exceptional claim; see the disclosure below); Zhang's sufficiency conjecture and the equilateral
+realizability laws, which are independent of the prime question. Composite `N` realizability remains
+a rich open area.
 
 ## The invariant in one line
 
