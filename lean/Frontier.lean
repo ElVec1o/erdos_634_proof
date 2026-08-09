@@ -235,12 +235,9 @@ theorem side_tile_third_vertex {f cb sb : ℝ} (hcos : 2 * f ^ 3 * cb = 3 * f ^ 
       = (f ^ 2 - 1) ^ 2 := by
   linear_combination (f ^ 2) * hpyth - hcos
 
-/-- **The four points share the height `c·sin β`.** Collinearity of `A`, `R₁`, `V`, `E`. -/
-theorem route1_common_height (f cb sb : ℝ) :
-    (f ^ 2 * sb = f ^ 2 * sb) ∧ (f ^ 2 * sb = f ^ 2 * sb) ∧ (f ^ 2 * sb = f ^ 2 * sb) :=
-  ⟨rfl, rfl, rfl⟩
-
-/-- **The spacings.** Along that line the four abscissae are `c·cb`, `c·cb + a`, `c·cb + c`,
+/-- **The spacings.** All four points share the ordinate `c·sin β` by construction (each is
+`c·u` plus a horizontal vector), so they are collinear; what carries content is the gaps. Along that
+line the four abscissae are `c·cb`, `c·cb + a`, `c·cb + c`,
 `c·cb + c + a`, so consecutive gaps are `a`, `c − a`, `a`, and `|AV| = |R₁E| = c`. In particular the
 gap `[V,E]` between the blocking edge's end and the chord's endpoint is exactly `a`, which is what
 route 1 must exploit. -/
@@ -258,6 +255,46 @@ length is exactly `b`, passes the base point by `c − b = e²`, which is positi
 leaves the target, which is why the `α`-slot flank cannot be a `c`-edge. -/
 theorem overshoot_c_sub_b (e f : ℕ) (h : e * e ≤ f * f) :
     (f * f) - (f * f - e * e) = e * e := by omega
+
+/-! ## Which angle is minimal: separated members versus close pairs
+
+The tile is `(a,b,c) = (ef, f²−e², f²)` with `a` opposite `α`, `b` opposite `β`, `c` opposite `γ`.
+Since a larger side faces a larger angle, `α < β` exactly when `a < b`. Several steps of the corner
+chain choose the filler of a wedge by "`α` is the minimal angle" (companion, `lem:wallclimb`), so it
+matters where that holds.
+
+The separation condition `f² > 2ef + e²` is literally `b > 2a`. Hence at every separated member
+`b > 2a > a` and `α` is minimal automatically, and the same holds at every `e = 1` member, where
+`a = f < f² − 1 = b` for `f ≥ 2`. Close pairs are exactly the complement, `b ≤ 2a`, and there `b`
+may fall below `a`: that happens iff `f < eφ`, and it does happen — at `(e,f) = (2,3), (3,4),
+(4,5), (5,6), (6,7), (7,8), …`, including `(5,6)`, which is `N = 83`.
+
+So the minimality of `α` is not a harmless normalisation but a genuine hypothesis, satisfied
+throughout the region where the machinery was developed and failing on a definite sublist of the
+region where it is wanted. Any close-pair argument must either avoid it or split into the two
+regimes. -/
+
+/-- **Separated members have `b > 2a`.** The separation condition is exactly this inequality, so
+`α` is the minimal angle at every separated member. -/
+theorem separated_b_gt_two_a {e f : ℕ} (hsep : 2 * e * f + e * e < f * f) :
+    2 * (e * f) < f * f - e * e := by
+  -- `2 * e * f` parses as `(2*e)*f`, a different atom from `2*(e*f)`; omega needs them linked.
+  have hx : 2 * e * f = 2 * (e * f) := by ring
+  omega
+
+/-- Consequently `a < b` there, i.e. `α < β`: the minimality of `α` is automatic away from close
+pairs. -/
+theorem separated_alpha_minimal {e f : ℕ} (he : 1 ≤ e) (hef : e < f)
+    (hsep : 2 * e * f + e * e < f * f) : e * f < f * f - e * e := by
+  have h := separated_b_gt_two_a hsep
+  have : 0 < e * f := Nat.mul_pos he (by omega)
+  omega
+
+/-- At `e = 1` the same holds for every `f ≥ 2`, with no separation hypothesis: `a = f` and
+`b = f² − 1`. -/
+theorem e_one_alpha_minimal {f : ℕ} (hf : 2 ≤ f) : 1 * f < f * f - 1 * 1 := by
+  have : 2 * f ≤ f * f := by nlinarith
+  omega
 
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/

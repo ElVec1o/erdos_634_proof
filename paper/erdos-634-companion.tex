@@ -2085,6 +2085,34 @@ coprime pairs, and among the smallest are $(5,6)$ and $(4,7)$, that is $N=83$ an
 by member certification therefore cannot settle this family.
 \end{remark}
 
+\begin{remark}[Which angle is minimal, and why close pairs are structurally different]\label{rem:alphamin}
+The separation condition is an inequality between tile edges: $f^2>2ef+e^2$ reads $b>2a$. Hence at
+every separated member $b>2a>a$, and since a larger side faces a larger angle, $\alpha<\beta$
+there automatically; the same holds at every $e=1$ member, where $a=f<f^2-1=b$ for $f\ge2$
+(\texttt{separated\_alpha\_minimal}, \texttt{e\_one\_alpha\_minimal}). Close pairs are exactly
+the complement $b\le 2a$, and there $b$ may fall below $a$: that happens precisely when
+$f<e\varphi$, $\varphi$ the golden ratio, and it does happen --- at $(e,f)=(2,3),(3,4),(4,5),
+(5,6),(6,7),(7,8),(7,9),(7,10),\dots$, including $(5,6)$, which is $N=83$. At those members
+$\beta$, not $\alpha$, is the minimal angle.
+
+This matters because several steps of the corner chain select the filler of a wedge by ``$\alpha$
+is the minimal angle'' (Lemma~\ref{lem:wallclimb}). That hypothesis is satisfied throughout the
+region where the machinery was developed --- all of $e=1$, and every separated member --- and fails
+on a definite sublist of the region where it is wanted. It is therefore a genuine hypothesis rather
+than a normalisation, and the failure is not a matter of the arithmetic filters being weaker at
+close pairs: the geometry itself changes. Any argument aimed at close pairs must either avoid the
+minimality of $\alpha$ or split into the two regimes $f<e\varphi$ and $e\varphi<f\le(1+\sqrt2)e$.
+
+We note also what does \emph{not} help there. Reducing the base equation modulo $e$ gives
+$y+z\equiv0\pmod e$ by coprimality, and the $\gamma$-injection is exactly a bipartite matching of
+the $a$- and $b$-edges to the junctions, whose sharp criterion is Hall's condition rather than the
+counting bound. Neither removes any of the $54$ columns that survive the three unconditional
+filters over $e\le9$, $f\le15$: the first is implied by the base equation, and the second collapses
+to the $\gamma$-trap $z\ge1$, since with $z\ge1$ a matching always exists. The boundary word
+therefore carries no further information, which is the precise sense in which a bound on $y$ must
+be interior.
+\end{remark}
+
 \begin{lemma}[A $c$-corner carries a side $a$-edge]\label{lem:ccornerside}
 The base corner angle is $\beta$, with flanks $\{a,c\}$. If a corner tile lays $c$ on the base it
 lays $a$ on the side, so that side's $a$-count $P'$ is positive; by Lemma~\ref{lem:sidequant}
