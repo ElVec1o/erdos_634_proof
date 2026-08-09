@@ -2102,14 +2102,23 @@ not of a three-variable search. Verified against brute enumeration on every clos
 $e\le25$, $f\le59$: $655$ surviving columns, no exception.
 
 Two consequences. At $k=1$ the column is pinned, $(x,y,z)=(e,\,e+f,\,2e-f)$, so it occurs exactly
-when $f\le 2e-1$ (\texttt{base\_column\_k\_one}). And since $x,z\ge1$ the equation forces
+when $f\le 2e-1$ (\texttt{base\_column\_k\_one}). And the equation bounds $k$. Using only $x,z\ge1$ gives $kb\le 2ef-e-f$
+(\texttt{base\_column\_k\_bound}). The corner parallelogram also forces $x+z\ge4$, and since $e<f$
+the minimum of $xe+zf$ subject to $x,z\ge1$, $x+z\ge4$ sits at $(x,z)=(3,1)$, so
 \[
-kb\;\le\;2ef-e-f
-\qquad(\texttt{base\_column\_k\_bound}),
+kb\;\le\;2ef-3e-f
+\qquad(\texttt{k\_bound\_sharp}),
 \]
-which is the size bound $kb\le 2ef$ of Remark~\ref{rem:closepairs} sharpened by the two positivity
-constraints. It is a bound, not the required $k=0$; what the reduction buys is that the residual
-question is now one linear equation per $k$, with $k$ ranging over an explicitly bounded set.
+better by $2e$. Checked against brute enumeration on every close pair with $e\le25$, $f\le59$: no
+violation, and the bound is \emph{attained} --- equal to the largest surviving $k$ --- at $186$ of
+the $198$ members carrying survivors. Since the enumeration also shows exactly one surviving column
+for each $k$ in range (observed on all $655$ columns; we do not prove it), the surviving set at a
+member is described completely by
+\[
+k=1,\dots,\Bigl\lfloor\frac{2ef-3e-f}{b}\Bigr\rfloor .
+\]
+This is a bound and a description, not the required $k=0$. What it buys is that the residual
+question is one linear equation per $k$, with $k$ in an explicit finite range.
 \end{remark}
 
 \begin{remark}[The wedge-filler hypothesis, and where it fails]\label{rem:alphamin}

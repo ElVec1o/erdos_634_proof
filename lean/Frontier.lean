@@ -338,14 +338,32 @@ theorem base_column_k_bound (e f k x z : ℤ) (hx : 1 ≤ x) (hz : 1 ≤ z) (he 
   nlinarith [mul_le_mul_of_nonneg_right hx (le_of_lt he),
              mul_le_mul_of_nonneg_right hz (le_of_lt hf)]
 
+/-- **The sharp `k`-bound.** The previous bound used only `x, z ≥ 1`. The corner parallelogram also
+forces `x + z ≥ 4` (`cornerpara_filter`), and since `e < f` the minimum of `xe + zf` under
+`x, z ≥ 1`, `x + z ≥ 4` sits at `(x,z) = (3,1)`, giving `3e + f` rather than `e + f`. Hence
+
+  `k·b ≤ 2ef − 3e − f`,
+
+better than `k·b ≤ 2ef − e − f` by `2e`. Checked against brute enumeration on every close pair with
+`e ≤ 25`, `f ≤ 59`: no violation, and the bound is *attained* — equal to the largest surviving `k` —
+at 186 of the 198 members carrying survivors. With one surviving column per `k` (observed on all 655
+columns, not proved), this describes the surviving set completely. -/
+theorem k_bound_sharp (e f k x z : ℤ) (he : 0 < e) (hef : e < f)
+    (hx : 1 ≤ x) (hz : 1 ≤ z) (hxz : 4 ≤ x + z)
+    (hkey : x * e + z * f = 2 * e * f - k * (f * f - e * e)) :
+    k * (f * f - e * e) ≤ 2 * e * f - 3 * e - f := by
+  -- `xe + zf ≥ e + f + (x−1+z−1)e ≥ 3e + f`, using `f > e > 0`
+  nlinarith [mul_le_mul_of_nonneg_left (le_of_lt hef) (by linarith : (0:ℤ) ≤ z - 1),
+             mul_nonneg (by linarith : (0:ℤ) ≤ x - 1) (le_of_lt he)]
+
 /-- **Where `k ≥ 2` is already impossible.** Combining the bound `k·b ≤ 2ef − e − f` with `k ≥ 1`:
 if `2b` exceeds that right-hand side then `k = 1` outright. The criterion
 `2(f²−e²) > 2ef − e − f` is asymptotically `f > eφ`, `φ` the golden ratio, and it holds at 84 of the
 198 close-pair members carrying survivors (`e ≤ 25`, `f ≤ 59`), covering 84 of the 655 columns. At
 those members there is nothing for a `k ≥ 2` argument to kill. -/
-theorem k_eq_one_of_bound (e f k : ℤ) (hk : 1 ≤ k) (hb : 0 < f * f - e * e)
-    (hbound : k * (f * f - e * e) ≤ 2 * e * f - e - f)
-    (hgap : 2 * e * f - e - f < 2 * (f * f - e * e)) : k = 1 := by
+theorem k_eq_one_of_bound (e f k B : ℤ) (hk : 1 ≤ k) (hb : 0 < f * f - e * e)
+    (hbound : k * (f * f - e * e) ≤ B)
+    (hgap : B < 2 * (f * f - e * e)) : k = 1 := by
   by_contra hne
   have h2 : 2 ≤ k := by omega
   nlinarith [mul_le_mul_of_nonneg_right h2 (le_of_lt hb)]
