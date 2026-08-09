@@ -2172,6 +2172,74 @@ determined by $x$.
 \textup{(\texttt{close\_pair\_column}, \texttt{close\_pair\_column\_unique}, \texttt{one\_column\_per\_k}.)}
 \end{proposition}
 
+The clause ``that admits a solution'' in Proposition~\ref{prop:closepaircolumns} is not decided by
+(iii): the bound there ignores the residue class of $x$, and over-permits. At $(e,f)=(8,17)$ it
+allows $k=1$, while $8x+17z=47$ with $x\equiv8\pmod{17}$ has no solution with $x,z\ge1$, so no
+column exists; the same happens at $551$ of the $1558$ close pairs with $e\le60$. Restoring the
+residue class makes the test exact.
+
+\begin{proposition}[Sharp criterion for an extra base column]\label{prop:sharpcolumn}
+Let $\gcd(e,f)=1$, $1\le e<f$, $b=f^2-e^2$. For $k\ge1$ let $x_k$ be the least positive integer with
+$x_k\equiv ke\pmod f$, and write $x_k=ke-m_kf$, so that $1\le x_k\le f$. Put
+\[
+g(k)=(m_k+2)e-1-kf, \qquad z_k=\frac{2ef-kb-x_ke}{f}.
+\]
+Then:
+\begin{enumerate}
+\item[\textup{(i)}] an extra base column with parameter $k$ exists if and only if $g(k)\ge0$ and
+$x_k+z_k\ge4$, and it is then $(x_k,\,e+kf,\,z_k)$;
+\item[\textup{(ii)}] $g(k+1)\le g(k)-(f-e)$, so $g$ is strictly decreasing;
+\item[\textup{(iii)}] $g(1)=2e-1-f$. Hence no member with $f\ge 2e$ carries an extra column at any
+$k$, and in general the admissible $k$ form an initial segment $1,\dots,K$ with
+$K\le 1+\lfloor(2e-1-f)/(f-e)\rfloor$.
+\end{enumerate}
+\textup{Formalised as \texttt{column\_criterion\_identity}, \texttt{column\_criterion},
+\texttt{k\_one\_forces\_f\_le\_two\_e\_sub\_one}, \texttt{residue\_step} and \texttt{g\_strict\_drop}
+in \texttt{lean/Frontier.lean}; unlike the other Lean citations in this note these five await a
+kernel check, so the proof below is the warrant for the statement.}
+\end{proposition}
+
+\begin{proof}
+(i) By Proposition~\ref{prop:closepaircolumns}(i),(ii) a column satisfies $xe+zf=2ef-kb$ and
+$x\equiv ke\pmod f$; conversely, for any $x$ in that class $f$ divides $2ef-kb-xe$, because
+$xe\equiv ke^2$ and $2ef-kb\equiv ke^2 \pmod f$. So the column exists precisely when some $x\ge1$ in
+the class has $z=(2ef-kb-xe)/f\ge1$, that is $xe+f+kb\le 2ef$. The left side increases with $x$, so
+it suffices to test $x=x_k$, and then $x=x_k$ by Proposition~\ref{prop:closepaircolumns}(iv).
+Writing $x_k=ke-m_kf$, the identity
+\[
+(ke-mf)e+f+k(f^2-e^2)-2ef \;=\; f\bigl(kf-(m+2)e+1\bigr)
+\]
+turns that inequality, after dividing by $f>0$, into $kf\le(m_k+2)e-1$, i.e.\ $g(k)\ge0$.
+
+(ii) From $x_k=ke-m_kf$ and $x_{k+1}=(k+1)e-m_{k+1}f$ one gets
+$x_{k+1}-x_k=e+(m_k-m_{k+1})f$. Both $x_k,x_{k+1}$ lie in $[1,f]$, so the left side lies in
+$[1-f,f-1]$; with $0<e<f$ this forces $m_k\le m_{k+1}\le m_k+1$. Hence
+$g(k+1)-g(k)=(m_{k+1}-m_k)e-f\le e-f<0$.
+
+(iii) Since $1\le e\le f-1$, the least positive member of the class of $e$ is $e$ itself, so
+$m_1=0$ and $g(1)=2e-1-f$. If $f\ge2e$ then $g(1)<0$, and $g$ is decreasing, so $g(k)<0$ for every
+$k\ge1$. In general $g(k)\le g(1)-(k-1)(f-e)$, and $g(K)\ge0$ gives the stated bound on $K$.
+\end{proof}
+
+\begin{remark}[What the criterion settles, and what it leaves]\label{rem:sharpcolumnscope}
+The whole $k\ge1$ question is now confined to $e<f<2e$, a strict sub-range of the close-pair range
+$f\le(1+\sqrt2)e$. Of the $17296$ close pairs with $e\le200$, $5065$ have $f\ge2e$ and so carry no
+extra column at all: for those the base column is forced to $k=0$ outright. At $e=1$ the condition
+$f\le2e-1=1$ is incompatible with $f>e$, so no $(1,f)$ member has an extra column, which is the
+arithmetic content of Theorem~\ref{thm:e1reduce} recovered independently.
+
+The criterion is exact, not merely necessary: it was checked against brute enumeration of the base
+equation on all $17296$ close pairs with $e\le200$, covering $67218$ columns, with no disagreement,
+and the initial-segment shape and the bound on $K$ hold in every case. The corner-parallelogram
+condition $x_k+z_k\ge4$ is not redundant --- it rejects an otherwise admissible $k$ in $119$ of the
+pairs with $e\le120$ --- so it is carried explicitly in (i).
+
+What this does \emph{not} do is exclude the surviving columns: $21837$ of them exist as solutions of
+the base equation, and no arithmetic condition can remove them, since they are genuine solutions.
+The arithmetic layer of the close-pair problem is now exactly described; the exclusion must come
+from the interior, as Remark~\ref{rem:closepairs} already recorded.
+\end{remark}
+
 \begin{remark}[The wedge-filler hypothesis, and where it fails]\label{rem:alphamin}
 Several steps of the corner chain fill a wedge of angle exactly $\alpha$ with a single
 $\alpha$-tile, justified in Lemma~\ref{lem:wallclimb} by ``$\alpha$ is the minimal angle''. That is

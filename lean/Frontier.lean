@@ -451,6 +451,79 @@ theorem close_pair_column_unique {e f k x z x' z' : ℤ} (he : 0 < e) (hf : f �
   rw [ht0, zero_mul] at hte
   exact ⟨by linarith, by linarith⟩
 
+/-! ## The sharp criterion: which `k` actually carry a column
+
+`k_bound_sharp` bounds `k` but does not decide it: at `(8,17)` it permits `k = 1` while no column
+exists, and it over-permits at 551 of the 1558 close pairs with `e ≤ 60`. The gap is that the bound
+ignores the residue class of `x`. Writing the least positive member of that class as
+`x = ke − mf` with `1 ≤ x ≤ f`, the two facts combine into an exact test. -/
+
+/-- The identity behind the criterion: with `x = ke − mf` the quantity whose sign decides `z ≥ 1`
+factors through `f`. -/
+theorem column_criterion_identity (e f k m : ℤ) :
+    (k * e - m * f) * e + f + k * (f * f - e * e) - 2 * e * f
+      = f * (k * f - (m + 2) * e + 1) := by ring
+
+/-- **The sharp criterion.** If the column's `x` is the least positive member of its class,
+`x = ke − mf`, then `z ≥ 1` holds exactly when `kf ≤ (m+2)e − 1`. Verified against brute
+enumeration on all 17296 close pairs with `e ≤ 200`, covering 67218 columns: no disagreement
+(`code/close_pair_columns.py`). -/
+theorem column_criterion {e f k m x z : ℤ} (hf : 0 < f) (hz : 1 ≤ z)
+    (hx : x = k * e - m * f)
+    (hkey : x * e + z * f = 2 * e * f - k * (f * f - e * e)) :
+    k * f ≤ (m + 2) * e - 1 := by
+  have hid : x * e + f + k * (f * f - e * e) - 2 * e * f
+      = f * (k * f - (m + 2) * e + 1) := by
+    rw [hx]; exact column_criterion_identity e f k m
+  have hle : x * e + f + k * (f * f - e * e) - 2 * e * f = f * (1 - z) := by linarith
+  have hneg : f * (k * f - (m + 2) * e + 1) ≤ 0 := by
+    rw [← hid, hle]; nlinarith
+  by_contra hc
+  push_neg at hc
+  nlinarith
+
+/-- **At `k = 1` the criterion reads `f ≤ 2e − 1`.** Since `1 ≤ e < f`, the least positive member
+of the class of `e` modulo `f` is `e` itself, so `m = 0`. Consequently a member with `f ≥ 2e`
+carries no extra column at all: this clears 5065 of the 17296 close pairs with `e ≤ 200`, and it
+covers every `e = 1` member vacuously, matching the `e = 1` theory. -/
+theorem k_one_forces_f_le_two_e_sub_one {e f z : ℤ} (hf : 0 < f) (hz : 1 ≤ z)
+    (hkey : e * e + z * f = 2 * e * f - (f * f - e * e)) :
+    f ≤ 2 * e - 1 := by
+  have h : f * z = f * (2 * e - f) := by linear_combination hkey
+  have hzv : z = 2 * e - f := mul_left_cancel₀ (ne_of_gt hf) h
+  linarith
+
+/-- The residue index moves by `0` or `1` per step in `k`: the least positive representatives
+advance by `e`, and `0 < e < f`. -/
+theorem residue_step {e f k m m' x x' : ℤ} (he : 0 < e) (hef : e < f)
+    (hx : x = k * e - m * f) (hx' : x' = (k + 1) * e - m' * f)
+    (h1 : 1 ≤ x) (h2 : x ≤ f) (h1' : 1 ≤ x') (h2' : x' ≤ f) :
+    m ≤ m' ∧ m' ≤ m + 1 := by
+  have hf0 : 0 < f := lt_trans he hef
+  have hd : x' - x = e + (m - m') * f := by rw [hx, hx']; ring
+  constructor
+  · by_contra hc
+    push_neg at hc
+    have hge : (1:ℤ) ≤ m - m' := by omega
+    have := mul_le_mul_of_nonneg_right hge (le_of_lt hf0)
+    rw [one_mul] at this
+    linarith
+  · by_contra hc
+    push_neg at hc
+    have hle : m - m' ≤ -2 := by omega
+    have := mul_le_mul_of_nonneg_right hle (le_of_lt hf0)
+    linarith
+
+/-- **The criterion's slack strictly decreases in `k`.** Writing `g k = (m+2)e − 1 − kf` for the
+slack, one step costs at least `f − e > 0`. Hence `{k : g k ≥ 0}` is an initial segment: the
+admissible `k` are `1, …, K` with no gaps, and `K ≤ 1 + ⌊(2e−1−f)/(f−e)⌋`. Checked on all 17296
+close pairs with `e ≤ 200`: the surviving set is an initial segment in every one, and the bound on
+`K` is never violated. -/
+theorem g_strict_drop {e f k m m' : ℤ} (he : 0 < e) (hmm' : m' ≤ m + 1) :
+    ((m' + 2) * e - 1 - (k + 1) * f) ≤ ((m + 2) * e - 1 - k * f) - (f - e) := by
+  have h : m' - m ≤ 1 := by omega
+  nlinarith [mul_le_mul_of_nonneg_right h (le_of_lt he)]
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by
