@@ -2365,6 +2365,34 @@ interior to $[X,Y]$.) The two consequences are immediate, the second because
 $\langle a,b,c\rangle$ has no element strictly between $0$ and its smallest generator.
 \end{proof}
 
+\begin{corollary}[One-end-blocked chord dichotomy]\label{cor:onebloc}
+Let $[X,Y]$ be a tile edge with the extension beyond $X$ blocked. Then the far side of $[X,Y]$ is
+covered by whole tile edges laid end to end from $X$, and exactly one of the following holds:
+\begin{enumerate}
+\item[\textup{(i)}] they partition $[X,Y]$ exactly, so $|XY|$ is a sum of tile sides and the
+arithmetic of Lemma~\ref{lem:cchord} applies as it stands;
+\item[\textup{(ii)}] the last one overruns $Y$, and those before it sum to some
+$s\in\langle a,b,c\rangle\cap\bigl(0,|XY|\bigr)$, with $s=0$ permitted.
+\end{enumerate}
+In particular, if $|XY|=\min(a,b,c)$ then that intersection is empty, so $s=0$ and the far side of
+$[X,Y]$ is a \emph{single} tile edge, either matching $[X,Y]$ exactly or overrunning $Y$.
+\end{corollary}
+
+\begin{proof}
+Immediate from Lemma~\ref{lem:anchorclear}: the covering begins at $X$ and proceeds by whole edges,
+so the partial sums before the final edge lie in $\langle a,b,c\rangle$, and the final edge either
+ends at $Y$ or passes it.
+\end{proof}
+
+This is the common form of three arguments that were being made separately. Lemma~\ref{lem:cchord} is
+the case where \emph{both} ends are blocked, which deletes branch (ii) outright. The chord at $V_k$
+in Remark~\ref{rem:n1gapexact} is the case $|XY|=b$ with the base end blocked, where
+$\langle a,b,c\rangle\cap(0,b)$ consists of the multiples of $a$ below $b$ --- which is exactly the
+``$j$ $a$-edges, then an overrun'' description obtained there by hand. And the filler dichotomy of
+\S\ref{sub:sidep} is the same statement at a side junction. Branch (ii) is the crossing that
+Remark~\ref{rem:onlyanchor} shows cannot be removed by anchoring alone; the corollary does not close
+it, it states it once instead of three times.
+
 \begin{remark}[The quantization is exactly tight]\label{lem:anchorclearsharp}
 The lemma is sharp in the strongest sense: not only does every crossing sit at a semigroup position,
 but \emph{every} semigroup position below the edge length is realised. Across the eight
