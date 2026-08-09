@@ -2119,7 +2119,12 @@ $2m\le k-1$ this yields $4k<k+3$, i.e.\ $k<1$, a contradiction.
 
 So $y=e$. Then $f\mid x$, say $x=jf$, and the base equation becomes $je+z=2e$, i.e.\
 $z=e(2-j)$, so $z\ge0$ gives $j\in\{0,1,2\}$ and the three columns are exactly those listed. The
-$\gamma$-trap forces $z\ge1$ (Lemma~\ref{lem:basedi}), deleting $j=2$.
+$\gamma$-trap forces $z\ge1$, deleting $j=2$. We cite the $\gamma$-trap
+(Proposition~\ref{M-prop:gammatrap}) rather than Lemma~\ref{lem:basedi}: the latter's formal
+counterpart \texttt{base\_dichotomy\_thick} carries a separation hypothesis, whereas the
+$\gamma$-trap is proved for an arbitrary side of a base-$\beta$ target and its corner input
+(Proposition~\ref{M-prop:cornerfig}) puts no $\gamma$ at a base corner or at the apex, so it applies
+here unchanged.
 \textup{(\texttt{no\_extra\_column\_of\_f\_gt\_two\_e}.)}
 \end{proof}
 
@@ -2137,51 +2142,58 @@ covers the band $2e<f\le(1+\sqrt2)e$ that Lemma~\ref{lem:basetri} left to a per-
 computation: $5064$ of the $17296$ close pairs with $e\le200$ lie in it. For those members the base
 dichotomy now holds for the same reason it holds at a separated member.
 
-To reach the walls form one further needs Theorem~\ref{thm:n1}, whose statement assumes separation.
-That hypothesis is inert, as the next proposition records.
+To reach the walls form one further needs Theorem~\ref{thm:n1}. Its separation hypothesis is indeed
+inert --- no step of its proof invokes $f^2>2ef+e^2$, and its arithmetic inputs
+(\texttt{partner\_unique}, $c>b$, \texttt{base\_not\_all\_c}) were checked on all $36896$ coprime
+members with $e\le200$, $e<f<4e+2$, of which $17296$ are close pairs, with no failure. But deleting
+the hypothesis does not deliver the conclusion, because the proof of Theorem~\ref{thm:n1} has a gap
+at $e\ge2$, recorded next.
 \end{remark}
 
-\begin{proposition}[Theorem~\ref{thm:n1} does not need separation]\label{prop:n1general}
-The separation hypothesis may be deleted from Theorem~\ref{thm:n1}: for all $e\ge1$, $f\ge2$ with
-$\gcd(e,f)=1$, no tiling of the base-$\beta$ target at $m=1$ has base walk $(0,e,2e)$.
-\end{proposition}
+\begin{remark}[A gap in the induction of Theorem~\ref{thm:n1}]\label{rem:n1gap}
+The induction step of Theorem~\ref{thm:n1} argues that at $V_k=(kc,0)+a\,u$ the tiles $T_k$ and
+$P_{k-1}$ present $\gamma$ and $\beta$, ``leaving $\alpha$''. That is the straight-junction identity
+$\pi-\gamma-\beta=\alpha$, which follows from $3\alpha+2\beta=\pi$ and $\gamma=2\alpha+\beta$. It is
+legitimate at $k=0$, where $V_0=a\,u$ lies on an equal side and the junction is genuinely straight.
+For $k\ge1$ the point $V_k$ is \emph{strictly interior}: the angle around it is $2\pi$, and
+\[
+2\pi-\gamma-\beta \;=\; 4\alpha+2\beta \;=\; \pi+\alpha \;\ne\;\alpha .
+\]
+The discrepancy is exactly $\pi$. For instance at $(e,f)=(2,5)$ one has
+$V_1=(30.68,8.23)$, interior to the target $(0,0),(142,0),f^3u$; the residue there is $203.07^\circ$,
+not the $\alpha=23.07^\circ$ the step requires. The same holds at every member we computed,
+$(2,3)$, $(3,8)$, $(1,4)$ and $(3,7)$ among them. With the residue $\pi+\alpha$ the partner $P_k$ is
+not forced, and the chain stops after $T_0,P_0,T_1$; that much is exactly
+Proposition~\ref{M-prop:cornerpara}.
 
-\begin{proof}
-The proof of Theorem~\ref{thm:n1} applies verbatim; separation is used at no step, as follows. The
-corner angle is $\beta$ and the corner tile is unique with flanks $\{a,c\}$, which is the base-$\beta$
-corner structure and holds for every member. Since the base carries no $a$-edge, $T_0$ lays $c$ on
-the base and $a$ on the side; the side has length $f^3>ef=a$, so the junction at $a\,u$ is interior
-and straight, and the wedge arithmetic $\pi-\gamma=\alpha+\beta$ is a consequence of
-$3\alpha+2\beta=\pi$ and $\gamma=2\alpha+\beta$ alone. The chord from $(c,0)$ to $a\,u$ is a whole
-edge of $T_0$, so no tile crosses it, and both of its ends lie on the target boundary, so no covering
-edge overruns them; its far side is therefore a union of whole edges of total length $b$, and
-$b=xa+yb+zc$ forces $(x,y,z)=(0,1,0)$ (\texttt{partner\_unique}), which is general in $(e,f)$. In
-the induction, the exclusion of a $c$ laid along $T_k$'s $b$-ray uses only $c>b$, i.e.\ $e^2>0$, and
-the slot fills use only the wedge arithmetic. The induction then forces every base edge to be a
-$c$-edge, which already contradicts the assumed column, since $(0,e,2e)$ carries $e\ge1$ $b$-edges;
-independently it forces $f^2\mid e(3f^2-e^2)$, hence $f^2\mid e^3$ and $f=1$ by coprimality
-(\texttt{base\_not\_all\_c}, whose Lean hypotheses are only $2\le f$, $e<f$, $\gcd(e,f)=1$).
-\end{proof}
+At $e=1$ the theorem is nevertheless true, by a different and much shorter route: the column
+$(0,e,2e)=(0,1,2)$ has a base word of only three letters, and
+Proposition~\ref{M-prop:cornerpara} places the first two and the last two base edges in $\{a,c\}$,
+which for a three-letter word is all of them; the word then carries no $b$-edge, contradicting
+$y=1$. That argument uses no induction and no separation.
 
-\begin{corollary}[The walls form at $f>2e$]\label{cor:wallsf2e}
-Let $\gcd(e,f)=1$ and $f>2e$. Then the base walk is the walls form $(f,e,e)$.
+At $e\ge2$ the word has $3e\ge6$ letters, the four pinned positions leave $3e-4\ge e$ interior slots,
+and the $b$-edges fit inside them: at $(2,5)$ the word $c\,c\,b\,b\,c\,c$ satisfies
+$25+25+21+21+25+25=142=e(3f^2-e^2)$ and survives every filter we have. So Theorem~\ref{thm:n1} is
+established at $e=1$ only, and its conclusion at $e\ge2$ --- on which
+Corollary~\ref{cor:basewalls} depends --- must be regarded as \textbf{open}. We have not refuted the
+conclusion; we refute only the proof. The missing ingredient is sharp: force the $\beta$-tile at
+$V_k$, whose flanks are $\{a,c\}$, to lay its $c$ rather than its $a$ along $[V_k,V_{k+1}]$. This is
+an instance of the crossing question of Remark~\ref{rem:straddle}, which
+Remark~\ref{rem:chainobstruction} already identifies as the obstruction, and
+Remark~\ref{rem:whyf3} already warns that a pinning argument must say against what the ends are
+pinned. Here the would-be blocking edge at the upper end is $P_k$'s own $c$-edge, the very thing
+being derived.
+\end{remark}
+
+\begin{corollary}[The walls form at $e=1$, $f\ge3$]\label{cor:wallsf2e}
+Let $e=1$ and $f\ge3$. Then the base walk is the walls form $(f,1,1)$.
 \end{corollary}
 
 \begin{proof}
-Corollary~\ref{cor:basedi2e} leaves $(0,e,2e)$ and $(f,e,e)$; Proposition~\ref{prop:n1general}
-deletes the first.
+Corollary~\ref{cor:basedi2e} applies, since $f\ge3>2=2e$, and leaves $(0,1,2)$ and $(f,1,1)$; the
+first is excluded by the three-letter argument of Remark~\ref{rem:n1gap}.
 \end{proof}
-
-\begin{remark}[Status of Proposition~\ref{prop:n1general}]\label{rem:n1status}
-The three arithmetic ingredients above were checked on all $36896$ coprime members with
-$e\le200$, $e<f<4e+2$, of which $17296$ are close pairs: $b$ has no decomposition other than a single
-$b$-edge, $c>b$ holds, and $f^2$ never divides $e(3f^2-e^2)$. The remaining steps are the base-$\beta$
-corner structure and the wedge arithmetic, neither of which refers to the separation inequality.
-Corollary~\ref{cor:wallsf2e} accordingly extends Corollary~\ref{cor:basewalls} from
-$f>(1+\sqrt2)e$ to $f>2e$. Being a deletion of a hypothesis from an existing geometric argument
-rather than a new one, Proposition~\ref{prop:n1general} carries the label PROVED, not machine-checked;
-its geometric steps are the same ones Theorem~\ref{thm:n1} already rests on.
-\end{remark}
 
 \subsection{The side parameter, and where its range is bounded}\label{sub:sidep}
 
@@ -2199,6 +2211,12 @@ The $\gamma$-trap gives $n_c\ge1$, so $0\le p\le(f-1)/e$, and Hypothesis~\ref{hy
 the assertion $p=0$.
 \textup{(\texttt{SideNoB.side\_no\_b\_uncond}, \texttt{side\_p\_parametrisation}.)}
 \end{proposition}
+
+The $e=1$ case of this parametrisation is already the opening step of the proof of
+Theorem~\ref{thm:e1reduce}, where $n_a=fk$ and $n_c=f-k$ are obtained after ruling out $n_b\in\{f\}$
+by a size count together with the $\gamma$-trap. What is new here is only that the elimination of
+$n_b$ is available at every member, via \texttt{side\_no\_b\_uncond}, so the parametrisation and the
+resulting parameter $p$ exist in general and not merely at $e=1$.
 
 \begin{proof}
 That an equal side carries no $b$-edge is \texttt{side\_no\_b\_uncond}, whose hypotheses are
@@ -2222,11 +2240,15 @@ inequality.
 \end{proof}
 
 \begin{remark}[What this buys, and what it does not]\label{rem:ptwoscope}
-Corollary~\ref{cor:wallsf2e} pins the base walk exactly on the close pairs with $f>2e$, which is
-where Lemma~\ref{lem:basetri} did not apply; there are $203$ such members with $e\le40$, the
-smallest being $(3,7)$ with $N=138$, then $(4,9)$ with $N=227$ and $(5,11)$ with $N=338$. On the same
-family Corollary~\ref{cor:ptwo} bounds the side parameter by $2$. Checked on all $126003$ close
-pairs with $f>2e$ and $e\le1000$: $\lfloor(f-1)/e\rfloor=2$ in every one.
+Proposition~\ref{prop:sidep} and Corollary~\ref{cor:ptwo} are independent of
+Theorem~\ref{thm:n1} and of the base walk: they constrain the side at any member. On the close pairs
+with $f>2e$ --- $203$ of them with $e\le40$, the smallest being $(3,7)$ with $N=138$, then $(4,9)$
+with $N=227$ and $(5,11)$ with $N=338$ --- the side parameter is bounded by $2$. Checked on all
+$126003$ close pairs with $f>2e$ and $e\le1000$: $\lfloor(f-1)/e\rfloor=2$ in every one.
+
+On that family Corollary~\ref{cor:basedi2e} also reduces the base to two columns. It does not reduce
+it to one: that step needs Theorem~\ref{thm:n1} at $e\ge2$, which Remark~\ref{rem:n1gap} leaves open.
+So for these members the current state is two base columns and two side parameters, not one of each.
 
 The contrast with $e=1$ is the point. There the range is $1\le p\le f-1$ and grows without bound
 with $f$, which is why the corner cascade of Conjecture~\ref{conj:advance} has to be run as an
