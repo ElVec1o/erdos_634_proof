@@ -2393,6 +2393,25 @@ $\langle a,b,c\rangle\cap(0,b)$ consists of the multiples of $a$ below $b$ --- w
 Remark~\ref{rem:onlyanchor} shows cannot be removed by anchoring alone; the corollary does not close
 it, it states it once instead of three times.
 
+\begin{remark}[Branch \textup{(ii)} occurs, so no general lemma will delete it]\label{rem:branchii}
+It is worth being explicit that branch (ii) is not a formal possibility awaiting exclusion: it is
+realised in a kernel-checked tiling. In the $99$-tiling, whose tile scaled by $16$ is
+$(a,b,c)=(32,48,64)$, the $b$-edge from $(88,24)$ --- a boundary point --- to the interior point
+$(136,24)$ carries one interior vertex, at distance $32$ from the blocked end. The remaining tail is
+$48-32=16$, and $16\notin\langle32,48,64\rangle$, so the covering edge that meets $Y$ must overrun
+it. Four $b$-edges of that shape occur in that tiling alone.
+
+Together with Remark~\ref{rem:onlyanchor} this settles the shape of the obstruction. Three successive
+generalisations have now been refuted by explicit certified witnesses: that an edge with one end on
+the boundary is uncrossed (false, $19+8+6+5$ counterexamples); that anchoring plus a length condition
+suffices (false, Remark~\ref{rem:noedgetoedge}); and that branch (ii) can be deleted (false, above).
+What survives is Corollary~\ref{cor:onebloc} itself, which is sharp, and the conclusion that the
+crossing at a given chord can only be excluded using the tiles the cascade has already forced there.
+No lemma quantified over chords will do it. That is a constraint on how the remaining work must be
+organised, and it is the reason the open steps in this note are stated as facts about particular
+configurations rather than as general pinning principles.
+\end{remark}
+
 \begin{remark}[The quantization is exactly tight]\label{lem:anchorclearsharp}
 The lemma is sharp in the strongest sense: not only does every crossing sit at a semigroup position,
 but \emph{every} semigroup position below the edge length is realised. Across the eight
