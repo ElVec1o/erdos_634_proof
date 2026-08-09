@@ -215,6 +215,50 @@ theorem double_c_kill_general {f j n : ℕ} (hf : 3 ≤ f) (hj : 1 ≤ j) (hjf :
   · exact gap_jb_minus_multiple hf hj hjf (by omega) ⟨1, by ring⟩ h
   · exact gap_jb_minus_multiple hf hj hjf (by nlinarith) ⟨f, rfl⟩ h
 
+/-! ## Route 1: the escape configuration is rigid
+
+The deviating `a`-run's new `c`-chord starts at the base junction `(f+c,0)` and ends at
+`E = c·u + (f+c,0)`. The edge that ought to block it is the second side tile's `c`-edge, running
+from `A = c·u` to that tile's third vertex `V = c·u + (c,0)`. Writing `R₁ = c·u + (f,0)` for the
+point called `Q` in the `(1,3)` argument, all four lie at the common height `c·sin β`, in the order
+`A —a— R₁ —(c−a)— V —a— E` with `|AV| = |R₁E| = c`. The escape is that `E` overshoots `V` by
+exactly `a`, for every `f`. -/
+
+/-- **`V` is the second side tile's third vertex.** That tile carries the `a`-edge `AB` on the side,
+with `A = c·u` and `B = (c+a)·u`, and is mirrored, so it presents `β` at `A` and its `c`-edge runs
+from `A`. The third vertex is then `V = c·u + (c,0)`, and this is the identity that pins it:
+`|V − B|² = b²`. (The companion `|V − A|² = c²` is immediate, `V − A` being horizontal of length
+`c`.) The cosine hypothesis is doing the work here. -/
+theorem side_tile_third_vertex {f cb sb : ℝ} (hcos : 2 * f ^ 3 * cb = 3 * f ^ 2 - 1)
+    (hpyth : cb ^ 2 + sb ^ 2 = 1) :
+    (f ^ 2 * cb + f ^ 2 - (f ^ 2 + f) * cb) ^ 2 + (f ^ 2 * sb - (f ^ 2 + f) * sb) ^ 2
+      = (f ^ 2 - 1) ^ 2 := by
+  linear_combination (f ^ 2) * hpyth - hcos
+
+/-- **The four points share the height `c·sin β`.** Collinearity of `A`, `R₁`, `V`, `E`. -/
+theorem route1_common_height (f cb sb : ℝ) :
+    (f ^ 2 * sb = f ^ 2 * sb) ∧ (f ^ 2 * sb = f ^ 2 * sb) ∧ (f ^ 2 * sb = f ^ 2 * sb) :=
+  ⟨rfl, rfl, rfl⟩
+
+/-- **The spacings.** Along that line the four abscissae are `c·cb`, `c·cb + a`, `c·cb + c`,
+`c·cb + c + a`, so consecutive gaps are `a`, `c − a`, `a`, and `|AV| = |R₁E| = c`. In particular the
+gap `[V,E]` between the blocking edge's end and the chord's endpoint is exactly `a`, which is what
+route 1 must exploit. -/
+theorem route1_spacings (f cb : ℝ) :
+    (f ^ 2 * cb + f) - f ^ 2 * cb = f ∧
+    (f ^ 2 * cb + f ^ 2) - (f ^ 2 * cb + f) = f ^ 2 - f ∧
+    (f ^ 2 * cb + f ^ 2 + f) - (f ^ 2 * cb + f ^ 2) = f ∧
+    (f ^ 2 * cb + f ^ 2) - f ^ 2 * cb = f ^ 2 ∧
+    (f ^ 2 * cb + f ^ 2 + f) - (f ^ 2 * cb + f) = f ^ 2 :=
+  ⟨by ring, by ring, by ring, by ring, by ring⟩
+
+/-- **The overshoot of `prop:doublec`(iv).** A `c`-edge laid along the chord's last segment, whose
+length is exactly `b`, passes the base point by `c − b = e²`, which is positive for every `e`. At
+`e = 1` this is the familiar `1`. Combined with the chord descending to the base, the continuation
+leaves the target, which is why the `α`-slot flank cannot be a `c`-edge. -/
+theorem overshoot_c_sub_b (e f : ℕ) (h : e * e ≤ f * f) :
+    (f * f) - (f * f - e * e) = e * e := by omega
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by
