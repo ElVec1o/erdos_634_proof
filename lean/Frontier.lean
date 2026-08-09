@@ -338,6 +338,18 @@ theorem base_column_k_bound (e f k x z : ℤ) (hx : 1 ≤ x) (hz : 1 ≤ z) (he 
   nlinarith [mul_le_mul_of_nonneg_right hx (le_of_lt he),
              mul_le_mul_of_nonneg_right hz (le_of_lt hf)]
 
+/-- **Where `k ≥ 2` is already impossible.** Combining the bound `k·b ≤ 2ef − e − f` with `k ≥ 1`:
+if `2b` exceeds that right-hand side then `k = 1` outright. The criterion
+`2(f²−e²) > 2ef − e − f` is asymptotically `f > eφ`, `φ` the golden ratio, and it holds at 84 of the
+198 close-pair members carrying survivors (`e ≤ 25`, `f ≤ 59`), covering 84 of the 655 columns. At
+those members there is nothing for a `k ≥ 2` argument to kill. -/
+theorem k_eq_one_of_bound (e f k : ℤ) (hk : 1 ≤ k) (hb : 0 < f * f - e * e)
+    (hbound : k * (f * f - e * e) ≤ 2 * e * f - e - f)
+    (hgap : 2 * e * f - e - f < 2 * (f * f - e * e)) : k = 1 := by
+  by_contra hne
+  have h2 : 2 ≤ k := by omega
+  nlinarith [mul_le_mul_of_nonneg_right h2 (le_of_lt hb)]
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by
