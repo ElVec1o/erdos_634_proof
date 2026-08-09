@@ -727,7 +727,9 @@ corner are $a$ and $c$; the edges of the apex tiles at the apex are $b$ and $c$.
 
 \begin{proof}
 By Proposition~\ref{prop:vertexfigures}, an angle relation $p\alpha+q\beta+r\gamma=t$ at a corner
-splits into $2p-3q+r=\sigma$ and $q+r=\tau$ for integers determined by $t$. A base corner has
+splits into $2p-3q+r=\sigma$ and $q+r=\tau$ for integers determined by $t$ (the splitting step is
+machine-checked: \texttt{lean/AngleSplit.lean}, \texttt{angle\_relation\_split}, from
+$3\alpha+2\beta=\pi$, $\gamma=2\alpha+\beta$ and irrationality of $\alpha/\pi$). A base corner has
 $t=\beta$, giving $\sigma=-3$, $\tau=1$; the case $(q,r)=(0,1)$ would need $2p=-4$, so
 $(p,q,r)=(0,1,0)$. The apex has $t=3\alpha$, giving $\sigma=6$, $\tau=0$, hence $q=r=0$ and $p=3$.
 The edge assertions are the incidence rule: $a$ joins the $\beta,\gamma$ corners, $b$ joins
