@@ -2201,33 +2201,23 @@ Once the base walk is pinned, what remains is the side. The side question has a 
 parameter, and on the family of Corollary~\ref{cor:wallsf2e} that parameter takes only two open
 values, uniformly in the member.
 
-\begin{proposition}[The side parameter]\label{prop:sidep}
-Let $\gcd(e,f)=1$, $1\le e<f$, $m=1$, and let $n_a,n_b,n_c$ be the edge counts of an equal side.
-Then $n_b=0$; moreover $f\mid n_a$, and writing $n_a=pf$ one has
+The parametrisation itself is already in hand and is not new here. By
+Lemma~\ref{lem:sidequant} an equal side carries no $b$-edge at any member and its $a$-count is a
+multiple of $f$; writing that count as $pf$, the side equation $pf\cdot ef+n_cf^2=f^3$ gives
 \[
-n_c+pe=f .
+n_c+pe=f ,
 \]
-The $\gamma$-trap gives $n_c\ge1$, so $0\le p\le(f-1)/e$, and Hypothesis~\ref{hyp:walls} is exactly
-the assertion $p=0$.
-\textup{(\texttt{SideNoB.side\_no\_b\_uncond}, \texttt{side\_p\_parametrisation}.)}
-\end{proposition}
-
-The $e=1$ case of this parametrisation is already the opening step of the proof of
-Theorem~\ref{thm:e1reduce}, where $n_a=fk$ and $n_c=f-k$ are obtained after ruling out $n_b\in\{f\}$
-by a size count together with the $\gamma$-trap. What is new here is only that the elimination of
-$n_b$ is available at every member, via \texttt{side\_no\_b\_uncond}, so the parametrisation and the
-resulting parameter $p$ exist in general and not merely at $e=1$.
-
-\begin{proof}
-That an equal side carries no $b$-edge is \texttt{side\_no\_b\_uncond}, whose hypotheses are
-$\gcd(e,f)=1$, $e<f$ and $n_c\ge1$; no size condition is involved. The side has length $f^3$, so
-$n_a\,ef+n_c f^2=f^3$; dividing by $f$ gives $n_a e+n_c f=f^2$, whence $f\mid n_a e$ and so
-$f\mid n_a$ by coprimality. Writing $n_a=pf$ and dividing once more gives $pe+n_c=f$. Finally
-$n_c\ge1$ is the $\gamma$-trap.
-\end{proof}
+and the $\gamma$-trap's $n_c\ge1$ gives $0\le p\le(f-1)/e$. Hypothesis~\ref{hyp:walls} is exactly
+the assertion $p=0$. Lemma~\ref{lem:ccorner} already records this profile in the form ``$a$-count
+$fj$ with $je\le f-1$'', and the Lean statements are
+\texttt{SideNoB.side\_no\_b\_uncond}, \texttt{SideNoB.side\_quantized} and
+\texttt{SideNoB.c\_corner\_forces\_side\_a}. What follows is the one consequence we did not find
+recorded: on the close pairs with $f>2e$ the range of $p$ is not merely bounded but equal to
+$\{0,1,2\}$, uniformly in the member.
 
 \begin{corollary}[A uniform two-case side problem]\label{cor:ptwo}
-Suppose in addition that $2e<f$ and that $(e,f)$ is a close pair, $f^2\le2ef+e^2$. Then
+In the setting above, suppose in addition that $2e<f$ and that $(e,f)$ is a close pair,
+$f^2\le2ef+e^2$. Then
 $\lfloor(f-1)/e\rfloor=2$. Hence on that family Hypothesis~\ref{hyp:walls} reduces to excluding
 $p\in\{1,2\}$ --- the same two cases for every member.
 \textup{(\texttt{side\_p\_le\_two}.)}
@@ -2240,8 +2230,8 @@ inequality.
 \end{proof}
 
 \begin{remark}[What this buys, and what it does not]\label{rem:ptwoscope}
-Proposition~\ref{prop:sidep} and Corollary~\ref{cor:ptwo} are independent of
-Theorem~\ref{thm:n1} and of the base walk: they constrain the side at any member. On the close pairs
+Corollary~\ref{cor:ptwo} is independent of Theorem~\ref{thm:n1} and of the base walk: it
+constrains the side at any member. On the close pairs
 with $f>2e$ --- $203$ of them with $e\le40$, the smallest being $(3,7)$ with $N=138$, then $(4,9)$
 with $N=227$ and $(5,11)$ with $N=338$ --- the side parameter is bounded by $2$. Checked on all
 $126003$ close pairs with $f>2e$ and $e\le1000$: $\lfloor(f-1)/e\rfloor=2$ in every one.

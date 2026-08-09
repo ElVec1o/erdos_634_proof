@@ -570,8 +570,10 @@ theorem no_extra_column_of_f_gt_two_e {e f k m x z : ℤ}
 `1 ≤ p ≤ (f−1)/e`. At `e = 1` that range grows with `f`; on the close pairs with `f > 2e` it does
 not — it is `{1,2}`, uniformly. -/
 
-/-- **The side parametrisation.** With no `b`-edge on the side, `f ∣ n_a`; writing `n_a = pf` the
-walk equation becomes `n_c + pe = f`. Only coprimality is used. -/
+/-- **The side parametrisation**, packaged. This is not new: `SideNoB.side_quantized` already gives
+`f ∣ n_a` from the same reduction, and `SideNoB.c_corner_forces_side_a` already records the profile
+`n_c + pe = f` with `1 ≤ p ≤ (f−1)/e`. What is packaged here is the existence statement in one
+place, for use by `side_p_le_two`, which is the part we did not find recorded. -/
 theorem side_p_parametrisation {e f na nc : ℕ} (hf : 0 < f) (hco : Nat.Coprime f e)
     (hwalk : na * (e * f) + nc * (f * f) = f * f * f) :
     ∃ p, na = p * f ∧ nc + p * e = f := by
