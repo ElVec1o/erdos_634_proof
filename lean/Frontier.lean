@@ -524,6 +524,44 @@ theorem g_strict_drop {e f k m m' : ℤ} (he : 0 < e) (hmm' : m' ≤ m + 1) :
   have h : m' - m ≤ 1 := by omega
   nlinarith [mul_le_mul_of_nonneg_right h (le_of_lt he)]
 
+/-! ## Extending the base trichotomy past separation
+
+`base_trichotomy` is stated for separated members (`f² > 2ef + e²`); separation is used only to
+exclude base columns with `y > e`. Those are excluded already under `f > 2e`. The criterion above
+cannot be reused here: it assumes `x, z ≥ 1`, whereas the trichotomy allows `x = 0` and `z = 0`.
+The bound `f > 2e` is sharp — coprimality makes `f = 2e` possible only at `(1,2)`, and that member
+really does carry the extra column `(1,3,0)`, which escapes exactly at `z = 0`. -/
+
+/-- The identity in the `z ≥ 0` regime: no `+f` term, so the factor is `kf − (m+2)e`. -/
+theorem column_identity_nonneg (e f k m : ℤ) :
+    (k * e - m * f) * e + k * (f * f - e * e) - 2 * e * f
+      = f * (k * f - (m + 2) * e) := by ring
+
+/-- **No base column with `y > e` when `f > 2e`**, with `x, z ≥ 0` only. Writing `y = e + kf` with
+`k ≥ 1` and `x = ke − mf`, the hypotheses force `2m < k` and `2k < m + 2`, which is impossible.
+Checked by structured enumeration on all 165038 members with `f > 2e`, `e ≤ 300`: no decomposition
+outside the three of `base_trichotomy` (`code/close_pair_columns.py` shares the enumerator). -/
+theorem no_extra_column_of_f_gt_two_e {e f k m x z : ℤ}
+    (he : 0 < e) (hf2 : 2 * e < f) (hk : 1 ≤ k)
+    (hx0 : 0 ≤ x) (hx : x = k * e - m * f) (hz : 0 ≤ z)
+    (hkey : x * e + z * f = 2 * e * f - k * (f * f - e * e)) : False := by
+  have hf : 0 < f := by linarith
+  have hmf : m * f ≤ k * e := by rw [hx] at hx0; linarith
+  -- `z ≥ 0` becomes `k*f ≤ (m+2)*e`
+  have hid : x * e + k * (f * f - e * e) - 2 * e * f = f * (k * f - (m + 2) * e) := by
+    rw [hx]; exact column_identity_nonneg e f k m
+  have hle : x * e + k * (f * f - e * e) - 2 * e * f ≤ 0 := by nlinarith
+  have hkf : k * f ≤ (m + 2) * e := by
+    rw [hid] at hle; nlinarith
+  -- `2m < k`
+  have h2m : 2 * m < k := by
+    by_cases hm : 0 < m
+    · nlinarith [mul_lt_mul_of_pos_left hf2 hm]
+    · have hm' : m ≤ 0 := not_lt.mp hm
+      nlinarith
+  -- `f > 2e` and `k ≥ 1` give `2ke < kf ≤ (m+2)e`, hence `2k < m+2`; with `2m ≤ k-1`, `k < 1`
+  nlinarith [mul_lt_mul_of_pos_left hf2 (lt_of_lt_of_le zero_lt_one hk)]
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by

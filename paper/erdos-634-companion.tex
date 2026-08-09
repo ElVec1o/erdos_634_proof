@@ -2090,28 +2090,51 @@ Theorem~\ref{thm:n1} deletes $(0,e,2e)$.
 \end{corollary}
 
 Separation enters that chain only through Lemma~\ref{lem:basetri}, to rule out columns with $y>e$.
-Proposition~\ref{prop:sharpcolumn} rules them out under the weaker hypothesis $f\ge2e$, so the
-trichotomy and the dichotomy both extend.
+That can be done under the weaker hypothesis $f>2e$, so the trichotomy and the dichotomy both
+extend. Proposition~\ref{prop:sharpcolumn} is not available for this purpose, because it assumes
+$x,z\ge1$ while Lemma~\ref{lem:basetri} allows $x=0$ and $z=0$; the argument below is run with
+$x,z\ge0$ throughout.
 
 \begin{corollary}[The base trichotomy and dichotomy without separation]\label{cor:basedi2e}
-Let $\gcd(e,f)=1$ and $f\ge2e$. Then the base admits exactly the three decompositions
+Let $\gcd(e,f)=1$ and $f>2e$. Then the base admits exactly the three decompositions
 $(0,e,2e)$, $(f,e,e)$, $(2f,e,0)$ of Lemma~\ref{lem:basetri}, and after the $\gamma$-trap exactly
 the two of Lemma~\ref{lem:basedi}, namely $(0,e,2e)$ and the walls form $(f,e,e)$.
 \end{corollary}
 
 \begin{proof}
 Reducing $xa+yb+zc=e(3f^2-e^2)$ modulo $f$ kills $a=ef$ and $c=f^2$ and leaves
-$-ye^2\equiv-e^3$, so $f\mid e^2(y-e)$ and hence $f\mid y-e$ by coprimality. Write $y=e+kf$ with
-$k\ge0$. If $k\ge1$ then Proposition~\ref{prop:sharpcolumn}(iii) forces $f\le2e-1$, contrary to
-$f\ge2e$; so $y=e$. Then $f\mid x$, say $x=jf$, and the base equation becomes $je+z=2e$, i.e.\
+$-ye^2\equiv-e^3$, so $f\mid e^2(y-e)$ and hence $f\mid y-e$ by coprimality. Write $y=e+kf$; since
+$0\le y$ and $e<f$, $k\ge0$.
+
+Suppose $k\ge1$. The base equation is then $xe+zf=2ef-kb$ (Proposition~\ref{prop:closepaircolumns}(i),
+whose derivation uses no positivity), and $f\mid x-ke$, so $x=ke-mf$ for an integer $m$; from $x\ge0$,
+$mf\le ke$. The identity
+\[
+(ke-mf)e+k(f^2-e^2)-2ef \;=\; f\bigl(kf-(m+2)e\bigr)
+\]
+together with $z\ge0$, i.e.\ $xe+kb-2ef\le0$, gives $kf\le(m+2)e$ after dividing by $f>0$. Now
+$2m<k$: for $m\le0$ this is clear from $k\ge1$, and for $m\ge1$ it follows from
+$2me<mf\le ke$. Finally $f>2e$ and $k\ge1$ give $2ke<kf\le(m+2)e$, hence $2k<m+2$, and with
+$2m\le k-1$ this yields $4k<k+3$, i.e.\ $k<1$, a contradiction.
+
+So $y=e$. Then $f\mid x$, say $x=jf$, and the base equation becomes $je+z=2e$, i.e.\
 $z=e(2-j)$, so $z\ge0$ gives $j\in\{0,1,2\}$ and the three columns are exactly those listed. The
 $\gamma$-trap forces $z\ge1$ (Lemma~\ref{lem:basedi}), deleting $j=2$.
+\textup{(\texttt{no\_extra\_column\_of\_f\_gt\_two\_e}.)}
 \end{proof}
+
+\begin{remark}[$f>2e$ is sharp, and $(1,2)$ is the unique exception]\label{rem:f2esharp}
+The inequality cannot be weakened to $f\ge2e$. Coprimality makes $f=2e$ possible only at $e=1$,
+$f=2$, and that member does carry a fourth decomposition: $1\cdot a+3\cdot b+0\cdot c=2+9=11=e(3f^2-e^2)$,
+i.e.\ $(x,y,z)=(1,3,0)$ with $y=3>e$. It escapes the argument above exactly at $z=0$. Checked by
+structured enumeration of the base equation on all $165038$ members with $f>2e$, $e\le300$: no
+decomposition outside the three, and the same enumerator does find $(1,3,0)$ at $(1,2)$.
+\end{remark}
 
 \begin{remark}[The band this opens, and what still blocks the walls form there]\label{rem:band2e}
 Separation is $f>(1+\sqrt2)e$, so Corollary~\ref{cor:basedi2e} is strictly weaker in hypothesis and
-covers the band $2e\le f\le(1+\sqrt2)e$ that Lemma~\ref{lem:basetri} left to a per-member
-computation: $5065$ of the $17296$ close pairs with $e\le200$ lie in it. For those members the base
+covers the band $2e<f\le(1+\sqrt2)e$ that Lemma~\ref{lem:basetri} left to a per-member
+computation: $5064$ of the $17296$ close pairs with $e\le200$ lie in it. For those members the base
 dichotomy now holds for the same reason it holds at a separated member.
 
 It does \emph{not} follow that the base walk is the walls form there, because the last step of

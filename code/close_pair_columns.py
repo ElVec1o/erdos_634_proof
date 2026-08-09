@@ -58,6 +58,45 @@ def criterion(e, f):
     return out
 
 
+def all_columns(e, f):
+    """Every base decomposition (x,y,z) with x,y,z >= 0, by structured enumeration.
+
+    f | y-e, so y = e+kf; then f | x-ke, so x runs over an arithmetic progression
+    of step f; z is determined.  Used for Corollary basedi2e / Remark f2esharp.
+    """
+    a, b = e * f, f * f - e * e
+    out, k = [], 0
+    while k * b <= 2 * e * f:
+        S = 2 * e * f - k * b                 # x*e + z*f = S
+        x = (k * e) % f                       # least non-negative x in the class
+        while x * e <= S:
+            r = S - x * e
+            if r % f == 0:
+                out.append((x, e + k * f, r // f))
+            x += f
+        k += 1
+    return out
+
+
+def trichotomy_check(emax=300):
+    """f > 2e admits only the three columns of base_trichotomy; f = 2e does not."""
+    tested = bad = 0
+    for e in range(1, emax + 1):
+        for f in range(2 * e + 1, 8 * e + 4):
+            if gcd(e, f) != 1:
+                continue
+            tested += 1
+            expect = [(0, e, 2 * e), (f, e, e), (2 * f, e, 0)]
+            extra = [s for s in all_columns(e, f) if s not in expect]
+            if extra:
+                bad += 1
+                print(f"  OUTSIDE THE THREE at ({e},{f}): {extra}")
+    print(f"members with f > 2e tested (e <= {emax}): {tested}")
+    print(f"  carrying a decomposition outside the three: {bad}")
+    # sharpness: f = 2e forces e = 1, and (1,2) really does carry a fourth column
+    print(f"  sharpness, (1,2) where f = 2e: {all_columns(1, 2)}")
+
+
 def close_pairs(emax):
     for e in range(1, emax + 1):
         for f in range(e + 1, int((1 + 2 ** 0.5) * e) + 1):
@@ -94,4 +133,8 @@ def main(emax):
 
 
 if __name__ == "__main__":
-    main(int(sys.argv[1]) if len(sys.argv) > 1 else 200)
+    args = [a for a in sys.argv[1:] if a != "--trichotomy"]
+    if "--trichotomy" in sys.argv:
+        trichotomy_check(int(args[0]) if args else 300)
+    else:
+        main(int(args[0]) if args else 200)
