@@ -485,6 +485,30 @@ theorem two_vertices_on_line (T : Tri) (f : Plane →ₗ[ℝ] ℝ) (c : ℝ) (hf
   · exact absurd h (ne_of_gt htpos)
   · exact hy h
 
+/-- Each tile lies inside the target. -/
+theorem tile_subset_target (D : Dissection N) (j : Fin N) :
+    (D.tile j).carrier ⊆ D.target.carrier := by
+  rw [← D.covers]; exact Set.subset_iUnion (fun i => (D.tile i).carrier) j
+
+/-- **The tile contacts exhaust the side.** For a functional `f` bounded by `c` on the target, the
+contact sets of the tiles with the line `f = c` cover exactly the target's own contact set. Combined
+with `tile_contact_face`, applied both to each tile and to the target itself, this says: the side of
+the target is the union of the faces the tiles present to it.
+
+This is the exhaustion half of G3. What it leaves is that those faces are edges rather than isolated
+vertices, which needs the finitely-many-vertices argument, not this one. -/
+theorem contacts_cover_side (D : Dissection N) (f : Plane →ₗ[ℝ] ℝ) (c : ℝ) :
+    (⋃ j, {x ∈ (D.tile j).carrier | f x = c}) = {x ∈ D.target.carrier | f x = c} := by
+  ext x
+  constructor
+  · intro hx
+    obtain ⟨j, hxj⟩ := Set.mem_iUnion.mp hx
+    exact ⟨tile_subset_target D j hxj.1, hxj.2⟩
+  · rintro ⟨hxt, hfx⟩
+    rw [← D.covers] at hxt
+    obtain ⟨j, hxj⟩ := Set.mem_iUnion.mp hxt
+    exact Set.mem_iUnion.mpr ⟨j, hxj, hfx⟩
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
