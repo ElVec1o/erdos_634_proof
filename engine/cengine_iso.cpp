@@ -806,9 +806,18 @@ static size_t g_qhead = 0;
 // breadth-first over subtrees: every task that blows its budget enqueues g_split_k children that
 // then sit unexplored, so the frontier grows faster than it drains and no finite ETA exists.
 // LIFO takes the most recently enqueued task, i.e. depth-first over subtrees, so a split is worked
-// off immediately and the pending set stays bounded.  The set of nodes explored is identical --
-// only the order changes -- because task paths are deterministic and order-independent (see the
-// comment above Task).  So EXHAUSTED is unaffected; this is a scheduling change, not a search change.
+// off immediately.  The set of nodes explored is identical -- only the order changes -- because task
+// paths are deterministic and order-independent (see the comment above Task).  So EXHAUSTED is
+// unaffected; this is a scheduling change, not a search change.
+//
+// MEASURED on N=138 (member (3,7)).  LIFO reduces the divergence, it does NOT remove it:
+//     FIFO  407 leaves closed   +16.36 pending per leaf   254 leaves/h   ~4,400 nodes/s
+//     LIFO  134 leaves closed   + 3.19 pending per leaf   423 leaves/h   ~2,253 nodes/s
+// Each closed leaf still creates ~4.19 tasks and removes one, so pending grows and no finite ETA
+// exists under either dispatcher.  An earlier note claiming LIFO "drains" the frontier was read off
+// a window containing a single leaf and was wrong; quote per-leaf rates only from >= ~100 leaves.
+// The remaining headroom is in propagation, not scheduling: at N=47 only ~13.5% of nodes die to an
+// explicit prune (11098 nodes vs 1500 prunes) and the rest is raw branching.
 static bool g_lifo = false;
 static size_t g_dispatched = 0;                          // tasks handed to workers (both modes)
 static bool g_found_any = false;
