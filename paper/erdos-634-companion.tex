@@ -1406,7 +1406,7 @@ partition $jb-a$ resp.\ $jb-c$ --- gaps.
 and $c-b=e^2>0$, so a $c$-edge laid from $R_{j-1}$ along the chord passes $(jf,0)$ by $e^2$. The
 chord descends: $j\,c\,u$ has ordinate $jf^2\sin\beta>0$ and $(jf,0)$ lies on the base, so the
 continuation beyond $(jf,0)$ has negative ordinate and leaves the target. This is the directional
-overshoot test of Remark~\ref{rem:straddle}: a $c$ laid downward onto a base point exceeds the
+overshoot test of Remark~\ref{rem:whyf3}: a $c$ laid downward onto a base point exceeds the
 boundary and dies, whereas the same edge laid upward from the base would merely pass an interior
 point. Hence the $\alpha$-slot flank along the chord is a whole $b$-edge, and the reflected placement
 is excluded. Nothing here depends on $f$, nor on $e$ beyond $e^2>0$.
@@ -1469,6 +1469,28 @@ statement about what covers $[V,E]$: if that segment is forced to be a whole $a$
 junction and the vertex figure there is constrained, which is the substitute for the tile-interior
 blocking that fails. We do not prove that here, and record only that the geometry leaves no other
 target: every length in the display is exact and independent of $f$.
+\end{remark}
+
+\begin{remark}[The blocking hypothesis cannot be weakened to ``both ends are vertices'']\label{rem:noedgetoedge}
+It is worth recording what the step left open in Remark~\ref{rem:route1uniform} may \emph{not} appeal
+to. In Lemma~\ref{lem:cchord} the hypothesis that the chord is blocked at both ends is what converts
+it into a union of whole tile edges; one cannot replace it by the weaker hypothesis that both ends
+are vertices of the tiling, because the tilings in this family are not edge-to-edge. The certified
+$99$-tiling of member $(1,2)$ settles this concretely. Its $99$ tiles span $216$ distinct edges, and
+$52$ of those carry a vertex of the tiling in their relative interior --- each exactly one. Moreover
+its $89$ vertices contain $19$ pairs at distance exactly $a$, $23$ at distance exactly $b$ and $45$
+at distance exactly $c$ that span no tile edge at all. (These counts are read off the coordinates of
+the machine-checked certificate; in that embedding every $x$ is rational and every $y$ a rational
+multiple of $\sqrt{15}$, so the chart $(x,y/\sqrt{15})$ is an affine rescaling of the plane and
+decides collinearity and betweenness faithfully.)
+
+Hence knowing that a segment has both endpoints at tiling vertices and has the length of a tile side
+carries \emph{no} information about how it meets the tiling. Since $V$ and $E$ are vertices at
+distance exactly $a$, this is precisely the shape of the hypothesis one is tempted to use, and it is
+not available. Whatever forces $[V,E]$ to be a whole $a$-edge must consume the cascade's tile data
+--- which tiles have been forced and where --- and not merely its vertex set. The same remark
+explains why the tile-interior blocking of Remark~\ref{rem:tib}, and not a vertex-incidence
+argument, is the mechanism the cascade actually runs on.
 \end{remark}
 
 \begin{conjecture}[Advance-and-collide]\label{conj:advance}
@@ -1674,7 +1696,7 @@ $a$-up placements are excluded by \texttt{alpha\_vertex\_gap} and \texttt{anti\_
 before.)
 \end{proof}
 
-\begin{remark}[Why $f\ge3$, and what the $(1,2)$ tilings show]\label{rem:straddle}
+\begin{remark}[Why $f\ge3$, and what the $(1,2)$ tilings show]\label{rem:whyf3}
 The hypothesis $f\ge3$ in Lemma~\ref{lem:eastfan} is doing real work, and the $(1,2)$ member shows
 exactly what it buys. At $f=2$ one has $2b=6=b+b=a+c=3a$: the chord's partition is not unique, the
 split need not fall at $Q_1$, and a tile may straddle there. The kernel-checked $99$-tiling does
