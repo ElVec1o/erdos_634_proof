@@ -2279,6 +2279,37 @@ exactly bounding the side's run of $a$-edges, which is Hypothesis~\ref{hyp:walls
 one problem, and the cascade was the long way round.
 \end{remark}
 
+\begin{remark}[Counting cannot decide the crossing question]\label{rem:censusblind}
+Since an overrun at $Y$ is equivalent to the tiles with a \emph{vertex} at $Y$ forming a
+$\pi$-figure, it is natural to attack it with the vertex census of
+Lemma~\ref{lem:census}, which counts exactly those figures. That cannot work, for a structural
+reason worth recording so it is not attempted again.
+
+Write $n_1$ for the number of $\{\gamma,\alpha,\beta\}$ figures and $n_2$ for the number of
+$\{3\alpha,2\beta\}$ figures, and $v_1,\dots,v_4$ for the four interior types. The census consists of
+one equation per angle, and its identity is obtained by subtracting the $\beta$ equation from the
+$\alpha$ equation:
+\[
+v_1 \;=\; 1+n_2+v_3+2v_4 ,
+\]
+in which $n_1$ \emph{cancels}. The third equation then pins $n_1=N-3v_1-2v_2-v_3$, but supplies no
+bound of its own. So the census constrains $\{3\alpha,2\beta\}$ and says nothing bounding about
+$\{\gamma,\alpha,\beta\}$.
+
+That is precisely the wrong way round for us: at $V_k$ the forced tiles are $T_k$, presenting
+$\gamma$, and $P_{k-1}$, presenting $\beta$, and $\{\gamma,\alpha,\beta\}$ is the only $\pi$-figure
+containing both. The census is therefore blind to exactly the configuration in question, and no
+counting argument built on it can decide the crossing.
+
+The kernel-checked $99$-tiling illustrates both points. Its vertex figures are: on the boundary,
+$22$ of type $\{\gamma,\alpha,\beta\}$, with the corners contributing $\{\beta\}$ twice and
+$\{3\alpha\}$ once; in the interior, $50$ of type $\{\gamma,\alpha,\beta\}$, $2$ of type
+$\{3\alpha,2\beta\}$, and $(v_1,v_2,v_3,v_4)=(4,7,1,0)$. The identity reads $4=1+2+1+0$, exactly. And
+the $50+2=52$ interior $\pi$-figures agree exactly with the $52$ edges carrying an interior vertex
+found in Remark~\ref{rem:noedgetoedge} by an unrelated computation --- a useful cross-check on both.
+Note the ratio: $50$ of the $52$ crossings are of the type the census cannot see.
+\end{remark}
+
 \begin{corollary}[The walls form at $e=1$, $f\ge3$]\label{cor:wallsf2e}
 Let $e=1$ and $f\ge3$. Then the base walk is the walls form $(f,1,1)$.
 \end{corollary}
