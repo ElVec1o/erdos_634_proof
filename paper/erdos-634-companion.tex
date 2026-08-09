@@ -2085,32 +2085,48 @@ coprime pairs, and among the smallest are $(5,6)$ and $(4,7)$, that is $N=83$ an
 by member certification therefore cannot settle this family.
 \end{remark}
 
-\begin{remark}[Which angle is minimal, and why close pairs are structurally different]\label{rem:alphamin}
-The separation condition is an inequality between tile edges: $f^2>2ef+e^2$ reads $b>2a$. Hence at
-every separated member $b>2a>a$, and since a larger side faces a larger angle, $\alpha<\beta$
-there automatically; the same holds at every $e=1$ member, where $a=f<f^2-1=b$ for $f\ge2$
-(\texttt{separated\_alpha\_minimal}, \texttt{e\_one\_alpha\_minimal}). Close pairs are exactly
-the complement $b\le 2a$, and there $b$ may fall below $a$: that happens precisely when
-$f<e\varphi$, $\varphi$ the golden ratio, and it does happen --- at $(e,f)=(2,3),(3,4),(4,5),
-(5,6),(6,7),(7,8),(7,9),(7,10),\dots$, including $(5,6)$, which is $N=83$. At those members
-$\beta$, not $\alpha$, is the minimal angle.
+\begin{remark}[The wedge-filler hypothesis, and where it fails]\label{rem:alphamin}
+Several steps of the corner chain fill a wedge of angle exactly $\alpha$ with a single
+$\alpha$-tile, justified in Lemma~\ref{lem:wallclimb} by ``$\alpha$ is the minimal angle''. That is
+not the load-bearing fact. What the step needs is that no two smaller angles fit, that is
+$2\beta>\alpha$, which with $3\alpha+2\beta=\pi$ reads
+\[
+\alpha<\tfrac\pi4 .
+\]
+The two conditions are different, and both directions of the difference occur. At $(e,f)=(3,4)$ one
+has $b<a$, so $\beta$ is the minimal angle, yet $\alpha<\pi/4$ still holds and the step survives.
 
-This matters because several steps of the corner chain select the filler of a wedge by ``$\alpha$
-is the minimal angle'' (Lemma~\ref{lem:wallclimb}). That hypothesis is satisfied throughout the
-region where the machinery was developed --- all of $e=1$, and every separated member --- and fails
-on a definite sublist of the region where it is wanted. It is therefore a genuine hypothesis rather
-than a normalisation, and the failure is not a matter of the arithmetic filters being weaker at
-close pairs: the geometry itself changes. Any argument aimed at close pairs must either avoid the
-minimality of $\alpha$ or split into the two regimes $f<e\varphi$ and $e\varphi<f\le(1+\sqrt2)e$.
+The criterion is exact and integral. Since $b^2+c^2-a^2=(f^2-e^2)(2f^2-e^2)$ and
+$2bc=2f^2(f^2-e^2)$,
+\[
+\cos\alpha=\frac{2f^2-e^2}{2f^2}=1-\frac{e^2}{2f^2},
+\]
+which at $e=1$ is the familiar $(2f^2-1)/(2f^2)$. So $\alpha<\pi/4$ iff $2f^2-e^2>\sqrt2\,f^2$, and
+squaring (both sides positive, as $f>e$) gives
+\[
+e^4-4e^2f^2+2f^4>0 .
+\]
+The separation condition $f^2>2ef+e^2$ implies it (\texttt{separated\_wedge\_ok}): from
+$f^2-e^2>2ef$ one gets $f^4+e^4>6e^2f^2$ on squaring, and the claim follows with room to spare. So
+the step is safe at every separated member, and every failure is a close pair. Among $e\le11$,
+$f\le19$ the failures are
+\[
+(4,5),\ (5,6),\ (6,7),\ (7,8),\ (7,9),\ (8,9),\ (9,10),\ (9,11),\ (10,11),\ (10,13),\ (11,12),\ (11,13),
+\]
+including $(5,6)$, which is $N=83$. No claim in either paper is affected: Lemma~\ref{lem:wallclimb}
+is invoked only at $e=1$, where $a=f<f^2-1=b$ and $\alpha<\pi/4$ both hold, and
+Proposition~\ref{prop:unify} lists four ingredients not including it. What the criterion supplies is
+a precise location for the obstruction: close pairs differ from separated members geometrically, not
+merely in having weaker arithmetic filters, and an argument aimed at them must either avoid the
+wedge-filler step or treat $e^4-4e^2f^2+2f^4\le0$ separately.
 
-We note also what does \emph{not} help there. Reducing the base equation modulo $e$ gives
-$y+z\equiv0\pmod e$ by coprimality, and the $\gamma$-injection is exactly a bipartite matching of
-the $a$- and $b$-edges to the junctions, whose sharp criterion is Hall's condition rather than the
-counting bound. Neither removes any of the $54$ columns that survive the three unconditional
-filters over $e\le9$, $f\le15$: the first is implied by the base equation, and the second collapses
-to the $\gamma$-trap $z\ge1$, since with $z\ge1$ a matching always exists. The boundary word
-therefore carries no further information, which is the precise sense in which a bound on $y$ must
-be interior.
+Two arithmetic strengthenings do \emph{not} help there, which is why the bound must be interior.
+Reducing the base equation modulo $e$ gives $y+z\equiv0\pmod e$ by coprimality; and the
+$\gamma$-injection is exactly a bipartite matching of the $a$- and $b$-edges to the junctions, whose
+sharp criterion is Hall's condition rather than the counting bound. Neither removes any of the $54$
+columns that survive the three unconditional filters over $e\le9$, $f\le15$: the first is implied by
+the base equation, and the second collapses to the $\gamma$-trap $z\ge1$, since with $z\ge1$ a
+matching always exists.
 \end{remark}
 
 \begin{lemma}[A $c$-corner carries a side $a$-edge]\label{lem:ccornerside}

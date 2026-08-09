@@ -256,44 +256,49 @@ leaves the target, which is why the `α`-slot flank cannot be a `c`-edge. -/
 theorem overshoot_c_sub_b (e f : ℕ) (h : e * e ≤ f * f) :
     (f * f) - (f * f - e * e) = e * e := by omega
 
-/-! ## Which angle is minimal: separated members versus close pairs
+/-! ## The wedge-filler hypothesis, and where it fails
 
-The tile is `(a,b,c) = (ef, f²−e², f²)` with `a` opposite `α`, `b` opposite `β`, `c` opposite `γ`.
-Since a larger side faces a larger angle, `α < β` exactly when `a < b`. Several steps of the corner
-chain choose the filler of a wedge by "`α` is the minimal angle" (companion, `lem:wallclimb`), so it
-matters where that holds.
+Several corner-chain steps fill a wedge of angle exactly `α` with a single `α`-tile, justified in
+`lem:wallclimb` by "`α` is the minimal angle". That is not the load-bearing fact. What is needed is
+that no two smaller angles fit, i.e. `2β > α`; with `3α + 2β = π` this reads `α < π/4`.
 
-The separation condition `f² > 2ef + e²` is literally `b > 2a`. Hence at every separated member
-`b > 2a > a` and `α` is minimal automatically, and the same holds at every `e = 1` member, where
-`a = f < f² − 1 = b` for `f ≥ 2`. Close pairs are exactly the complement, `b ≤ 2a`, and there `b`
-may fall below `a`: that happens iff `f < eφ`, and it does happen — at `(e,f) = (2,3), (3,4),
-(4,5), (5,6), (6,7), (7,8), …`, including `(5,6)`, which is `N = 83`.
+The distinction is not academic. The two conditions disagree: at `(e,f) = (3,4)` one has `b < a`, so
+`β` is the minimal angle, yet `α < π/4` still holds and the step survives. Conversely the step does
+fail somewhere, and the criterion is exact and integral.
 
-So the minimality of `α` is not a harmless normalisation but a genuine hypothesis, satisfied
-throughout the region where the machinery was developed and failing on a definite sublist of the
-region where it is wanted. Any close-pair argument must either avoid it or split into the two
-regimes. -/
+`cos α = 1 − e²/(2f²)`, since `b² + c² − a² = (f²−e²)(2f²−e²)` and `2bc = 2f²(f²−e²)`. So
+`α < π/4` iff `2f² − e² > √2 f²`, and squaring (both sides positive as `f > e`) gives the integer
+criterion `e⁴ − 4e²f² + 2f⁴ > 0`. It fails on `(4,5), (5,6), (6,7), (7,8), (7,9), (8,9), (9,10),
+(9,11), (10,11), (10,13), (11,12), (11,13)` among `e ≤ 11`, `f ≤ 19` — every one a close pair, and
+including `(5,6)`, which is `N = 83`. -/
 
-/-- **Separated members have `b > 2a`.** The separation condition is exactly this inequality, so
-`α` is the minimal angle at every separated member. -/
+/-- **The closed form of `cos α`.** `(b²+c²−a²)·2f² = (2f²−e²)·2bc` for the family
+`(a,b,c) = (ef, f²−e², f²)`, i.e. `cos α = 1 − e²/(2f²)`. At `e = 1` this is `(2f²−1)/(2f²)`. -/
+theorem cos_alpha_closed (e f : ℝ) :
+    ((f ^ 2 - e ^ 2) ^ 2 + (f ^ 2) ^ 2 - (e * f) ^ 2) * (2 * f ^ 2)
+      = (2 * f ^ 2 - e ^ 2) * (2 * (f ^ 2 - e ^ 2) * f ^ 2) := by ring
+
+/-- **The wedge-filler criterion.** `α < π/4` iff `2f² − e² > √2 f²`, which on squaring is the
+integer condition below. This is what `lem:wallclimb`'s step actually needs; minimality of `α` is
+neither necessary nor what is used. -/
+theorem wedge_criterion (e f : ℝ) :
+    (2 * f ^ 2 - e ^ 2) ^ 2 - 2 * f ^ 4 = e ^ 4 - 4 * e ^ 2 * f ^ 2 + 2 * f ^ 4 := by ring
+
+/-- **Separated members satisfy it.** `f² > 2ef + e²` is `b > 2a`, and it implies
+`e⁴ − 4e²f² + 2f⁴ > 0`, so the wedge step is safe at every separated member; the failures are
+confined to close pairs. -/
+theorem separated_wedge_ok {e f : ℝ} (he : 0 < e) (hef : e < f)
+    (hsep : 2 * e * f + e ^ 2 < f ^ 2) :
+    0 < e ^ 4 - 4 * e ^ 2 * f ^ 2 + 2 * f ^ 4 := by
+  -- `f² − e² > 2ef`; squaring gives `f⁴ + e⁴ > 6e²f²`, and the claim follows with room to spare.
+  have hs : 0 < f ^ 2 - e ^ 2 - 2 * e * f := by linarith
+  nlinarith [mul_pos hs hs, sq_nonneg (e * f), sq_nonneg f, mul_pos he (he.trans hef)]
+
+/-- Separated members also have `b > 2a`, hence `a < b`: `α < β` there. Recorded because it is the
+edge-inequality form of the separation condition. -/
 theorem separated_b_gt_two_a {e f : ℕ} (hsep : 2 * e * f + e * e < f * f) :
     2 * (e * f) < f * f - e * e := by
-  -- `2 * e * f` parses as `(2*e)*f`, a different atom from `2*(e*f)`; omega needs them linked.
   have hx : 2 * e * f = 2 * (e * f) := by ring
-  omega
-
-/-- Consequently `a < b` there, i.e. `α < β`: the minimality of `α` is automatic away from close
-pairs. -/
-theorem separated_alpha_minimal {e f : ℕ} (he : 1 ≤ e) (hef : e < f)
-    (hsep : 2 * e * f + e * e < f * f) : e * f < f * f - e * e := by
-  have h := separated_b_gt_two_a hsep
-  have : 0 < e * f := Nat.mul_pos he (by omega)
-  omega
-
-/-- At `e = 1` the same holds for every `f ≥ 2`, with no separation hypothesis: `a = f` and
-`b = f² − 1`. -/
-theorem e_one_alpha_minimal {f : ℕ} (hf : 2 ≤ f) : 1 * f < f * f - 1 * 1 := by
-  have : 2 * f ≤ f * f := by nlinarith
   omega
 
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
