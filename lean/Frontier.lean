@@ -397,6 +397,60 @@ theorem k_eq_one_of_bound (e f k B : ℤ) (hk : 1 ≤ k) (hb : 0 < f * f - e * e
   have h2 : 2 ≤ k := by omega
   nlinarith [mul_le_mul_of_nonneg_right h2 (le_of_lt hb)]
 
+/-! ## The close-pair base columns, assembled
+
+The pieces above combine into one statement about the extra columns at a close pair. -/
+
+/-- **Characterisation of the extra base columns.** Let `y = e + kf` with `k ≥ 1`, and let
+`(x,y,z)` be a base column surviving the two unconditional positivity filters and the corner
+parallelogram (`x, z ≥ 1`, `x + z ≥ 4`). Then the three-variable base equation is equivalent to a
+two-variable one, `x` is pinned modulo `f`, and `k` is bounded:
+
+* `x·e + z·f = 2ef − k·b`,
+* `f ∣ x − ke`,
+* `k·b ≤ 2ef − 3e − f`,
+
+with `b = f² − e²`. -/
+theorem close_pair_column {e f k x z : ℤ} (he : 0 < e) (hef : e < f) (hf : f ≠ 0)
+    (hco : IsCoprime f e) (hx : 1 ≤ x) (hz : 1 ≤ z) (hxz : 4 ≤ x + z)
+    (hbase : x * (e * f) + (e + k * f) * (f * f - e * e) + z * (f * f)
+             = e * (3 * f * f - e * e)) :
+    x * e + z * f = 2 * e * f - k * (f * f - e * e)
+    ∧ f ∣ x - k * e
+    ∧ k * (f * f - e * e) ≤ 2 * e * f - 3 * e - f := by
+  have hid := base_column_reduction e f k x z
+  rw [hbase] at hid
+  simp only [sub_self] at hid
+  have hred : x * e + z * f = 2 * e * f - k * (f * f - e * e) := by
+    rcases mul_eq_zero.mp hid.symm with h0 | h0
+    · exact absurd h0 hf
+    · linarith
+  exact ⟨hred, column_x_congruence e f k x z hco hred,
+         k_bound_sharp e f k x z he hef hx hz hxz hred⟩
+
+/-- **Uniqueness for a given `k`.** Two columns with the same `k` coincide. The hypotheses `z ≤ e`
+are what `one_column_per_k` supplies: the least admissible `x` in the residue class carries
+`z ≤ e`, and any larger member of the class would force `z ≤ 0`. -/
+theorem close_pair_column_unique {e f k x z x' z' : ℤ} (he : 0 < e) (hf : f ≠ 0)
+    (hco : IsCoprime f e) (hze : z ≤ e) (hze' : z' ≤ e) (hz : 1 ≤ z) (hz' : 1 ≤ z')
+    (h : x * e + z * f = 2 * e * f - k * (f * f - e * e))
+    (h' : x' * e + z' * f = 2 * e * f - k * (f * f - e * e)) : x = x' ∧ z = z' := by
+  have hkey : (x - x') * e = (z' - z) * f := by linarith
+  have hdvd : f ∣ x - x' := hco.dvd_of_dvd_mul_left ⟨z' - z, by linarith [hkey]⟩
+  obtain ⟨t, ht⟩ := hdvd
+  have hcancel : f * (t * e) = f * (z' - z) := by
+    have : (x - x') * e = (f * t) * e := by rw [ht]
+    linarith [hkey, this]
+  have hte : t * e = z' - z := mul_left_cancel₀ hf hcancel
+  have ht0 : t = 0 := by
+    rcases lt_trichotomy t 0 with hlt | heq | hgt
+    · nlinarith
+    · exact heq
+    · nlinarith
+  rw [ht0, mul_zero] at ht
+  rw [ht0, zero_mul] at hte
+  exact ⟨by linarith, by linarith⟩
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by

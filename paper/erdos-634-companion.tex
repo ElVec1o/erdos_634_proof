@@ -2135,6 +2135,21 @@ residual question is one linear congruence per $k$, with $k$ in an explicit fini
 an unstructured three-variable family.
 \end{remark}
 
+\begin{proposition}[The extra base columns at a close pair]\label{prop:closepaircolumns}
+Let $\gcd(e,f)=1$ and $1\le e<f$, let $b=f^2-e^2$, and let $(x,y,z)$ be a base column with
+$y=e+kf$, $k\ge1$, satisfying $x,z\ge1$ and $x+z\ge4$. Then
+\begin{enumerate}
+\item[\textup{(i)}] the base equation is equivalent to $xe+zf=2ef-kb$;
+\item[\textup{(ii)}] $f\mid x-ke$, so $x$ lies in a single residue class modulo $f$;
+\item[\textup{(iii)}] $kb\le 2ef-3e-f$;
+\item[\textup{(iv)}] for each $k$ the pair $(x,z)$ is unique.
+\end{enumerate}
+Consequently the extra columns at a close pair are exactly one for each
+$k=1,\dots,\lfloor(2ef-3e-f)/b\rfloor$ that admits a solution, with $x$ determined modulo $f$ and $z$
+determined by $x$.
+\textup{(\texttt{close\_pair\_column}, \texttt{close\_pair\_column\_unique}, \texttt{one\_column\_per\_k}.)}
+\end{proposition}
+
 \begin{remark}[The wedge-filler hypothesis, and where it fails]\label{rem:alphamin}
 Several steps of the corner chain fill a wedge of angle exactly $\alpha$ with a single
 $\alpha$-tile, justified in Lemma~\ref{lem:wallclimb} by ``$\alpha$ is the minimal angle''. That is
