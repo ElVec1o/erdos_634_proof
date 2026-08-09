@@ -2111,9 +2111,11 @@ kb\;\le\;2ef-3e-f
 \]
 better by $2e$. Checked against brute enumeration on every close pair with $e\le25$, $f\le59$: no
 violation, and the bound is \emph{attained} --- equal to the largest surviving $k$ --- at $186$ of
-the $198$ members carrying survivors. Since the enumeration also shows exactly one surviving column
-for each $k$ in range (observed on all $655$ columns; we do not prove it), the surviving set at a
-member is described completely by
+the $198$ members carrying survivors. There is exactly one surviving column for each $k$ in range. For fixed $k$ the solutions form a
+chain $x=x_0+tf$, $z=z_0-te$, so there are $\lfloor(z_0-1)/e\rfloor+1$ with $z\ge1$, and exactly one
+when $z_0\le e$; writing $ke=qf+r$ this is $e(1+q)\le kf$, and since $e<f$ we have $ke/f<k$, so
+$q\le k-1$ and $e(1+q)\le ek<fk$ (\texttt{one\_column\_per\_k}; neither coprimality nor the
+close-pair hypothesis is used). Hence the surviving set at a member is described completely by
 \[
 k=1,\dots,\Bigl\lfloor\frac{2ef-3e-f}{b}\Bigr\rfloor .
 \]

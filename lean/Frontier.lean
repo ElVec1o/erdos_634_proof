@@ -352,6 +352,21 @@ theorem column_x_congruence (e f k x z : ℤ) (hco : IsCoprime f e)
   have key : e * (x - k * e) = f * (2 * e - k * f - z) := by linear_combination h
   exact hco.dvd_of_dvd_mul_left ⟨2 * e - k * f - z, key.symm ▸ key⟩
 
+/-- **At most one surviving column per `k`.** For fixed `k` the solutions of `xe + zf = R` with
+`x` in the class of `column_x_congruence` form a chain `x = x₀ + tf`, `z = z₀ − te`, so there are
+`⌊(z₀−1)/e⌋ + 1` of them with `z ≥ 1`, and exactly one when `z₀ ≤ e`. Writing `ke = qf + r` that is
+equivalent to `e(1+q) ≤ kf`, which is this lemma.
+
+The proof needs neither coprimality nor the close-pair hypothesis: since `e < f` we have
+`ke/f < k`, so `q ≤ k−1` and `1 + q ≤ k`, whence `e(1+q) ≤ ek < fk`. -/
+theorem one_column_per_k {e f k q : ℕ} (he : 0 < e) (hef : e < f) (hk : 1 ≤ k)
+    (hq : q * f ≤ k * e) (hq' : k * e < (q + 1) * f) : e * (1 + q) ≤ k * f := by
+  have h1 : k * e < k * f := by nlinarith
+  have hqk : q < k := by nlinarith
+  have h2 : 1 + q ≤ k := by omega
+  have h3 : e * (1 + q) ≤ e * k := Nat.mul_le_mul_left e h2
+  nlinarith
+
 /-- **The sharp `k`-bound.** The previous bound used only `x, z ≥ 1`. The corner parallelogram also
 forces `x + z ≥ 4` (`cornerpara_filter`), and since `e < f` the minimum of `xe + zf` under
 `x, z ≥ 1`, `x + z ≥ 4` sits at `(x,z) = (3,1)`, giving `3e + f` rather than `e + f`. Hence
