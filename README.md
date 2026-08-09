@@ -84,8 +84,13 @@ folklore conjecture is open.
 What is proved of the hypothesis:
 
 - `e = 1` (thin members): it holds for `f ≤ 6`, that is for `N = 11, 26, 47, 74, 107`.
-- `e ≥ 2` (thick members): the base walk is forced to the walls form at every *separated* member
-  (`f² > 2ef + e²`), via a base trichotomy, the `γ`-trap, and an unconditional corner chain.
+- `e ≥ 2` (thick members): the base admits only two columns at every member with `f > 2e` — a
+  weaker hypothesis than separation, which is `f > (1+√2)e` — by a sharp criterion for the extra
+  close-pair columns. Reducing those two to the walls form needs the corner chain, whose induction
+  is **not** established at `e ≥ 2`: its step applies straight-junction arithmetic at a vertex that
+  is interior for `k ≥ 1`, where the residue is `π + α` rather than `α`. Under Hypothesis (walls)
+  the walls form follows in two lines instead, so every downstream use is unaffected; unconditionally
+  it holds at `e = 1` only.
 - Seven members are settled by independent certified exhaustion of the full `m = 1` target:
   `N = 11, 23, 26, 39, 71, 74, 107`. `N = 146` (the member `(1,7)`) is settled by the same engine
   with the `γ`-trap and corner-type prunes enabled; that certificate depends on the reduction
