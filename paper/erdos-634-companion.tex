@@ -2137,15 +2137,50 @@ covers the band $2e<f\le(1+\sqrt2)e$ that Lemma~\ref{lem:basetri} left to a per-
 computation: $5064$ of the $17296$ close pairs with $e\le200$ lie in it. For those members the base
 dichotomy now holds for the same reason it holds at a separated member.
 
-It does \emph{not} follow that the base walk is the walls form there, because the last step of
-Corollary~\ref{cor:basewalls} is Theorem~\ref{thm:n1}, whose statement assumes separation.
-Inspecting its proof, separation is not visibly used: the chord's far side is a single $b$ by
-\texttt{partner\_unique}, which is general in $(e,f)$ and is checked at the close pair $(2,3)$; the
-overshoot step needs only $c>b$; and the final contradiction is $f^2\mid e^3$, i.e.\
-\texttt{base\_not\_all\_c}, whose Lean statement assumes only $2\le f$, $e<f$ and
-$\gcd(e,f)=1$. Whether the separation hypothesis of Theorem~\ref{thm:n1} can simply be deleted is
-therefore a concrete open question, and an affirmative answer would give the walls form throughout
-$f\ge2e$. We do not assert it here.
+To reach the walls form one further needs Theorem~\ref{thm:n1}, whose statement assumes separation.
+That hypothesis is inert, as the next proposition records.
+\end{remark}
+
+\begin{proposition}[Theorem~\ref{thm:n1} does not need separation]\label{prop:n1general}
+The separation hypothesis may be deleted from Theorem~\ref{thm:n1}: for all $e\ge1$, $f\ge2$ with
+$\gcd(e,f)=1$, no tiling of the base-$\beta$ target at $m=1$ has base walk $(0,e,2e)$.
+\end{proposition}
+
+\begin{proof}
+The proof of Theorem~\ref{thm:n1} applies verbatim; separation is used at no step, as follows. The
+corner angle is $\beta$ and the corner tile is unique with flanks $\{a,c\}$, which is the base-$\beta$
+corner structure and holds for every member. Since the base carries no $a$-edge, $T_0$ lays $c$ on
+the base and $a$ on the side; the side has length $f^3>ef=a$, so the junction at $a\,u$ is interior
+and straight, and the wedge arithmetic $\pi-\gamma=\alpha+\beta$ is a consequence of
+$3\alpha+2\beta=\pi$ and $\gamma=2\alpha+\beta$ alone. The chord from $(c,0)$ to $a\,u$ is a whole
+edge of $T_0$, so no tile crosses it, and both of its ends lie on the target boundary, so no covering
+edge overruns them; its far side is therefore a union of whole edges of total length $b$, and
+$b=xa+yb+zc$ forces $(x,y,z)=(0,1,0)$ (\texttt{partner\_unique}), which is general in $(e,f)$. In
+the induction, the exclusion of a $c$ laid along $T_k$'s $b$-ray uses only $c>b$, i.e.\ $e^2>0$, and
+the slot fills use only the wedge arithmetic. The induction then forces every base edge to be a
+$c$-edge, which already contradicts the assumed column, since $(0,e,2e)$ carries $e\ge1$ $b$-edges;
+independently it forces $f^2\mid e(3f^2-e^2)$, hence $f^2\mid e^3$ and $f=1$ by coprimality
+(\texttt{base\_not\_all\_c}, whose Lean hypotheses are only $2\le f$, $e<f$, $\gcd(e,f)=1$).
+\end{proof}
+
+\begin{corollary}[The walls form at $f>2e$]\label{cor:wallsf2e}
+Let $\gcd(e,f)=1$ and $f>2e$. Then the base walk is the walls form $(f,e,e)$.
+\end{corollary}
+
+\begin{proof}
+Corollary~\ref{cor:basedi2e} leaves $(0,e,2e)$ and $(f,e,e)$; Proposition~\ref{prop:n1general}
+deletes the first.
+\end{proof}
+
+\begin{remark}[Status of Proposition~\ref{prop:n1general}]\label{rem:n1status}
+The three arithmetic ingredients above were checked on all $36896$ coprime members with
+$e\le200$, $e<f<4e+2$, of which $17296$ are close pairs: $b$ has no decomposition other than a single
+$b$-edge, $c>b$ holds, and $f^2$ never divides $e(3f^2-e^2)$. The remaining steps are the base-$\beta$
+corner structure and the wedge arithmetic, neither of which refers to the separation inequality.
+Corollary~\ref{cor:wallsf2e} accordingly extends Corollary~\ref{cor:basewalls} from
+$f>(1+\sqrt2)e$ to $f>2e$. Being a deletion of a hypothesis from an existing geometric argument
+rather than a new one, Proposition~\ref{prop:n1general} carries the label PROVED, not machine-checked;
+its geometric steps are the same ones Theorem~\ref{thm:n1} already rests on.
 \end{remark}
 
 \begin{remark}[Close pairs: what the unconditional filters leave]\label{rem:closepairs}
