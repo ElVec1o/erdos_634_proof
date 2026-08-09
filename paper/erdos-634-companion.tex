@@ -2089,6 +2089,42 @@ gives three columns, the $\gamma$-trap deletes $(2f,e,0)$ (Lemma~\ref{lem:basedi
 Theorem~\ref{thm:n1} deletes $(0,e,2e)$.
 \end{corollary}
 
+Separation enters that chain only through Lemma~\ref{lem:basetri}, to rule out columns with $y>e$.
+Proposition~\ref{prop:sharpcolumn} rules them out under the weaker hypothesis $f\ge2e$, so the
+trichotomy and the dichotomy both extend.
+
+\begin{corollary}[The base trichotomy and dichotomy without separation]\label{cor:basedi2e}
+Let $\gcd(e,f)=1$ and $f\ge2e$. Then the base admits exactly the three decompositions
+$(0,e,2e)$, $(f,e,e)$, $(2f,e,0)$ of Lemma~\ref{lem:basetri}, and after the $\gamma$-trap exactly
+the two of Lemma~\ref{lem:basedi}, namely $(0,e,2e)$ and the walls form $(f,e,e)$.
+\end{corollary}
+
+\begin{proof}
+Reducing $xa+yb+zc=e(3f^2-e^2)$ modulo $f$ kills $a=ef$ and $c=f^2$ and leaves
+$-ye^2\equiv-e^3$, so $f\mid e^2(y-e)$ and hence $f\mid y-e$ by coprimality. Write $y=e+kf$ with
+$k\ge0$. If $k\ge1$ then Proposition~\ref{prop:sharpcolumn}(iii) forces $f\le2e-1$, contrary to
+$f\ge2e$; so $y=e$. Then $f\mid x$, say $x=jf$, and the base equation becomes $je+z=2e$, i.e.\
+$z=e(2-j)$, so $z\ge0$ gives $j\in\{0,1,2\}$ and the three columns are exactly those listed. The
+$\gamma$-trap forces $z\ge1$ (Lemma~\ref{lem:basedi}), deleting $j=2$.
+\end{proof}
+
+\begin{remark}[The band this opens, and what still blocks the walls form there]\label{rem:band2e}
+Separation is $f>(1+\sqrt2)e$, so Corollary~\ref{cor:basedi2e} is strictly weaker in hypothesis and
+covers the band $2e\le f\le(1+\sqrt2)e$ that Lemma~\ref{lem:basetri} left to a per-member
+computation: $5065$ of the $17296$ close pairs with $e\le200$ lie in it. For those members the base
+dichotomy now holds for the same reason it holds at a separated member.
+
+It does \emph{not} follow that the base walk is the walls form there, because the last step of
+Corollary~\ref{cor:basewalls} is Theorem~\ref{thm:n1}, whose statement assumes separation.
+Inspecting its proof, separation is not visibly used: the chord's far side is a single $b$ by
+\texttt{partner\_unique}, which is general in $(e,f)$ and is checked at the close pair $(2,3)$; the
+overshoot step needs only $c>b$; and the final contradiction is $f^2\mid e^3$, i.e.\
+\texttt{base\_not\_all\_c}, whose Lean statement assumes only $2\le f$, $e<f$ and
+$\gcd(e,f)=1$. Whether the separation hypothesis of Theorem~\ref{thm:n1} can simply be deleted is
+therefore a concrete open question, and an affirmative answer would give the walls form throughout
+$f\ge2e$. We do not assert it here.
+\end{remark}
+
 \begin{remark}[Close pairs: what the unconditional filters leave]\label{rem:closepairs}
 At a close pair ($f^2\le 2ef+e^2$) Lemma~\ref{lem:basetri} no longer applies and the base admits
 extra columns, all with $y=e+kf$ for some $k\ge1$. Three unconditional filters apply: the
@@ -2193,10 +2229,11 @@ $x_k+z_k\ge4$, and it is then $(x_k,\,e+kf,\,z_k)$;
 $k$, and in general the admissible $k$ form an initial segment $1,\dots,K$ with
 $K\le 1+\lfloor(2e-1-f)/(f-e)\rfloor$.
 \end{enumerate}
-\textup{Formalised as \texttt{column\_criterion\_identity}, \texttt{column\_criterion},
-\texttt{k\_one\_forces\_f\_le\_two\_e\_sub\_one}, \texttt{residue\_step} and \texttt{g\_strict\_drop}
-in \texttt{lean/Frontier.lean}; unlike the other Lean citations in this note these five await a
-kernel check, so the proof below is the warrant for the statement.}
+\textup{Machine-checked in \texttt{lean/Frontier.lean} as
+\texttt{column\_criterion\_identity}, \texttt{column\_criterion},
+\texttt{k\_one\_forces\_f\_le\_two\_e\_sub\_one}, \texttt{residue\_step} and
+\texttt{g\_strict\_drop}, axiom-free beyond \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound}.}
 \end{proposition}
 
 \begin{proof}
