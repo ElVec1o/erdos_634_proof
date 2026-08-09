@@ -2211,6 +2211,34 @@ stops the corner cascade of Remark~\ref{rem:route1uniform} and the filler dichot
 Section~\ref{sub:sidep}. Three routes, one wall.
 \end{remark}
 
+\begin{remark}[The overrun configuration at $V_k$, determined]\label{rem:overrunshape}
+The crossing that has to be excluded is more rigid than it looks. By
+Remark~\ref{rem:noedgetoedge}'s accounting, a tile whose edge passes through $V_k$ contributes
+exactly $\pi$ there, so an overrun forces the tiles with a \emph{vertex} at $V_k$ to form a
+$\pi$-figure. The forced ones are $T_k$, presenting $\gamma$, and $P_{k-1}$, presenting $\beta$, and
+the only $\pi$-figure containing $\{\gamma,\beta\}$ is $\{\gamma,\alpha,\beta\}$. So an overrun
+admits \emph{exactly one} further tile at $V_k$, and it presents $\alpha$.
+
+That tile has room. The chord leaves the base at angle $\alpha$, so its extension at $V_k$ lies at
+$\pi-\alpha$, while $P_{k-1}$'s $c$-edge lies along $\pi$; the wedge between them is exactly
+$\alpha$. The configuration is therefore angularly consistent and cannot be refuted by counting
+angles, which is why it has survived.
+
+Its two edges at $V_k$ are $b$ and $c$, one along the chord's extension and one along $P_{k-1}$'s
+$c$-edge. Along the latter, of length $c$:
+\begin{itemize}
+\item laying $c$ matches exactly;
+\item laying $b$ falls short of $V_{k-1}$ by $c-b=e^2$, and $e^2$ lies in $\langle a,b,c\rangle$ for
+no member (\texttt{gap\_e\_squared}), so that residue admits no whole-edge closure either.
+\end{itemize}
+The overrun therefore forces either a second crossing further along the same horizontal, or the
+$\alpha$-tile to share $P_{k-1}$'s $c$-edge exactly and lay its $b$ along the chord's extension. We
+record this because it reduces the open question to a single configuration, not because it settles
+it: the second branch remains open, and a descent on the first is blocked by the fact that the
+$e^2$-residue may be closed by an edge overrunning its \emph{other}, interior end rather than
+$V_{k-1}$.
+\end{remark}
+
 \begin{corollary}[The walls form at $e=1$, $f\ge3$]\label{cor:wallsf2e}
 Let $e=1$ and $f\ge3$. Then the base walk is the walls form $(f,1,1)$.
 \end{corollary}

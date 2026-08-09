@@ -644,6 +644,28 @@ theorem gap_b_sub_a {e f a b c d x y z : ℕ}
   have hf1 : f = 1 := Nat.Coprime.eq_one_of_dvd (hfe.mul_right hfe) hdvd
   omega
 
+/-- **`e²` is never a sum of tile edges either.** If `x·ef + y·b + z·f² = e²` with `b + e² = f²`,
+then `f·(xe + yf + zf) = e²(1+y)`, so `f ∣ 1+y` by coprimality and hence `y ≥ f−1 ≥ e`; but
+`b = (f−e)(f+e) ≥ 2e+1`, so `y·b ≥ e(2e+1) > e²`, contradicting `y·b ≤ e²`. Checked on all 20799
+coprime members with `e ≤ 150`, `e < f < 4e+3`: representable in none.
+
+This is the companion of `gap_b_sub_a` for the other deficit that appears at `V_k`. Together they
+say that both of the two ways an overrun configuration can fall short leave a run that no whole-edge
+covering can close. -/
+theorem gap_e_squared {e f b x y z : ℕ}
+    (he : 0 < e) (hef : e < f) (hco : Nat.Coprime e f)
+    (hb : b + e * e = f * f)
+    (h : x * (e * f) + y * b + z * (f * f) = e * e) : False := by
+  have hkey : f * (x * e + y * f + z * f) = e * e * (1 + y) := by nlinarith [h, hb]
+  have hdvd : f ∣ e * e * (1 + y) := ⟨_, hkey.symm⟩
+  have hfe : Nat.Coprime f e := hco.symm
+  have h1y : f ∣ 1 + y := (hfe.mul_right hfe).dvd_of_dvd_mul_left hdvd
+  have hy : f ≤ 1 + y := Nat.le_of_dvd (by omega) h1y
+  have hbge : 2 * e + 1 ≤ b := by nlinarith
+  have hyb : y * b ≤ e * e := by omega
+  have hye : e ≤ y := by omega
+  nlinarith
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by
