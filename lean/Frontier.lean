@@ -338,6 +338,20 @@ theorem base_column_k_bound (e f k x z : ℤ) (hx : 1 ≤ x) (hz : 1 ≤ z) (he 
   nlinarith [mul_le_mul_of_nonneg_right hx (le_of_lt he),
              mul_le_mul_of_nonneg_right hz (le_of_lt hf)]
 
+/-- **The reduced equation pins `x` modulo `f`.** From `xe + zf = 2ef − kb` one gets
+`e(x − ke) = f(2e − kf − z)`, so `f ∣ e(x − ke)`, and coprimality gives `f ∣ x − ke`. Hence for each
+`k` the admissible `x` form a single residue class mod `f`, and the surviving columns of that `k`
+are the members of that class with `z = (2ef − kb − xe)/f ≥ 1` and `x + z ≥ 4`.
+
+That criterion is exact: over every close pair with `e ≤ 25`, `f ≤ 59` it reproduces the surviving
+`k`-set at all 198 members carrying survivors, with no exception. In particular the 12 members where
+the sharp bound is not attained are solvability failures of `xe + zf = R` — a Frobenius condition on
+`⟨e,f⟩` — rather than a further geometric filter. -/
+theorem column_x_congruence (e f k x z : ℤ) (hco : IsCoprime f e)
+    (h : x * e + z * f = 2 * e * f - k * (f * f - e * e)) : f ∣ x - k * e := by
+  have key : e * (x - k * e) = f * (2 * e - k * f - z) := by linear_combination h
+  exact hco.dvd_of_dvd_mul_left ⟨2 * e - k * f - z, key.symm ▸ key⟩
+
 /-- **The sharp `k`-bound.** The previous bound used only `x, z ≥ 1`. The corner parallelogram also
 forces `x + z ≥ 4` (`cornerpara_filter`), and since `e < f` the minimum of `xe + zf` under
 `x, z ≥ 1`, `x + z ≥ 4` sits at `(x,z) = (3,1)`, giving `3e + f` rather than `e + f`. Hence

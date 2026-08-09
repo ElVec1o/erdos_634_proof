@@ -2117,8 +2117,20 @@ member is described completely by
 \[
 k=1,\dots,\Bigl\lfloor\frac{2ef-3e-f}{b}\Bigr\rfloor .
 \]
-This is a bound and a description, not the required $k=0$. What it buys is that the residual
-question is one linear equation per $k$, with $k$ in an explicit finite range.
+The description can be made exact. Reducing $xe+zf=2ef-kb$ modulo $f$ gives
+$e(x-ke)=f(2e-kf-z)$, so $f\mid e(x-ke)$ and, by coprimality, $f\mid x-ke$
+(\texttt{column\_x\_congruence}). For each $k$ the admissible $x$ therefore form a single residue
+class modulo $f$, and the surviving columns of that $k$ are the members of that class with
+$z=(2ef-kb-xe)/f\ge1$ and $x+z\ge4$. Over every close pair with $e\le25$, $f\le59$ this criterion
+reproduces the surviving $k$-set at all $198$ members carrying survivors, with no exception. The $12$
+members at which the bound $kb\le2ef-3e-f$ is not attained are exactly those where
+$xe+zf=2ef-kb$ has no solution with $x,z\ge1$ --- a Frobenius condition on $\langle e,f\rangle$, not
+a further geometric filter; at $(e,f)=(15,23)$ and $k=2$, for instance, the residue $44$ is a gap of
+$\langle15,23\rangle$.
+
+All of this is a description of the surviving set, not the required $k=0$. What it buys is that the
+residual question is one linear congruence per $k$, with $k$ in an explicit finite range, in place of
+an unstructured three-variable family.
 \end{remark}
 
 \begin{remark}[The wedge-filler hypothesis, and where it fails]\label{rem:alphamin}
