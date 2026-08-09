@@ -666,6 +666,48 @@ theorem gap_e_squared {e f b x y z : ℕ}
   have hye : e ≤ y := by omega
   nlinarith
 
+/-! ## The arithmetic core of blocked-end quantization
+
+`lem:anchorclear` says that on a tile edge `[X,Y]` whose extension beyond `X` is blocked, every
+interior vertex sits at a distance from `X` in `⟨a,b,c⟩`. The geometric content is that the far-side
+covering starts exactly at `X` and proceeds by whole tile edges, so the meeting points are partial
+sums of tile sides; that is carried as a hypothesis below. What is formalisable, and is the step the
+conclusions actually use, is the arithmetic: a nonzero element of `⟨a,b,c⟩` is at least the least
+generator. -/
+
+/-- **A nonzero sum of tile sides is at least the smallest side.** This is the step behind
+`lem:anchorclear`'s clearance conclusion: no meeting point of the far-side covering can lie strictly
+between `X` and distance `min(a,b,c)`. -/
+theorem semigroup_elt_ge_min {a b c x y z : ℕ}
+    (hab : a ≤ b) (hac : a ≤ c) (hpos : 0 < x * a + y * b + z * c) :
+    a ≤ x * a + y * b + z * c := by
+  rcases Nat.eq_zero_or_pos x with hx | hx
+  · rcases Nat.eq_zero_or_pos y with hy | hy
+    · rcases Nat.eq_zero_or_pos z with hz | hz
+      · simp [hx, hy, hz] at hpos
+      · calc a ≤ c := hac
+          _ = 1 * c := (one_mul c).symm
+          _ ≤ z * c := Nat.mul_le_mul_right c hz
+          _ ≤ x * a + y * b + z * c := by omega
+    · calc a ≤ b := hab
+        _ = 1 * b := (one_mul b).symm
+        _ ≤ y * b := Nat.mul_le_mul_right b hy
+        _ ≤ x * a + y * b + z * c := by omega
+  · calc a = 1 * a := (one_mul a).symm
+      _ ≤ x * a := Nat.mul_le_mul_right a hx
+      _ ≤ x * a + y * b + z * c := by omega
+
+/-- **Clearance, in the form the geometry hands over.** Suppose the interior vertex sits at distance
+`d` from the blocked end, that `d` is a sum of tile sides (the far-side covering starts at the
+blocked end and proceeds by whole edges), and that `d` is strictly inside an edge of length `L` with
+`L ≤ a ≤ b, c`. That is impossible. Taking `L = a` gives: a minimal-length edge with a blocked end
+carries no interior vertex. -/
+theorem no_interior_vertex_of_len_le_min {a b c x y z L : ℕ}
+    (hab : a ≤ b) (hac : a ≤ c) (hL : L ≤ a)
+    (hpos : 0 < x * a + y * b + z * c) (hlt : x * a + y * b + z * c < L) : False := by
+  have := semigroup_elt_ge_min hab hac hpos
+  omega
+
 /-- The catalogue is non-vacuous in the other direction: the run `n` with `n + f = f²` *is* in the
 semigroup, being `f − 1` copies of `a`. A predicate that excluded everything would say nothing. -/
 theorem south_cover_mem {f n : ℕ} (hf : 3 ≤ f) (hn : n + f = f * f) : inSemi 1 f n := by

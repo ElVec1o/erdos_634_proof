@@ -136,6 +136,11 @@ first among them, is \emph{not} settled unconditionally.
 Let $p>3$ be prime with $p=3f^2-e^2$ for some coprime $e,f$. Then $p\equiv11\pmod{12}$. Conversely
 every prime $p\equiv11\pmod{12}$ is of that form. Hence the base-$\beta$ candidates among the primes
 are exactly the primes $\equiv11\pmod{12}$.
+The forward direction is machine-checked
+(\texttt{lean/Mod12.lean}, \texttt{base\_beta\_prime\_mod12}), axiom-free beyond \texttt{propext},
+\texttt{Classical.choice} and \texttt{Quot.sound}; it is the direction that makes the class
+$7\pmod{12}$ unconditional. The converse uses quadratic reciprocity and the class group of
+discriminant $12$ and is not formalised.
 \end{theorem}
 
 \begin{proof}
