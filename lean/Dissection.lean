@@ -4,6 +4,7 @@ import Mathlib.Analysis.Normed.Affine.AddTorsorBases
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 import Mathlib.Geometry.Euclidean.Triangle
 import Mathlib.Tactic
+import Erdos634.SupportFace
 
 open scoped ENNReal
 
@@ -410,6 +411,79 @@ development assumed it, so no result was affected, but the statement is correcte
 its own docstring describes: each of the target's three sides is a finite union of whole tile edges.
 That is exactly the input the walk equations `P·a + Q·b + R·c = (side length)` need.
 -/
+
+/-- The `i`-th edge of a triangle: the segment from vertex `i` to vertex `i+1`. This is the
+`edgeOf` that `HasEdgeChains` quantifies over, made concrete. -/
+def Tri.edge (T : Tri) (i : Fin 3) : Set Plane := segment ℝ (T.pts i) (T.pts (i + 1))
+
+/-- **A tile meets a supporting line in a face.** If a linear functional `f` is bounded by `c` on a
+triangle and the line `f = c` is a genuine line (`f ≠ 0`), the contact set is the convex hull of the
+vertices on the line, and there are at most two of those: three would put the whole triangle on the
+line, contradicting that a triangle has interior.
+
+This is the step that makes a target side a union of WHOLE tile edges rather than partial ones,
+which is the content of `HasEdgeChains`. It does not by itself discharge G3, which additionally
+needs the ordering and exhaustion bookkeeping along the side. -/
+theorem tile_contact_face (T : Tri) (f : Plane →ₗ[ℝ] ℝ) (c : ℝ)
+    (hle : ∀ x ∈ T.carrier, f x ≤ c) :
+    {x ∈ T.carrier | f x = c}
+      = convexHull ℝ (((Finset.univ.image T.pts).filter (fun v => f v = c) : Finset Plane) :
+          Set Plane) := by
+  classical
+  have hmem : ∀ v ∈ (Finset.univ.image T.pts), f v ≤ c := by
+    intro v hv
+    obtain ⟨i, _, rfl⟩ := Finset.mem_image.mp hv
+    exact hle _ (subset_convexHull ℝ _ ⟨i, rfl⟩)
+  have hcar : T.carrier = convexHull ℝ ((Finset.univ.image T.pts : Finset Plane) : Set Plane) := by
+    rw [Tri.carrier]; congr 1
+    ext x; constructor
+    · rintro ⟨i, rfl⟩; exact Finset.mem_coe.mpr (Finset.mem_image.mpr ⟨i, Finset.mem_univ i, rfl⟩)
+    · intro hx
+      obtain ⟨i, _, rfl⟩ := Finset.mem_image.mp (Finset.mem_coe.mp hx)
+      exact ⟨i, rfl⟩
+  rw [hcar]
+  exact Erdos634.SupportFace.contact_eq_face f c _ hmem
+
+/-- **At most two vertices of a tile lie on a supporting line.** Otherwise the whole triangle lies on
+the line `f = c`, which has empty interior when `f ≠ 0`, contradicting `Tri.interior_nonempty`. -/
+theorem two_vertices_on_line (T : Tri) (f : Plane →ₗ[ℝ] ℝ) (c : ℝ) (hf : f ≠ 0)
+    (hall : ∀ i, f (T.pts i) = c) : False := by
+  have hsub : T.carrier ⊆ {x | f x = c} := by
+    rw [Tri.carrier]
+    refine convexHull_min ?_ ?_
+    · rintro x ⟨i, rfl⟩; exact hall i
+    · intro a ha b hb ta tb hta htb htab
+      simp only [Set.mem_setOf_eq] at *
+      rw [map_add, map_smul, map_smul, ha, hb, smul_eq_mul, smul_eq_mul]
+      linear_combination c * htab
+  obtain ⟨x, hx⟩ := T.interior_nonempty
+  have hxc : f x = c := hsub (interior_subset hx)
+  -- an interior point has a ball inside the carrier, hence inside the line: impossible for f ≠ 0
+  obtain ⟨y, hy⟩ : ∃ y, f y ≠ 0 := by
+    by_contra h
+    push_neg at h
+    exact hf (LinearMap.ext fun z => by simp [h z])
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp isOpen_interior x hx
+  set t : ℝ := ε / (2 * ‖y‖) with ht
+  have hynorm : 0 < ‖y‖ := by
+    rcases eq_or_ne y 0 with rfl | hy0
+    · simp at hy
+    · exact norm_pos_iff.mpr hy0
+  have htpos : 0 < t := by positivity
+  have hdist : dist (x + t • y) x = t * ‖y‖ := by
+    rw [dist_eq_norm]
+    have hxy : x + t • y - x = t • y := by abel
+    rw [hxy, norm_smul, Real.norm_eq_abs, abs_of_pos htpos]
+  have hmemball : x + t • y ∈ Metric.ball x ε := by
+    rw [Metric.mem_ball, hdist]
+    have hhalf : t * ‖y‖ = ε / 2 := by rw [ht]; field_simp
+    rw [hhalf]; linarith
+  have : f (x + t • y) = c := hsub (interior_subset (hball hmemball))
+  rw [map_add, map_smul, hxc, smul_eq_mul] at this
+  have : t * f y = 0 := by linarith
+  rcases mul_eq_zero.mp this with h | h
+  · exact absurd h (ne_of_gt htpos)
+  · exact hy h
 
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
