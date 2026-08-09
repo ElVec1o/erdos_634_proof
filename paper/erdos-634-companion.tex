@@ -2310,6 +2310,35 @@ found in Remark~\ref{rem:noedgetoedge} by an unrelated computation --- a useful 
 Note the ratio: $50$ of the $52$ crossings are of the type the census cannot see.
 \end{remark}
 
+\begin{remark}[Anchoring one end is not enough, and the data says which edges get crossed]\label{rem:onlyanchor}
+It is tempting to hope for a lemma of the shape ``a tile edge with one end on $\partial ABC$ is not
+crossed''. No such lemma exists. Across the four kernel-checked tilings, the split edges with exactly
+one endpoint on the boundary number $19$, $8$, $6$ and $5$ respectively, so crossings of that shape
+are routine.
+
+Sorting them by edge type is more informative. Writing crossed/total for edges with exactly one end
+on the boundary:
+\[
+\begin{array}{lccc}
+ & a & b & c\\
+\text{99-tiling} & 0/27 & 4/12 & 15/22\\
+\text{77-tiling} & 0/9 & 1/5 & 7/13\\
+\text{44-tiling} & 0/10 & 1/13 & 5/9\\
+\text{parallelogram 52} & 0/8 & 3/14 & 2/13
+\end{array}
+\]
+
+Two things follow. First, $b$-edges with one anchored end \emph{are} crossed, in every one of the
+four. The chord at $V_k$ in Theorem~\ref{thm:n1} is exactly such an edge, so the crossing there
+cannot be excluded by any statement about anchoring alone: the exclusion has to consume the cascade's
+forced tiles, and that is precisely what has resisted.
+
+Second, and unexplained, $a$-edges with one anchored end are crossed in none of them --- $0$ out of
+$54$. A whole-edge covering of an $a$-edge is a single $a$ by uniqueness of the representation, so a
+crossing would need the far side's first edge to be a $b$ or a $c$, overrunning the interior end by
+$b-a$ or $c-a$. We have no proof that this cannot happen and record the observation only as that.
+\end{remark}
+
 \begin{corollary}[The walls form at $e=1$, $f\ge3$]\label{cor:wallsf2e}
 Let $e=1$ and $f\ge3$. Then the base walk is the walls form $(f,1,1)$.
 \end{corollary}
