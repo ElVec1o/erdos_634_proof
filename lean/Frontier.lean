@@ -606,6 +606,46 @@ theorem side_p_le_two {e f p : ℕ} (he : 0 < e) (hpe : p * e < f)
   have hf : 3 * e + 1 ≤ f := by omega
   nlinarith
 
+/-! ## The `γ`-injection budget at `p = 2`, and the subfamily where it is exhausted
+
+The `γ`-injection lemma bounds a side's non-`c` edges by its junction count: `#a + #b ≤ k − 1`, where
+`k` is the number of edges on the side. On a side with parameter `p` the profile is
+`n_a = p f`, `n_b = 0`, `n_c = f − p e`, so `k = p f + (f − p e)` and the bound reads
+`p f ≤ p f + (f − p e) − 1`, i.e. the **slack is `f − p e − 1`**.
+
+At `p = 1` the slack is `f − e − 1 > 0` always. At `p = 2` it is `f − 2e − 1`, which **vanishes
+exactly on `f = 2e + 1`** — an infinite subfamily, automatically coprime, with
+`N = 3f² − e² = 11e² + 12e + 3`: `(1,3)` at `N = 26`, `(2,5)` at `71`, `(3,7)` at `138`, `(4,9)` at
+`227`, `(5,11)` at `338`. Verified against the census: of the close pairs with `f > 2e` and `e ≤ 40`,
+the `38` that are tight at `p = 2` are exactly those with `f = 2e + 1`.
+
+Tightness is rigidity: an injection into a set of equal size is a bijection, so on that subfamily
+**every junction of a `p = 2` side carries exactly one `γ`**, and by the `π`-vertex classification
+every junction is the figure `{γ, α, β}`. -/
+
+/-- **The `γ`-injection slack on a side of parameter `p` is `f − p e − 1`.** -/
+theorem gamma_slack (e f p : ℕ) (hpe : p * e ≤ f) :
+    (p * f + (f - p * e)) - 1 - p * f = f - p * e - 1 := by omega
+
+/-- **The budget is exhausted at `p = 2` exactly on `f = 2e + 1`.** -/
+theorem p_two_tight_iff (e f : ℕ) (h2e : 2 * e < f) :
+    (2 * f + (f - 2 * e)) - 1 = 2 * f ↔ f = 2 * e + 1 := by omega
+
+/-- **On that subfamily a `p = 2` side carries exactly one `c`-edge.**  With `n_c = f − 2e = 1` and
+`n_a = 2f`, the side is `2f` `a`-edges and a single `c`, of total length `2f·ef + f² = f²(2e+1) = f³`
+as required. -/
+theorem p_two_single_c (e f : ℕ) (hf : f = 2 * e + 1) :
+    f - 2 * e = 1 ∧ 2 * f * (e * f) + f * f = f * f * f := by
+  subst hf; constructor
+  · omega
+  · ring
+
+/-- **A `π`-vertex carrying a `γ` is `{γ, α, β}`.**  Specialisation of `BaseBetaE1.vertex_pi`: of its
+two solutions `{3α,2β}` and `{α,β,γ}`, only the second has a `γ`.  This is what converts the
+bijection at `p = 2`, `f = 2e+1` into a figure at every junction. -/
+theorem pi_vertex_with_gamma (x y z : ℕ) (h1 : y + z = 2) (h2 : 2 * x + z = 3 * y) (hz : 1 ≤ z) :
+    x = 1 ∧ y = 1 ∧ z = 1 := by omega
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
