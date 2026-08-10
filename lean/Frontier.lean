@@ -929,6 +929,36 @@ theorem last_junction_caseB_25_dead {x y z : ℕ}
     · omega
   subst hy; subst hz; omega
 
+/-- **Case B at `(3,7)` is dead: the forced `a`-edge cannot close.**
+
+Case B pins the horizontal covering to a single `a`-edge at chord positions `[21,42]`
+(`last_junction_caseB_37`), lying on the far side of the filler's `b`-edge, hence *above* the chord.
+
+The height of a `(21,40,49)` tile over its `a`-edge is `2·Area/a = 60√187/21 = 20√187/7`, and the
+target's apex sits `20√187 − 120√187/7 = 20√187/7` above the chord through `J_{2f}`.  These are
+equal, so that tile's third vertex lies at exactly apex height — and the target meets that height in
+the single point `(207, 20√187)`.  The third vertex is therefore the apex.
+
+Scaling by `7`, the `a`-edge runs from `(1389, 120√187)` to `(1536, 120√187)` with the apex at
+`(1449, 140√187)`, so the two remaining sides have squared lengths `(60² + 400·187)/49 = 1600` and
+`(87² + 400·187)/49 = 1681`.  The first is `40² = b²`; the second is `41²`, and `41` is not a tile
+side.  The tile would have to be `(21,40,41)`.
+
+With `last_junction_caseA_dead` this closes `p = 2` at `(3,7)`. -/
+theorem caseB_37_apex_mismatch :
+    (60 ^ 2 + 400 * 187 : ℕ) = 49 * 40 ^ 2 ∧ (87 ^ 2 + 400 * 187 : ℕ) = 49 * 41 ^ 2 ∧
+      41 ≠ 21 ∧ 41 ≠ 40 ∧ 41 ≠ 49 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num, by norm_num⟩
+
+/-- **Heron at `(21,40,49)`**: `Area² = 55·34·15·6 = 900·187`, so `Area = 30√187`. -/
+theorem tile_area_sq_37 : 55 * 34 * 15 * 6 = 900 * 187 := by norm_num
+
+/-- **The tile height over `a` equals the height above the chord** — the identity that forces the
+third vertex to the apex.  The tile height is `2·Area/a = 60√187/21`; the apex sits
+`20√187 − 120√187/7 = 20√187/7` above the chord through `J_{2f}`.  Stripping the common `√187` and
+clearing denominators, that is `60·7 = 20·21`. -/
+theorem caseB_37_height_match : 60 * 7 = 20 * 21 := by norm_num
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
