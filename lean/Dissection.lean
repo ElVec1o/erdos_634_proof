@@ -799,6 +799,36 @@ theorem Tri.inter_ball_eq_halfplane (T : Tri) (k : Fin 3) {x : Plane}
     · exact hp1.le
     · exact hp2.le
 
+/-- **Local classification, interior case.**  If all three barycentric coordinates are strictly
+positive at `x` then `x` is interior to the tile: a small ball around `x` lies inside it, so the tile
+contributes the *whole* ball to a local area count. -/
+theorem Tri.ball_subset_of_pos (T : Tri) {x : Plane}
+    (hpos : ∀ i, 0 < T.basis.coord i x) :
+    ∃ r > 0, Metric.ball x r ⊆ T.carrier := by
+  have hopen : IsOpen {y : Plane | ∀ i, 0 < T.basis.coord i y} := by
+    have : {y : Plane | ∀ i, 0 < T.basis.coord i y} = ⋂ i, {y | 0 < T.basis.coord i y} := by
+      ext y; simp [Set.mem_iInter]
+    rw [this]
+    exact isOpen_iInter_of_finite fun i =>
+      isOpen_lt continuous_const (AffineMap.continuous_of_finiteDimensional _)
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hopen x hpos
+  refine ⟨r, hr, fun y hy => ?_⟩
+  rw [T.carrier_eq_nonneg_coord]
+  exact fun i => (hball hy i).le
+
+/-- **Local classification, exterior case.**  If some barycentric coordinate is strictly negative at
+`x` then a small ball around `x` misses the tile entirely, so the tile contributes nothing. -/
+theorem Tri.ball_disjoint_of_neg (T : Tri) {x : Plane} {k : Fin 3}
+    (hneg : T.basis.coord k x < 0) :
+    ∃ r > 0, Metric.ball x r ∩ T.carrier = ∅ := by
+  have hopen : IsOpen {y : Plane | T.basis.coord k y < 0} :=
+    isOpen_lt (AffineMap.continuous_of_finiteDimensional _) continuous_const
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hopen x hneg
+  refine ⟨r, hr, Set.eq_empty_iff_forall_notMem.mpr ?_⟩
+  rintro y ⟨hy1, hy2⟩
+  rw [T.carrier_eq_nonneg_coord] at hy2
+  exact absurd (hy2 k) (not_le.mpr (hball hy1))
+
 /-- **G4 step 2 — a half-plane through the centre cuts a ball exactly in half.**
 
 `A = {v | 0 ≤ L v} ∩ ball 0 r` and its point reflection `-A = {v | L v ≤ 0} ∩ ball 0 r` have equal
@@ -825,7 +855,7 @@ theorem volume_halfspace_inter_ball (L : Plane →ₗ[ℝ] ℝ) (hL : L ≠ 0) (
   -- reflection preserves measure: `|((-1)^d)⁻¹| = 1` in every dimension
   have hvolB : volume B = volume A := by
     rw [hBA, Measure.addHaar_preimage_smul volume (by norm_num : (-1 : ℝ) ≠ 0)]
-    simp [abs_inv, abs_pow]
+    simp
   -- the two halves cover the ball
   have hunion : A ∪ B = Metric.ball (0 : Plane) r := by
     ext v
