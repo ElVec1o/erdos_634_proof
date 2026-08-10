@@ -23,7 +23,7 @@ export LEAN_PATH="$LP:$BUILD"
 mkdir -p "$BUILD/Erdos634"
 
 # Modules that other project files import, in dependency order.
-DEPS=(SectorArea Wedge OrderForcing SupportFace)
+DEPS=(SectorArea Wedge OrderForcing SupportFace SegmentDense)
 for m in "${DEPS[@]}"; do
   echo "  olean  $m"
   lean -o "$BUILD/Erdos634/$m.olean" "$ROOT/lean/$m.lean"

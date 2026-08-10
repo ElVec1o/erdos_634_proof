@@ -5,6 +5,7 @@ import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 import Mathlib.Geometry.Euclidean.Triangle
 import Mathlib.Tactic
 import Erdos634.SupportFace
+import Erdos634.SegmentDense
 
 open scoped ENNReal
 
@@ -591,6 +592,157 @@ theorem exists_supporting (T : Tri) (i : Fin 3) :
   · simp only [LinearMap.neg_apply]; linarith [hdecomp (T.pts i), h0]
   · simp only [LinearMap.neg_apply]; linarith [hdecomp (T.pts (i + 1)), h1]
   · simp only [LinearMap.neg_apply]; linarith [hdecomp (T.pts (i + 2)), h2]
+
+/-- **A tile's contact with a supporting line is an edge, once a non-vertex point lies on it.**
+The contact is the hull of the tile's vertices on the line; if a point of the contact is not a
+vertex, at least two vertices are involved, and `two_vertices_on_line` forbids all three, so exactly
+two are, and `pair_eq_edge` names the edge. -/
+theorem contact_is_edge (T : Tri) (f : Plane →ₗ[ℝ] ℝ) (c : ℝ) (hf : f ≠ 0)
+    (hle : ∀ x ∈ T.carrier, f x ≤ c) {x : Plane} (hx : x ∈ T.carrier) (hfx : f x = c)
+    (hxv : ∀ k, x ≠ T.pts k) :
+    ∃ k, {y ∈ T.carrier | f y = c} = T.edge k := by
+  classical
+  set V : Finset (Fin 3) := Finset.univ.filter (fun k => f (T.pts k) = c) with hV
+  have himg : (((Finset.univ.image T.pts).filter (fun v => f v = c) : Finset Plane) : Set Plane)
+            = T.pts '' (V : Set (Fin 3)) := by
+    ext v
+    constructor
+    · intro hv
+      rw [Finset.mem_coe, Finset.mem_filter, Finset.mem_image] at hv
+      obtain ⟨⟨k, _, hk⟩, hfv⟩ := hv
+      refine ⟨k, ?_, hk⟩
+      rw [Finset.mem_coe, hV, Finset.mem_filter]
+      exact ⟨Finset.mem_univ k, by rw [hk]; exact hfv⟩
+    · rintro ⟨k, hkV, rfl⟩
+      rw [Finset.mem_coe, hV, Finset.mem_filter] at hkV
+      rw [Finset.mem_coe, Finset.mem_filter, Finset.mem_image]
+      exact ⟨⟨k, Finset.mem_univ k, rfl⟩, hkV.2⟩
+  have hcontact : {y ∈ T.carrier | f y = c} = convexHull ℝ (T.pts '' (V : Set (Fin 3))) := by
+    rw [tile_contact_face T f c hle, himg]
+  have hxc : x ∈ convexHull ℝ (T.pts '' (V : Set (Fin 3))) := by
+    rw [← hcontact]; exact ⟨hx, hfx⟩
+  have hcard3 : V.card ≤ 3 := by
+    have := Finset.card_le_card (Finset.subset_univ V)
+    simpa using this
+  interval_cases h : V.card
+  · -- empty
+    rw [Finset.card_eq_zero] at h
+    rw [h] at hxc; simp at hxc
+  · -- a single vertex
+    obtain ⟨k, hk⟩ := Finset.card_eq_one.mp h
+    rw [hk] at hxc
+    simp only [Finset.coe_singleton, Set.image_singleton, convexHull_singleton,
+      Set.mem_singleton_iff] at hxc
+    exact absurd hxc (hxv k)
+  · -- two vertices: the contact is an edge
+    obtain ⟨p, q, hpq, hV2⟩ := Finset.card_eq_two.mp h
+    obtain ⟨k, hk⟩ := T.pair_eq_edge hpq
+    refine ⟨k, ?_⟩
+    rw [hcontact, hV2]
+    simp only [Finset.coe_insert, Finset.coe_singleton, Set.image_insert_eq, Set.image_singleton]
+    rw [convexHull_pair, hk]
+  · -- all three: impossible
+    exfalso
+    have hall : ∀ k, f (T.pts k) = c := by
+      intro k
+      have hmem : k ∈ V := by
+        have : V = Finset.univ := Finset.eq_univ_of_card V (by simpa using h)
+        rw [this]; exact Finset.mem_univ k
+      simpa [hV, Finset.mem_filter] using hmem
+    exact two_vertices_on_line T f c hf hall
+
+/-- The target's own contact with the supporting line of side `i` is that side. -/
+theorem target_contact_side (T : Tri) (f : Plane →ₗ[ℝ] ℝ) (c : ℝ) {i : Fin 3}
+    (hle : ∀ x ∈ T.carrier, f x ≤ c) (hi : f (T.pts i) = c) (hi1 : f (T.pts (i + 1)) = c)
+    (hi2 : f (T.pts (i + 2)) < c) :
+    {x ∈ T.carrier | f x = c} = segment ℝ (T.pts i) (T.pts (i + 1)) := by
+  classical
+  set V : Finset (Fin 3) := Finset.univ.filter (fun k => f (T.pts k) = c) with hV
+  have hexh : ∀ k : Fin 3, k = i ∨ k = i + 1 ∨ k = i + 2 := by
+    intro k; fin_cases i <;> fin_cases k <;> decide
+  have hVeq : V = {i, i + 1} := by
+    apply Finset.Subset.antisymm
+    · intro k hk
+      rw [hV, Finset.mem_filter] at hk
+      rcases hexh k with rfl | rfl | rfl
+      · exact Finset.mem_insert_self _ _
+      · exact Finset.mem_insert_of_mem (Finset.mem_singleton_self _)
+      · exact absurd hk.2 (by linarith)
+    · intro k hk
+      rw [hV, Finset.mem_filter]
+      refine ⟨Finset.mem_univ _, ?_⟩
+      rcases Finset.mem_insert.mp hk with rfl | hk'
+      · exact hi
+      · rw [Finset.mem_singleton.mp hk']; exact hi1
+  have himg : (((Finset.univ.image T.pts).filter (fun v => f v = c) : Finset Plane) : Set Plane)
+            = T.pts '' (V : Set (Fin 3)) := by
+    ext v
+    constructor
+    · intro hv
+      rw [Finset.mem_coe, Finset.mem_filter, Finset.mem_image] at hv
+      obtain ⟨⟨k, _, hk⟩, hfv⟩ := hv
+      refine ⟨k, ?_, hk⟩
+      rw [Finset.mem_coe, hV, Finset.mem_filter]
+      exact ⟨Finset.mem_univ k, by rw [hk]; exact hfv⟩
+    · rintro ⟨k, hkV, rfl⟩
+      rw [Finset.mem_coe, hV, Finset.mem_filter] at hkV
+      rw [Finset.mem_coe, Finset.mem_filter, Finset.mem_image]
+      exact ⟨⟨k, Finset.mem_univ k, rfl⟩, hkV.2⟩
+  rw [tile_contact_face T f c hle, himg, hVeq]
+  simp only [Finset.coe_insert, Finset.coe_singleton, Set.image_insert_eq, Set.image_singleton]
+  rw [convexHull_pair]
+
+/-- **G3 — the chain lemma, proved.**  Each side of the target is exactly the union of the tile
+edges lying on it. -/
+theorem hasEdgeChains_edge (D : Dissection N) :
+    HasEdgeChains D (fun j k => (D.tile j).edge k) := by
+  classical
+  intro i
+  obtain ⟨f, c, hf, hle, hi, hi1, hi2⟩ := exists_supporting D.target i
+  set S : Set Plane := segment ℝ (D.target.pts i) (D.target.pts (i + 1)) with hSdef
+  have hS : {x ∈ D.target.carrier | f x = c} = S :=
+    target_contact_side D.target f c hle hi hi1 hi2
+  set part : Finset (Fin N × Fin 3) :=
+    Finset.univ.filter (fun e : Fin N × Fin 3 => (D.tile e.1).edge e.2 ⊆ S) with hpart
+  refine ⟨part, ?_⟩
+  apply Set.Subset.antisymm
+  · -- every listed edge lies in the side
+    intro x hx
+    obtain ⟨e, he, hxe⟩ := Set.mem_iUnion₂.mp hx
+    have : (D.tile e.1).edge e.2 ⊆ S := by
+      rw [hpart, Finset.mem_filter] at he; exact he.2
+    exact this hxe
+  · -- and they cover it
+    have hFfin : (Set.range fun (jk : Fin N × Fin 3) => (D.tile jk.1).pts jk.2).Finite :=
+      Set.finite_range _
+    have hUclosed : IsClosed (⋃ e ∈ part, (D.tile e.1).edge e.2) :=
+      Set.Finite.isClosed_biUnion (Finset.finite_toSet part)
+        (fun e _ => (D.tile e.1).isClosed_edge e.2)
+    have hnd : D.target.pts i ≠ D.target.pts (i + 1) := by
+      intro h
+      have hij : i = i + 1 := D.target.indep.injective h
+      fin_cases i <;> exact absurd hij (by decide)
+    have hkey : S \ (Set.range fun (jk : Fin N × Fin 3) => (D.tile jk.1).pts jk.2)
+              ⊆ ⋃ e ∈ part, (D.tile e.1).edge e.2 := by
+      rintro x ⟨hxS, hxF⟩
+      have hxt : x ∈ D.target.carrier ∧ f x = c := by rw [← hS] at hxS; exact hxS
+      obtain ⟨j, hxj⟩ := Set.mem_iUnion.mp (by rw [D.covers]; exact hxt.1)
+      have hlej : ∀ y ∈ (D.tile j).carrier, f y ≤ c :=
+        fun y hy => hle y (tile_subset_target D j hy)
+      have hxv : ∀ k, x ≠ (D.tile j).pts k := by
+        intro k hk; exact hxF ⟨(j, k), hk.symm⟩
+      obtain ⟨k, hk⟩ := contact_is_edge (D.tile j) f c hf hlej hxj hxt.2 hxv
+      have hsub : (D.tile j).edge k ⊆ S := by
+        rw [← hk, ← hS]
+        rintro y ⟨hy1, hy2⟩
+        exact ⟨tile_subset_target D j hy1, hy2⟩
+      refine Set.mem_iUnion₂.mpr ⟨(j, k), ?_, ?_⟩
+      · rw [hpart, Finset.mem_filter]; exact ⟨Finset.mem_univ _, hsub⟩
+      · rw [← hk]; exact ⟨hxj, hxt.2⟩
+    calc S ⊆ closure (S \ (Set.range fun (jk : Fin N × Fin 3) => (D.tile jk.1).pts jk.2)) :=
+          Erdos634.SegmentDense.subset_closure_diff_finite hnd hFfin
+      _ ⊆ closure (⋃ e ∈ part, (D.tile e.1).edge e.2) := closure_mono hkey
+      _ = _ := hUclosed.closure_eq
 
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
