@@ -844,6 +844,47 @@ theorem volume_halfspace_inter_ball (L : Plane →ₗ[ℝ] ℝ) (hL : L ≠ 0) (
   rw [hunion, hinter, hvolB, add_zero] at hie
   rw [hie, two_mul]
 
+/-- **G4 step 3 — a ball inside the target is partitioned by the tiles.**  The same argument as
+`Dissection.volume_target`, localised to a ball: the tiles cover the target and are a.e. disjoint, so
+their traces on any ball contained in the target are a.e. disjoint and cover it. -/
+theorem Dissection.volume_ball_eq_sum {N : ℕ} (D : Dissection N) {x : Plane} {r : ℝ}
+    (hball : Metric.ball x r ⊆ D.target.carrier) :
+    volume (Metric.ball x r) = ∑ i, volume ((D.tile i).carrier ∩ Metric.ball x r) := by
+  have h := measure_biUnion_finset₀ (μ := volume)
+    (s := (Finset.univ : Finset (Fin N)))
+    (f := fun i => (D.tile i).carrier ∩ Metric.ball x r)
+    (fun i _ j _ hij => measure_mono_null
+      (Set.inter_subset_inter Set.inter_subset_left Set.inter_subset_left) (D.aedisjoint hij))
+    (fun i _ => ((D.tile i).nullMeasurableSet).inter
+      Metric.isOpen_ball.measurableSet.nullMeasurableSet)
+  have hU : (⋃ i ∈ (Finset.univ : Finset (Fin N)), ((D.tile i).carrier ∩ Metric.ball x r))
+          = Metric.ball x r := by
+    simp only [Finset.mem_univ, Set.iUnion_true]
+    rw [← Set.iUnion_inter, D.covers]
+    exact Set.inter_eq_self_of_subset_right hball
+  rw [hU] at h
+  exact h
+
+/-- **G4 step 4 — the local degree count.**  If `k` tiles each contribute half the ball's area and
+`m` tiles each contribute all of it, and together they exhaust the ball, then `k + 2m = 2`.
+
+The area of the ball is written `2 * V`, so that "half the ball" is `V` and no `ℝ≥0∞` division is
+needed; cancelling `V` is legitimate because a ball has positive finite area. -/
+theorem local_degree_eq {V : ℝ≥0∞} (hV0 : V ≠ 0) (hVt : V ≠ ⊤) {k m : ℕ}
+    (h : (k : ℝ≥0∞) * V + (m : ℝ≥0∞) * (2 * V) = 2 * V) :
+    k + 2 * m = 2 := by
+  have hcast : ((k + 2 * m : ℕ) : ℝ≥0∞) * V = ((2 : ℕ) : ℝ≥0∞) * V := by
+    push_cast
+    rw [← h]; ring
+  exact_mod_cast (ENNReal.mul_left_inj hV0 hVt).mp hcast
+
+/-- **The local double covering, arithmetic half.**  At a point in the relative interior of a tile
+edge at least one tile contributes a half-disk (`Tri.inter_ball_eq_halfplane` together with
+`volume_halfspace_inter_ball`), so `k ≥ 1`; then `k + 2m = 2` forces exactly two half-contributors
+and no full one.  That is "the segment is met from both sides, by one tile each". -/
+theorem local_degree_two {k m : ℕ} (hk : 1 ≤ k) (h : k + 2 * m = 2) : k = 2 ∧ m = 0 := by
+  omega
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
