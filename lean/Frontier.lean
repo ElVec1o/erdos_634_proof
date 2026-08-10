@@ -959,6 +959,23 @@ third vertex to the apex.  The tile height is `2·Area/a = 60√187/21`; the ape
 clearing denominators, that is `60·7 = 20·21`. -/
 theorem caseB_37_height_match : 60 * 7 = 20 * 21 := by norm_num
 
+/-- **The `c`-edge placement leaves the target**, on the whole tight subfamily.  A tile above the
+chord with its `c`-edge starting at chord position `a` needs `a + c ≤ L = eN/f`; scaling by `f`,
+`(a+c)f - eN = f³ - 2ef² + e³`, which at `f = 2e+1` is `(2e+1)² + e³ > 0`. -/
+theorem placement_c_overshoots (e : ℕ) (he : 1 ≤ e) :
+    e * (11 * e * e + 12 * e + 3) < (e * (2 * e + 1) + (2 * e + 1) * (2 * e + 1)) * (2 * e + 1) := by
+  nlinarith [he, sq_nonneg e]
+
+/-- **The `a`-edge placement puts the third vertex at apex height**, and neither chirality closes.
+The two candidate positions demand `N(f - 2e - 1) = 2f²` and `N(f - 2e + 1) = 4f²`; on `f = 2e+1`
+the first reads `0 = 2f²` and the second `N = 2f²`, i.e. `3f² - e² = 2f²`, i.e. `e = f`. -/
+theorem placement_a_apex_fails (e : ℤ) (he : 1 ≤ e) :
+    (3 * (2 * e + 1) ^ 2 - e ^ 2) * ((2 * e + 1) - 2 * e - 1) ≠ 2 * ((2 * e + 1) ^ 2) ∧
+    (3 * (2 * e + 1) ^ 2 - e ^ 2) * ((2 * e + 1) - 2 * e + 1) ≠ 4 * ((2 * e + 1) ^ 2) := by
+  constructor
+  · intro h; nlinarith [he]
+  · intro h; nlinarith [he]
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
@@ -1133,3 +1150,5 @@ end Erdos634.Frontier
 #print axioms Erdos634.Frontier.last_junction_caseB_37
 #print axioms Erdos634.Frontier.last_junction_caseB_25_dead
 #print axioms Erdos634.Frontier.caseB_37_apex_mismatch
+#print axioms Erdos634.Frontier.placement_c_overshoots
+#print axioms Erdos634.Frontier.placement_a_apex_fails
