@@ -722,6 +722,57 @@ theorem base_walk_nb_eq_e {e f na nc b k : ℤ}
   rw [hbv] at h4
   nlinarith [h4, hwin]
 
+/-- **`k ≤ 1`: the base walk admits at most one step above `n_b = e`.**  From
+`n_a e + n_c f = 2ef − k·b` with `n_a ≥ 0` and `n_c ≥ 1` we get `k·b < 2ef`; and `f > 2e` gives
+`4b > 3f²`, so `3k f² < 8ef < 4f²`. -/
+theorem base_walk_k_le_one {e f na nc b k : ℤ}
+    (he : 1 ≤ e) (hf : 2 * e < f) (hb : b + e * e = f * f) (hk : 0 ≤ k)
+    (hna : 0 ≤ na) (hnc : 1 ≤ nc)
+    (hred : na * e + nc * f = 2 * e * f - k * b) :
+    k ≤ 1 := by
+  have hf0 : (0 : ℤ) < f := by omega
+  have h4b : 3 * (f * f) < 4 * b := by nlinarith
+  have hkb : k * b < 2 * (e * f) := by nlinarith
+  nlinarith
+
+/-- **`n_b = e` on the base, for every member with `f > 2e`.**  No window and no representability
+case analysis: `base_walk_k_le_one` leaves only `k = 1`, and there the residual equation forces
+`n_a = e` — because `0 ≤ n_a < f` and `f ∣ n_a − e` — whence `n_c f = 2ef − f² = f(2e − f)` and
+`n_c = 2e − f < 0`, contradicting the `γ`-trap `n_c ≥ 1`.
+
+`hcop` is coprimality of `e` and `f` in the only form used: `f ∣ e·m → f ∣ m`. -/
+theorem base_walk_nb_eq_e' {e f na nc b k : ℤ}
+    (he : 1 ≤ e) (hf : 2 * e < f) (hb : b + e * e = f * f) (hk : 0 ≤ k)
+    (hna : 0 ≤ na) (hnc : 1 ≤ nc)
+    (hcop : ∀ m : ℤ, f ∣ e * m → f ∣ m)
+    (hred : na * e + nc * f = 2 * e * f - k * b) :
+    k = 0 := by
+  have hf0 : (0 : ℤ) < f := by omega
+  have hk1 := base_walk_k_le_one he hf hb hk hna hnc hred
+  rcases (by omega : k = 0 ∨ k = 1) with h0 | h1
+  · exact h0
+  · exfalso
+    subst h1
+    -- `f ∣ e·(n_a − e)` straight from the residual equation
+    have hd : f ∣ e * (na - e) := ⟨2 * e - f - nc, by nlinarith [hred, hb]⟩
+    obtain ⟨t, ht⟩ := hcop _ hd
+    -- `0 ≤ n_a < f`, so `t = 0` and `n_a = e`
+    have hub : na * e < f * e := by nlinarith [hred, hnc, hb, hna]
+    have hlt : na < f := lt_of_mul_lt_mul_right hub (by omega)
+    have ht0 : t = 0 := by
+      rcases lt_trichotomy t 0 with h | h | h
+      · nlinarith [ht, hna, he]
+      · exact h
+      · nlinarith [ht, hlt, he]
+    subst ht0
+    have hnae : na = e := by simp at ht; omega
+    -- then `n_c f = f(2e − f)`, so `n_c = 2e − f < 0`
+    have : nc * f = f * (2 * e - f) := by nlinarith [hred, hb, hnae]
+    have : nc = 2 * e - f := by
+      have := mul_left_cancel₀ hf0.ne' (by linarith [this] : f * nc = f * (2 * e - f))
+      linarith [this]
+    omega
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
