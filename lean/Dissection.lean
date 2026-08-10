@@ -6,6 +6,7 @@ import Mathlib.Geometry.Euclidean.Triangle
 import Mathlib.Tactic
 import Erdos634.SupportFace
 import Erdos634.SegmentDense
+import Mathlib.MeasureTheory.Measure.Hausdorff
 
 open scoped ENNReal
 
@@ -743,6 +744,16 @@ theorem hasEdgeChains_edge (D : Dissection N) :
           Erdos634.SegmentDense.subset_closure_diff_finite hnd hFfin
       _ ⊆ closure (⋃ e ∈ part, (D.tile e.1).edge e.2) := closure_mono hkey
       _ = _ := hUclosed.closure_eq
+
+/-- **The one-dimensional measure of a tile edge is its length.**  This is the measure that `Λ_int`
+of obligation G4 must be built from: `Λ_int d` is to be the total `μH[1]`-length of the interior tile
+edges in direction `d`, and the balance `Λ_int (-d) = Λ_int d` then says each interior segment is
+covered once from each side. Recorded here because it fixes which measure the construction should
+use; the construction itself is not attempted. -/
+theorem Tri.hausdorff_edge (T : Tri) (k : Fin 3) :
+    (MeasureTheory.Measure.hausdorffMeasure 1) (T.edge k) = edist (T.pts k) (T.pts (k + 1)) := by
+  rw [Tri.edge]
+  exact MeasureTheory.hausdorffMeasure_segment _ _
 
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
