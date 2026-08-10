@@ -799,6 +799,51 @@ theorem Tri.inter_ball_eq_halfplane (T : Tri) (k : Fin 3) {x : Plane}
     · exact hp1.le
     · exact hp2.le
 
+/-- **G4 step 2 — a half-plane through the centre cuts a ball exactly in half.**
+
+`A = {v | 0 ≤ L v} ∩ ball 0 r` and its point reflection `-A = {v | L v ≤ 0} ∩ ball 0 r` have equal
+measure (Haar measure is invariant under `v ↦ -v`, since `|(-1)^d| = 1` in every dimension), they
+cover the ball, and they meet in `ker L ∩ ball`, which is null because a proper subspace is null.
+Inclusion–exclusion then gives `2·volume A = volume (ball)`.
+
+Mathlib has no such lemma (searched), so it is proved here.  Stated multiplicatively rather than as
+`volume A = volume ball / 2` to stay clear of `ℝ≥0∞` division. -/
+theorem volume_halfspace_inter_ball (L : Plane →ₗ[ℝ] ℝ) (hL : L ≠ 0) (r : ℝ) :
+    2 * volume ({v : Plane | 0 ≤ L v} ∩ Metric.ball 0 r) = volume (Metric.ball (0 : Plane) r) := by
+  classical
+  have hcont : Continuous L := L.continuous_of_finiteDimensional
+  set A : Set Plane := {v | 0 ≤ L v} ∩ Metric.ball 0 r with hAdef
+  set B : Set Plane := {v | L v ≤ 0} ∩ Metric.ball 0 r with hBdef
+  have hBmeas : MeasurableSet B :=
+    ((isClosed_le hcont continuous_const).measurableSet).inter Metric.isOpen_ball.measurableSet
+  -- `B` is the preimage of `A` under the point reflection `v ↦ -v`, written as a preimage so that
+  -- no pointwise-set scalar action is needed
+  have hBA : B = (fun v : Plane => (-1 : ℝ) • v) ⁻¹' A := by
+    ext v
+    simp only [hAdef, hBdef, Set.mem_preimage, Set.mem_inter_iff, Set.mem_setOf_eq,
+      Metric.mem_ball, dist_zero_right, neg_one_smul, map_neg, norm_neg, neg_nonneg]
+  -- reflection preserves measure: `|((-1)^d)⁻¹| = 1` in every dimension
+  have hvolB : volume B = volume A := by
+    rw [hBA, Measure.addHaar_preimage_smul volume (by norm_num : (-1 : ℝ) ≠ 0)]
+    simp [abs_inv, abs_pow]
+  -- the two halves cover the ball
+  have hunion : A ∪ B = Metric.ball (0 : Plane) r := by
+    ext v
+    constructor
+    · rintro (⟨_, h⟩ | ⟨_, h⟩) <;> exact h
+    · intro hv
+      rcases le_total (0 : ℝ) (L v) with h | h
+      · exact Or.inl ⟨h, hv⟩
+      · exact Or.inr ⟨h, hv⟩
+  -- they meet in the kernel, which is null
+  have hker : LinearMap.ker L ≠ ⊤ := fun h => hL (LinearMap.ker_eq_top.mp h)
+  have hinter : volume (A ∩ B) = 0 := by
+    refine measure_mono_null (fun v hv => ?_) (Measure.addHaar_submodule volume _ hker)
+    exact le_antisymm hv.2.1 hv.1.1
+  have hie := measure_union_add_inter (μ := volume) A hBmeas
+  rw [hunion, hinter, hvolB, add_zero] at hie
+  rw [hie, two_mul]
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
