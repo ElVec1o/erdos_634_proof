@@ -1021,6 +1021,37 @@ theorem height_identity (A e f : ℚ) (hA : A ≠ 0) :
     linarith
   · intro h; subst h; ring
 
+/-! ## A parity consequence of the vertex census
+
+`OrderForcing.vertex_census` records the three counting identities of a tiling. Its `α`-identity
+alone has a parity consequence that the census's own conclusion `v1 = 1 + n2 + v3 + 2v4` discards,
+and on some members that consequence is contradictory. -/
+
+/-- **The boundary-junction count has fixed parity.**  Write `S = n1 + n2` for the number of straight
+(`π`) junctions on the boundary.  The `α`-identity `3 + n1 + 3n2 + 2v2 + 4v3 + 6v4 = N` becomes
+`S + 2(n2 + v2 + 2v3 + 3v4) = N - 3`, so `S ≡ N + 1 \pmod 2`. -/
+theorem census_parity {N n1 n2 v2 v3 v4 S : ℕ} (hS : n1 + n2 = S)
+    (ha : 3 + n1 + 3 * n2 + 2 * v2 + 4 * v3 + 6 * v4 = N) :
+    (S + N) % 2 = 1 := by omega
+
+/-- **No tiling of the `(3,7)` target at `m = 1`.**
+
+A side of parameter `p` carries `n_a = 7p` and `n_c = 7 - 3p` edges and no `b`-edge, so it has
+`k = 4p + 7` edges — **odd for every `p`**, and `p ≤ 2` by `side_p_le_two`.  The base walk is
+`(0,3,6)` or `(7,3,3)` by the classification for `f > 2e`, with `9` resp.\ `13` edges — **also odd**.
+Each side with `k` edges contributes `k - 1` junctions, so `S = k₁ + k₂ + k_b - 3` is even.  But
+`census_parity` forces `S ≡ N + 1 = 139`, which is odd.
+
+This settles `N = 138` by structure rather than by search, and it uses none of the chord or height
+machinery.  The geometric input is only that the boundary junctions are exactly the `Σ(kᵢ - 1)`
+meeting points of consecutive boundary edges, each a `π`-vertex. -/
+theorem no_tiling_37 {n1 n2 v2 v3 v4 k1 k2 kb S : ℕ}
+    (hk1 : k1 = 7 ∨ k1 = 11 ∨ k1 = 15) (hk2 : k2 = 7 ∨ k2 = 11 ∨ k2 = 15)
+    (hkb : kb = 9 ∨ kb = 13) (hS : S + 3 = k1 + k2 + kb) (hn : n1 + n2 = S)
+    (ha : 3 + n1 + 3 * n2 + 2 * v2 + 4 * v3 + 6 * v4 = 138) : False := by
+  rcases hk1 with rfl | rfl | rfl <;> rcases hk2 with rfl | rfl | rfl <;>
+    rcases hkb with rfl | rfl <;> omega
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
@@ -1202,3 +1233,5 @@ end Erdos634.Frontier
 #print axioms Erdos634.Frontier.placement_b_other_chirality
 #print axioms Erdos634.Frontier.chord_length
 #print axioms Erdos634.Frontier.height_identity
+#print axioms Erdos634.Frontier.census_parity
+#print axioms Erdos634.Frontier.no_tiling_37
