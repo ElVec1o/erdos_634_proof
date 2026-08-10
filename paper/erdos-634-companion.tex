@@ -2602,6 +2602,45 @@ every $e$.
 No placement survives.
 \end{proof}
 
+\begin{theorem}[The last-junction dichotomy]\label{thm:lastjunction}
+Let $(e,f)$ be any member with $f=2e+1$, and consider the last junction $J$ of an equal side --- the
+junction where the final $c$-edge begins, at distance $f^3-f^2$ from the base corner, hence at height
+fraction $(f-1)/f$ for every value of $p$. Let $X$ be the tile angularly adjacent to the apex
+$c$-tile $C$ on the interior side of $C$'s $a$-ray. Then $X$ lays an $a$-edge along that ray,
+coinciding with $C$'s. Equivalently, \emph{$X$ does not present $\alpha$ at $J$}.
+\end{theorem}
+
+\begin{proof}
+$X$ lays one of its own flanks along $C$'s $a$-ray. If it lays $c$, the run $c-a$ must be covered
+inside the chord of Lemma~\ref{lem:chord} and that window is empty. If it lays $b$, the window pins
+the covering to a single $a$-edge, and the height identity of Theorem~\ref{thm:ptwodead} then places
+that tile's third vertex at the apex, where its remaining sides fail to be tile sides. So $X$ lays
+$a$. The flanks of $\alpha$ are $b$ and $c$, so $X$ is not an $\alpha$-vertex.
+\textup{(}\texttt{alpha\_cannot\_lay\_a}, \texttt{adjacent\_angle\_not\_alpha}.\textup{)}
+\end{proof}
+
+\begin{remark}[What the dichotomy settles, and what it leaves]\label{rem:dichotomy}
+Theorem~\ref{thm:ptwodead} is the case $p=2$: there the tightness of Proposition~\ref{prop:tightside}
+forces $X$ to be the $\alpha$-filler, which Theorem~\ref{thm:lastjunction} forbids. The dichotomy is
+strictly more general --- it is stated for every $p$ and every vertex figure --- and at $p=1$ it
+forces structure without closing the case:
+
+\begin{itemize}
+\item[] in the figure $\{\gamma,\alpha,\beta\}$ it forces the angular order $C(\beta),\gamma,\alpha$,
+so the side word cannot end $a\,c$ with the $\alpha$ adjacent to $C$;
+\item[] in the figure $\{3\alpha,2\beta\}$ it forces $X$ to be the second $\beta$. That $\beta$ shares
+$C$'s $a$-edge and is the reflection of $C$ across it, so both present $\gamma$ at the far end $Q$ of
+that edge. Since $2\gamma=\pi+\alpha<2\pi$, the point $Q$ is interior, and its figure is
+$\{2\alpha,2\beta,2\gamma\}$ or $\{\beta,3\gamma\}$.
+\end{itemize}
+
+At $(3,7)$ the reflected tile is $(J,Q,R)$ with $R=(207,100\sqrt{187}/7)$, a genuine $(21,49,40)$
+placement lying inside the target, and both figures at $Q$ are consistent. So the two surviving
+configurations at $p=1$ --- the mirror partner and the $\gamma$ --- are a single phenomenon, and
+neither is excluded by the chord or the height identity. Closing $p=1$, and with it
+Hypothesis~\ref{hyp:walls} on the whole subfamily $f=2e+1$, requires a further mechanism.
+\end{remark}
+
 \begin{remark}[Scope, and where $e\ge2$ is easier]\label{rem:ptwoscopeb}
 Theorem~\ref{thm:ptwodead} closes $p=2$ on the whole subfamily $f=2e+1$, hence at $(1,3)$, $(2,5)$,
 $(3,7)$, $(4,9)$, $(5,11)$ and onward; verified independently by exact enumeration of the six
