@@ -1115,6 +1115,85 @@ theorem Dissection.local_balance {N : ℕ} (D : Dissection N) {x : Plane} {r : �
   have hcount : E.card + 2 * I.card = 2 := local_degree_eq hV0 hVt hkey
   exact local_degree_two (Finset.card_pos.mpr hEne) hcount
 
+/-- `x` lies in the relative interior of one of tile `i`'s edges. -/
+def OnEdge {N : ℕ} (D : Dissection N) (x : Plane) (i : Fin N) : Prop :=
+  ∃ k, (D.tile i).basis.coord k x = 0 ∧ ∀ j, j ≠ k → 0 < (D.tile i).basis.coord j x
+
+/-- `x` is interior to tile `i`. -/
+def Inside {N : ℕ} (D : Dissection N) (x : Plane) (i : Fin N) : Prop :=
+  ∀ j, 0 < (D.tile i).basis.coord j x
+
+/-- **Every tile has a radius below which its local contribution is pinned.**  Which of the three
+values it takes is decided by `Tri.classify`, so this is where the classification becomes a single
+uniform statement that can be quantified over the tiles. -/
+theorem Dissection.local_contribution {N : ℕ} (D : Dissection N) {x : Plane} (i : Fin N)
+    (hxv : ∀ k, x ≠ (D.tile i).pts k) :
+    ∃ ri > 0, ∀ r', 0 < r' → r' ≤ ri →
+      (OnEdge D x i →
+        2 * volume ((D.tile i).carrier ∩ Metric.ball x r') = volume (Metric.ball x r'))
+    ∧ (Inside D x i →
+        volume ((D.tile i).carrier ∩ Metric.ball x r') = volume (Metric.ball x r'))
+    ∧ (¬ OnEdge D x i → ¬ Inside D x i →
+        volume ((D.tile i).carrier ∩ Metric.ball x r') = 0) := by
+  classical
+  rcases (D.tile i).classify hxv with hpos | ⟨k, hk0, hkpos⟩ | ⟨k, hkneg⟩
+  · -- interior: `OnEdge` is impossible, since no coordinate vanishes
+    obtain ⟨r, hr, h⟩ := (D.tile i).volume_inter_ball_interior hpos
+    refine ⟨r, hr, fun r' h1 h2 => ⟨fun hE => ?_, fun _ => h r' h1 h2, fun _ hI => absurd hpos hI⟩⟩
+    obtain ⟨m, hm, -⟩ := hE
+    exact absurd hm (ne_of_gt (hpos m))
+  · -- edge: `Inside` is impossible, since the `k`-th coordinate vanishes
+    have hne : ∀ j : Fin 3, j + 1 ≠ j ∧ j + 2 ≠ j := by decide
+    obtain ⟨r, hr, h⟩ := (D.tile i).volume_inter_ball_edge k hk0
+      (hkpos _ (hne k).1) (hkpos _ (hne k).2)
+    refine ⟨r, hr, fun r' h1 h2 => ⟨fun _ => h r' h1 h2, fun hI => ?_, fun hE _ => ?_⟩⟩
+    · exact absurd hk0 (ne_of_gt (hI k))
+    · exact absurd ⟨k, hk0, hkpos⟩ hE
+  · -- exterior
+    obtain ⟨r, hr, h⟩ := (D.tile i).volume_inter_ball_exterior hkneg
+    refine ⟨r, hr, fun r' h1 h2 => ⟨fun hE => ?_, fun hI => ?_, fun _ _ => h r' h1 h2⟩⟩
+    · obtain ⟨m, hm, hrest⟩ := hE
+      by_cases hmk : k = m
+      · rw [hmk] at hkneg; exact absurd hm (ne_of_lt hkneg)
+      · exact absurd (hrest k hmk) (not_lt.mpr hkneg.le)
+    · exact absurd (hI k) (not_lt.mpr hkneg.le)
+
+open scoped Classical in
+/-- **G4 — the local double covering, with the classification discharged.**
+
+At a point `x` interior to the target and not a vertex of any tile, if at least one tile meets `x`
+in the relative interior of an edge, then **exactly two do, and no tile has `x` in its interior**.
+
+This is `Dissection.local_balance` with all three of its hypotheses supplied: the classification is
+exhaustive by `Tri.classify`, each tile's contribution is pinned by `Dissection.local_contribution`,
+and a single radius serving every tile comes from `exists_common_radius`. -/
+theorem Dissection.two_tiles_at_edge_point {N : ℕ} (D : Dissection N) (hN : 0 < N) {x : Plane}
+    (hxv : ∀ i k, x ≠ (D.tile i).pts k)
+    {R : ℝ} (hR : 0 < R) (hRt : Metric.ball x R ⊆ D.target.carrier)
+    (hEne : (Finset.univ.filter (fun i => OnEdge D x i)).Nonempty) :
+    (Finset.univ.filter (fun i => OnEdge D x i)).card = 2
+      ∧ (Finset.univ.filter (fun i => Inside D x i)).card = 0 := by
+  classical
+  choose ri hri hcontrib using fun i => D.local_contribution i (hxv i)
+  -- one radius for every tile at once, and inside the target
+  obtain ⟨r0, hr0, hr0le⟩ := exists_common_radius hN ri hri
+  refine D.local_balance (x := x) (r := min R r0) (lt_min hR hr0) ?_ _ _ ?_ ?_ ?_ ?_ hEne
+  · exact (Metric.ball_subset_ball (min_le_left _ _)).trans hRt
+  · -- a tile cannot both contain `x` inside and meet it on an edge
+    rw [Finset.disjoint_left]
+    intro i hiE hiI
+    obtain ⟨m, hm, -⟩ := (Finset.mem_filter.mp hiE).2
+    exact absurd hm (ne_of_gt ((Finset.mem_filter.mp hiI).2 m))
+  · exact fun i hi => (hcontrib i _ (lt_min hR hr0)
+      ((min_le_right R r0).trans (hr0le i))).1 (Finset.mem_filter.mp hi).2
+  · exact fun i hi => (hcontrib i _ (lt_min hR hr0)
+      ((min_le_right R r0).trans (hr0le i))).2.1 (Finset.mem_filter.mp hi).2
+  · intro i _ hi
+    rw [Finset.mem_union, not_or] at hi
+    exact (hcontrib i _ (lt_min hR hr0) ((min_le_right R r0).trans (hr0le i))).2.2
+      (fun h => hi.1 (Finset.mem_filter.mpr ⟨Finset.mem_univ i, h⟩))
+      (fun h => hi.2 (Finset.mem_filter.mpr ⟨Finset.mem_univ i, h⟩))
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
