@@ -915,6 +915,63 @@ and no full one.  That is "the segment is met from both sides, by one tile each"
 theorem local_degree_two {k m : ℕ} (hk : 1 ≤ k) (h : k + 2 * m = 2) : k = 2 ∧ m = 0 := by
   omega
 
+/-- **A finite family of positive radii has a common positive lower bound.**  Each local
+classification lemma supplies its own radius; a local count needs one radius that works for every
+tile at once.  This is assembly item (a). -/
+theorem exists_common_radius {N : ℕ} (hN : 0 < N) (f : Fin N → ℝ) (hf : ∀ i, 0 < f i) :
+    ∃ r > 0, ∀ i, r ≤ f i := by
+  have hne : (Finset.univ : Finset (Fin N)).Nonempty := ⟨⟨0, hN⟩, Finset.mem_univ _⟩
+  refine ⟨Finset.univ.inf' hne f, ?_, fun i => Finset.inf'_le _ (Finset.mem_univ i)⟩
+  rw [gt_iff_lt, Finset.lt_inf'_iff]
+  exact fun i _ => hf i
+
+/-- **G4 — the local double covering, assembled.**
+
+Take a ball around `x` inside the target, small enough that every tile's contribution is already
+classified: the tiles in `E` each meet it in a half-ball (`x` in the relative interior of one of
+their edges), those in `I` swallow it whole (`x` interior to them), and every other tile misses it.
+Then `E` has exactly two elements and `I` is empty: **the segment through `x` is met from both
+sides, by one tile from each.**
+
+The three hypotheses are exactly what `Tri.inter_ball_eq_halfplane` together with
+`volume_halfspace_inter_ball`, `Tri.ball_subset_of_pos` and `Tri.ball_disjoint_of_neg` deliver, once
+a common radius is chosen with `exists_common_radius`.  What is still not supplied — and so is still
+a hypothesis here rather than a conclusion — is that the classification is *exhaustive*, i.e. that
+`x` is not a vertex of any tile.  That is the finite exceptional set, item (b). -/
+theorem Dissection.local_balance {N : ℕ} (D : Dissection N) {x : Plane} {r : ℝ} (hr : 0 < r)
+    (hball : Metric.ball x r ⊆ D.target.carrier)
+    (E I : Finset (Fin N)) (hdisj : Disjoint E I)
+    (hE : ∀ i ∈ E, 2 * volume ((D.tile i).carrier ∩ Metric.ball x r) = volume (Metric.ball x r))
+    (hI : ∀ i ∈ I, volume ((D.tile i).carrier ∩ Metric.ball x r) = volume (Metric.ball x r))
+    (hrest : ∀ i ∈ (Finset.univ : Finset (Fin N)), i ∉ E ∪ I →
+      volume ((D.tile i).carrier ∩ Metric.ball x r) = 0)
+    (hEne : E.Nonempty) :
+    E.card = 2 ∧ I.card = 0 := by
+  classical
+  set V : ℝ≥0∞ := volume (Metric.ball x r) with hV
+  have hV0 : V ≠ 0 := (Metric.measure_ball_pos volume x hr).ne'
+  have hVt : V ≠ ⊤ := measure_ball_lt_top.ne
+  -- the tiles that contribute are exactly those in `E ∪ I`
+  have hsum : ∑ i ∈ E ∪ I, volume ((D.tile i).carrier ∩ Metric.ball x r) = V := by
+    rw [Finset.sum_subset (Finset.subset_univ (E ∪ I)) hrest]
+    exact (D.volume_ball_eq_sum hball).symm
+  -- split that sum and weigh each part
+  have hsplit : ∑ i ∈ E ∪ I, volume ((D.tile i).carrier ∩ Metric.ball x r)
+      = (∑ i ∈ E, volume ((D.tile i).carrier ∩ Metric.ball x r))
+        + ∑ i ∈ I, volume ((D.tile i).carrier ∩ Metric.ball x r) :=
+    Finset.sum_union hdisj
+  have hEsum : 2 * ∑ i ∈ E, volume ((D.tile i).carrier ∩ Metric.ball x r) = (E.card : ℝ≥0∞) * V := by
+    rw [Finset.mul_sum, Finset.sum_congr rfl hE, Finset.sum_const, nsmul_eq_mul]
+  have hIsum : ∑ i ∈ I, volume ((D.tile i).carrier ∩ Metric.ball x r) = (I.card : ℝ≥0∞) * V := by
+    rw [Finset.sum_congr rfl hI, Finset.sum_const, nsmul_eq_mul]
+  -- `2·V = card E · V + card I · 2V`, so `card E + 2·card I = 2`
+  rw [hsplit] at hsum
+  have hkey : (E.card : ℝ≥0∞) * V + (I.card : ℝ≥0∞) * (2 * V) = 2 * V := by
+    have h1 : (I.card : ℝ≥0∞) * (2 * V) = 2 * ((I.card : ℝ≥0∞) * V) := by ring
+    rw [h1, ← hEsum, ← hIsum, ← mul_add, hsum]
+  have hcount : E.card + 2 * I.card = 2 := local_degree_eq hV0 hVt hkey
+  exact local_degree_two (Finset.card_pos.mpr hEne) hcount
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
