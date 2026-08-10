@@ -773,6 +773,48 @@ theorem base_walk_nb_eq_e' {e f na nc b k : ℤ}
       linarith [this]
     omega
 
+/-- **`c − a` is a gap on the tight subfamily, for `e ≥ 2`.**  At `f = 2e+1` the tile is
+`a = e(2e+1)`, `b = (3e+1)(e+1)`, `c = (2e+1)²`, and `c − a = (2e+1)(e+1)`, which is smaller than
+both `b` and `c`.  So a representation can only use `a`, and `x·e(2e+1) = (2e+1)(e+1)` forces
+`e ∣ e+1`, i.e. `e = 1`.
+
+This matters at the last junction of a `p = 2` side.  There the filler's rays are `b` and `c` while
+its neighbour, the apex `c`-tile, presents an `a`-edge, so the junction cannot be edge-to-edge and
+leaves a run of `b − a` or `c − a`.  Both are gaps: `b − a` by `gap_b_sub_a`, `c − a` by this.  At
+`e = 1` the second escapes — `c − a = 2a` at `(1,3)` — which is consistent with `(1,3)` having needed
+a different argument. -/
+theorem gap_c_sub_a_tight {e x y z : ℕ} (he : 2 ≤ e)
+    (h : x * (e * (2 * e + 1)) + y * ((3 * e + 1) * (e + 1))
+         + z * ((2 * e + 1) * (2 * e + 1)) = (2 * e + 1) * (e + 1)) : False := by
+  set A := e * (2 * e + 1) with hA
+  set B := (3 * e + 1) * (e + 1) with hB
+  set C := (2 * e + 1) * (2 * e + 1) with hC
+  set R := (2 * e + 1) * (e + 1) with hR
+  have hRB : R < B := by rw [hR, hB]; nlinarith
+  have hRC : R < C := by rw [hR, hC]; nlinarith
+  have hyB : y * B ≤ R := by
+    rw [← h]; linarith [Nat.zero_le (x * A), Nat.zero_le (z * C)]
+  have hzC : z * C ≤ R := by
+    rw [← h]; linarith [Nat.zero_le (x * A), Nat.zero_le (y * B)]
+  have hy : y = 0 := by
+    rcases Nat.eq_zero_or_pos y with h0 | h0
+    · exact h0
+    · exact absurd (le_trans (Nat.le_mul_of_pos_left B h0) hyB) (by omega)
+  have hz : z = 0 := by
+    rcases Nat.eq_zero_or_pos z with h0 | h0
+    · exact h0
+    · exact absurd (le_trans (Nat.le_mul_of_pos_left C h0) hzC) (by omega)
+  subst hy; subst hz
+  simp only [Nat.zero_mul, Nat.add_zero] at h
+  -- `x · e(2e+1) = (2e+1)(e+1)`, so `x·e = e+1` and `e ∣ e+1`
+  have h' : x * (e * (2 * e + 1)) = (2 * e + 1) * (e + 1) := by rw [hA, hR] at h; exact h
+  have hx : (2 * e + 1) * (x * e) = (2 * e + 1) * (e + 1) :=
+    (by ring : (2 * e + 1) * (x * e) = x * (e * (2 * e + 1))).trans h'
+  have hxe : x * e = e + 1 := Nat.eq_of_mul_eq_mul_left (by omega) hx
+  rcases Nat.lt_or_ge x 2 with h2 | h2
+  · interval_cases x <;> omega
+  · nlinarith
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
