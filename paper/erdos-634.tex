@@ -2445,9 +2445,46 @@ admissible solution there; the two equilateral factor-pair uniqueness statements
 congruences that kill the isosceles candidates at $14$ and $22$; the $F_1$ invariant kill at
 $21$; and the parity kill of $46$.
 \end{itemize}
-What is \emph{not} formalized is exactly the geometry: the direction grid of
-Section~\ref{sec:prelim} and Lemmas~\ref{lem:cancel} and~\ref{lem:value}, which are proved in the
-text and checked numerically; Mathlib has no theory of planar dissections.
+Mathlib still has no theory of planar dissections --- no \texttt{IsTiling}, no planar subdivision,
+no Jordan curve theorem, no Euler formula, no polytopes --- so the geometric layer is built from the
+convexity and measure-theoretic primitives that do exist. Within that constraint it is now
+substantially machine-checked, and we state exactly how far, since the boundary has moved.
+
+Formalized (\texttt{lean/Dissection.lean}). A dissection is defined as a target, $N$ tiles, the
+covering equation, and pairwise disjointness of tile \emph{interiors} --- combinatorially, not
+measure-theoretically, so that the measure-theoretic consequence is derived rather than assumed.
+From it: \texttt{Dissection.aedisjoint} (disjoint interiors give a.e.\ disjointness, via
+\texttt{Convex.addHaar\_frontier}; this is what lets a \emph{non-edge-to-edge} dissection still be
+additive for area), the area identity \texttt{Dissection.volume\_target}, and
+\texttt{vertex\_multiplicities}, which converts a real angle equation at a vertex into the integer
+multiplicity equations the arithmetic consumes.
+
+Also formalized: that each side of the target is a finite union of whole tile edges
+(\texttt{hasEdgeChains\_edge}), by way of a support-face argument
+(\texttt{SupportFace.mem\_convexHull\_max}: a point of a simplex attaining the maximum of a linear
+functional is a convex combination of the vertices attaining it) together with a density step
+(\texttt{SegmentDense.subset\_closure\_diff\_finite}).
+
+Lemma~\ref{lem:cancel} is the one place where the remaining geometry sits, and it is now isolated to
+a single statement rather than distributed over the proof. \texttt{InvariantCore.cancellation\_core}
+derives the lemma from one hypothesis: that the total directed length of interior tile edges is
+invariant under reversal of direction. \texttt{interiorBalanced\_of\_segments} reduces
+that global identity to a local one --- each maximal interior segment is covered once from each side
+--- and the local statement is assembled from four machine-checked steps: a tile coincides with a
+half-plane near a point in the relative interior of one of its edges
+(\texttt{Tri.inter\_ball\_eq\_halfplane}); a half-plane through the centre halves a ball
+(\texttt{volume\_halfspace\_inter\_ball}, which Mathlib does not have); a ball inside the target is
+partitioned by the tiles (\texttt{Dissection.volume\_ball\_eq\_sum}); and the resulting count forces
+exactly two tiles (\texttt{Dissection.local\_balance}). The classification of a tile's local
+contribution is exhaustive away from the tiles' vertices (\texttt{Tri.classify}), a finite set.
+What is \emph{not} yet written is the mechanical assembly of these pieces into
+\texttt{InteriorBalanced}; no further geometric content is required for it.
+
+What remains on written proofs, checked numerically but not formalized, is the direction grid of
+Section~\ref{sec:prelim} and Lemma~\ref{lem:value}. Search verdicts (\texttt{EXHAUSTED}) are
+declared computer assistance and are not formalized: doing so would mean verifying the search
+engine. Finally, a formalized theorem certifies its own Lean statement; that each such statement
+faithfully renders the paper result it is cited against is prose, and should be read as such.
 
 \section*{Acknowledgements}
 
