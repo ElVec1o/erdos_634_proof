@@ -870,6 +870,65 @@ theorem last_junction_caseA_dead {e x y z : ℕ} (he : 1 ≤ e) (he4 : e ≤ 4)
   have := Nat.mul_le_mul_right (2 * e + 1) h2a
   interval_cases e <;> omega
 
+/-- **The chord bound forces case B's horizontal covering to a single `a`-edge**, for `e ∈ {3,4}`.
+
+In case B the filler lays its `b`-edge along the horizontal ray, so the run `[a, b]` must be covered
+from `a` with all endpoints inside the chord.  Scaling by `f`, that asks for
+`b − a = e²+3e+1 ≤ x a + y b + z c` with `(x a + y b + z c)·f ≤ e(7e²+8e+2)`.  For `e ∈ {3,4}` the
+window admits exactly `x = 1`: at `(3,7)` it is `19 ≤ 21x+40y+49z ≤ 38`, at `(4,9)`
+`29 ≤ 36x+65y+81z ≤ 64`.
+
+So case B does not die here, but it is pinned: one `a`-edge, overrunning the filler's `b`-vertex.
+At `(2,5)` the same window is *empty* — `2a = 20 < 21 = b` while `b` and `c` overshoot — so case B
+dies there outright, which together with `last_junction_caseA_dead` closes `p = 2` at `(2,5)`. -/
+theorem last_junction_caseB_37 {x y z : ℕ}
+    (hlo : 19 ≤ 21 * x + 40 * y + 49 * z)
+    (hhi : (21 * x + 40 * y + 49 * z) * 7 ≤ 267) :
+    x = 1 ∧ y = 0 ∧ z = 0 := by
+  have hs : 21 * x + 40 * y + 49 * z ≤ 38 := by omega
+  have hy : y = 0 := by
+    rcases Nat.eq_zero_or_pos y with h | h
+    · exact h
+    · omega
+  have hz : z = 0 := by
+    rcases Nat.eq_zero_or_pos z with h | h
+    · exact h
+    · omega
+  subst hy; subst hz; omega
+
+/-- The same at `(4,9)`: window `29 ≤ 36x+65y+81z ≤ 64`, again only `x = 1`. -/
+theorem last_junction_caseB_49 {x y z : ℕ}
+    (hlo : 29 ≤ 36 * x + 65 * y + 81 * z)
+    (hhi : (36 * x + 65 * y + 81 * z) * 9 ≤ 584) :
+    x = 1 ∧ y = 0 ∧ z = 0 := by
+  have hs : 36 * x + 65 * y + 81 * z ≤ 64 := by omega
+  have hy : y = 0 := by
+    rcases Nat.eq_zero_or_pos y with h | h
+    · exact h
+    · omega
+  have hz : z = 0 := by
+    rcases Nat.eq_zero_or_pos z with h | h
+    · exact h
+    · omega
+  subst hy; subst hz; omega
+
+/-- **At `(2,5)` case B has no covering at all.**  The window `11 ≤ 10x+21y+25z ≤ 18` is empty:
+`b` and `c` overshoot, and `10x` lands on `10` or `20`, never inside.  With
+`last_junction_caseA_dead` this closes `p = 2` at `(2,5)` outright. -/
+theorem last_junction_caseB_25_dead {x y z : ℕ}
+    (hlo : 11 ≤ 10 * x + 21 * y + 25 * z)
+    (hhi : (10 * x + 21 * y + 25 * z) * 5 ≤ 92) : False := by
+  have hs : 10 * x + 21 * y + 25 * z ≤ 18 := by omega
+  have hy : y = 0 := by
+    rcases Nat.eq_zero_or_pos y with h | h
+    · exact h
+    · omega
+  have hz : z = 0 := by
+    rcases Nat.eq_zero_or_pos z with h | h
+    · exact h
+    · omega
+  subst hy; subst hz; omega
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
