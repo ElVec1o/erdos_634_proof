@@ -177,14 +177,19 @@ theorem side_no_b_e_one {f b P Q R : ℕ} (hf : 2 ≤ f)
 /-! ## The side c-count bound: `p ≤ f − 2`, and `hyp:walls` at `f = 2`
 
 With `Q' = 0` (`side_no_b`) the side walk is `(P', R') = (f·p, f−p)`. The first and last side edges
-are c-edges — the first is the base-corner tile's side flank (its base flank is an a-edge), the last
+are c-edges — at `e = 1`; the first is the base-corner tile's side flank (its base flank is an a-edge
+by `thm:e1reduce`(ii), an `e = 1` theorem), the last
 belongs to the apex figure `{3α}`, whose side edge is `b` or `c` and `b` is excluded — so the side
 carries at least two c-edges: `f − p ≥ 2`. Hence `p ≤ f − 2`, and at `f = 2` the side carries no
 a-edge at all: `hyp:walls` holds for the member `(1,2)` by boundary analysis alone, recovering the
 closure of `thm:basebeta-e1`. At `f = 3` the only surviving value is `p = 1`, whose side word is
 forced to `c a a a c`. -/
 
-/-- **`p ≤ f − 2`.** The side's c-count is `f − p`; two c-edges are forced. -/
+/-- **`p ≤ f − 2`, AT `e = 1` ONLY.** The hypothesis `R + p = f` is the `e = 1` form of the side
+profile: in general the c-count is `n_c = f − p·e`, so the relation is `R + p·e = f` and this
+statement does NOT apply. Two c-edges are forced at `e = 1` because the base begins with an `a`-edge
+(`thm:e1reduce`(ii)), which is itself an `e = 1` theorem. At `e ≥ 2` the base-corner end of a side may
+be an `a`-edge, and indeed at `p = 2` on `f = 2e+1` the side word is `a^{2f} c` with a single `c`. -/
 theorem p_le_f_sub_two {f p R : ℕ} (hR : R + p = f) (h2 : 2 ≤ R) : p ≤ f - 2 := by omega
 
 /-- **`hyp:walls` at `f = 2`**: the side carries no a-edge. -/

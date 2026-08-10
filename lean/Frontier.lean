@@ -1122,3 +1122,14 @@ theorem corner_step_branches :
     (3 + 2 * 0 = 3 ∧ 1 + 0 = 1) ∧ (1 + 2 * 1 = 3 ∧ 0 + 1 = 1) := by omega
 
 end Erdos634.Frontier
+
+#print axioms Erdos634.Frontier.gamma_slack
+#print axioms Erdos634.Frontier.p_two_tight_iff
+#print axioms Erdos634.Frontier.pi_vertex_with_gamma
+#print axioms Erdos634.Frontier.base_walk_k_le_one
+#print axioms Erdos634.Frontier.base_walk_nb_eq_e'
+#print axioms Erdos634.Frontier.gap_c_sub_a_tight
+#print axioms Erdos634.Frontier.last_junction_caseA_dead
+#print axioms Erdos634.Frontier.last_junction_caseB_37
+#print axioms Erdos634.Frontier.last_junction_caseB_25_dead
+#print axioms Erdos634.Frontier.caseB_37_apex_mismatch
