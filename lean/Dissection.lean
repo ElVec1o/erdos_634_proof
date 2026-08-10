@@ -509,6 +509,28 @@ theorem contacts_cover_side (D : Dissection N) (f : Plane →ₗ[ℝ] ℝ) (c : 
     obtain ⟨j, hxj⟩ := Set.mem_iUnion.mp hxt
     exact Set.mem_iUnion.mpr ⟨j, hxj, hfx⟩
 
+/-- A tile edge is closed: it is the convex hull of a pair, hence compact. -/
+theorem Tri.isClosed_edge (T : Tri) (k : Fin 3) : IsClosed (T.edge k) := by
+  have hc : IsCompact (T.edge k) := by
+    rw [Tri.edge, segment_eq_image]
+    exact isCompact_Icc.image (by fun_prop)
+  exact hc.isClosed
+
+/-- **Any two distinct vertices of a triangle span one of its edges.**  The three edges realise the
+three unordered pairs, so the convex hull of two distinct vertices is an edge, up to the symmetry
+`segment x y = segment y x`. This is what turns "the contact face has two vertices" into "the contact
+face IS a tile edge". -/
+theorem Tri.pair_eq_edge (T : Tri) {p q : Fin 3} (hpq : p ≠ q) :
+    ∃ k, segment ℝ (T.pts p) (T.pts q) = T.edge k := by
+  simp only [Tri.edge]
+  fin_cases p <;> fin_cases q <;> simp_all <;>
+    [ exact ⟨0, rfl⟩;
+      exact ⟨2, segment_symm ℝ _ _⟩;
+      exact ⟨0, segment_symm ℝ _ _⟩;
+      exact ⟨1, rfl⟩;
+      exact ⟨2, rfl⟩;
+      exact ⟨1, segment_symm ℝ _ _⟩ ]
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
