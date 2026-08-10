@@ -690,6 +690,38 @@ theorem base_walk_of_nb_eq_e {e f na nc : ℤ} (he : 0 < e) (hf : 0 < f) (hna : 
   · left; exact ⟨by ring, by linarith [ht]⟩
   · right; exact ⟨by ring, by linarith [ht]⟩
 
+/-- **`n_b = e` on the base, outside a narrow window.**  Writing `n_b = e + kf` (legitimate by
+`base_walk_nb_mod`), the walk divided by `f` reads `n_a e + n_c f = 2ef − k·b`.  With `n_a ≥ 0`,
+`n_c ≥ 1` and `k ≥ 1` this forces `f ≤ 2ef − b`, i.e. `(f−e)² + f ≤ 2e²`.  So whenever
+`2e² < (f−e)² + f` the only possibility is `k = 0`.
+
+The window is narrow: combined with `f > 2e` the surviving band needs `e ≥ 5` **and**
+`f < (1+√2)e`, i.e. exactly a *close pair*.  In particular the condition holds automatically for
+every `e ≤ 4`, and at `(3,7)` it reads `23 > 18`, so `n_b = 3` there is forced by size alone. Inside
+the band the classification still holds but by representability rather than size: checked on all
+`2622` coprime members with `5 ≤ e ≤ 25` and `2e < f ≤ e²−2e−1`, zero violations. -/
+theorem base_walk_nb_eq_e {e f na nc b k : ℤ}
+    (he : 1 ≤ e) (hf : 2 * e < f) (hb : b + e * e = f * f)
+    (hna : 0 ≤ na) (hnc : 1 ≤ nc) (hk : 0 ≤ k)
+    (hwin : 2 * e * e < (f - e) * (f - e) + f)
+    (h : na * (e * f) + (e + k * f) * b + nc * (f * f) = e * (3 * f * f - e * e)) :
+    k = 0 := by
+  by_contra hne
+  have hk1 : (1 : ℤ) ≤ k := by omega
+  have hf0 : (0 : ℤ) < f := by omega
+  have hbv : b = f * f - e * e := by linarith
+  -- divide the walk by `f`
+  have hkey : f * (na * e + nc * f) = f * (2 * e * f - k * b) := by
+    rw [hbv] at h ⊢; nlinarith [h]
+  have hred : na * e + nc * f = 2 * e * f - k * b := mul_left_cancel₀ hf0.ne' hkey
+  have hbpos : (0 : ℤ) < b := by nlinarith
+  have h1 : nc * f ≤ 2 * e * f - k * b := by nlinarith
+  have h2 : f ≤ nc * f := by nlinarith
+  have h3 : b ≤ k * b := by nlinarith
+  have h4 : f ≤ 2 * e * f - b := by linarith
+  rw [hbv] at h4
+  nlinarith [h4, hwin]
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
