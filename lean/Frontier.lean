@@ -1034,7 +1034,7 @@ theorem census_parity {N n1 n2 v2 v3 v4 S : ℕ} (hS : n1 + n2 = S)
     (ha : 3 + n1 + 3 * n2 + 2 * v2 + 4 * v3 + 6 * v4 = N) :
     (S + N) % 2 = 1 := by omega
 
-/-- **No tiling of the `(3,7)` target at `m = 1`.**
+/-- **CONDITIONAL, and its hypothesis is NOT generally satisfied.**  RETRACTED as a kill.
 
 A side of parameter `p` carries `n_a = 7p` and `n_c = 7 - 3p` edges and no `b`-edge, so it has
 `k = 4p + 7` edges — **odd for every `p`**, and `p ≤ 2` by `side_p_le_two`.  The base walk is
@@ -1042,9 +1042,13 @@ A side of parameter `p` carries `n_a = 7p` and `n_c = 7 - 3p` edges and no `b`-e
 Each side with `k` edges contributes `k - 1` junctions, so `S = k₁ + k₂ + k_b - 3` is even.  But
 `census_parity` forces `S ≡ N + 1 = 139`, which is odd.
 
-This settles `N = 138` by structure rather than by search, and it uses none of the chord or height
-machinery.  The geometric input is only that the boundary junctions are exactly the `Σ(kᵢ - 1)`
-meeting points of consecutive boundary edges, each a `π`-vertex. -/
+**The hypothesis `hS : S + 3 = k₁ + k₂ + k_b` is false in general**, which is why this is not a
+kill.  `S = n₁ + n₂` counts *every* straight figure, and an interior `T`-junction is one: there a
+tile has the vertex in the relative interior of a side, contributing a straight angle and no corner,
+while the tiles opposite have corners summing to `π`.  So `S = Σkᵢ - 3 + T` with `T` their number,
+and the parity constrains only `T` — at `(3,7)` it forces `T` odd.  Since non-edge-to-edge incidences
+are exactly what this problem must allow, nothing is excluded.  Kept as the arithmetic core, with the
+false step named. -/
 theorem no_tiling_37 {n1 n2 v2 v3 v4 k1 k2 kb S : ℕ}
     (hk1 : k1 = 7 ∨ k1 = 11 ∨ k1 = 15) (hk2 : k2 = 7 ∨ k2 = 11 ∨ k2 = 15)
     (hkb : kb = 9 ∨ kb = 13) (hS : S + 3 = k1 + k2 + kb) (hn : n1 + n2 = S)

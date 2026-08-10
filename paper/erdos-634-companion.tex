@@ -2510,53 +2510,41 @@ $a$-edges and $1$ $c$-edge. Excluding those two remains open; the reduction boun
 does not solve it.
 \end{remark}
 
-\subsection{A parity the vertex census discards}\label{sub:parity}
+\subsection{A parity of the straight figures}\label{sub:parity}
 
-Lemma~\ref{lem:census} records three counting identities. Their published consequence,
-$v_1=1+n_2+v_3+2v_4$, is not all they contain: the $\alpha$-identity carries a parity statement about
-the boundary that the substitution throws away.
+Lemma~\ref{lem:census} records three counting identities whose published consequence is
+$v_1=1+n_2+v_3+2v_4$. The $\alpha$-identity also carries a parity statement, which we record together
+with the reason it does \emph{not} exclude any member.
 
-\begin{lemma}[Junction parity]\label{lem:parity}
-Write $S=n_1+n_2$ for the number of straight ($\pi$) junctions on the boundary. Then
-$S\equiv N+1\pmod 2$.
+\begin{lemma}[Straight-figure parity]\label{lem:parity}
+Write $S=n_1+n_2$ for the total number of straight ($\pi$) figures. Then $S\equiv N+1\pmod 2$.
 \end{lemma}
 
 \begin{proof}
-The $\alpha$-identity is $3+n_1+3n_2+2v_2+4v_3+6v_4=N$. Substituting $n_1=S-n_2$ gives
-$S+2\bigl(n_2+v_2+2v_3+3v_4\bigr)=N-3$, and the bracket is an integer.
-\textup{(}\texttt{census\_parity}.\textup{)}
+The $\alpha$-identity is $3+n_1+3n_2+2v_2+4v_3+6v_4=N$; substituting $n_1=S-n_2$ gives
+$S+2(n_2+v_2+2v_3+3v_4)=N-3$. \textup{(}\texttt{census\_parity}.\textup{)}
 \end{proof}
 
-The three identities have rank two, and this is the only parity they yield: substituting
-$v_1=1+n_2+v_3+2v_4$ into the $\beta$-identity returns the $\alpha$-identity exactly, and the
-$\gamma$-identity is then dependent. So Lemma~\ref{lem:parity} exhausts the census.
+The three identities have rank two and this is the only parity they contain: substituting the
+$v_1$ relation into the $\beta$-identity returns the $\alpha$-identity exactly.
 
-\begin{theorem}[The member $(3,7)$ is excluded]\label{thm:no37}
-The $(3,7)$ target admits no tiling at $m=1$. In particular $N=138$ is not a number of congruent
-triangles into which a triangle can be cut by a base-$\beta$ tiling at $m=1$.
-\end{theorem}
+\begin{remark}[Why this does not exclude a member, and the trap it sets]\label{rem:parityscope}
+It is tempting to combine Lemma~\ref{lem:parity} with the boundary walks. On a member all of whose
+walks have odd edge-counts --- $(3,7)$ is one, with $k=4p+7$ on a side and $9$ or $13$ on the base
+--- the boundary contributes $\sum k_i-3$ straight figures, an even number, against the odd value
+$N+1=139$ that Lemma~\ref{lem:parity} demands. That looks like an exclusion. It is not.
 
-\begin{proof}
-A side of parameter $p$ carries $n_a=7p$ and $n_c=7-3p$ edges and no $b$-edge
-(Lemma~\ref{lem:sidenob}), so it has $k=4p+7$ edges, odd for every $p$; and $p\le2$ by
-Corollary~\ref{cor:ptwo}. The base walk is $(0,3,6)$ or $(7,3,3)$, with $9$ resp.\ $13$ edges, again
-odd. A side with $k$ edges contributes $k-1$ junctions, so $S=k_1+k_2+k_{\mathrm b}-3$ is even, while
-Lemma~\ref{lem:parity} requires $S\equiv N+1=139$, odd. All eighteen combinations are checked and
-every one violates. \textup{(}\texttt{no\_tiling\_37}.\textup{)}
-\end{proof}
+$S$ counts \emph{every} straight figure, and a straight figure need not lie on the boundary: at an
+interior $T$-junction one tile has the vertex in the relative interior of a side, contributing a
+straight angle and no corner, while the tiles on the other side have corners summing to $\pi$. Such a
+vertex is a $\{\gamma,\alpha,\beta\}$ or $\{3\alpha,2\beta\}$ figure and is counted in $n_1+n_2$.
+Writing $T$ for their number, $S=\sum k_i-3+T$, so the parity constrains only $T$: at $(3,7)$ every
+tiling has an \emph{odd} number of interior $T$-junctions. Since non-edge-to-edge incidences are
+exactly what this problem must allow, nothing is excluded.
 
-\begin{remark}[Reach of the parity, and a positive control]\label{rem:parityscope}
-The test is not vacuous: run on the $(1,2)$ family at $m=1,2,3,4$ --- whose $m=2$ and $m=3$ members
-are the genuine $44$- and $99$-tilings, kernel-checked in \texttt{lean/Tiling44.lean} and
-\texttt{lean/Tiling99.lean} --- it returns \emph{satisfiable} every time. It therefore does not
-exclude tilings that exist.
-
-Its reach is nevertheless limited in a way worth stating plainly. Of the $1064$ members with
-$e\le25$ it excludes $296$, and \emph{none of them has $N$ prime}. The reason is structural:
-$N=3f^2-e^2$ is even exactly when $e$ and $f$ are both odd --- they cannot both be even, being
-coprime --- and the parity bites only there, so every member it kills has $N$ even. The lemma
-therefore contributes to Theorem~\ref{thm:basebeta-full}, which requires every member, and nothing
-directly to the prime problem.
+This is the failure mode Lemma~\ref{lem:census} already warns of --- corner counting cannot see the
+side structure --- and the boundary walks are side structure. It is recorded here because the
+temptation is sharp and the arithmetic is otherwise correct.
 \end{remark}
 
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
