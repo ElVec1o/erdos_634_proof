@@ -531,6 +531,67 @@ theorem Tri.pair_eq_edge (T : Tri) {p q : Fin 3} (hpq : p ≠ q) :
       exact ⟨2, rfl⟩;
       exact ⟨1, segment_symm ℝ _ _⟩ ]
 
+/-- The three vertices of a triangle form an affine basis of the plane. -/
+noncomputable def Tri.basis (T : Tri) : AffineBasis (Fin 3) ℝ Plane :=
+  AffineBasis.mk T.pts T.indep (by
+    have := T.affineSpan_eq_top
+    rwa [Tri.carrier, affineSpan_convexHull] at this)
+
+/-- **G3a — every side of a triangle has a supporting functional.**  For the side from `pts i` to
+`pts (i+1)`, the barycentric coordinate opposite that side vanishes on both its endpoints and equals
+`1` at the third vertex. Its negated linear part, with the constant absorbed into `c`, is a linear
+functional bounded by `c` on the triangle, attaining `c` exactly at the two endpoints and strictly
+less at the third vertex.
+
+Together with `tile_contact_face` this identifies `{x ∈ carrier | f x = c}` as the side itself, which
+is what the chain lemma needs in order to be instantiated. -/
+theorem exists_supporting (T : Tri) (i : Fin 3) :
+    ∃ (f : Plane →ₗ[ℝ] ℝ) (c : ℝ), f ≠ 0 ∧ (∀ x ∈ T.carrier, f x ≤ c) ∧
+      f (T.pts i) = c ∧ f (T.pts (i + 1)) = c ∧ f (T.pts (i + 2)) < c := by
+  classical
+  set g : Plane →ᵃ[ℝ] ℝ := T.basis.coord (i + 2) with hg
+  have hdecomp : ∀ x, g x = g.linear x + g 0 := by
+    intro x; simpa using congrFun (AffineMap.decomp g) x
+  have hb : ∀ j, g (T.pts j) = if i + 2 = j then 1 else 0 := by
+    intro j; exact AffineBasis.coord_apply T.basis (i + 2) j
+  have hne1 : i + 2 ≠ i := by fin_cases i <;> decide
+  have hne2 : i + 2 ≠ i + 1 := by fin_cases i <;> decide
+  have h0 : g (T.pts i) = 0 := by rw [hb]; simp [hne1]
+  have h1 : g (T.pts (i + 1)) = 0 := by rw [hb]; simp [hne2]
+  have h2 : g (T.pts (i + 2)) = 1 := by rw [hb]; simp
+  have hnonneg : ∀ j, (0:ℝ) ≤ g (T.pts j) := by
+    intro j; rw [hb]; split <;> norm_num
+  refine ⟨-g.linear, g 0, ?_, ?_, ?_, ?_, ?_⟩
+  · intro hzero
+    have hlin0 : g.linear = 0 := by
+      have := congrArg Neg.neg hzero; simpa using this
+    have ha := hdecomp (T.pts i)
+    have hc := hdecomp (T.pts (i + 2))
+    rw [hlin0] at ha hc
+    simp only [LinearMap.zero_apply, zero_add] at ha hc
+    rw [h0] at ha; rw [h2] at hc
+    linarith
+  · intro x hx
+    rw [Tri.carrier] at hx
+    show x ∈ {y : Plane | (-g.linear) y ≤ g 0}
+    refine convexHull_min ?_ ?_ hx
+    · rintro y ⟨j, rfl⟩
+      simp only [Set.mem_setOf_eq, LinearMap.neg_apply]
+      linarith [hdecomp (T.pts j), hnonneg j]
+    · intro a ha b hb ta tb hta htb htab
+      simp only [Set.mem_setOf_eq, LinearMap.neg_apply] at ha hb ⊢
+      rw [map_add, map_smul, map_smul, smul_eq_mul, smul_eq_mul]
+      have key : -(ta * g.linear a + tb * g.linear b)
+               = ta * (-g.linear a) + tb * (-g.linear b) := by ring
+      rw [key]
+      calc ta * (-g.linear a) + tb * (-g.linear b)
+          ≤ ta * g 0 + tb * g 0 :=
+            add_le_add (mul_le_mul_of_nonneg_left ha hta) (mul_le_mul_of_nonneg_left hb htb)
+        _ = g 0 := by rw [← add_mul, htab, one_mul]
+  · simp only [LinearMap.neg_apply]; linarith [hdecomp (T.pts i), h0]
+  · simp only [LinearMap.neg_apply]; linarith [hdecomp (T.pts (i + 1)), h1]
+  · simp only [LinearMap.neg_apply]; linarith [hdecomp (T.pts (i + 2)), h2]
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
