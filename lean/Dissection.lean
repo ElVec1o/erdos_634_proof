@@ -755,6 +755,50 @@ theorem Tri.hausdorff_edge (T : Tri) (k : Fin 3) :
   rw [Tri.edge]
   exact MeasureTheory.hausdorffMeasure_segment _ _
 
+/-- **The barycentric description of a tile.**  `T.carrier` is exactly the points whose three
+barycentric coordinates are all nonnegative. -/
+theorem Tri.carrier_eq_nonneg_coord (T : Tri) :
+    T.carrier = {y | ∀ i, 0 ≤ T.basis.coord i y} := by
+  have h : Set.range T.pts = Set.range (T.basis : Fin 3 → Plane) := rfl
+  rw [Tri.carrier, h]
+  exact T.basis.convexHull_eq_nonneg_coord
+
+/-- **A tile is locally a half-plane at an edge-interior point.**
+
+If the two barycentric coordinates other than the `k`-th are strictly positive at `x` — that is, `x`
+lies on the line of edge `k` but strictly inside the other two edges' half-planes, which is exactly
+what it means for `x` to be in the *relative interior* of edge `k` — then on a small enough ball
+around `x` the tile coincides with the single half-plane `0 ≤ coord k`.
+
+This is the first step of the local double-covering statement that G4 now reduces to
+(`interiorBalanced_of_segments`): near an edge-interior point a tile contributes a half-disk, so a
+local area count at such a point can only balance as *two* tiles meeting along the segment, one from
+each side. The area count itself is not carried out here. -/
+theorem Tri.inter_ball_eq_halfplane (T : Tri) (k : Fin 3) {x : Plane}
+    (h1 : 0 < T.basis.coord (k + 1) x) (h2 : 0 < T.basis.coord (k + 2) x) :
+    ∃ r > 0, T.carrier ∩ Metric.ball x r
+           = {y | 0 ≤ T.basis.coord k y} ∩ Metric.ball x r := by
+  -- every index is one of `k`, `k+1`, `k+2`
+  have hfin : ∀ j i : Fin 3, i = j ∨ i = j + 1 ∨ i = j + 2 := by decide
+  -- the other two coordinates stay positive near `x`
+  have hc1 : Continuous (T.basis.coord (k + 1)) := AffineMap.continuous_of_finiteDimensional _
+  have hc2 : Continuous (T.basis.coord (k + 2)) := AffineMap.continuous_of_finiteDimensional _
+  have hopen : IsOpen {y | 0 < T.basis.coord (k + 1) y ∧ 0 < T.basis.coord (k + 2) y} :=
+    (isOpen_lt continuous_const hc1).inter (isOpen_lt continuous_const hc2)
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hopen x ⟨h1, h2⟩
+  refine ⟨r, hr, ?_⟩
+  ext y
+  simp only [Set.mem_inter_iff, Set.mem_setOf_eq, T.carrier_eq_nonneg_coord]
+  constructor
+  · rintro ⟨hy, hyb⟩; exact ⟨hy k, hyb⟩
+  · rintro ⟨hyk, hyb⟩
+    refine ⟨fun i => ?_, hyb⟩
+    obtain ⟨hp1, hp2⟩ := hball hyb
+    rcases hfin k i with rfl | rfl | rfl
+    · exact hyk
+    · exact hp1.le
+    · exact hp2.le
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
