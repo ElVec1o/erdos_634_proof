@@ -646,6 +646,50 @@ bijection at `p = 2`, `f = 2e+1` into a figure at every junction. -/
 theorem pi_vertex_with_gamma (x y z : ℕ) (h1 : y + z = 2) (h2 : 2 * x + z = 3 * y) (hz : 1 ≤ z) :
     x = 1 ∧ y = 1 ∧ z = 1 := by omega
 
+/-! ## The base walk at general `e`
+
+`thm:e1reduce`(ii) classifies the base walk at `e = 1`. The same reduction runs at every `e`: the
+walk `n_a·ef + n_b·(f²−e²) + n_c·f² = e(3f²−e²)` forces `n_b ≡ e (mod f)`, and *given* `n_b = e` the
+remaining walk is `n_a e + n_c f = 2ef`, whose solutions with `n_c ≥ 1` (the `γ`-trap) are exactly
+`(n_a, n_c) = (0, 2e)` and `(f, e)`. So the base walk is `(0, e, 2e)` or `(f, e, e)` — at `(3,7)`
+that is `(0,3,6)` and `(7,3,3)`, exactly the two walks the engine instance carries.
+
+The step `n_b = e` is **not** proved here. The congruence leaves `n_b ∈ {e, e+f, e+2f, …}` and the
+size bound alone does not close it: at `(3,7)`, `n_b = e + f = 10` satisfies `n_b·b = 400 ≤ 414`, and
+is excluded only because the remainder `14` is not representable. Checked exhaustively: the two-walk
+classification holds for **all 2433 coprime members with `f > 2e`, `e ≤ 40`** and fails for `f ≤ 2e`
+(first failure `(2,3)`, where `(2,5,1)` also solves). So the classification is HEURISTIC on `f > 2e`
+and the arithmetic below is the proved part. -/
+
+/-- **The base walk forces `n_b ≡ e (mod f)`.**  Reducing modulo `f` kills the `a` and `c` terms and
+leaves `e²(n_b − e) ≡ 0`; coprimality of `e` and `f` then transfers the congruence to `n_b`. -/
+theorem base_walk_nb_mod {e f na nb nc : ℤ}
+    (h : na * (e * f) + nb * (f * f - e * e) + nc * (f * f) = e * (3 * f * f - e * e)) :
+    f ∣ (e * e) * (nb - e) :=
+  ⟨na * e + nb * f + nc * f - 3 * e * f, by linarith [h]⟩
+
+/-- **Given `n_b = e`, the base walk has exactly two solutions.**  The residual equation is
+`n_a e + n_c f = 2ef` with `f ∣ n_a`; writing `n_a = f t` gives `n_c = e(2 − t)`, and the `γ`-trap
+`n_c ≥ 1` leaves `t ∈ {0,1}`. -/
+theorem base_walk_of_nb_eq_e {e f na nc : ℤ} (he : 0 < e) (hf : 0 < f) (hna : 0 ≤ na)
+    (h : na * e + nc * f = 2 * e * f) (hd : f ∣ na) (hnc : 1 ≤ nc) :
+    (na = 0 ∧ nc = 2 * e) ∨ (na = f ∧ nc = e) := by
+  obtain ⟨t, rfl⟩ := hd
+  have key : f * (t * e + nc - 2 * e) = 0 := by ring_nf; linarith [h]
+  have ht : nc = e * (2 - t) := by
+    have := (mul_eq_zero.mp key).resolve_left hf.ne'
+    linarith [this]
+  have hpos : 0 < e * (2 - t) := by rw [← ht]; linarith
+  have h1 : t ≤ 1 := by
+    by_contra hc
+    push_neg at hc
+    have h2 : 2 - t ≤ 0 := by linarith
+    nlinarith
+  have h0 : 0 ≤ t := nonneg_of_mul_nonneg_right hna hf
+  interval_cases t
+  · left; exact ⟨by ring, by linarith [ht]⟩
+  · right; exact ⟨by ring, by linarith [ht]⟩
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
