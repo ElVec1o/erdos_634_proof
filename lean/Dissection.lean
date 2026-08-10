@@ -915,6 +915,60 @@ and no full one.  That is "the segment is met from both sides, by one tile each"
 theorem local_degree_two {k m : ℕ} (hk : 1 ≤ k) (h : k + 2 * m = 2) : k = 2 ∧ m = 0 := by
   omega
 
+/-- **Two vanishing barycentric coordinates pin `x` to the remaining vertex.**  The coordinates sum
+to `1`, so if two vanish the third is `1`, and a point whose coordinates agree with a vertex's *is*
+that vertex. -/
+theorem Tri.eq_vertex_of_two_coords_zero (T : Tri) {x : Plane} {j k : Fin 3} (hjk : j ≠ k)
+    (hj : T.basis.coord j x = 0) (hk : T.basis.coord k x = 0) :
+    ∃ m, x = T.pts m := by
+  classical
+  have key : ∀ u v : Fin 3, u ≠ v →
+      ∃ m : Fin 3, m ≠ u ∧ m ≠ v ∧ ∀ b : Fin 3, b ≠ m → b = u ∨ b = v := by decide
+  obtain ⟨m, hmj, hmk, hall⟩ := key j k hjk
+  have hzero : ∀ b : Fin 3, b ≠ m → T.basis.coord b x = 0 := by
+    intro b hb; rcases hall b hb with rfl | rfl
+    · exact hj
+    · exact hk
+  -- the surviving coordinate is 1
+  have hm : T.basis.coord m x = 1 := by
+    rw [← T.basis.sum_coord_apply_eq_one x]
+    exact (Finset.sum_eq_single_of_mem m (Finset.mem_univ m)
+      (fun b _ hb => hzero b hb)).symm
+  refine ⟨m, T.basis.ext_elem (fun i => ?_)⟩
+  by_cases hi : i = m
+  · rw [hi, hm]; exact (T.basis.coord_apply_eq m).symm
+  · rw [hzero i hi]; exact (T.basis.coord_apply_ne hi).symm
+
+/-- **The local classification is exhaustive away from the tile's vertices.**
+
+At any point that is not a vertex of `T`, exactly one of three things holds: all three barycentric
+coordinates are positive (`x` is interior), exactly one vanishes and the others are positive (`x` is
+in the relative interior of that edge), or one is negative (`x` is outside).  These are precisely the
+hypotheses of `Tri.ball_subset_of_pos`, `Tri.inter_ball_eq_halfplane` and `Tri.ball_disjoint_of_neg`.
+
+This is assembly item (b): it is what makes the classification feeding `Dissection.local_balance`
+exhaustive, and it isolates the excluded set as the tile's three vertices — a finite set, which is
+what `SegmentDense.subset_closure_diff_finite` is there to absorb. -/
+theorem Tri.classify (T : Tri) {x : Plane} (hx : ∀ k, x ≠ T.pts k) :
+    (∀ i, 0 < T.basis.coord i x)
+  ∨ (∃ k, T.basis.coord k x = 0 ∧ ∀ j, j ≠ k → 0 < T.basis.coord j x)
+  ∨ (∃ k, T.basis.coord k x < 0) := by
+  classical
+  by_cases hneg : ∃ k, T.basis.coord k x < 0
+  · exact Or.inr (Or.inr hneg)
+  push_neg at hneg
+  by_cases hpos : ∀ i, 0 < T.basis.coord i x
+  · exact Or.inl hpos
+  push_neg at hpos
+  obtain ⟨k, hk⟩ := hpos
+  have hk0 : T.basis.coord k x = 0 := le_antisymm hk (hneg k)
+  refine Or.inr (Or.inl ⟨k, hk0, fun j hj => ?_⟩)
+  rcases (hneg j).lt_or_eq with h | h
+  · exact h
+  · -- a second vanishing coordinate would make `x` a vertex
+    exact absurd (T.eq_vertex_of_two_coords_zero hj h.symm hk0) (by
+      rintro ⟨m, rfl⟩; exact hx m rfl)
+
 /-- **A finite family of positive radii has a common positive lower bound.**  Each local
 classification lemma supplies its own radius; a local count needs one radius that works for every
 tile at once.  This is assembly item (a). -/
