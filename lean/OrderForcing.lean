@@ -386,6 +386,25 @@ theorem alpha_vertex_gap {f n K : ℕ} (hf : 2 ≤ f) (h : n * f + 1 = K * (f * 
   have h4 : f ∣ 1 := by have h6 := Nat.dvd_sub h3 h2; rwa [h5] at h6
   exact absurd (Nat.le_of_dvd (by norm_num) h4) (by omega)
 
+/-- **The α-vertex gap, general form** (companion `lem:avgen`).  At a general member the mirrored
+cover piece has its foot at `(k+3)a − e³/f`, so the foot is a lattice point only if `f² ∣ e²`, and
+at row `1` it is a junction only if `f ∣ e³`.  Coprimality kills both: a modulus coprime to `e` that
+divides a power of `e` is `1`, contradicting `f ≥ 2`.  So the mirrored placement is excluded at row
+`1` for every member with `f ≥ 2`, with `e³` playing the role that `1` plays at `e = 1`.
+
+This is the general counterpart of `alpha_vertex_gap`, which is the `e = 1` instance: there `e³ = 1`
+and the condition degenerates to `f ∣ 1`. -/
+theorem alpha_vertex_gap_gen {e f : ℕ} (hf : 2 ≤ f) (hco : Nat.Coprime e f) :
+    ¬ (f * f ∣ e * e) ∧ ¬ (f ∣ e * e * e) := by
+  have hfe : Nat.Coprime f e := hco.symm
+  refine ⟨fun h => ?_, fun h => ?_⟩
+  · have hff : f ∣ f * f := ⟨f, rfl⟩
+    have h1 : f ∣ e * e := hff.trans h
+    have := (hfe.mul_right hfe).eq_one_of_dvd h1
+    omega
+  · have := ((hfe.mul_right hfe).mul_right hfe).eq_one_of_dvd h
+    omega
+
 /-- **The anti-brick side.** The direct `γ`-right placement of an `a`-up tile has squared third
 side `f⁴ − 2f² + 2`, which is no tile side: it misses `b²` by exactly `1`, `c²` by `2f² − 2`, and
 `a²` by `(f²−1)(f²−2)`. -/
