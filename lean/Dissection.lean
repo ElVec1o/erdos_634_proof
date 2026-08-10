@@ -768,6 +768,46 @@ which is why it does not follow from the area work above). -/
 def InteriorBalanced {Dir : Type*} (neg : Dir → Dir) (Lint : Dir → ℤ) : Prop :=
   ∀ d, Lint (neg d) = Lint d
 
+/-- **G4 reduces to a local statement, one maximal segment at a time.**
+
+Group the interior tile-edges by the maximal interior segment they lie on. `cov σ d` is the total
+length of the interior tile-edges lying on `σ` and directed along `d`; `Lint d = ∑ σ, cov σ d`. A
+maximal segment `σ` carries just one pair of opposite directions, `dirOf σ` and `neg (dirOf σ)`, so
+`cov σ d` vanishes for every other `d` (`hoff`), and the geometric content is exactly that each of
+the two sides of `σ` covers it once: `cov σ (dirOf σ) = cov σ (neg (dirOf σ)) = len σ`
+(`hpos`, `hneg`).
+
+Granting those three, the global balance follows. This is the honest shape of the remaining work:
+the *global* length identity `Lint (neg d) = Lint d` is not what has to be proved geometrically —
+the *local* double covering of a single segment is, and it is a statement about one segment and the
+tiles meeting it, which is what a covering argument near `σ` can reach. Note the two sides may
+subdivide `σ` completely differently; only the totals are claimed equal, which is why this is a
+length statement and not a bijection between edges.
+
+Degenerate directions are allowed: `neg` may fix `dirOf σ`, and then `hpos` and `hneg` coincide.
+
+This does not discharge G4 — it relocates it to `hpos`/`hneg`. -/
+theorem interiorBalanced_of_segments {Dir Seg : Type*} [Fintype Seg] [DecidableEq Dir]
+    (neg : Dir → Dir) (hinv : Function.Involutive neg)
+    (dirOf : Seg → Dir) (len : Seg → ℤ) (cov : Seg → Dir → ℤ)
+    (hpos : ∀ σ, cov σ (dirOf σ) = len σ)
+    (hneg : ∀ σ, cov σ (neg (dirOf σ)) = len σ)
+    (hoff : ∀ σ d, d ≠ dirOf σ → d ≠ neg (dirOf σ) → cov σ d = 0) :
+    InteriorBalanced neg (fun d => ∑ σ, cov σ d) := by
+  intro d
+  refine Finset.sum_congr rfl ?_
+  intro σ _
+  by_cases h1 : d = dirOf σ
+  · subst h1; rw [hneg σ, hpos σ]
+  · by_cases h2 : d = neg (dirOf σ)
+    · subst h2; rw [hinv (dirOf σ), hpos σ, hneg σ]
+    · -- off the segment's own direction pair: both sides vanish
+      have hn1 : neg d ≠ dirOf σ := by
+        intro h; exact h2 (by rw [← h, hinv d])
+      have hn2 : neg d ≠ neg (dirOf σ) := by
+        intro h; exact h1 (hinv.injective h)
+      rw [hoff σ (neg d) hn1 hn2, hoff σ d h1 h2]
+
 end Erdos634.Geometry
 
 #print axioms Erdos634.Geometry.Tri.volume_pos
