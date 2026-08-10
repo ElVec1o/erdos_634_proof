@@ -815,6 +815,61 @@ theorem gap_c_sub_a_tight {e x y z : ℕ} (he : 2 ≤ e)
   · interval_cases x <;> omega
   · nlinarith
 
+/-- **The chord bound kills case A at the last junction, for `e ≤ 4`.**
+
+At `J_{2f}` the apex `c`-tile's `a`-ray points along the horizontal (rotating the side direction by
+`−β`), and `J_{2f}` sits at height fraction `2f·a/f³ = 2e/f`, so the horizontal chord from `J_{2f}`
+to the far side has length exactly `L = e(3f²−e²)(f−2e)/f`, which on `f = 2e+1` is `eN/f`.  In case A
+the filler lays its `c`-edge along that ray, so the run `[a, c]` must be covered by tile edges whose
+endpoints all stay within `L`.  Scaling by `f`, that asks for `x,y,z` with
+
+  `c − a ≤ x a + y b + z c`  and  `(x a + y b + z c)·f ≤ e(7e² + 8e + 2)`.
+
+There are none: a pure-`a` solution needs `x ≥ 2`, and already `2a·f > e(7e²+8e+2)`; while
+`b·f − e(7e²+8e+2) = −e³+3e²+4e+1 > 0` for `e ≤ 4`, and `c·f` exceeds it for every `e`.
+
+At `(3,7)` the numbers are `L = 414/7`, and `[c−a, L−a] = [28, 267/7]` contains no element of
+`⟨21,40,49⟩`.  The bound is sharp in `e`: at `(5,11)` a `b`-edge does fit (`96 ≤ 1085/11`) and case A
+survives, so this argument covers `(1,3)`, `(2,5)`, `(3,7)`, `(4,9)` and no further. -/
+theorem last_junction_caseA_dead {e x y z : ℕ} (he : 1 ≤ e) (he4 : e ≤ 4)
+    (hlo : (2 * e + 1) * (e + 1) ≤
+        x * (e * (2 * e + 1)) + y * ((3 * e + 1) * (e + 1)) + z * ((2 * e + 1) * (2 * e + 1)))
+    (hhi : (x * (e * (2 * e + 1)) + y * ((3 * e + 1) * (e + 1)) + z * ((2 * e + 1) * (2 * e + 1)))
+        * (2 * e + 1) ≤ e * (7 * e * e + 8 * e + 2)) : False := by
+  -- `y = 0`: a single `b` already overshoots, because `-e³+3e²+4e+1 > 0` for `e ≤ 4`
+  have hy : y = 0 := by
+    rcases Nat.eq_zero_or_pos y with h | h
+    · exact h
+    · exfalso
+      have hbig : ((3 * e + 1) * (e + 1)) * (2 * e + 1) ≤
+          (x * (e * (2 * e + 1)) + y * ((3 * e + 1) * (e + 1))
+            + z * ((2 * e + 1) * (2 * e + 1))) * (2 * e + 1) := by
+        have : (3 * e + 1) * (e + 1) ≤ y * ((3 * e + 1) * (e + 1)) := Nat.le_mul_of_pos_left _ h
+        exact Nat.mul_le_mul_right _ (by omega)
+      interval_cases e <;> omega
+  -- `z = 0`: a single `c` overshoots for every `e`
+  have hz : z = 0 := by
+    rcases Nat.eq_zero_or_pos z with h | h
+    · exact h
+    · exfalso
+      have hbig : ((2 * e + 1) * (2 * e + 1)) * (2 * e + 1) ≤
+          (x * (e * (2 * e + 1)) + y * ((3 * e + 1) * (e + 1))
+            + z * ((2 * e + 1) * (2 * e + 1))) * (2 * e + 1) := by
+        have : (2 * e + 1) * (2 * e + 1) ≤ z * ((2 * e + 1) * (2 * e + 1)) :=
+          Nat.le_mul_of_pos_left _ h
+        exact Nat.mul_le_mul_right _ (by omega)
+      interval_cases e <;> omega
+  subst hy; subst hz
+  simp only [Nat.zero_mul, Nat.add_zero] at hlo hhi
+  -- pure `a`: `x ≥ 2` from `hlo`, and `2a` already overshoots
+  have hx2 : 2 ≤ x := by
+    by_contra hc
+    interval_cases x <;> interval_cases e <;> omega
+  have h2a : 2 * (e * (2 * e + 1)) ≤ x * (e * (2 * e + 1)) :=
+    Nat.mul_le_mul_right _ hx2
+  have := Nat.mul_le_mul_right (2 * e + 1) h2a
+  interval_cases e <;> omega
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
