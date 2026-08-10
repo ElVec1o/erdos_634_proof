@@ -2510,6 +2510,62 @@ $a$-edges and $1$ $c$-edge. Excluding those two remains open; the reduction boun
 does not solve it.
 \end{remark}
 
+\subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
+
+Corollary~\ref{cor:ptwo} leaves the two cases $p\in\{1,2\}$. The case $p=2$ is not uniformly hard:
+on one infinite subfamily it is completely rigid, and the rigidity is visible in a counting budget.
+
+\begin{lemma}[The $\gamma$-injection budget at $p=2$]\label{lem:tight}
+A side of parameter $p$ carries $n_a=pf$, $n_b=0$, $n_c=f-pe$, hence $k=pf+(f-pe)$ edges and $k-1$
+junctions, so the $\gamma$-injection bound $\#a+\#b\le k-1$ has slack $f-pe-1$. At $p=1$ the slack is
+$f-e-1>0$ for every member. At $p=2$ it is $f-2e-1$, which vanishes exactly when $f=2e+1$.
+\textup{(}\texttt{gamma\_slack}, \texttt{p\_two\_tight\_iff}.\textup{)}
+\end{lemma}
+
+The subfamily $f=2e+1$ is infinite and automatically coprime, with $N=3f^2-e^2=11e^2+12e+3$: the
+members $(1,3)$ at $N=26$, $(2,5)$ at $71$, $(3,7)$ at $138$, $(4,9)$ at $227$, $(5,11)$ at $338$.
+The first is closed by Theorem~\ref{thm:walls13} and the second by search, so $(3,7)$ is the smallest
+tight member not already settled.
+
+\begin{proposition}[The $p=2$ side is forced]\label{prop:tightside}
+Let $f=2e+1$ and suppose an equal side has $p=2$. Then $n_c=f-2e=1$, and the side word is
+$a^{2f}c$, read from the base corner to the apex. Every one of its $2f$ junctions carries exactly one
+$\gamma$ and is the figure $\{\gamma,\alpha,\beta\}$; each $a$-tile presents $\beta$ at its left
+junction and $\gamma$ at its right; the corner tile lays $a$ on the side and $c$ on the base.
+\end{proposition}
+
+\begin{proof}
+$n_c=f-2e=1$ and $2f\cdot ef+f^2=f^2(2e+1)=f^3$, so the profile is consistent
+(\texttt{p\_two\_single\_c}). Tightness makes the $\gamma$-injection a bijection, so every junction
+carries exactly one $\gamma$; a $\pi$-vertex carrying a $\gamma$ is $\{\gamma,\alpha,\beta\}$
+(\texttt{pi\_vertex\_with\_gamma}). The apex figure is $3\alpha$ and the sides carry no $b$-edge
+(Lemma~\ref{lem:sidenob}), so the apex-end edge is a $c$; with only one $c$ available it sits there,
+fixing the word. The corner figure is a single $\beta$ with flanks $\{a,c\}$, and the base-corner end
+being an $a$-edge puts the $c$ on the base. The alternation follows: the corner tile presents
+$\gamma$ at $J_1$, and each junction having a unique $\gamma$ forces the next $a$-tile to present
+$\beta$ there.
+\end{proof}
+
+\begin{remark}[The last junction, and what is still missing]\label{rem:lastjunction}
+At $J_{2f}$ the two boundary neighbours are the $a$-tile $A_{2f}$, presenting $\gamma$ with a
+$b$-ray inward, and the apex $c$-tile, presenting $\beta$ with an \emph{$a$}-ray inward; the filler's
+rays are $b$ and $c$. Since neither $b$ nor $c$ equals $a$, \emph{$J_{2f}$ cannot be edge-to-edge},
+and each placement leaves a residual run: $c-a$, or $b-a$ together with $c-b=e^2$. All three are gaps
+of $\langle a,b,c\rangle$ --- $b-a$ by \texttt{gap\_b\_sub\_a}, $e^2$ by \texttt{gap\_e\_squared},
+and $c-a$ by \texttt{gap\_c\_sub\_a\_tight}, which holds precisely for $e\ge2$ since $c-a=2a$ at
+$(1,3)$. Moreover $e^2<a$, so no tile edge fits inside that run at all. Hence the covering
+\emph{must} overrun a filler vertex.
+
+That is forcing, not exclusion. A gap run contradicts only when the run is blocked at both ends; it
+is blocked at $J_{2f}$, which lies on the boundary, but nothing proved here blocks the far end.
+Supplying that is the tile-interior blocking of Theorem~\ref{thm:walls13}, and it is the one step
+between this analysis and the exclusion of $p=2$ on the whole subfamily. It is open.
+
+The point at which $e\ge2$ is \emph{easier} than $e=1$ is worth recording: $c-a$ is a gap exactly for
+$e\ge2$.
+\end{remark}
+
+
 \begin{remark}[Close pairs: what the unconditional filters leave]\label{rem:closepairs}
 At a close pair ($f^2\le 2ef+e^2$) Lemma~\ref{lem:basetri} no longer applies and the base admits
 extra columns, all with $y=e+kf$ for some $k\ge1$. Three unconditional filters apply: the
