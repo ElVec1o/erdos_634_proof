@@ -2556,14 +2556,65 @@ and $c-a$ by \texttt{gap\_c\_sub\_a\_tight}, which holds precisely for $e\ge2$ s
 $(1,3)$. Moreover $e^2<a$, so no tile edge fits inside that run at all. Hence the covering
 \emph{must} overrun a filler vertex.
 
-That is forcing, not exclusion. A gap run contradicts only when the run is blocked at both ends; it
-is blocked at $J_{2f}$, which lies on the boundary, but nothing proved here blocks the far end.
-Supplying that is the tile-interior blocking of Theorem~\ref{thm:walls13}, and it is the one step
-between this analysis and the exclusion of $p=2$ on the whole subfamily. It is open.
-
-The point at which $e\ge2$ is \emph{easier} than $e=1$ is worth recording: $c-a$ is a gap exactly for
-$e\ge2$.
+Each placement therefore forces the covering to overrun a filler vertex. That alone is not an
+exclusion, and the exclusion comes instead from a chord bound, which we now state.
 \end{remark}
+
+\begin{lemma}[The chord at the last junction]\label{lem:chord}
+Let $f=2e+1$ and let a side have $p=2$. The apex $c$-tile presents $\beta$ at $J_{2f}$ with its
+$a$-ray pointing along the horizontal, and $J_{2f}$ lies at height fraction $2e/f$, so the horizontal
+chord from $J_{2f}$ to the opposite side has length exactly $e(3f^2-e^2)(f-2e)/f=eN/f$. At $(3,7)$
+this is $414/7$.
+
+Moreover the tiles meeting that chord from either side meet it in \emph{whole} edges: a tile whose
+interior misses the chord line lies in a closed half-plane of it, so its contact is a face
+(\texttt{tile\_contact\_face}), and at a non-vertex point that face is an edge
+(\texttt{contact\_is\_edge}). Disjointness of tile interiors then makes the covering a chain starting
+at the end of the $c$-tile's $a$-edge, and convexity of the target keeps every endpoint within the
+chord.
+\end{lemma}
+
+\begin{theorem}[$p=2$ is excluded on the tight subfamily]\label{thm:ptwodead}
+Let $f=2e+1$. Then no equal side of the base-$\beta$ target at $m=1$ has $p=2$.
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:tightside} the side word is $a^{2f}c$ and the last junction carries
+$\{\gamma,\alpha,\beta\}$, so by Remark~\ref{rem:lastjunction} a tile must sit above the chord of
+Lemma~\ref{lem:chord} with an edge beginning at chord position $a$. Enumerate those placements: the
+edge on the chord is $a$, $b$ or $c$, each with two chiralities.
+
+If the edge is $c$ it leaves the target, since $(a+c)f-eN=f^3-2ef^2+e^3=(2e+1)^2+e^3>0$.
+
+If the edge is $a$, the height of the tile over its $a$-edge is $2\,\mathrm{Area}/a$, and the apex
+stands $H(f-2e)/f$ above the chord where $H$ is the target height. Writing $A$ for the target area,
+these are $2A/(Nef)$ and $2A(f-2e)/(eNf)$, equal precisely when $f-2e=1$. So on this subfamily the
+third vertex lies at exactly apex height, and the target meets that height in one point: the apex.
+The two chiralities then demand $N(f-2e-1)=2f^2$ and $N(f-2e+1)=4f^2$, i.e.\ $0=2f^2$ and $N=2f^2$,
+the latter giving $e=f$. Both are impossible. \textup{(}At $(3,7)$ the tile would be $(21,40,41)$.\textup{)}
+
+If the edge is $b$, one chirality overruns the chord when $-e^3+3e^2+4e+1>0$, i.e.\ for $e\le4$, and
+for $e\ge5$ its third vertex falls outside on the left, since $(f^2-e^2)(2f-e)\ge e(3f^2-e^2)$
+reduces to $e^3\le3e^2+4e+1$, false there; the ranges are complementary. The other chirality places
+the third vertex at chord position $a+(2f^2-e^2)/2$, exceeding the chord by $(7e^2+8e+2)/(2f)>0$ for
+every $e$.
+
+No placement survives.
+\end{proof}
+
+\begin{remark}[Scope, and where $e\ge2$ is easier]\label{rem:ptwoscopeb}
+Theorem~\ref{thm:ptwodead} closes $p=2$ on the whole subfamily $f=2e+1$, hence at $(1,3)$, $(2,5)$,
+$(3,7)$, $(4,9)$, $(5,11)$ and onward; verified independently by exact enumeration of the six
+placements for every member with $e\le400$. Combined with Corollary~\ref{cor:ptwo} it leaves $p=1$ as
+the only obstruction to Hypothesis~\ref{hyp:walls} on that subfamily.
+
+It does not extend beyond $f=2e+1$: the height identity used above holds exactly there.
+
+Two by-products. First, $c-a$ is a gap of $\langle a,b,c\rangle$ precisely for $e\ge2$, failing at
+$(1,3)$ where $c-a=2a$; this is the first point in the problem where $e\ge2$ is easier than $e=1$.
+Second, at $(3,7)$ the base walk $(0,e,2e)$ carries no $a$-edge, so the corner tile lays $c$ on the
+base and $a$ on the side, forcing $p\ge1$ on both equal sides; with $p=2$ excluded,
+Hypothesis~\ref{hyp:walls} at $(3,7)$ therefore requires the base walk $(f,e,e)$.\end{remark}
 
 
 \begin{remark}[Close pairs: what the unconditional filters leave]\label{rem:closepairs}
