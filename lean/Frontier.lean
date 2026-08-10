@@ -992,6 +992,35 @@ cleared of the factor `2f`, is `7e²+8e+2`. -/
 theorem placement_b_other_chirality (e : ℤ) (he : 1 ≤ e) : 0 < 7 * e ^ 2 + 8 * e + 2 := by
   nlinarith [he]
 
+/-! ## The chord and the height identity, as arithmetic
+
+The two geometric inputs of `thm:lastjunction` reduce to arithmetic once the standard similar-triangle
+and area relations are supplied. `A` is the tile's area, so the target's area is `N·A` and, its base
+being `eN`, its height is `H = 2A/e`. The last junction sits at height fraction `2e/f`. -/
+
+/-- **The chord at height fraction `2e/f` has length `eN(f−2e)/f`.**  A triangle's horizontal
+cross-section at height fraction `s` has length `(1−s)` times the base; here `s = 2e/f` and the base
+is `eN`.  On `f = 2e+1` this is `eN/f`. -/
+theorem chord_length (e f N : ℚ) (he : 0 < e) (hf : 0 < f) :
+    (1 - 2 * e / f) * (e * N) = e * N * (f - 2 * e) / f := by
+  field_simp
+
+/-- **The height identity, cleared of denominators.**  The apex stands `H(f−2e)/f` above the chord,
+with `H = 2A/e` the target height (`A` the tile area, target area `N·A`, base `eN`), while the tile's
+height over its `a`-edge is `2A/a = 2A/(ef)`.  Multiplying both by `ef`, the identity reads
+`2A(f−2e) = 2A`, i.e. **`f = 2e+1`**: the defining property of the tight subfamily.
+
+This is the step that forces the third vertex of the pinned `a`-edge tile to the apex, and hence the
+step behind `thm:lastjunction` and `thm:ptwodead`. -/
+theorem height_identity (A e f : ℚ) (hA : A ≠ 0) :
+    2 * A * (f - 2 * e) = 2 * A ↔ f = 2 * e + 1 := by
+  constructor
+  · intro h
+    have h2 : 2 * A * (f - 2 * e) = 2 * A * 1 := by linarith
+    have := mul_left_cancel₀ (by simpa using hA : (2:ℚ) * A ≠ 0) h2
+    linarith
+  · intro h; subst h; ring
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
@@ -1171,3 +1200,5 @@ end Erdos634.Frontier
 #print axioms Erdos634.Frontier.placement_b_overshoots_small
 #print axioms Erdos634.Frontier.placement_b_falls_out_large
 #print axioms Erdos634.Frontier.placement_b_other_chirality
+#print axioms Erdos634.Frontier.chord_length
+#print axioms Erdos634.Frontier.height_identity
