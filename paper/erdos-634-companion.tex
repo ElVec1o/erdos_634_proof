@@ -2510,6 +2510,55 @@ $a$-edges and $1$ $c$-edge. Excluding those two remains open; the reduction boun
 does not solve it.
 \end{remark}
 
+\subsection{A parity the vertex census discards}\label{sub:parity}
+
+Lemma~\ref{lem:census} records three counting identities. Their published consequence,
+$v_1=1+n_2+v_3+2v_4$, is not all they contain: the $\alpha$-identity carries a parity statement about
+the boundary that the substitution throws away.
+
+\begin{lemma}[Junction parity]\label{lem:parity}
+Write $S=n_1+n_2$ for the number of straight ($\pi$) junctions on the boundary. Then
+$S\equiv N+1\pmod 2$.
+\end{lemma}
+
+\begin{proof}
+The $\alpha$-identity is $3+n_1+3n_2+2v_2+4v_3+6v_4=N$. Substituting $n_1=S-n_2$ gives
+$S+2\bigl(n_2+v_2+2v_3+3v_4\bigr)=N-3$, and the bracket is an integer.
+\textup{(}\texttt{census\_parity}.\textup{)}
+\end{proof}
+
+The three identities have rank two, and this is the only parity they yield: substituting
+$v_1=1+n_2+v_3+2v_4$ into the $\beta$-identity returns the $\alpha$-identity exactly, and the
+$\gamma$-identity is then dependent. So Lemma~\ref{lem:parity} exhausts the census.
+
+\begin{theorem}[The member $(3,7)$ is excluded]\label{thm:no37}
+The $(3,7)$ target admits no tiling at $m=1$. In particular $N=138$ is not a number of congruent
+triangles into which a triangle can be cut by a base-$\beta$ tiling at $m=1$.
+\end{theorem}
+
+\begin{proof}
+A side of parameter $p$ carries $n_a=7p$ and $n_c=7-3p$ edges and no $b$-edge
+(Lemma~\ref{lem:sidenob}), so it has $k=4p+7$ edges, odd for every $p$; and $p\le2$ by
+Corollary~\ref{cor:ptwo}. The base walk is $(0,3,6)$ or $(7,3,3)$, with $9$ resp.\ $13$ edges, again
+odd. A side with $k$ edges contributes $k-1$ junctions, so $S=k_1+k_2+k_{\mathrm b}-3$ is even, while
+Lemma~\ref{lem:parity} requires $S\equiv N+1=139$, odd. All eighteen combinations are checked and
+every one violates. \textup{(}\texttt{no\_tiling\_37}.\textup{)}
+\end{proof}
+
+\begin{remark}[Reach of the parity, and a positive control]\label{rem:parityscope}
+The test is not vacuous: run on the $(1,2)$ family at $m=1,2,3,4$ --- whose $m=2$ and $m=3$ members
+are the genuine $44$- and $99$-tilings, kernel-checked in \texttt{lean/Tiling44.lean} and
+\texttt{lean/Tiling99.lean} --- it returns \emph{satisfiable} every time. It therefore does not
+exclude tilings that exist.
+
+Its reach is nevertheless limited in a way worth stating plainly. Of the $1064$ members with
+$e\le25$ it excludes $296$, and \emph{none of them has $N$ prime}. The reason is structural:
+$N=3f^2-e^2$ is even exactly when $e$ and $f$ are both odd --- they cannot both be even, being
+coprime --- and the parity bites only there, so every member it kills has $N$ even. The lemma
+therefore contributes to Theorem~\ref{thm:basebeta-full}, which requires every member, and nothing
+directly to the prime problem.
+\end{remark}
+
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
 
 Corollary~\ref{cor:ptwo} leaves the two cases $p\in\{1,2\}$. The case $p=2$ is not uniformly hard:
