@@ -874,6 +874,95 @@ theorem volume_halfspace_inter_ball (L : Plane →ₗ[ℝ] ℝ) (hL : L ≠ 0) (
   rw [hunion, hinter, hvolB, add_zero] at hie
   rw [hie, two_mul]
 
+/-- **The half-plane statement transported to an arbitrary centre.**  `volume_halfspace_inter_ball`
+is stated at the origin for a *linear* functional; the local count needs it at `x` for an *affine*
+one vanishing there, which is what a barycentric coordinate is on the line of its edge.  Translation
+invariance of Haar measure moves it. -/
+theorem volume_halfplane_inter_ball_at (g : Plane →ᵃ[ℝ] ℝ) (hL : g.linear ≠ 0)
+    {x : Plane} (hx : g x = 0) (r : ℝ) :
+    2 * volume ({y : Plane | 0 ≤ g y} ∩ Metric.ball x r) = volume (Metric.ball x r) := by
+  have hg : ∀ v : Plane, g (x + v) = g.linear v := by
+    intro v
+    have h := g.map_vadd x v
+    simpa [add_comm, hx] using h
+  have hballpre : (fun v : Plane => x + v) ⁻¹' Metric.ball x r = Metric.ball 0 r := by
+    ext v; simp [Metric.mem_ball, dist_eq_norm, dist_zero_right]
+  have hpre : (fun v : Plane => x + v) ⁻¹' ({y : Plane | 0 ≤ g y} ∩ Metric.ball x r)
+            = {v : Plane | 0 ≤ g.linear v} ∩ Metric.ball 0 r := by
+    rw [Set.preimage_inter, hballpre]
+    congr 1
+    ext v; simp only [Set.mem_preimage, Set.mem_setOf_eq, hg]
+  calc 2 * volume ({y : Plane | 0 ≤ g y} ∩ Metric.ball x r)
+      = 2 * volume ((fun v : Plane => x + v) ⁻¹' ({y : Plane | 0 ≤ g y} ∩ Metric.ball x r)) := by
+        rw [measure_preimage_add]
+    _ = 2 * volume ({v : Plane | 0 ≤ g.linear v} ∩ Metric.ball 0 r) := by rw [hpre]
+    _ = volume (Metric.ball (0 : Plane) r) := volume_halfspace_inter_ball _ hL r
+    _ = volume (Metric.ball x r) := by rw [← hballpre, measure_preimage_add]
+
+/-- **A barycentric coordinate has nonzero linear part.**  It takes the value `1` at its own vertex
+and `0` at the others, so it is not constant. -/
+theorem Tri.coord_linear_ne_zero (T : Tri) (k : Fin 3) : (T.basis.coord k).linear ≠ 0 := by
+  intro h
+  have hne : ∀ j : Fin 3, j ≠ j + 1 := by decide
+  have e1 : T.basis.coord k (T.pts k) = 1 := T.basis.coord_apply_eq k
+  have e2 : T.basis.coord k (T.pts (k + 1)) = 0 := T.basis.coord_apply_ne (hne k)
+  have hdiff : T.basis.coord k (T.pts k) - T.basis.coord k (T.pts (k + 1)) = 0 := by
+    have hv := (T.basis.coord k).linearMap_vsub (T.pts k) (T.pts (k + 1))
+    rw [h] at hv
+    simpa using hv.symm
+  rw [e1, e2] at hdiff
+  norm_num at hdiff
+
+/-- **A local set identity persists on smaller balls.**  Each classification lemma produces its own
+radius; the count needs them all at one radius, so every local statement must survive shrinking. -/
+theorem inter_ball_mono {A B : Set Plane} {x : Plane} {r : ℝ}
+    (h : A ∩ Metric.ball x r = B ∩ Metric.ball x r) {r' : ℝ} (hr' : r' ≤ r) :
+    A ∩ Metric.ball x r' = B ∩ Metric.ball x r' := by
+  have hsub : Metric.ball x r' ⊆ Metric.ball x r := Metric.ball_subset_ball hr'
+  ext y
+  simp only [Set.mem_inter_iff]
+  constructor
+  · rintro ⟨hy, hb⟩; exact ⟨((Set.ext_iff.mp h y).mp ⟨hy, hsub hb⟩).1, hb⟩
+  · rintro ⟨hy, hb⟩; exact ⟨((Set.ext_iff.mp h y).mpr ⟨hy, hsub hb⟩).1, hb⟩
+
+/-- **The three local contributions, in the form the count consumes.**  At a point in the relative
+interior of edge `k`, every small enough ball meets the tile in exactly half its area. -/
+theorem Tri.volume_inter_ball_edge (T : Tri) (k : Fin 3) {x : Plane}
+    (h0 : T.basis.coord k x = 0)
+    (h1 : 0 < T.basis.coord (k + 1) x) (h2 : 0 < T.basis.coord (k + 2) x) :
+    ∃ r > 0, ∀ r', 0 < r' → r' ≤ r →
+      2 * volume (T.carrier ∩ Metric.ball x r') = volume (Metric.ball x r') := by
+  obtain ⟨r, hr, hEq⟩ := T.inter_ball_eq_halfplane k h1 h2
+  refine ⟨r, hr, fun r' _ hle => ?_⟩
+  rw [inter_ball_mono hEq hle]
+  exact volume_halfplane_inter_ball_at (T.basis.coord k) (T.coord_linear_ne_zero k) h0 r'
+
+/-- At an interior point the tile swallows every small enough ball. -/
+theorem Tri.volume_inter_ball_interior (T : Tri) {x : Plane}
+    (hpos : ∀ i, 0 < T.basis.coord i x) :
+    ∃ r > 0, ∀ r', 0 < r' → r' ≤ r →
+      volume (T.carrier ∩ Metric.ball x r') = volume (Metric.ball x r') := by
+  obtain ⟨r, hr, hsub⟩ := T.ball_subset_of_pos hpos
+  refine ⟨r, hr, fun r' _ hle => ?_⟩
+  congr 1
+  exact Set.inter_eq_self_of_subset_right
+    (fun y hy => hsub (Metric.ball_subset_ball hle hy))
+
+/-- At an exterior point every small enough ball misses the tile. -/
+theorem Tri.volume_inter_ball_exterior (T : Tri) {x : Plane} {k : Fin 3}
+    (hneg : T.basis.coord k x < 0) :
+    ∃ r > 0, ∀ r', 0 < r' → r' ≤ r →
+      volume (T.carrier ∩ Metric.ball x r') = 0 := by
+  obtain ⟨r, hr, hemp⟩ := T.ball_disjoint_of_neg hneg
+  refine ⟨r, hr, fun r' _ hle => ?_⟩
+  have : T.carrier ∩ Metric.ball x r' = ∅ := by
+    rw [Set.eq_empty_iff_forall_notMem]
+    rintro y ⟨hy1, hy2⟩
+    have : y ∈ Metric.ball x r ∩ T.carrier := ⟨Metric.ball_subset_ball hle hy2, hy1⟩
+    rw [hemp] at this
+    exact this
+  rw [this, measure_empty]
+
 /-- **G4 step 3 — a ball inside the target is partitioned by the tiles.**  The same argument as
 `Dissection.volume_target`, localised to a ball: the tiles cover the target and are a.e. disjoint, so
 their traces on any ball contained in the target are a.e. disjoint and cover it. -/
