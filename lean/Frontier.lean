@@ -976,6 +976,22 @@ theorem placement_a_apex_fails (e : ℤ) (he : 1 ≤ e) :
   · intro h; nlinarith [he]
   · intro h; nlinarith [he]
 
+/-- **The `b`-edge placement fails too, in two complementary ranges.**  One chirality overruns the
+chord when `(a+b)f - eN = -e³+3e²+4e+1 > 0`, i.e. for `e ≤ 4`; for `e ≥ 5` its third vertex falls
+outside on the left, since `eN - b(2f-e) = 2e³-6e²-8e-2 > 0` exactly there.  The ranges are
+complementary, so no `e` escapes. -/
+theorem placement_b_overshoots_small (e : ℤ) (he : 1 ≤ e) (he4 : e ≤ 4) :
+    0 < -(e ^ 3) + 3 * e ^ 2 + 4 * e + 1 := by
+  interval_cases e <;> norm_num
+
+theorem placement_b_falls_out_large (e : ℤ) (he : 5 ≤ e) :
+    0 < 2 * e ^ 3 - 6 * e ^ 2 - 8 * e - 2 := by nlinarith [he]
+
+/-- The other `b`-chirality puts the third vertex past the chord for **every** `e`: the excess,
+cleared of the factor `2f`, is `7e²+8e+2`. -/
+theorem placement_b_other_chirality (e : ℤ) (he : 1 ≤ e) : 0 < 7 * e ^ 2 + 8 * e + 2 := by
+  nlinarith [he]
+
 /-! ## Where the `thm:n1` induction actually fails
 
 At `V_k = (kc,0) + a·u` with `k ≥ 1` the tile `Q` across `T_k`'s `b`-edge lays `a`, `b` or `c` along
@@ -1152,3 +1168,6 @@ end Erdos634.Frontier
 #print axioms Erdos634.Frontier.caseB_37_apex_mismatch
 #print axioms Erdos634.Frontier.placement_c_overshoots
 #print axioms Erdos634.Frontier.placement_a_apex_fails
+#print axioms Erdos634.Frontier.placement_b_overshoots_small
+#print axioms Erdos634.Frontier.placement_b_falls_out_large
+#print axioms Erdos634.Frontier.placement_b_other_chirality

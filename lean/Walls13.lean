@@ -78,6 +78,32 @@ theorem beta_lays_no_b {E : Edge}
     (hslot : E = (flanks Angle.beta).1 ∨ E = (flanks Angle.beta).2) : E ≠ Edge.b := by
   intro h; exact advance_and_collide hslot (by simpa [opposite] using h)
 
+/-- **The last-junction dichotomy.**  At the last junction of an equal side, let `X` be the tile
+angularly adjacent to the apex `c`-tile `C` on the interior side of `C`'s `a`-ray.  `X` lays one of
+its own flanks along that ray, and the chord/height argument (companion `thm:ptwodead`) excludes both
+a `b`-edge and a `c`-edge there.  So `X` must lay an **`a`-edge**, exactly matching `C`'s.
+
+Since the flanks of `α` are `b` and `c`, this says **`X` cannot present `α` at the last junction** —
+which is what kills `p = 2`, where `X` is forced to be the `α`-filler.  The surviving possibilities
+are `X = β` (the mirror partner sharing `C`'s `a`-edge) and `X = γ`. -/
+theorem alpha_cannot_lay_a :
+    Edge.a ≠ (flanks Angle.alpha).1 ∧ Edge.a ≠ (flanks Angle.alpha).2 := by
+  constructor <;> decide
+
+/-- Conversely `β` and `γ` both can: their flank pairs contain `a`. -/
+theorem beta_gamma_can_lay_a :
+    Edge.a = (flanks Angle.beta).1 ∧ Edge.a = (flanks Angle.gamma).1 := by
+  constructor <;> decide
+
+/-- **The dichotomy, packaged.**  If the adjacent tile lays an `a`-edge on the ray, its angle there
+is `β` or `γ`, never `α`. -/
+theorem adjacent_angle_not_alpha {A : Angle}
+    (hlay : Edge.a = (flanks A).1 ∨ Edge.a = (flanks A).2) : A ≠ Angle.alpha := by
+  rintro rfl
+  rcases hlay with h | h
+  · exact alpha_cannot_lay_a.1 h
+  · exact alpha_cannot_lay_a.2 h
+
 /-! ## The two forced base words
 
 At `(1,3)` the tile is `(a,b,c) = (3,8,9)` and the base has length `3f²−e² = 26`. The dichotomy fork
