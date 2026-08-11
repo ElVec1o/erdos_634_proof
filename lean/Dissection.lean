@@ -1411,17 +1411,45 @@ theorem Tri.leftDir_eq_or (T : Tri) (k : Fin 3) :
   · exact Or.inl rfl
   · right; abel
 
+/-- **A tile's signed area is nonzero.**  If `det` vanished, `coord_mul_det` at `k = 0` would give
+`cross (pts 1 - pts 0) w = 0` for every `w`; testing against the two coordinate directions forces
+both components of `pts 1 - pts 0` to vanish, i.e.\ `pts 1 = pts 0`, contradicting affine
+independence.
+
+This removes the `hdet` hypothesis of `Tri.interior_left_of_leftDir`. -/
+theorem Tri.det_ne_zero (T : Tri) : T.det ≠ 0 := by
+  intro h
+  have hall : ∀ w : Plane, cross (T.pts 1 - T.pts 0) w = 0 := by
+    intro w
+    have hid := T.coord_mul_det 0 (T.pts 0 + w)
+    simp only [h, mul_zero, add_sub_cancel_left] at hid
+    exact hid.symm
+  have h0 : (T.pts 1 - T.pts 0) 0 = 0 := by
+    have hw := hall (EuclideanSpace.single 1 (1 : ℝ))
+    simpa [cross] using hw
+  have h1 : (T.pts 1 - T.pts 0) 1 = 0 := by
+    have hw := hall (EuclideanSpace.single 0 (1 : ℝ))
+    simp [cross] at hw
+    simp only [PiLp.sub_apply]
+    linarith
+  have hzero : T.pts 1 - T.pts 0 = 0 := by
+    ext i; fin_cases i
+    · simpa using h0
+    · simpa using h1
+  have hne : (0 : Fin 3) ≠ 1 := by decide
+  exact hne (T.indep.injective (sub_eq_zero.mp hzero).symm)
+
 /-- **A tile lies strictly to the left of each of its left-directed edges.**  If every barycentric
 coordinate of `y` is positive — i.e.\ `y` is interior to `T` — then `cross (leftDir k) (y - pts k)`
 is positive, for every edge `k`.
 
 Both branches of `Tri.leftDir` are handled by the same identity: `coord_mul_det` gives
 `cross = coord · det`, and `leftDir` carries exactly the sign of `det`, so the product is positive
-either way.  `hdet` is affine independence in the form this argument uses; it is not an extra
-assumption about `T`, only one this file does not derive. -/
-theorem Tri.interior_left_of_leftDir (T : Tri) (k : Fin 3) (hdet : T.det ≠ 0) {y : Plane}
+either way.  Nondegeneracy is supplied by `Tri.det_ne_zero`, so no hypothesis beyond interiority is needed. -/
+theorem Tri.interior_left_of_leftDir (T : Tri) (k : Fin 3) {y : Plane}
     (hy : ∀ i, 0 < T.basis.coord i y) :
     0 < cross (T.leftDir k) (y - T.pts k) := by
+  have hdet : T.det ≠ 0 := T.det_ne_zero
   have hid := T.coord_mul_det k y
   have hc : 0 < T.basis.coord (k + 2) y := hy _
   unfold Tri.leftDir
