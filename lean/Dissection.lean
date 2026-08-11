@@ -1327,6 +1327,34 @@ theorem Tri.leftDir_reverse (T : Tri) (k : Fin 3) :
     (if 0 < T.det then T.pts k - T.pts (k + 1) else T.pts (k + 1) - T.pts k) = - T.leftDir k := by
   unfold Tri.leftDir; split <;> simp
 
+/-- The scalar cross product of two plane vectors: positive when `v` is to the left of `u`. -/
+def cross (u v : Plane) : ℝ := u 0 * v 1 - u 1 * v 0
+
+@[simp] theorem cross_neg_left (u v : Plane) : cross (-u) v = - cross u v := by
+  simp only [cross]; simp; ring
+
+@[simp] theorem cross_self (u : Plane) : cross u u = 0 := by simp only [cross]; ring
+
+/-- **Left-of is exactly a cross-product sign, and reversing the direction reverses the side.**
+This is the vector-level content of `g4_assembled`'s hypothesis: two tiles whose interiors lie on
+opposite sides of a shared segment see opposite signs, so directing each edge with its own tile on
+the left gives the two tiles *negatively proportional* directions. -/
+theorem opposite_sides_opposite_dir (u : Plane) {p y₁ y₂ : Plane}
+    (h₁ : 0 < cross u (y₁ - p)) (h₂ : cross u (y₂ - p) < 0) :
+    0 < cross u (y₁ - p) ∧ 0 < cross (-u) (y₂ - p) := by
+  refine ⟨h₁, ?_⟩
+  rw [cross_neg_left]
+  linarith
+
+/-- **`Tri.leftDir` is the direction, up to sign, of the edge it names.**  Both branches of the
+definition are `± (pts (k+1) - pts k)`, so the undirected line is unchanged and only the sense
+differs — which is precisely the freedom `horient` fixes. -/
+theorem Tri.leftDir_eq_or (T : Tri) (k : Fin 3) :
+    T.leftDir k = T.pts (k + 1) - T.pts k ∨ T.leftDir k = -(T.pts (k + 1) - T.pts k) := by
+  unfold Tri.leftDir; split
+  · exact Or.inl rfl
+  · right; abel
+
 /-! ### G4 without maximal segments
 
 The obligation "produce the two covering families for each maximal interior segment" can be avoided
