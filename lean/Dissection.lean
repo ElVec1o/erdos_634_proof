@@ -58,7 +58,9 @@ convexity and measure-theory primitives that *do* exist.
 Following the discipline of `BaseBetaWalks.gamma_injection` and `InvariantCore.cancellation_core`,
 the facts this file cannot yet derive are isolated as named `Prop`-valued predicates in the final
 section (`HasAngleSums`, `HasEdgeChains`, `InteriorBalanced`), each with a docstring saying exactly
-what it asserts and why it is not available.  They are *definitions*, not axioms: nothing in this
+what it asserts and why it is not available.  **`InteriorBalanced` is no longer among them**: its
+real-valued form is now *proved* for `Dissection.dirSet` by `Dissection.g4_final`, and the predicate
+is kept only for downstream theorems that were stated against it.  They are *definitions*, not axioms: nothing in this
 file assumes them, and any downstream theorem that needs one must take it as a hypothesis.
 
 The single sharpest gap is `HasAngleSums`.  Its difficulty is narrower than first recorded here:
@@ -1927,6 +1929,149 @@ theorem interiorBalanced_of_segments {Dir Seg : Type*} [Fintype Seg] [DecidableE
         intro h; exact h1 (hinv.injective h)
       rw [hoff σ (neg d) hn1 hn2, hoff σ d h1 h2]
 
+/-! ### From two tiles to `horient`
+
+What remains between `Dissection.leftDir_antiparallel` and `g4` is bookkeeping in two registers:
+translating between "lies on `edge k`" and "barycentric coordinate `k+2` vanishes", and pushing the
+negative constant through the normalisation `leftDir ↦ leftUnit`.  Neither involves geometry. -/
+
+/-- An edge lies in the tile. -/
+theorem Tri.edge_subset_carrier (T : Tri) (k : Fin 3) : T.edge k ⊆ T.carrier := by
+  refine (convex_convexHull ℝ _).segment_subset ?_ ?_ <;>
+    exact subset_convexHull ℝ _ ⟨_, rfl⟩
+
+/-- **On an edge, the opposite barycentric coordinate vanishes.**  `coord (k+2)` is affine and kills
+both endpoints of `edge k`, so it kills the whole segment. -/
+theorem Tri.coord_eq_zero_of_mem_edge (T : Tri) (k : Fin 3) {x : Plane} (hx : x ∈ T.edge k) :
+    T.basis.coord (k + 2) x = 0 := by
+  have hne1 : (k + 2) ≠ k := by fin_cases k <;> decide
+  have hne2 : (k + 2) ≠ (k + 1) := by fin_cases k <;> decide
+  have hconv : Convex ℝ ((T.basis.coord (k + 2)) ⁻¹' {(0 : ℝ)}) :=
+    (convex_singleton (0 : ℝ)).affine_preimage _
+  have hb : ∀ i : Fin 3, T.pts i = (T.basis : Fin 3 → Plane) i := fun _ => rfl
+  refine hconv.segment_subset ?_ ?_ hx
+  · simp only [Set.mem_preimage, Set.mem_singleton_iff, hb, AffineBasis.coord_apply]
+    simp [hne1]
+  · simp only [Set.mem_preimage, Set.mem_singleton_iff, hb, AffineBasis.coord_apply]
+    simp [hne2]
+
+/-- **A non-vertex point of an edge is `OnEdge`.**  The opposite coordinate vanishes; if a second one
+vanished too, `Tri.eq_vertex_of_two_coords_zero` would make `x` a vertex. -/
+theorem Tri.onEdge_data (T : Tri) {k : Fin 3} {x : Plane} (hx : x ∈ T.edge k)
+    (hxv : ∀ m, x ≠ T.pts m) :
+    T.basis.coord (k + 2) x = 0 ∧ ∀ j, j ≠ k + 2 → 0 < T.basis.coord j x := by
+  refine ⟨T.coord_eq_zero_of_mem_edge k hx, fun j hj => ?_⟩
+  have hnn : 0 ≤ T.basis.coord j x := by
+    have := T.edge_subset_carrier k hx
+    rw [T.carrier_eq_nonneg_coord] at this; exact this j
+  refine lt_of_le_of_ne hnn (Ne.symm fun hzero => ?_)
+  obtain ⟨m, hm⟩ := T.eq_vertex_of_two_coords_zero hj hzero (T.coord_eq_zero_of_mem_edge k hx)
+  exact hxv m hm
+
+/-- **The converse.**  A point whose `m`-th coordinate vanishes and whose others are positive is a
+convex combination of the two vertices flanking `m`, hence lies on `edge (m+1)`. -/
+theorem Tri.mem_edge_of_coord_zero (T : Tri) {m : Fin 3} {x : Plane}
+    (hm : T.basis.coord m x = 0) (ho : ∀ j, j ≠ m → 0 < T.basis.coord j x) :
+    x ∈ T.edge (m + 1) := by
+  have hsum := T.basis.sum_coord_apply_eq_one x
+  have hcomb := T.basis.linear_combination_coord_eq_self x
+  have h1 : (m + 1) ≠ m := by fin_cases m <;> decide
+  have h2 : (m + 2) ≠ m := by fin_cases m <;> decide
+  refine ⟨T.basis.coord (m + 1) x, T.basis.coord (m + 1 + 1) x,
+    (ho _ h1).le, ?_, ?_, ?_⟩
+  · have : (m + 1 + 1) = m + 2 := by fin_cases m <;> rfl
+    rw [this]; exact (ho _ h2).le
+  · have hthree : ∀ c : Fin 3 → ℝ, ∑ i, c i = c m + c (m + 1) + c (m + 1 + 1) := by
+      intro c; fin_cases m <;> simp [Fin.sum_univ_three] <;> ring
+    rw [hthree] at hsum; rw [hm, zero_add] at hsum; exact hsum
+  · have hthree : ∀ c : Fin 3 → Plane, ∑ i, c i = c m + c (m + 1) + c (m + 1 + 1) := by
+      intro c; fin_cases m <;> simp [Fin.sum_univ_three] <;> abel
+    rw [hthree] at hcomb
+    simpa [hm, zero_smul] using hcomb
+
+/-- **Normalisation reverses a direction exactly when the scalar is negative.** -/
+theorem unit_smul_of_neg {u v : Plane} {c : ℝ} (hc : c < 0) (hu : u ≠ 0) (hv : v = c • u) :
+    ‖v‖⁻¹ • v = -(‖u‖⁻¹ • u) := by
+  have hun : (0 : ℝ) < ‖u‖ := norm_pos_iff.mpr hu
+  have hcne : c ≠ 0 := ne_of_lt hc
+  have hune : ‖u‖ ≠ 0 := ne_of_gt hun
+  subst hv
+  have hnv : ‖c • u‖ = -c * ‖u‖ := by
+    rw [norm_smul, Real.norm_eq_abs, abs_of_neg hc]
+  rw [hnv, smul_smul, ← neg_smul]
+  congr 1
+  field_simp
+
+/-- **`leftUnit` reverses across a shared edge point** — `horient` for two tiles, normalised. -/
+theorem Dissection.leftUnit_neg {N : ℕ} (D : Dissection N)
+    {i₁ i₂ : Fin N} (hne : i₁ ≠ i₂) {x : Plane} {m₁ m₂ : Fin 3}
+    (hm₁ : (D.tile i₁).basis.coord m₁ x = 0)
+    (ho₁ : ∀ j, j ≠ m₁ → 0 < (D.tile i₁).basis.coord j x)
+    (hm₂ : (D.tile i₂).basis.coord m₂ x = 0)
+    (ho₂ : ∀ j, j ≠ m₂ → 0 < (D.tile i₂).basis.coord j x) :
+    (D.tile i₂).leftUnit (m₂ + 1) = Dir.neg ((D.tile i₁).leftUnit (m₁ + 1)) := by
+  obtain ⟨c, hcneg, hc⟩ := D.leftDir_antiparallel hne hm₁ ho₁ hm₂ ho₂
+  apply Subtype.ext
+  simpa [Tri.leftUnit, Dir.neg] using
+    unit_smul_of_neg hcneg ((D.tile i₁).leftDir_ne_zero (m₁ + 1)) hc
+
+/-- The (finite) set of tile vertices — the exceptional set `g4` quotients by. -/
+def Dissection.vertexSet {N : ℕ} (D : Dissection N) : Set Plane :=
+  ⋃ i : Fin N, ⋃ k : Fin 3, {(D.tile i).pts k}
+
+theorem Dissection.vertexSet_finite {N : ℕ} (D : Dissection N) : D.vertexSet.Finite :=
+  Set.finite_iUnion fun _ => Set.finite_iUnion fun _ => Set.finite_singleton _
+
+theorem Dissection.notMem_vertexSet {N : ℕ} (D : Dissection N) {x : Plane}
+    (hx : x ∉ D.vertexSet) : ∀ i k, x ≠ (D.tile i).pts k := by
+  intro i k h
+  exact hx (Set.mem_iUnion.mpr ⟨i, Set.mem_iUnion.mpr ⟨k, by simp [h]⟩⟩)
+
+/-- **One inclusion of `horient` for `dirSet`.**  At a non-vertex point of an interior edge carrying
+direction `d`, `Dissection.second_tile_at_edge_point` produces a *different* tile also meeting `x` on
+an edge, and `Dissection.leftUnit_neg` says that edge carries `Dir.neg d`. -/
+theorem Dissection.dirSet_sub {N : ℕ} (D : Dissection N) (hN : 0 < N) (d : Dir) :
+    D.dirSet d \ D.vertexSet ⊆ D.dirSet (Dir.neg d) \ D.vertexSet := by
+  rintro x ⟨hxd, hxv⟩
+  refine ⟨?_, hxv⟩
+  have hxint : x ∈ interior D.target.carrier := hxd.2
+  obtain ⟨i₀, k₀, hk₀, hmem⟩ := D.mem_dirSet d hxd
+  have hnv := D.notMem_vertexSet hxv
+  obtain ⟨hz₀, hp₀⟩ := (D.tile i₀).onEdge_data hmem (hnv i₀)
+  -- a ball around `x` inside the target
+  obtain ⟨R, hR, hRt⟩ := Metric.isOpen_iff.mp isOpen_interior x hxint
+  have hRt' : Metric.ball x R ⊆ D.target.carrier := hRt.trans interior_subset
+  -- the second tile
+  obtain ⟨i₁, hne, hi₁⟩ := D.second_tile_at_edge_point hN hnv hR hRt' ⟨k₀ + 2, hz₀, hp₀⟩
+  obtain ⟨m₁, hz₁, hp₁⟩ := hi₁
+  have hkey := D.leftUnit_neg (Ne.symm hne) hz₀ hp₀ hz₁ hp₁
+  have hshift : (k₀ + 2 + 1 : Fin 3) = k₀ := by fin_cases k₀ <;> rfl
+  rw [hshift, hk₀] at hkey
+  refine ⟨?_, hxint⟩
+  exact Set.mem_iUnion.mpr ⟨i₁, Set.mem_iUnion.mpr ⟨m₁ + 1, Set.mem_iUnion.mpr
+    ⟨hkey, (D.tile i₁).mem_edge_of_coord_zero hz₁ hp₁⟩⟩⟩
+
+/-- **`horient` for `dirSet`** — the hypothesis `g4` consumes, now a theorem. -/
+theorem Dissection.dirSet_horient {N : ℕ} (D : Dissection N) (hN : 0 < N) (d : Dir) :
+    D.dirSet d \ D.vertexSet = D.dirSet (Dir.neg d) \ D.vertexSet := by
+  refine Set.Subset.antisymm (D.dirSet_sub hN d) ?_
+  have h := D.dirSet_sub hN (Dir.neg d)
+  rwa [Dir.neg_involutive d] at h
+
+/-- **G4, unconditional.**  Every hypothesis has been discharged: the interior directed lengths of a
+dissection balance, with no geometric input left to supply.
+
+This is the end of the chain begun with `volume_halfspace_inter_ball`: local area balance forces
+exactly two tiles at each interior edge point, disjointness of their interiors forces their edge
+lines to coincide with opposite orientations, and the resulting set-level symmetry — exact away from
+the finite vertex set — makes the two directed length functions equal. -/
+theorem Dissection.g4_final {N : ℕ} (D : Dissection N) (hN : 0 < N) :
+    InteriorBalancedReal Dir.neg
+      (fun d => ((MeasureTheory.Measure.hausdorffMeasure 1 :
+        MeasureTheory.Measure Plane) (D.dirSet d)).toReal) :=
+  g4 D.dirSet D.vertexSet D.vertexSet_finite (D.dirSet_horient hN)
+
+
 end Erdos634.Geometry
 
 #print axioms Erdos634.Geometry.Tri.volume_pos
@@ -1939,3 +2084,6 @@ end Erdos634.Geometry
 #print axioms Erdos634.Geometry.vertex_pi_multiplicities
 #print axioms Erdos634.Geometry.vertex_beta_corner_multiplicities
 #print axioms Erdos634.Geometry.vertex_apex_multiplicities
+#print axioms Erdos634.Geometry.Dissection.leftDir_antiparallel
+#print axioms Erdos634.Geometry.Dissection.dirSet_horient
+#print axioms Erdos634.Geometry.Dissection.g4_final
