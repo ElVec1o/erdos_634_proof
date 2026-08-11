@@ -137,4 +137,40 @@ theorem c_side_profiles_37 :
 /-- The inflation is `35%` of the target at `(3,7)`: `49` tiles against `N = 138`. -/
 theorem inflation_smaller_37 : 49 < 138 := by decide
 
+
+/-! ## The γ-corner hypothesis is not needed
+
+Only the `α`- and `β`-corners need be single, and both are: two tiles at the `α`-corner already exceed
+`α`, and the `β`-corner would need `β/α` integral, which fails at both members. The `γ`-corner may
+split as `{α,α,β}` for all we know, and it does not matter:
+
+* the `c`-side joins the `α`- and `β`-vertices, so **both** its end edges are `c` unconditionally;
+* the `a`-side has its `β`-end forced to `a`, and the residual has a unique composition;
+* the `b`-side has its `α`-end forced to `b`, and likewise.
+
+So the side words are determined without any assumption at the `γ`-corner. -/
+
+/-- The inflated `a`-side at `(3,7)`, with only its `β`-end known: residual `126` is `6·21`. -/
+theorem residual_126 (x y z : ℕ) (h : 21 * x + 40 * y + 49 * z = 126) :
+    x = 6 ∧ y = 0 ∧ z = 0 := by
+  have hy : y ≤ 3 := by omega
+  have hz : z ≤ 2 := by omega
+  interval_cases y <;> interval_cases z <;> omega
+
+/-- The inflated `b`-side at `(3,7)`, with only its `α`-end known: residual `240` is `6·40`. -/
+theorem residual_240 (x y z : ℕ) (h : 21 * x + 40 * y + 49 * z = 240) :
+    x = 0 ∧ y = 6 ∧ z = 0 := by
+  have hy : y ≤ 6 := by omega
+  have hz : z ≤ 4 := by omega
+  interval_cases y <;> interval_cases z <;> omega
+
+/-- The same at `(1,3)`: residuals `6` and `16` over `{3,8,9}` are `2·3` and `2·8`. -/
+theorem residual_13_sides (x y z : ℕ) :
+    (3 * x + 8 * y + 9 * z = 6 → x = 2 ∧ y = 0 ∧ z = 0)
+  ∧ (3 * x + 8 * y + 9 * z = 16 → x = 0 ∧ y = 2 ∧ z = 0) := by
+  constructor <;> intro h <;> [skip; skip] <;>
+    (have hy : y ≤ 2 := by omega
+     have hz : z ≤ 1 := by omega
+     interval_cases y <;> interval_cases z <;> omega)
+
 end Erdos634.Inflation

@@ -3051,10 +3051,13 @@ side. Read the other way, that says the equal side's edge word is the $c$-side w
 tile, and the side question becomes a question about the inflation alone.
 
 \begin{proposition}[The inflated boundary]\label{prop:inflbdy}
-Let the tile be inflated by $f$, so its sides are $fa$, $fb$, $fc$, and suppose each corner of the
-inflated triangle is met by a single tile, that tile laying along the two sides the two flanks of the
-corner angle. Then each side begins and ends with a prescribed edge, and its interior is a word over
-$\{a,b,c\}$ of the residual length. At $(1,3)$ and $(3,7)$ the outcome is:
+Let the tile be inflated by $f$, so its sides are $fa$, $fb$, $fc$, and suppose $\beta/\alpha\notin
+\mathbb Z$. Then the $\alpha$- and $\beta$-corners of the inflated triangle are each met by a single
+tile, which lays along the two sides the flanks of that angle. No assumption is made at the
+$\gamma$-corner, and none is needed: the $c$-side joins the $\alpha$- and $\beta$-vertices, so both its
+end edges are $c$; the $a$-side has its $\beta$-end forced to $a$ and the $b$-side its $\alpha$-end
+forced to $b$, and in each case the residual composition is unique. At $(1,3)$ and $(3,7)$ the outcome
+is:
 \[
 \begin{array}{llll}
 (e,f) & a\text{-side} & b\text{-side} & c\text{-side}\\\hline
@@ -3069,8 +3072,15 @@ where the second $c$-side word at $(3,7)$ has $7$ $a$-edges and $4$ $c$-edges.
 The residual lengths are $fa-2a$, $fb-2b$, $fc-2c$. At $(1,3)$, tile $(3,8,9)$: the residuals are
 $3$, $8$, $9$, whose compositions over $\{3,8,9\}$ are $\{3\}$, $\{8\}$ and $\{9\},\{3,3,3\}$
 respectively (\texttt{Inflation.middle\_three}, \texttt{.middle\_eight}, \texttt{.middle\_nine}). At
-$(3,7)$, tile $(21,40,49)$: the residuals are $105$, $200$, $245$, with unique compositions
-$5a$ and $5b$ for the first two, and $5c$ or $7a+2c$ for the third.
+$(3,7)$, tile $(21,40,49)$: the $c$-side residual is $245$, with compositions $5c$ and $7a+2c$
+(\texttt{.residual\_245}). For the $a$- and $b$-sides only one end is known, so the residuals are
+$fa-a=126$ and $fb-b=240$; their compositions are again unique, $6a$ and $6b$
+(\texttt{.residual\_126}, \texttt{.residual\_240}), and at $(1,3)$ the corresponding residuals $6$ and
+$16$ give $2a$ and $2b$ (\texttt{.residual\_13\_sides}).
+
+Only the $\alpha$- and $\beta$-corners were used. Two tiles at the $\alpha$-corner already give
+$2\alpha>\alpha$; and a $\beta$-corner splits only as $k\alpha=\beta$, excluded by
+$\beta/\alpha\notin\mathbb Z$, which holds at both members ($3.190\ldots$ and $2.136\ldots$).
 \end{proof}
 
 \begin{corollary}[The crux, on $f^2$ tiles]\label{cor:inflcrux}
@@ -3094,10 +3104,8 @@ The inflation carries $f^2$ tiles against the target's $N=3f^2-e^2$:
 \end{array}
 \]
 uniformly about $35\%$. At $(3,7)$ that is a $49$-tile question in place of a $138$-tile one, with the
-same answer for the west side. The hypothesis of Proposition~\ref{prop:inflbdy} --- one tile per
-corner, laying the corner angle's flanks --- is geometric and is not proved here; at $f=2$ it follows
-from a tile count, since a $\gamma$-corner splits as $\{2\alpha,\beta\}$ into three tiles and
-$3+1+1>f^2=4$, but that argument fails for $f\ge3$.
+same answer for the west side. Proposition~\ref{prop:inflbdy} carries no unproved geometric hypothesis:
+the $\gamma$-corner, the only one that can split, is not used.
 \end{remark}
 
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
