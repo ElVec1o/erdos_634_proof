@@ -2675,7 +2675,8 @@ At $(3,7)$ the reflected tile is $(J,Q,R)$ with $R=(207,100\sqrt{187}/7)$, a gen
 placement lying inside the target, and both figures at $Q$ are consistent. So the two surviving
 configurations at $p=1$ --- the mirror partner and the $\gamma$ --- are a single phenomenon, and
 neither is excluded by the chord or the height identity. Closing $p=1$, and with it
-Hypothesis~\ref{hyp:walls} on the whole subfamily $f=2e+1$, requires a further mechanism.
+Hypothesis~\ref{hyp:walls} on the whole subfamily $f=2e+1$, requires a further mechanism ---
+and \S\ref{sub:nogo} rules out the two most natural candidates, so that mechanism must be metric.
 \end{remark}
 
 \begin{remark}[Scope, and where $e\ge2$ is easier]\label{rem:ptwoscopeb}
@@ -2691,6 +2692,121 @@ $(1,3)$ where $c-a=2a$; this is the first point in the problem where $e\ge2$ is 
 Second, at $(3,7)$ the base walk $(0,e,2e)$ carries no $a$-edge, so the corner tile lays $c$ on the
 base and $a$ on the side, forcing $p\ge1$ on both equal sides; with $p=2$ excluded,
 Hypothesis~\ref{hyp:walls} at $(3,7)$ therefore requires the base walk $(f,e,e)$.\end{remark}
+
+\subsection{Two mechanisms that provably cannot close \texorpdfstring{$p=1$}{p=1}}\label{sub:nogo}
+
+Remark~\ref{rem:dichotomy} ends by saying that closing $p=1$ ``requires a further mechanism''. That
+is a hedge, and it can be replaced by theorems. This subsection records two natural mechanisms and
+proves that neither can work, and one arithmetic fact that survives and points the other way. The
+member is $(e,f)=(3,7)$ throughout: tile $(a,b,c)=(21,40,49)$, target $(343,343,414)$, $N=138$.
+
+Fix an equal side with $p=1$. Its word is a permutation of $a^{7}c^{4}$ ending in $c$
+($7\cdot21+4\cdot49=343$), so it has $11$ edges and $10$ interior junctions. Each edge is laid by a
+tile, and the two angles of that tile at the ends of the edge are the two angles \emph{not} opposite
+it: an $a$-edge is flanked by $\beta$ and $\gamma$, a $c$-edge by $\alpha$ and $\beta$. Call the
+choice of which flank sits at the lower end the \emph{orientation} of the edge.
+
+\begin{lemma}[Endpoint angles]\label{lem:endpoints}
+The angle at the top of the last edge is $\alpha$, and the angle at the bottom of the first edge is
+$\beta$.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:census} the apex fills uniquely as $\{3\alpha\}$ and each base corner uniquely as
+$\{\beta\}$. The last edge of the side is a $c$-edge, whose flanking angles are $\alpha$ and $\beta$;
+the tile at the apex presents $\alpha$, so the top angle is $\alpha$. The single tile at the base
+corner presents $\beta$, so the bottom angle of the first edge is $\beta$.
+\end{proof}
+
+\begin{proposition}[The junction automaton is consistent, and hugely so]\label{prop:nogoauto}
+Regard the side as a transfer system: a state is the angle at the top of the current edge, and a
+transition is admissible when the pair (top angle of one edge, bottom angle of the next) extends to a
+straight figure at their junction. Then the only inadmissible pair is $(\gamma,\gamma)$, which can
+occur only at a junction between two $a$-edges. Consequently, over all $120$ words $a^{7}c^{4}$
+ending in $c$ and all $2^{11}$ orientations, exactly $10\,560$ configurations satisfy every junction
+constraint together with Lemma~\ref{lem:endpoints}.
+\end{proposition}
+
+\begin{proof}
+A junction of an equal side carries a straight figure, so by Lemma~\ref{lem:census} it is
+$\{\gamma,\alpha,\beta\}$ or $\{3\alpha,2\beta\}$. The figure $\{\gamma,\alpha,\beta\}$ has one angle
+of each kind, so it admits a pair of side angles precisely when the two are distinct. The figure
+$\{3\alpha,2\beta\}$ contains no $\gamma$, so it admits precisely the pairs drawn from
+$\{\alpha,\beta\}$, all four of which leave an admissible remainder ($3\alpha$, $2\alpha+\beta$,
+$2\alpha+\beta$, $\alpha+2\beta$ respectively). A pair is therefore inadmissible exactly when it is
+equal and involves $\gamma$; and $\gamma$ occurs only as a flank of an $a$-edge. The count is a
+finite check over $120\cdot2^{11}$ cases.
+\end{proof}
+
+\begin{proposition}[The census contributes one relation, and it is already spent]\label{prop:nogocensus}
+Let $x$ be the number of junctions of the side carrying $\{\gamma,\alpha,\beta\}$. Then $x\ge7$, and
+the $\alpha$- and $\beta$-counts along the side are linearly dependent: they sum to the identity
+$13=13$. Both $x=7$ and $x=10$ occur in solutions, so the census does not determine $x$.
+\end{proposition}
+
+\begin{proof}
+The $7$ $a$-edges contribute one $\beta$ and one $\gamma$ each, the $4$ $c$-edges one $\alpha$ and
+one $\beta$ each: $7\gamma$, $11\beta$, $4\alpha$ in all. By Lemma~\ref{lem:endpoints} the apex
+absorbs one $\alpha$ and the base corner one $\beta$, leaving $7\gamma$, $10\beta$, $3\alpha$
+distributed over the $20$ side-tile slots at the $10$ junctions. A $\{3\alpha,2\beta\}$ junction
+contains no $\gamma$ and a $\{\gamma,\alpha,\beta\}$ junction exactly one, so the $7$ $\gamma$'s
+occupy $7$ distinct junctions of the latter type, whence $x\ge7$.
+
+Write $u$ for the number of junctions whose $\gamma$ lies on a side tile and whose other side slot is
+$\beta$, and $(a_i,b_i)$ with $a_i+b_i=2$ for the side slots at the $10-x$ junctions of type
+$\{3\alpha,2\beta\}$. Counting $\alpha$ and $\beta$ separately,
+\[
+(7-u)+(x-7)+\textstyle\sum_i a_i \;=\;3,
+\qquad
+u+(x-7)+\textstyle\sum_i b_i \;=\;10 .
+\]
+Adding and using $\sum_i(a_i+b_i)=2(10-x)$ gives $7+2x-14+20-2x=13$, an identity. The two equations
+are therefore dependent. Taking $x=10$, $u=7$ satisfies both, as does $x=7$, $u=4+\sum_i a_i$ for any
+$\sum_i a_i\le3$.
+\end{proof}
+
+\begin{remark}[What the two no-go results mean]\label{rem:nogoscope}
+Proposition~\ref{prop:nogoauto} shows that the local combinatorics of the side is almost unconstrained:
+the automaton forbids one adjacency and leaves $10\,560$ configurations. Proposition~\ref{prop:nogocensus}
+shows that adjoining the census adds nothing, because the two counting equations are dependent. This
+is the third independent confirmation of the warning in Lemma~\ref{lem:census} that corner counting
+cannot see $p$, and it is also the exact reason the retraction described in
+Remark~\ref{rem:parityscope} was possible: a counting argument at $(3,7)$ has one relation to spend
+and it is spent.
+
+The conclusion is directional, not merely negative. Any mechanism that closes $p=1$ must use metric
+information --- positions, not multiplicities. Proposition~\ref{prop:straddle} is the first such fact.
+\end{remark}
+
+\begin{proposition}[Every junction chord is straddled]\label{prop:straddle}
+Let $J$ be a junction of an equal side at distance $d$ from the apex, and let $C$ be the chord of the
+target through $J$ parallel to the base. Then some tile of the tiling meets both open sides of $C$.
+\end{proposition}
+
+\begin{proof}
+Since $d$ is a sum of edge lengths $21$ and $49$, we have $d=21i+49j$ and the height fraction is
+$\rho=d/343=(3i+7j)/49$. Write $n=3i+7j$, so $1\le n\le48$ for a junction strictly between the apex
+and the base. The chord cuts off a triangle similar to the target with ratio $\rho$, whose area in
+units of the tile area is
+\[
+138\rho^{2}\;=\;\frac{138\,n^{2}}{2401}.
+\]
+Now $2401=7^{4}$ and $138=2\cdot3\cdot23$, so $\gcd(138,2401)=1$ and the quantity is an integer if
+and only if $7^{4}\mid n^{2}$, i.e.\ $49\mid n$ --- impossible for $1\le n\le48$. Hence the area above
+$C$ is not an integral number of tiles. If no tile met both open sides of $C$, every tile would lie
+weakly on one side and the area above $C$ would be a sum of whole tile areas, a contradiction.
+\end{proof}
+
+\begin{remark}[Why this is the right direction]\label{rem:straddlescope}
+At the last junction, $n=7$ and the area above the chord is $138/49=2.816\ldots$ tiles, while the
+chord has length $414/7=59.14\ldots$ and a tile meets a line in a segment of length at most $c=49$;
+so at least two tiles meet that chord, and at least one straddles it. This is exactly the region
+below the chord that the enumeration of Theorem~\ref{thm:ptwodead} does not reach --- see the
+discussion of the $c\,c$ ending in Remark~\ref{rem:dichotomy} --- and it is the reason the surviving
+configurations survive: not that the chord bound fails there, but that it was never applied there.
+Whether the straddling constraint can be sharpened into a contradiction is open.
+\end{remark}
+
 
 
 \begin{remark}[Close pairs: what the unconditional filters leave]\label{rem:closepairs}
