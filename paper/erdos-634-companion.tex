@@ -3161,6 +3161,51 @@ rather than $26$, which is the regression check that the reformulation of \S\ref
 recovers a known case before being trusted elsewhere.
 \end{remark}
 
+Theorem~\ref{thm:inflrigid} is proved one member at a time by search, which is unsatisfying: the
+statement is uniform in $(e,f)$ and ought to have a uniform proof. One is available for half the
+family, at the cost of an extra hypothesis.
+
+\begin{proposition}[Edge parity kills the $p=1$ boundary when $e$ and $f$ differ in parity]\label{prop:inflparity}
+Assume the dissection of the inflated tile is \emph{edge-to-edge}. If $e\not\equiv f \pmod 2$, then the
+boundary word with $p=1$ is impossible.
+\end{proposition}
+
+\begin{proof}
+The $f^2$ tiles contribute $3f^2$ edge-slots. Edge-to-edge means every edge of the subdivision is an
+entire edge of each tile meeting it, so each interior edge consumes exactly two slots and each boundary
+edge exactly one; hence $3f^2 - B \equiv 0 \pmod 2$, where $B$ is the number of boundary edges. The
+standard boundary has $B=3f$, and $3f^2-3f=3f(f-1)$ is always even. The $p=1$ boundary has $f$ edges on
+the $a$-side, $f$ on the $b$-side, and $f + (f-e)$ on the $c$-side, so $B=4f-e$ and
+\[
+  3f^2-(4f-e) \;\equiv\; f^2+e \;\equiv\; f+e \pmod 2 .
+\]
+This is odd exactly when $e\not\equiv f$, and an odd value contradicts the count.
+\end{proof}
+
+\begin{remark}[Scope, and why this is not a proof of Theorem~\ref{thm:inflrigid}]\label{rem:inflparity}
+Two limitations, both essential.
+
+First, $\gcd(e,f)=1$ forbids $e$ and $f$ both even, so ``$e\not\equiv f$'' is exactly ``one of them is
+even''. The proposition is therefore \emph{silent} on the both-odd members --- which include $(1,3)$ and
+$(3,7)$, i.e.\ every member the crux actually needs. It fires at $(2,5)$ and $(4,9)$, where
+$3f^2-(4f-e)$ equals $57$ and $211$, and those are precisely the two members the search found cheap.
+That correlation is the content of the proposition: it explains the observed cost profile, it does not
+extend the theorem.
+
+Second, edge-to-edge is an extra hypothesis, and it is not a mild one here. The main paper does not
+assume it, and the T-junction whose exclusion is the whole difficulty of \S\ref{sub:apex} is exactly an
+edge-to-edge failure; assuming it would be assuming a neighbourhood of what is to be proved. This is the
+same wall that Remark~\ref{M-rem:parityfail} hits: the $b$-edge pairing argument there fails precisely
+because a longer edge may straddle a $b$-edge instead of abutting it, and both genuine tilings exhibit
+such straddles. Proposition~\ref{prop:inflparity} is what survives once straddles are hypothesised away,
+which is why it proves less than it appears to.
+
+So the uniform proof of Theorem~\ref{thm:inflrigid} remains open. What Proposition~\ref{prop:inflparity}
+shows is that any such proof must use more than counting on the both-odd members, since the counting
+invariant is identically satisfied there. \textup{(}Machine-checked, \texttt{parity\_25},
+\texttt{parity\_49}, \texttt{parity\_silent}.\textup{)}
+\end{remark}
+
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
 
 Corollary~\ref{cor:ptwo} leaves the two cases $p\in\{1,2\}$. The case $p=2$ is not uniformly hard:

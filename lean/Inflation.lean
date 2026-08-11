@@ -237,4 +237,33 @@ theorem p1_profiles_total :
     3 * 3 + 2 * 9 = 27 ∧ 5 * 10 + 3 * 25 = 125 ∧ 7 * 21 + 4 * 49 = 343 := by
   refine ⟨by decide, by decide, by decide⟩
 
+
+/-! ## A parity obstruction for `e`, `f` of opposite parity
+
+Under the extra hypothesis that the dissection is edge-to-edge, every interior edge is shared by two
+tiles, so `3f² − (boundary edge count)` is even. The standard boundary has `3f` edges; the `p = 1`
+boundary has `f + f + (f + (f−e)) = 4f − e`. The second count changes the parity exactly when `e` and
+`f` differ in parity.
+
+This does not prove `thm:inflrigid`: edge-to-edge is an extra hypothesis the main paper does not
+assume, and the obstruction is silent when `e` and `f` are both odd, which includes `(1,3)` and
+`(3,7)`. It is recorded because it is free and because it explains why the even-`e` members were the
+cheap ones for the search. -/
+
+/-! **The criterion.**  `3f² − (4f − e)` has the parity of `f + e`, since `3f² ≡ f² ≡ f` and
+`4f ≡ 0` mod 2. So the `p=1` boundary fails the edge-parity test exactly when `e` and `f` differ in
+parity; with `gcd(e,f) = 1` that is exactly the case where one of them is even. The instances below
+record the four members computed. -/
+
+/-- The instance at `(2,5)`: `3·25 − (20 − 2) = 57`, odd, so the `p=1` boundary is impossible for an
+edge-to-edge dissection. -/
+theorem parity_25 : (3 * 25 - (20 - 2)) % 2 = 1 := by decide
+
+/-- The instance at `(4,9)`: `3·81 − (36 − 4) = 211`, odd. -/
+theorem parity_49 : (3 * 81 - (36 - 4)) % 2 = 1 := by decide
+
+/-- At `(1,3)` and `(3,7)` the test is silent: both counts are even. -/
+theorem parity_silent : (3 * 9 - (12 - 1)) % 2 = 0 ∧ (3 * 49 - (28 - 3)) % 2 = 0 := by
+  constructor <;> decide
+
 end Erdos634.Inflation
