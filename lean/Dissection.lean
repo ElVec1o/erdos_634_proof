@@ -1291,6 +1291,41 @@ theorem interiorBalancedReal_of_segments {Dir Seg : Type*} [Fintype Seg] [Decida
       have hn2 : neg d ≠ neg (dirOf σ) := fun h => h1 (hinv.injective h)
       rw [hoff σ (neg d) hn1 hn2, hoff σ d h1 h2]
 
+/-! ### G4 without maximal segments
+
+The obligation "produce the two covering families for each maximal interior segment" can be avoided
+entirely.  Let `S d` be the *union* of the interior tile edges in direction `d`.  Then:
+
+* the edges in a fixed direction are pairwise a.e.-disjoint — two on the same line come from tiles on
+  the same side and meet only at endpoints, two on parallel lines are disjoint — so
+  `Lint d = μH[1] (S d)` by the additivity of `length_sum_of_cover`;
+* `Dissection.two_tiles_at_edge_point` says that at every non-vertex interior point of a tile edge
+  exactly two tiles meet, one on each side; with tile boundaries oriented consistently the two
+  traverse the common line oppositely, so `S d` and `S (neg d)` agree away from the tiles' vertices;
+* that exceptional set is finite, hence `μH[1]`-null.
+
+So the balance follows from a *set-level* symmetry, and no notion of maximal segment is needed.  What
+remains is exactly the orientation statement — a smaller obligation than the one it replaces. -/
+
+/-- **G4's balance from a null-symmetric difference.**  If `S d` and `S (neg d)` agree outside a
+finite set, their `μH[1]`-measures are equal. -/
+theorem interiorBalanced_of_null_symm {Dir : Type*}
+    (neg : Dir → Dir) (S : Dir → Set Plane) (F : Set Plane) (hF : F.Finite)
+    (hmeas : ∀ d, MeasurableSet (S d))
+    (hsym : ∀ d, S d \ F = S (neg d) \ F) (d : Dir) :
+    (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) (S (neg d))
+      = (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) (S d) := by
+  haveI : MeasureTheory.NoAtoms
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) :=
+    MeasureTheory.Measure.noAtoms_hausdorff Plane (by norm_num)
+  set μ := (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) with hμ
+  have hFnull : μ F = 0 := hF.measure_zero μ
+  have hdrop : ∀ A : Set Plane, μ (A \ F) = μ A := fun A =>
+    MeasureTheory.measure_diff_null hFnull
+  calc μ (S (neg d)) = μ (S (neg d) \ F) := (hdrop _).symm
+    _ = μ (S d \ F) := by rw [hsym d]
+    _ = μ (S d) := hdrop _
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
