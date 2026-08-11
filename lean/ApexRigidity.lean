@@ -55,15 +55,18 @@ Everything below is stated directly in those closed forms, so no trigonometry is
 /-- **The apex rigidity.**  The drop from the apex to `P` (along the tile's `b`-edge) equals the drop
 from the apex to the first junction `J` (along its `c`-edge).  So `P` lies on the chord through `J`.
 
-This is an identity in `(e,f)`, not a numerical coincidence: both sides equal
-`(f²−e²)√(4f²−e²)/(2f)`. -/
+NOT NEW. With `γ = (π+α)/2` and `β = π/2 − 3α/2` this reads `b·sin γ = c·sin β`, which is the law of
+sines for the tile; the companion's `rem:apexnovelty` records the identification. What is new is the
+configuration it applies to, not the identity. Stated here in the closed forms the coordinates use. -/
 theorem apex_drop_eq (e f : ℝ) (hf : f ≠ 0) :
     (f ^ 2 - e ^ 2) * (Real.sqrt (4 * f ^ 2 - e ^ 2) / (2 * f))
       = f ^ 2 * (Real.sqrt (4 * f ^ 2 - e ^ 2) * (f ^ 2 - e ^ 2) / (2 * f ^ 3)) := by
   field_simp
 
 /-- **The edge on the chord has length exactly `a`.**  The horizontal offsets of `J` and `P` from the
-apex differ by exactly `a = ef`, so `T₁`'s third edge lies along the chord and is its `a`-edge. -/
+apex differ by exactly `a = ef`.
+
+NOT NEW either: this reads `c·cos β + b·cos γ = a`, the projection formula for the tile. -/
 theorem apex_edge_eq (e f : ℝ) (hf : f ≠ 0) :
     f ^ 2 * (e * (3 * f ^ 2 - e ^ 2) / (2 * f ^ 3)) - (f ^ 2 - e ^ 2) * (e / (2 * f)) = e * f := by
   field_simp

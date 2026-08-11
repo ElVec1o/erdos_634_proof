@@ -2577,11 +2577,38 @@ c\sin\tfrac{3\alpha}{2}-b\sin\tfrac{\alpha}{2}=a .
 \end{lemma}
 
 \begin{proof}
-Both sides of the first are $(f^{2}-e^{2})\sqrt{4f^{2}-e^{2}}/(2f)$. For the second,
-$c\sin\frac{3\alpha}{2}=e(3f^{2}-e^{2})/(2f)$ and $b\sin\frac{\alpha}{2}=e(f^{2}-e^{2})/(2f)$, whose
-difference is $e\cdot 2f^{2}/(2f)=ef=a$. Both are machine-checked
+Neither identity is new, and it is worth saying which classical facts they are. Since
+$3\alpha+2\beta=\pi$ and $\gamma=2\alpha+\beta$ one has $\gamma=\frac{\pi+\alpha}{2}$ and
+$\beta=\frac{\pi}{2}-\frac{3\alpha}{2}$, whence
+\[
+\cos\tfrac{\alpha}{2}=\sin\gamma,\qquad
+\cos\tfrac{3\alpha}{2}=\sin\beta,\qquad
+\sin\tfrac{3\alpha}{2}=\cos\beta,\qquad
+\sin\tfrac{\alpha}{2}=-\cos\gamma .
+\]
+The first identity therefore reads $b\sin\gamma=c\sin\beta$, which is the \emph{law of sines}
+$b/\sin\beta=c/\sin\gamma$; the second reads $c\cos\beta+b\cos\gamma=a$, which is the
+\emph{projection formula} for the tile. Both hold for every triangle whatever. Verified symbolically
+and numerically at two precisions, and machine-checked in the closed forms used here
 (\texttt{lean/ApexRigidity.lean}: \texttt{apex\_drop\_eq}, \texttt{apex\_edge\_eq}).
 \end{proof}
+
+\begin{remark}[What is actually new here]\label{rem:apexnovelty}
+Since Lemma~\ref{lem:apexid} is classical, the content of Theorem~\ref{thm:apexconfig} lies entirely in
+the \emph{configuration}, not in the algebra. The point is this. A base-$\beta$ target has base angle
+$\beta$, so an equal side descends at angle $\beta$ to the horizontal. A tile presenting $\alpha$ at a
+point of that side, with its $c$ along the side, therefore has its other edge at that vertex --- its
+$b$ --- inclined at $\alpha+\beta=\pi-\gamma$ to the horizontal. The two edges drop by $c\sin\beta$ and
+$b\sin\gamma$, and the law of sines makes those equal.
+
+So the rigidity is not a coincidence of the family and not a property of the apex: it holds wherever a
+tile presents $\alpha$ on an equal side with its $c$ along that side, which is exactly why it recurs at
+every junction (Proposition~\ref{prop:selfsim}). What the family supplies is the hypothesis that makes
+it bite --- that the target's base angle is the tile's own $\beta$, so that the tile's angle sum does
+the work. The consequences drawn from it in this section, Theorems~\ref{thm:secondc},
+\ref{thm:aforcesT} and \ref{thm:nobothmirror} and Corollary~\ref{cor:pbound}, are new; the identity
+underneath them is not.
+\end{remark}
 
 \begin{theorem}[The first chord is covered exactly]\label{thm:apexconfig}
 Let $T_1,T_2,T_3$ be the three tiles at $A$, with $T_1,T_3$ the outer ones. Then:
