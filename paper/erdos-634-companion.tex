@@ -2929,6 +2929,26 @@ every $e$.
 No placement survives.
 \end{proof}
 
+\begin{remark}[The audit of Theorem~\ref{thm:ptwodead} against the apex rigidity]\label{rem:ptwoaudit}
+Theorem~\ref{thm:ptwodead} predates \S\ref{sub:apex}, and the two overlap. Reconciling them shows the
+earlier enumeration was doing more work than necessary, and we record this rather than leave two
+arguments whose relation is unclear.
+
+Remark~\ref{rem:lastjunction} has the $\alpha$-filler standing between the apex $c$-tile and the
+$a$-tile, so it lays one of its flanks --- a $b$ or a $c$ --- along the apex tile's $a$-ray. Both
+exceed $a=|JP|$, so $P$ would lie \emph{interior} to that edge, contributing $\pi$ at $P$. But
+Theorem~\ref{thm:apexconfig} puts $T_1$ at $\gamma$ there, and $T_2$'s trace on the chord ends at $P$,
+so $T_2$ contributes at least $\gamma$ as well. The total is at least $2\gamma+\pi=2\pi+\alpha>2\pi$.
+
+So that configuration does not occur at all, and the placements enumerated in the proof of
+Theorem~\ref{thm:ptwodead} are placements of a tile that cannot be there. The conclusion is unharmed
+--- indeed Corollary~\ref{cor:pbound} re-derives it, on a wider range of members and without any chord
+estimate --- and Theorem~\ref{thm:lastjunction}'s conclusion, that the adjacent tile lays an $a$-edge,
+is likewise immediate from the same count. What the audit removes is the impression that the tight
+subfamily needs the height identity: it does not.
+\end{remark}
+
+
 \begin{theorem}[The last-junction dichotomy]\label{thm:lastjunction}
 Let $(e,f)$ be any member with $f=2e+1$, and consider the last junction $J$ of an equal side --- the
 junction where the final $c$-edge begins, at distance $f^3-f^2$ from the base corner, hence at height

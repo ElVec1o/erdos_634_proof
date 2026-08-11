@@ -207,4 +207,17 @@ theorem residuals_lt_pi {al be ga : ℝ} (hal : 0 < al) (hbe : 0 < be)
   rw [← hsum]
   constructor <;> linarith
 
+
+/-- **The `α`-filler cannot stand next to the apex `c`-tile.**  It would lay a `b` or a `c` along that
+tile's `a`-ray, both longer than `|JP| = a`, putting `P` interior to its edge and contributing `π`
+there; but `P` already carries `γ` from the apex tile and at least `γ` from the middle apex tile,
+whose chord trace ends at `P`.  The total is `2γ + π = 2π + α > 2π`.
+
+This is the angle-count form of `thm:lastjunction`, and it shows the enumeration in `thm:ptwodead`
+ranges over placements of a tile that cannot be present. -/
+theorem filler_excluded {al be ga : ℝ} (hal : 0 < al) (hbe : 0 < be)
+    (hsum : 3 * al + 2 * be = Real.pi) (hga : ga = 2 * al + be) :
+    2 * Real.pi < ga + ga + Real.pi :=
+  (at_most_one_straight hal hbe hsum hga).1
+
 end Erdos634.SecondEdge
