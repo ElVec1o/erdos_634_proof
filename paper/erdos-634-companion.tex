@@ -2612,18 +2612,38 @@ $R=P'$; and $T_2$ is split by the line $PR$ through its vertex $P$, so the area 
 it, nothing else can.
 \end{proof}
 
-\begin{corollary}[No $T$-junction at $P$]\label{cor:noTP}
-$T_1$ and $T_2$ each present $\gamma$ at $P$, and $2\gamma=\pi+\alpha$, so the angle left at $P$ is
-$\pi-\alpha<\pi$. Hence no tile has $P$ interior to one of its edges: every tile meeting $P$ has a
-vertex there, and the residual figure is $\{2\alpha,2\beta\}$ or $\{\beta,\gamma\}$.
+\begin{corollary}[The tile below $T_1$'s $a$-edge has a vertex at $P$]\label{cor:noTP}
+$T_1$ presents $\gamma$ at $P$, and either $T_2$ presents $\gamma$ at $P$ as well, or $P$ lies interior
+to an edge of $T_2$. In both cases no \emph{further} tile has $P$ interior to an edge; in particular
+the tile below $T_1$'s $a$-edge has a vertex at $P$, and the residual figure there is
+$\{2\alpha,2\beta\}$, $\{\beta,\gamma\}$ or $\{\alpha,\beta\}$.
 \end{corollary}
 
 \begin{proof}
-$T_1$ has sides $c,b,a$ at $A,P,J$ as in Theorem~\ref{thm:apexconfig}, so its angle at $P$ is opposite
-$c$, namely $\gamma$; likewise for $T_2$. A tile with $P$ interior to an edge would contribute $\pi$,
-exceeding the residual $\pi-\alpha$. The residual is $2\alpha+2\beta$, and the vertex arithmetic of
-Lemma~\ref{lem:anglecalc} at $k=1$ leaves only the two figures named.
+$T_1$ has sides $c,b,a$ at $A,P,J$ by Theorem~\ref{thm:apexconfig}, so its angle at $P$ is opposite
+$c$, namely $\gamma$. By Theorem~\ref{thm:apexconfig}(c) the trace of $T_2$ on $C$ is $PP'$, so $P$
+lies on $\partial T_2$: it is either a vertex of $T_2$ or interior to one of its edges.
+
+Suppose it is a vertex. The edge of $T_2$ at $P$ along the ray towards $A$ terminates at $P$, at
+distance $b$ from $A$; $T_2$'s flanks at $A$ are $b$ and $c$, and a $c$ there would terminate at
+distance $c\ne b$, so that edge is $T_2$'s $b$. Hence $T_2$'s angle at $P$ has $b$ as a flank and is
+$\alpha$ or $\gamma$. If it were $\alpha$, the other flank at $P$ would be $c$ and $T_2$ would be the
+triangle $APR$ with $AP=b$, $PR=c$, $AR=a$, whose angle at $A$ is opposite $c$, that is $\gamma$ ---
+contradicting that $T_2$ presents $\alpha$ at $A$. So $T_2$ presents $\gamma$.
+
+For the count: two $\gamma$'s total $\pi+\alpha$, leaving $\pi-\alpha<\pi$; a $\gamma$ and a straight
+angle total $\pi+\gamma$, leaving $\pi-\gamma<\pi$. In neither case does a further straight angle fit.
+Finally the tile below $T_1$'s $a$-edge is neither $T_1$ nor $T_2$, since at $P$ those occupy the
+wedge towards $A$ and the wedge towards $P'$ respectively, so it has a vertex at $P$.
 \end{proof}
+
+\begin{remark}[The two equal sides differ]\label{rem:twosides}
+The dichotomy in Corollary~\ref{cor:noTP} is not an artefact. $T_2$ lays $b$ on one of the two rays it
+shares with $T_1$ and $T_3$ and $c$ on the other, so exactly one of $P$, $P'$ is a genuine vertex
+point and the other carries a $T$-junction. This is the asymmetry between the two equal sides already
+visible in Remark~\ref{rem:dichotomy}. It does not affect what follows: Corollary~\ref{cor:noTP}
+delivers the same conclusion on both sides.
+\end{remark}
 
 \begin{theorem}[The second edge of an equal side is a $c$]\label{thm:secondc}
 Assume $e^{2}+ef<f^{2}$, equivalently $a<b$. Then on every equal side the tile edge immediately below
