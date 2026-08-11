@@ -3003,6 +3003,50 @@ Hypothesis~\ref{hyp:walls} on the whole subfamily $f=2e+1$, requires a further m
 and \S\ref{sub:nogo} rules out the two most natural candidates, so that mechanism must be metric.
 \end{remark}
 
+\begin{theorem}[The two equal sides cannot both be mirrored]\label{thm:nobothmirror}
+Assume $e^{2}+ef<f^{2}$. Then the two equal sides do not both carry the figure $\{3\alpha,2\beta\}$ at
+their last junctions. Hence at least one carries $\{\gamma,\alpha,\beta\}$.
+\end{theorem}
+
+\begin{proof}
+Suppose both do. By Remark~\ref{rem:dichotomy} the tile $X$ adjacent to the apex $c$-tile on each side
+is that tile's reflection across their common $a$-edge, and by Theorem~\ref{thm:apexconfig} that edge
+lies along the chord $C$. So each $X$ is the reflection of the corresponding apex tile across $C$, and
+in particular each has the reflection $R$ of the apex $A$ across $C$ as a vertex. Thus \emph{both}
+mirror partners meet at the single point $R$, which lies on the axis of symmetry, at height
+$H-2H/f$ --- that is, on the chord through the second junction.
+
+Now consider $T_2$. It presents $\alpha$ at $A$, laying its $b$ on one of the two inner rays and its
+$c$ on the other; let $V$ be the far endpoint of the $c$, at distance $c$ from $A$. Its horizontal
+offset from the axis is $c\sin\frac{\alpha}{2}=ef/2=a/2$, exceeding the offset
+$b\sin\frac{\alpha}{2}=e(f^{2}-e^{2})/(2f)$ of $P'$ by $e^{3}/(2f)>0$. Testing $V$ against the three
+edges of the mirror partner on that side gives cross products
+\[
+\frac{e^{3}\sqrt{4f^{2}-e^{2}}}{2},\qquad
+\frac{e^{3}\sqrt{4f^{2}-e^{2}}\,(f-e)(f+e)}{2f^{2}},\qquad
+\frac{e\sqrt{4f^{2}-e^{2}}\,(e^{2}-ef-f^{2})(e^{2}+ef-f^{2})}{2f^{2}} .
+\]
+The first two are positive since $e<f$. In the third, $e^{2}-ef-f^{2}<0$ always, and
+$e^{2}+ef-f^{2}<0$ is exactly the hypothesis, so the product is positive. All three agree in sign, so
+$V$ lies \emph{strictly inside} that mirror partner. But $V$ is a vertex of $T_2$, so the interiors of
+$T_2$ and of the mirror partner meet --- contradicting the dissection. The same computation applies to
+whichever ray carries the $c$, by reflection.
+\end{proof}
+
+\begin{remark}[The first coupling of the two sides]\label{rem:coupling}
+Every previous constraint in this branch has been local to one equal side; Theorem~\ref{thm:nobothmirror}
+is the first that forbids a combination across both. Its mechanism is that the two mirror partners are
+forced to share the vertex $R$ on the axis, which leaves the middle apex tile nowhere to put its far
+vertex.
+
+Note also that the sign condition governing the third cross product is $e^{2}+ef<f^{2}$ --- exactly
+the hypothesis under which $a$ is the shortest side and the whole of \S\ref{sub:apex} operates. That
+the same inequality controls both an edge-length comparison and a containment test is not obvious a
+priori, and it suggests the condition is the natural one for this geometry rather than an artefact of
+the arguments.
+\end{remark}
+
+
 \begin{remark}[Scope, and where $e\ge2$ is easier]\label{rem:ptwoscopeb}
 Theorem~\ref{thm:ptwodead} closes $p=2$ on the whole subfamily $f=2e+1$, hence at $(1,3)$, $(2,5)$,
 $(3,7)$, $(4,9)$, $(5,11)$ and onward; verified independently by exact enumeration of the six

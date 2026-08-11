@@ -122,4 +122,33 @@ theorem scope_limitation {e f : ℕ} (hef : e < f) (h : e ^ 2 + e * f < f ^ 2) (
   subst hfe
   nlinarith
 
+
+/-! ## The two sides cannot both be mirrored
+
+If both equal sides carry `{3α,2β}` at their last junctions, both mirror partners have the reflection
+of the apex as a vertex, and the middle apex tile's far vertex falls strictly inside one of them. The
+containment is decided by three cross products; the first two are positive whenever `e < f`, and the
+third factors as `(e²−ef−f²)(e²+ef−f²)`, whose first factor is always negative and whose second is
+negative exactly under the standing hypothesis `e² + ef < f²`. -/
+
+/-- The first factor of the third cross product is always negative. -/
+theorem quad_neg_always {e f : ℝ} (he : 0 < e) (hef : e < f) :
+    e ^ 2 - e * f - f ^ 2 < 0 := by nlinarith
+
+/-- **The three cross products are simultaneously positive exactly under `e² + ef < f²`.**  So the
+middle apex tile's far vertex lies strictly inside the mirror partner, and the two interiors meet. -/
+theorem overlap_signs {e f : ℝ} (he : 0 < e) (hf : 0 < f) (hef : e < f)
+    (hgold : e ^ 2 + e * f < f ^ 2) (r : ℝ) (hr : 0 < r) :
+    0 < e ^ 3 * r / 2
+  ∧ 0 < e ^ 3 * r * (f - e) * (f + e) / (2 * f ^ 2)
+  ∧ 0 < e * r * (e ^ 2 - e * f - f ^ 2) * (e ^ 2 + e * f - f ^ 2) / (2 * f ^ 2) := by
+  have h1 : e ^ 2 - e * f - f ^ 2 < 0 := quad_neg_always he hef
+  have h2 : e ^ 2 + e * f - f ^ 2 < 0 := by linarith
+  refine ⟨by positivity, ?_, ?_⟩
+  · have : 0 < f - e := by linarith
+    positivity
+  · have her : 0 < e * r := mul_pos he hr
+    have hneg : e * r * (e ^ 2 - e * f - f ^ 2) < 0 := mul_neg_of_pos_of_neg her h1
+    exact div_pos (mul_pos_of_neg_of_neg hneg h2) (by positivity)
+
 end Erdos634.ApexRigidity
