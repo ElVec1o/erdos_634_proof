@@ -2929,6 +2929,17 @@ every $e$.
 No placement survives.
 \end{proof}
 
+\begin{proof}[Second proof, by the angle count at $P$]
+By Proposition~\ref{prop:tightside} the last junction carries $\{\gamma,\alpha,\beta\}$ with the
+$\alpha$-filler adjacent to the apex $c$-tile, so the filler lays a $b$ or a $c$ along that tile's
+$a$-ray. Both exceed $a=|JP|$, so $P$ lies interior to the filler's edge and it contributes $\pi$
+there. But $T_1$ presents $\gamma$ at $P$ and $T_2$'s chord trace ends at $P$, contributing at least
+$\gamma$; the total is at least $2\gamma+\pi=2\pi+\alpha>2\pi$
+(\texttt{SecondEdge.filler\_excluded}). No chord estimate and no height identity is used, and the
+argument needs only $e^{2}+ef<f^{2}$ rather than $f=2e+1$ --- see Corollary~\ref{cor:pbound}, which
+draws the same conclusion from the side count.
+\end{proof}
+
 \begin{remark}[The audit of Theorem~\ref{thm:ptwodead} against the apex rigidity]\label{rem:ptwoaudit}
 Theorem~\ref{thm:ptwodead} predates \S\ref{sub:apex}, and the two overlap. Reconciling them shows the
 earlier enumeration was doing more work than necessary, and we record this rather than leave two
@@ -2977,8 +2988,11 @@ forces structure without closing the case:
 so the side word cannot end $a\,c$ with the $\alpha$ adjacent to $C$;
 \item[] in the figure $\{3\alpha,2\beta\}$ it forces $X$ to be the second $\beta$. That $\beta$ shares
 $C$'s $a$-edge and is the reflection of $C$ across it, so both present $\gamma$ at the far end $Q$ of
-that edge. Since $2\gamma=\pi+\alpha<2\pi$, the point $Q$ is interior, and its figure is
-$\{2\alpha,2\beta,2\gamma\}$ or $\{\beta,3\gamma\}$.
+that edge. Since $2\gamma=\pi+\alpha<2\pi$, the point $Q$ is interior. Its figure is in fact
+\emph{exactly} $\{\beta,3\gamma\}$: by Theorem~\ref{thm:apexconfig} the middle apex tile $T_2$ also
+meets $Q$, its chord trace ending there, and a straight angle from $T_2$ would give
+$2\gamma+\pi>2\pi$; so $T_2$ contributes a third $\gamma$, leaving $2\pi-3\gamma=\beta$. The
+alternative $\{2\alpha,2\beta,2\gamma\}$, which carries only two $\gamma$'s, is excluded.
 \end{itemize}
 
 At $(3,7)$ the reflected tile is $(J,Q,R)$ with $R=(207,100\sqrt{187}/7)$, a genuine $(21,49,40)$
