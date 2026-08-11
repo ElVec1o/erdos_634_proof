@@ -1535,6 +1535,50 @@ theorem g4_assembled {Dir : Type*} (neg : Dir → Dir)
   intro d
   exact congrArg ENNReal.toReal (interiorBalanced_of_null_symm neg S F hF horient d)
 
+/-! ### The direction type, and G4 as a single statement
+
+A *direction* is a unit vector in the plane; reversal is negation, an involution.  Unit vectors are
+the right quotient of "nonzero vectors modulo positive scaling" for this purpose: two tile edges on
+the same line with *different lengths* — which is exactly what a non-edge-to-edge incidence
+produces — must receive the same direction, and normalising achieves that where the raw vector would
+not.  No `Fintype` is needed: `InteriorBalancedReal` quantifies over directions rather than summing
+over them, and finiteness enters only at `cancellation_core_real`, where the directions actually
+occurring form a finite set. -/
+
+/-- A direction in the plane: a unit vector. -/
+def Dir : Type := {v : Plane // ‖v‖ = 1}
+
+/-- Reversal of a direction. -/
+def Dir.neg (d : Dir) : Dir := ⟨-d.1, by rw [norm_neg]; exact d.2⟩
+
+theorem Dir.neg_involutive : Function.Involutive Dir.neg := by
+  intro d; apply Subtype.ext; simp [Dir.neg]
+
+/-- **The unit direction of a tile edge, with the tile on the left.**  `Tri.leftDir` normalised;
+`Tri.leftDir_ne_zero` is what makes the normalisation legitimate. -/
+noncomputable def Tri.leftUnit (T : Tri) (k : Fin 3) : Dir :=
+  ⟨‖T.leftDir k‖⁻¹ • T.leftDir k, by
+    rw [norm_smul, norm_inv, norm_norm]
+    exact inv_mul_cancel₀ (norm_ne_zero_iff.mpr (T.leftDir_ne_zero k))⟩
+
+/-- **G4, as one statement.**  With `S d` the union of the interior tile edges carrying unit
+direction `d`, and `F` the (finite) set of tile vertices, the interior directed lengths balance.
+
+The single input `horient` is the geometric fact this file has been assembling: two tiles meeting
+along an interior segment receive opposite directions.  `Tri.leftUnit` supplies the canonical
+assignment, `Tri.interior_left_of_leftDir` shows each tile lies to the left of its own directed
+edges — with no hypotheses, `Tri.det_ne_zero` having discharged the last one — and
+`leftDir_opposite_of_opposite_sides` converts the two tiles' opposite sides into opposite directions.
+
+What is still not built here is `S` itself, as a function of a `Dissection`.  That is a definition,
+not a fact: every fact it would need is proved above. -/
+theorem g4 (S : Dir → Set Plane) (F : Set Plane) (hF : F.Finite)
+    (horient : ∀ d, S d \ F = S (Dir.neg d) \ F) :
+    InteriorBalancedReal Dir.neg
+      (fun d => ((MeasureTheory.Measure.hausdorffMeasure 1 :
+        MeasureTheory.Measure Plane) (S d)).toReal) :=
+  g4_assembled Dir.neg S F hF horient
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
