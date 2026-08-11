@@ -129,3 +129,143 @@ are finite checks stated in the companion and verified by computation, not in Le
 
 `bash lean/check-all.sh` — compiles all 68 modules sequentially against the borrowed Mathlib and runs
 the `sorry` audit. Verified 2026-08-11: 67 modules ok, 0 failures, 754 theorems, no `sorry`.
+
+## Completed census, 2026-08-12 (Rule 5 / Rule 18)
+
+Every labelled statement of both papers now appears exactly once, here or in a section above.
+
+`M` = main paper, `C` = companion.
+
+
+### Statements citing a Lean declaration (label VERIFIED for the cited part)
+
+| Paper | Statement | Lean declaration(s) |
+|---|---|---|
+| C `conj:advance` | Advance-and-collide | `first_run_kill`, `through_edge_exclusive`, `chord_two_b`, `chord_two_b_half` |
+| C `cor:basedi2e` | The base trichotomy and dichotomy without separation | `base_dichotomy_thick`, `no_extra_column_of_f_gt_two_e` |
+| C `cor:ptwo` | A uniform two-case side problem | `side_p_le_two` |
+| C `cor:walls16` | corollary | `pincer_window_four` |
+| C `cor:wallsf2e` | The walls form at $e=1$, $f\ge3$ | `SideNoB.side_no_b_uncond`, `SideNoB.side_quantized`, `SideNoB.c_corner_forces_side_a` |
+| C `lem:anglethreshold` | The angle threshold | `cos_alpha_closed` |
+| C `lem:avgen` | The $\alpha$-vertex gap, general | `alpha_vertex_gap_gen` |
+| C `lem:basedi` | The thick base dichotomy | `base_dichotomy_thick` |
+| C `lem:basetri` | The thick base trichotomy | `base_trichotomy` |
+| C `lem:cchord` | c-chord dichotomy | `CChord.c_chord_dichotomy` |
+| C `lem:ccorner` | The $c$-corner is rigid | `partner_unique` |
+| C `lem:census` | The vertex census | `vertex_census` |
+| C `lem:charge` | The mirrored piece is charged | `mirrored_left_junction`, `escape_charge` |
+| C `lem:chord` | The chord at the last junction | `tile_contact_face`, `contact_is_edge` |
+| C `lem:collar` | Collar decomposition | `collar_cells` |
+| C `lem:eastfan` | The east fan at the fork is forced | `straight_junction_gamma_bound`, `straight_junction_cases` |
+| C `lem:firstrun` | First-run orientation | `PentagonLemma.partner_unique`, `OrderForcing.first_run_kill`, `gamma_far_absorbing` |
+| C `lem:jbline` | The $jb$-line partition | `partition_jb` |
+| C `lem:ladder` | Descent identities and the ladder | `descent_ident`, `sinb_ident`, `ladder_no_base` |
+| C `lem:monochotomy` | The thick-member monochotomy | `c_chord_unique_thick` |
+| C `lem:noapexline` | The chain never needs the apex line | `chain_needs_small_lines` |
+| C `lem:parity` | Straight-figure parity | `census_parity` |
+| C `lem:shadow` | The shadow at a $c$-corner | `strips_tall`, `shadow_footage_e1` |
+| C `lem:sidequant` | Thick-side quantization | `side_no_b_uncond`, `side_quantized` |
+| C `lem:solitary` | The crossing kill, and solitude of branches | `crossing_tangency` |
+| C `lem:termination` | Termination is one condition, boundary or interior | `consecutive_gap` |
+| C `lem:tight` | The $\gamma$-injection budget at $p=2$ | `gamma_slack`, `p_two_tight_iff` |
+| C `lem:topjunction` | Top junction; $p\le f-3$ for $f\ge4$ | `OrderForcing.mirrored_filler_outside`, `direct_filler_outside`, `two_c_single_run`, `p_le_f_sub_three` |
+| C `prop:a2branch` | The $A_2$ branch dies | `straight_junction_cases`, `east_cover_gap`, `straight_junction_gamma_bound`, `alpha_vertex_gap` |
+| C `prop:closepaircolumns` | The extra base columns at a close pair | `close_pair_column`, `close_pair_column_unique`, `one_column_per_k` |
+| C `prop:doublec` | The double-$c$ kill at any initial block length | `chord_jb`, `chord_jb_segment`, `partition_jb_gen`, `partition_30` |
+| C `prop:inflbdy` | The inflated boundary | `Inflation.middle_three`, `middle_eight`, `middle_nine`, `residual_245` |
+| C `prop:nogolden` | The golden-ratio hypothesis is removable | `ApexRigidity.b_gt_f`, `eb_gt_a`, `e_ge_two_of_b_lt_a` |
+| C `prop:sharpcolumn` | Sharp criterion for an extra base column | `column_criterion_identity`, `column_criterion`, `k_one_forces_f_le_two_e_sub_one`, `residue_step` |
+| C `prop:straddlegen` | The general form | `ChordDecomp.area_never_integral`, `ChordDecomp.coprime_tight` |
+| C `prop:tightside` | The $p=2$ side is forced | `p_two_single_c`, `pi_vertex_with_gamma` |
+| C `prop:unify` | The chain machinery is member-independent | `fill_beta`, `fill_alpha`, `fill_alpha_beta`, `partition_jb_gen` |
+| C `thm:align` | Alignment of the mismatch ray | `far_near_disjoint`, `far_is_bpow`, `b_not_dvd_fsq` |
+| C `thm:basebeta-e1` | The base-$\beta$ family at $e=1$, $f=2$ | `tile_alpha_irrational`, `vertex_pi`, `vertex_beta_corner`, `vertex_apex` |
+| C `thm:depthwindow` | Reach three behind a thick block, and the pincer win | `pincer_window` |
+| C `thm:e1cascade` | The cascade closes every initial-block-1 configurati | `cascade_reaches`, `reversal_covers`, `partition_2b` |
+| C `thm:elltwo` | The block-two chain runs to arbitrary depth | `partition_2b`, `east_cover_gap` |
+| C `thm:halfangle` | The angle $(\pi-\alpha)/2$ | `halfpi_minus_alpha_unique` |
+| C `thm:kbrep` | Unique representation of $k\,b$ | `kb_unique_rep` |
+| C `thm:l2slot` | L2 at every reached slot | `partner_unique` |
+| C `thm:lastjunction` | The last-junction dichotomy | `alpha_cannot_lay_a`, `adjacent_angle_not_alpha` |
+| C `thm:n1` | The column $(0,e,2e)$ admits no tiling | `fill_beta`, `fill_alpha`, `fill_alpha_beta`, `partner_unique` |
+| C `thm:ptwodead` | $p=2$ is excluded on the tight subfamily | `SecondEdge.filler_excluded` |
+| C `thm:walkstruct` | Walk structure at $m=1$ | `equal_side_no_b`, `equal_side_shape`, `base_b_count` |
+| C `thm:walls13` | Hypothesis~\ref{hyp:walls} holds at $(1,3)$ | `partner_unique` |
+| C `thm:walls14` | Hypothesis~\ref{hyp:walls} holds at $(1,4)$ | `first_run_kill`, `partition_30` |
+| M `prop:F1free` | $F_1$ excluded for prime $N$, without a rationality  | `F1_Ma`, `F1_Mb`, `F1_ratio`, `F1_pin` |
+| M `prop:bunsplit` | $b$ is unsplittable | `b_unsplittable` |
+| M `prop:dissection` | Dissection basics | `Dissection.volume_target`, `volume_target_of_congruent`, `vertex_multiplicities`, `cornerAngle_sum` |
+
+### Statements with no Lean declaration (label PROVED; formalization debt)
+
+These carry no formalization. The blocker is recorded per group rather than per row, since it is the
+same in each case: the statement quantifies over tilings, tile placements or boundary walks of a
+planar region, and Mathlib has no theory of polygonal dissections to state it against. What would
+unblock them is the `Dissection` layer of `lean/Dissection.lean` extended to boundary words; that
+layer exists for area and vertex degree but not for edge sequences along a side.
+
+| Paper | Statement |
+|---|---|
+| C `cor:basewalls` | corollary |
+| C `cor:farvacuous` | The far side can never give a contradiction |
+| C `cor:inflcrux` | The crux, on $f^2$ tiles |
+| C `cor:onebloc` | One-end-blocked chord dichotomy |
+| C `cor:walls-from-T` | A sufficient condition for Hypothesis~\ref{hyp:walls} |
+| C `cor:walls15` | corollary |
+| C `lem:anchorclear` | Blocked-end quantization |
+| C `lem:ccornerside` | A $c$-corner carries a side $a$-edge |
+| C `lem:climberdetect` | Climbers detect deviation |
+| C `lem:columnlines` | Corner lines are column lines |
+| C `lem:cornerstep` | The corner step, unconditional at every member |
+| C `lem:endpoints` | Endpoint angles |
+| C `lem:filler` | Filler identity |
+| C `lem:interior` | Interior multiples |
+| C `lem:offsets` | Offset congruence |
+| C `lem:ple` | Two $c$-edges are forced; $p\le f-2$ |
+| C `lem:sidenob` | The equal sides carry no $b$-edge |
+| C `lem:stubgap` | The second stub is a gap |
+| C `lem:termwedge` | Terminal wedge |
+| C `lem:wallclimb` | The wall climb |
+| C `prop:dirgroup` | The direction group of a branch |
+| C `prop:gammagrading` | $\gamma$-grading |
+| C `prop:n1fromwalls` | proposition |
+| C `prop:rung2` | Rung two: the pre-piercer chain |
+| C `prop:widecol` | Wide columns, all $(e,f)$ |
+| C `thm:chain` | The $b$-run orientation lemma |
+| C `thm:e1family` | The $e=1$ base-$\beta$ family |
+| C `thm:e1reduce` | The $e=1$ subfamily reduces to one walk |
+| C `thm:efminus1` | The side parameter vanishes on the family $e=f-1$ |
+| C `thm:farregion` | The far region is a scaled tile |
+| C `thm:forkkill` | The row fork kill |
+| C `thm:pierce` | Apex mismatch: the pierced corner |
+| C `thm:ray` | The mismatch ray is completely determined |
+| C `thm:strippbound` | Straddlers need three strips, so rows $1,2,3$ are clean |
+| C `thm:walks` | Boundary walks of the base-$\beta$ target at $m=1$ |
+| M `cor:elevenm` | An infinite family of tilings in an incommensurable branch |
+| M `cor:int` | Integrality and parity |
+| M `cor:ladder` | The realizable set of a base-$\beta$ family is a union of mu |
+| M `cor:mod12` | Theorem~\ref{thm:main}, congruence form |
+| M `lem:cancel` | Cancellation |
+| M `lem:nonint` | Non-integrality |
+| M `lem:value` | Tile value |
+| M `prop:conic` | Conic form |
+| M `prop:cornerpara` | Corner parallelogram |
+| M `prop:eqspec` | Equilateral admissibility |
+| M `prop:otherspectra` | The other branches |
+| M `prop:ratfree` | The rationality input, partly internalised |
+| M `prop:solv` | Solvability of $e\mid(a+b-c)$ |
+| M `prop:unsplit` | Unsplittability, and the rigidity of the thick regime |
+| M `thm:44` | theorem |
+| M `thm:admissible` | Isosceles admissible spectrum |
+| M `thm:decidable` | Decidability |
+| M `thm:fib` | Fibonacci families are the extremal ones |
+| M `thm:frontier` | theorem |
+| M `thm:frontier2` | theorem |
+| M `thm:frontier3` | theorem |
+| M `thm:frontier4` | theorem |
+| M `thm:frontier5` | theorem |
+| M `thm:iso` | theorem |
+| M `thm:ladder` | Scaling ladder |
+| M `thm:lattice` | Spectrum lattice |
+| M `thm:primefull` | The prime case |
+| M `thm:spectrum` | Spectrum theorem |
