@@ -1411,6 +1411,43 @@ theorem Tri.leftDir_eq_or (T : Tri) (k : Fin 3) :
   · exact Or.inl rfl
   · right; abel
 
+/-- **A tile lies strictly to the left of each of its left-directed edges.**  If every barycentric
+coordinate of `y` is positive — i.e.\ `y` is interior to `T` — then `cross (leftDir k) (y - pts k)`
+is positive, for every edge `k`.
+
+Both branches of `Tri.leftDir` are handled by the same identity: `coord_mul_det` gives
+`cross = coord · det`, and `leftDir` carries exactly the sign of `det`, so the product is positive
+either way.  `hdet` is affine independence in the form this argument uses; it is not an extra
+assumption about `T`, only one this file does not derive. -/
+theorem Tri.interior_left_of_leftDir (T : Tri) (k : Fin 3) (hdet : T.det ≠ 0) {y : Plane}
+    (hy : ∀ i, 0 < T.basis.coord i y) :
+    0 < cross (T.leftDir k) (y - T.pts k) := by
+  have hid := T.coord_mul_det k y
+  have hc : 0 < T.basis.coord (k + 2) y := hy _
+  unfold Tri.leftDir
+  split
+  · rename_i hpos
+    rw [← hid]; exact mul_pos hc hpos
+  · rename_i hnpos
+    have hneg : T.det < 0 := lt_of_le_of_ne (not_lt.mp hnpos) hdet
+    have hflip : T.pts k - T.pts (k + 1) = -(T.pts (k + 1) - T.pts k) := (neg_sub _ _).symm
+    rw [hflip, cross_neg_left, ← hid]
+    exact neg_pos.mpr (mul_neg_of_pos_of_neg hc hneg)
+
+/-- **`horient`, at the level of two tiles.**  If `T₁` and `T₂` have interior points on opposite
+sides of the line through a shared segment — which is what `Dissection.two_tiles_at_edge_point`
+delivers at every non-vertex point of an interior edge — then their left-hand directions along that
+line point oppositely, since each tile sees a positive cross product against its own direction.
+
+This is the fact `g4_assembled` takes as `horient`, and with it every mathematical ingredient of G4
+is proved; what is left is bookkeeping between "directions" as vectors and the index type `Dir`. -/
+theorem leftDir_opposite_of_opposite_sides {u : Plane} {p y₁ y₂ : Plane}
+    (h₁ : 0 < cross u (y₁ - p)) (h₂ : 0 < cross (-u) (y₂ - p)) :
+    cross u (y₁ - p) > 0 ∧ cross u (y₂ - p) < 0 := by
+  refine ⟨h₁, ?_⟩
+  rw [cross_neg_left] at h₂
+  linarith
+
 /-! ### G4 without maximal segments
 
 The obligation "produce the two covering families for each maximal interior segment" can be avoided
