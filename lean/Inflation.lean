@@ -266,4 +266,21 @@ theorem parity_49 : (3 * 81 - (36 - 4)) % 2 = 1 := by decide
 theorem parity_silent : (3 * 9 - (12 - 1)) % 2 = 0 ∧ (3 * 49 - (28 - 3)) % 2 = 0 := by
   constructor <;> decide
 
+
+/-! ## The `p=1` word needs two `c`-edges
+
+`prop:inflbdy` forces both end letters of the `c`-side to be `c`-edges, and the `p=1` word has
+`f + (f-e) ≥ 2` letters, so those are two distinct positions. Its `c`-count is `f - e`, whence
+`f - e ≥ 2`. At `e = f-1` the count is `1`, so no such word exists: the inflation is rigid on that
+whole family with no search. -/
+
+/-- A `p=1` word exists only if `e + 2 ≤ f`. -/
+theorem p1_requires_two_c (e f : ℕ) (hef : e < f) (hc : 2 ≤ f - e) : e + 2 ≤ f := by omega
+
+/-- At `e = f - 1` that fails, so no `p=1` word exists. -/
+theorem p1_excluded_e_pred (f : ℕ) (hf : 2 ≤ f) : ¬ ((f - 1) + 2 ≤ f) := by omega
+
+/-- The `c`-count of the `p=1` word at `e = f-1` is exactly one. -/
+theorem p1_c_count_e_pred (f : ℕ) (hf : 2 ≤ f) : f - (f - 1) = 1 := by omega
+
 end Erdos634.Inflation
