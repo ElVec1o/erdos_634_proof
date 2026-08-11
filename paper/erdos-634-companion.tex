@@ -2686,6 +2686,62 @@ exactly on the next chord, by the same identities --- only one $\gamma$ is force
 is what an induction would require, and we do not have it.
 \end{remark}
 
+\begin{proposition}[The descent is self-similar]\label{prop:selfsim}
+Suppose a tile $Z$ lays a $c$-edge of an equal side between consecutive junctions $J'$ (nearer the
+apex) and $J$, and presents $\alpha$ at $J'$. Let $W$ be its third vertex. Then $W$ lies \emph{exactly}
+on the chord $C$ through $J$; the segment $JW$ is $Z$'s $a$-edge, of length $a$, lying along $C$; and
+$Z$ presents $\beta$ at $J$ and $\gamma$ at $W$.
+\end{proposition}
+
+\begin{proof}
+The two edges of $Z$ at $J'$ are its flanks at $\alpha$, namely $b$ and $c$; the $c$ runs down the side
+to $J$ and the $b$ into the interior, at angle $\alpha$ from the descending side, hence at
+$\frac{3\alpha}{2}-\alpha=\frac{\alpha}{2}$ from the downward vertical --- the same inclination as the
+apex tile's $b$-edge in Theorem~\ref{thm:apexconfig}. So the drop from $J'$ to $W$ is
+$b\cos\frac{\alpha}{2}$ and that from $J'$ to $J$ is $c\cos\frac{3\alpha}{2}$, equal by
+Lemma~\ref{lem:apexid}; and the horizontal offsets differ by
+$c\sin\frac{3\alpha}{2}-b\sin\frac{\alpha}{2}=a$. The angles at $J$ and $W$ are those opposite $b$ and
+$c$, namely $\beta$ and $\gamma$.
+\end{proof}
+
+\begin{remark}[Why the descent does not close, and it is not for want of trying]\label{rem:selfsim}
+Proposition~\ref{prop:selfsim} says the configuration at $J$ is a verbatim copy of the configuration
+at the first junction, with $(A,J_1,P)$ replaced by $(J',J,W)$. If the argument of
+Theorem~\ref{thm:secondc} could be run at $J$ as it was at $J_1$, it would force the side edge below
+$J$ to be a $c$ as well, and induction down the side would give $n_a=0$, that is $p=0$ --- exactly
+Hypothesis~\ref{hyp:walls}. It cannot, and the obstruction is sharp.
+
+The argument at $J_1$ turns on Corollary~\ref{cor:noTP}: \emph{two} tiles present $\gamma$ at $P$, so
+the residual is $\pi-\alpha<\pi$ and no tile can have $P$ interior to an edge. The second $\gamma$
+comes from $T_2$, which exists only because the apex figure is $\{3\alpha\}$. At $W$ only $Z$'s
+$\gamma$ is forced, and no counting argument can supply the other:
+
+\begin{lemma}[A single $\gamma$ never excludes a $T$-junction]\label{lem:onegamma}
+Let $x$ be an interior point at which one tile presents $\gamma$ and one tile has $x$ interior to an
+edge. Then the remaining tiles at $x$ present angles totalling exactly $\alpha+\beta$, realised by one
+$\alpha$ and one $\beta$. The angle count is therefore always consistent.
+\end{lemma}
+
+\begin{proof}
+$2\pi=\gamma+\pi+R$ gives $R=\pi-\gamma=\alpha+\beta$, since $\alpha+\beta+\gamma=\pi$.
+\end{proof}
+
+So the obstruction is not a missing computation but the tile's own angle sum: a lone $\gamma$ beside a
+straight edge balances at every member and at every point. Exclusion by angle count needs two
+$\gamma$'s, and the apex is the only place that supplies two.
+
+We also record a near miss, since it shows how narrow the gap is. At $W$ the $T$-junction \emph{can}
+be excluded when it would sit on the tile $V$ angularly adjacent to $Z$ at $J'$: if $V$ lays its $c$
+along $Z$'s $b$-ray, the budget is $\gamma+\pi$ with residual $\pi-\gamma<\pi$, so no \emph{second}
+straight angle fits, and the tile below $Z$'s $a$-edge is forced to have a vertex at $W$ and to lay
+exactly $a$ --- which is all Theorem~\ref{thm:secondc} needs. What defeats this is that the
+$T$-junction need not sit on $V$ at all: the tile \emph{below} $C$ may carry an edge running along $C$
+from $J$ through $W$, of length $b$ or $c$, with its vertex on the boundary at $J$. That is precisely
+the tile the argument was trying to pin, so it closes on itself. Settling whether that placement can
+occur is, as far as we can see, the whole of what remains at $p=1$.
+\end{remark}
+
+
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
 
 Corollary~\ref{cor:ptwo} leaves the two cases $p\in\{1,2\}$. The case $p=2$ is not uniformly hard:
