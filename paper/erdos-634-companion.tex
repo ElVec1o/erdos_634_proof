@@ -2778,8 +2778,18 @@ and the vertex budget of Corollary~\ref{cor:noTP} in both branches
 not formalized is the planar geometry underneath: that $T_1$ presents $\gamma$ at $P$ and that $T_2$'s
 chord trace ends there, which are the hypotheses those statements take. The non-representability of $a-b$
 was checked symbolically, with $(f-2)(2f-1)-(a-b)=(f-1)^{2}$, and by exhaustive enumeration for
-$3\le f\le39$. An adversarial review in a fresh session, working from the written proof alone, has not
-yet been carried out, and the result should be read with that outstanding.
+$3\le f\le39$. Two adversarial passes have been made, both within the session that produced the proof. The first
+found a genuine defect --- Corollary~\ref{cor:pbound} was stated under a hypothesis that fails at
+$e=f-1$, the very members it was invoked for --- now repaired by restating that corollary under
+$\gcd(e,f)=1$. The second checked the side equation, integrality of $p$, the case $p\ge2$ including
+$f=2$, that $J$ is interior to the side so that the tile $Y$ exists at all, the edge counts, absence of
+circularity, and that Theorem~\ref{thm:apexconfig} and Corollary~\ref{cor:noTP} use nothing beyond
+family-wide facts; it found no further defect.
+
+Neither pass is what Rule 6 asks for, namely a review in a fresh session with no memory of the
+derivation, and that remains outstanding. Each of the fifteen candidate integers above has, we note, a
+unique base-$\beta$ member, so discharging the hypothesis at $(f-1,f)$ discharges it for that
+integer's only member of this branch.
 \end{remark}
 
 
