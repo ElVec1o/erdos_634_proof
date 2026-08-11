@@ -151,4 +151,26 @@ theorem overlap_signs {e f : ℝ} (he : 0 < e) (hf : 0 < f) (hef : e < f)
     have hneg : e * r * (e ^ 2 - e * f - f ^ 2) < 0 := mul_neg_of_pos_of_neg her h1
     exact div_pos (mul_pos_of_neg_of_neg hneg h2) (by positivity)
 
+
+/-- **`T₂`'s far vertex overshoots `P'`.**  Its horizontal offset from the axis is
+`c·sin(α/2) = ef/2 = a/2`, against `b·sin(α/2)` for `P'`; the difference is `e³/(2f) > 0`.  This is
+what carries the far vertex past the mirror partner's boundary. -/
+theorem far_vertex_offset (e f : ℝ) (hf : f ≠ 0) :
+    f ^ 2 * (e / (2 * f)) - (f ^ 2 - e ^ 2) * (e / (2 * f)) = e ^ 3 / (2 * f) := by
+  field_simp
+  ring
+
+/-- **The reflected apex lies on the second chord.**  The chord through the first junction sits at
+drop `H/f`, so the reflection of the apex across it sits at drop `2H/f` — which is the drop of the
+chord through the second junction. -/
+theorem reflection_drop (H f : ℝ) : H - (H - 2 * (H / f)) = 2 * (H / f) := by ring
+
+/-- **The figure at `P` on the side carrying `T₂`'s `c`-edge.**  A `γ`, a straight angle, a `β` and an
+`α` total exactly `2π`, so one further tile completes it and it presents `α`. -/
+theorem figure_at_P {al be ga : ℝ} (hsum : 3 * al + 2 * be = Real.pi) (hga : ga = 2 * al + be) :
+    ga + Real.pi + be + al = 2 * Real.pi := by
+  subst hga
+  rw [← hsum]
+  ring
+
 end Erdos634.ApexRigidity

@@ -3003,9 +3003,13 @@ Hypothesis~\ref{hyp:walls} on the whole subfamily $f=2e+1$, requires a further m
 and \S\ref{sub:nogo} rules out the two most natural candidates, so that mechanism must be metric.
 \end{remark}
 
-\begin{theorem}[The two equal sides cannot both be mirrored]\label{thm:nobothmirror}
-Assume $e^{2}+ef<f^{2}$. Then the two equal sides do not both carry the figure $\{3\alpha,2\beta\}$ at
-their last junctions. Hence at least one carries $\{\gamma,\alpha,\beta\}$.
+\begin{theorem}[The side carrying $T_2$'s $c$-edge is not mirrored]\label{thm:nobothmirror}
+Assume $e^{2}+ef<f^{2}$. The middle apex tile $T_2$ lays its $b$ on one of the two inner rays at $A$
+and its $c$ on the other. Then the equal side on the ray carrying the $c$ has figure
+$\{\gamma,\alpha,\beta\}$ at its last junction, not $\{3\alpha,2\beta\}$.
+
+In particular the two equal sides are not both mirrored, and at least one carries
+$\{\gamma,\alpha,\beta\}$.
 \end{theorem}
 
 \begin{proof}
@@ -3029,8 +3033,26 @@ edges of the mirror partner on that side gives cross products
 The first two are positive since $e<f$. In the third, $e^{2}-ef-f^{2}<0$ always, and
 $e^{2}+ef-f^{2}<0$ is exactly the hypothesis, so the product is positive. All three agree in sign, so
 $V$ lies \emph{strictly inside} that mirror partner. But $V$ is a vertex of $T_2$, so the interiors of
-$T_2$ and of the mirror partner meet --- contradicting the dissection. The same computation applies to
-whichever ray carries the $c$, by reflection.
+$T_2$ and of the mirror partner meet --- contradicting the dissection. Only the mirror partner on the
+ray carrying the $c$ enters the test, so one side suffices; the other ray is handled by reflection.
+\end{proof}
+
+\begin{corollary}[The figure at $P$ on that side is fully determined]\label{cor:figureP}
+On the equal side carrying $T_2$'s $c$-edge, the point $P$ lies at distance $b<c$ from $A$ along that
+edge, hence interior to it, so $T_2$ is the straight tile at $P$. The figure at $P$ is then forced:
+\[
+\underbrace{\gamma}_{T_1}\;+\;\underbrace{\pi}_{T_2}\;+\;\underbrace{\beta}_{Y}\;+\;\underbrace{\alpha}_{U}\;=\;2\pi ,
+\]
+with $Y$ the tile below $T_1$'s $a$-edge and $U$ a single further tile presenting $\alpha$. No other
+distribution is possible.
+\end{corollary}
+
+\begin{proof}
+$T_1$ presents $\gamma$ at $P$ and $T_2$ contributes $\pi$. By Theorem~\ref{thm:nobothmirror} the
+figure at the last junction of that side is $\{\gamma,\alpha,\beta\}$, in which $Y$ presents $\gamma$
+at $J$ and therefore $\beta$ at $P$, those being the two angles at the ends of its $a$-edge. That
+leaves $2\pi-\gamma-\pi-\beta=\pi-\gamma-\beta=\alpha$, so exactly one further tile meets $P$ and it
+presents $\alpha$.
 \end{proof}
 
 \begin{remark}[The first coupling of the two sides]\label{rem:coupling}
