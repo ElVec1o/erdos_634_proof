@@ -99,4 +99,42 @@ compositions with the prescribed end edges. -/
 theorem a_b_sides_rigid : ([3, 3, 3] : List ℕ).sum = 9 ∧ ([8, 8, 8] : List ℕ).sum = 24 := by
   constructor <;> decide
 
+
+/-! ## The same forcing at `(3,7)`
+
+Tile `(21,40,49)` inflated to `(147,280,343)`, `49` copies. The residual lengths after removing the
+two prescribed end edges are `105`, `200`, `245`. The first two have unique compositions; the third
+has exactly two, and they are `p = 0` and `p = 1` on the equal side. -/
+
+/-- The inflated `a`-side is rigid at `(3,7)`: `105 = 5·21` and nothing else. -/
+theorem residual_105 (x y z : ℕ) (h : 21 * x + 40 * y + 49 * z = 105) :
+    x = 5 ∧ y = 0 ∧ z = 0 := by
+  have hy : y ≤ 2 := by omega
+  have hz : z ≤ 2 := by omega
+  interval_cases y <;> interval_cases z <;> omega
+
+/-- The inflated `b`-side is rigid at `(3,7)`: `200 = 5·40` and nothing else. -/
+theorem residual_200 (x y z : ℕ) (h : 21 * x + 40 * y + 49 * z = 200) :
+    x = 0 ∧ y = 5 ∧ z = 0 := by
+  have hy : y ≤ 5 := by omega
+  have hz : z ≤ 4 := by omega
+  interval_cases y <;> interval_cases z <;> omega
+
+/-- **The inflated `c`-side at `(3,7)` has exactly two compositions**, `5·49` and `7·21 + 2·49`.
+Adding the two end `c`-edges gives the whole-side profiles `(0 a, 7 c)` and `(7 a, 4 c)` --- that is,
+`p = 0` and `p = 1`. This is the crux, posed on `49` tiles instead of `138`. -/
+theorem residual_245 (x y z : ℕ) (h : 21 * x + 40 * y + 49 * z = 245) :
+    (x = 0 ∧ y = 0 ∧ z = 5) ∨ (x = 7 ∧ y = 0 ∧ z = 2) := by
+  have hy : y ≤ 6 := by omega
+  have hz : z ≤ 5 := by omega
+  interval_cases y <;> interval_cases z <;> omega
+
+/-- Both survivors have the right length, and the whole-side profiles are `p=0` and `p=1`. -/
+theorem c_side_profiles_37 :
+    49 + (49 * 5) + 49 = 343 ∧ 49 + (21 * 7 + 49 * 2) + 49 = 343 := by
+  constructor <;> decide
+
+/-- The inflation is `35%` of the target at `(3,7)`: `49` tiles against `N = 138`. -/
+theorem inflation_smaller_37 : 49 < 138 := by decide
+
 end Erdos634.Inflation
