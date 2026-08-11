@@ -3204,6 +3204,16 @@ So the uniform proof of Theorem~\ref{thm:inflrigid} remains open. What Propositi
 shows is that any such proof must use more than counting on the both-odd members, since the counting
 invariant is identically satisfied there. \textup{(}Machine-checked, \texttt{parity\_25},
 \texttt{parity\_49}, \texttt{parity\_silent}.\textup{)}
+
+One caveat should be entered in the hypothesis's favour. The edge multiset of the two standard
+inflations was computed from the certified tilings in \texttt{code/engine/inflation/}: at $(1,3)$ every
+edge has multiplicity $1$ or $2$ with $9$ of the former and $9$ of the latter, and at $(3,7)$ with $21$
+and $63$; no edge has multiplicity above $2$, and $2\cdot 9+9=27=3\cdot 3^2$, $2\cdot 63+21=147=3\cdot
+7^2$. So the inflation that does exist \emph{is} edge-to-edge, and the boundary count is $3f$ on the
+nose. That is a positive control sensitive to exactly the quantity the proof above manipulates --- a
+mis-stated $B$ would break it --- and it is recorded because the vertex-census parity of
+Remark~\ref{rem:parityscope} was retracted after passing a control that could not see its defect.
+What the control cannot do is speak for the $p=1$ boundary, since no such tiling exists to measure.
 \end{remark}
 
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
