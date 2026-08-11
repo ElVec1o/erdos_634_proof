@@ -2359,8 +2359,35 @@ there: $(e,f)=(2,3)$, $(2,5)$ and $(3,4)$, with $N=23$, $71$ and $39$ and node c
 $19\,677$, $553\,417$ and $825\,724$. The first two of these integers are primes congruent to
 $11$ modulo $12$; all three are already excluded as tile counts by other means recorded above.
 
+A further reduction of the side condition is now available. The apex of a base-$\beta$ target is
+rigid, and the rigidity is an identity of the whole family: $b\cos\frac{\alpha}{2}=c\cos\frac{3\alpha}{2}$
+for every $(e,f)$, which places the apex tile's third vertex exactly on the chord through the first
+junction of an equal side, so that its $a$-edge lies \emph{along} that chord and has length exactly
+$a$. The area above that chord is $2+b/c=N/f^{2}$ tile areas, filled by the two outer apex tiles
+together with the fraction $b/c$ of the middle one and by nothing else, so that chord is met from
+above by exactly three tiles. Whenever $a<b$, that is $e^{2}+ef<f^{2}$ --- a weaker requirement than
+separation --- it follows that the edge of an equal side immediately below the first junction is
+again a $c$, whence $n_c\ge2$ and
+\[
+pe+2\le f .
+\]
+In particular $p=2$ is excluded on the whole tight subfamily $f=2e+1$, by an argument independent of
+the chord and height estimates used there previously. The bound does not reach $p=1$ at any new
+member, and not incidentally: that would need $e\ge f-1$, which together with $e^{2}+ef<f^{2}$ forces
+$(e,f)=(1,2)$.
+
+The residual question has correspondingly sharpened. Each junction $J$ of an equal side whose upper
+edge is a $c$ determines a point $W(J)$ on the chord through $J$, at distance exactly $a$ from $J$,
+namely the third vertex of the $c$-tile above. An $a$-edge immediately below $J$ forces $W(J)$ to lie
+interior to an edge of some tile. Hence the hypothesis holds at any member with $e^{2}+ef<f^{2}$
+provided no such $T$-junction occurs. At the first junction none does, because two tiles present
+$\gamma$ there; at every later junction the configuration is a verbatim copy of the first, and a lone
+$\gamma$ beside a straight edge is always consistent because $\alpha+\beta+\gamma=\pi$, so no counting
+argument can settle it. All of this is proved in the companion and the identities are machine-checked
+(\texttt{lean/ApexRigidity.lean}, \texttt{lean/SecondEdge.lean}).
+
 What remains for the hypothesis in general is the side condition, namely the exclusion of
-$1\le p\le(f-1)/e$ where $fp$ is the number of $a$-edges on a side, together with the members
+$1\le p\le(f-2)/e$ where $fp$ is the number of $a$-edges on a side, together with the members
 with $f\le(1+\sqrt2)e$, for which the base walk admits further columns. Both reduce to one
 question: whether the tile across a corner-chain $b$-edge lays a whole $b$ there. At the corner
 itself that $b$-edge joins a base vertex to a side vertex and the answer is yes unconditionally;
