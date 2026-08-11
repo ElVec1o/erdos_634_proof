@@ -1242,6 +1242,29 @@ theorem length_sum_of_cover {n : ℕ} (σ : Set Plane) (E : Fin n → Set Plane)
   rw [hUuniv, hUeq] at hadd
   exact hadd.symm
 
+/-- **G4's per-segment balance.**  If BOTH sides of a maximal interior segment `σ` cover it up to
+finite sets of vertices, with pairwise a.e.-disjoint edges lying on it, then the two sides' edge
+lengths have the same total — namely `μH[1] σ` on the nose.
+
+This is exactly `hpos`/`hneg` of `interiorBalanced_of_segments`, so with it G4 reduces to a single
+remaining obligation: **produce the two covering families for each maximal interior segment.** That
+is where `Dissection.two_tiles_at_edge_point` enters — it gives exactly two tiles at every non-vertex
+point of `σ`, one per side — and where a usable notion of *maximal interior segment*, which Mathlib
+does not provide, is still needed. -/
+theorem side_totals_agree {m n : ℕ} (σ : Set Plane) (E : Fin m → Set Plane) (E' : Fin n → Set Plane)
+    (F F' : Set Plane) (hF : F.Finite) (hF' : F'.Finite)
+    (hmeas : ∀ i, MeasurableSet (E i)) (hmeas' : ∀ j, MeasurableSet (E' j))
+    (hdisj : Pairwise (Function.onFun (MeasureTheory.AEDisjoint
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)) E))
+    (hdisj' : Pairwise (Function.onFun (MeasureTheory.AEDisjoint
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)) E'))
+    (hsub : ∀ i, E i ⊆ σ) (hsub' : ∀ j, E' j ⊆ σ)
+    (hcov : σ \ F ⊆ ⋃ i, E i) (hcov' : σ \ F' ⊆ ⋃ j, E' j) :
+    ∑ i, (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) (E i)
+      = ∑ j, (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) (E' j) :=
+  (length_sum_of_cover σ E F hF hmeas hdisj hsub hcov).trans
+    (length_sum_of_cover σ E' F' hF' hmeas' hdisj' hsub' hcov').symm
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
