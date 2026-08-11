@@ -775,9 +775,8 @@ the east --- whose hypotenuse is a straight segment, of length $f\,b$ resp.\ $e\
 whole $b$-edges.
 \end{hypothesis}
 
-\begin{remark}[An unresolved tension in the reading of Hypothesis~\ref{hyp:walls}]\label{rem:wallsfix}
-Two readings of the hypothesis are in circulation in this development and they are not equivalent. We
-record the discrepancy rather than resolve it.
+\begin{remark}[Hypothesis~\ref{hyp:walls} is asymmetric; the $p=0$ reading is its west half]\label{rem:wallsfix}
+Two readings of the hypothesis are in circulation in this development and they are not equivalent.
 
 The block form above is asymmetric: $a$-feet west, $c$-feet east. By Lemma~\ref{lem:ccorner} a corner
 tile laying $c$ on the base lays $a$ on the equal side, so the block form puts an $a$-edge at the foot
@@ -792,12 +791,25 @@ base walk begins \emph{and} ends with an $a$-edge --- so its single $c$-edge is 
 corner carries $c$-feet. The block form and that theorem cannot both describe an $m=1$ tiling at
 $e=1$.
 
-Three possibilities remain open: the block form is correct and Theorem~\ref{thm:e1reduce} shows it is
-unsatisfiable at $e=1$, $m=1$, making the conditional results vacuous there; or the $p=0$ reading is
-correct and the block wording needs amending; or the hypothesis is genuinely asymmetric and every
-statement of the form ``$\mathrm{Hypothesis}~\ref{hyp:walls} \Leftrightarrow p=0$'' should be read as
-applying to the west side only. The results of \S\ref{sub:apex} are unaffected either way: they are
-statements about $p$ on a given equal side and stand on their own proofs.
+The discrepancy is localised, and Remark~\ref{rem:sidenoa} localises it. Its derivation reads: ``the
+complete \emph{west} block is the tile scaled by $f$, so its far side --- which at $m=1$ is the whole
+equal side --- is subdivided into exactly $f$ $c$-edges, i.e.\ $p=0$.'' That argument uses the west
+block only, and the conclusion is drawn for the west side; it is then stated for ``the sides''. The
+east block, being the tile scaled by $e$, has far side $e\,a$ and therefore places $e$ $a$-edges at the
+foot of the east side.
+
+So the hypothesis is genuinely asymmetric, and the identification with $p=0$ holds for the west side.
+Both tilings we possess agree: west side all $c$-edges, east side beginning with $a$-edges. Every
+statement of the form ``Hypothesis~\ref{hyp:walls} is exactly $p=0$'' should be read as applying to the
+west side; on the east the hypothesis gives $p\ge1$.
+
+Theorem~\ref{thm:e1reduce} then says something sharper than a wording problem: at $e=1$, $m=1$,
+$f\ge3$ it proves the base begins \emph{and} ends with an $a$-edge, so no tiling there has $c$-feet at
+the east corner. The east half of the hypothesis is thus unsatisfiable at those members, and any
+result quoted as ``establishing Hypothesis~\ref{hyp:walls}'' there establishes its west half only.
+This does not affect \S\ref{sub:apex}, whose results are statements about $p$ on a given equal side and
+stand on their own proofs, but it does mean the hypothesis should be split into its two halves before
+being used further.
 \end{remark}
 
 \begin{theorem}[The base-$\beta$ branch, conditional on Hypothesis~\ref{hyp:walls}]\label{thm:basebeta-full}
