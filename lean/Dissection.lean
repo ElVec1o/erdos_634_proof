@@ -1602,14 +1602,61 @@ theorem proportional_of_ker_le (f g : Plane →ₗ[ℝ] ℝ) (hf : f ≠ 0)
   rw [this]
   field_simp
 
-/-- A two-element finset containing `a` contains something else. -/
-theorem exists_second_of_card_two {α : Type*} [DecidableEq α] {s : Finset α}
-    (h : s.card = 2) {a : α} (ha : a ∈ s) : ∃ b ∈ s, b ≠ a := by
-  by_contra hcon
-  push_neg at hcon
-  have hsub : s ⊆ {a} := fun b hb => Finset.mem_singleton.mpr (hcon b hb)
-  have := Finset.card_le_card hsub
-  simp [h] at this
+/-- **Disjoint open half-planes force negative proportionality.**  If no vector makes both `L₁` and
+`L₂` positive, and neither is zero, then `L₂ = c • L₁` with `c < 0`.
+
+This is item (a1) of the `horient` chain, in linear form.  The kernels must nest: if `L₁ v = 0` while
+`L₂ v > 0`, then taking `u` with `L₁ u > 0` and a small enough `ε > 0`, the vector `ε • u + v` has
+both functionals positive — the case `L₂ u ≥ 0` needs only `ε = 1`, and otherwise
+`ε = L₂ v / (−2 L₂ u)` keeps `L₂` at half its value.  `proportional_of_ker_le` then gives the
+constant, which is nonzero because `L₂ ≠ 0` and negative because a positive one would make the two
+half-planes coincide rather than be disjoint. -/
+theorem proportional_of_disjoint_pos (L₁ L₂ : Plane →ₗ[ℝ] ℝ) (h₁ : L₁ ≠ 0) (h₂ : L₂ ≠ 0)
+    (hdisj : ∀ v, ¬(0 < L₁ v ∧ 0 < L₂ v)) :
+    ∃ c : ℝ, c < 0 ∧ ∀ v, L₂ v = c * L₁ v := by
+  obtain ⟨u, hu⟩ : ∃ u, 0 < L₁ u := by
+    obtain ⟨w, hw⟩ : ∃ w, L₁ w ≠ 0 := by
+      by_contra hc; push_neg at hc
+      exact h₁ (LinearMap.ext fun w => by simpa using hc w)
+    rcases lt_or_gt_of_ne hw with hneg | hpos
+    · exact ⟨-w, by simpa using hneg⟩
+    · exact ⟨w, hpos⟩
+  -- the kernels nest
+  have hker : ∀ v, L₁ v = 0 → L₂ v = 0 := by
+    intro v hv
+    by_contra hne
+    -- replace v by ±v so that L₂ v > 0
+    obtain ⟨v', hv1, hv2⟩ : ∃ v', L₁ v' = 0 ∧ 0 < L₂ v' := by
+      rcases lt_or_gt_of_ne hne with hlt | hgt
+      · exact ⟨-v, by simpa using hv, by simpa using hlt⟩
+      · exact ⟨v, hv, hgt⟩
+    by_cases hpos : 0 ≤ L₂ u
+    · refine hdisj (u + v') ⟨?_, ?_⟩
+      · rw [map_add, hv1, add_zero]; exact hu
+      · rw [map_add]; linarith
+    · have hnegu : L₂ u < 0 := not_le.mp hpos
+      have hepos : 0 < L₂ v' / (-2 * L₂ u) := div_pos hv2 (by linarith)
+      refine hdisj ((L₂ v' / (-2 * L₂ u)) • u + v') ⟨?_, ?_⟩
+      · rw [map_add, map_smul, hv1, smul_eq_mul, add_zero]
+        exact mul_pos hepos hu
+      · rw [map_add, map_smul, smul_eq_mul]
+        have hune : L₂ u ≠ 0 := ne_of_lt hnegu
+        have hcalc : L₂ v' / (-2 * L₂ u) * L₂ u = -(L₂ v') / 2 := by
+          field_simp
+        rw [hcalc]; linarith
+  obtain ⟨c, hc⟩ := proportional_of_ker_le L₁ L₂ h₁ hker
+  have hcne : c ≠ 0 := by
+    intro h; subst h
+    exact h₂ (LinearMap.ext fun v => by simpa using hc v)
+  refine ⟨c, ?_, hc⟩
+  rcases lt_or_gt_of_ne hcne with hlt | hgt
+  · exact hlt
+  · exact absurd ⟨hu, by rw [hc u]; exact mul_pos hgt hu⟩ (hdisj u)
+
+/-- A two-element finset contains something other than any given `a`. -/
+theorem exists_second_of_card_two {α : Type*} {s : Finset α} (h : s.card = 2) (a : α) :
+    ∃ b ∈ s, b ≠ a :=
+  Finset.exists_mem_ne (by omega) a
 
 /-- **The second tile at an interior edge point.**  `Dissection.two_tiles_at_edge_point` concludes
 that exactly two tiles meet `x` on an edge; this turns that *cardinality* into a *witness*.  Given
@@ -1627,7 +1674,7 @@ theorem Dissection.second_tile_at_edge_point {N : ℕ} (D : Dissection N) (hN : 
   have hmem : i₀ ∈ Finset.univ.filter (fun i => OnEdge D x i) :=
     Finset.mem_filter.mpr ⟨Finset.mem_univ _, hi₀⟩
   have hcard := (D.two_tiles_at_edge_point hN hxv hR hRt ⟨i₀, hmem⟩).1
-  obtain ⟨i₁, hi₁mem, hne⟩ := exists_second_of_card_two hcard hmem
+  obtain ⟨i₁, hi₁mem, hne⟩ := exists_second_of_card_two hcard i₀
   exact ⟨i₁, hne, (Finset.mem_filter.mp hi₁mem).2⟩
 
 /-- **The interior tile edges of a dissection carrying a given direction.**  The union, over all
