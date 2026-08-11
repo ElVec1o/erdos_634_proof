@@ -1579,6 +1579,29 @@ theorem g4 (S : Dir → Set Plane) (F : Set Plane) (hF : F.Finite)
         MeasureTheory.Measure Plane) (S d)).toReal) :=
   g4_assembled Dir.neg S F hF horient
 
+/-- **The interior tile edges of a dissection carrying a given direction.**  The union, over all
+tiles and all three of their edges, of those edges whose left-hand unit direction is `d`, intersected
+with the interior of the target so that boundary edges are excluded.
+
+This is the `S` that `g4` consumes.  With it, `Lint d = μH[1] (D.dirSet d)`. -/
+noncomputable def Dissection.dirSet {N : ℕ} (D : Dissection N) (d : Dir) : Set Plane :=
+  (⋃ i : Fin N, ⋃ k : Fin 3, ⋃ (_ : (D.tile i).leftUnit k = d), (D.tile i).edge k)
+    ∩ interior D.target.carrier
+
+theorem Dissection.dirSet_subset_interior {N : ℕ} (D : Dissection N) (d : Dir) :
+    D.dirSet d ⊆ interior D.target.carrier := Set.inter_subset_right
+
+/-- Every point of `dirSet d` lies on some tile edge whose left-hand direction is `d`.  This is the
+form the orientation argument consumes: given such a tile, `two_tiles_at_edge_point` produces the
+second one and `leftDir_opposite_of_opposite_sides` gives it the reversed direction. -/
+theorem Dissection.mem_dirSet {N : ℕ} (D : Dissection N) (d : Dir) {x : Plane}
+    (hx : x ∈ D.dirSet d) :
+    ∃ i k, (D.tile i).leftUnit k = d ∧ x ∈ (D.tile i).edge k := by
+  obtain ⟨hu, -⟩ := hx
+  simp only [Set.mem_iUnion] at hu
+  obtain ⟨i, k, hik, hmem⟩ := hu
+  exact ⟨i, k, hik, hmem⟩
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
