@@ -78,6 +78,42 @@ theorem cancellation_core {D : Type*} [Fintype D]
     intro d _; ring
   rw [hsplit, hzero, zero_add]
 
+/-- **The cancellation engine over `ℝ`.**  Identical proof to `sum_antisym_of_involution`, which is
+its `ℤ` instance.  The generality is not decoration: G4's directed lengths are Hausdorff measures,
+hence real, and the `ℤ`-valued form cannot consume them.
+
+(Over an arbitrary commutative ring the final step fails: `x = -x` gives `2x = 0`, which forces
+`x = 0` only without `2`-torsion.  `ℝ` is the case G4 needs and avoids carrying that hypothesis.) -/
+theorem sum_antisym_of_involution_real {D : Type*} [Fintype D]
+    (neg : D → D) (hinv : Function.Involutive neg)
+    (L f : D → ℝ) (hL : ∀ d, L (neg d) = L d) (hf : ∀ d, f (neg d) = - f d) :
+    ∑ d, L d * f d = 0 := by
+  have hre : ∑ d, L (neg d) * f (neg d) = ∑ d, L d * f d :=
+    Equiv.sum_comp hinv.toPerm (fun d => L d * f d)
+  have hneg : ∑ d, L (neg d) * f (neg d) = - ∑ d, L d * f d := by
+    have hterm : ∀ d : D, L (neg d) * f (neg d) = -(L d * f d) := by
+      intro d; rw [hL d, hf d]; ring
+    calc ∑ d, L (neg d) * f (neg d) = ∑ d, -(L d * f d) :=
+          Finset.sum_congr rfl (fun d _ => hterm d)
+      _ = - ∑ d, L d * f d := by simp
+  have h2 : ∑ d, L d * f d = - ∑ d, L d * f d := hre.symm.trans hneg
+  linarith
+
+/-- **Cancellation, real form.**  The `ℝ`-valued counterpart of `cancellation_core`, so that the
+interior directed lengths supplied by G4 — `μH[1]`-measures of tile edges, real by construction —
+can be fed to it directly. -/
+theorem cancellation_core_real {D : Type*} [Fintype D]
+    (neg : D → D) (hinv : Function.Involutive neg)
+    (Lint Lbd f : D → ℝ)
+    (hLint : ∀ d, Lint (neg d) = Lint d) (hf : ∀ d, f (neg d) = - f d) :
+    ∑ d, (Lint d + Lbd d) * f d = ∑ d, Lbd d * f d := by
+  have hzero : ∑ d, Lint d * f d = 0 :=
+    sum_antisym_of_involution_real neg hinv Lint f hLint hf
+  have hsplit : ∑ d, (Lint d + Lbd d) * f d = (∑ d, Lint d * f d) + ∑ d, Lbd d * f d := by
+    rw [← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl (fun d _ => by ring)
+  rw [hsplit, hzero, zero_add]
+
 /-! ### Tile value -/
 
 /-- The grid sign `ε j = (−1)^j`, as an integer. -/
@@ -170,6 +206,8 @@ end Erdos634.InvariantCore
 
 #print axioms Erdos634.InvariantCore.sum_antisym_of_involution
 #print axioms Erdos634.InvariantCore.cancellation_core
+#print axioms Erdos634.InvariantCore.sum_antisym_of_involution_real
+#print axioms Erdos634.InvariantCore.cancellation_core_real
 #print axioms Erdos634.InvariantCore.sign_shift_two
 #print axioms Erdos634.InvariantCore.sign_shift_three
 #print axioms Erdos634.InvariantCore.tile_value_core

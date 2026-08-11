@@ -1265,6 +1265,32 @@ theorem side_totals_agree {m n : ℕ} (σ : Set Plane) (E : Fin m → Set Plane)
   (length_sum_of_cover σ E F hF hmeas hdisj hsub hcov).trans
     (length_sum_of_cover σ E' F' hF' hmeas' hdisj' hsub' hcov').symm
 
+/-- **`InteriorBalanced` with real-valued lengths** — the form G4 actually produces, since
+`length_sum_of_cover` and `side_totals_agree` deliver Hausdorff measures.  Consumed by
+`InvariantCore.cancellation_core_real`. -/
+def InteriorBalancedReal {Dir : Type*} (neg : Dir → Dir) (Lint : Dir → ℝ) : Prop :=
+  ∀ d, Lint (neg d) = Lint d
+
+/-- The real-valued counterpart of `interiorBalanced_of_segments`; same proof, and it is what makes
+the chain type-consistent from `side_totals_agree` through to `cancellation_core_real`. -/
+theorem interiorBalancedReal_of_segments {Dir Seg : Type*} [Fintype Seg] [DecidableEq Dir]
+    (neg : Dir → Dir) (hinv : Function.Involutive neg)
+    (dirOf : Seg → Dir) (len : Seg → ℝ) (cov : Seg → Dir → ℝ)
+    (hpos : ∀ σ, cov σ (dirOf σ) = len σ)
+    (hneg : ∀ σ, cov σ (neg (dirOf σ)) = len σ)
+    (hoff : ∀ σ d, d ≠ dirOf σ → d ≠ neg (dirOf σ) → cov σ d = 0) :
+    InteriorBalancedReal neg (fun d => ∑ σ, cov σ d) := by
+  intro d
+  refine Finset.sum_congr rfl ?_
+  intro σ _
+  by_cases h1 : d = dirOf σ
+  · subst h1; rw [hneg σ, hpos σ]
+  · by_cases h2 : d = neg (dirOf σ)
+    · subst h2; rw [hinv (dirOf σ), hpos σ, hneg σ]
+    · have hn1 : neg d ≠ dirOf σ := fun h => h2 (by rw [← h, hinv d])
+      have hn2 : neg d ≠ neg (dirOf σ) := fun h => h1 (hinv.injective h)
+      rw [hoff σ (neg d) hn1 hn2, hoff σ d h1 h2]
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
