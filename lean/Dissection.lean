@@ -1335,6 +1335,62 @@ def cross (u v : Plane) : ℝ := u 0 * v 1 - u 1 * v 0
 
 @[simp] theorem cross_self (u : Plane) : cross u u = 0 := by simp only [cross]; ring
 
+@[simp] theorem cross_zero_right (u : Plane) : cross u 0 = 0 := by simp only [cross]; simp
+
+/-- `cross` is additive in its second argument. -/
+theorem cross_add_right (u v w : Plane) : cross u (v + w) = cross u v + cross u w := by
+  simp only [cross]; simp; ring
+
+/-- `cross` is homogeneous in its second argument. -/
+theorem cross_smul_right (t : ℝ) (u v : Plane) : cross u (t • v) = t * cross u v := by
+  simp only [cross]; simp; ring
+
+/-- `cross` over a finite sum in its second argument. -/
+theorem cross_sum_right {n : ℕ} (u : Plane) (g : Fin n → Plane) :
+    cross u (∑ i, g i) = ∑ i, cross u (g i) := by
+  classical
+  induction n with
+  | zero => simp
+  | succ m ih =>
+      rw [Fin.sum_univ_castSucc, cross_add_right, ih, Fin.sum_univ_castSucc]
+
+/-- **The determinant is cyclic.**  `cross (pts (k+1) - pts k) (pts (k+2) - pts k) = det` for every
+`k`: a cyclic relabelling of a triangle's vertices preserves its signed area. -/
+theorem Tri.det_cyclic (T : Tri) (k : Fin 3) :
+    cross (T.pts (k + 1) - T.pts k) (T.pts (k + 2) - T.pts k) = T.det := by
+  fin_cases k <;> simp [cross, Tri.det] <;> ring
+
+/-- **The barycentric coordinate opposite an edge, as a cross product.**  Expanding `y` in
+barycentric coordinates and using bilinearity of `cross`, the terms at `pts k` and `pts (k+1)`
+vanish — the first against the zero vector, the second against `u` itself — leaving only the vertex
+opposite edge `k`, weighted by `Tri.det_cyclic`.
+
+With `Tri.leftDir` this is the bridge `horient` needs: interior membership means every coordinate is
+positive, so the cross product against a left-directed edge has the sign of `det`, and flipping the
+traversal for negatively oriented tiles makes that sign positive for both tiles at a shared
+segment. -/
+theorem Tri.coord_mul_det (T : Tri) (k : Fin 3) (y : Plane) :
+    T.basis.coord (k + 2) y * T.det = cross (T.pts (k + 1) - T.pts k) (y - T.pts k) := by
+  have hsum : ∑ i, T.basis.coord i y = 1 := T.basis.sum_coord_apply_eq_one y
+  have hy : ∑ i, T.basis.coord i y • T.pts i = y := T.basis.linear_combination_coord_eq_self y
+  have hdec : y - T.pts k = ∑ i, T.basis.coord i y • (T.pts i - T.pts k) := by
+    simp only [smul_sub, Finset.sum_sub_distrib, hy, ← Finset.sum_smul, hsum, one_smul]
+  rw [hdec, cross_sum_right]
+  have hk   : cross (T.pts (k + 1) - T.pts k) (T.pts k - T.pts k) = 0 := by simp
+  have hk1  : cross (T.pts (k + 1) - T.pts k) (T.pts (k + 1) - T.pts k) = 0 := cross_self _
+  have hk2  := T.det_cyclic k
+  have hfin : ∀ j : Fin 3, j = k ∨ j = k + 1 ∨ j = k + 2 := by
+    have : ∀ u v : Fin 3, v = u ∨ v = u + 1 ∨ v = u + 2 := by decide
+    exact fun j => this k j
+  rw [Finset.sum_eq_single (k + 2)]
+  · rw [cross_smul_right, hk2]
+  · intro j _ hj
+    rcases hfin j with rfl | rfl | rfl
+    · rw [cross_smul_right, hk, mul_zero]
+    · rw [cross_smul_right, hk1, mul_zero]
+    · exact absurd rfl hj
+  · intro h; exact absurd (Finset.mem_univ _) h
+
 /-- **Left-of is exactly a cross-product sign, and reversing the direction reverses the side.**
 This is the vector-level content of `g4_assembled`'s hypothesis: two tiles whose interiors lie on
 opposite sides of a shared segment see opposite signs, so directing each edge with its own tile on
