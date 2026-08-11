@@ -3109,6 +3109,52 @@ same answer for the west side. Proposition~\ref{prop:inflbdy} carries no unprove
 the $\gamma$-corner, the only one that can split, is not used.
 \end{remark}
 
+
+\begin{theorem}[The inflation is rigid at $(1,3)$ and $(3,7)$]\label{thm:inflrigid}
+The inflated tile of Proposition~\ref{prop:inflbdy} admits no tiling by $f^2$ copies whose $c$-side
+carries the $p=1$ word, at $(1,3)$ and at $(3,7)$. Its only boundary is therefore the standard one,
+$a^f$, $b^f$, $c^f$.
+\end{theorem}
+
+\begin{proof}
+Exhaustive exact search over the two profiles left open by Proposition~\ref{prop:inflbdy}. At $(1,3)$,
+target $(9,24,27)$ with $N=9$: the $c$-side profile $(3,0,2)$ gives \texttt{EXHAUSTED\_NO\_TILING} in
+$9$ nodes, and $(0,0,3)$ gives \texttt{FOUND\_TILING} in $30$. At $(3,7)$, target $(147,280,343)$ with
+$N=49$: the profile $(7,0,4)$ gives \texttt{EXHAUSTED\_NO\_TILING} in $57\,824$ nodes, and $(0,0,7)$
+gives \texttt{FOUND\_TILING} in $443\,347$, with boundary words $a^7$, $b^7$, $c^7$ as predicted.
+
+The two \texttt{FOUND} runs are negative controls: a search exhausting both profiles would indicate a
+malformed instance rather than a theorem. Instances, certificates and node counts are in
+\texttt{code/engine/inflation/}. Search verdicts are declared computer assistance and are not
+formalized.
+\end{proof}
+
+\begin{corollary}[Remark~\ref{rem:sidenoa}'s step, proved]\label{cor:sidenoa-proved}
+At $(1,3)$ and $(3,7)$: if the west corner block is complete, then the equal side on that side carries
+no $a$-edge.
+\end{corollary}
+
+\begin{proof}
+A complete west block is the tile inflated by $f$ (Remark~\ref{rem:blockbreaks}), and at $m=1$ its far
+side is the whole equal side. By Theorem~\ref{thm:inflrigid} that side is $c^f$, so $n_a=0$.
+\end{proof}
+
+\begin{remark}[What this settles and what it does not]\label{rem:inflrigidscope}
+Remark~\ref{rem:sidenoa} draws exactly this inference --- ``the complete west block is the tile scaled
+by $f$, so its far side \dots\ is subdivided into exactly $f$ $c$-edges'' --- and asserts the middle
+step rather than proving it. Corollary~\ref{cor:sidenoa-proved} proves it at the two members where the
+computation is feasible.
+
+It does not decide $p$ at $(3,7)$. The inflated tile is the west corner block only if that block is
+complete, which is the west half of Hypothesis~\ref{hyp:walls} itself; the corollary is conditional on
+exactly the hypothesis it serves. What has been removed is an unproved step \emph{inside} that
+implication, not the implication's hypothesis.
+
+At $(1,3)$ the theorem also reproves Theorem~\ref{thm:walls13} by an independent route, on $9$ tiles
+rather than $26$, which is the regression check that the reformulation of \S\ref{sub:inflation}
+recovers a known case before being trusted elsewhere.
+\end{remark}
+
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
 
 Corollary~\ref{cor:ptwo} leaves the two cases $p\in\{1,2\}$. The case $p=2$ is not uniformly hard:
