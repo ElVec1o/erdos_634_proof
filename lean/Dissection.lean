@@ -1194,6 +1194,54 @@ theorem Dissection.two_tiles_at_edge_point {N : ℕ} (D : Dissection N) (hN : 0 
       (fun h => hi.1 (Finset.mem_filter.mpr ⟨Finset.mem_univ i, h⟩))
       (fun h => hi.2 (Finset.mem_filter.mpr ⟨Finset.mem_univ i, h⟩))
 
+/-- **G4's length step.**  Suppose a maximal interior segment `σ` is covered, up to a finite set `F`
+of vertices, by finitely many tile edges `E i` lying on it with pairwise a.e.-disjoint interiors.
+Then their lengths sum to `σ`'s length exactly.
+
+This is the lift the double covering needs: `Dissection.two_tiles_at_edge_point` is a statement about
+one *point*, and what `interiorBalanced_of_segments` consumes is a statement about total *length*.
+The bridge is that the exceptional set is finite, hence `μH[1]`-null since `μH[1]` has no atoms in
+positive dimension, so the covering is exact for measure even though it misses points.
+
+The one-dimensional Hausdorff measure is the right one because it computes on segments:
+`Tri.hausdorff_edge` gives `μH[1] (T.edge k) = edist (T.pts k) (T.pts (k+1))`. -/
+theorem length_sum_of_cover {n : ℕ} (σ : Set Plane) (E : Fin n → Set Plane) (F : Set Plane)
+    (hF : F.Finite)
+    (hmeas : ∀ i, MeasurableSet (E i))
+    (hdisj : Pairwise (Function.onFun (MeasureTheory.AEDisjoint
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)) E))
+    (hsub : ∀ i, E i ⊆ σ)
+    (hcov : σ \ F ⊆ ⋃ i, E i) :
+    ∑ i, (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) (E i)
+      = (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) σ := by
+  classical
+  haveI : MeasureTheory.NoAtoms
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) :=
+    MeasureTheory.Measure.noAtoms_hausdorff Plane (by norm_num)
+  set μ := (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) with hμ
+  -- the union is exactly `σ` up to the null set `F`
+  have hUsub : (⋃ i, E i) ⊆ σ := Set.iUnion_subset hsub
+  have hFnull : μ F = 0 := hF.measure_zero μ
+  have hle₁ : μ (⋃ i, E i) ≤ μ σ := measure_mono hUsub
+  have hle₂ : μ σ ≤ μ (⋃ i, E i) := by
+    have hsplit : σ ⊆ (⋃ i, E i) ∪ F := by
+      intro x hx
+      by_cases hxF : x ∈ F
+      · exact Or.inr hxF
+      · exact Or.inl (hcov ⟨hx, hxF⟩)
+    calc μ σ ≤ μ ((⋃ i, E i) ∪ F) := measure_mono hsplit
+      _ ≤ μ (⋃ i, E i) + μ F := measure_union_le _ _
+      _ = μ (⋃ i, E i) := by rw [hFnull, add_zero]
+  have hUeq : μ (⋃ i, E i) = μ σ := le_antisymm hle₁ hle₂
+  -- finite additivity for a.e.-disjoint pieces
+  have hadd := MeasureTheory.measure_biUnion_finset₀ (μ := μ)
+    (s := (Finset.univ : Finset (Fin n))) (f := E)
+    (fun i _ j _ hij => hdisj hij) (fun i _ => (hmeas i).nullMeasurableSet)
+  have hUuniv : (⋃ i ∈ (Finset.univ : Finset (Fin n)), E i) = ⋃ i, E i := by
+    simp
+  rw [hUuniv, hUeq] at hadd
+  exact hadd.symm
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
