@@ -2547,6 +2547,145 @@ side structure --- and the boundary walks are side structure. It is recorded her
 temptation is sharp and the arithmetic is otherwise correct.
 \end{remark}
 
+
+\subsection{Apex rigidity, and a bound on the side parameter}\label{sub:apex}
+
+The apex of a base-$\beta$ target is completely rigid, and the rigidity is an identity of the whole
+family rather than a coincidence at one member. It forces the covering of the first chord exactly, and
+from that it bounds $p$.
+
+Throughout, $A$ is the apex, the equal sides have length $f^3$, the apex angle is $3\alpha$, and
+$\sin(\alpha/2)=e/(2f)$, whence
+\[
+\cos\tfrac{\alpha}{2}=\frac{\sqrt{4f^{2}-e^{2}}}{2f},\qquad
+\cos\tfrac{3\alpha}{2}=\frac{(f^{2}-e^{2})\sqrt{4f^{2}-e^{2}}}{2f^{3}},\qquad
+\sin\tfrac{3\alpha}{2}=\frac{e(3f^{2}-e^{2})}{2f^{3}} .
+\]
+By Lemma~\ref{lem:sidenob} an equal side carries no $b$-edge, and the apex figure is $\{3\alpha\}$, so
+the tile at $A$ presents $\alpha$ and its two edges there are $b$ and $c$; the one on the side is
+therefore a $c$. Hence the first junction $J$ of the side sits at distance $c=f^{2}$ from $A$. Write
+$C$ for the chord through $J$ parallel to the base. It cuts off a triangle similar to the target with
+ratio $f^{2}/f^{3}=1/f$, so the area above $C$ is $N/f^{2}$ tile areas and $|C|=e(3f^{2}-e^{2})/f$.
+
+\begin{lemma}[The apex identities]\label{lem:apexid}
+For every $(e,f)$,
+\[
+b\cos\tfrac{\alpha}{2}=c\cos\tfrac{3\alpha}{2},
+\qquad
+c\sin\tfrac{3\alpha}{2}-b\sin\tfrac{\alpha}{2}=a .
+\]
+\end{lemma}
+
+\begin{proof}
+Both sides of the first are $(f^{2}-e^{2})\sqrt{4f^{2}-e^{2}}/(2f)$. For the second,
+$c\sin\frac{3\alpha}{2}=e(3f^{2}-e^{2})/(2f)$ and $b\sin\frac{\alpha}{2}=e(f^{2}-e^{2})/(2f)$, whose
+difference is $e\cdot 2f^{2}/(2f)=ef=a$. Both are machine-checked
+(\texttt{lean/ApexRigidity.lean}: \texttt{apex\_drop\_eq}, \texttt{apex\_edge\_eq}).
+\end{proof}
+
+\begin{theorem}[The first chord is covered exactly]\label{thm:apexconfig}
+Let $T_1,T_2,T_3$ be the three tiles at $A$, with $T_1,T_3$ the outer ones. Then:
+\begin{enumerate}
+\item[(a)] $T_1$'s remaining apex edge is its $b$, ending at a point $P$ lying \emph{exactly} on $C$;
+\item[(b)] $T_1$'s third edge $JP$ lies \emph{along} $C$ and has length exactly $a$;
+\item[(c)] $T_2$ has exactly the fraction $b/c$ of its area above $C$, and its trace on $C$ is the
+segment $PP'$ joining $P$ to the mirror point $P'$ of $T_3$, of length $e(f^{2}-e^{2})/f$;
+\item[(d)] consequently $a+|PP'|+a=|C|$ and the area above $C$ is $2+b/c=N/f^{2}$ --- so $T_1$, $T_3$
+and that fraction of $T_2$ fill the region above $C$ \emph{exactly}, and no other tile has any area
+above $C$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a) The drop of $J$ below $A$ is $c\cos\frac{3\alpha}{2}$ and that of $P$ is $b\cos\frac{\alpha}{2}$;
+they agree by Lemma~\ref{lem:apexid}. (b) The horizontal offsets of $J$ and $P$ from the axis of
+symmetry are $c\sin\frac{3\alpha}{2}$ and $b\sin\frac{\alpha}{2}$, differing by $a$.
+
+(c) $T_2$ presents $\alpha$ at $A$ with edges $b$ and $c$ there, the $b$ along $AP$; let $Q$ be its far
+vertex, at drop $c\cos\frac{\alpha}{2}$. The chord meets $AQ$ at the point $R$ with
+$|AR|/|AQ|=\cos\frac{3\alpha}{2}/\cos\frac{\alpha}{2}=b/c$ by Lemma~\ref{lem:apexid}, so $|AR|=b$ and
+$R=P'$; and $T_2$ is split by the line $PR$ through its vertex $P$, so the area ratio is also $b/c$
+(\texttt{middle\_fraction}). The length of $PP'$ is $2b\sin\frac{\alpha}{2}=e(f^{2}-e^{2})/f$.
+
+(d) $2ef+e(f^{2}-e^{2})/f=e(3f^{2}-e^{2})/f=|C|$, and $2+b/c=(3f^{2}-e^{2})/f^{2}=N/f^{2}$
+(\texttt{area\_above\_chord}), which is the area above $C$. Since the three tiles already supply all of
+it, nothing else can.
+\end{proof}
+
+\begin{corollary}[No $T$-junction at $P$]\label{cor:noTP}
+$T_1$ and $T_2$ each present $\gamma$ at $P$, and $2\gamma=\pi+\alpha$, so the angle left at $P$ is
+$\pi-\alpha<\pi$. Hence no tile has $P$ interior to one of its edges: every tile meeting $P$ has a
+vertex there, and the residual figure is $\{2\alpha,2\beta\}$ or $\{\beta,\gamma\}$.
+\end{corollary}
+
+\begin{proof}
+$T_1$ has sides $c,b,a$ at $A,P,J$ as in Theorem~\ref{thm:apexconfig}, so its angle at $P$ is opposite
+$c$, namely $\gamma$; likewise for $T_2$. A tile with $P$ interior to an edge would contribute $\pi$,
+exceeding the residual $\pi-\alpha$. The residual is $2\alpha+2\beta$, and the vertex arithmetic of
+Lemma~\ref{lem:anglecalc} at $k=1$ leaves only the two figures named.
+\end{proof}
+
+\begin{theorem}[The second edge of an equal side is a $c$]\label{thm:secondc}
+Assume $e^{2}+ef<f^{2}$, equivalently $a<b$. Then on every equal side the tile edge immediately below
+the first junction $J$ is a $c$.
+\end{theorem}
+
+\begin{proof}
+Let $Y$ be the tile below $T_1$'s $a$-edge, adjacent to it at $P$. By Corollary~\ref{cor:noTP}, $Y$ has
+a vertex at $P$ and an edge running from $P$ along $C$ towards $J$. Since $J$ lies on the boundary at
+distance $a$, that edge has length at most $a$; as $a<b<c$ it is exactly $a$, so $Y$'s $a$-edge is
+$JP$, matching $T_1$'s. In particular $Y$ does not present $\alpha$ at $P$, whose flanks are $b$ and
+$c$.
+
+At $J$ the figure is straight, hence $\{\alpha,\beta,\gamma\}$ or $\{3\alpha,2\beta\}$. $T_1$ presents
+$\beta$ there (its angle opposite $b$). The angles at the two ends of $Y$'s $a$-edge are $\beta$ and
+$\gamma$, so $Y$ presents $\gamma$ or $\beta$ at $J$. In the first case the figure must be
+$\{\alpha,\beta,\gamma\}$ and the third tile presents $\alpha$; in the second it must be
+$\{3\alpha,2\beta\}$ and the remaining three tiles all present $\alpha$. Either way, $T_1$ occupies the
+extreme position against the ascending side and $Y$ the next, so the tile against the \emph{descending}
+side presents $\alpha$. Its flanks are $b$ and $c$, and the side edge below $J$ is that tile's edge; by
+Lemma~\ref{lem:sidenob} it is not a $b$, hence it is a $c$.
+\end{proof}
+
+\begin{corollary}[A bound on the side parameter]\label{cor:pbound}
+If $e^{2}+ef<f^{2}$ then $n_c\ge2$, hence
+\[
+pe+2\le f .
+\]
+In particular $p=2$ is impossible whenever $2e+2\le f$ fails, and on the tight subfamily $f=2e+1$ the
+bound reads $pe\le 2e-1$, so $p\le1$.
+\end{corollary}
+
+\begin{proof}
+The edge at the apex and the edge below $J$ are both $c$ by Theorem~\ref{thm:secondc}, so $n_c\ge2$;
+with $n_c+pe=f$ this is $pe+2\le f$. For $f=2e+1$, $p\ge2$ would give $2e\le pe\le2e-1$
+(\texttt{side\_p\_bound}, \texttt{p\_le\_one\_of\_tight}).
+\end{proof}
+
+\begin{remark}[What this settles, and exactly where it stops]\label{rem:apexscope}
+Corollary~\ref{cor:pbound} is a second and independent proof of Theorem~\ref{thm:ptwodead} on the
+tight subfamily, by a route that uses no chord bound and no height identity --- only the apex
+identities and the boundary at $J$. It also completes the first bullet of
+Remark~\ref{rem:dichotomy}: there the $a\,c$ ending was excluded only in the figure
+$\{\gamma,\alpha,\beta\}$ and only with the $\alpha$ adjacent to $C$, whereas
+Theorem~\ref{thm:secondc} excludes it in \emph{both} straight figures and for every $p$. Hence at
+$(3,7)$ the side word of an equal side must end $c\,c$; the two cases $X=\beta$ and $X=\gamma$ of
+Remark~\ref{rem:dichotomy} both persist, but now only inside that ending.
+
+It does not reach $p=1$ at any new member, and the reason is arithmetic rather than incidental.
+Killing $p=1$ by this bound needs $e\ge f-1$; with $e^{2}+ef<f^{2}$ that forces $f=e+1$ and then
+$e^{2}<e+1$, so $e=1$ and $f=2$ --- the member already closed by
+Theorem~\ref{thm:basebeta-e1} (\texttt{scope\_limitation}). The hypothesis $e^{2}+ef<f^{2}$ says
+$f/e$ exceeds the golden ratio, and $e\ge f-1$ says it is close to $1$; the two cannot hold together
+beyond $(1,2)$.
+
+The obstruction to iterating is equally precise. Corollary~\ref{cor:noTP} needed \emph{two} tiles
+presenting $\gamma$ at $P$, and the second, $T_2$, exists only because the apex figure is $3\alpha$.
+At the analogous point one level down --- the far end of the next $c$-tile's $a$-edge, which does lie
+exactly on the next chord, by the same identities --- only one $\gamma$ is forced. Supplying a second
+is what an induction would require, and we do not have it.
+\end{remark}
+
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
 
 Corollary~\ref{cor:ptwo} leaves the two cases $p\in\{1,2\}$. The case $p=2$ is not uniformly hard:
