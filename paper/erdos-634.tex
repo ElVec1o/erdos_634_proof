@@ -2465,20 +2465,31 @@ Also formalized: that each side of the target is a finite union of whole tile ed
 functional is a convex combination of the vertices attaining it) together with a density step
 (\texttt{SegmentDense.subset\_closure\_diff\_finite}).
 
-Lemma~\ref{lem:cancel} is the one place where the remaining geometry sits, and it is now isolated to
-a single statement rather than distributed over the proof. \texttt{InvariantCore.cancellation\_core}
-derives the lemma from one hypothesis: that the total directed length of interior tile edges is
-invariant under reversal of direction. \texttt{interiorBalanced\_of\_segments} reduces
-that global identity to a local one --- each maximal interior segment is covered once from each side
---- and the local statement is assembled from four machine-checked steps: a tile coincides with a
-half-plane near a point in the relative interior of one of its edges
-(\texttt{Tri.inter\_ball\_eq\_halfplane}); a half-plane through the centre halves a ball
-(\texttt{volume\_halfspace\_inter\_ball}, which Mathlib does not have); a ball inside the target is
-partitioned by the tiles (\texttt{Dissection.volume\_ball\_eq\_sum}); and the resulting count forces
-exactly two tiles (\texttt{Dissection.local\_balance}). The classification of a tile's local
-contribution is exhaustive away from the tiles' vertices (\texttt{Tri.classify}), a finite set.
-What is \emph{not} yet written is the mechanical assembly of these pieces into
-\texttt{InteriorBalanced}; no further geometric content is required for it.
+Lemma~\ref{lem:cancel} was the one place where geometry remained, and it is now discharged.
+\texttt{InvariantCore.cancellation\_core} derives the lemma from a single hypothesis: that the total
+directed length of interior tile edges is invariant under reversal of direction. That hypothesis is
+no longer assumed. \texttt{Dissection.g4\_final} proves it for every dissection, unconditionally.
+
+The route avoids the notion of a maximal interior segment, for which Mathlib offers no support.
+Instead of covering each maximal segment once from each side, one takes $S(d)$ to be the union of the
+interior tile edges carrying unit direction $d$, and shows that $S(d)$ and $S(-d)$ agree away from the
+finite set of tile vertices. The measure-theoretic ingredients are: a tile coincides with a half-plane
+near a point in the relative interior of one of its edges (\texttt{Tri.inter\_ball\_eq\_halfplane}); a
+half-plane through the centre halves a ball (\texttt{volume\_halfspace\_inter\_ball}, which Mathlib
+does not have); a ball inside the target is partitioned by the tiles
+(\texttt{Dissection.volume\_ball\_eq\_sum}); and the resulting count forces exactly two tiles at each
+such point (\texttt{Dissection.two\_tiles\_at\_edge\_point}), the classification of a tile's local
+contribution being exhaustive away from the tiles' vertices (\texttt{Tri.classify}), a finite set.
+
+The orientation step carries the genuine geometric content, and runs as follows. The two tiles have
+disjoint interiors, so the open half-planes they occupy near the shared point are disjoint
+(\texttt{Dissection.cross\_disjoint\_of\_onEdge}, which uses the structural disjointness of interiors
+rather than any measure); two nonzero linear functionals whose positive sets are disjoint are negative
+multiples of one another (\texttt{proportional\_of\_disjoint\_pos}); hence the two edges span the
+\emph{same} line with \emph{opposite} senses (\texttt{Dissection.leftDir\_antiparallel}); and
+normalising to unit directions yields $S(d)\setminus F=S(-d)\setminus F$ with $F$ the finite vertex set
+(\texttt{Dissection.dirSet\_horient}). Every statement named in this paragraph depends on
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, and on nothing else.
 
 What remains on written proofs, checked numerically but not formalized, is the direction grid of
 Section~\ref{sec:prelim} and Lemma~\ref{lem:value}. Search verdicts (\texttt{EXHAUSTED}) are
