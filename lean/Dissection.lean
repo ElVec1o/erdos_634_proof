@@ -1653,6 +1653,180 @@ theorem proportional_of_disjoint_pos (L₁ L₂ : Plane →ₗ[ℝ] ℝ) (h₁ :
   · exact hlt
   · exact absurd ⟨hu, by rw [hc u]; exact mul_pos hgt hu⟩ (hdisj u)
 
+/-- **A positive cross product against a left-direction pushes into the tile.**
+
+Let `x` lie on the edge of `T` opposite vertex `m` — barycentric coordinate `m` vanishing, the other
+two positive — and let `v` satisfy `0 < cross (T.leftDir (m+1)) v`.  Then `x + ε • v` is *interior*
+to `T` for all small `ε > 0`.
+
+The index shift is forced by `Tri.coord_mul_det`, which pairs edge `k` with coordinate `k+2`: the
+edge carrying `x` is the one whose left-direction is `leftDir (m+1)`.
+
+Coordinate `m` becomes positive for **every** `ε > 0` — the identity
+`coord m (x + ε•v) * det = ε * cross w v` has both sides carrying the sign of `det`, in either branch
+of `leftDir`.  The other two coordinates merely have to survive, which continuity gives. -/
+theorem Tri.mem_interior_of_cross_pos (T : Tri) {x : Plane} {m : Fin 3}
+    (hm : T.basis.coord m x = 0) (hother : ∀ j, j ≠ m → 0 < T.basis.coord j x)
+    {v : Plane} (hv : 0 < cross (T.leftDir (m + 1)) v) :
+    ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, 0 < ε → ε < ε₀ → x + ε • v ∈ interior T.carrier := by
+  have hidx : (m + 1) + 2 = m := by fin_cases m <;> rfl
+  set w : Plane := T.pts ((m + 1) + 1) - T.pts (m + 1) with hw
+  -- the coordinate opposite the edge, after the push
+  have hcoord : ∀ ε : ℝ, T.basis.coord m (x + ε • v) * T.det = ε * cross w v := by
+    intro ε
+    have h1 := T.coord_mul_det (m + 1) (x + ε • v)
+    have h2 := T.coord_mul_det (m + 1) x
+    rw [hidx] at h1 h2
+    rw [hm, zero_mul] at h2
+    have hsplit : x + ε • v - T.pts (m + 1) = (x - T.pts (m + 1)) + ε • v := by abel
+    rw [hsplit, cross_add_right, cross_smul_right, ← hw, ← h2, zero_add] at h1
+    exact h1
+  -- `v ≠ 0`, so a positive `ε₀` can be scaled off it
+  have hvne : v ≠ 0 := by rintro rfl; simp at hv
+  have hvpos : 0 < ‖v‖ := norm_pos_iff.mpr hvne
+  -- coordinate `m` is positive after any push, in both sign branches
+  have hmpos : ∀ ε : ℝ, 0 < ε → 0 < T.basis.coord m (x + ε • v) := by
+    intro ε hε
+    have hdet := T.det_ne_zero
+    rcases lt_or_gt_of_ne hdet with hneg | hpos
+    · have hlv : T.leftDir (m + 1) = -w := by
+        unfold Tri.leftDir; rw [if_neg (not_lt.mpr hneg.le), hw]; abel
+      rw [hlv, cross_neg_left] at hv
+      have hcw : cross w v < 0 := by linarith
+      have := hcoord ε
+      nlinarith [mul_pos hε (neg_pos.mpr hcw)]
+    · have hlv : T.leftDir (m + 1) = w := by
+        unfold Tri.leftDir; rw [if_pos hpos, hw]
+      rw [hlv] at hv
+      have := hcoord ε
+      nlinarith [mul_pos hε hv]
+  -- the other two coordinates survive a small push
+  have hopen : IsOpen {y : Plane | ∀ j, j ≠ m → 0 < T.basis.coord j y} := by
+    have heq : {y : Plane | ∀ j, j ≠ m → 0 < T.basis.coord j y}
+        = ⋂ j : Fin 3, {y : Plane | j ≠ m → 0 < T.basis.coord j y} := by
+      ext y; simp [Set.mem_iInter]
+    rw [heq]
+    refine isOpen_iInter_of_finite fun j => ?_
+    by_cases hj : j = m
+    · have : {y : Plane | j ≠ m → 0 < T.basis.coord j y} = Set.univ := by ext y; simp [hj]
+      rw [this]; exact isOpen_univ
+    · have : {y : Plane | j ≠ m → 0 < T.basis.coord j y} = {y | 0 < T.basis.coord j y} := by
+        ext y; simp [hj]
+      rw [this]
+      exact isOpen_lt continuous_const (AffineMap.continuous_of_finiteDimensional _)
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hopen x hother
+  refine ⟨r / ‖v‖, div_pos hr hvpos, fun ε hε hlt => ?_⟩
+  -- all three coordinates now positive, so a whole ball fits
+  have hin : x + ε • v ∈ Metric.ball x r := by
+    rw [Metric.mem_ball, dist_eq_norm]
+    have hsub : x + ε • v - x = ε • v := by abel
+    rw [hsub, norm_smul, Real.norm_eq_abs, abs_of_pos hε]
+    calc ε * ‖v‖ < (r / ‖v‖) * ‖v‖ := by
+          exact mul_lt_mul_of_pos_right hlt hvpos
+      _ = r := div_mul_cancel₀ r (ne_of_gt hvpos)
+  have hallpos : ∀ j, 0 < T.basis.coord j (x + ε • v) := by
+    intro j
+    by_cases hj : j = m
+    · rw [hj]; exact hmpos ε hε
+    · exact hball hin j hj
+  obtain ⟨ρ, hρ, hρsub⟩ := T.ball_subset_of_pos hallpos
+  exact mem_interior.mpr ⟨Metric.ball (x + ε • v) ρ, hρsub, Metric.isOpen_ball,
+    Metric.mem_ball_self hρ⟩
+
+/-- **The bridge from disjoint tiles to disjoint half-planes.**
+
+Two *distinct* tiles of a dissection meeting `x` on their edges cannot both be pushed into by the
+same vector: a common `v` would put `x + ε • v` in both interiors, and the dissection's tiles have
+disjoint interiors.
+
+This is exactly the hypothesis `proportional_of_disjoint_pos` consumes, with
+`Lᵢ = cross ((D.tile iᵢ).leftDir (mᵢ + 1))`.  Note that no measure theory is used: the structural
+field `interiors_disjoint` is stronger and more direct than `aedisjoint`. -/
+theorem Dissection.cross_disjoint_of_onEdge {N : ℕ} (D : Dissection N)
+    {i₁ i₂ : Fin N} (hne : i₁ ≠ i₂) {x : Plane} {m₁ m₂ : Fin 3}
+    (hm₁ : (D.tile i₁).basis.coord m₁ x = 0)
+    (ho₁ : ∀ j, j ≠ m₁ → 0 < (D.tile i₁).basis.coord j x)
+    (hm₂ : (D.tile i₂).basis.coord m₂ x = 0)
+    (ho₂ : ∀ j, j ≠ m₂ → 0 < (D.tile i₂).basis.coord j x)
+    (v : Plane) :
+    ¬(0 < cross ((D.tile i₁).leftDir (m₁ + 1)) v
+      ∧ 0 < cross ((D.tile i₂).leftDir (m₂ + 1)) v) := by
+  rintro ⟨hv₁, hv₂⟩
+  obtain ⟨ε₁, hε₁, h₁⟩ := (D.tile i₁).mem_interior_of_cross_pos hm₁ ho₁ hv₁
+  obtain ⟨ε₂, hε₂, h₂⟩ := (D.tile i₂).mem_interior_of_cross_pos hm₂ ho₂ hv₂
+  set ε := min ε₁ ε₂ / 2 with hεdef
+  have hεpos : 0 < ε := by
+    rw [hεdef]; exact half_pos (lt_min hε₁ hε₂)
+  have hlt₁ : ε < ε₁ := by
+    rw [hεdef]; have := min_le_left ε₁ ε₂; linarith
+  have hlt₂ : ε < ε₂ := by
+    rw [hεdef]; have := min_le_right ε₁ ε₂; linarith
+  exact Set.disjoint_left.mp (D.interiors_disjoint hne)
+    (h₁ ε hεpos hlt₁) (h₂ ε hεpos hlt₂)
+
+/-- `cross u` as a linear functional, so that `proportional_of_disjoint_pos` applies to it. -/
+noncomputable def crossL (u : Plane) : Plane →ₗ[ℝ] ℝ where
+  toFun := cross u
+  map_add' := cross_add_right u
+  map_smul' := fun t v => cross_smul_right t u v
+
+@[simp] theorem crossL_apply (u v : Plane) : crossL u v = cross u v := rfl
+
+/-- **`cross` is nondegenerate.**  Testing against the two coordinate directions recovers both
+components, so only the zero vector annihilates everything. -/
+theorem eq_zero_of_cross_eq_zero {u : Plane} (h : ∀ v, cross u v = 0) : u = 0 := by
+  have h0 : u 0 = 0 := by
+    have := h (EuclideanSpace.single 1 (1 : ℝ)); simpa [cross] using this
+  have h1 : u 1 = 0 := by
+    have := h (EuclideanSpace.single 0 (1 : ℝ))
+    simp [cross] at this
+    linarith
+  ext i; fin_cases i
+  · simpa using h0
+  · simpa using h1
+
+/-- `crossL u` is a nonzero functional whenever `u` is a nonzero vector. -/
+theorem crossL_ne_zero {u : Plane} (hu : u ≠ 0) : crossL u ≠ 0 := by
+  intro h
+  exact hu (eq_zero_of_cross_eq_zero fun v => by
+    have := LinearMap.congr_fun h v; simpa using this)
+
+/-- **`horient` for two tiles, in vector form — the goal of the whole chain.**
+
+If two *distinct* tiles of a dissection both meet `x` on an edge (barycentric coordinate `mᵢ`
+vanishing there, the other two positive), then their left-hand directions along those edges are
+**negative multiples of one another**: `leftDir₂ = c • leftDir₁` with `c < 0`.
+
+So the two edges lie on the *same* line and are traversed in *opposite* senses — which is precisely
+the orientation fact `g4` consumes as `horient`.
+
+The proof is the composition of the two halves built above: `cross_disjoint_of_onEdge` supplies the
+disjointness of the two positive half-planes from the dissection's `interiors_disjoint`, and
+`proportional_of_disjoint_pos` turns that into proportionality with a negative constant.
+Nondegeneracy of `cross` then upgrades the functional identity to a vector identity. -/
+theorem Dissection.leftDir_antiparallel {N : ℕ} (D : Dissection N)
+    {i₁ i₂ : Fin N} (hne : i₁ ≠ i₂) {x : Plane} {m₁ m₂ : Fin 3}
+    (hm₁ : (D.tile i₁).basis.coord m₁ x = 0)
+    (ho₁ : ∀ j, j ≠ m₁ → 0 < (D.tile i₁).basis.coord j x)
+    (hm₂ : (D.tile i₂).basis.coord m₂ x = 0)
+    (ho₂ : ∀ j, j ≠ m₂ → 0 < (D.tile i₂).basis.coord j x) :
+    ∃ c : ℝ, c < 0 ∧ (D.tile i₂).leftDir (m₂ + 1) = c • (D.tile i₁).leftDir (m₁ + 1) := by
+  obtain ⟨c, hcneg, hc⟩ := proportional_of_disjoint_pos
+    (crossL ((D.tile i₁).leftDir (m₁ + 1))) (crossL ((D.tile i₂).leftDir (m₂ + 1)))
+    (crossL_ne_zero ((D.tile i₁).leftDir_ne_zero _))
+    (crossL_ne_zero ((D.tile i₂).leftDir_ne_zero _))
+    (fun v => by
+      simpa using D.cross_disjoint_of_onEdge hne hm₁ ho₁ hm₂ ho₂ v)
+  refine ⟨c, hcneg, ?_⟩
+  have hzero : ∀ v, cross ((D.tile i₂).leftDir (m₂ + 1) - c • (D.tile i₁).leftDir (m₁ + 1)) v = 0 := by
+    intro v
+    have h1 : cross ((D.tile i₂).leftDir (m₂ + 1)) v = c * cross ((D.tile i₁).leftDir (m₁ + 1)) v := by
+      simpa using hc v
+    simp only [cross, PiLp.sub_apply, PiLp.smul_apply, smul_eq_mul]
+    simp only [cross] at h1
+    linarith [h1]
+  exact sub_eq_zero.mp (eq_zero_of_cross_eq_zero hzero)
+
 /-- A two-element finset contains something other than any given `a`. -/
 theorem exists_second_of_card_two {α : Type*} {s : Finset α} (h : s.card = 2) (a : α) :
     ∃ b ∈ s, b ≠ a :=
