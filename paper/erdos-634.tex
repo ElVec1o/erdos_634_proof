@@ -2386,6 +2386,27 @@ $\gamma$ beside a straight edge is always consistent because $\alpha+\beta+\gamm
 argument can settle it. All of this is proved in the companion and the identities are machine-checked
 (\texttt{lean/ApexRigidity.lean}, \texttt{lean/SecondEdge.lean}).
 
+On the tight subfamily $f=2e+1$ the standing hypothesis is automatic --- $e^{2}+ef<f^{2}$ there reduces
+to $e^{2}+3e+1>0$ --- so $pe\le 2e-1$ and $p\le1$ at every member. The members of that subfamily whose
+tile count $N=11e^{2}+12e+3$ is a prime congruent to $11$ modulo $12$ and is still open are
+\[
+\begin{array}{rrrl}
+N & e & f & \text{tile }(a,b,c)\\\hline
+227 & 4 & 9 & (36,65,81)\\
+1223 & 10 & 21 & (210,341,441)\\
+3011 & 16 & 33 & (528,833,1089)\\
+4643 & 20 & 41 & (820,1281,1681)\\
+5591 & 22 & 45 & (990,1541,2025)\\
+8963 & 28 & 57 & (1596,2465,3249)\\
+13127 & 34 & 69 & (2346,3605,4761)
+\end{array}
+\]
+together with $N=138$ at $(3,7)$, which is not prime but is the smallest member where the question is
+live. Each of the eight is in the same state: base walk settled, $p\in\{0,1\}$, and the single open
+question $p=1$. No step of the argument uses the member beyond $e^{2}+ef<f^{2}$, so a proof at one is
+a proof at all eight; an exhaustive search, by contrast, reaches only the member it is run on, the
+next target after $N=138$ having a triangle nine times larger in linear scale.
+
 What remains for the hypothesis in general is the side condition, namely the exclusion of
 $1\le p\le(f-2)/e$ where $fp$ is the number of $a$-edges on a side, together with the members
 with $f\le(1+\sqrt2)e$, for which the base walk admits further columns. Both reduce to one
