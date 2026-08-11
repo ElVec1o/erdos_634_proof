@@ -2365,16 +2365,20 @@ for every $(e,f)$, which places the apex tile's third vertex exactly on the chor
 junction of an equal side, so that its $a$-edge lies \emph{along} that chord and has length exactly
 $a$. The area above that chord is $2+b/c=N/f^{2}$ tile areas, filled by the two outer apex tiles
 together with the fraction $b/c$ of the middle one and by nothing else, so that chord is met from
-above by exactly three tiles. Whenever $a<b$, that is $e^{2}+ef<f^{2}$ --- a weaker requirement than
-separation --- it follows that the edge of an equal side immediately below the first junction is
-again a $c$, whence $n_c\ge2$ and
+above by exactly three tiles. It follows that the edge of an equal side immediately below the first junction is again a $c$, whence
+$n_c\ge2$ and
 \[
 pe+2\le f .
 \]
+This holds at every member with $\gcd(e,f)=1$. The step needs only that the tile below cannot lay a
+$b$-edge towards the junction, and when $b<a$ that is forced by a semigroup argument: the residual
+length $a-b$ satisfies $a-b\equiv-f^{2}\pmod e$, so any representation over $\langle a,b,c\rangle$
+would need at least $e-1$ copies of $b$ or $c$, giving $a-b\ge(e-1)b$, whereas $(e-1)b>a-b$ because
+$b>f$ holds at every member.
 In particular $p=2$ is excluded on the whole tight subfamily $f=2e+1$, by an argument independent of
 the chord and height estimates used there previously. The bound does not reach $p=1$ at any new
-member, and not incidentally: that would need $e\ge f-1$, which together with $e^{2}+ef<f^{2}$ forces
-$(e,f)=(1,2)$.
+member: that would need $e\ge f-1$, and $pe+2\le f$ then gives $f\le e+1\le pe+2-e+1$, leaving only
+the smallest members, all already closed.
 
 The residual question has correspondingly sharpened. Each junction $J$ of an equal side whose upper
 edge is a $c$ determines a point $W(J)$ on the chord through $J$, at distance exactly $a$ from $J$,
