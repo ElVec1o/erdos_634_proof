@@ -2738,6 +2738,41 @@ multiple of $b^{2}-a^{2}$ and changes sign at the threshold; there the hypothesi
 the statement.
 \end{remark}
 
+\begin{theorem}[Hypothesis~\ref{hyp:walls} on the family $e=f-1$]\label{thm:efminus1}
+Let $e=f-1$ with $f\ge2$. Then every equal side of the base-$\beta$ target at $m=1$ has $p=0$; that is,
+Hypothesis~\ref{hyp:walls} holds at every such member.
+\end{theorem}
+
+\begin{proof}
+$\gcd(f-1,f)=1$, so Proposition~\ref{prop:nogolden} applies and Corollary~\ref{cor:pbound} gives
+$n_c\ge2$. Here $n_c=f-pe=f-p(f-1)$. For $p=1$ this is $1$, contradicting $n_c\ge2$; for $p\ge2$ it is
+at most $2-f\le0$, contradicting the $\gamma$-trap's $n_c\ge1$. Hence $p=0$.
+
+Concretely at $p=1$ the side word would carry $f$ $a$-edges and a single $c$, the $c$ at the apex; and
+Theorem~\ref{thm:secondc} requires a second $c$ immediately below it, which is not available. The side
+does have at least three edges, so the edge below the first junction exists and the theorem applies.
+\end{proof}
+
+\begin{remark}[Scope, and the status of this theorem]\label{rem:efminus1}
+The family $e=f-1$ was outside the reach of \S\ref{sub:apex} until Proposition~\ref{prop:nogolden}
+removed the golden-ratio hypothesis: $f/(f-1)<\varphi$ for every $f\ge3$, so every member of it has
+$b<a$. Its tile counts are $N=2f^{2}+2f-1$, giving $11, 23, 39, 59, 83, 111, 143, 179, 219, 263,
+311,\dots$, of which $23$ and $39$ were previously settled by exhaustive search and $11$ by
+Theorem~\ref{thm:basebeta-e1}.
+
+The theorem discharges Hypothesis~\ref{hyp:walls} at these members; it does not by itself exclude the
+corresponding integers, which requires the remaining branches.
+
+We record the label honestly. The chain is PROVED, not VERIFIED: Lean carries the arithmetic
+(\texttt{ApexRigidity.b\_gt\_f}, \texttt{.eb\_gt\_a}, \texttt{.e\_ge\_two\_of\_b\_lt\_a},
+\texttt{.side\_p\_bound}) but not the geometric steps of Theorem~\ref{thm:apexconfig} and
+Corollary~\ref{cor:noTP} on which Theorem~\ref{thm:secondc} rests. The non-representability of $a-b$
+was checked symbolically, with $(f-2)(2f-1)-(a-b)=(f-1)^{2}$, and by exhaustive enumeration for
+$3\le f\le39$. An adversarial review in a fresh session, working from the written proof alone, has not
+yet been carried out, and the result should be read with that outstanding.
+\end{remark}
+
+
 \begin{corollary}[A bound on the side parameter]\label{cor:pbound}
 If $e^{2}+ef<f^{2}$ then $n_c\ge2$, hence
 \[
