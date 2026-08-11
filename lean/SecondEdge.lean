@@ -85,4 +85,65 @@ an equal side carries at least two `c`-edges. -/
 theorem n_c_ge_two {n_c p e f : ℕ} (hside : n_c + p * e = f) (h2 : 2 ≤ n_c) : p * e + 2 ≤ f := by
   omega
 
+
+/-! ## An `a`-edge on the side forces a T-junction
+
+The last tile in angular order stands against the descending side and lays the next side edge on one
+of its flanks, with `b` excluded because an equal side carries none. Reading that off for each order
+shows an `a` is possible only when the *second* tile — the one sharing the chord ray with the
+`c`-tile above — presents `α`. Its flanks are then `b` and `c`, both longer than `a = |JW|`, so the
+point `W` falls strictly inside its edge. -/
+
+/-- `b` is the one edge an equal side never carries. -/
+def notB : Edge → Bool
+  | .b => false
+  | _  => true
+
+/-- The edges an angle can lay on an equal side: its flanks, with `b` removed. -/
+def sideEdges (A : Angle) : List Edge := [(flanks A).1, (flanks A).2].filter notB
+
+/-- An `α` standing against the side can only lay a `c` there. -/
+theorem sideEdges_alpha : sideEdges Angle.alpha = [Edge.c] := by decide
+
+/-- `β` can lay `a` or `c`; `γ` can lay only `a`. -/
+theorem sideEdges_beta_gamma :
+    sideEdges Angle.beta = [Edge.a, Edge.c] ∧ sideEdges Angle.gamma = [Edge.a] := by
+  constructor <;> decide
+
+private def isA : Edge → Bool
+  | .a => true
+  | _  => false
+
+/-- An order permits an `a`-edge below the junction exactly when its last tile can lay one. -/
+def permitsA (L : List Angle) : Bool :=
+  match L.getLast? with
+  | some A => (sideEdges A).any isA
+  | none   => false
+
+/-- The `c`-tile above the junction stands first and presents `β` (Proposition `prop:selfsim`). -/
+def headBeta (L : List Angle) : Bool := L.head? == some Angle.beta
+
+/-- **Every order permitting an `a` below the junction has `α` in second place.**  Exhaustive over
+all sixteen orderings of the two straight figures.  This is the table in the proof of
+`thm:aforcesT`. -/
+theorem permitsA_forces_alpha :
+    ((ordersABG ++ ordersAAABB).filter (fun L => headBeta L && permitsA L)).all
+      (fun L => L[1]? == some Angle.alpha) = true := by
+  decide
+
+/-- Exactly two orders permit an `a`, and both have `α` second — so the theorem is not vacuous. -/
+theorem permitsA_exactly_two :
+    (ordersABG ++ ordersAAABB).filter (fun L => headBeta L && permitsA L)
+      = [[.beta, .alpha, .gamma], [.beta, .alpha, .alpha, .alpha, .beta]] := by
+  decide
+
+/-- **The T-junction.**  The second tile presents `α`, so the edge it lays along the chord ray is a
+`b` or a `c`; with `a < b < c` — the hypothesis `e² + ef < f²` of `thm:aforcesT` — that edge is
+strictly longer than `a = |JW|`, so `W` lies strictly inside it. -/
+theorem chord_edge_longer_than_a {E : Edge} {len : Edge → ℕ}
+    (hlay : E = (flanks Angle.alpha).1 ∨ E = (flanks Angle.alpha).2)
+    (hab : len Edge.a < len Edge.b) (hbc : len Edge.b < len Edge.c) :
+    len Edge.a < len E := by
+  rcases alpha_lays_b_or_c hlay with h | h <;> subst h <;> omega
+
 end Erdos634.SecondEdge
