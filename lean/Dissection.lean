@@ -1291,6 +1291,42 @@ theorem interiorBalancedReal_of_segments {Dir Seg : Type*} [Fintype Seg] [Decida
       have hn2 : neg d ≠ neg (dirOf σ) := fun h => h1 (hinv.injective h)
       rw [hoff σ (neg d) hn1 hn2, hoff σ d h1 h2]
 
+/-! ### Toward `horient`: the left-hand edge direction
+
+`g4_assembled`'s one hypothesis is that the two tiles meeting along an interior segment receive
+opposite edge directions.  The canonical way to arrange it is to direct each edge so that its own
+tile lies on the *left*; two tiles on opposite sides of a segment then traverse it oppositely.
+
+A triangle in the plane is positively or negatively oriented according to the sign of the
+determinant of its edge vectors, and that sign is nonzero exactly because the vertices are affinely
+independent.  Flipping the traversal for negatively oriented tiles is what makes the choice
+canonical rather than a convention. -/
+
+/-- Twice the signed area of a tile: the determinant of `(pts 1 - pts 0, pts 2 - pts 0)`. -/
+noncomputable def Tri.det (T : Tri) : ℝ :=
+  (T.pts 1 - T.pts 0) 0 * (T.pts 2 - T.pts 0) 1 - (T.pts 1 - T.pts 0) 1 * (T.pts 2 - T.pts 0) 0
+
+/-- **The left-hand direction of a tile edge.**  For a positively oriented tile the boundary is
+traversed `pts k → pts (k+1)`; for a negatively oriented one the traversal is reversed.  Either way
+the tile lies to the left of the directed edge. -/
+noncomputable def Tri.leftDir (T : Tri) (k : Fin 3) : Plane :=
+  if 0 < T.det then T.pts (k + 1) - T.pts k else T.pts k - T.pts (k + 1)
+
+/-- **The left-hand direction is nonzero**, since a tile's vertices are distinct. -/
+theorem Tri.leftDir_ne_zero (T : Tri) (k : Fin 3) : T.leftDir k ≠ 0 := by
+  have hsucc : ∀ j : Fin 3, j ≠ j + 1 := by decide
+  have hne : T.pts k ≠ T.pts (k + 1) := fun h => hsucc k (T.indep.injective h)
+  unfold Tri.leftDir
+  split
+  · exact sub_ne_zero.mpr (Ne.symm hne)
+  · exact sub_ne_zero.mpr hne
+
+/-- **Reversing the traversal negates the direction.**  This is the shape `horient` needs: two tiles
+that traverse a shared segment oppositely have directions differing by a sign. -/
+theorem Tri.leftDir_reverse (T : Tri) (k : Fin 3) :
+    (if 0 < T.det then T.pts k - T.pts (k + 1) else T.pts (k + 1) - T.pts k) = - T.leftDir k := by
+  unfold Tri.leftDir; split <;> simp
+
 /-! ### G4 without maximal segments
 
 The obligation "produce the two covering families for each maximal interior segment" can be avoided
@@ -1311,7 +1347,6 @@ remains is exactly the orientation statement — a smaller obligation than the o
 finite set, their `μH[1]`-measures are equal. -/
 theorem interiorBalanced_of_null_symm {Dir : Type*}
     (neg : Dir → Dir) (S : Dir → Set Plane) (F : Set Plane) (hF : F.Finite)
-    (hmeas : ∀ d, MeasurableSet (S d))
     (hsym : ∀ d, S d \ F = S (neg d) \ F) (d : Dir) :
     (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) (S (neg d))
       = (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) (S d) := by
@@ -1344,13 +1379,12 @@ traversed oppositely.  Supplying that canonical choice is the remaining obligati
 maximal-segment formulation it replaced, Mathlib has the orientation machinery for it. -/
 theorem g4_assembled {Dir : Type*} (neg : Dir → Dir)
     (S : Dir → Set Plane) (F : Set Plane) (hF : F.Finite)
-    (hmeas : ∀ d, MeasurableSet (S d))
     (horient : ∀ d, S d \ F = S (neg d) \ F) :
     InteriorBalancedReal neg
       (fun d => ((MeasureTheory.Measure.hausdorffMeasure 1 :
         MeasureTheory.Measure Plane) (S d)).toReal) := by
   intro d
-  exact congrArg ENNReal.toReal (interiorBalanced_of_null_symm neg S F hF hmeas horient d)
+  exact congrArg ENNReal.toReal (interiorBalanced_of_null_symm neg S F hF horient d)
 
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
