@@ -2785,9 +2785,9 @@ the statement.
 Let $e=f-1$ with $f\ge2$. Then every equal side of the base-$\beta$ target at $m=1$ carries no
 $a$-edge: $p=0$.
 
-Under the reading of Hypothesis~\ref{hyp:walls} as $p=0$, this establishes the hypothesis at every
-such member. We state the theorem in terms of $p$, which is what the proof gives, because that reading
-is not settled: see Remark~\ref{rem:wallsfix}.
+This establishes the \emph{west} half of Hypothesis~\ref{hyp:walls} at every such member, that half
+being the assertion $p=0$ on the west side (Remark~\ref{rem:wallsfix}). We state the theorem in terms
+of $p$, which is what the proof gives.
 \end{theorem}
 
 \begin{proof}
@@ -3041,6 +3041,64 @@ does not revive the counting argument retracted in Remark~\ref{rem:parityscope}.
 \end{remark}
 
 
+
+
+\subsection{The inflation reformulation}\label{sub:inflation}
+
+The base-$\beta$ tile is a rep-tile. Remark~\ref{rem:blockbreaks} records that the complete west block
+is the tile scaled by $f$, containing $f^2$ tiles, and that at $m=1$ its far side is the whole equal
+side. Read the other way, that says the equal side's edge word is the $c$-side word of an inflated
+tile, and the side question becomes a question about the inflation alone.
+
+\begin{proposition}[The inflated boundary]\label{prop:inflbdy}
+Let the tile be inflated by $f$, so its sides are $fa$, $fb$, $fc$, and suppose each corner of the
+inflated triangle is met by a single tile, that tile laying along the two sides the two flanks of the
+corner angle. Then each side begins and ends with a prescribed edge, and its interior is a word over
+$\{a,b,c\}$ of the residual length. At $(1,3)$ and $(3,7)$ the outcome is:
+\[
+\begin{array}{llll}
+(e,f) & a\text{-side} & b\text{-side} & c\text{-side}\\\hline
+(1,3) & a^3 \text{ (rigid)} & b^3 \text{ (rigid)} & c^3 \ \text{ or }\ c\,a^3c\\
+(3,7) & a^7 \text{ (rigid)} & b^7 \text{ (rigid)} & c^7 \ \text{ or }\ c\,a^7c^2c
+\end{array}
+\]
+where the second $c$-side word at $(3,7)$ has $7$ $a$-edges and $4$ $c$-edges.
+\end{proposition}
+
+\begin{proof}
+The residual lengths are $fa-2a$, $fb-2b$, $fc-2c$. At $(1,3)$, tile $(3,8,9)$: the residuals are
+$3$, $8$, $9$, whose compositions over $\{3,8,9\}$ are $\{3\}$, $\{8\}$ and $\{9\},\{3,3,3\}$
+respectively (\texttt{Inflation.middle\_three}, \texttt{.middle\_eight}, \texttt{.middle\_nine}). At
+$(3,7)$, tile $(21,40,49)$: the residuals are $105$, $200$, $245$, with unique compositions
+$5a$ and $5b$ for the first two, and $5c$ or $7a+2c$ for the third.
+\end{proof}
+
+\begin{corollary}[The crux, on $f^2$ tiles]\label{cor:inflcrux}
+At $m=1$ the inflated $c$-side is the whole equal side, so the two $c$-side words of
+Proposition~\ref{prop:inflbdy} are exactly $p=0$ and $p=1$. Deciding which occurs --- that is,
+deciding whether the inflation is rigid --- decides the side parameter on that side.
+\end{corollary}
+
+\begin{remark}[What this buys, and what it does not]\label{rem:inflvalue}
+This is a reformulation, not a new obstruction: the question ``is the inflation rigid'' and the
+question ``is $p=0$'' are the same question, and at $(1,3)$ Theorem~\ref{thm:walls13} already answers
+it. Reformulations earn their place only by new attack surface, and here there is one, namely size.
+The inflation carries $f^2$ tiles against the target's $N=3f^2-e^2$:
+\[
+\begin{array}{rrr}
+(e,f) & f^2 & N\\\hline
+(1,3) & 9 & 26\\
+(2,5) & 25 & 71\\
+(3,7) & 49 & 138\\
+(4,9) & 81 & 227
+\end{array}
+\]
+uniformly about $35\%$. At $(3,7)$ that is a $49$-tile question in place of a $138$-tile one, with the
+same answer for the west side. The hypothesis of Proposition~\ref{prop:inflbdy} --- one tile per
+corner, laying the corner angle's flanks --- is geometric and is not proved here; at $f=2$ it follows
+from a tile count, since a $\gamma$-corner splits as $\{2\alpha,\beta\}$ into three tiles and
+$3+1+1>f^2=4$, but that argument fails for $f\ge3$.
+\end{remark}
 
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
 

@@ -42,6 +42,7 @@ import Erdos634.Frontier
 import Erdos634.Gamma2Alpha
 import Erdos634.GammaC
 import Erdos634.GeneralPillars
+import Erdos634.Inflation
 import Erdos634.Interface
 import Erdos634.InvariantCore
 import Erdos634.InvariantProduct
