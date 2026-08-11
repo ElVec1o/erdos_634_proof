@@ -2741,6 +2741,72 @@ the tile the argument was trying to pin, so it closes on itself. Settling whethe
 occur is, as far as we can see, the whole of what remains at $p=1$.
 \end{remark}
 
+\begin{definition}[The points $W(J)$]\label{def:WJ}
+Let $J$ be a junction of an equal side whose edge \emph{above} it is a $c$, laid by a tile presenting
+$\alpha$ at the junction above. By Proposition~\ref{prop:selfsim} that tile's third vertex lies on the
+chord through $J$ at distance exactly $a$ from $J$; call it $W(J)$.
+\end{definition}
+
+\begin{theorem}[An $a$-edge forces a $T$-junction]\label{thm:aforcesT}
+Assume $e^{2}+ef<f^{2}$. Let $J$ be as in Definition~\ref{def:WJ} and suppose the side edge
+\emph{below} $J$ is an $a$. Then $W(J)$ lies in the \emph{interior} of an edge of some tile.
+\end{theorem}
+
+\begin{proof}
+Write $Z$ for the $c$-tile above $J$; by Proposition~\ref{prop:selfsim} it presents $\beta$ at $J$ and
+its $a$-edge is $JW$ with $W=W(J)$. Let $M$ be the tile below sharing the chord ray with $Z$, and let
+$X$ be the last tile in angular order, standing against the descending side; $X$ lays the next side
+edge on one of its flanks, and that flank is not a $b$ by Lemma~\ref{lem:sidenob}.
+
+The figure at $J$ is $\{\alpha,\beta,\gamma\}$ or $\{3\alpha,2\beta\}$, with $Z$ first. Exhausting the
+orders with first entry $\beta$:
+\[
+\begin{array}{llll}
+\text{figure} & \text{order} & M & \text{side edge below }J\\\hline
+\{\alpha,\beta,\gamma\} & (\beta,\alpha,\gamma) & \alpha & a\\
+\{\alpha,\beta,\gamma\} & (\beta,\gamma,\alpha) & \gamma & c\\
+\{3\alpha,2\beta\} & (\beta,\alpha,\alpha,\alpha,\beta) & \alpha & a \text{ or } c\\
+\{3\alpha,2\beta\} & (\beta,\alpha,\alpha,\beta,\alpha) & \alpha & c\\
+\{3\alpha,2\beta\} & (\beta,\alpha,\beta,\alpha,\alpha) & \alpha & c\\
+\{3\alpha,2\beta\} & (\beta,\beta,\alpha,\alpha,\alpha) & \beta & c
+\end{array}
+\]
+(the side edge is read off $X$'s flanks with $b$ removed: $\alpha\mapsto c$, $\beta\mapsto a$ or $c$,
+$\gamma\mapsto a$). In both rows permitting an $a$, $M$ presents $\alpha$. Its flanks are then $b$ and
+$c$, so the edge $M$ lays along the chord ray has length $b$ or $c$, and $e^{2}+ef<f^{2}$ gives
+$a<b<c$. Since $|JW|=a$, the point $W$ lies strictly inside that edge.
+\end{proof}
+
+\begin{corollary}[A sufficient condition for Hypothesis~\ref{hyp:walls}]\label{cor:walls-from-T}
+Assume $e^{2}+ef<f^{2}$. If for every junction $J$ as in Definition~\ref{def:WJ} the point $W(J)$ is a
+\emph{vertex} of every tile meeting it, then $p=0$ on every equal side, i.e.\
+Hypothesis~\ref{hyp:walls} holds at that member.
+\end{corollary}
+
+\begin{proof}
+Suppose some equal side carries an $a$-edge, and take the first one counted from the apex. Every edge
+above it is a $c$, so the junction $J$ immediately above it satisfies Definition~\ref{def:WJ}, and
+Theorem~\ref{thm:aforcesT} puts $W(J)$ interior to an edge --- contrary to hypothesis. Hence
+$n_a=0$, that is $p=0$.
+\end{proof}
+
+\begin{remark}[The crux, in its sharpest form]\label{rem:cruxsharp}
+Corollary~\ref{cor:walls-from-T} replaces ``exclude the surviving configuration'' by a single
+question about an explicitly located finite set of points. The exclusion succeeds at the first
+junction: there $W(J_1)=P$, and Corollary~\ref{cor:noTP} rules out a $T$-junction because two tiles
+present $\gamma$ at $P$. It is unavailable at every later junction, and not by accident:
+Lemma~\ref{lem:onegamma} shows a single $\gamma$ beside a straight edge always balances, so no angle
+count can do it, and Proposition~\ref{prop:selfsim} shows the configuration one level down is a
+verbatim copy, so no new local information appears. What is needed is a second $\gamma$ at $W(J)$ from
+geometry rather than from counting.
+
+We note the numerical consequence is weak and should not be oversold: only a $c\to a$ transition
+forces a $T$-junction, and a side word such as $c\,c\,c\,c\,a^{7}$ has exactly one. The theorem gives
+one forced $T$-junction per equal side carrying an $a$, not one per $a$-edge, and in particular it
+does not revive the counting argument retracted in Remark~\ref{rem:parityscope}.
+\end{remark}
+
+
 
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
 
