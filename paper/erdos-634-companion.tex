@@ -2757,16 +2757,25 @@ does have at least three edges, so the edge below the first junction exists and 
 The family $e=f-1$ was outside the reach of \S\ref{sub:apex} until Proposition~\ref{prop:nogolden}
 removed the golden-ratio hypothesis: $f/(f-1)<\varphi$ for every $f\ge3$, so every member of it has
 $b<a$. Its tile counts are $N=2f^{2}+2f-1$, giving $11, 23, 39, 59, 83, 111, 143, 179, 219, 263,
-311,\dots$, of which $23$ and $39$ were previously settled by exhaustive search and $11$ by
-Theorem~\ref{thm:basebeta-e1}.
+311,\dots$, of which $23$ and $39$ were previously settled by exhaustive search, $11$ by
+Theorem~\ref{thm:basebeta-e1}, and $59$ by the frontier results for $N\le80$. Among the remainder the
+base-$\beta$ candidates, that is the primes congruent to $11$ modulo $12$, are
+\[
+83,\;179,\;263,\;311,\;419,\;479,\;683,\;839,\;1103,\;1511,\;2111,\;2243,\;2663,\;2963,\;3119
+\]
+for $f\le39$. Whether the family contains infinitely many such primes is a Bunyakovsky-type question
+and is not claimed here.
 
 The theorem discharges Hypothesis~\ref{hyp:walls} at these members; it does not by itself exclude the
 corresponding integers, which requires the remaining branches.
 
-We record the label honestly. The chain is PROVED, not VERIFIED: Lean carries the arithmetic
+We record the label honestly. The chain is PROVED, not VERIFIED. Lean carries the arithmetic
 (\texttt{ApexRigidity.b\_gt\_f}, \texttt{.eb\_gt\_a}, \texttt{.e\_ge\_two\_of\_b\_lt\_a},
-\texttt{.side\_p\_bound}) but not the geometric steps of Theorem~\ref{thm:apexconfig} and
-Corollary~\ref{cor:noTP} on which Theorem~\ref{thm:secondc} rests. The non-representability of $a-b$
+\texttt{.side\_p\_bound}), the area accounting (\texttt{.area\_above\_chord}, \texttt{.middle\_fraction})
+and the vertex budget of Corollary~\ref{cor:noTP} in both branches
+(\texttt{SecondEdge.noTP\_budget}, \texttt{.noTP\_remainders}, \texttt{.T2\_not\_alpha\_at\_P}). What is
+not formalized is the planar geometry underneath: that $T_1$ presents $\gamma$ at $P$ and that $T_2$'s
+chord trace ends there, which are the hypotheses those statements take. The non-representability of $a-b$
 was checked symbolically, with $(f-2)(2f-1)-(a-b)=(f-1)^{2}$, and by exhaustive enumeration for
 $3\le f\le39$. An adversarial review in a fresh session, working from the written proof alone, has not
 yet been carried out, and the result should be read with that outstanding.

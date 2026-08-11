@@ -220,4 +220,39 @@ theorem filler_excluded {al be ga : ℝ} (hal : 0 < al) (hbe : 0 < be)
     2 * Real.pi < ga + ga + Real.pi :=
   (at_most_one_straight hal hbe hsum hga).1
 
+
+/-! ## The budget at `P`, assembled
+
+`cor:noTP` rests on two facts: `T₁` presents `γ` at `P`, and `T₂` either presents `γ` there or has `P`
+interior to an edge (contributing `π`). Its conclusion is that no *further* tile can contribute a
+straight angle, so the tile below `T₁`'s `a`-edge has a vertex at `P`. That conclusion is an
+inequality on the remainder, and it is proved here in both branches at once.
+
+The geometric inputs — that `T₁` presents `γ`, and that `T₂`'s chord trace ends at `P` so that `T₂`
+lands in one of the two cases — are hypotheses, in the `ChordInterface` style. -/
+
+/-- **The remainder at `P` is strictly less than `π`, in both branches.**  With `T₁` at `γ` and `T₂`
+at `γ` the remainder is `π − α`; with `T₂` straight it is `π − γ`. Neither admits a further straight
+angle, so every other tile at `P` has a vertex there. -/
+theorem noTP_budget {al be ga t2 rest : ℝ} (hal : 0 < al) (hbe : 0 < be)
+    (hsum : 3 * al + 2 * be = Real.pi) (hga : ga = 2 * al + be)
+    (ht2 : t2 = ga ∨ t2 = Real.pi) (htot : ga + t2 + rest = 2 * Real.pi) :
+    rest < Real.pi := by
+  subst hga
+  rcases ht2 with h | h <;> subst h <;> rw [← hsum] at htot ⊢ <;> linarith
+
+/-- The two branch values of the remainder, for the record: `π − α` and `π − γ`. -/
+theorem noTP_remainders {al be ga : ℝ} (hsum : 3 * al + 2 * be = Real.pi) (hga : ga = 2 * al + be) :
+    2 * Real.pi - (ga + ga) = Real.pi - al ∧ 2 * Real.pi - (ga + Real.pi) = Real.pi - ga := by
+  subst hga
+  rw [← hsum]
+  constructor <;> ring
+
+/-- **`T₂` cannot present `α` at `P`.**  Its edge towards the apex ends at `P`, at distance `b`, so
+that edge is its `b`; an `α` there would put its other flank `c` opposite, making the tile's angle at
+the apex the one opposite `c`, namely `γ` — contradicting the apex figure `3α`.  The flank-pair
+bookkeeping is `other_angles_of_alpha`. -/
+theorem T2_not_alpha_at_P :
+    angleOfFlanks (flanks Angle.alpha).1 (opposite Angle.alpha) ≠ some Angle.alpha := by decide
+
 end Erdos634.SecondEdge
