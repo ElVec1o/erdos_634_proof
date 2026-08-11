@@ -1579,6 +1579,34 @@ theorem g4 (S : Dir → Set Plane) (F : Set Plane) (hF : F.Finite)
         MeasureTheory.Measure Plane) (S d)).toReal) :=
   g4_assembled Dir.neg S F hF horient
 
+/-- A two-element finset containing `a` contains something else. -/
+theorem exists_second_of_card_two {α : Type*} [DecidableEq α] {s : Finset α}
+    (h : s.card = 2) {a : α} (ha : a ∈ s) : ∃ b ∈ s, b ≠ a := by
+  by_contra hcon
+  push_neg at hcon
+  have hsub : s ⊆ {a} := fun b hb => Finset.mem_singleton.mpr (hcon b hb)
+  have := Finset.card_le_card hsub
+  simp [h] at this
+
+/-- **The second tile at an interior edge point.**  `Dissection.two_tiles_at_edge_point` concludes
+that exactly two tiles meet `x` on an edge; this turns that *cardinality* into a *witness*.  Given
+one such tile, there is a different one, also meeting `x` on an edge.
+
+This is the bridge `horient` needs: the two tiles lie on opposite sides of the shared line, so
+`Tri.interior_left_of_leftDir` gives each a positive cross product against its own direction and
+`leftDir_opposite_of_opposite_sides` makes those directions opposite. -/
+theorem Dissection.second_tile_at_edge_point {N : ℕ} (D : Dissection N) (hN : 0 < N) {x : Plane}
+    (hxv : ∀ i k, x ≠ (D.tile i).pts k)
+    {R : ℝ} (hR : 0 < R) (hRt : Metric.ball x R ⊆ D.target.carrier)
+    {i₀ : Fin N} (hi₀ : OnEdge D x i₀) :
+    ∃ i₁, i₁ ≠ i₀ ∧ OnEdge D x i₁ := by
+  classical
+  have hmem : i₀ ∈ Finset.univ.filter (fun i => OnEdge D x i) :=
+    Finset.mem_filter.mpr ⟨Finset.mem_univ _, hi₀⟩
+  have hcard := (D.two_tiles_at_edge_point hN hxv hR hRt ⟨i₀, hmem⟩).1
+  obtain ⟨i₁, hi₁mem, hne⟩ := exists_second_of_card_two hcard hmem
+  exact ⟨i₁, hne, (Finset.mem_filter.mp hi₁mem).2⟩
+
 /-- **The interior tile edges of a dissection carrying a given direction.**  The union, over all
 tiles and all three of their edges, of those edges whose left-hand unit direction is `d`, intersected
 with the interior of the target so that boundary edges are excluded.
