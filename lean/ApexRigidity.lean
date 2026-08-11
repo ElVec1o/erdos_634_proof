@@ -173,4 +173,49 @@ theorem figure_at_P {al be ga : ℝ} (hsum : 3 * al + 2 * be = Real.pi) (hga : g
   rw [← hsum]
   ring
 
+
+/-! ## The vertex figures adjacent to the apex, and the placements of `U` -/
+
+/-- **The figure at `P'` on the mirrored side is `{β,3γ}`.**  Three `γ`'s and a `β` total `2π`. -/
+theorem figure_at_Pprime {al be ga : ℝ} (hsum : 3 * al + 2 * be = Real.pi) (hga : ga = 2 * al + be) :
+    3 * ga + be = 2 * Real.pi := by
+  subst hga
+  rw [← hsum]
+  ring
+
+/-- Both routes to that figure leave the same residual: `2π − 3γ = β` and `2π − (2γ+β) = γ`. -/
+theorem Pprime_residuals {al be ga : ℝ} (hsum : 3 * al + 2 * be = Real.pi) (hga : ga = 2 * al + be) :
+    2 * Real.pi - 3 * ga = be ∧ 2 * Real.pi - (2 * ga + be) = ga := by
+  subst hga
+  rw [← hsum]
+  constructor <;> ring
+
+/-- **`U`'s two flanking vertices land at the same height — by the law of sines.**  One is reached by
+a `c`-edge at inclination `β` below the horizontal, the other by a `b`-edge at inclination `γ`, and
+`c·sin β = b·sin γ` is exactly the law of sines for the tile.  This is why placement (i) puts `U`'s
+third side flush along the next chord; it is not a coincidence of the member. -/
+theorem drops_agree_law_of_sines (b c sb sg : ℝ) (hlaw : b * sg = c * sb) :
+    c * sb = b * sg := hlaw.symm
+
+/-- The instance at `(3,7)`: `sin β = 20√187/343`, `sin γ = √187/14`, and both drops equal
+`20√187/7`, the spacing between consecutive chords. -/
+theorem drops_agree_37 :
+    (49 : ℝ) * (20 * Real.sqrt 187 / 343) = 40 * (Real.sqrt 187 / 14) := by
+  field_simp
+  ring
+
+/-- The horizontal separation of `U`'s two flanking vertices at `(3,7)` is exactly `a = 21`, so its
+third side is an `a`-edge lying along the chord. -/
+theorem U_edge_length_37 : (49 : ℝ) * (207 / 343) - 40 * (3 / 14) = 21 := by norm_num
+
+/-- **`V` is interior to `U`'s edge.**  `|PV| = c − b = e²`, and `e² < b = f² − e²` whenever
+`2e² < f²`, which the standing hypothesis `e² + ef < f²` implies since `e² < ef`.  So the shorter of
+`α`'s two flanks already overshoots `V`, in either placement. -/
+theorem V_interior {e f : ℝ} (he : 0 < e) (hef : e < f) (hgold : e ^ 2 + e * f < f ^ 2) :
+    f ^ 2 - (f ^ 2 - e ^ 2) < f ^ 2 - e ^ 2 := by nlinarith
+
+/-- The instance at `(3,7)`: `|PV| = 9`, against flanks `40` and `49`. -/
+theorem V_interior_37 : (49 : ℝ) - 40 < 40 ∧ (49 : ℝ) - 40 < 49 := by
+  constructor <;> norm_num
+
 end Erdos634.ApexRigidity
