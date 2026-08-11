@@ -1326,6 +1326,32 @@ theorem interiorBalanced_of_null_symm {Dir : Type*}
     _ = μ (S d \ F) := by rw [hsym d]
     _ = μ (S d) := hdrop _
 
+/-- **G4, assembled.**  With `S d` the union of the interior tile edges carrying direction `d`, and
+given that the two tiles meeting along an interior segment receive *opposite* directions — so that
+`S d` and `S (neg d)` agree away from the finitely many tile vertices — the interior directed lengths
+balance, in the real-valued form `InvariantCore.cancellation_core_real` consumes.
+
+No finiteness hypothesis appears, and that is deliberate: `toReal` sends `⊤` to `0`, so the balance
+holds regardless.  Finiteness — true here, `S d` being a finite union of segments — is what makes the
+*value* the actual total length rather than a placeholder, and it belongs wherever `S` is
+constructed, not here.
+
+**This is the whole of G4 modulo one fact**, namely `horient`.  That fact is not arbitrary: directing
+each tile edge so that its *tile lies on the left* makes it automatic, because
+`Dissection.two_tiles_at_edge_point` puts exactly two tiles at every non-vertex point of an interior
+edge, one on each side, and a segment traversed with the tile on the left from both sides is
+traversed oppositely.  Supplying that canonical choice is the remaining obligation, and unlike the
+maximal-segment formulation it replaced, Mathlib has the orientation machinery for it. -/
+theorem g4_assembled {Dir : Type*} (neg : Dir → Dir)
+    (S : Dir → Set Plane) (F : Set Plane) (hF : F.Finite)
+    (hmeas : ∀ d, MeasurableSet (S d))
+    (horient : ∀ d, S d \ F = S (neg d) \ F) :
+    InteriorBalancedReal neg
+      (fun d => ((MeasureTheory.Measure.hausdorffMeasure 1 :
+        MeasureTheory.Measure Plane) (S d)).toReal) := by
+  intro d
+  exact congrArg ENNReal.toReal (interiorBalanced_of_null_symm neg S F hF hmeas horient d)
+
 /-- **G4 — the cancellation input.**  For a direction `d`, `Lint d` is the total directed length of
 interior tile-edges in direction `d`.  `InteriorBalanced` asserts `Lint (d + π) = Lint d`, i.e. each
 interior segment is covered exactly once from each side.
