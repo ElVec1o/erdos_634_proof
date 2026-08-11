@@ -2376,7 +2376,18 @@ length $a-b$ satisfies $a-b\equiv-f^{2}\pmod e$, so any representation over $\la
 would need at least $e-1$ copies of $b$ or $c$, giving $a-b\ge(e-1)b$, whereas $(e-1)b>a-b$ because
 $b>f$ holds at every member.
 In particular $p=2$ is excluded on the whole tight subfamily $f=2e+1$, by an argument independent of
-the chord and height estimates used there previously. The bound does not reach $p=1$ at any new
+the chord and height estimates used there previously.
+
+Removing the hypothesis has one further consequence, on the family $e=f-1$, which the earlier form
+could not reach because $f/(f-1)$ lies below the golden ratio for every $f\ge3$. There
+$n_c=f-p(f-1)$, which is $1$ at $p=1$ and non-positive for $p\ge2$; both contradict the bound. Hence
+$p=0$ on every equal side, so Hypothesis (walls) \emph{holds unconditionally at every member with
+$e=f-1$}. The tile counts are $N=2f^{2}+2f-1$, and the base-$\beta$ candidates among them --- primes
+congruent to $11$ modulo $12$ --- beyond the range already determined are
+$83$, $179$, $263$, $311$, $419$, $479$, $683$, $839$, $1103$, $1511$, $2111$, $2243$, $2663$, $2963$,
+$3119$ for $f\le39$. This discharges the hypothesis at those members; it does not by itself settle the
+integers, which needs the remaining branches. The argument is written out in the companion, where its
+label is recorded as PROVED with the outstanding formalization and review noted. The bound does not reach $p=1$ at any new
 member: that would need $e\ge f-1$, and $pe+2\le f$ then gives $f\le e+1\le pe+2-e+1$, leaving only
 the smallest members, all already closed.
 
