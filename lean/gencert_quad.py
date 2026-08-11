@@ -14,7 +14,7 @@ the base-beta unit parallelogram always has this shape (rational x, sqrt-multipl
 Usage:
   python3 gencert_quad.py <witness.txt> <Out.lean> <Namespace> <D> <a,b,c> <scale> "<4 corners>"
 Examples (the two members settled so far):
-  python3 gencert_quad.py ../engine/tiling_FILE_.._private_inst_pgram22.txt.txt \\
+  python3 gencert_quad.py ../code/engine/tiling_FILE_.._private_inst_pgram22.txt.txt \\
       PgramTiling22.lean PgramTiling22 15 2,3,4 4 "0,0 44,0 66,6 22,6"
   python3 gencert_quad.py ../private/tiling_FILE_inst_pgram52.txt.txt \\
       PgramTiling52.lean PgramTiling52 35 3,8,9 3 "0,0 78,0 117,12 39,12"

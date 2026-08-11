@@ -129,8 +129,8 @@ target this forces `(c−a−b)/√b ∈ ℤ`, which never holds for a primitive
 - `lean/` — a Lean 4 formalization of the arithmetic and combinatorial layer: 47 files, 408 theorems, no `sorry`, **all verified**. 20 files are dependency-free and check with plain `lean <file>` (every tiling certificate and every combinatorial core); the other 18 pin Mathlib v4.30.0 and were checked with `lake env lean` against a local build of that revision. Axioms are `propext`, `Quot.sound`, and `Classical.choice` where `omega` introduces it. `lean/README.md` gives the per-file status and `lean/PAPER_MAP.md` maps every numbered statement of the papers to its Lean declaration, or states why none exists.
   `Tiling*.lean`/`PgramTiling*.lean` certificates and `Collar.lean` are kernel-only (no Mathlib) and report no axioms.
 - `code/` — exact-arithmetic verification scripts for the paper's finite and symbolic claims.
-- `engine/` — the exact corner-anchored search engine (C++ with GMP, the Python reference
-  implementation, instance builders) and `engine/tilings/` with the verified 28-, 44-, 77- and 99-tiling
+- `code/engine/` — the exact corner-anchored search engine (C++ with GMP, the Python reference
+  implementation, instance builders) and `code/engine/tilings/` with the verified 28-, 44-, 77- and 99-tiling
   certificates.
 - `archived/` — superseded material kept for provenance only, and **not part of the work**: the
   earlier Zenodo/referee package (which contains a **false claim** that the folklore conjecture was

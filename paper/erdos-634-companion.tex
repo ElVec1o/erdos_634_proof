@@ -406,7 +406,7 @@ not a prohibition but a \emph{quantitative} bound: a description of the set in w
 tile's crossing points must lie. Since every vertex of a tiling lies in a finitely generated
 $\mathbb Z$-module over $\Q(\sqrt D)$, and $b$-pinning fixes the segment's endpoints inside that
 module, such a bound is the natural object to seek; we have not found it. The computation is
-\texttt{rust/walls} (binary \texttt{straddle}), and it is recorded here because a negative result of
+\texttt{code/rust/walls} (binary \texttt{straddle}), and it is recorded here because a negative result of
 this shape saves the reader the attempt, and because it explains why the interior argument of
 \S\ref{sub:funnels} has never been written out.
 \end{remark}
@@ -1134,12 +1134,12 @@ earlier treatment sent the stub sequence walking by $e^2$ modulo $b$ until it en
 $(0,\min(a,b))$, a gap whose reachability had to be argued geometrically; the statement above shows
 the second stub is \emph{already} a gap, for every member, so no walk occurs. This is not merely a
 shorter route to the same place: an exhaustive check over every member with $f\le200$
-($12\,231$ pairs, \texttt{rust/stubgap}) finds that \emph{both} initial stubs are gaps at the first
+($12\,231$ pairs, \texttt{code/rust/stubgap}) finds that \emph{both} initial stubs are gaps at the first
 step in every single case, so the walk the earlier argument invoked never executes even one step.
 The mechanism can be deleted from the lemma rather than justified. It is formalized in
 \textup{\texttt{lean/PentagonLemma.lean}} (\texttt{pentagon\_lemma}, general in $(e,f)$, standard axioms only),
 together with $\gcd(a,b)=1$, and cross-checked by exhaustive semigroup search over all coprime pairs
-with $f\le400$ (\texttt{rust/stubgap}). Note that $(0,\min(a,b))$ and $\{|a-b|\}$ are genuinely
+with $f\le400$ (\texttt{code/rust/stubgap}). Note that $(0,\min(a,b))$ and $\{|a-b|\}$ are genuinely
 different gaps: at $(1,3)$ the tile is $(3,8,9)$, $\min(a,b)=3$, and $|a-b|=5$ lies outside
 $(0,3)$ while still being a gap of $\langle3,8,9\rangle$.
 \end{remark}

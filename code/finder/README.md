@@ -3,7 +3,7 @@
 Sound but **incomplete**: it may miss tilings, and finding nothing proves nothing. Every tiling it
 reports is re-verified from scratch (congruence of all N tiles, exact area identity, and coverage
 with disjoint interiors via the boundary algebra), so a bug yields a rejected candidate, never a
-false theorem. **Exhaustion claims must come from `engine/cengine`, never from this program.**
+false theorem. **Exhaustion claims must come from `code/engine/cengine`, never from this program.**
 
     cargo build --release
     ./target/release/finder <instance.txt> [threads] [seed]
