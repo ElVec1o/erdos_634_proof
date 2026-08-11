@@ -42,6 +42,18 @@ theorem orders_have_right_counts :
         && L.count Angle.gamma == 0) = true := by
   constructor <;> decide
 
+/-- **The enumeration is exhaustive.**  `BaseBetaE1.vertex_pi` proves that a straight figure
+`iα + jβ + kγ = π` has exactly two solutions, `(3,2,0)` and `(1,1,1)` — the two integer conditions
+`j+k = 2` and `2i+k = 3j` come from irrationality of `α/π`.  Together with `orders_have_right_counts`,
+the two facts below pin `ordersABG ++ ordersAAABB` as *every* ordering of *exactly* those two figures:
+the lengths are `3! = 6` and `5!/(3!2!) = 10`, and no ordering is listed twice.  Without this the
+sixteen-case exhaustion below would only be a check on a set nobody had shown to be complete. -/
+theorem orders_count : ordersABG.length = 6 ∧ ordersAAABB.length = 10 := by
+  constructor <;> decide
+
+/-- No ordering appears twice, so the sixteen are genuinely distinct. -/
+theorem orders_nodup : (ordersABG ++ ordersAAABB).Nodup := by decide
+
 /-- The admissible angular orders at the first junction: the apex `c`-tile stands first and presents
 `β`; the tile below its `a`-edge stands second and presents `β` or `γ` — never `α`, by
 `Walls13.alpha_cannot_lay_a`, since that tile lays an `a`-edge. -/

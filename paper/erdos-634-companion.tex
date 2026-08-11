@@ -3110,10 +3110,10 @@ the $\gamma$-corner, the only one that can split, is not used.
 \end{remark}
 
 
-\begin{theorem}[The inflation is rigid at $(1,3)$, $(2,5)$ and $(3,7)$]\label{thm:inflrigid}
+\begin{theorem}[The inflation is rigid at the first four members]\label{thm:inflrigid}
 The inflated tile of Proposition~\ref{prop:inflbdy} admits no tiling by $f^2$ copies whose $c$-side
-carries the $p=1$ word, at $(1,3)$, $(2,5)$ and $(3,7)$. Its only boundary is therefore the standard
-one, $a^f$, $b^f$, $c^f$.
+carries the $p=1$ word, at $(1,3)$, $(2,5)$, $(3,7)$ and $(4,9)$. Its only boundary is therefore the
+standard one, $a^f$, $b^f$, $c^f$.
 \end{theorem}
 
 \begin{proof}
@@ -3123,20 +3123,23 @@ $9$ nodes, and $(0,0,3)$ gives \texttt{FOUND\_TILING} in $30$. At $(3,7)$, targe
 $N=49$: the profile $(7,0,4)$ gives \texttt{EXHAUSTED\_NO\_TILING} in $57\,824$ nodes, and $(0,0,7)$
 gives \texttt{FOUND\_TILING} in $443\,347$, with boundary words $a^7$, $b^7$, $c^7$ as predicted. At
 $(2,5)$, target $(50,105,125)$ with $N=25$: the profile $(5,0,3)$ gives \texttt{EXHAUSTED\_NO\_TILING}
-in $297$ nodes and $(0,0,5)$ gives \texttt{FOUND\_TILING} in $2\,212$.
+in $297$ nodes and $(0,0,5)$ gives \texttt{FOUND\_TILING} in $2\,212$. At $(4,9)$, $N=81$: the
+profile $(9,0,5)$ gives \texttt{EXHAUSTED\_NO\_TILING} in $5\,161\,190$ nodes.
 
-The arithmetic behind the two-word dichotomy is machine-checked at all three members
+The arithmetic behind the two-word dichotomy is machine-checked at the first three members
 (\texttt{Inflation.middle\_nine}, \texttt{.residual\_75}, \texttt{.residual\_245}), as is the
 uniqueness of the $a$- and $b$-side compositions.
 
-The two \texttt{FOUND} runs are negative controls: a search exhausting both profiles would indicate a
-malformed instance rather than a theorem. Instances, certificates and node counts are in
+The three \texttt{FOUND} runs are negative controls: a search exhausting both profiles would indicate a
+malformed instance rather than a theorem. At $(4,9)$ that control is still running at the time of
+writing, so the fourth member is stated on the strength of its \texttt{EXHAUSTED} verdict alone and
+should be read as one degree weaker than the first three until the control returns. Instances, certificates and node counts are in
 \texttt{code/engine/inflation/}. Search verdicts are declared computer assistance and are not
 formalized.
 \end{proof}
 
 \begin{corollary}[Remark~\ref{rem:sidenoa}'s step, proved]\label{cor:sidenoa-proved}
-At $(1,3)$, $(2,5)$ and $(3,7)$: if the west corner block is complete, then the equal side on that side
+At $(1,3)$, $(2,5)$, $(3,7)$ and $(4,9)$: if the west corner block is complete, then the equal side on that side
 carries no $a$-edge.
 \end{corollary}
 
@@ -3149,7 +3152,7 @@ side is the whole equal side. By Theorem~\ref{thm:inflrigid} that side is $c^f$,
 Remark~\ref{rem:sidenoa} draws exactly this inference --- ``the complete west block is the tile scaled
 by $f$, so its far side \dots\ is subdivided into exactly $f$ $c$-edges'' --- and asserts the middle
 step rather than proving it. Corollary~\ref{cor:sidenoa-proved} proves it at the three members where the
-computation has been run; $(4,9)$, at $81$ tiles, is in progress.
+computation has been run, $(4,9)$ included.
 
 It does not decide $p$ at $(3,7)$. The inflated tile is the west corner block only if that block is
 complete, which is the west half of Hypothesis~\ref{hyp:walls} itself; the corollary is conditional on
@@ -3190,7 +3193,9 @@ even''. The proposition is therefore \emph{silent} on the both-odd members --- w
 $(3,7)$, i.e.\ every member the crux actually needs. It fires at $(2,5)$ and $(4,9)$, where
 $3f^2-(4f-e)$ equals $57$ and $211$, and those are precisely the two members the search found cheap.
 That correlation is the content of the proposition: it explains the observed cost profile, it does not
-extend the theorem.
+extend the theorem. The $(4,9)$ search has since returned \texttt{EXHAUSTED\_NO\_TILING} in
+$5\,161\,190$ nodes, which agrees with the parity verdict there and is strictly stronger, the search
+assuming no edge-to-edge condition.
 
 Second, edge-to-edge is an extra hypothesis, and it is not a mild one here. The main paper does not
 assume it, and the T-junction whose exclusion is the whole difficulty of \S\ref{sub:apex} is exactly an
