@@ -2601,11 +2601,15 @@ above $C$.
 they agree by Lemma~\ref{lem:apexid}. (b) The horizontal offsets of $J$ and $P$ from the axis of
 symmetry are $c\sin\frac{3\alpha}{2}$ and $b\sin\frac{\alpha}{2}$, differing by $a$.
 
-(c) $T_2$ presents $\alpha$ at $A$ with edges $b$ and $c$ there, the $b$ along $AP$; let $Q$ be its far
-vertex, at drop $c\cos\frac{\alpha}{2}$. The chord meets $AQ$ at the point $R$ with
-$|AR|/|AQ|=\cos\frac{3\alpha}{2}/\cos\frac{\alpha}{2}=b/c$ by Lemma~\ref{lem:apexid}, so $|AR|=b$ and
-$R=P'$; and $T_2$ is split by the line $PR$ through its vertex $P$, so the area ratio is also $b/c$
-(\texttt{middle\_fraction}). The length of $PP'$ is $2b\sin\frac{\alpha}{2}=e(f^{2}-e^{2})/f$.
+(c) Note first that $P$ and $P'$ are defined by $T_1$ and $T_3$, at distance $b$ along the two inner
+rays from $A$, independently of $T_2$. Now $T_2$ presents $\alpha$ at $A$, so its two edges there are a
+$b$ and a $c$, laid on those same two rays --- and \emph{both orientations occur}, so we treat them
+together. Its $b$-edge terminates at drop $b\cos\frac{\alpha}{2}$, which is the chord by
+Lemma~\ref{lem:apexid}, hence at whichever of $P,P'$ lies on that ray. Its $c$-edge terminates at drop
+$c\cos\frac{\alpha}{2}$, strictly below $C$, and the chord meets it at distance $b$ from $A$, since
+$\cos\frac{3\alpha}{2}/\cos\frac{\alpha}{2}=b/c$ --- that is, at the other of $P,P'$. So in either
+orientation $T_2\cap C=PP'$, and $T_2$ is cut by a line through one of its vertices, giving area ratio
+$b/c$ (\texttt{middle\_fraction}). The length of $PP'$ is $2b\sin\frac{\alpha}{2}=e(f^{2}-e^{2})/f$.
 
 (d) $2ef+e(f^{2}-e^{2})/f=e(3f^{2}-e^{2})/f=|C|$, and $2+b/c=(3f^{2}-e^{2})/f^{2}=N/f^{2}$
 (\texttt{area\_above\_chord}), which is the area above $C$. Since the three tiles already supply all of
@@ -2773,6 +2777,11 @@ Assume $e^{2}+ef<f^{2}$. Let $J$ be as in Definition~\ref{def:WJ} and suppose th
 \end{theorem}
 
 \begin{proof}
+Every tile meeting $J$ has a vertex there. A tile with $J$ interior to an edge would contribute $\pi$
+and so exhaust the straight figure by itself, forcing the two side edges at $J$ to be collinear parts of
+a single tile edge, in which case $J$ would not be a junction; and an edge through $J$ transversal to the
+side would carry that tile outside the target.
+
 Write $Z$ for the $c$-tile above $J$; by Proposition~\ref{prop:selfsim} it presents $\beta$ at $J$ and
 its $a$-edge is $JW$ with $W=W(J)$. Let $M$ be the tile below sharing the chord ray with $Z$, and let
 $X$ be the last tile in angular order, standing against the descending side; $X$ lays the next side
