@@ -2872,6 +2872,36 @@ where no area bound confines it. Closing $p=1$ therefore requires a constraint t
 and we do not have one.
 \end{remark}
 
+\begin{remark}[The chord programme is exhausted]\label{rem:chordexhausted}
+It is natural to hope that the family of chords does collectively what no single chord does: there
+are $37$ admissible heights $\rho=n/49$ with $n=3i+7j$, each carrying its own non-integral area
+$138\rho^{2}$, and a tile lying below the chord at $J$ lies above the chord at some lower junction. We
+record that this hope is also unfounded, so that the reader need not pursue it.
+
+For a tile $T$ and a chord $C$ write $\varphi_T(C)\in[0,1]$ for the fraction of $T$'s area lying above
+$C$; thus $T$ straddles $C$ exactly when $\varphi_T(C)\in(0,1)$. The area statement at height $\rho$ is
+\[
+\sum_{T}\varphi_T(C_\rho)\;=\;138\rho^{2},
+\]
+and this is nothing but additivity of area over the tiling: the left-hand side \emph{is} the area
+above $C_\rho$, decomposed tile by tile. It therefore holds identically, for every tiling of the
+target, and the $37$ admissible heights supply $37$ instantiations of one identity rather than $37$
+constraints.
+
+The only information extractable from the family is the integrality bit --- where $138\rho^{2}\notin
+\mathbb Z$, some $\varphi_T(C_\rho)$ lies strictly between $0$ and $1$ --- and that is precisely
+Proposition~\ref{prop:straddle}. The nesting adds nothing further: the set of heights straddled by a
+given tile is an interval, and $138$ tiles cover $37$ heights with room to spare.
+
+This is the same degeneracy as Proposition~\ref{prop:nogocensus}, in a metric rather than a
+combinatorial register: a single global identity, instantiated many times, cannot separate tilings.
+Taken together with Remark~\ref{rem:chordscope} it closes the chord programme. What the chord method
+yields at $(3,7)$ is exactly Propositions~\ref{prop:straddle} and \ref{prop:chorddecomp}, and closing
+$p=1$ requires a mechanism that is neither counting nor chord-area. We do not have one, and we prefer
+to say so.
+\end{remark}
+
+
 
 
 
@@ -3493,6 +3523,18 @@ number of boundary edges, and on the genuine certificates it is $28$ of $44$ and
 falling fraction. Comparing it against $N$ therefore never yields a contradiction.
 \item \textbf{The far side of the mismatch ray}, under the hypothesis that the ray is a complete
 wall: that side is the tile scaled by $f$, and is tileable. No obstruction can come from there.
+\item \textbf{Local combinatorics of an equal side, with or without the census}, for $p=1$ at
+$(3,7)$. The junction automaton forbids a single adjacency and leaves $10\,560$ configurations
+(Proposition~\ref{prop:nogoauto}); adjoining the corner census adds nothing, its two counting
+equations being dependent (Proposition~\ref{prop:nogocensus}). Together with
+Lemma~\ref{lem:census} this is the third confirmation that corner counting cannot see $p$.
+\item \textbf{The chord/area programme}, beyond Propositions~\ref{prop:straddle}
+and~\ref{prop:chorddecomp}. Two continuations both fail: the $\gamma$-grading does not discretize
+straddle positions, because it constrains directions and the vertical projection of the vertex module
+is dense (Remark~\ref{rem:chordscope}); and the family of $37$ admissible chord heights supplies $37$
+instantiations of one identity --- additivity of area --- rather than $37$ constraints
+(Remark~\ref{rem:chordexhausted}). Closing $p=1$ needs a mechanism that is neither counting nor
+chord-area.
 \end{enumerate}
 
 \begin{thebibliography}{9}
