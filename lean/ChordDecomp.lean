@@ -156,4 +156,35 @@ theorem straddle_sum_values (C : ChordTrace) :
   · right; right; right; left; linarith
   · right; right; right; right; linarith
 
+
+/-! ## The general form
+
+The `(3,7)` statement above is a special case. A junction at distance `d = i·a + j·c = f(ie+jf)` from
+the apex has height fraction `ρ = m/f²` with `m = ie + jf`, so the area above its chord is `N·m²/f⁴`
+tile areas. If `gcd(N,f) = 1` this is an integer only when `f² ∣ m`, which fails for `1 ≤ m < f²`.
+
+For a base-β member `gcd(N,f) = gcd(3f²−e², f) = gcd(e², f)`, so coprimality of `e` and `f` suffices —
+and on the tight subfamily `f = 2e+1` it is automatic, since `gcd(e, 2e+1) = 1`. -/
+
+/-- **The area above an interior junction chord is never an integral number of tiles.**  General form:
+`N` coprime to `f`, and `1 ≤ m < f²`. -/
+theorem area_never_integral {N f m : ℕ} (hf : 0 < f) (hcop : Nat.Coprime N f)
+    (h1 : 1 ≤ m) (h2 : m < f ^ 2) : ¬ (f ^ 4 ∣ N * m ^ 2) := by
+  intro hdvd
+  have hcop4 : Nat.Coprime (f ^ 4) N := (hcop.symm.pow_left 4)
+  have hdvd2 : f ^ 4 ∣ m ^ 2 := (Nat.Coprime.dvd_of_dvd_mul_left hcop4 hdvd)
+  have hsq : (f ^ 2) ^ 2 ∣ m ^ 2 := by
+    have : (f ^ 2) ^ 2 = f ^ 4 := by ring
+    rwa [this]
+  have hfm : f ^ 2 ∣ m := (Nat.pow_dvd_pow_iff (by norm_num)).mp hsq
+  have : f ^ 2 ≤ m := Nat.le_of_dvd (by omega) hfm
+  omega
+
+/-- On the tight subfamily the coprimality hypothesis is automatic. -/
+theorem coprime_tight (e : ℕ) : Nat.Coprime e (2 * e + 1) := by
+  have h : Nat.Coprime e (1 + 2 * e) :=
+    (Nat.coprime_add_mul_right_right e 1 2).mpr (Nat.coprime_one_right e)
+  have heq : 1 + 2 * e = 2 * e + 1 := by ring
+  rwa [heq] at h
+
 end Erdos634.ChordDecomp

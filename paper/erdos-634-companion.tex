@@ -3324,6 +3324,23 @@ $C$ is not an integral number of tiles. If no tile met both open sides of $C$, e
 weakly on one side and the area above $C$ would be a sum of whole tile areas, a contradiction.
 \end{proof}
 
+\begin{proposition}[The general form]\label{prop:straddlegen}
+Let $(e,f)$ be any member with $\gcd(e,f)=1$. Then the area above the chord through any junction
+strictly between the apex and the base is never an integral number of tile areas, so some tile meets
+both open sides of that chord.
+\end{proposition}
+
+\begin{proof}
+A junction at distance $d=ia+jc=f(ie+jf)$ from the apex has height fraction $\rho=m/f^{2}$ with
+$m=ie+jf$ and $1\le m<f^{2}$, so the area above its chord is $Nm^{2}/f^{4}$ tile areas. Since
+$\gcd(e,f)=1$ we have $\gcd(N,f)=\gcd(3f^{2}-e^{2},f)=\gcd(e^{2},f)=1$, so $f^{4}\mid Nm^{2}$ forces
+$f^{4}\mid m^{2}$, hence $f^{2}\mid m$ prime by prime, which contradicts $m<f^{2}$. The rest is as in
+Proposition~\ref{prop:straddle} (\texttt{ChordDecomp.area\_never\_integral}; the coprimality is
+automatic on the tight subfamily, \texttt{ChordDecomp.coprime\_tight}). Checked by exhaustive
+enumeration over all members with $e\le14$, $f\le31$ and all admissible junctions: $80\,299$ cases,
+no exception.
+\end{proof}
+
 \begin{remark}[Why this is the right direction]\label{rem:straddlescope}
 At the last junction, $n=7$ and the area above the chord is $138/49=2.816\ldots$ tiles, while the
 chord has length $414/7=59.14\ldots$ and a tile meets a line in a segment of length at most $c=49$;
