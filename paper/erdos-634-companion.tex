@@ -769,26 +769,35 @@ isolate here and do not prove. We state it first, so that nothing downstream is 
 unconditional.
 
 \begin{hypothesis}[Complete corner walls]\label{hyp:walls}
-Let $\mathcal T$ be a tiling of the base-$\beta$ target at $m=1$. Then both base-corner tiles lay an
-$a$-edge on the base and a $c$-edge on the equal side. Equivalently, by Lemma~\ref{lem:ccorner},
-neither equal side carries an $a$-edge: $p=0$ on both.
+Let $\mathcal T$ be a tiling of the base-$\beta$ target at $m=1$. Then neither base-corner structure
+is starved or broken: each is the complete block --- $f$ $a$-feet at the west corner, $e$ $c$-feet at
+the east --- whose hypotenuse is a straight segment, of length $f\,b$ resp.\ $e\,b$, partitioned into
+whole $b$-edges.
 \end{hypothesis}
 
-\begin{remark}[Correction to the statement of Hypothesis~\ref{hyp:walls}]\label{rem:wallsfix}
-Earlier versions stated the hypothesis as the completeness of two corner \emph{blocks}, ``$f$ $a$-feet
-at the west corner, $e$ $c$-feet at the east''. That form is inconsistent with
-Theorem~\ref{thm:e1reduce}, which proves, for $e=1$, $m=1$, $f\ge3$, that the base walk begins
-\emph{and} ends with an $a$-edge and carries its single $c$-edge in the interior. The block form
-places a $c$-edge at the east corner and concentrates all $f$ $a$-edges at the west, contradicting
-both halves of that theorem; at $(1,2)$ it would give $p=0$ on the west side and $p=1$ on the east,
-contradicting Lemma~\ref{lem:ple} as well.
+\begin{remark}[An unresolved tension in the reading of Hypothesis~\ref{hyp:walls}]\label{rem:wallsfix}
+Two readings of the hypothesis are in circulation in this development and they are not equivalent. We
+record the discrepancy rather than resolve it.
 
-The form above is what every downstream result consumes --- \S\ref{sub:sidep}, Lemma~\ref{lem:ple},
-Corollary~\ref{cor:ptwo}, Theorem~\ref{thm:ptwodead} and all of \S\ref{sub:apex} --- and it agrees with
-Theorem~\ref{thm:e1reduce}. The $e$ $c$-edges of the walls base walk $(f\,a,\,e\,b,\,e\,c)$ sit in the
-interior of the base, not at a corner. Remark~\ref{rem:blockbreaks}'s identification of the west block
-as the tile scaled by $f$ stands; its dual east block does not, and the remark should be read for its
-$m$-dependence argument only.
+The block form above is asymmetric: $a$-feet west, $c$-feet east. By Lemma~\ref{lem:ccorner} a corner
+tile laying $c$ on the base lays $a$ on the equal side, so the block form puts an $a$-edge at the foot
+of the east side and gives $p_{\mathrm{west}}=0$, $p_{\mathrm{east}}\ge1$. That asymmetry is visible in
+both tilings we possess: the $44$-tiling of $(16,16,22)$ has base word $a^4c^2ac$ with west side
+$c^4$ and east side $a^4c^2$, and the $99$-tiling of $(24,24,33)$ has base $a^2b^7c^2$ with west side
+$c^6$ and east side $a^2b^2c^2b^2$. Both are at $m>1$.
+
+Against this, \S\ref{sub:sidep} reads the hypothesis as ``exactly the assertion $p=0$'', which is
+symmetric in the two sides, and Theorem~\ref{thm:e1reduce} proves that at $e=1$, $m=1$, $f\ge3$ the
+base walk begins \emph{and} ends with an $a$-edge --- so its single $c$-edge is interior and neither
+corner carries $c$-feet. The block form and that theorem cannot both describe an $m=1$ tiling at
+$e=1$.
+
+Three possibilities remain open: the block form is correct and Theorem~\ref{thm:e1reduce} shows it is
+unsatisfiable at $e=1$, $m=1$, making the conditional results vacuous there; or the $p=0$ reading is
+correct and the block wording needs amending; or the hypothesis is genuinely asymmetric and every
+statement of the form ``$\mathrm{Hypothesis}~\ref{hyp:walls} \Leftrightarrow p=0$'' should be read as
+applying to the west side only. The results of \S\ref{sub:apex} are unaffected either way: they are
+statements about $p$ on a given equal side and stand on their own proofs.
 \end{remark}
 
 \begin{theorem}[The base-$\beta$ branch, conditional on Hypothesis~\ref{hyp:walls}]\label{thm:basebeta-full}
@@ -828,9 +837,6 @@ Theorem~\ref{thm:basebeta-e1}, whose argument is boundary-only and needs no corn
 \begin{remark}[A corner block can break: the hypothesis needs $m=1$ essentially]\label{rem:blockbreaks}
 It is worth recording what the corner blocks are, and that Hypothesis~\ref{hyp:walls} is genuinely a
 statement about $m=1$ and not a local fact.
-
-\emph{The east block described below does not occur; see Remark~\ref{rem:wallsfix}. The identification
-of the west block and the $m$-dependence argument that follows are unaffected.}
 
 First the identification. At a base corner the complete block with $f$ $a$-feet has footprint $fa=ef^2$
 and, by the law of cosines against the base angle $\beta$, its far side has length exactly $f^3=fc$;
@@ -2485,9 +2491,9 @@ multiple of $f$; writing that count as $pf$, the side equation $pf\cdot ef+n_cf^
 \[
 n_c+pe=f ,
 \]
-and the $\gamma$-trap's $n_c\ge1$ gives $0\le p\le(f-1)/e$. Hypothesis~\ref{hyp:walls} is, in the form
-stated there, exactly the assertion $p=0$ on both equal sides; see Remark~\ref{rem:wallsfix} for why
-that form replaces an earlier one. Lemma~\ref{lem:ccorner} already records this profile in the form ``$a$-count
+and the $\gamma$-trap's $n_c\ge1$ gives $0\le p\le(f-1)/e$. Hypothesis~\ref{hyp:walls} is read throughout this
+development as the assertion $p=0$; Remark~\ref{rem:wallsfix} records that this reading and the
+block form of the hypothesis are not evidently equivalent. Lemma~\ref{lem:ccorner} already records this profile in the form ``$a$-count
 $fj$ with $je\le f-1$'', and the Lean statements are
 \texttt{SideNoB.side\_no\_b\_uncond}, \texttt{SideNoB.side\_quantized} and
 \texttt{SideNoB.c\_corner\_forces\_side\_a}. What follows is the one consequence we did not find
@@ -2763,8 +2769,9 @@ the statement.
 Let $e=f-1$ with $f\ge2$. Then every equal side of the base-$\beta$ target at $m=1$ carries no
 $a$-edge: $p=0$.
 
-Since Hypothesis~\ref{hyp:walls} is now stated as $p=0$ on both equal sides
-(Remark~\ref{rem:wallsfix}), this establishes the hypothesis at every such member.
+Under the reading of Hypothesis~\ref{hyp:walls} as $p=0$, this establishes the hypothesis at every
+such member. We state the theorem in terms of $p$, which is what the proof gives, because that reading
+is not settled: see Remark~\ref{rem:wallsfix}.
 \end{theorem}
 
 \begin{proof}
@@ -2809,9 +2816,8 @@ $f=2$, that $J$ is interior to the side so that the tile $Y$ exists at all, the 
 circularity, and that Theorem~\ref{thm:apexconfig} and Corollary~\ref{cor:noTP} use nothing beyond
 family-wide facts; it found no further defect.
 
-The identification with Hypothesis~\ref{hyp:walls} is now immediate, the hypothesis being stated as
-$p=0$ on both equal sides. That restatement was forced: the earlier corner-block form contradicted
-Theorem~\ref{thm:e1reduce}, as Remark~\ref{rem:wallsfix} records. Theorem~\ref{thm:efminus1} is therefore unconditional as a statement about $p$, and
+The identification with Hypothesis~\ref{hyp:walls} is the one discussed in
+Remark~\ref{rem:wallsfix} and is not settled; the theorem is stated in terms of $p$ for that reason. Theorem~\ref{thm:efminus1} is therefore unconditional as a statement about $p$, and
 inherits that identification when read as a statement about the hypothesis.
 
 A second point in its favour: since $N=m^{2}(3f^{2}-e^{2})$, a prime $N$ forces $m=1$, so at each of
