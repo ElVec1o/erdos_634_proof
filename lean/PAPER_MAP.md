@@ -269,3 +269,12 @@ layer exists for area and vertex degree but not for edge sequences along a side.
 | M `thm:lattice` | Spectrum lattice |
 | M `thm:primefull` | The prime case |
 | M `thm:spectrum` | Spectrum theorem |
+
+### Added 2026-08-12 (inflation)
+
+| Paper | Statement | Lean / status |
+|---|---|---|
+| C `prop:inflbdy` | inflated boundary: `aᶠ`, `bᶠ`, and `cᶠ` or the `p=1` word | `Inflation.middle_three`, `.middle_eight`, `.middle_nine`, `.residual_105`, `.residual_126`, `.residual_240`, `.residual_245`, `.residual_40`, `.residual_84`, `.residual_75`, `.beta_not_nat_multiple` — VERIFIED |
+| C `cor:inflcrux` | the crux on `f²` tiles | follows from `prop:inflbdy`; `Inflation.inflation_smaller_37` |
+| C `thm:inflrigid` | the inflation is rigid at (1,3), (2,5), (3,7) | **PROVED, not formalizable**: the content is three `EXHAUSTED_NO_TILING` verdicts of the search engine, declared computer assistance. Instances and certificates in `code/engine/inflation/`. The arithmetic they rest on is VERIFIED as above. |
+| C `cor:sidenoa-proved` | complete west block ⟹ no `a`-edge on that side | PROVED, inherits `thm:inflrigid`'s label |
