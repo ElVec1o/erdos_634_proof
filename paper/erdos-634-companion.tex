@@ -3173,11 +3173,15 @@ is the first that forbids a combination across both. Its mechanism is that the t
 forced to share the vertex $R$ on the axis, which leaves the middle apex tile nowhere to put its far
 vertex.
 
-Note also that the sign condition governing the third cross product is $e^{2}+ef<f^{2}$ --- exactly
-the hypothesis under which $a$ is the shortest side and the whole of \S\ref{sub:apex} operates. That
-the same inequality controls both an edge-length comparison and a containment test is not obvious a
-priori, and it suggests the condition is the natural one for this geometry rather than an artefact of
-the arguments.
+The sign condition governing the third cross product is not a second, independent appearance of
+$e^{2}+ef<f^{2}$, and it would be misleading to present it as one. The quadratic factor is a
+difference of squares,
+\[
+(e^{2}-ef-f^{2})(e^{2}+ef-f^{2})=(f^{2}-e^{2})^{2}-(ef)^{2}=b^{2}-a^{2},
+\]
+so the third cross product is $e\sqrt{4f^{2}-e^{2}}\,(b^{2}-a^{2})/(2f^{2})$ and is positive precisely
+when $b>a$. The containment test \emph{is} the edge-length comparison, in disguise. For the same
+reason the first two cross products stand in the ratio $b:c$.
 \end{remark}
 
 

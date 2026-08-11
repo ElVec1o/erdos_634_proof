@@ -132,7 +132,11 @@ If both equal sides carry `{3α,2β}` at their last junctions, both mirror partn
 of the apex as a vertex, and the middle apex tile's far vertex falls strictly inside one of them. The
 containment is decided by three cross products; the first two are positive whenever `e < f`, and the
 third factors as `(e²−ef−f²)(e²+ef−f²)`, whose first factor is always negative and whose second is
-negative exactly under the standing hypothesis `e² + ef < f²`. -/
+negative exactly under the standing hypothesis `e² + ef < f²`.
+
+NOT A SECOND CONDITION. That product is a difference of squares, `(f²−e²)² − (ef)² = b² − a²`, so the
+third cross product is a positive multiple of `b² − a²` and the containment test is the edge-length
+comparison `a < b` itself. The first two cross products stand in the ratio `b : c`. -/
 
 /-- The first factor of the third cross product is always negative. -/
 theorem quad_neg_always {e f : ℝ} (he : 0 < e) (hef : e < f) :
