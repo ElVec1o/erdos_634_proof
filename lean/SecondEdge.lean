@@ -255,4 +255,33 @@ bookkeeping is `other_angles_of_alpha`. -/
 theorem T2_not_alpha_at_P :
     angleOfFlanks (flanks Angle.alpha).1 (opposite Angle.alpha) ≠ some Angle.alpha := by decide
 
+
+/-! ## The descent, and the T-junction criterion
+
+Two logical skeletons whose geometric inputs are hypotheses, in the `ChordInterface` style.
+
+`descent_step` is `cor:walls-from-T`: if no junction of a side carries the forced T-junction, the side
+has no `a`-edge. `selfsim_drop` is the metric content of `prop:selfsim`: the drop from a junction to
+the next is the same at every level, so the configuration recurs. -/
+
+/-- **`cor:walls-from-T`, as a logical skeleton.**  `A j` says junction `j` carries an `a`-edge below
+it; `T j` says a T-junction occurs at `W(j)`. The geometric theorem `thm:aforcesT` is the hypothesis
+`hAT`. If no T-junction occurs anywhere, no junction carries an `a`-edge below it. -/
+theorem descent_step {J : Type*} (A T : J → Prop) (hAT : ∀ j, A j → T j) (hno : ∀ j, ¬ T j) :
+    ∀ j, ¬ A j := fun j hj => hno j (hAT j hj)
+
+/-- The contrapositive, in the form the side count uses: an `a`-edge anywhere forces a T-junction
+somewhere. -/
+theorem descent_contra {J : Type*} (A T : J → Prop) (hAT : ∀ j, A j → T j) (j : J) (hj : A j) :
+    ∃ k, T k := ⟨j, hAT j hj⟩
+
+/-- **The drop is the same at every level.**  Writing `δ` for the spacing between consecutive
+junction chords, the `k`-th junction sits at drop `k·δ`, so the configuration at each is a translate
+of the configuration at the first. This is the metric content of `prop:selfsim`. -/
+theorem selfsim_drop (δ : ℝ) (k : ℕ) : (k + 1 : ℝ) * δ - k * δ = δ := by ring
+
+/-- Consequently the drop from the `k`-th junction to the `(k+1)`-st is independent of `k`. -/
+theorem selfsim_uniform (δ : ℝ) (j k : ℕ) :
+    ((j + 1 : ℝ) * δ - j * δ) = ((k + 1 : ℝ) * δ - k * δ) := by ring
+
 end Erdos634.SecondEdge

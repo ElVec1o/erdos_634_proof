@@ -201,4 +201,40 @@ theorem beta_corner_single {al be : ℝ} (hal : 0 < al)
     (hsum : 3 * al + 2 * be = Real.pi) (hirr : Irrational (al / Real.pi)) :
     ∀ k : ℕ, be ≠ k * al := fun k => beta_not_nat_multiple hal hsum hirr k
 
+
+/-! ## The same at `(2,5)`
+
+Tile `(10,21,25)` inflated to `(50,105,125)`, `25` copies. Residuals `40`, `84`, `75`. The first two
+are unique; the third has two compositions, which are `p = 0` and `p = 1`. -/
+
+/-- The inflated `a`-side at `(2,5)`: residual `40` is `4·10`. -/
+theorem residual_40 (x y z : ℕ) (h : 10 * x + 21 * y + 25 * z = 40) :
+    x = 4 ∧ y = 0 ∧ z = 0 := by
+  have hy : y ≤ 1 := by omega
+  have hz : z ≤ 1 := by omega
+  interval_cases y <;> interval_cases z <;> omega
+
+/-- The inflated `b`-side at `(2,5)`: residual `84` is `4·21`. -/
+theorem residual_84 (x y z : ℕ) (h : 10 * x + 21 * y + 25 * z = 84) :
+    x = 0 ∧ y = 4 ∧ z = 0 := by
+  have hy : y ≤ 4 := by omega
+  have hz : z ≤ 3 := by omega
+  interval_cases y <;> interval_cases z <;> omega
+
+/-- **The inflated `c`-side at `(2,5)` has exactly two compositions**, `3·25` and `5·10 + 1·25`.
+With the two end `c`-edges these are the whole-side profiles `(0a,5c)` and `(5a,3c)`, i.e. `p = 0` and
+`p = 1`. -/
+theorem residual_75 (x y z : ℕ) (h : 10 * x + 21 * y + 25 * z = 75) :
+    (x = 0 ∧ y = 0 ∧ z = 3) ∨ (x = 5 ∧ y = 0 ∧ z = 1) := by
+  have hy : y ≤ 3 := by omega
+  have hz : z ≤ 3 := by omega
+  interval_cases y <;> interval_cases z <;> omega
+
+/-- The three members where the two-word dichotomy has been computed, with their `p=1` `c`-side
+profiles: `(1,3)` gives `(3,0,2)`, `(2,5)` gives `(5,0,3)`, `(3,7)` gives `(7,0,4)`. Each has total
+`f³`. -/
+theorem p1_profiles_total :
+    3 * 3 + 2 * 9 = 27 ∧ 5 * 10 + 3 * 25 = 125 ∧ 7 * 21 + 4 * 49 = 343 := by
+  refine ⟨by decide, by decide, by decide⟩
+
 end Erdos634.Inflation
