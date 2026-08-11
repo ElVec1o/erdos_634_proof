@@ -2698,7 +2698,32 @@ side presents $\alpha$. Its flanks are $b$ and $c$, and the side edge below $J$ 
 Lemma~\ref{lem:sidenob} it is not a $b$, hence it is a $c$.
 \end{proof}
 
-\begin{remark}[Where the hypothesis $a<b$ is used, and what is known about removing it]\label{rem:abnecessary}
+\begin{proposition}[The golden-ratio hypothesis is removable]\label{prop:nogolden}
+Theorem~\ref{thm:secondc} holds at every member with $\gcd(e,f)=1$, with no assumption relating $a$
+and $b$.
+\end{proposition}
+
+\begin{proof}
+Only one step used $a<b$: that $Y$'s edge from $P$ towards $J$, of length at most $|PJ|=a$, equals
+$a$. A $c$-edge never fits, since $c=f^{2}>ef=a$. Suppose then $b<a$ and $Y$ lays $b$. Its far end is
+interior to $T_1$'s $a$-edge, and the residual segment from $J$ to that point, of length $a-b$, must be
+partitioned by whole tile edges: no edge may overrun $J$, which lies on the boundary, and none may
+overrun $Y$'s vertex, which would put two tiles below the chord on the same ground. So
+$a-b\in\langle a,b,c\rangle$.
+
+It is not. Modulo $e$ the three lengths are $0$, $f^{2}$, $f^{2}$, and $a-b=e^{2}+ef-f^{2}\equiv-f^{2}$.
+A representation $a-b=xa+yb+zc$ gives $(y+z+1)f^{2}\equiv0 \pmod e$, and $\gcd(e,f)=1$ forces
+$e\mid y+z+1$, hence $y+z\ge e-1$ and $a-b\ge(e-1)b$. But $(e-1)b>a-b$, since that is $eb>a$, which is
+$b>f$; and $b>f$ holds always, because $e\le f-1$ gives $e^{2}\le(f-1)^{2}<f^{2}-f$
+(\texttt{ApexRigidity.b\_gt\_f}, \texttt{.eb\_gt\_a}). Finally $b<a$ forces $e\ge2$, so the modular step
+is available (\texttt{.e\_ge\_two\_of\_b\_lt\_a}). Hence no representation exists, $Y$ cannot lay $b$,
+and it lays $a$.
+
+Checked on all $17$ coprime members with $b<a$ and $e\le9$, $f\le17$: in every case $a-b$ is a gap of
+$\langle a,b,c\rangle$.
+\end{proof}
+
+\begin{remark}[What this does and does not extend]\label{rem:abnecessary}
 Theorem~\ref{thm:secondc} uses $e^{2}+ef<f^{2}$ at exactly one step: that $Y$'s edge from $P$ towards
 $J$, being of length at most $|PJ|=a$, is therefore \emph{equal} to $a$. That inference needs $a$ to be
 the shortest side, and it fails without it: at $(2,3)$, $(3,4)$, $(4,5)$, $(5,6)$ the tiles are
@@ -2706,11 +2731,11 @@ $(6,5,9)$, $(12,7,16)$, $(20,9,25)$, $(30,11,36)$, each with $b<a$, so a $b$-edg
 $|PJ|$; since $b$ is a flank of $\alpha$, the conclusion ``$Y$ does not present $\alpha$'' no longer
 follows.
 
-That is a statement about this proof, not about the theorem, and we do not claim more. No
-counterexample to the \emph{conclusion} is known at any member with $b<a$. Indeed at $(2,3)$ and
-$(3,4)$ the $m=1$ target is exhausted by search, so there the conclusion holds vacuously; at
-$(4,5)$, $(5,6)$, $(5,7)$, $(5,8)$, $(6,7)$, $(7,8)$, $(7,9)$, $(7,10)$, $(7,11)$ the status is
-simply unknown. Whether Theorem~\ref{thm:secondc} extends below the golden-ratio threshold is open.
+Proposition~\ref{prop:nogolden} removes the hypothesis from Theorem~\ref{thm:secondc}, and with it
+from Corollary~\ref{cor:pbound}: the bound $pe+2\le f$ holds at every coprime member. It does
+\emph{not} remove it from Theorem~\ref{thm:nobothmirror}, whose third cross product is a positive
+multiple of $b^{2}-a^{2}$ and changes sign at the threshold; there the hypothesis is genuinely part of
+the statement.
 \end{remark}
 
 \begin{corollary}[A bound on the side parameter]\label{cor:pbound}

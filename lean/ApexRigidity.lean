@@ -225,4 +225,37 @@ theorem V_interior {e f : ℝ} (he : 0 < e) (hef : e < f) (hgold : e ^ 2 + e * f
 theorem V_interior_37 : (49 : ℝ) - 40 < 40 ∧ (49 : ℝ) - 40 < 49 := by
   constructor <;> norm_num
 
+
+/-! ## Removing the golden-ratio hypothesis
+
+`thm:secondc` needed `a < b` only to conclude that `Y`'s edge from `P` towards `J` — of length at most
+`|PJ| = a` — is exactly `a`. When `b < a` a `b`-edge also fits, but then the residual segment of length
+`a − b` must be partitioned by whole tile edges, and it cannot be.
+
+Modulo `e` the three side lengths are `0, f², f²`, and `a − b ≡ −f²`. A representation
+`a − b = xa + yb + zc` therefore forces `e ∣ (y+z+1)`, hence `y + z ≥ e − 1` and `a − b ≥ (e−1)·b`.
+That is impossible because `e·b > a`, which in turn follows from `b > f`. Both are recorded here. -/
+
+/-- **`b > f` at every member.**  From `e ≤ f−1` one gets `e² ≤ (f−1)² = f²−2f+1`, so
+`f + e² ≤ f² − f + 1 < f²` for `f ≥ 2`.  Stated additively to avoid truncated subtraction. -/
+theorem b_gt_f {e f : ℕ} (hef : e < f) (hf : 2 ≤ f) : f + e ^ 2 < f ^ 2 := by nlinarith
+
+/-- **`e·b > a`**, the inequality that kills every representation of `a − b`. -/
+theorem eb_gt_a {e f : ℕ} (he : 1 ≤ e) (hef : e < f) (hf : 2 ≤ f) :
+    e * f < e * (f ^ 2 - e ^ 2) := by
+  have h := b_gt_f hef hf
+  have hb : f < f ^ 2 - e ^ 2 := by omega
+  exact Nat.mul_lt_mul_of_pos_left hb (by omega)
+
+/-- **`b < a` forces `e ≥ 2`.**  At `e = 1` we have `b = f²−1 ≥ f = a` for `f ≥ 2`, so the branch
+where a `b`-edge could fit does not arise. -/
+theorem e_ge_two_of_b_lt_a {e f : ℕ} (he : 1 ≤ e) (hf : 2 ≤ f) (hef : e < f)
+    (hba : f ^ 2 - e ^ 2 < e * f) : 2 ≤ e := by
+  by_contra h
+  have he1 : e = 1 := by omega
+  subst he1
+  simp only [one_pow, one_mul] at hba
+  have h2 : 2 * f ≤ f ^ 2 := by nlinarith
+  omega
+
 end Erdos634.ApexRigidity
