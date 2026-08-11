@@ -2678,7 +2678,8 @@ delivers the same conclusion on both sides.
 
 \begin{theorem}[The second edge of an equal side is a $c$]\label{thm:secondc}
 Assume $e^{2}+ef<f^{2}$, equivalently $a<b$. Then on every equal side the tile edge immediately below
-the first junction $J$ is a $c$.
+the first junction $J$ is a $c$. \emph{The hypothesis is removable}: Proposition~\ref{prop:nogolden}
+reaches the same conclusion assuming only $\gcd(e,f)=1$, and it is that form the corollaries below use.
 \end{theorem}
 
 \begin{proof}
@@ -2783,7 +2784,7 @@ yet been carried out, and the result should be read with that outstanding.
 
 
 \begin{corollary}[A bound on the side parameter]\label{cor:pbound}
-If $e^{2}+ef<f^{2}$ then $n_c\ge2$, hence
+Let $\gcd(e,f)=1$. Then $n_c\ge2$, hence
 \[
 pe+2\le f .
 \]
@@ -2792,7 +2793,9 @@ bound reads $pe\le 2e-1$, so $p\le1$.
 \end{corollary}
 
 \begin{proof}
-The edge at the apex and the edge below $J$ are both $c$ by Theorem~\ref{thm:secondc}, so $n_c\ge2$;
+The edge at the apex and the edge below $J$ are both $c$ by Theorem~\ref{thm:secondc}, in the form
+freed of the hypothesis $a<b$ by Proposition~\ref{prop:nogolden}, which needs only $\gcd(e,f)=1$; so
+$n_c\ge2$,
 with $n_c+pe=f$ this is $pe+2\le f$. For $f=2e+1$, $p\ge2$ would give $2e\le pe\le2e-1$
 (\texttt{side\_p\_bound}, \texttt{p\_le\_one\_of\_tight}).
 \end{proof}
