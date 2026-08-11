@@ -2807,6 +2807,58 @@ configurations survive: not that the chord bound fails there, but that it was ne
 Whether the straddling constraint can be sharpened into a contradiction is open.
 \end{remark}
 
+\begin{proposition}[Chord decomposition at the last junction]\label{prop:chorddecomp}
+Let $C$ be the chord of the target through the last junction $J$ of an equal side at $(3,7)$, so
+$|C|=414/7$. Let $\mathcal U$ be the set of tiles whose interiors meet the open half-plane above $C$.
+Each $T\in\mathcal U$ either \emph{straddles} $C$ (its interior meets both open sides) or is
+\emph{flush from above} (it lies weakly above the line of $C$). Then:
+\begin{enumerate}
+\item[(a)] a flush tile meets the line of $C$ in a full tile edge, of length $21$, $40$ or $49$;
+\item[(b)] the traces on $C$ of the tiles of $\mathcal U$ have pairwise disjoint interiors and cover
+$C$, so their lengths sum to $414/7$;
+\item[(c)] at most two tiles of $\mathcal U$ are flush, and the multiset of flush lengths is one of
+$\varnothing,\{21\},\{40\},\{49\},\{21,21\}$;
+\item[(d)] at least one tile straddles, and if none is flush then at least two straddle.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) For a tile lying weakly above the line of $C$, that line is a supporting line, so the intersection
+is a face of the tile --- a vertex or an edge (\texttt{contact\_is\_edge}). A trace of positive length
+excludes the vertex case, and the edge lengths are $a=21$, $b=40$, $c=49$.
+
+(b) The closed region above $C$ is covered by the tiles, and a point of $C$ interior to the target is
+a limit of points of that region, hence lies in a tile of $\mathcal U$, which is closed; so the traces
+cover $C$. If two tiles of $\mathcal U$ had traces overlapping in a segment, both would occupy area
+immediately above that segment, contradicting disjointness of interiors. Additivity of length gives
+the sum.
+
+(c) The flush lengths are integers drawn from $\{21,40,49\}$ and, by (b), sum to at most
+$|C|=414/7=59.142\ldots$. The only multisets meeting that bound are the five listed: already
+$21+40=61>|C|$, and $21+21+21=63>|C|$.
+
+(d) By the computation in Proposition~\ref{prop:straddle} the area above $C$ is $138/49$ tiles, not an
+integer, so a straddler exists. If no tile of $\mathcal U$ is flush, the straddling traces alone sum to
+$|C|=59.142\ldots$; a segment contained in a tile has length at most the tile's diameter, which for a
+triangle is its longest side $c=49$. Hence at least two straddlers.
+\end{proof}
+
+\begin{remark}[What the decomposition gives, and the rung that remains]\label{rem:chordscope}
+Proposition~\ref{prop:chorddecomp} is the first statement that constrains the configuration
+\emph{below} the chord at $J$, the region Remark~\ref{rem:dichotomy} identifies as untouched. It
+reduces the possibilities there to a finite list: a flush total in $\{0,21,40,42,49\}$ together with a
+straddling remainder of $59.142\ldots$, $38.142\ldots$, $19.142\ldots$, $17.142\ldots$ or
+$10.142\ldots$, distributed over at least one and at most a bounded number of straddling tiles.
+
+What it does not yet give is rigidity: the cross-section of a straddling tile varies continuously with
+its position, so no individual value is forced. Closing $p=1$ by this route requires the missing
+ingredient to be supplied by the $\gamma$-grading of \S\ref{sub:gammagrading} --- a straddling tile's
+edges have directions that are integer multiples of $\gamma$ modulo $\pi$, so its cross-section is not
+free but drawn from a countable set determined by the tile's label. Whether that set meets the
+required totals is open, and is the next question we intend to settle.
+\end{remark}
+
+
 
 
 \begin{remark}[Close pairs: what the unconditional filters leave]\label{rem:closepairs}
