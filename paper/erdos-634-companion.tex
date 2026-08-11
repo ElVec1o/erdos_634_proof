@@ -3051,8 +3051,7 @@ side. Read the other way, that says the equal side's edge word is the $c$-side w
 tile, and the side question becomes a question about the inflation alone.
 
 \begin{proposition}[The inflated boundary]\label{prop:inflbdy}
-Let the tile be inflated by $f$, so its sides are $fa$, $fb$, $fc$, and suppose $\beta/\alpha\notin
-\mathbb Z$. Then the $\alpha$- and $\beta$-corners of the inflated triangle are each met by a single
+Let the tile be inflated by $f$, so its sides are $fa$, $fb$, $fc$. Then the $\alpha$- and $\beta$-corners of the inflated triangle are each met by a single
 tile, which lays along the two sides the flanks of that angle. No assumption is made at the
 $\gamma$-corner, and none is needed: the $c$-side joins the $\alpha$- and $\beta$-vertices, so both its
 end edges are $c$; the $a$-side has its $\beta$-end forced to $a$ and the $b$-side its $\alpha$-end
@@ -3079,8 +3078,10 @@ $fa-a=126$ and $fb-b=240$; their compositions are again unique, $6a$ and $6b$
 $16$ give $2a$ and $2b$ (\texttt{.residual\_13\_sides}).
 
 Only the $\alpha$- and $\beta$-corners were used. Two tiles at the $\alpha$-corner already give
-$2\alpha>\alpha$; and a $\beta$-corner splits only as $k\alpha=\beta$, excluded by
-$\beta/\alpha\notin\mathbb Z$, which holds at both members ($3.190\ldots$ and $2.136\ldots$).
+$2\alpha>\alpha$; and a $\beta$-corner splits only as $\beta=k\alpha$, which with $3\alpha+2\beta=\pi$
+gives $\alpha(3+2k)=\pi$, making $\alpha/\pi$ rational and contradicting its irrationality. So the
+$\beta$-corner is single at every member, with no hypothesis
+(\texttt{Inflation.beta\_not\_nat\_multiple}, \texttt{.beta\_corner\_single}).
 \end{proof}
 
 \begin{corollary}[The crux, on $f^2$ tiles]\label{cor:inflcrux}

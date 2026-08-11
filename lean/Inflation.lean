@@ -173,4 +173,32 @@ theorem residual_13_sides (x y z : ℕ) :
      have hz : z ≤ 1 := by omega
      interval_cases y <;> interval_cases z <;> omega)
 
+
+/-! ## The last hypothesis dissolves
+
+`prop:inflbdy` needed the `β`-corner to be single, which required `β/α ∉ ℤ`. That holds at every
+member, and not by computation: `β = kα` together with `3α + 2β = π` forces `α(3+2k) = π`, so
+`α/π = 1/(3+2k)` would be rational, contradicting the irrationality of `α/π` (Niven, via
+`sin(α/2) = e/(2f)`). -/
+
+/-- **`β` is never an integer multiple of `α`.**  Otherwise `α/π` would be rational. -/
+theorem beta_not_nat_multiple {al be : ℝ} (hal : 0 < al)
+    (hsum : 3 * al + 2 * be = Real.pi) (hirr : Irrational (al / Real.pi)) (k : ℕ) :
+    be ≠ k * al := by
+  intro h
+  subst h
+  have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
+  have hval : al / Real.pi = 1 / (3 + 2 * k) := by
+    have h3 : al * (3 + 2 * (k : ℝ)) = Real.pi := by linarith
+    have hne : (3 : ℝ) + 2 * k ≠ 0 := by positivity
+    field_simp
+    linarith [h3]
+  exact hirr ⟨1 / (3 + 2 * (k : ℚ)), by push_cast [hval]; norm_num⟩
+
+/-- Consequently the `β`-corner of the inflated triangle is met by a single tile at every member,
+and `prop:inflbdy` carries no hypothesis at all. -/
+theorem beta_corner_single {al be : ℝ} (hal : 0 < al)
+    (hsum : 3 * al + 2 * be = Real.pi) (hirr : Irrational (al / Real.pi)) :
+    ∀ k : ℕ, be ≠ k * al := fun k => beta_not_nat_multiple hal hsum hirr k
+
 end Erdos634.Inflation
