@@ -2710,6 +2710,34 @@ exactly on the next chord, by the same identities --- only one $\gamma$ is force
 is what an induction would require, and we do not have it.
 \end{remark}
 
+\begin{remark}[The seven open primes of the tight subfamily]\label{rem:sevenprimes}
+On the tight subfamily $f=2e+1$ the tile count is $N=11e^{2}+12e+3$, and the members whose $N$ is a
+prime congruent to $11$ modulo $12$ and still open are these:
+\[
+\begin{array}{rrrll}
+N & e & f & \text{tile }(a,b,c) & \text{target}\\\hline
+227 & 4 & 9 & (36,65,81) & (729,729,908)\\
+1223 & 10 & 21 & (210,341,441) & (9261,9261,12230)\\
+3011 & 16 & 33 & (528,833,1089) & (35937,35937,48176)\\
+4643 & 20 & 41 & (820,1281,1681) & (68921,68921,92860)\\
+5591 & 22 & 45 & (990,1541,2025) & (91125,91125,123002)\\
+8963 & 28 & 57 & (1596,2465,3249) & (185193,185193,250964)\\
+13127 & 34 & 69 & (2346,3605,4761) & (328509,328509,446318)
+\end{array}
+\]
+Every one satisfies the standing hypothesis: on $f=2e+1$ the inequality $e^{2}+ef<f^{2}$ reduces to
+$e^{2}+3e+1>0$, true for all $e$. So the whole of \S\ref{sub:apex} applies at each, and
+Corollary~\ref{cor:pbound} reads $pe\le 2e-1$, giving $p\le1$.
+
+Each member is therefore in \emph{exactly} the state of $(3,7)$: the base walk is settled,
+$p\in\{0,1\}$, and the single open question is $p=1$, which by
+Corollary~\ref{cor:walls-from-T} reduces to whether a $T$-junction occurs at one of the points
+$W(J)$. Whatever settles $(3,7)$ by theory settles all seven, since no step of \S\ref{sub:apex} uses
+the member beyond $e^{2}+ef<f^{2}$ --- and conversely an exhaustive search at $(3,7)$ settles that
+member alone, the next target having $N=227$ and a target triangle nine times larger in linear scale.
+\end{remark}
+
+
 \begin{proposition}[The descent is self-similar]\label{prop:selfsim}
 Suppose a tile $Z$ lays a $c$-edge of an equal side between consecutive junctions $J'$ (nearer the
 apex) and $J$, and presents $\alpha$ at $J'$. Let $W$ be its third vertex. Then $W$ lies \emph{exactly}
