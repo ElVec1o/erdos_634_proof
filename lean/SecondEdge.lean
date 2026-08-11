@@ -146,4 +146,65 @@ theorem chord_edge_longer_than_a {E : Edge} {len : Edge → ℕ}
     len Edge.a < len E := by
   rcases alpha_lays_b_or_c hlay with h | h <;> subst h <;> omega
 
+
+/-! ## The vertex at `P`, corrected
+
+The published form of `cor:noTP` claimed no tile has `P` interior to an edge. That is false: the middle
+apex tile `T₂` lays `b` on one of the rays it shares with `T₁`, `T₃` and `c` on the other, so exactly
+one of `P`, `P'` carries a T-junction. The conclusion survives because `T₂` occupies the *only*
+straight slot. The two ingredients are formalized here: a tile presenting `α` at one vertex presents
+`β` and `γ` at the others (so `T₂` cannot present `α` at `P`), and the angle budget admits at most one
+straight angle beside a `γ`. -/
+
+/-- The angle with a given ordered pair of flanks, when there is one. -/
+def angleOfFlanks : Edge → Edge → Option Angle
+  | .b, .c => some .alpha
+  | .c, .b => some .alpha
+  | .a, .c => some .beta
+  | .c, .a => some .beta
+  | .a, .b => some .gamma
+  | .b, .a => some .gamma
+  | _, _   => none
+
+/-- `angleOfFlanks` inverts `flanks`. -/
+theorem angleOfFlanks_flanks (A : Angle) :
+    angleOfFlanks (flanks A).1 (flanks A).2 = some A := by
+  cases A <;> decide
+
+/-- **A tile presenting `α` at one vertex presents `β` and `γ` at the other two.**  The side opposite
+`α` is `a`, and the other two vertices have flank pairs `{b,a}` and `{c,a}`.
+
+This is what excludes `T₂` presenting `α` at `P`: it would then present `γ` at the apex, contradicting
+the apex figure `3α`. -/
+theorem other_angles_of_alpha :
+    angleOfFlanks (flanks Angle.alpha).1 (opposite Angle.alpha) = some Angle.gamma
+  ∧ angleOfFlanks (flanks Angle.alpha).2 (opposite Angle.alpha) = some Angle.beta := by
+  constructor <;> decide
+
+/-- No tile presents the same angle at two of its vertices: the three flank pairs are distinct. -/
+theorem angles_pairwise_distinct :
+    angleOfFlanks Edge.b Edge.c ≠ angleOfFlanks Edge.b Edge.a
+  ∧ angleOfFlanks Edge.b Edge.c ≠ angleOfFlanks Edge.c Edge.a
+  ∧ angleOfFlanks Edge.b Edge.a ≠ angleOfFlanks Edge.c Edge.a := by
+  refine ⟨by decide, by decide, by decide⟩
+
+/-- **At most one straight angle sits beside a `γ`.**  Two `γ`'s and a straight angle total
+`2π + α > 2π`; a `γ` and two straight angles total `γ + 2π > 2π`.  So in either configuration at `P`
+no further tile can have `P` interior to an edge. -/
+theorem at_most_one_straight {al be ga : ℝ} (hal : 0 < al) (hbe : 0 < be)
+    (hsum : 3 * al + 2 * be = Real.pi) (hga : ga = 2 * al + be) :
+    2 * Real.pi < ga + ga + Real.pi ∧ 2 * Real.pi < ga + Real.pi + Real.pi := by
+  subst hga
+  rw [← hsum]
+  constructor <;> linarith
+
+/-- The residual angle at `P` is strictly less than `π` in both configurations: `π − α` when `T₂`
+presents `γ`, and `π − γ` when `T₂` is the straight tile. -/
+theorem residuals_lt_pi {al be ga : ℝ} (hal : 0 < al) (hbe : 0 < be)
+    (hsum : 3 * al + 2 * be = Real.pi) (hga : ga = 2 * al + be) :
+    2 * Real.pi - (ga + ga) < Real.pi ∧ 2 * Real.pi - (ga + Real.pi) < Real.pi := by
+  subst hga
+  rw [← hsum]
+  constructor <;> linarith
+
 end Erdos634.SecondEdge
