@@ -1579,6 +1579,29 @@ theorem g4 (S : Dir → Set Plane) (F : Set Plane) (hF : F.Finite)
         MeasureTheory.Measure Plane) (S d)).toReal) :=
   g4_assembled Dir.neg S F hF horient
 
+/-- **Two functionals with nested kernels are proportional.**  If `f ≠ 0` and `f v = 0 → g v = 0`,
+then `g = c • f`.  Pick `v` with `f v ≠ 0`; every `w` splits as a multiple of `v` plus something in
+`ker f ⊆ ker g`, and the constant is forced to `g v / f v`.
+
+This is the linear core of item (a) of the `horient` chain: once the two tiles' edge lines through a
+shared point are known to have the same kernel, their defining functionals are proportional, and the
+sign of the constant is what distinguishes "same side" from "opposite sides". -/
+theorem proportional_of_ker_le (f g : Plane →ₗ[ℝ] ℝ) (hf : f ≠ 0)
+    (h : ∀ v, f v = 0 → g v = 0) : ∃ c : ℝ, ∀ w, g w = c * f w := by
+  obtain ⟨v, hv⟩ : ∃ v, f v ≠ 0 := by
+    by_contra hcon
+    push_neg at hcon
+    exact hf (LinearMap.ext fun w => by simpa using hcon w)
+  refine ⟨g v / f v, fun w => ?_⟩
+  have hker : f (w - (f w / f v) • v) = 0 := by
+    simp [map_sub, map_smul, smul_eq_mul]
+    field_simp
+    ring
+  have := h _ hker
+  simp only [map_sub, map_smul, smul_eq_mul, sub_eq_zero] at this
+  rw [this]
+  field_simp
+
 /-- A two-element finset containing `a` contains something else. -/
 theorem exists_second_of_card_two {α : Type*} [DecidableEq α] {s : Finset α}
     (h : s.card = 2) {a : α} (ha : a ∈ s) : ∃ b ∈ s, b ≠ a := by
