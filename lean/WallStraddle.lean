@@ -142,3 +142,31 @@ end Erdos634.WallStraddle
 #print axioms Erdos634.WallStraddle.no_single_straddler
 #print axioms Erdos634.WallStraddle.chain_bound
 #print axioms Erdos634.WallStraddle.multiplier_closure
+
+namespace Erdos634.WallStraddle
+
+/-! ## The middle region: the construction side
+
+The two corner blocks and the region between them partition the target exactly.  The west block is
+the tile at scale `f` (its `c`-side is the whole equal side, its `a`-side sits on the base), the east
+block is the tile at scale `e` (`c`-side on the base, `a`-side on the equal side), and what is left
+is a quadrilateral whose four sides are `f·b`, `e·b`, `e·b`, `f·b` — two of them the blocks' walls.
+
+The tile counts add up on the nose, and the middle's count is **even** for every `(e,f)`, so the
+middle is a candidate for `b` parallelograms of two tiles each.  That is the shape a general
+`(e,f)` construction would take, and it is what the sufficiency question (which `N` occur) needs:
+the certified `(1,2)` tilings would generalise to every family. -/
+
+/-- **The three regions partition the count.**  `f² + e² + 2b = N₀`. -/
+theorem region_count (e f : ℤ) :
+    f ^ 2 + e ^ 2 + 2 * (f ^ 2 - e ^ 2) = 3 * f ^ 2 - e ^ 2 := by ring
+
+/-- **The middle base segment is `e·b`.**  The base has length `e·N₀` and each block occupies
+`e·f²` of it. -/
+theorem middle_base (e f : ℤ) :
+    e * (3 * f ^ 2 - e ^ 2) - 2 * (e * f ^ 2) = e * (f ^ 2 - e ^ 2) := by ring
+
+/-- **The middle carries an even number of tiles**, hence could be `b` two-tile parallelograms. -/
+theorem middle_even (e f : ℤ) : ∃ k : ℤ, 2 * (f ^ 2 - e ^ 2) = 2 * k := ⟨f ^ 2 - e ^ 2, rfl⟩
+
+end Erdos634.WallStraddle
