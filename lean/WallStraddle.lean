@@ -119,6 +119,21 @@ scaled by two, not an independent construction. -/
 theorem counts_1_2 : (4:ℤ) ^ 2 * 11 = 176 ∧ (6:ℤ) ^ 2 * 11 = 396 ∧ (9:ℤ) ^ 2 * 11 = 891 := by
   refine ⟨by norm_num, by norm_num, by norm_num⟩
 
+
+/-! ### The skeleton, verified in the certified 44-tiling
+
+At `(e,f,m) = (1,2,2)` the target is `(16,16,22)` with apex `(11,3)` in the chart.  The skeleton
+predicts a west block of `(fm)² = 16` tiles on the triangle `(0,0),(8,0),(11,3)`, an east block of
+`(em)² = 4` on `(22,0),(14,0),(77/4,3/4)`, and a middle quadrilateral carrying `2bm² = 24`.
+
+Classifying all 44 tiles of the certificate by centroid gives **west 16, east 4, middle 24, and none
+unclassified** — the skeleton is exactly realised in a Lean-verified tiling, not merely consistent by
+area.  The middle's 24 tiles share 22 full edges among themselves, so a perfect matching into 12
+two-tile parallelograms is possible but not yet exhibited. -/
+
+/-- The `(1,2,2)` skeleton counts: `16 + 4 + 24 = 44`. -/
+theorem skeleton_44 : (2*2:ℤ)^2 + (1*2)^2 + 2*3*2^2 = 44 := by norm_num
+
 /-! ## The cut-fraction recursion
 
 Writing `ω^k = p_k + q_k·ω` with `f·ω² + e·ω + f = 0`, the chord of a straddler forces the
