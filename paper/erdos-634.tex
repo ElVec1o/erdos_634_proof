@@ -389,7 +389,23 @@ $\equiv3\pmod4$). Each such $N$ passes every sound necessary condition ($X,Y\in\
 and is killed only by the unsound $g\mid M$. Unlike the base-$\alpha$ case
 (Proposition~\ref{prop:isoalphaprime}), no arithmetic contradiction follows; \emph{a general proof
 that these candidates do not tile is open for $e\ge 2$}, and to our knowledge is not supplied by a
-correct argument in the literature. For the subfamily $e=1$ the companion note \cite{Companion}
+correct argument in the literature.
+
+This last point needs stating explicitly, because the most recent paper in the area asserts the
+contrary. Beeson's \emph{No prime tiling of an isosceles triangle} \cite{BeesonNoPrime} (July 2026)
+opens with the statement that no isosceles triangle admits a prime tiling, and its Theorem~1 reads:
+``Let $T$ be a triangle tiled using a tile $R$ with angles $(\alpha,\beta,\gamma)$ such that
+$3\alpha+2\beta=\pi$, and $T$ is not similar to $R$. Then the number of tiles $N$ is not a prime,''
+with the proof given in full as ``This is proved in \cite{BeesonIII}, by considering the possible
+shapes of $T$ one by one.'' It is a citation, not an independent argument, and \cite{BeesonIII} has
+not been revised since v3 of 13 February 2019 --- the text analysed above. Its Theorem~14, which is
+verbatim the base-$\beta$ isosceles case, derives
+$X^2a(c^2-a^2)(a+c)^2=abc^5M^2$ and then argues that if $g\nmid M$ then $g^6$ divides the right side
+but $g^7$ does not. Since that paper's own Lemma~8 gives $c=g^2$, and $g\mid a$, the right side carries
+$g^{11}$; the divisibility count is wrong and the contradiction does not follow. We therefore record
+that the base-$\beta$ isosceles target remains open in the published record at the time of writing,
+and that the present note's contribution --- the $e=1$ family, and the conditional
+Theorem~\ref{thm:fullprime} --- addresses a live gap rather than a closed one. For the subfamily $e=1$ the companion note \cite{Companion}
 now proves the exclusion outright (its Theorem on the $e=1$ family, for all even $f$): this
 settles by argument the candidates $11, 47, 107, 191, 431,\dots$ --- every prime
 $p=3f^2-1$ with no second base-$\beta$ representation --- and leaves $e\ge2$ as the open residue. This assessment includes the recent preprint \cite{BeesonNoPrime}
@@ -2584,6 +2600,9 @@ offered for independent refereeing.
 
 \bibitem{BeesonI} M.~Beeson, \emph{Triangle tiling I: The tile is similar to ABC or has a right
 angle}, arXiv:1206.2231.
+
+\bibitem{BeesonNoPrime} M.~Beeson, \emph{No prime tiling of an isosceles triangle},
+  arXiv:2607.19572 [math.MG], 21 July 2026.
 
 \bibitem{BeesonIII} M.~Beeson, \emph{Triangle tiling III: the case $3\alpha+2\beta=\pi$},
 arXiv:1206.2229.
