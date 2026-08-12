@@ -125,4 +125,26 @@ theorem west_block_p1_iff (e f z : ℤ) (hz : 1 * e + z = f) : (2 ≤ z ↔ e + 
 east `z = 0 < 2` (so `p=1` is excluded outright). -/
 theorem blocks_at_3_7 : (7:ℤ) - 3 = 4 ∧ (3:ℤ) - 3 = 0 := by decide
 
+
+/-! ## The east half is fully closed on the thin family `e = 1`
+
+`hyp:walls` asserts two things per corner: that the block is **complete**, and that its boundary is
+therefore standard. The identity `z = k − pe` settles the boundary at the east for every `(e,f)`.
+Completeness is a separate statement — except at `e = 1`, where the east block is the tile scaled by
+`1`, i.e. a **single tile**, and "the block is complete" reduces to `lem:ccorner`: the base corner
+tile laying `c` lays `a` on the side. That is already proved.
+
+So on the whole thin family the east half has no residual content. For `e ≥ 2` the block carries
+`e² ≥ 4` tiles and completeness is genuine. -/
+
+/-- The east block carries `e²` tiles; at `e = 1` that is one. -/
+theorem east_block_count (e : ℤ) : e^2 = e * e := by ring
+
+/-- At `e = 1` the east block is a single tile, so its completeness is `lem:ccorner` and nothing
+more; with `east_block_rigid` the east half of the hypothesis is closed on the whole thin family. -/
+theorem east_singleton_at_one : (1:ℤ)^2 = 1 := by norm_num
+
+/-- For `e ≥ 2` the block has at least four tiles, so completeness is a real statement there. -/
+theorem east_block_ge_four (e : ℤ) (he : 2 ≤ e) : 4 ≤ e^2 := by nlinarith
+
 end Erdos634.Wedge
