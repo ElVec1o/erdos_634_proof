@@ -3269,6 +3269,47 @@ $\binom{12}{3}=220$ tasks. The table below shows the count beside the measured n
 $k=2$ members are cheap for a structural reason rather than an accidental one.
 \end{remark}
 
+\begin{proposition}[The orientation of a boundary $a$-run is monotone]\label{prop:orientmono}
+Let a maximal run of consecutive $a$-edges lie on a straight side of the target, or on a side of the
+inflated tile, and let $T_1,\dots,T_L$ be the tiles laying them. Each $T_i$ presents $\beta$ at one end
+of its $a$-edge and $\gamma$ at the other; write its orientation as $\mathrm{BG}$ or $\mathrm{GB}$
+according to which end carries $\beta$. Then no $\mathrm{BG}$ is followed by a $\mathrm{GB}$: the
+sequence is $\mathrm{GB}^{j}\mathrm{BG}^{L-j}$ for a single $j$. Consequently at most one junction of
+the run carries the figure $\{3\alpha,2\beta\}$, and it is the transition.
+\end{proposition}
+
+\begin{proof}
+Side $a$ is opposite $\alpha$, so the angles at its two ends are $\beta$ and $\gamma$; a tile laying
+$a$ on the boundary therefore presents one of each, never $\beta$ twice. A junction interior to the run
+receives the right end of one tile and the left end of the next, so the four orientation pairs give
+contributions $\{\gamma,\beta\}$, $\{\gamma,\gamma\}$, $\{\beta,\beta\}$, $\{\beta,\gamma\}$
+respectively. By Proposition~\ref{M-prop:vertexfigures} the only straight figures are
+$\{\alpha,\beta,\gamma\}$ and $\{3\alpha,2\beta\}$, carrying one $\gamma$ and none. So
+$\{\gamma,\gamma\}$ --- the pair $\mathrm{BG},\mathrm{GB}$ --- admits no figure at all, and
+$\{\beta,\beta\}$ --- the pair $\mathrm{GB},\mathrm{BG}$ --- forces $\{3\alpha,2\beta\}$. The first
+statement forbids the descent $\mathrm{BG}\to\mathrm{GB}$, which is the monotonicity; the second
+identifies the $\{3\alpha,2\beta\}$ junctions with the $\mathrm{GB},\mathrm{BG}$ transitions, of which
+a monotone sequence has at most one. \textup{(}Machine-checked: \texttt{BG\_GB\_forbidden},
+\texttt{orient\_monotone}, \texttt{AAB\_iff\_transition}.\textup{)}
+\end{proof}
+
+\begin{remark}[What this buys]\label{rem:orientmono}
+Two things, on different fronts.
+
+On the inflation, The junction analysis of \S\ref{sub:inflation} (machine-checked as \texttt{junction\_three}) leaves three completions at each junction of the $k=2$ word
+$c\,a^{f}c$, hence $3^{f-1}$ patterns a priori. Proposition~\ref{prop:orientmono} leaves $f+1$, one for
+each value of $j$: the branching is linear in $f$, not exponential. That is consistent with the
+measured search depth, which grows like $2.65f$ rather than with $f^2$.
+
+On the thin family, nothing in the proof used the inflation --- only that an $a$-edge's two ends carry
+$\beta$ and $\gamma$. So the proposition applies verbatim to an $a$-run on an \emph{equal side}, and in
+particular to the runs enumerated in the second gap of Conjecture~\ref{conj:advance}. That enumeration
+is over the double-$c$ walks $(fk,0,f-k)$ with $1\le k\le f-3$; the number of such words grows quickly
+with $f$ \textup{(}$1,7,42,263,1823,\dots$ for $f=4,\dots,8$\textup{)}, so it is not a finite check, but
+the orientation branching within each word is now linear rather than exponential. This is the first
+tool bearing on that gap which is uniform in $f$; the cascade argument as written does not use it.
+\end{remark}
+
 \begin{remark}[Scope, and why this is not a proof of Theorem~\ref{thm:inflrigid}]\label{rem:inflparity}
 Two limitations, both essential.
 

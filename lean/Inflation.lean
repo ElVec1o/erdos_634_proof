@@ -409,4 +409,107 @@ theorem AAB_forces_alternation (t₁ t₂ t₃ : Orient) (h : isAAB t₁ t₂ = 
     isAAB t₂ t₃ = false := by
   cases t₁ <;> cases t₂ <;> cases t₃ <;> simp_all [isAAB, rightAngle, leftAngle]
 
+
+/-! ## The east half of `hyp:walls` at `e = 1`
+
+The base of the target at `m = 1` accounts as an identity in `(e,f)`:
+`e(3f² − e²) = f·a + e·b + e·c`, the three terms being the west foot, the middle, and the east foot.
+The west corner block is the tile scaled by `f` and carries `f²` tiles; the east block is the tile
+scaled by `e` and carries `e²`.
+
+At `e = 1` the east block is therefore a **single tile**, and the east half of the hypothesis has no
+content beyond `lem:ccorner` — a base corner tile laying `c` lays `a` on the side. -/
+
+/-- The base identity: west foot `f·a`, middle `e·b`, east foot `e·c` sum to the base `e(3f²−e²)`. -/
+theorem base_accounts (e f : ℕ) :
+    f * (e * f) + e * (f * f - e * e) + e * (f * f) = e * (3 * f * f - e * e) ∨ f < e := by
+  rcases lt_or_ge f e with h | h
+  · right; exact h
+  · left
+    have h2 : e * e ≤ f * f := Nat.mul_le_mul h h
+    have h3 : e * e ≤ 3 * f * f := le_trans h2 (by nlinarith)
+    zify [h2, h3]; ring
+
+-- NOTE: "at `e = 1` the east block is a single tile" is *not* stated as a theorem here. Its
+-- arithmetic content is `1² = 1`, which is vacuous; its real content is geometric — that the block is
+-- the tile scaled by `e`, which is `rem:blockbreaks`, and that a corner tile laying `c` lays `a` on
+-- the side, which is `lem:ccorner`. Neither is available in this file. Recording `1 * 1 = 1` under a
+-- geometric name would be a façade of the kind the 2026-08-12 audit removed.
+
+/-- The east block is strictly smaller than the west whenever `e < f`. -/
+theorem east_smaller (e f : ℕ) (h : e < f) : e * e < f * f :=
+  Nat.mul_lt_mul_of_lt_of_le h (le_of_lt h) (Nat.pos_of_ne_zero (by rintro rfl; omega))
+
+
+/-! ## S5: the orientation sequence is monotone, and the branching collapses to linear
+
+S4 asked which adjacent pairs admit the figure `{3α,2β}`. The sharper question is which admit **any**
+straight figure. Writing `right(BG) = γ`, `right(GB) = β`, `left(BG) = β`, `left(GB) = γ`, a junction
+between consecutive `a`-tiles receives `right` of the left tile and `left` of the right tile:
+
+| pair | contributions | figure |
+|---|---|---|
+| `BG,BG` | `γ, β` | `{α,β,γ}` |
+| `BG,GB` | `γ, γ` | **none** — no straight figure carries two `γ`s |
+| `GB,BG` | `β, β` | `{3α,2β}` |
+| `GB,GB` | `β, γ` | `{α,β,γ}` |
+
+So a `BG` is never followed by a `GB`. The orientation sequence along the run is therefore
+`GB^j BG^{f-j}` for a single `j`, and the `{3α,2β}` junctions — the `GB,BG` transitions — number **at
+most one**. Rung S3 left three completions per junction, so `3^{f-1}` patterns a priori; this leaves
+`f+1`, one per `j`. -/
+
+/-- A junction is admissible when its two contributions are not both `γ`. -/
+def admissiblePair (l r : Orient) : Bool := rightAngle l || leftAngle r
+
+/-- **The forbidden transition.**  `BG` then `GB` puts two `γ`s at their shared junction. -/
+theorem BG_GB_forbidden : admissiblePair BG GB = false := by decide
+
+/-- The other three pairs are admissible, so the constraint is not vacuous. -/
+theorem others_admissible :
+    admissiblePair BG BG = true ∧ admissiblePair GB BG = true ∧ admissiblePair GB GB = true := by
+  decide
+
+/-- `{3α,2β}` occurs exactly at a `GB,BG` transition. -/
+theorem AAB_iff_transition (l r : Orient) : isAAB l r = true ↔ l = GB ∧ r = BG := by
+  cases l <;> cases r <;> simp [isAAB, rightAngle, leftAngle]
+
+/-- **S5.**  Along a run whose every adjacent pair is admissible, the orientations are a block of `GB`
+followed by a block of `BG`.  The branching is linear in the run length, not exponential. -/
+theorem orient_monotone :
+    ∀ L : List Orient, L.Chain' (fun l r => admissiblePair l r = true) →
+      ∃ j k, L = List.replicate j GB ++ List.replicate k BG := by
+  intro L
+  induction L with
+  | nil => intro _; exact ⟨0, 0, rfl⟩
+  | cons x t ih =>
+    intro h
+    cases t with
+    | nil => cases x
+             · exact ⟨0, 1, rfl⟩
+             · exact ⟨1, 0, rfl⟩
+    | cons y t' =>
+      obtain ⟨hxy, hrest⟩ : admissiblePair x y = true ∧ (y :: t').Chain' (fun l r => admissiblePair l r = true) := by
+        cases h with | cons_cons hh ht => exact ⟨hh, ht⟩
+      obtain ⟨j, k, hjk⟩ := ih hrest
+      cases x with
+      | BG =>
+        -- `BG` forces the next to be `BG`, so the tail has no `GB` block
+        have hy : y = BG := by
+          cases y
+          · rfl
+          · simp [admissiblePair, rightAngle, leftAngle] at hxy
+        subst hy
+        cases j with
+        | zero =>
+          refine ⟨0, k + 1, ?_⟩
+          simp only [List.replicate_zero, List.nil_append] at hjk ⊢
+          rw [List.replicate_succ]
+          exact congrArg (BG :: ·) hjk
+        | succ n => simp [List.replicate_succ] at hjk
+      | GB =>
+        refine ⟨j + 1, k, ?_⟩
+        rw [List.replicate_succ, List.cons_append]
+        exact congrArg (GB :: ·) hjk
+
 end Erdos634.Inflation
