@@ -82,6 +82,27 @@ theorem chain_bound_east_5_6 (C : ℤ) (h : (C - 1) * 11 ≤ 55) : C ≤ 6 := by
 /-- The west wall at `(3,7)`: length `f·b = 280`, same gap floor. -/
 theorem chain_bound_west_3_7 (C : ℤ) (h : (C - 1) * 21 ≤ 280) : C ≤ 14 := by omega
 
+/-! ### A negative: the chain-endpoint condition is nearly vacuous
+
+A chain can begin at a vertex `V` only if some edge direction at `V` has **no opposite** — the wall
+arrives along an edge in direction `−ω^ℓ` and leaves in direction `+ω^ℓ`, which must therefore not be
+an edge direction.  One might hope this pins chain endpoints to rare vertex types.  It does not.
+
+Writing `π = 1` and `θ = α/2`, the angles are `α = (0,2)`, `β = (1/2,−3)`, `γ = (1/2,1)` in the basis
+`(rational·π, multiple of θ)`, and a direction has an opposite iff some partial sum differs from it
+by `(1,0)`.  Enumerating every cyclic arrangement of each `2π` vertex type:
+
+    type                cyclic words   admit an endpoint
+    β+3γ                        1            1  (100%)
+    2α+2β+2γ                   16           14  ( 88%)
+    4α+3β+γ                    35           35  (100%)
+    6α+4β                      22           20  ( 91%)
+
+The only arrangements that cannot host a chain endpoint are the two `2α+2β+2γ` and the two `6α+4β`
+words whose direction set is closed under `+π` — precisely the vertices sitting in the interior of a
+straight line of the tiling.  So the local condition excludes four configurations out of 74 and is
+not a route to Hypothesis (walls).  Recorded so the enumeration is not repeated. -/
+
 /-! ## The multiplier closure
 
 The target at multiplier `m` has sides `(f³m, f³m, e·m·N₀)`; at `mk` it is that triangle scaled by
