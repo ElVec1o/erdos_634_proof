@@ -812,7 +812,31 @@ together with the confirmation from the two certified tilings.
 
 The practical consequence is that the hypothesis should be split into its west and east halves before
 being used further, and that a result quoted as ``establishing Hypothesis~\ref{hyp:walls}'' should say
-which half. This does not affect \S\ref{sub:apex}, whose results are statements about $p$ on a given
+which half.
+
+Having split them, it is worth recording how unequal the two halves are, since the split might be read
+as doubling the work and it does not. The base accounts as
+\[
+  e(3f^2-e^2)\;=\;\underbrace{f\,a}_{\text{west foot}}\;+\;\underbrace{e\,b}_{\text{middle}}\;+\;\underbrace{e\,c}_{\text{east foot}},
+\]
+an identity in $(e,f)$. The west block is the tile scaled by $f$ and carries $f^2$ tiles; the east block
+is the tile scaled by $e$ and carries only $e^2$. Three consequences.
+
+First, \emph{at $e=1$ the east block is a single tile}, and the east half of the hypothesis has no
+content beyond Lemma~\ref{lem:ccorner}: a base corner tile laying $c$ lays $a$ on the side. So on the
+whole thin family the east half is free, and what remains there is the base-form question of
+Lemma~\ref{lem:basedi}, which the two halves share.
+
+Second, the east block is smaller than the west at every member --- $e^2$ against $f^2$, a factor
+between $4.8$ and $49$ on the members tabulated in \S\ref{sub:inflation} --- so any method that settles
+the west settles the east \emph{a fortiori} in size, if not automatically in content.
+
+Third, and most usefully, the side the east block presents to the equal side is its $a$-side, of length
+$e\,a$; and Proposition~\ref{prop:inflbdy} makes the $a$-side of an inflation \emph{rigid}, namely
+$a^{e}$. The $p=0$ versus $p=1$ ambiguity that is the whole difficulty of the west half lives on the
+$c$-side, which for the east block lies along the base rather than along an equal side. The east half is
+therefore not a second copy of the crux: it is a smaller problem, and the feature that makes the west
+hard is absent from it. This does not affect \S\ref{sub:apex}, whose results are statements about $p$ on a given
 equal side and stand on their own proofs.
 \end{remark}
 
@@ -1352,8 +1376,10 @@ components are machine-checked (\texttt{partner\_unique}, \texttt{c\_chord\_dich
 \texttt{beta\_slot\_unique}, \texttt{alpha\_slot\_unique}, \texttt{wedge\_gamma\_cases}, and the
 polynomial signs of Lemma~\ref{lem:topjunction}); the geometric steps are exact coordinate
 computations over $\Q(\sqrt{35})$. Hypothesis~\ref{hyp:walls} is thereby proved for the members
-$(1,2)$ (Lemma~\ref{lem:ple}) and $(1,3)$; it remains open for $f\ge4$, where $p\le f-3$, and for
-$e\ge2$.
+$(1,2)$ (Lemma~\ref{lem:ple}) and $(1,3)$; $f=4$ is settled by Theorem~\ref{thm:walls14}, so on the
+thin family the hypothesis is open for $f\ge5$, where $p\le f-3$, and it is open for $e\ge2$
+generally --- see Conjecture~\ref{conj:advance} for the thin case and \S\ref{sub:apex} for what is
+known at $e\ge2$.
 \end{remark}
 
 \begin{remark}[The cascade at $(1,4)$, and the general mechanism]\label{rem:walls14}

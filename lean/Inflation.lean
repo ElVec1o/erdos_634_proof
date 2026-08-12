@@ -359,4 +359,54 @@ theorem junction_residues :
       (fun p => admissible p.1 p.2)).map (fun p => residue p.1 p.2)
       = [(0, 0, 1), (0, 1, 0), (2, 1, 0)] := by decide
 
+
+/-! ## S4: consecutive `a|a` junctions constrain each other
+
+A tile laying an `a`-edge on the boundary has, at that edge's two ends, the two angles adjacent to
+side `a` — namely `β` and `γ`. So one tile presents `β` at one end and `γ` at the other; never `β` at
+both. Record its orientation by which end carries `β`.
+
+A junction between two consecutive `a`-tiles receives the right end of the left tile and the left end
+of the right tile. The straight figure `{3α,2β}` carries no `γ` (`BaseBetaE1.vertex_pi`), so it demands
+that *both* contributions be `β`.
+
+The consequence is that the `{3α,2β}` junctions cannot be adjacent: a shared tile would have to carry
+`β` at both ends of its own `a`-edge. This is the first constraint in this development that couples one
+junction to the next, and it is what rung S4 asked for. -/
+
+/-- Which end of a boundary `a`-tile's `a`-edge carries `β`. -/
+inductive Orient | BG | GB
+  deriving DecidableEq, Repr
+
+open Orient
+
+/-- The angle a tile contributes at the junction on its **right**. -/
+def rightAngle : Orient → Bool
+  | BG => false   -- γ
+  | GB => true    -- β
+
+/-- The angle a tile contributes at the junction on its **left**. -/
+def leftAngle : Orient → Bool
+  | BG => true    -- β
+  | GB => false   -- γ
+
+/-- A junction carries `{3α,2β}` exactly when both incident contributions are `β`; any `γ` forces the
+figure `{α,β,γ}` instead. -/
+def isAAB (l r : Orient) : Bool := rightAngle l && leftAngle r
+
+/-- Sanity: exactly one of the four orientation pairs admits `{3α,2β}`. -/
+theorem isAAB_unique :
+    ([(BG,BG),(BG,GB),(GB,BG),(GB,GB)].filter (fun p => isAAB p.1 p.2)).length = 1 := by decide
+
+/-- **S4.**  No two adjacent junctions along the `a`-run both carry `{3α,2β}`: the tile they share
+would need `β` at both ends of its `a`-edge. -/
+theorem no_two_adjacent_AAB (t₁ t₂ t₃ : Orient) : ¬(isAAB t₁ t₂ ∧ isAAB t₂ t₃) := by
+  cases t₁ <;> cases t₂ <;> cases t₃ <;> simp [isAAB, rightAngle, leftAngle]
+
+/-- Equivalently, the `{3α,2β}` junctions form an independent set: along `f` tiles there are `f-1`
+junctions and at most `⌈(f-1)/2⌉` of them can carry that figure. -/
+theorem AAB_forces_alternation (t₁ t₂ t₃ : Orient) (h : isAAB t₁ t₂ = true) :
+    isAAB t₂ t₃ = false := by
+  cases t₁ <;> cases t₂ <;> cases t₃ <;> simp_all [isAAB, rightAngle, leftAngle]
+
 end Erdos634.Inflation
