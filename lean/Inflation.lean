@@ -255,17 +255,35 @@ cheap ones for the search. -/
 parity; with `gcd(e,f) = 1` that is exactly the case where one of them is even. The instances below
 record the four members computed. -/
 
-/-- The instance at `(2,5)`: `3·25 − (20 − 2) = 57`, odd, so the `p=1` boundary is impossible for an
-edge-to-edge dissection. -/
-theorem parity_25 : (3 * 25 - (20 - 2)) % 2 = 1 := by decide
+/-- **The parity obstruction, stated generally.**  Under edge-to-edge the `3f²` edge-slots split as
+`2·(interior edges) + (boundary edges)`, and the `p=1` boundary has `B + e = 4f`.  Together these force
+`e ≡ f (mod 2)`.  Contrapositive: if `e` and `f` differ in parity, no edge-to-edge dissection of the
+inflated tile can carry the `p=1` boundary.
 
-/-- The instance at `(4,9)`: `3·81 − (36 − 4) = 211`, odd. -/
-theorem parity_49 : (3 * 81 - (36 - 4)) % 2 = 1 := by decide
+This replaces three earlier numeral-level facts (`3·25 − 18` odd, etc.).  Those were closed arithmetic
+on literals and would have passed even if the boundary count `B` had been derived wrongly; the content
+is in the two hypotheses, so the two hypotheses are what the statement must quantify over. -/
+theorem parity_forces_same_parity (e f I B : ℕ)
+    (hslots : 3 * f ^ 2 = 2 * I + B) (hbdy : B + e = 4 * f) :
+    e % 2 = f % 2 := by
+  have hsq : f ^ 2 % 2 = f % 2 := by
+    rw [Nat.pow_mod]
+    rcases Nat.mod_two_eq_zero_or_one f with h | h <;> rw [h] <;> rfl
+  omega
 
-/-- At `(1,3)` and `(3,7)` the test is silent: both counts are even. -/
-theorem parity_silent : (3 * 9 - (12 - 1)) % 2 = 0 ∧ (3 * 49 - (28 - 3)) % 2 = 0 := by
-  constructor <;> decide
+/-- The instances, now *derived* from the general statement rather than asserted:
+at `(2,5)` and `(4,9)` the parities differ, so the hypothesis set is contradictory. -/
+theorem parity_kills_25 (I B : ℕ) (hs : 3 * 5 ^ 2 = 2 * I + B) (hb : B + 2 = 4 * 5) : False := by
+  have := parity_forces_same_parity 2 5 I B hs hb; omega
 
+theorem parity_kills_49 (I B : ℕ) (hs : 3 * 9 ^ 2 = 2 * I + B) (hb : B + 4 = 4 * 9) : False := by
+  have := parity_forces_same_parity 4 9 I B hs hb; omega
+
+/-- At `(1,3)` and `(3,7)` the parities agree, so the obstruction is silent: the hypotheses are
+satisfiable.  Witnesses exhibited, so the silence is a fact and not an absence of effort. -/
+theorem parity_silent_witnesses :
+    (3 * 3 ^ 2 = 2 * 8 + 11 ∧ 11 + 1 = 4 * 3) ∧ (3 * 7 ^ 2 = 2 * 61 + 25 ∧ 25 + 3 = 4 * 7) := by
+  refine ⟨⟨by norm_num, by norm_num⟩, ⟨by norm_num, by norm_num⟩⟩
 
 /-! ## The `p=1` word needs two `c`-edges
 
@@ -274,13 +292,29 @@ theorem parity_silent : (3 * 9 - (12 - 1)) % 2 = 0 ∧ (3 * 49 - (28 - 3)) % 2 =
 `f - e ≥ 2`. At `e = f-1` the count is `1`, so no such word exists: the inflation is rigid on that
 whole family with no search. -/
 
-/-- A `p=1` word exists only if `e + 2 ≤ f`. -/
-theorem p1_requires_two_c (e f : ℕ) (hef : e < f) (hc : 2 ≤ f - e) : e + 2 ≤ f := by omega
+/-- **The combinatorial content of `cor:twoc`.**  A word that begins and ends with the same letter
+`x` — the geometry gives exactly this: the `c`-side joins the `α`- and `β`-vertices and neither can
+present an `a`, so the first and last letters are both `c` — contains that letter at least twice.
 
-/-- At `e = f - 1` that fails, so no `p=1` word exists. -/
-theorem p1_excluded_e_pred (f : ℕ) (hf : 2 ≤ f) : ¬ ((f - 1) + 2 ≤ f) := by omega
+Stated as a structural decomposition `x :: (M ++ [x])` rather than as hypotheses on `head?`/`getLast?`,
+because that is precisely what the two corner tiles supply: a first letter, a last letter, and an
+unconstrained middle. -/
+theorem two_of_sandwich {α : Type*} [DecidableEq α] (x : α) (M : List α) :
+    2 ≤ (x :: (M ++ [x])).count x := by
+  simp [List.count_cons, List.count_append]
 
-/-- The `c`-count of the `p=1` word at `e = f-1` is exactly one. -/
-theorem p1_c_count_e_pred (f : ℕ) (hf : 2 ≤ f) : f - (f - 1) = 1 := by omega
+/-- Hence the `p=1` word's `c`-count, which is `f − e`, is at least two.  The earlier
+`p1_requires_two_c` was vacuous — in `ℕ`, `2 ≤ f − e` under `e < f` *is* `e + 2 ≤ f`, so hypothesis and
+conclusion coincided.  Here the bound is *derived* from the word's shape. -/
+theorem p1_c_count_ge_two {α : Type*} [DecidableEq α] (x : α) (M : List α) (e f : ℕ)
+    (hcount : (x :: (M ++ [x])).count x = f - e) : 2 ≤ f - e := by
+  rw [← hcount]; exact two_of_sandwich x M
+
+/-- **The family exclusion.**  At `e = f − 1` the `c`-count is `1`, contradicting the bound, so no
+`p=1` word exists and the inflation is rigid there — uniformly in `f`, with no search. -/
+theorem no_p1_word_at_e_pred {α : Type*} [DecidableEq α] (x : α) (M : List α) (f : ℕ) (hf : 2 ≤ f)
+    (hcount : (x :: (M ++ [x])).count x = f - (f - 1)) : False := by
+  have h := p1_c_count_ge_two x M (f - 1) f hcount
+  omega
 
 end Erdos634.Inflation
