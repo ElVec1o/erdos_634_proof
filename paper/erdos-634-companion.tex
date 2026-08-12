@@ -439,29 +439,11 @@ and~\ref{thm:ray} unconditionally for every thick member.
 \end{remark}
 
 \begin{remark}[Scope and consequences]\label{rem:ray}
-Thickness is used exactly once, and sharply: the next solution would be $n_a=2f-e$, which needs
-$f\ge2e+1$ --- the thin regime. So in the regime that is open, the entire mismatch ray is now pinned
-on \emph{both} sides, with no freedom beyond the order of the near-side edges. Explicitly:
-$N=23$ has far $5^3$, near $\{6,9\}$; $N=59$ far $9^5$, near $\{20,25\}$; $N=66$ far $16^5$, near
-$\{15^2,25^2\}$; $N=83$ far $11^6$, near $\{30,36\}$; $N=167$ far $39^8$, near $\{40^3,64^3\}$.
-The count of interior junctions is therefore also determined --- $f-1$ on the far side and
-$2(f-e)-1$ on the near side, none shared (Theorem~\ref{thm:align}(i)) --- so a hypothetical thick
-tiling carries exactly $3f-2e-2$ T-junctions along this ray, each a $\pi$-vertex. The arithmetic is
-machine-checked (\texttt{near\_side\_unique}, \texttt{BaseBetaWalks.lean}).
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{remark}[Scope, and why $m=1$ is the rigid case]\label{rem:walkscope}
-Theorem~\ref{thm:walks}(i) generalizes the $e=1$ base analysis used for
-Theorem~\ref{thm:basebeta-e1} to the infinite family $f>2e$ --- $e=1$, $f\ge3$; $e=2$, $f\ge5$;
-$e=4$, $f\ge9$; \dots --- covering the primes $N=47,71,107,191,227,239,359,\dots$, and its parts (iii)--(iv),
-which need no thinness, deliver the $e\ge2$ analogue of the $e=1$ structure theorem of
-Remark~\ref{M-rem:lem6} for \emph{every} $(e,f)$: the equal sides are $b$-free and the base's $b$-count
-is bounded by $j(f-e)\le e-1$. The step that fails for $m\ge2$ is the very first one: there
-$Q\equiv em\pmod f$, so $j$ may be \emph{negative} and the level rises to $2em$. This is not an
-artifact. The genuine $44$-tiling ($e{=}1,f{=}2,m{=}2$) has base walk $aaaaccca$, i.e.
-$(P,Q,R)=(5,0,3)$, which is the parameter $j=-1$, $p=3$; and the $99$-tiling
-($e{=}1,f{=}2,m{=}3$) has base walk $aabbbbbbbcc$, i.e. $(2,7,2)$, the parameter $j=2$, $p=0$. Both
-satisfy $R\ge1$, as the $\gamma$-trap requires.
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{theorem}[Walk structure at $m=1$]\label{thm:walkstruct}
@@ -1539,25 +1521,7 @@ target: every length in the display is exact and independent of $f$.
 \end{remark}
 
 \begin{remark}[The blocking hypothesis cannot be weakened to ``both ends are vertices'']\label{rem:noedgetoedge}
-It is worth recording what the step left open in Remark~\ref{rem:route1uniform} may \emph{not} appeal
-to. In Lemma~\ref{lem:cchord} the hypothesis that the chord is blocked at both ends is what converts
-it into a union of whole tile edges; one cannot replace it by the weaker hypothesis that both ends
-are vertices of the tiling, because the tilings in this family are not edge-to-edge. The certified
-$99$-tiling of member $(1,2)$ settles this concretely. Its $99$ tiles span $216$ distinct edges, and
-$52$ of those carry a vertex of the tiling in their relative interior --- each exactly one. Moreover
-its $89$ vertices contain $19$ pairs at distance exactly $a$, $23$ at distance exactly $b$ and $45$
-at distance exactly $c$ that span no tile edge at all. (These counts are read off the coordinates of
-the machine-checked certificate; in that embedding every $x$ is rational and every $y$ a rational
-multiple of $\sqrt{15}$, so the chart $(x,y/\sqrt{15})$ is an affine rescaling of the plane and
-decides collinearity and betweenness faithfully.)
-
-Hence knowing that a segment has both endpoints at tiling vertices and has the length of a tile side
-carries \emph{no} information about how it meets the tiling. Since $V$ and $E$ are vertices at
-distance exactly $a$, this is precisely the shape of the hypothesis one is tempted to use, and it is
-not available. Whatever forces $[V,E]$ to be a whole $a$-edge must consume the cascade's tile data
---- which tiles have been forced and where --- and not merely its vertex set. The same remark
-explains why the tile-interior blocking of Remark~\ref{rem:tib}, and not a vertex-incidence
-argument, is the mechanism the cascade actually runs on.
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{conjecture}[Advance-and-collide]\label{conj:advance}
@@ -2218,64 +2182,11 @@ at $e\ge2$, recorded next.
 \end{remark}
 
 \begin{remark}[A gap in the induction of Theorem~\ref{thm:n1}]\label{rem:n1gap}
-The induction step of Theorem~\ref{thm:n1} argues that at $V_k=(kc,0)+a\,u$ the tiles $T_k$ and
-$P_{k-1}$ present $\gamma$ and $\beta$, ``leaving $\alpha$''. That is the straight-junction identity
-$\pi-\gamma-\beta=\alpha$, which follows from $3\alpha+2\beta=\pi$ and $\gamma=2\alpha+\beta$. It is
-legitimate at $k=0$, where $V_0=a\,u$ lies on an equal side and the junction is genuinely straight.
-For $k\ge1$ the point $V_k$ is \emph{strictly interior}: the angle around it is $2\pi$, and
-\[
-2\pi-\gamma-\beta \;=\; 4\alpha+2\beta \;=\; \pi+\alpha \;\ne\;\alpha .
-\]
-The discrepancy is exactly $\pi$. For instance at $(e,f)=(2,5)$ one has
-$V_1=(30.68,8.23)$, interior to the target $(0,0),(142,0),f^3u$; the residue there is $203.07^\circ$,
-not the $\alpha=23.07^\circ$ the step requires. The same holds at every member we computed,
-$(2,3)$, $(3,8)$, $(1,4)$ and $(3,7)$ among them. With the residue $\pi+\alpha$ the partner $P_k$ is
-not forced, and the chain stops after $T_0,P_0,T_1$; that much is exactly
-Proposition~\ref{M-prop:cornerpara}.
-
-At $e=1$ the theorem is nevertheless true, by a different and much shorter route: the column
-$(0,e,2e)=(0,1,2)$ has a base word of only three letters, and
-Proposition~\ref{M-prop:cornerpara} places the first two and the last two base edges in $\{a,c\}$,
-which for a three-letter word is all of them; the word then carries no $b$-edge, contradicting
-$y=1$. That argument uses no induction and no separation.
-
-At $e\ge2$ the word has $3e\ge6$ letters, the four pinned positions leave $3e-4\ge e$ interior slots,
-and the $b$-edges fit inside them: at $(2,5)$ the word $c\,c\,b\,b\,c\,c$ satisfies
-$25+25+21+21+25+25=142=e(3f^2-e^2)$ and survives every filter we have. So Theorem~\ref{thm:n1} is
-established at $e=1$ only, and its conclusion at $e\ge2$ --- on which
-Corollary~\ref{cor:basewalls} depends --- must be regarded as \textbf{open}. We have not refuted the
-conclusion; we refute only the proof. The missing ingredient is sharp: force the $\beta$-tile at
-$V_k$, whose flanks are $\{a,c\}$, to lay its $c$ rather than its $a$ along $[V_k,V_{k+1}]$. This is
-an instance of the crossing question of Remark~\ref{rem:straddle}, which
-Remark~\ref{rem:chainobstruction} already identifies as the obstruction, and
-Remark~\ref{rem:whyf3} already warns that a pinning argument must say against what the ends are
-pinned. Here the would-be blocking edge at the upper end is $P_k$'s own $c$-edge, the very thing
-being derived.
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{remark}[The gap is exactly one crossing, and there is no cheaper repair]\label{rem:n1gapexact}
-The step admits a sharp reduction. Let $Q$ be the tile across $T_k$'s $b$-edge
-$[V_k,\,((k+1)c,0)]$, whose base end lies on $\partial ABC$ and whose end $V_k$ is interior. Measured
-from the anchored base end, $Q$ lays $a$, $b$ or $c$ along that edge:
-\begin{itemize}
-\item $b$: an exact match, so $Q$ is the partner $P_k$ --- the case the induction wants;
-\item $c$: overruns $V_k$ by $c-b=e^2$;
-\item $a$: falls short of $V_k$ by $b-a$, leaving a run of that length still to be covered.
-\end{itemize}
-The third case does not close either, because $b-a$ is representable in $\langle a,b,c\rangle$ for no
-member whatever. Indeed if $xa+yb+zc=b-a$ then $y=0$, since $y\ge1$ would give $yb\ge b>b-a$;
-reducing $x\,ef+z\,f^2=f^2-e^2-ef$ modulo $f$ then gives $f\mid e^2$, hence $f=1$ by coprimality.
-(\texttt{gap\_b\_sub\_a}; checked on all $29435$ coprime members with $e\le200$, $e<f<4e+3$, with no
-representation in any of them.)
-
-So both surviving branches force a tile edge past $V_k$, and the induction step of
-Theorem~\ref{thm:n1} is \emph{equivalent} to the assertion that nothing overruns $V_k$. That is the
-one-end-anchored pinning question in its purest form: the base end cannot be overrun, because the
-continuation would leave the target, while $V_k$ is interior and, as computed in
-Remark~\ref{rem:n1gap}, is not blocked by any tile already forced. Repairing Theorem~\ref{thm:n1} at
-$e\ge2$ is therefore neither more nor less than settling that question, and the same question is what
-stops the corner cascade of Remark~\ref{rem:route1uniform} and the filler dichotomy of
-Section~\ref{sub:sidep}. Three routes, one wall.
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{remark}[The overrun configuration at $V_k$, determined]\label{rem:overrunshape}
@@ -2347,34 +2258,7 @@ one problem, and the cascade was the long way round.
 \end{remark}
 
 \begin{remark}[Counting cannot decide the crossing question]\label{rem:censusblind}
-Since an overrun at $Y$ is equivalent to the tiles with a \emph{vertex} at $Y$ forming a
-$\pi$-figure, it is natural to attack it with the vertex census of
-Lemma~\ref{lem:census}, which counts exactly those figures. That cannot work, for a structural
-reason worth recording so it is not attempted again.
-
-Write $n_1$ for the number of $\{\gamma,\alpha,\beta\}$ figures and $n_2$ for the number of
-$\{3\alpha,2\beta\}$ figures, and $v_1,\dots,v_4$ for the four interior types. The census consists of
-one equation per angle, and its identity is obtained by subtracting the $\beta$ equation from the
-$\alpha$ equation:
-\[
-v_1 \;=\; 1+n_2+v_3+2v_4 ,
-\]
-in which $n_1$ \emph{cancels}. The third equation then pins $n_1=N-3v_1-2v_2-v_3$, but supplies no
-bound of its own. So the census constrains $\{3\alpha,2\beta\}$ and says nothing bounding about
-$\{\gamma,\alpha,\beta\}$.
-
-That is precisely the wrong way round for us: at $V_k$ the forced tiles are $T_k$, presenting
-$\gamma$, and $P_{k-1}$, presenting $\beta$, and $\{\gamma,\alpha,\beta\}$ is the only $\pi$-figure
-containing both. The census is therefore blind to exactly the configuration in question, and no
-counting argument built on it can decide the crossing.
-
-The kernel-checked $99$-tiling illustrates both points. Its vertex figures are: on the boundary,
-$22$ of type $\{\gamma,\alpha,\beta\}$, with the corners contributing $\{\beta\}$ twice and
-$\{3\alpha\}$ once; in the interior, $50$ of type $\{\gamma,\alpha,\beta\}$, $2$ of type
-$\{3\alpha,2\beta\}$, and $(v_1,v_2,v_3,v_4)=(4,7,1,0)$. The identity reads $4=1+2+1+0$, exactly. And
-the $50+2=52$ interior $\pi$-figures agree exactly with the $52$ edges carrying an interior vertex
-found in Remark~\ref{rem:noedgetoedge} by an unrelated computation --- a useful cross-check on both.
-Note the ratio: $50$ of the $52$ crossings are of the type the census cannot see.
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{remark}[Anchoring one end is not enough, and the data says which edges get crossed]\label{rem:onlyanchor}
@@ -2557,25 +2441,7 @@ inequality.
 \end{proof}
 
 \begin{remark}[What this buys, and what it does not]\label{rem:ptwoscope}
-Corollary~\ref{cor:ptwo} is independent of Theorem~\ref{thm:n1} and of the base walk: it
-constrains the side at any member. On the close pairs
-with $f>2e$ --- $203$ of them with $e\le40$, the smallest being $(3,7)$ with $N=138$, then $(4,9)$
-with $N=227$ and $(5,11)$ with $N=338$ --- the side parameter is bounded by $2$. Checked on all
-$126003$ close pairs with $f>2e$ and $e\le1000$: $\lfloor(f-1)/e\rfloor=2$ in every one.
-
-On that family Corollary~\ref{cor:basedi2e} also reduces the base to two columns. It does not reduce
-it to one: that step needs Theorem~\ref{thm:n1} at $e\ge2$, which Remark~\ref{rem:n1gap} leaves open.
-So for these members the current state is two base columns and two side parameters, not one of each.
-
-The contrast with $e=1$ is the point. There the range is $1\le p\le f-1$ and grows without bound
-with $f$, which is why the corner cascade of Conjecture~\ref{conj:advance} has to be run as an
-induction over block lengths. Here the range is $\{1,2\}$ for every member of an infinite family, so
-the side question is a fixed finite case analysis rather than an induction. This is the first
-sub-family in which that happens.
-
-At $(3,7)$, concretely: $p=1$ gives a side of $7$ $a$-edges and $4$ $c$-edges, and $p=2$ gives $14$
-$a$-edges and $1$ $c$-edge. Excluding those two remains open; the reduction bounds the problem, it
-does not solve it.
+The count kills $p=2$ on $f=2e+1$ but not $p=1$. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \subsection{A parity of the straight figures}\label{sub:parity}
@@ -2597,22 +2463,7 @@ The three identities have rank two and this is the only parity they contain: sub
 $v_1$ relation into the $\beta$-identity returns the $\alpha$-identity exactly.
 
 \begin{remark}[Why this does not exclude a member, and the trap it sets]\label{rem:parityscope}
-It is tempting to combine Lemma~\ref{lem:parity} with the boundary walks. On a member all of whose
-walks have odd edge-counts --- $(3,7)$ is one, with $k=4p+7$ on a side and $9$ or $13$ on the base
---- the boundary contributes $\sum k_i-3$ straight figures, an even number, against the odd value
-$N+1=139$ that Lemma~\ref{lem:parity} demands. That looks like an exclusion. It is not.
-
-$S$ counts \emph{every} straight figure, and a straight figure need not lie on the boundary: at an
-interior $T$-junction one tile has the vertex in the relative interior of a side, contributing a
-straight angle and no corner, while the tiles on the other side have corners summing to $\pi$. Such a
-vertex is a $\{\gamma,\alpha,\beta\}$ or $\{3\alpha,2\beta\}$ figure and is counted in $n_1+n_2$.
-Writing $T$ for their number, $S=\sum k_i-3+T$, so the parity constrains only $T$: at $(3,7)$ every
-tiling has an \emph{odd} number of interior $T$-junctions. Since non-edge-to-edge incidences are
-exactly what this problem must allow, nothing is excluded.
-
-This is the failure mode Lemma~\ref{lem:census} already warns of --- corner counting cannot see the
-side structure --- and the boundary walks are side structure. It is recorded here because the
-temptation is sharp and the arithmetic is otherwise correct.
+The parity constrains only the number of interior $T$-junctions, so it excludes no member. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 
@@ -2793,18 +2644,7 @@ $\langle a,b,c\rangle$.
 \end{proof}
 
 \begin{remark}[What this does and does not extend]\label{rem:abnecessary}
-Theorem~\ref{thm:secondc} uses $e^{2}+ef<f^{2}$ at exactly one step: that $Y$'s edge from $P$ towards
-$J$, being of length at most $|PJ|=a$, is therefore \emph{equal} to $a$. That inference needs $a$ to be
-the shortest side, and it fails without it: at $(2,3)$, $(3,4)$, $(4,5)$, $(5,6)$ the tiles are
-$(6,5,9)$, $(12,7,16)$, $(20,9,25)$, $(30,11,36)$, each with $b<a$, so a $b$-edge also fits inside
-$|PJ|$; since $b$ is a flank of $\alpha$, the conclusion ``$Y$ does not present $\alpha$'' no longer
-follows.
-
-Proposition~\ref{prop:nogolden} removes the hypothesis from Theorem~\ref{thm:secondc}, and with it
-from Corollary~\ref{cor:pbound}: the bound $pe+2\le f$ holds at every coprime member. It does
-\emph{not} remove it from Theorem~\ref{thm:nobothmirror}, whose third cross product is a positive
-multiple of $b^{2}-a^{2}$ and changes sign at the threshold; there the hypothesis is genuinely part of
-the statement.
+The hypothesis $a<b$ was later removed entirely by Proposition~\ref{prop:nogolden}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{theorem}[The side parameter vanishes on the family $e=f-1$]\label{thm:efminus1}
@@ -2827,48 +2667,7 @@ does have at least three edges, so the edge below the first junction exists and 
 \end{proof}
 
 \begin{remark}[Scope, and the status of this theorem]\label{rem:efminus1}
-The family $e=f-1$ was outside the reach of \S\ref{sub:apex} until Proposition~\ref{prop:nogolden}
-removed the golden-ratio hypothesis: $f/(f-1)<\varphi$ for every $f\ge3$, so every member of it has
-$b<a$. Its tile counts are $N=2f^{2}+2f-1$, giving $11, 23, 39, 59, 83, 111, 143, 179, 219, 263,
-311,\dots$, of which $23$ and $39$ were previously settled by exhaustive search, $11$ by
-Theorem~\ref{thm:basebeta-e1}, and $59$ by the frontier results for $N\le80$. Among the remainder the
-base-$\beta$ candidates, that is the primes congruent to $11$ modulo $12$, are
-\[
-83,\;179,\;263,\;311,\;419,\;479,\;683,\;839,\;1103,\;1511,\;2111,\;2243,\;2663,\;2963,\;3119
-\]
-for $f\le39$. Whether the family contains infinitely many such primes is a Bunyakovsky-type question
-and is not claimed here.
-
-The theorem discharges Hypothesis~\ref{hyp:walls} at these members; it does not by itself exclude the
-corresponding integers, which requires the remaining branches.
-
-We record the label honestly. The chain is PROVED, not VERIFIED. Lean carries the arithmetic
-(\texttt{ApexRigidity.b\_gt\_f}, \texttt{.eb\_gt\_a}, \texttt{.e\_ge\_two\_of\_b\_lt\_a},
-\texttt{.side\_p\_bound}), the area accounting (\texttt{.area\_above\_chord}, \texttt{.middle\_fraction})
-and the vertex budget of Corollary~\ref{cor:noTP} in both branches
-(\texttt{SecondEdge.noTP\_budget}, \texttt{.noTP\_remainders}, \texttt{.T2\_not\_alpha\_at\_P}). What is
-not formalized is the planar geometry underneath: that $T_1$ presents $\gamma$ at $P$ and that $T_2$'s
-chord trace ends there, which are the hypotheses those statements take. The non-representability of $a-b$
-was checked symbolically, with $(f-2)(2f-1)-(a-b)=(f-1)^{2}$, and by exhaustive enumeration for
-$3\le f\le39$. Two adversarial passes have been made, both within the session that produced the proof. The first
-found a genuine defect --- Corollary~\ref{cor:pbound} was stated under a hypothesis that fails at
-$e=f-1$, the very members it was invoked for --- now repaired by restating that corollary under
-$\gcd(e,f)=1$. The second checked the side equation, integrality of $p$, the case $p\ge2$ including
-$f=2$, that $J$ is interior to the side so that the tile $Y$ exists at all, the edge counts, absence of
-circularity, and that Theorem~\ref{thm:apexconfig} and Corollary~\ref{cor:noTP} use nothing beyond
-family-wide facts; it found no further defect.
-
-The identification with Hypothesis~\ref{hyp:walls} is the one discussed in
-Remark~\ref{rem:wallsfix} and is not settled; the theorem is stated in terms of $p$ for that reason. Theorem~\ref{thm:efminus1} is therefore unconditional as a statement about $p$, and
-inherits that identification when read as a statement about the hypothesis.
-
-A second point in its favour: since $N=m^{2}(3f^{2}-e^{2})$, a prime $N$ forces $m=1$, so at each of
-the fifteen candidates the branch has no other scale to consider.
-
-Neither pass is what Rule 6 asks for, namely a review in a fresh session with no memory of the
-derivation, and that remains outstanding. Each of the fifteen candidate integers above has, we note, a
-unique base-$\beta$ member, so discharging the hypothesis at $(f-1,f)$ discharges it for that
-integer's only member of this branch.
+The theorem is \emph{proved}, not machine-checked: steps~2--3 of its chain are planar geometry. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 
@@ -2890,27 +2689,7 @@ with $n_c+pe=f$ this is $pe+2\le f$. For $f=2e+1$, $p\ge2$ would give $2e\le pe\
 \end{proof}
 
 \begin{remark}[What this settles, and exactly where it stops]\label{rem:apexscope}
-Corollary~\ref{cor:pbound} is a second and independent proof of Theorem~\ref{thm:ptwodead} on the
-tight subfamily, by a route that uses no chord bound and no height identity --- only the apex
-identities and the boundary at $J$. It also completes the first bullet of
-Remark~\ref{rem:dichotomy}: there the $a\,c$ ending was excluded only in the figure
-$\{\gamma,\alpha,\beta\}$ and only with the $\alpha$ adjacent to $C$, whereas
-Theorem~\ref{thm:secondc} excludes it in \emph{both} straight figures and for every $p$. Hence at
-$(3,7)$ the side word of an equal side must end $c\,c$; the two cases $X=\beta$ and $X=\gamma$ of
-Remark~\ref{rem:dichotomy} both persist, but now only inside that ending.
-
-It does not reach $p=1$ at any new member, and the reason is arithmetic rather than incidental.
-Killing $p=1$ by this bound needs $e\ge f-1$; with $e^{2}+ef<f^{2}$ that forces $f=e+1$ and then
-$e^{2}<e+1$, so $e=1$ and $f=2$ --- the member already closed by
-Theorem~\ref{thm:basebeta-e1} (\texttt{scope\_limitation}). The hypothesis $e^{2}+ef<f^{2}$ says
-$f/e$ exceeds the golden ratio, and $e\ge f-1$ says it is close to $1$; the two cannot hold together
-beyond $(1,2)$.
-
-The obstruction to iterating is equally precise. Corollary~\ref{cor:noTP} needed \emph{two} tiles
-presenting $\gamma$ at $P$, and the second, $T_2$, exists only because the apex figure is $3\alpha$.
-At the analogous point one level down --- the far end of the next $c$-tile's $a$-edge, which does lie
-exactly on the next chord, by the same identities --- only one $\gamma$ is forced. Supplying a second
-is what an induction would require, and we do not have it.
+The bound reaches $p=1$ only at $(1,2)$; at every other member it stops at $p\ge2$. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{remark}[The seven open primes of the tight subfamily]\label{rem:sevenprimes}
@@ -3117,22 +2896,7 @@ deciding whether the inflation is rigid --- decides the side parameter on that s
 \end{corollary}
 
 \begin{remark}[What this buys, and what it does not]\label{rem:inflvalue}
-This is a reformulation, not a new obstruction: the question ``is the inflation rigid'' and the
-question ``is $p=0$'' are the same question, and at $(1,3)$ Theorem~\ref{thm:walls13} already answers
-it. Reformulations earn their place only by new attack surface, and here there is one, namely size.
-The inflation carries $f^2$ tiles against the target's $N=3f^2-e^2$:
-\[
-\begin{array}{rrr}
-(e,f) & f^2 & N\\\hline
-(1,3) & 9 & 26\\
-(2,5) & 25 & 71\\
-(3,7) & 49 & 138\\
-(4,9) & 81 & 227
-\end{array}
-\]
-uniformly about $35\%$. At $(3,7)$ that is a $49$-tile question in place of a $138$-tile one, with the
-same answer for the west side. Proposition~\ref{prop:inflbdy} carries no unproved geometric hypothesis:
-the $\gamma$-corner, the only one that can split, is not used.
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 
@@ -3205,19 +2969,7 @@ side is the whole equal side. By Theorem~\ref{thm:inflrigid} that side is $c^f$,
 \end{proof}
 
 \begin{remark}[What this settles and what it does not]\label{rem:inflrigidscope}
-Remark~\ref{rem:sidenoa} draws exactly this inference --- ``the complete west block is the tile scaled
-by $f$, so its far side \dots\ is subdivided into exactly $f$ $c$-edges'' --- and asserts the middle
-step rather than proving it. Corollary~\ref{cor:sidenoa-proved} proves it at the three members where the
-computation has been run, $(4,9)$ included.
-
-It does not decide $p$ at $(3,7)$. The inflated tile is the west corner block only if that block is
-complete, which is the west half of Hypothesis~\ref{hyp:walls} itself; the corollary is conditional on
-exactly the hypothesis it serves. What has been removed is an unproved step \emph{inside} that
-implication, not the implication's hypothesis.
-
-At $(1,3)$ the theorem also reproves Theorem~\ref{thm:walls13} by an independent route, on $9$ tiles
-rather than $26$, which is the regression check that the reformulation of \S\ref{sub:inflation}
-recovers a known case before being trusted elsewhere.
+This does not decide $p$ at $(3,7)$: the inflated tile is the west corner block only if that block is complete, which is the west half of Hypothesis~\ref{hyp:walls} itself. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 Theorem~\ref{thm:inflrigid} is proved one member at a time by search, which is unsatisfying: the
@@ -3294,56 +3046,11 @@ a monotone sequence has at most one. \textup{(}Machine-checked: \texttt{BG\_GB\_
 \end{proof}
 
 \begin{remark}[What this buys]\label{rem:orientmono}
-Two things, on different fronts.
-
-On the inflation, The junction analysis of \S\ref{sub:inflation} (machine-checked as \texttt{junction\_three}) leaves three completions at each junction of the $k=2$ word
-$c\,a^{f}c$, hence $3^{f-1}$ patterns a priori. Proposition~\ref{prop:orientmono} leaves $f+1$, one for
-each value of $j$: the branching is linear in $f$, not exponential. That is consistent with the
-measured search depth, which grows like $2.65f$ rather than with $f^2$.
-
-On the thin family, nothing in the proof used the inflation --- only that an $a$-edge's two ends carry
-$\beta$ and $\gamma$. So the proposition applies verbatim to an $a$-run on an \emph{equal side}, and in
-particular to the runs enumerated in the second gap of Conjecture~\ref{conj:advance}. That enumeration
-is over the double-$c$ walks $(fk,0,f-k)$ with $1\le k\le f-3$; the number of such words grows quickly
-with $f$ \textup{(}$1,7,42,263,1823,\dots$ for $f=4,\dots,8$\textup{)}, so it is not a finite check, but
-the orientation branching within each word is now linear rather than exponential. This is the first
-tool bearing on that gap which is uniform in $f$; the cascade argument as written does not use it.
+The branching at the $k=2$ word falls from $3^{f-1}$ to $f+1$, and the proposition applies verbatim to an $a$-run on an equal side. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{remark}[Scope, and why this is not a proof of Theorem~\ref{thm:inflrigid}]\label{rem:inflparity}
-Two limitations, both essential.
-
-First, $\gcd(e,f)=1$ forbids $e$ and $f$ both even, so ``$e\not\equiv f$'' is exactly ``one of them is
-even''. The proposition is therefore \emph{silent} on the both-odd members --- which include $(1,3)$ and
-$(3,7)$, i.e.\ every member the crux actually needs. It fires at $(2,5)$ and $(4,9)$, where
-$3f^2-(4f-e)$ equals $57$ and $211$, and those are precisely the two members the search found cheap.
-That correlation is the content of the proposition: it explains the observed cost profile, it does not
-extend the theorem. The $(4,9)$ search has since returned \texttt{EXHAUSTED\_NO\_TILING} in
-$5\,161\,190$ nodes, which agrees with the parity verdict there and is strictly stronger, the search
-assuming no edge-to-edge condition.
-
-Second, edge-to-edge is an extra hypothesis, and it is not a mild one here. The main paper does not
-assume it, and the T-junction whose exclusion is the whole difficulty of \S\ref{sub:apex} is exactly an
-edge-to-edge failure; assuming it would be assuming a neighbourhood of what is to be proved. This is the
-same wall that Remark~\ref{M-rem:parityfail} hits: the $b$-edge pairing argument there fails precisely
-because a longer edge may straddle a $b$-edge instead of abutting it, and both genuine tilings exhibit
-such straddles. Proposition~\ref{prop:inflparity} is what survives once straddles are hypothesised away,
-which is why it proves less than it appears to.
-
-So the uniform proof of Theorem~\ref{thm:inflrigid} remains open. What Proposition~\ref{prop:inflparity}
-shows is that any such proof must use more than counting on the both-odd members, since the counting
-invariant is identically satisfied there. \textup{(}Machine-checked, \texttt{parity\_25},
-\texttt{parity\_49}, \texttt{parity\_silent}.\textup{)}
-
-One caveat should be entered in the hypothesis's favour. The edge multiset of the two standard
-inflations was computed from the certified tilings in \texttt{code/engine/inflation/}: at $(1,3)$ every
-edge has multiplicity $1$ or $2$ with $9$ of the former and $9$ of the latter, and at $(3,7)$ with $21$
-and $63$; no edge has multiplicity above $2$, and $2\cdot 9+9=27=3\cdot 3^2$, $2\cdot 63+21=147=3\cdot
-7^2$. So the inflation that does exist \emph{is} edge-to-edge, and the boundary count is $3f$ on the
-nose. That is a positive control sensitive to exactly the quantity the proof above manipulates --- a
-mis-stated $B$ would break it --- and it is recorded because the vertex-census parity of
-Remark~\ref{rem:parityscope} was retracted after passing a control that could not see its defect.
-What the control cannot do is speak for the $p=1$ boundary, since no such tiling exists to measure.
+The obstruction assumes the dissection is edge-to-edge, which the main paper does not, and it is silent when $e$ and $f$ are both odd --- which includes $(1,3)$ and $(3,7)$. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
@@ -3383,17 +3090,7 @@ $\beta$ there.
 \end{proof}
 
 \begin{remark}[The last junction, and what is still missing]\label{rem:lastjunction}
-At $J_{2f}$ the two boundary neighbours are the $a$-tile $A_{2f}$, presenting $\gamma$ with a
-$b$-ray inward, and the apex $c$-tile, presenting $\beta$ with an \emph{$a$}-ray inward; the filler's
-rays are $b$ and $c$. Since neither $b$ nor $c$ equals $a$, \emph{$J_{2f}$ cannot be edge-to-edge},
-and each placement leaves a residual run: $c-a$, or $b-a$ together with $c-b=e^2$. All three are gaps
-of $\langle a,b,c\rangle$ --- $b-a$ by \texttt{gap\_b\_sub\_a}, $e^2$ by \texttt{gap\_e\_squared},
-and $c-a$ by \texttt{gap\_c\_sub\_a\_tight}, which holds precisely for $e\ge2$ since $c-a=2a$ at
-$(1,3)$. Moreover $e^2<a$, so no tile edge fits inside that run at all. Hence the covering
-\emph{must} overrun a filler vertex.
-
-Each placement therefore forces the covering to overrun a filler vertex. That alone is not an
-exclusion, and the exclusion comes instead from a chord bound, which we now state.
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{lemma}[The chord at the last junction]\label{lem:chord}
@@ -3450,22 +3147,7 @@ draws the same conclusion from the side count.
 \end{proof}
 
 \begin{remark}[The audit of Theorem~\ref{thm:ptwodead} against the apex rigidity]\label{rem:ptwoaudit}
-Theorem~\ref{thm:ptwodead} predates \S\ref{sub:apex}, and the two overlap. Reconciling them shows the
-earlier enumeration was doing more work than necessary, and we record this rather than leave two
-arguments whose relation is unclear.
-
-Remark~\ref{rem:lastjunction} has the $\alpha$-filler standing between the apex $c$-tile and the
-$a$-tile, so it lays one of its flanks --- a $b$ or a $c$ --- along the apex tile's $a$-ray. Both
-exceed $a=|JP|$, so $P$ would lie \emph{interior} to that edge, contributing $\pi$ at $P$. But
-Theorem~\ref{thm:apexconfig} puts $T_1$ at $\gamma$ there, and $T_2$'s trace on the chord ends at $P$,
-so $T_2$ contributes at least $\gamma$ as well. The total is at least $2\gamma+\pi=2\pi+\alpha>2\pi$.
-
-So that configuration does not occur at all, and the placements enumerated in the proof of
-Theorem~\ref{thm:ptwodead} are placements of a tile that cannot be there. The conclusion is unharmed
---- indeed Corollary~\ref{cor:pbound} re-derives it, on a wider range of members and without any chord
-estimate --- and Theorem~\ref{thm:lastjunction}'s conclusion, that the adjacent tile lays an $a$-edge,
-is likewise immediate from the same count. What the audit removes is the impression that the tight
-subfamily needs the height identity: it does not.
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 
@@ -3509,7 +3191,7 @@ placement lying inside the target, and both figures at $Q$ are consistent. So th
 configurations at $p=1$ --- the mirror partner and the $\gamma$ --- are a single phenomenon, and
 neither is excluded by the chord or the height identity. Closing $p=1$, and with it
 Hypothesis~\ref{hyp:walls} on the whole subfamily $f=2e+1$, requires a further mechanism ---
-and \S\ref{sub:nogo} rules out the two most natural candidates, so that mechanism must be metric.
+and \cite{Obstructions} rules out the two most natural candidates, so that mechanism must be metric.
 \end{remark}
 
 \begin{theorem}[The side carrying $T_2$'s $c$-edge is not mirrored]\label{thm:nobothmirror}
@@ -3615,7 +3297,7 @@ direction, at $\beta$ below the horizontal, and the direction at $\alpha+\beta$ 
 every forced vertex sits at a \emph{rational} multiple of the chord spacing $\delta=H/f$; at $(3,7)$
 the heights are $0$, $1$, $c/b$, $2$, $(b+c)/c$, $(b+c)/b$, with denominators dividing
 $\operatorname{lcm}(b,c)$. This cannot persist, since the vertical projection of the $\mathbb Z$-module
-generated by all admissible edge vectors is dense (Remark~\ref{rem:chordscope}). Of the four ways to
+generated by all admissible edge vectors is dense (\cite{Obstructions}). Of the four ways to
 continue past $X_1$ in placement (ii), exactly two stay inside the two-direction system and two
 introduce a third direction. The rationality breaks precisely at those two, and that is the boundary
 of the region the present arguments control. What is gained is that the
@@ -3666,247 +3348,14 @@ reason the first two cross products stand in the ratio $b:c$.
 
 
 \begin{remark}[Scope, and where $e\ge2$ is easier]\label{rem:ptwoscopeb}
-Theorem~\ref{thm:ptwodead} closes $p=2$ on the whole subfamily $f=2e+1$, hence at $(1,3)$, $(2,5)$,
-$(3,7)$, $(4,9)$, $(5,11)$ and onward; verified independently by exact enumeration of the six
-placements for every member with $e\le400$. Combined with Corollary~\ref{cor:ptwo} it leaves $p=1$ as
-the only obstruction to Hypothesis~\ref{hyp:walls} on that subfamily.
-
-It does not extend beyond $f=2e+1$: the height identity used above holds exactly there.
-
-Two by-products. First, $c-a$ is a gap of $\langle a,b,c\rangle$ precisely for $e\ge2$, failing at
-$(1,3)$ where $c-a=2a$; this is the first point in the problem where $e\ge2$ is easier than $e=1$.
-Second, at $(3,7)$ the base walk $(0,e,2e)$ carries no $a$-edge, so the corner tile lays $c$ on the
-base and $a$ on the side, forcing $p\ge1$ on both equal sides; with $p=2$ excluded,
-Hypothesis~\ref{hyp:walls} at $(3,7)$ therefore requires the base walk $(f,e,e)$.\end{remark}
-
-\subsection{Two mechanisms that provably cannot close \texorpdfstring{$p=1$}{p=1}}\label{sub:nogo}
-
-Remark~\ref{rem:dichotomy} ends by saying that closing $p=1$ ``requires a further mechanism''. That
-is a hedge, and it can be replaced by theorems. This subsection records two natural mechanisms and
-proves that neither can work, and one arithmetic fact that survives and points the other way. The
-member is $(e,f)=(3,7)$ throughout: tile $(a,b,c)=(21,40,49)$, target $(343,343,414)$, $N=138$.
-
-Fix an equal side with $p=1$. Its word is a permutation of $a^{7}c^{4}$ ending in $c$
-($7\cdot21+4\cdot49=343$), so it has $11$ edges and $10$ interior junctions. Each edge is laid by a
-tile, and the two angles of that tile at the ends of the edge are the two angles \emph{not} opposite
-it: an $a$-edge is flanked by $\beta$ and $\gamma$, a $c$-edge by $\alpha$ and $\beta$. Call the
-choice of which flank sits at the lower end the \emph{orientation} of the edge.
-
-\begin{lemma}[Endpoint angles]\label{lem:endpoints}
-The angle at the top of the last edge is $\alpha$, and the angle at the bottom of the first edge is
-$\beta$.
-\end{lemma}
-
-\begin{proof}
-By Lemma~\ref{lem:census} the apex fills uniquely as $\{3\alpha\}$ and each base corner uniquely as
-$\{\beta\}$. The last edge of the side is a $c$-edge, whose flanking angles are $\alpha$ and $\beta$;
-the tile at the apex presents $\alpha$, so the top angle is $\alpha$. The single tile at the base
-corner presents $\beta$, so the bottom angle of the first edge is $\beta$.
-\end{proof}
-
-\begin{proposition}[The junction automaton is consistent, and hugely so]\label{prop:nogoauto}
-Regard the side as a transfer system: a state is the angle at the top of the current edge, and a
-transition is admissible when the pair (top angle of one edge, bottom angle of the next) extends to a
-straight figure at their junction. Then the only inadmissible pair is $(\gamma,\gamma)$, which can
-occur only at a junction between two $a$-edges. Consequently, over all $120$ words $a^{7}c^{4}$
-ending in $c$ and all $2^{11}$ orientations, exactly $10\,560$ configurations satisfy every junction
-constraint together with Lemma~\ref{lem:endpoints}.
-\end{proposition}
-
-\begin{proof}
-A junction of an equal side carries a straight figure, so by Lemma~\ref{lem:census} it is
-$\{\gamma,\alpha,\beta\}$ or $\{3\alpha,2\beta\}$. The figure $\{\gamma,\alpha,\beta\}$ has one angle
-of each kind, so it admits a pair of side angles precisely when the two are distinct. The figure
-$\{3\alpha,2\beta\}$ contains no $\gamma$, so it admits precisely the pairs drawn from
-$\{\alpha,\beta\}$, all four of which leave an admissible remainder ($3\alpha$, $2\alpha+\beta$,
-$2\alpha+\beta$, $\alpha+2\beta$ respectively). A pair is therefore inadmissible exactly when it is
-equal and involves $\gamma$; and $\gamma$ occurs only as a flank of an $a$-edge. The count is a
-finite check over $120\cdot2^{11}$ cases.
-\end{proof}
-
-\begin{proposition}[The census contributes one relation, and it is already spent]\label{prop:nogocensus}
-Let $x$ be the number of junctions of the side carrying $\{\gamma,\alpha,\beta\}$. Then $x\ge7$, and
-the $\alpha$- and $\beta$-counts along the side are linearly dependent: they sum to the identity
-$13=13$. Both $x=7$ and $x=10$ occur in solutions, so the census does not determine $x$.
-\end{proposition}
-
-\begin{proof}
-The $7$ $a$-edges contribute one $\beta$ and one $\gamma$ each, the $4$ $c$-edges one $\alpha$ and
-one $\beta$ each: $7\gamma$, $11\beta$, $4\alpha$ in all. By Lemma~\ref{lem:endpoints} the apex
-absorbs one $\alpha$ and the base corner one $\beta$, leaving $7\gamma$, $10\beta$, $3\alpha$
-distributed over the $20$ side-tile slots at the $10$ junctions. A $\{3\alpha,2\beta\}$ junction
-contains no $\gamma$ and a $\{\gamma,\alpha,\beta\}$ junction exactly one, so the $7$ $\gamma$'s
-occupy $7$ distinct junctions of the latter type, whence $x\ge7$.
-
-Write $u$ for the number of junctions whose $\gamma$ lies on a side tile and whose other side slot is
-$\beta$, and $(a_i,b_i)$ with $a_i+b_i=2$ for the side slots at the $10-x$ junctions of type
-$\{3\alpha,2\beta\}$. Counting $\alpha$ and $\beta$ separately,
-\[
-(7-u)+(x-7)+\textstyle\sum_i a_i \;=\;3,
-\qquad
-u+(x-7)+\textstyle\sum_i b_i \;=\;10 .
-\]
-Adding and using $\sum_i(a_i+b_i)=2(10-x)$ gives $7+2x-14+20-2x=13$, an identity. The two equations
-are therefore dependent. Taking $x=10$, $u=7$ satisfies both, as does $x=7$, $u=4+\sum_i a_i$ for any
-$\sum_i a_i\le3$.
-\end{proof}
-
-\begin{remark}[What the two no-go results mean]\label{rem:nogoscope}
-Proposition~\ref{prop:nogoauto} shows that the local combinatorics of the side is almost unconstrained:
-the automaton forbids one adjacency and leaves $10\,560$ configurations. Proposition~\ref{prop:nogocensus}
-shows that adjoining the census adds nothing, because the two counting equations are dependent. This
-is the third independent confirmation of the warning in Lemma~\ref{lem:census} that corner counting
-cannot see $p$, and it is also the exact reason the retraction described in
-Remark~\ref{rem:parityscope} was possible: a counting argument at $(3,7)$ has one relation to spend
-and it is spent.
-
-The conclusion is directional, not merely negative. Any mechanism that closes $p=1$ must use metric
-information --- positions, not multiplicities. Proposition~\ref{prop:straddle} is the first such fact.
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
-\begin{proposition}[Every junction chord is straddled]\label{prop:straddle}
-Let $J$ be a junction of an equal side at distance $d$ from the apex, and let $C$ be the chord of the
-target through $J$ parallel to the base. Then some tile of the tiling meets both open sides of $C$.
-\end{proposition}
+\subsection{Close pairs: the extra base columns}\label{sub:closepairs}
 
-\begin{proof}
-Since $d$ is a sum of edge lengths $21$ and $49$, we have $d=21i+49j$ and the height fraction is
-$\rho=d/343=(3i+7j)/49$. Write $n=3i+7j$, so $1\le n\le48$ for a junction strictly between the apex
-and the base. The chord cuts off a triangle similar to the target with ratio $\rho$, whose area in
-units of the tile area is
-\[
-138\rho^{2}\;=\;\frac{138\,n^{2}}{2401}.
-\]
-Now $2401=7^{4}$ and $138=2\cdot3\cdot23$, so $\gcd(138,2401)=1$ and the quantity is an integer if
-and only if $7^{4}\mid n^{2}$, i.e.\ $49\mid n$ --- impossible for $1\le n\le48$. Hence the area above
-$C$ is not an integral number of tiles. If no tile met both open sides of $C$, every tile would lie
-weakly on one side and the area above $C$ would be a sum of whole tile areas, a contradiction.
-\end{proof}
-
-\begin{proposition}[The general form]\label{prop:straddlegen}
-Let $(e,f)$ be any member with $\gcd(e,f)=1$. Then the area above the chord through any junction
-strictly between the apex and the base is never an integral number of tile areas, so some tile meets
-both open sides of that chord.
-\end{proposition}
-
-\begin{proof}
-A junction at distance $d=ia+jc=f(ie+jf)$ from the apex has height fraction $\rho=m/f^{2}$ with
-$m=ie+jf$ and $1\le m<f^{2}$, so the area above its chord is $Nm^{2}/f^{4}$ tile areas. Since
-$\gcd(e,f)=1$ we have $\gcd(N,f)=\gcd(3f^{2}-e^{2},f)=\gcd(e^{2},f)=1$, so $f^{4}\mid Nm^{2}$ forces
-$f^{4}\mid m^{2}$, hence $f^{2}\mid m$ prime by prime, which contradicts $m<f^{2}$. The rest is as in
-Proposition~\ref{prop:straddle} (\texttt{ChordDecomp.area\_never\_integral}; the coprimality is
-automatic on the tight subfamily, \texttt{ChordDecomp.coprime\_tight}). Checked by exhaustive
-enumeration over all members with $e\le14$, $f\le31$ and all admissible junctions: $80\,299$ cases,
-no exception.
-\end{proof}
-
-\begin{remark}[Why this is the right direction]\label{rem:straddlescope}
-At the last junction, $n=7$ and the area above the chord is $138/49=2.816\ldots$ tiles, while the
-chord has length $414/7=59.14\ldots$ and a tile meets a line in a segment of length at most $c=49$;
-so at least two tiles meet that chord, and at least one straddles it. This is exactly the region
-below the chord that the enumeration of Theorem~\ref{thm:ptwodead} does not reach --- see the
-discussion of the $c\,c$ ending in Remark~\ref{rem:dichotomy} --- and it is the reason the surviving
-configurations survive: not that the chord bound fails there, but that it was never applied there.
-Whether the straddling constraint can be sharpened into a contradiction is open.
-\end{remark}
-
-\begin{proposition}[Chord decomposition at the last junction]\label{prop:chorddecomp}
-Let $C$ be the chord of the target through the last junction $J$ of an equal side at $(3,7)$, so
-$|C|=414/7$. Let $\mathcal U$ be the set of tiles whose interiors meet the open half-plane above $C$.
-Each $T\in\mathcal U$ either \emph{straddles} $C$ (its interior meets both open sides) or is
-\emph{flush from above} (it lies weakly above the line of $C$). Then:
-\begin{enumerate}
-\item[(a)] a flush tile meets the line of $C$ in a full tile edge, of length $21$, $40$ or $49$;
-\item[(b)] the traces on $C$ of the tiles of $\mathcal U$ have pairwise disjoint interiors and cover
-$C$, so their lengths sum to $414/7$;
-\item[(c)] at most two tiles of $\mathcal U$ are flush, and the multiset of flush lengths is one of
-$\varnothing,\{21\},\{40\},\{49\},\{21,21\}$;
-\item[(d)] at least one tile straddles, and if none is flush then at least two straddle.
-\end{enumerate}
-\end{proposition}
-
-\begin{proof}
-(a) For a tile lying weakly above the line of $C$, that line is a supporting line, so the intersection
-is a face of the tile --- a vertex or an edge (\texttt{contact\_is\_edge}). A trace of positive length
-excludes the vertex case, and the edge lengths are $a=21$, $b=40$, $c=49$.
-
-(b) The closed region above $C$ is covered by the tiles, and a point of $C$ interior to the target is
-a limit of points of that region, hence lies in a tile of $\mathcal U$, which is closed; so the traces
-cover $C$. If two tiles of $\mathcal U$ had traces overlapping in a segment, both would occupy area
-immediately above that segment, contradicting disjointness of interiors. Additivity of length gives
-the sum.
-
-(c) The flush lengths are integers drawn from $\{21,40,49\}$ and, by (b), sum to at most
-$|C|=414/7=59.142\ldots$. The only multisets meeting that bound are the five listed: already
-$21+40=61>|C|$, and $21+21+21=63>|C|$.
-
-(d) By the computation in Proposition~\ref{prop:straddle} the area above $C$ is $138/49$ tiles, not an
-integer, so a straddler exists. If no tile of $\mathcal U$ is flush, the straddling traces alone sum to
-$|C|=59.142\ldots$; a segment contained in a tile has length at most the tile's diameter, which for a
-triangle is its longest side $c=49$. Hence at least two straddlers.
-\end{proof}
-
-\begin{remark}[What the decomposition gives, and the rung that remains]\label{rem:chordscope}
-Proposition~\ref{prop:chorddecomp} is the first statement that constrains the configuration
-\emph{below} the chord at $J$, the region Remark~\ref{rem:dichotomy} identifies as untouched. It
-reduces the possibilities there to a finite list: a flush total in $\{0,21,40,42,49\}$ together with a
-straddling remainder of $59.142\ldots$, $38.142\ldots$, $19.142\ldots$, $17.142\ldots$ or
-$10.142\ldots$, distributed over at least one and at most a bounded number of straddling tiles.
-
-What it does not give is rigidity: the cross-section of a straddling tile varies continuously with its
-position, so no individual value is forced. The natural hope is that the $\gamma$-grading of
-\S\ref{sub:gammagrading} restores discreteness --- a straddler's edges have directions that are
-integer multiples of $\gamma$ modulo $\pi$, so one might expect its cross-section to be drawn from a
-countable set fixed by its label. \emph{That hope is unfounded}, and we record why, since it is the
-first thing a reader will try.
-
-The grading constrains directions, not positions. Tile vertices lie in the $\mathbb Z$-module
-generated by the admissible edge vectors, and for a horizontal chord what matters is the projection
-of that module to the vertical axis. Since $\gamma=(\pi+\alpha)/2$ with $\alpha/\pi$ irrational, that
-projection is generated by the values $\ell\sin(k\gamma)$ for $\ell\in\{21,40,49\}$ and $k$ in the label
-window, and these are rationally independent: the subgroup they generate is dense in $\mathbb R$.
-So no cross-section is forced, and the chord decomposition cannot by itself close $p=1$.
-
-What the decomposition does establish is that the obstruction is located strictly \emph{below} the
-chord. Above it there is only $138/49=2.816\ldots$ of a tile's area, so that region is enumerable up
-to boundedly many tiles --- which is precisely the enumeration Theorem~\ref{thm:ptwodead} performs.
-The surviving configurations of Remark~\ref{rem:dichotomy} place the decisive tile below the chord,
-where no area bound confines it. Closing $p=1$ therefore requires a constraint that reaches downward,
-and we do not have one.
-\end{remark}
-
-\begin{remark}[The chord programme is exhausted]\label{rem:chordexhausted}
-It is natural to hope that the family of chords does collectively what no single chord does: there
-are $37$ admissible heights $\rho=n/49$ with $n=3i+7j$, each carrying its own non-integral area
-$138\rho^{2}$, and a tile lying below the chord at $J$ lies above the chord at some lower junction. We
-record that this hope is also unfounded, so that the reader need not pursue it.
-
-For a tile $T$ and a chord $C$ write $\varphi_T(C)\in[0,1]$ for the fraction of $T$'s area lying above
-$C$; thus $T$ straddles $C$ exactly when $\varphi_T(C)\in(0,1)$. The area statement at height $\rho$ is
-\[
-\sum_{T}\varphi_T(C_\rho)\;=\;138\rho^{2},
-\]
-and this is nothing but additivity of area over the tiling: the left-hand side \emph{is} the area
-above $C_\rho$, decomposed tile by tile. It therefore holds identically, for every tiling of the
-target, and the $37$ admissible heights supply $37$ instantiations of one identity rather than $37$
-constraints.
-
-The only information extractable from the family is the integrality bit --- where $138\rho^{2}\notin
-\mathbb Z$, some $\varphi_T(C_\rho)$ lies strictly between $0$ and $1$ --- and that is precisely
-Proposition~\ref{prop:straddle}. The nesting adds nothing further: the set of heights straddled by a
-given tile is an interval, and $138$ tiles cover $37$ heights with room to spare.
-
-This is the same degeneracy as Proposition~\ref{prop:nogocensus}, in a metric rather than a
-combinatorial register: a single global identity, instantiated many times, cannot separate tilings.
-Taken together with Remark~\ref{rem:chordscope} it closes the chord programme. What the chord method
-yields at $(3,7)$ is exactly Propositions~\ref{prop:straddle} and \ref{prop:chorddecomp}, and closing
-$p=1$ requires a mechanism that is neither counting nor chord-area. We do not have one, and we prefer
-to say so.
-\end{remark}
-
-
-
-
+The close-pair regime $f^2\le 2ef+e^2$ admits base decompositions the separated members do not.
+This subsection puts them in closed form and gives the sharp criterion, which is Hall's condition
+rather than the counting bound.
 
 \begin{remark}[Close pairs: what the unconditional filters leave]\label{rem:closepairs}
 At a close pair ($f^2\le 2ef+e^2$) Lemma~\ref{lem:basetri} no longer applies and the base admits
@@ -3991,12 +3440,6 @@ determined by $x$.
 \textup{(\texttt{close\_pair\_column}, \texttt{close\_pair\_column\_unique}, \texttt{one\_column\_per\_k}.)}
 \end{proposition}
 
-The clause ``that admits a solution'' in Proposition~\ref{prop:closepaircolumns} is not decided by
-(iii): the bound there ignores the residue class of $x$, and over-permits. At $(e,f)=(8,17)$ it
-allows $k=1$, while $8x+17z=47$ with $x\equiv8\pmod{17}$ has no solution with $x,z\ge1$, so no
-column exists; the same happens at $551$ of the $1558$ close pairs with $e\le60$. Restoring the
-residue class makes the test exact.
-
 \begin{proposition}[Sharp criterion for an extra base column]\label{prop:sharpcolumn}
 Let $\gcd(e,f)=1$, $1\le e<f$, $b=f^2-e^2$. For $k\ge1$ let $x_k$ be the least positive integer with
 $x_k\equiv ke\pmod f$, and write $x_k=ke-m_kf$, so that $1\le x_k\le f$. Put
@@ -4019,28 +3462,6 @@ $K\le 1+\lfloor(2e-1-f)/(f-e)\rfloor$.
 \texttt{Quot.sound}.}
 \end{proposition}
 
-\begin{proof}
-(i) By Proposition~\ref{prop:closepaircolumns}(i),(ii) a column satisfies $xe+zf=2ef-kb$ and
-$x\equiv ke\pmod f$; conversely, for any $x$ in that class $f$ divides $2ef-kb-xe$, because
-$xe\equiv ke^2$ and $2ef-kb\equiv ke^2 \pmod f$. So the column exists precisely when some $x\ge1$ in
-the class has $z=(2ef-kb-xe)/f\ge1$, that is $xe+f+kb\le 2ef$. The left side increases with $x$, so
-it suffices to test $x=x_k$, and then $x=x_k$ by Proposition~\ref{prop:closepaircolumns}(iv).
-Writing $x_k=ke-m_kf$, the identity
-\[
-(ke-mf)e+f+k(f^2-e^2)-2ef \;=\; f\bigl(kf-(m+2)e+1\bigr)
-\]
-turns that inequality, after dividing by $f>0$, into $kf\le(m_k+2)e-1$, i.e.\ $g(k)\ge0$.
-
-(ii) From $x_k=ke-m_kf$ and $x_{k+1}=(k+1)e-m_{k+1}f$ one gets
-$x_{k+1}-x_k=e+(m_k-m_{k+1})f$. Both $x_k,x_{k+1}$ lie in $[1,f]$, so the left side lies in
-$[1-f,f-1]$; with $0<e<f$ this forces $m_k\le m_{k+1}\le m_k+1$. Hence
-$g(k+1)-g(k)=(m_{k+1}-m_k)e-f\le e-f<0$.
-
-(iii) Since $1\le e\le f-1$, the least positive member of the class of $e$ is $e$ itself, so
-$m_1=0$ and $g(1)=2e-1-f$. If $f\ge2e$ then $g(1)<0$, and $g$ is decreasing, so $g(k)<0$ for every
-$k\ge1$. In general $g(k)\le g(1)-(k-1)(f-e)$, and $g(K)\ge0$ gives the stated bound on $K$.
-\end{proof}
-
 \begin{remark}[What the criterion settles, and what it leaves]\label{rem:sharpcolumnscope}
 The whole $k\ge1$ question is now confined to $e<f<2e$, a strict sub-range of the close-pair range
 $f\le(1+\sqrt2)e$. Of the $17296$ close pairs with $e\le200$, $5065$ have $f\ge2e$ and so carry no
@@ -4058,220 +3479,6 @@ What this does \emph{not} do is exclude the surviving columns: $21837$ of them e
 the base equation, and no arithmetic condition can remove them, since they are genuine solutions.
 The arithmetic layer of the close-pair problem is now exactly described; the exclusion must come
 from the interior, as Remark~\ref{rem:closepairs} already recorded.
-\end{remark}
-
-\begin{remark}[The wedge-filler hypothesis, and where it fails]\label{rem:alphamin}
-Several steps of the corner chain fill a wedge of angle exactly $\alpha$ with a single
-$\alpha$-tile, justified in Lemma~\ref{lem:wallclimb} by ``$\alpha$ is the minimal angle''. That is
-not the load-bearing fact. What the step needs is that no two smaller angles fit, that is
-$2\beta>\alpha$, which with $3\alpha+2\beta=\pi$ reads
-\[
-\alpha<\tfrac\pi4 .
-\]
-The two conditions are different, and both directions of the difference occur. At $(e,f)=(3,4)$ one
-has $b<a$, so $\beta$ is the minimal angle, yet $\alpha<\pi/4$ still holds and the step survives.
-
-The criterion is exact and integral. Since $b^2+c^2-a^2=(f^2-e^2)(2f^2-e^2)$ and
-$2bc=2f^2(f^2-e^2)$,
-\[
-\cos\alpha=\frac{2f^2-e^2}{2f^2}=1-\frac{e^2}{2f^2},
-\]
-which at $e=1$ is the familiar $(2f^2-1)/(2f^2)$. So $\alpha<\pi/4$ iff $2f^2-e^2>\sqrt2\,f^2$, and
-squaring (both sides positive, as $f>e$) gives
-\[
-e^4-4e^2f^2+2f^4>0 .
-\]
-The separation condition $f^2>2ef+e^2$ implies it (\texttt{separated\_wedge\_ok}): from
-$f^2-e^2>2ef$ one gets $f^4+e^4>6e^2f^2$ on squaring, and the claim follows with room to spare. So
-the step is safe at every separated member, and every failure is a close pair. Among $e\le11$,
-$f\le19$ the failures are
-\[
-(4,5),\ (5,6),\ (6,7),\ (7,8),\ (7,9),\ (8,9),\ (9,10),\ (9,11),\ (10,11),\ (10,13),\ (11,12),\ (11,13),
-\]
-including $(5,6)$, which is $N=83$. No claim in either paper is affected: Lemma~\ref{lem:wallclimb}
-is invoked only at $e=1$, where $a=f<f^2-1=b$ and $\alpha<\pi/4$ both hold, and
-Proposition~\ref{prop:unify} lists four ingredients not including it. What the criterion supplies is
-a precise location for the obstruction: close pairs differ from separated members geometrically, not
-merely in having weaker arithmetic filters, and an argument aimed at them must either avoid the
-wedge-filler step or treat $e^4-4e^2f^2+2f^4\le0$ separately.
-
-Two arithmetic strengthenings do \emph{not} help there, which is why the bound must be interior.
-Reducing the base equation modulo $e$ gives $y+z\equiv0\pmod e$ by coprimality; and the
-$\gamma$-injection is exactly a bipartite matching of the $a$- and $b$-edges to the junctions, whose
-sharp criterion is Hall's condition rather than the counting bound. Neither removes any of the $54$
-columns that survive the three unconditional filters over $e\le9$, $f\le15$: the first is implied by
-the base equation, and the second collapses to the $\gamma$-trap $z\ge1$, since with $z\ge1$ a
-matching always exists.
-\end{remark}
-
-\begin{lemma}[A $c$-corner carries a side $a$-edge]\label{lem:ccornerside}
-The base corner angle is $\beta$, with flanks $\{a,c\}$. If a corner tile lays $c$ on the base it
-lays $a$ on the side, so that side's $a$-count $P'$ is positive; by Lemma~\ref{lem:sidequant}
-$P'=fp$, hence $P'\ge f$, and with $p e+R'=f$ and the $\gamma$-trap $R'\ge1$ one gets
-$1\le p\le(f-1)/e$. So the side condition of Hypothesis~\ref{hyp:walls}, namely $p=0$, fails at
-any $c$-corner: under that hypothesis both base ends are $a$-edges, exactly as
-Theorem~\ref{thm:e1reduce} concludes at $e=1$. What remains for $e\ge2$ is to exclude
-$1\le p\le(f-1)/e$, which is the analogue of the entire $e=1$ programme rather than a single
-lemma; the boundary alone does not do it, since $a$ and $c$ are both available at the first base
-position once the walls column is in force.
-\end{lemma}
-
-\begin{proposition}[The chain machinery is member-independent]\label{prop:unify}
-Every ingredient of the corner chain holds at all members $(e,f)$, not only at $e=1$:
-\begin{enumerate}
-\item[\textup{(i)}] the branch relations $3\alpha+2\beta=\pi$ and $\gamma=2\alpha+\beta$ define
-the family, so the unique fills of $\beta$, $\alpha$ and $\alpha+\beta$ (\texttt{fill\_beta},
-\texttt{fill\_alpha}, \texttt{fill\_alpha\_beta}) and the straight and full vertex
-classifications are unchanged;
-\item[\textup{(ii)}] $\cos\gamma=-e/2f<0$, so $2\gamma>\pi$ and every reflected partner dies at a
-straight junction, at every member;
-\item[\textup{(iii)}] $b\sin\gamma=c\sin\beta$, so an $a$-up tile spans its strip, at every member;
-\item[\textup{(iv)}] for $1\le j<f$ the only decomposition of $j\,b$ is $j$ copies of $b$. Writing
-$j=y+z+w$, the equation gives $e^2(z+w)+x\,ef=w f^2$, so $f\mid e^2(z+w)$ and hence
-$f\mid z+w$ by coprimality; since $z+w\le j<f$ this forces $z=w=0$, so $y=j$ and $x=0$. Both
-reductions are derived rather than assumed (\texttt{partition\_jb\_gen}). Verified for all
-coprime $(e,f)$ with $e<12$, $f<20$.
-\end{enumerate}
-The single parameter that changes is the overshoot $c-b=e^2$, which is $1$ only at $e=1$. The
-$e=1$ arguments that used $c-b=1$ as a unit therefore carry over with $e^2$ in its place, while
-those that used its being the smallest positive integer do not.
-\end{proposition}
-
-\begin{lemma}[The $\alpha$-vertex gap, general]\label{lem:avgen}
-A cover piece of a horizontal $a$-edge has its foot at $(k+1)a$ from the row origin if it is
-direct, and at $(k+3)a-e^3/f$ if it is mirrored, since $2\,cu_x-3a=-e^3/f$. The mirrored foot is a
-lattice point only if $f^2\mid e^2$, and at row $1$, where feet land on the base and every
-junction there is at an integer abscissa, it is a junction only if $f\mid e^3$; coprimality forces
-$f=1$ in both cases (\texttt{alpha\_vertex\_gap\_gen}). So the mirrored placement is excluded at
-row $1$ at every member with $f\ge2$, with $e^3$ playing the role that $1$ plays at $e=1$.
-\end{lemma}
-
-\begin{remark}[The two corners are not equally rigid]\label{rem:cornerasym}
-At a $c$-corner the side junction carries $\gamma$ and the remaining $\alpha+\beta$ has the unique
-fill $\{\alpha,\beta\}$, so the partner is forced immediately; this is what makes
-Theorem~\ref{thm:n1} short. At an $a$-corner the side junction carries $\alpha$ and the remaining
-$2\alpha+2\beta$ admits both $\{2\alpha,2\beta\}$ and $\{\beta,\gamma\}$, so the side branches at
-once. The base end behaves the other way: there the $a$-corner leaves $\alpha+\beta$, whose unique
-fill again forces the partner and confines the next base edge to $\{a,c\}$. The chain therefore
-runs along the base from either corner, and what it cannot do is pass a base $b$-edge; this is the
-mechanism behind Theorem~\ref{thm:e1cascade} at $e=1$ and it is available verbatim at every member.
-\end{remark}
-
-\begin{lemma}[The corner step, unconditional at every member]\label{lem:cornerstep}
-Let a base corner tile lay $a$ on the base. It presents $\gamma$ at the far end of that $a$-edge,
-where the junction is straight, so the remainder is $\alpha+\beta$ with the unique fill
-$\{\alpha,\beta\}$. The corner tile's $b$-edge joins a base vertex to a side vertex, so both of
-its ends lie on the boundary and the tile across it lays a whole $b$; that tile presents $\alpha$
-at the junction, since a straight junction carries at most one $\gamma$. Hence the $\alpha$-tile
-is adjacent to the corner tile and the $\beta$-tile is adjacent to the base, and the second base
-edge, lying among the $\beta$-tile's flanks, is an $a$ or a $c$.
-\end{lemma}
-
-\begin{remark}[Where the chain stops being free]\label{rem:chainobstruction}
-Lemma~\ref{lem:cornerstep} iterates only as far as the same two ingredients survive. The fill of
-$\alpha+\beta$ is unique at every member, so the two tiles are always an $\alpha$ and a $\beta$;
-what decides whether the next base edge is confined to $\{a,c\}$ is their angular order, and that
-is settled by whether the $\alpha$-tile is the partner across the previous tile's whole $b$-edge.
-At the corner this is unconditional, because the $b$-chord runs from a base vertex to a side
-vertex. At the $k$-th step the chord's upper end is interior, and pinning it is precisely the
-crossing question of Remark~\ref{rem:straddle}. Both remaining cases, the residual configurations
-at $e=1$ and the exclusion of $1\le p\le(f-1)/e$ at $e\ge2$, reduce to that single question.
-
-That question is not answered by the hypothesis $m=1$ alone. Instrumenting the certified
-exhaustions to record every partial configuration they build shows the overshoot occurring
-freely: at $(1,2)$ it appears in $31$ of the $52$ recorded frontiers and at $(1,3)$ in $1128$,
-the first already at depth $3$ with three tiles placed, a $c$-edge from $(2,0)$ to
-$\bigl(\tfrac{11}2,\tfrac{\sqrt{15}}2\bigr)$ covering a $b$-edge from $(2,0)$ and overshooting
-it by $c-b=1$. Every such configuration is eventually refuted, but not locally: the partner
-pinning cannot be established by excluding the overshoot near the chord.
-\end{remark}
-
-\begin{remark}[The thick program]\label{rem:thickprogram}
-The three verified facts above change the character of the $e\ge2$ case. The chain machinery
-ports with strictly stronger tools: the wall climb and the first-run chirality are
-member-independent (their proofs use only the angle identities and the boundary overshoot
-$c-b=e^2>0$), and Lemma~\ref{lem:monochotomy} removes the $c$-chord fork entirely, so the thick
-chain branches strictly less than the thin one. What remains is the finite bookkeeping: the base
-letters run through a trichotomy rather than a free word, the side violations are quantized to
-$p\in f\mathbb{N}$, and the reach analysis of the thin case applies verbatim where the blocks are
-short. The $(2,3)$, $(2,5)$ and $(3,4)$ members are certified by full exhaustions ($19{,}677$,
-$553{,}417$ and $825{,}724$ nodes; the second is the prime $N=71\equiv11\pmod{12}$, the third a
-close pair). The close pair refutes deeper ($8.3f$ against $5.7f$ and $5.2f$), consistent with
-its additional base decompositions.
-\end{remark}
-
-\begin{remark}[First thick-member certificates]\label{rem:thickcerts}
-The full $m=1$ search of the $(2,3)$ target ($N=23$, prime, $23\equiv11\pmod{12}$) is
-\textsc{exhausted} at $19{,}677$ nodes: no tiling exists, and Hypothesis~\ref{hyp:walls} holds at
-$(2,3)$. The refutation profile differs from the thin members: the semigroup-run prune carries
-$57\%$ of the kills (against $8\%$ at $(1,5)$), consistent with Lemma~\ref{lem:monochotomy}
-strengthening the run arithmetic, and the maximal depth is $5.7f$ against $4.8f$. \end{remark}
-
-\begin{lemma}[The crossing kill, and solitude of branches]\label{lem:solitary}
-A transversal edge crossing a ladder's line within parameter $b+c$ of its start is fatal: the
-covers cannot cross it, every T-junction forces the next cover edge, and
-Lemma~\ref{lem:termination} forbids termination below $b+c$. A branch's own ceilings never
-trigger this --- the $k$-th strip crossing is endpoint-tangent, sitting exactly $(k-1)c$ east of
-the corresponding ceiling's end (\texttt{crossing\_tangency}) --- but a \emph{different} same-row
-branch's ceilings do whenever it sits $1$ to $2f-1$ columns west: the offset $D f$ lands the
-crossing inside a ceiling for every $-2f<D<0$, at parameter $b$ or $2b<b+c$. Hence any strip
-junction of an $A$-branch with another $A$-branch $1$ to $2f-1$ columns to its west admits no
-straddler, and its fills are mates: at most one $A$-branch per $2f$-column window per row-band
-carries any straddler at all.
-\end{lemma}
-
-\begin{lemma}[The mirrored piece is charged]\label{lem:charge}
-A cover piece of a horizontal $c$-edge is direct, with foot at the row lattice, or mirrored, with
-foot displaced by $1/f$; the mirrored piece presents $\beta$ at its left junction, as does its
-left neighbour, so that junction carries $n_\beta\ge2$ and its figure is $\{3\alpha,2\beta\}$
-(\texttt{mirrored\_left\_junction}). By the census (Lemma~\ref{lem:census}) each such junction
-forces an additional $\{\beta,3\gamma\}$ vertex: a single mirrored piece already gives $v_1\ge2$
-(\texttt{escape\_charge}). The off-lattice escape available at rows $j\ge3$ is therefore paid for
-globally, in climber vertices, of which the kernel-checked tilings carry between one and four.
-\end{lemma}
-
-\begin{lemma}[Climbers detect deviation]\label{lem:climberdetect}
-At an interior lattice point of the brick/mate structure exactly six tiles meet, contributing
-$\beta,\gamma,\alpha$ from the row above and $\alpha,\gamma,\beta$ from the row below; the counts
-are $(2,2,2)$ and the figure is $\{2\alpha,2\beta,2\gamma\}$. Hence a $\{\beta,3\gamma\}$ vertex
-never occurs where the six incident tiles are the brick/mate six: by Lemma~\ref{lem:census} every
-tiling contains such a vertex, and by Lemma~\ref{lem:charge} each mirrored cover piece forces a
-further one, so each escape requires two points at which the tiling deviates from the forced
-pattern. This is a detector, not an exclusion: the kernel-checked tilings do carry climbers at
-lattice points, at places where their local structure is not brick/mate.
-\end{lemma}
-
-\begin{remark}[What reach buys, and what it does not]\label{rem:reachlaw}
-The four kills at reach $R$ empty the window exactly for $f\le R+2$: reach $3$ gave $f\le5$,
-reach $4$ gives $f\le6$, and each further row would give one further member. Theorem
-\ref{thm:strippbound} raises the reach by one and no more, because the clearance bound it uses is
-the fixed constant $T/b>2$. A proof for all $f$ therefore requires killing straddlers at
-\emph{every} row, not at the first three. The natural route is that a ladder descends into strips
-the chain has already forced, where every line of its direction is a shared $b$-edge chain broken
-at the strip junctions on both sides at once --- unstaggered --- while a ladder is staggered by
-$c-b=1$; a ladder in forced territory would have to run along such a line or cross tile interiors,
-and both are impossible. What is missing is the bookkeeping: that the region a ladder descends
-through, roughly one half-column east per strip, lies inside the forced staircase at the moment
-the fork is being decided.
-\end{remark}
-
-\begin{remark}[The residue at $f\ge6$]\label{rem:f6residue}
-For $f\ge6$ the surviving words form an explicit thin set, symmetric under reversal; at $f=6$ it
-is a single class: $b$ at position $5$, $c$ at position $7$ ($a\,a\,a\,a\,b\,a\,c\,a$), read from
-a corner whose block is at least $3$. The blocking structure is always the same: the chain's
-column-$3$ line needs a row-$3$ brick, the row-$3$ fork's $A$-branch lays its south cover on the
-row-$2$ floor, and the floor is edged only as far as the staircase has reached --- which the $b$
-itself interrupts. Closing the row-$3$ fork is the entire remaining content of
-Conjecture~\ref{conj:advance} at $e=1$.
-\end{remark}
-
-\begin{remark}\label{rem:e1residual}
-The residual class for $f\ge5$ is precisely: some side's first $a$-run behind an initial $c$-block
-of length at least $2$. At $(1,4)$ the single such side word dies by the line-total kill of
-Remark~\ref{rem:walls14}, whose three gap facts $b-a$, $b-e^2$, $2b-a\notin\langle a,b,c\rangle$
-hold for every $f\ge3$; what does not yet generalize is the case analysis behind them when the
-initial block exceeds two or the run splits. Closing this class for all $f$ is the last step of
-Conjecture~\ref{conj:advance} at $e=1$.
 \end{remark}
 
 \subsection{Assembly}
@@ -4484,14 +3691,7 @@ architecture: at $e\ge2$ there is nothing for any architecture to find. At $(2,3
 cell (Theorem~\ref{thm:basebeta-full}) and the unit parallelogram are untileable.
 
 \begin{remark}[What this does to the induction]\label{rem:e2induction}
-The collar of Theorem~\ref{thm:realize12} runs on unit columns, so it is unavailable at $e\ge2$;
-only the wide columns of Proposition~\ref{prop:widecol} remain, and they advance $m$ in steps of
-$f$. Consequently the clean law ``tileable iff $m\ne1$'' proved for $(1,2)$ need not persist:
-the spectrum may genuinely depend on $e$. For $(2,3)$, where $f=3$, the subdivision closure and
-the wide-column law together would give every $m\ge4$ and every even $m$ from a single seed
-$\Delta_2$, leaving exactly $m=3$ unreached from below; so the decisive experiment for the whole
-$e\ge2$ story is the realizability of $\Delta_2$ at $(2,3)$, i.e.\ $N=92$. That search is
-running; we record the reduction rather than guess its outcome.
+Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 \begin{proposition}[Wide columns, all $(e,f)$]\label{prop:widecol}
@@ -4504,52 +3704,9 @@ valid in every member; at $e=1$ the unit column exists and the law upgrades to a
 \end{proposition}
 \end{remark}
 
-\section{What is known to be dead}\label{sec:compdead}
-
-The following approaches to this branch are closed, and are recorded so that they are not retried.
-
-\begin{enumerate}
-\item \textbf{The whole class of linear direction invariants.} Weighting a directed edge by a
-function of its direction alone, antisymmetric under $\theta\mapsto\theta+\pi$, yields a
-one-parameter family of identities; every member is a specialisation of the master identity of
-\cite[Rem.~4.9]{Main}. The associated ideal-membership condition is satisfied identically for every
-root of unity and every $(e,f)$, and the optimal $\ell^1$ bound the family can produce is
-$m(3f-2e)(f+e)/f$, which is smaller than $N$ by a factor at least $11/6$ and growing like $mf$. So
-no choice of weight, kernel, moment ladder or duality can exclude a candidate. Both statements are
-machine-checked in \texttt{lean/LambdaFactor.lean}.
-\item \textbf{Closing $e=1$ by proving $R\ge2$ on every side.} False at the base: the walk with
-$R_{\mathrm{base}}=2$ is exactly the one the corner parallelogram kills, and the survivor has
-$R_{\mathrm{base}}=1$. On the base, ``$R\ge2$'' restates the remaining problem rather than reducing
-it. It does hold on the two equal sides, and is proved there.
-\item \textbf{Boundary tile counts.} The number of tiles meeting $\partial ABC$ grows like the
-number of boundary edges, and on the genuine certificates it is $28$ of $44$ and $44$ of $99$ --- a
-falling fraction. Comparing it against $N$ therefore never yields a contradiction.
-\item \textbf{The far side of the mismatch ray}, under the hypothesis that the ray is a complete
-wall: that side is the tile scaled by $f$, and is tileable. No obstruction can come from there.
-\item \textbf{Local combinatorics of an equal side, with or without the census}, for $p=1$ at
-$(3,7)$. The junction automaton forbids a single adjacency and leaves $10\,560$ configurations
-(Proposition~\ref{prop:nogoauto}); adjoining the corner census adds nothing, its two counting
-equations being dependent (Proposition~\ref{prop:nogocensus}). Together with
-Lemma~\ref{lem:census} this is the third confirmation that corner counting cannot see $p$.
-\item \textbf{The chord/area programme}, beyond Propositions~\ref{prop:straddle}
-and~\ref{prop:chorddecomp}. Two continuations both fail: the $\gamma$-grading does not discretize
-straddle positions, because it constrains directions and the vertical projection of the vertex module
-is dense (Remark~\ref{rem:chordscope}); and the family of $37$ admissible chord heights supplies $37$
-instantiations of one identity --- additivity of area --- rather than $37$ constraints
-(Remark~\ref{rem:chordexhausted}). Closing $p=1$ needs a mechanism that is neither counting nor
-chord-area.
-\item \textbf{Boundary-word invariants (Conway--Lagarias tiling groups)}~\cite{ConwayLagarias}. These
-are the natural non-abelian strengthening of the direction invariants of item~1, and are known to be
-strictly stronger than colouring and weighting arguments --- which is exactly the class item~1 kills
-here. They nevertheless do not apply, for two independent reasons. First, the method is formulated
-for regions assembled from cells of a regular lattice, and the vertices of a tiling of our target lie
-in no lattice: the edge vectors have lengths in $\{21,40,49\}$ and directions $k\gamma$ with
-$\gamma=(\pi+\alpha)/2$ and $\alpha/\pi$ irrational, so the vertical projection of the
-$\mathbb Z$-module they generate is dense in $\mathbb R$. Second, tilings here need not be
-edge-to-edge, so the boundary word of a region is not determined by its combinatorics.
-\end{enumerate}
-
 \begin{thebibliography}{9}
+\bibitem{Obstructions} V.~Bonfioli, \emph{Erd\H{o}s Problem 634: obstructions, scope limits, and closed routes}, 2026.
+
 \bibitem{ConwayLagarias} J.~H.~Conway and J.~C.~Lagarias, \emph{Tiling with polyominoes and
 combinatorial group theory}, J.\ Combin.\ Theory Ser.\ A 53 (1990), 183--208.
 \bibitem{Laczkovich1995} M.~Laczkovich, \emph{Tilings of triangles}, Discrete Math.\ 140 (1995).

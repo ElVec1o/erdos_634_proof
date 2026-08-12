@@ -3,7 +3,8 @@
 Required by the project's Rule 5. Each row gives a numbered statement of the papers and the Lean
 declaration that machine-checks it, or states plainly that no formalization exists and why.
 
-`M` = main paper (`paper/erdos-634.tex`), `C` = companion (`paper/erdos-634-companion.tex`).
+`M` = main paper (`paper/erdos-634.tex`), `C` = companion (`paper/erdos-634-companion.tex`),
+`O` = obstructions note (`paper/erdos-634-obstructions.tex`) — scope limits, no-go theorems and closed routes.
 Labels are the LaTeX `\label` keys. **Status** is the Rule 0 label of the *paper* statement.
 
 ## Fully formalized (the statement itself is the Lean theorem)
