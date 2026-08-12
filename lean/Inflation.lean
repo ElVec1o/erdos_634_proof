@@ -317,4 +317,46 @@ theorem no_p1_word_at_e_pred {α : Type*} [DecidableEq α] (x : α) (M : List α
   have h := p1_c_count_ge_two x M (f - 1) f hcount
   omega
 
+
+/-! ## S3: the first `c|a` junction of the `k=2` word
+
+For the `k=2` family (`e = f-2`, `f` odd) the `c`-side word is forced to `c a^f c` (`cor:twoc` plus the
+`c`-count).  Put the `β`-vertex at the origin.  The corner tile `Z` lays that first `c` and has `β` at
+the corner, so at the far end `J₁` it presents `α` — the ends of a `c`-edge carry the angles adjacent
+to `c`, namely `α` and `β`.  The first `a`-tile `Y₁` lays an `a`-edge, whose ends carry the angles
+adjacent to `a`, namely `β` and `γ`.
+
+`BaseBetaE1.vertex_pi` says a straight figure is `(3α,2β)` or `(α,β,γ)`.  Removing `Z`'s `α` and `Y₁`'s
+angle leaves the residue that further tiles at `J₁` must supply.  The enumeration below is exhaustive.
+
+The count is **three**, not two.  An earlier statement of this rung claimed "at most two completions";
+that was a guess and it is false. -/
+
+/-- A straight figure written as `(#α, #β, #γ)`. -/
+abbrev Fig := ℕ × ℕ × ℕ
+
+/-- The two straight figures (`BaseBetaE1.vertex_pi`). -/
+def straightFigs : List Fig := [(1, 1, 1), (3, 2, 0)]
+
+/-- `Y₁` presents `β` (`true`) or `γ` (`false`). -/
+def admissible (F : Fig) (yBeta : Bool) : Bool :=
+  1 ≤ F.1 && (if yBeta then 1 ≤ F.2.1 else 1 ≤ F.2.2)
+
+/-- The residue at `J₁` after removing `Z`'s `α` and `Y₁`'s angle. -/
+def residue (F : Fig) (yBeta : Bool) : Fig :=
+  if yBeta then (F.1 - 1, F.2.1 - 1, F.2.2) else (F.1 - 1, F.2.1, F.2.2 - 1)
+
+/-- **Exactly three completions.**  Over both straight figures and both angles `Y₁` may present, three
+pairs are admissible. -/
+theorem junction_three :
+    ((straightFigs.flatMap (fun F => [(F, true), (F, false)])).filter
+      (fun p => admissible p.1 p.2)).length = 3 := by decide
+
+/-- The three, with their residues: `{α,β,γ}` with `Y₁ = β` leaves one `γ`; `{α,β,γ}` with `Y₁ = γ`
+leaves one `β`; `{3α,2β}` with `Y₁ = β` leaves `2α + β`.  So `J₁` carries 3, 3 and 5 tiles. -/
+theorem junction_residues :
+    ((straightFigs.flatMap (fun F => [(F, true), (F, false)])).filter
+      (fun p => admissible p.1 p.2)).map (fun p => residue p.1 p.2)
+      = [(0, 0, 1), (0, 1, 0), (2, 1, 0)] := by decide
+
 end Erdos634.Inflation
