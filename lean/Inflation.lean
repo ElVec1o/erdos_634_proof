@@ -706,7 +706,7 @@ theorem a_side_all_c (e f k na nc : ℕ) (he : 1 ≤ e) (hef : e < f) (hcop : Na
 separate question, and it was **not** covered by the searches behind `thm:inflrigid`, which fixed the
 `a`-side to `a^f` throughout (`code/engine/gen_inflation.py` hard-codes the word `f 0 0`).  Running
 the same engine with the `a`-side set to `c^e`, over every admissible `c`-side word, returns
-`EXHAUSTED_NO_TILING` at each of the twelve members
+`EXHAUSTED_NO_TILING` on all 61 instances over the thirteen members
 
     (1,3) (2,3) (1,4) (3,4) (1,5) (2,5) (3,5) (4,5) (1,6) (5,6) (1,7) (3,7) (5,7)
 

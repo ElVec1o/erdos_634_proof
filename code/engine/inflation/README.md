@@ -61,5 +61,5 @@ admissible `c`-side word returns `EXHAUSTED_NO_TILING` at
 
     (1,3) (2,3) (1,4) (3,4) (1,5) (2,5) (3,5) (4,5) (1,6) (5,6) (1,7) (3,7) (5,7)
 
-— 41 instances, each with the standard boundary returning `FOUND_TILING` as its control. At `e = 1`
+— 61 instances in all, each with the standard boundary returning `FOUND_TILING` as its control. At `e = 1`
 the branch also dies by hand: see the discussion in `lean/Inflation.lean`.
