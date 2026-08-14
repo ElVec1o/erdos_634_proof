@@ -512,4 +512,207 @@ theorem orient_monotone :
         rw [List.replicate_succ, List.cons_append]
         exact congrArg (GB :: ·) hjk
 
+
+/-! ## The general scale `k`: the `a`-side is rigid, and the `β`-corner dichotomy
+
+`prop:inflbdy` is stated at scale `f`, and its proof reads the `a`-side residual off a numeral.
+The statement is really uniform in the scale, and this section proves the uniform version.
+
+Let `Δ_k` be the tile inflated by `k`, `1 ≤ k ≤ f`, tiled by `k²` copies.  Its three sides are
+`k·a` (opposite `α`), `k·b` (opposite `β`) and `k·c` (opposite `γ`); side `a` joins the `β`- and
+`γ`-corners, so it is one of the two sides at the `β`-corner, the other being the `c`-side.
+
+*  `a_unsplittable` — `a` is not a sum of two or more tile edges.  This is the companion of
+   `BaseBetaCorners.b_unsplittable`, and it is what makes the `α`-corner chord rigid: the `α`-corner
+   of an inflation is met by a **single** tile (`corner_apex_unique`-style: `x + 2z = 1`, `y + z = 0`
+   force `(1,0,0)`), whose `a`-edge is a chord with both ends on the boundary.
+
+*  `a_side_no_b` — **the `a`-side of a scale-`k` inflation carries no `b`-edge, for every `k ≤ f`.**
+   Length alone does not give this: `f·b ≤ k·e·f` is satisfiable whenever `a/b` is below the golden
+   ratio (`GoldenForm`), i.e. on the close pairs.  The proof is a two-step descent.  Reduction mod
+   `f` gives `f ∣ n_b`, say `n_b = f·s`; dividing the length identity by `f` and reducing mod `e`
+   gives `e ∣ s·f + n_c`, say `s·f + n_c = e·t`; eliminating `n_c` leaves the linear relation
+
+       n_a + t·f = k + s·e.
+
+   Now `n_c ≥ 0` forces `e·t ≥ s·f > s·e`, hence `t > s`; and `n_a ≥ 0` with `k ≤ f` forces
+   `t·f ≤ f + s·e`, hence `(s+1)·f ≤ f + s·e`, i.e. `f ≤ e`.  Contradiction unless `s = 0`.
+   The hypothesis `k ≤ f` is used exactly once, in the second bound.
+
+*  `a_side_words` — consequently the `a`-side word is `a^{k−qf} c^{qe}`; `a_side_rigid` — for
+   `k < f` the only word is `a^k`; `a_side_all_c` — the sole alternative in the range is `k = f`
+   with the side equal to `c^e`.
+
+**The `β`-corner dichotomy this yields.**  The `β`-corner of `Δ_k` is met by a single tile
+(`BaseBetaCorners.corner_beta_unique`) whose two edges there are the flanks `{a, c}`.  Since the
+`a`-side is monochromatic, the corner tile lays on it whichever letter that side carries:
+
+* `k < f`: the `a`-side is `a^k`, so the corner tile lays `a` there and `c` on the `c`-side — the
+  standard orientation, with no hypothesis at all.  This is the missing half of `prop:inflbdy`'s
+  claim that both end letters of the `c`-side are `c`, which that proof asserted from the flanks
+  alone and which does not follow from the flanks alone.
+* `k = f`: the second word `c^e` is combinatorially admissible, and there the corner tile lays `c`
+  on the `a`-side and `a` on the `c`-side.  The corner block is then the *transverse* one, with
+  `c`-feet, and `a_side_all_c` computes its footprint `n_c · c = k · a`: **its scale is `k·e/f`,
+  which in the range `k ≤ f` is `e`.**  That is the arithmetic reason `hyp:walls` couples the two
+  scales `f` and `e` rather than being a statement about `f` alone.
+
+The transverse branch is not excluded by any of the above.  At `e = 1` it dies by a corner count:
+the whole `a`-side is then a single `c`-edge, so the corner tile's `α` sits **at** the `γ`-corner of
+`Δ_f`, leaving `γ − α = α + β`, which admits exactly one `α` and one `β` (`fill_alpha_beta`); but the
+`b`-partner across the corner tile's chord — forced to be the direct partner, since the reflected one
+would repeat `γ` at a straight junction and `2γ > π` — presents `γ` there, and `γ > α + β`.  For
+`e ≥ 2` the branch is excluded only by search; see the note below.
+-/
+
+theorem a_unsplittable (e f b na nb nc : ℕ) (he : 1 ≤ e) (hef : e < f)
+    (hcop : Nat.Coprime e f) (hb : b + e ^ 2 = f ^ 2)
+    (heq : na * (e * f) + nb * b + nc * f ^ 2 = e * f) :
+    na = 1 ∧ nb = 0 ∧ nc = 0 := by
+  have hf2 : 2 ≤ f := by omega
+  have hbpos : 0 < b := by
+    have : e ^ 2 < f ^ 2 := Nat.pow_lt_pow_left hef (by norm_num)
+    omega
+  have hef0 : 0 < e * f := Nat.mul_pos (by omega) (by omega)
+  have hlt : e * f < f ^ 2 := by nlinarith
+  have hnc : nc = 0 := by
+    by_contra h
+    have : 1 * f ^ 2 ≤ nc * f ^ 2 := Nat.mul_le_mul_right _ (by omega)
+    omega
+  subst hnc
+  have hna1 : na ≤ 1 := by
+    by_contra h
+    have : 2 * (e * f) ≤ na * (e * f) := Nat.mul_le_mul_right _ (by omega)
+    omega
+  have hsum : nb * b + na * (e * f) = e * f := by omega
+  have hnb : nb = 0 := by
+    rcases Nat.lt_or_ge nb 1 with h | h
+    · omega
+    · exfalso
+      have hbf : nb * b + nb * e ^ 2 = nb * f ^ 2 := by rw [← Nat.mul_add, hb]
+      have h1 : f ∣ nb * b := by
+        interval_cases na
+        · exact ⟨e, by rw [mul_comm f e]; omega⟩
+        · exact ⟨0, by omega⟩
+      have hdvd : f ∣ nb * e ^ 2 :=
+        (Nat.dvd_add_right h1).mp (by rw [hbf]; exact ⟨nb * f, by ring⟩)
+      have hfnb : f ∣ nb :=
+        Nat.Coprime.dvd_of_dvd_mul_right (Nat.Coprime.pow_right 2 hcop.symm) hdvd
+      have hge : f ≤ nb := Nat.le_of_dvd (by omega) hfnb
+      have h1' : f * b ≤ nb * b := Nat.mul_le_mul_right _ hge
+      have h2 : f * b + f * e ^ 2 = f * f ^ 2 := by rw [← Nat.mul_add, hb]
+      interval_cases na <;> nlinarith [h1', h2, sq_nonneg (f - e)]
+  subst hnb
+  refine ⟨?_, rfl, rfl⟩
+  interval_cases na <;> omega
+
+theorem f_dvd_nb (e f b nb : ℕ) (hcop : Nat.Coprime e f) (hb : b + e ^ 2 = f ^ 2)
+    (hz : (f : ℤ) ∣ (nb : ℤ) * (b : ℤ)) : f ∣ nb := by
+  have hbz : (b : ℤ) + (e : ℤ) ^ 2 = (f : ℤ) ^ 2 := by exact_mod_cast hb
+  have hz2 : (f : ℤ) ∣ (nb : ℤ) * (e : ℤ) ^ 2 := by
+    have hrw : (nb : ℤ) * (e : ℤ) ^ 2 = (nb : ℤ) * (f : ℤ) ^ 2 - (nb : ℤ) * (b : ℤ) := by
+      linear_combination (nb : ℤ) * hbz
+    rw [hrw]; exact dvd_sub ⟨(nb : ℤ) * f, by ring⟩ hz
+  have hnat : f ∣ nb * e ^ 2 := by exact_mod_cast hz2
+  exact Nat.Coprime.dvd_of_dvd_mul_right (Nat.Coprime.pow_right 2 hcop.symm) hnat
+
+theorem a_side_no_b (e f b k na nb nc : ℕ) (he : 1 ≤ e) (hef : e < f)
+    (hcop : Nat.Coprime e f) (hb : b + e ^ 2 = f ^ 2) (hk : k ≤ f)
+    (heq : na * (e * f) + nb * b + nc * f ^ 2 = k * (e * f)) :
+    nb = 0 := by
+  have hbz : (b : ℤ) + (e : ℤ) ^ 2 = (f : ℤ) ^ 2 := by exact_mod_cast hb
+  have hcast : (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * b + (nc : ℤ) * (f : ℤ) ^ 2
+      = (k : ℤ) * ((e : ℤ) * f) := by exact_mod_cast congrArg (Nat.cast : ℕ → ℤ) heq
+  have hfnb : f ∣ nb :=
+    f_dvd_nb e f b nb hcop hb ⟨(k : ℤ) * e - na * e - nc * f, by linear_combination hcast⟩
+  obtain ⟨s, hs⟩ := hfnb
+  subst hs
+  have hfz : ((f : ℤ)) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  have hez0 : ((e : ℤ)) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  have h2 : (na : ℤ) * e + (s : ℤ) * b + (nc : ℤ) * f = (k : ℤ) * e := by
+    refine mul_left_cancel₀ hfz ?_
+    push_cast at hcast ⊢; linear_combination hcast
+  -- e ∣ f * (s*f + nc), hence e ∣ s*f + nc
+  have hdz : (e : ℤ) ∣ (f : ℤ) * ((s : ℤ) * f + nc) :=
+    ⟨(s : ℤ) * e + k - na, by linear_combination h2 - (s : ℤ) * hbz⟩
+  have hdn : e ∣ f * (s * f + nc) := by exact_mod_cast hdz
+  obtain ⟨t, ht⟩ := Nat.Coprime.dvd_of_dvd_mul_left hcop hdn
+  have htz : (s : ℤ) * f + nc = (e : ℤ) * t := by exact_mod_cast ht
+  have h4 : (na : ℤ) + (t : ℤ) * f = (k : ℤ) + (s : ℤ) * e := by
+    refine mul_left_cancel₀ hez0 ?_
+    linear_combination h2 - (s : ℤ) * hbz - (f : ℤ) * htz
+  by_contra hcon
+  have hs1 : 1 ≤ s := by
+    rcases Nat.eq_zero_or_pos s with h | h
+    · exact absurd (by simp [h]) hcon
+    · exact h
+  have hsz : (1 : ℤ) ≤ (s : ℤ) := by exact_mod_cast hs1
+  have hez : (1 : ℤ) ≤ (e : ℤ) := by exact_mod_cast he
+  have hefz : (e : ℤ) < f := by exact_mod_cast hef
+  have hkz : (k : ℤ) ≤ f := by exact_mod_cast hk
+  have hnaz : (0 : ℤ) ≤ (na : ℤ) := Int.natCast_nonneg na
+  have hncz : (0 : ℤ) ≤ (nc : ℤ) := Int.natCast_nonneg nc
+  have hts : (s : ℤ) < (t : ℤ) := by nlinarith
+  nlinarith [hts, h4, hnaz, hkz, hsz, hefz]
+
+theorem a_side_words (e f k na nc : ℕ) (he : 1 ≤ e) (hef : e < f) (hcop : Nat.Coprime e f)
+    (heq : na * (e * f) + nc * f ^ 2 = k * (e * f)) :
+    ∃ q, na + q * f = k ∧ nc = q * e := by
+  have h2 : na * e + nc * f = k * e := by
+    have hz : (f : ℤ) * ((na : ℤ) * e + (nc : ℤ) * f) = (f : ℤ) * ((k : ℤ) * e) := by
+      have hc : (na : ℤ) * ((e : ℤ) * f) + (nc : ℤ) * (f : ℤ) ^ 2 = (k : ℤ) * ((e : ℤ) * f) := by
+        exact_mod_cast heq
+      linear_combination hc
+    exact_mod_cast mul_left_cancel₀ (Nat.cast_ne_zero.mpr (show f ≠ 0 by omega)) hz
+  have hnak : na ≤ k := Nat.le_of_mul_le_mul_right (by omega : na * e ≤ k * e) (by omega)
+  have hsub : (k - na) * e = nc * f := by rw [Nat.sub_mul]; omega
+  obtain ⟨q, hq⟩ :=
+    Nat.Coprime.dvd_of_dvd_mul_right hcop.symm (⟨nc, by rw [hsub, Nat.mul_comm]⟩ : f ∣ (k - na) * e)
+  refine ⟨q, by rw [Nat.mul_comm]; omega, ?_⟩
+  refine Nat.eq_of_mul_eq_mul_right (show 0 < f by omega) ?_
+  rw [← hsub, hq]; ring
+
+theorem a_side_rigid (e f k na nc : ℕ) (he : 1 ≤ e) (hef : e < f) (hcop : Nat.Coprime e f)
+    (hkf : k < f) (heq : na * (e * f) + nc * f ^ 2 = k * (e * f)) :
+    na = k ∧ nc = 0 := by
+  obtain ⟨q, h1, h2⟩ := a_side_words e f k na nc he hef hcop heq
+  have hq : q = 0 := by
+    rcases Nat.eq_zero_or_pos q with h | h
+    · exact h
+    · exact absurd h1 (by have : f ≤ q * f := Nat.le_mul_of_pos_left f h; omega)
+  subst hq; omega
+
+theorem a_side_all_c (e f k na nc : ℕ) (he : 1 ≤ e) (hef : e < f) (hcop : Nat.Coprime e f)
+    (hk : k ≤ f) (hk0 : 0 < k) (hna : na = 0)
+    (heq : na * (e * f) + nc * f ^ 2 = k * (e * f)) :
+    k = f ∧ nc = e ∧ nc * f = k * e := by
+  obtain ⟨q, h1, h2⟩ := a_side_words e f k na nc he hef hcop heq
+  subst hna
+  have hq1 : 1 ≤ q := by
+    rcases Nat.eq_zero_or_pos q with h | h
+    · subst h; omega
+    · exact h
+  have hqle : q ≤ 1 := Nat.le_of_mul_le_mul_right (by omega : q * f ≤ 1 * f) (by omega)
+  have : q = 1 := by omega
+  subst this
+  refine ⟨by omega, by omega, ?_⟩
+  have hkf : k = f := by omega
+  have hnce : nc = e := by omega
+  rw [hkf, hnce]; exact Nat.mul_comm e f
+
+/-! ### Scope of the transverse branch
+
+`a_side_all_c` says the branch exists as arithmetic; whether it is geometrically realizable is a
+separate question, and it was **not** covered by the searches behind `thm:inflrigid`, which fixed the
+`a`-side to `a^f` throughout (`code/engine/gen_inflation.py` hard-codes the word `f 0 0`).  Running
+the same engine with the `a`-side set to `c^e`, over every admissible `c`-side word, returns
+`EXHAUSTED_NO_TILING` at each of the twelve members
+
+    (1,3) (2,3) (1,4) (3,4) (1,5) (2,5) (3,5) (4,5) (1,6) (5,6) (1,7) (3,7) (5,7)
+
+with the standard boundary returning `FOUND_TILING` as the negative control in every case.  That is
+computer assistance, not a proof, and it is recorded here so the gap in `prop:inflbdy`'s proof is not
+silently inherited. -/
+
+
 end Erdos634.Inflation
