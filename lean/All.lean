@@ -61,6 +61,8 @@ import Erdos634.PgramTiling52
 import Erdos634.Rationality
 import Erdos634.RationalityFree
 import Erdos634.Rigidity
+import Erdos634.RogueChord
+import Erdos634.RogueContainment
 import Erdos634.ScaleBreak
 import Erdos634.ScaleRigidity
 import Erdos634.SecondEdge
