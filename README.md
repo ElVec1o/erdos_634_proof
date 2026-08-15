@@ -105,6 +105,21 @@ What is proved of the hypothesis:
   filters are now described in closed form: writing the base `b`-count as `y = e + kf`, the base
   equation reduces to `xe + zf = 2ef − k(f²−e²)`, `x` is pinned modulo `f`, `k` is bounded by
   `(2ef−3e−f)/(f²−e²)`, and each admissible `k` carries exactly one column.
+- The `W`-tower behind the corner chain at `e ≥ 2` (every scale-`k` inflation standard) is now
+  attacked in the plane rather than on the chord. Its single open obstruction — the two-sided
+  rogue chord at slots `⌊f/e⌋+2 ≤ M ≤ k−2`, whose one-dimensional word system provably cannot
+  close (`swap_fits`) — dies under exact two-dimensional patch forcing: the row-side fan at the
+  chord's first breakpoint has total room `(M−1)b` against the `c`-side, killing `M = 3` at every
+  member and every slot with `(M−1)(f²−e²) < f²`, uniformly in the scale (`RogueFan.lean`,
+  axiom-clean); and the patch engine (`code/swap_patch_search.py`, exact rational arithmetic,
+  kill verdicts sound by construction) closes every slot of every member `e ≥ 2, f ≤ 9` at its
+  tightest scale `k = M+2` with **no chord-word assumption**, and every slot at every scale on
+  the members it has fully swept: `(3,5), (4,5), (5,6), (2,7), (3,7), (4,7), (6,7), (2,9)` —
+  including three prime members, `N = 83` (`(5,6)`), `N = 131` (`(4,7)`) and `N = 239` (`(2,9)`),
+  whose rogue obstruction is now completely dead (engine certificates; the standing geometric
+  inputs of the chord modules apply). The transverse corner block, previously excluded only by
+  the 61 searches, dies structurally at `(2,3), (3,4), (2,5), (3,5), (4,5), (5,6), (2,7)`.
+  Verdict matrix and the remaining flat-deferred word pairs: `code/patch_results.txt`.
 
 What remains open: the hypothesis in general — the side condition at `e ≥ 2`, the residual
 configurations at `e = 1` (route 1 above), and the close pairs, an infinite family that contains

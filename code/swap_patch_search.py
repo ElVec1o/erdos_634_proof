@@ -35,10 +35,16 @@ Soundness of the move enumeration (kills are never spurious):
   * deficiencies with neither pivot available are deferred; a branch that ends
     with only deferred deficiencies is reported OPEN, never SURVIVES/KILLED.
 
-Modes.  'r2': k = M+2 with full containment in Δ_k (the tightest step);
-'open': the base line only — a kill is then valid for every k ≥ M+3.
-Chord discipline: 'swap' pins chord 1 to R = a·c (row side), S = c·a (rogue
-side); 'free' lets the chord words emerge from the search.
+Modes.  'open': only the k-independent half-planes (the base line and the
+side AB) are enforced — a kill is then valid for every scale k ≥ M+2 at once.
+'rN' (r2 … r5): k = M+N with full containment in Δ_k and the chord-2/3
+corridor demanded up to the BC exit at N·c.  Chord discipline: 'swap' pins
+chord 1 to R = a·c (row side), S = c·a (rogue side); 'free' imposes no word
+at all, so a kill closes the whole slot.  --scenario transverse instead seeds
+the corner block of Δ_f with the a-side read as c^e (the transverse branch),
+with the c-grid discipline on BC; TR_DEEP=1 adds the third demand layer.
+The per-pair driver (code/per_pair_chord.py) reruns a slot with the chord
+pinned to each 1D-surviving word pair in turn.
 """
 from fractions import Fraction as Fr
 from math import gcd, atan2, sqrt, pi as PI
@@ -579,6 +585,16 @@ class Search:
         assert Phit[1] == 0
         segs = [(Bpt, Cpt), (Bpt, addm(Bpt, Fr(min(a + c, k * c)), neg(G.u))),
                 (Bau, Phit), (Cpt, (max(Fr(0), Cpt[0] - c), Fr(0)))]
+        import os
+        if os.environ.get("TR_DEEP"):
+            # third layer: the strip inner line at 2a·u depth and a longer
+            # base stretch — for the e ≥ 3 members whose kill sits deeper
+            B2 = addm(Bpt, Fr(2 * a), neg(G.u))
+            t2 = Fr((k * c - 2 * a) * G.e, f)
+            P2 = addm(B2, t2, neg(G.vh))
+            if P2[1] == 0 and t2 > 0:
+                segs.append((B2, P2))
+            segs.append((Cpt, (max(Fr(0), Cpt[0] - 2 * c), Fr(0))))
         r0sq = Fr(b * b, 4)
         pq = canon_dir(neg(G.vh))
         dd = (Fr(pq[0]), Fr(pq[1]))
@@ -798,12 +814,15 @@ class Search:
         if piv[0] == "defer":
             return "OPEN"
         res = "KILLED"
-        for T in piv[1]:
+        import os, random
+        opts = list(piv[1])
+        if os.environ.get("SHUFFLE"):
+            random.Random(int(os.environ["SHUFFLE"]) + self.nodes).shuffle(opts)
+        for T in opts:
             P2 = P.clone()
             P2.add(T)
             r = self.dfs(P2, depth + 1)
             if r == "SURVIVES":
-                self.survivor = self.survivor  # already set deeper
                 return "SURVIVES"
             if r == "OPEN":
                 res = "OPEN"

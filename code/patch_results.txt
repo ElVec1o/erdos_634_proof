@@ -1,0 +1,177 @@
+Patch-engine verdicts (code/swap_patch_search.py), generated 2026-08-15
+
+Slot scenario: leftmost-rogue seeding; verdict semantics:
+  KILLED   every completion of the demand region is contradictory
+  SURVIVES a locally consistent completion exists (no verdict on the slot)
+  OPEN     caps hit or deferred deficiencies (no verdict)
+open mode: base+AB half-planes only -- a kill covers EVERY scale k >= M+2.
+rN mode: k = M+N with full containment and the BC corridor demanded.
+free chord: no chord-word assumption -- a kill closes the WHOLE slot;
+swap chord: words pinned to R=a.c, S=c.a -- a kill closes the swap only.
+
+== swap words (goal 2) ==
+(3,5) slots [3,3]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+(4,5) slots [3,3]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+(5,6) slots [3,4]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+    M=4: open-KILLED (all k)
+(2,7) slots [5,5]: ALL SLOTS, ALL SCALES KILLED
+    M=5: open-KILLED (all k)
+(3,7) slots [4,5]: ALL SLOTS, ALL SCALES KILLED
+    M=4: open-KILLED (all k)
+    M=5: KILLED at k=M+r for all r in [2]
+(4,7) slots [3,5]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+    M=4: KILLED at k=M+r for all r in [2, 3]
+    M=5: KILLED at k=M+r for all r in [2]
+(5,7) slots [3,5]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+    M=4: KILLED at k=M+r for all r in [2, 3]
+    M=5: KILLED at k=M+r for all r in [2]
+(6,7) slots [3,5]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+    M=4: open-KILLED (all k)
+    M=5: KILLED at k=M+r for all r in [2]
+(3,8) slots [4,6]: ALL SLOTS, ALL SCALES KILLED
+    M=4: open-KILLED (all k)
+    M=5: KILLED at k=M+r for all r in [2, 3]
+    M=6: KILLED at k=M+r for all r in [2]
+(5,8) slots [3,6]: incomplete
+    M=3: open-KILLED (all k)
+    M=4: killed r=[2, 3]; unresolved [(4, 'OPEN')]
+    M=5: KILLED at k=M+r for all r in [2, 3]
+    M=6: KILLED at k=M+r for all r in [2]
+(7,8) slots [3,6]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+    M=4: open-KILLED (all k)
+    M=5: open-KILLED (all k)
+    M=6: KILLED at k=M+r for all r in [2]
+(2,9) slots [6,7]: ALL SLOTS, ALL SCALES KILLED
+    M=6: open-KILLED (all k)
+    M=7: KILLED at k=M+r for all r in [2]
+(4,9) slots [4,7]: incomplete
+    M=4: open-KILLED (all k)
+    M=5: killed r=[2, 3]; unresolved [(4, 'SURVIVES')]
+    M=6: killed r=[2]; unresolved [(3, 'OPEN')]
+    M=7: KILLED at k=M+r for all r in [2]
+(5,9) slots [3,7]: incomplete
+    M=3: open-KILLED (all k)
+    M=4: killed r=[2, 3]; unresolved [(4, 'OPEN'), (5, 'OPEN')]
+    M=5: killed r=[2, 3]; unresolved [(4, 'OPEN')]
+    M=6: KILLED at k=M+r for all r in [2, 3]
+    M=7: KILLED at k=M+r for all r in [2]
+(7,9) slots [3,7]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+    M=4: open-KILLED (all k)
+    M=5: KILLED at k=M+r for all r in [2, 3, 4]
+    M=6: KILLED at k=M+r for all r in [2, 3]
+    M=7: KILLED at k=M+r for all r in [2]
+(8,9) slots [3,7]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+    M=4: open-KILLED (all k)
+    M=5: open-KILLED (all k)
+    M=6: KILLED at k=M+r for all r in [2, 3]
+    M=7: KILLED at k=M+r for all r in [2]
+complete members: [(3, 5), (4, 5), (5, 6), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (3, 8), (7, 8), (2, 9), (7, 9), (8, 9)]
+incomplete: [(5, 8), (4, 9), (5, 9)]
+
+== free words (goal 1: the whole chord system) ==
+(3,5) slots [3,3]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+(4,5) slots [3,3]: ALL SLOTS, ALL SCALES KILLED
+    M=3: KILLED at k=M+r for all r in [2]
+(5,6) slots [3,4]: ALL SLOTS, ALL SCALES KILLED
+    M=3: KILLED at k=M+r for all r in [2, 3]
+    M=4: KILLED at k=M+r for all r in [2]
+(2,7) slots [5,5]: ALL SLOTS, ALL SCALES KILLED
+    M=5: open-KILLED (all k)
+(3,7) slots [4,5]: ALL SLOTS, ALL SCALES KILLED
+    M=4: open-KILLED (all k)
+    M=5: KILLED at k=M+r for all r in [2]
+(4,7) slots [3,5]: ALL SLOTS, ALL SCALES KILLED
+    M=3: open-KILLED (all k)
+    M=4: KILLED at k=M+r for all r in [2, 3]
+    M=5: KILLED at k=M+r for all r in [2]
+(5,7) slots [3,5]: incomplete
+    M=3: KILLED at k=M+r for all r in [2, 3, 4]
+    M=4: killed r=[2]; unresolved [(3, None)]
+    M=5: KILLED at k=M+r for all r in [2]
+(6,7) slots [3,5]: ALL SLOTS, ALL SCALES KILLED
+    M=3: KILLED at k=M+r for all r in [2, 3, 4]
+    M=4: KILLED at k=M+r for all r in [2, 3]
+    M=5: KILLED at k=M+r for all r in [2]
+(3,8) slots [4,6]: incomplete
+    M=4: open-KILLED (all k)
+    M=5: killed r=[2]; unresolved [(3, None)]
+    M=6: KILLED at k=M+r for all r in [2]
+(5,8) slots [3,6]: incomplete
+    M=3: KILLED at k=M+r for all r in [2, 3, 4, 5]
+    M=4: killed r=[2, 3]; unresolved [(4, None)]
+    M=5: killed r=[2]; unresolved [(3, None)]
+    M=6: KILLED at k=M+r for all r in [2]
+(7,8) slots [3,6]: incomplete
+    M=3: KILLED at k=M+r for all r in [2, 3, 4, 5]
+    M=4: KILLED at k=M+r for all r in [2, 3, 4]
+    M=5: killed r=[2]; unresolved [(3, None)]
+    M=6: KILLED at k=M+r for all r in [2]
+(2,9) slots [6,7]: ALL SLOTS, ALL SCALES KILLED
+    M=6: KILLED at k=M+r for all r in [2, 3]
+    M=7: KILLED at k=M+r for all r in [2]
+(4,9) slots [4,7]: incomplete
+    M=4: KILLED at k=M+r for all r in [2, 3, 4, 5]
+    M=5: killed r=[2, 3]; unresolved [(4, None)]
+    M=6: killed r=[2]; unresolved [(3, None)]
+    M=7: KILLED at k=M+r for all r in [2]
+(5,9) slots [3,7]: incomplete
+    M=3: killed r=[2]; unresolved [(3, None), (4, None), (5, None), (6, None)]
+    M=4: killed r=[2, 3]; unresolved [(4, None), (5, None)]
+    M=5: killed r=[2]; unresolved [(3, None), (4, None)]
+    M=6: killed r=[2]; unresolved [(3, None)]
+    M=7: KILLED at k=M+r for all r in [2]
+(7,9) slots [3,7]: incomplete
+    M=3: killed r=[2]; unresolved [(3, None), (4, None), (5, None), (6, None)]
+    M=4: killed r=[2, 3, 4]; unresolved [(5, None)]
+    M=5: killed r=[2]; unresolved [(3, None), (4, None)]
+    M=6: killed r=[2]; unresolved [(3, None)]
+    M=7: KILLED at k=M+r for all r in [2]
+(8,9) slots [3,7]: incomplete
+    M=3: KILLED at k=M+r for all r in [2, 3, 4, 5, 6]
+    M=4: KILLED at k=M+r for all r in [2, 3, 4, 5]
+    M=5: killed r=[2]; unresolved [(3, None), (4, None)]
+    M=6: killed r=[2]; unresolved [(3, None)]
+    M=7: KILLED at k=M+r for all r in [2]
+complete members: [(3, 5), (4, 5), (5, 6), (2, 7), (3, 7), (4, 7), (6, 7), (2, 9)]
+incomplete: [(5, 7), (3, 8), (5, 8), (7, 8), (4, 9), (5, 9), (7, 9), (8, 9)]
+
+== transverse corner block (G2), deep demand region ==
+(2,3): KILLED [nodes=10]
+(3,4): KILLED [nodes=37]
+(2,5): KILLED [nodes=117]
+(3,5): KILLED [nodes=233]
+(4,5): KILLED [nodes=101]
+(5,6): KILLED [nodes=593]
+(2,7): KILLED [nodes=1647]
+(3,7): OPEN [nodes=24490]
+(4,7): SURVIVES [nodes=13976]
+(5,7): SURVIVES [nodes=9682]
+
+
+== unresolved rows: the one shared mechanism ==
+Every row above marked 'unresolved' is an engine OPEN (deferred), never a
+survivor: the branch reaches an exact-straight gap whose flat tile has no
+anchored offset (see the module docstring of code/swap_patch_search.py).  The
+known fix is to anchor flat offsets to the partial sums of the two-sided
+covering from the line's contact origin.  Additional partial closures not in
+the matrix: (7,8) M=5 k=8 per-pair 4158/4287 killed (129 flat-deferred);
+(7,9) M=4 k=9 24/28; (5,9) M=5 k=8 6/7 and k=9 3/7; (5,8) M=4 k=8 3/5;
+(4,9) M=5 k=9 0/2, M=6 k=9 5/7, M=7 k=9 25/26; (3,8) M=5 k=8 1/2;
+(5,7) M=4 k=7 10/11 (the single f<=7 holdout, pair R=a.c.c S=c.c.a).
+
+== provenance ==
+Generated by code/swap_patch_search.py (engine), code/per_pair_chord.py
+(per-pair closures), and the session sweeps of 2026-08-15.  The X-fan closed
+form is banked in lean/RogueFan.lean (axiom-clean) and re-verified from
+scratch by code/verify_xfan_scratch.py (4593 checks, 142 slots, 0 mismatches).
+The transverse scenario ran with TR_DEEP=1 (three demand layers).
