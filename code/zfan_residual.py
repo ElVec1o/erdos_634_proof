@@ -89,9 +89,11 @@ def main():
             closed_members.append((e, f))
     print(f"\nclosed members (empty residual): {closed_members}")
     print(f"total open (M,k) pairs, f <= {fmax}: {grand_open}")
-    print("(* = wall scale k = f: every kill there, and hence the pair's")
-    print(" openness, sits under the b^f base reading -- Inflation.b_side_rigid")
-    print(" is sharp at k = f: RogueMirror.base_side_wall_family.)")
+    print("(* = wall scale k = f.  The b^f base reading these cells sat")
+    print(" under is PROVED -- RogueMirror.wall_base_reading (2026-08-15);")
+    print(" the arithmetic sharpness RogueMirror.base_side_wall_family")
+    print(" stands, the geometry kills the family.  The * marks are kept")
+    print(" as scale markers only; no conditionality attaches.)")
 
 
 if __name__ == "__main__":
