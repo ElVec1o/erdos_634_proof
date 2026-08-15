@@ -32,6 +32,13 @@ Soundness of the move enumeration (kills are never spurious):
     (flat tiles contribute (3,2) = π, corners (1,0),(0,1),(2,1)); if none
     exists the branch is dead.  Bounded uncovered line gaps must be
     ℕ⟨a,b,c⟩-representable; if not, dead.
+  * exact-π gap — the fillers adjacent to the boundary ray are the snug
+    corners plus the flats (an edge through V).  The flat list is exhaustive
+    when the line's contact origin is pinned (the line leaves the region
+    there, or runs into a placed tile's interior): the gap side of the
+    covered run is then an edge-union anchored at the origin, so flat
+    endpoints lie at origin + ℕ⟨a,b,c⟩.  An unpinned line defers — branching
+    on an incomplete flat list would make kills spurious.
   * deficiencies with neither pivot available are deferred; a branch that ends
     with only deferred deficiencies is reported OPEN, never SURVIVES/KILLED.
 
@@ -666,20 +673,30 @@ class Search:
                 if combo is None:
                     return ("dead", ("angle-unfillable", V))
                 if not self.lt_pi(combo):
-                    if combo == (3, 2):
-                        # exact straight gap: corner fills or an anchored flat
-                        opts = [T for T in self.snug_options(P, V, d1)
-                                if self.sector_inside(T, V, d1, d2)]
-                        opts += self.flat_options(P, V, d1)
-                        if opts:
-                            if len(opts) == 1:
-                                return ("branch", opts)
-                            if best is None or len(opts) < len(best):
-                                best = opts
-                        else:
-                            deferred = True   # unanchored flat may exist
-                    else:
-                        deferred = True       # side machinery must handle it
+                    # arc ≥ π: the filler adjacent to the boundary ray d1 is a
+                    # snug corner (edge on d1) or a flat collinear with d1 (an
+                    # edge through V along the d1-line; the arc has room for
+                    # its π).  The flat list is exhaustive only when the
+                    # line's contact origin is pinned (flat_options);
+                    # branching on an incomplete list would make kills
+                    # spurious, so an unpinned line defers regardless of the
+                    # corner options.
+                    pinned, flats = self.flat_options(P, V, d1)
+                    if not pinned:
+                        deferred = True
+                        continue
+                    opts = [T for T in self.snug_options(P, V, d1)
+                            if self.sector_inside(T, V, d1, d2)]
+                    opts += flats
+                    seen0 = set()
+                    opts = [T for T in opts if not
+                            (T.key() in seen0 or seen0.add(T.key()))]
+                    if not opts:
+                        return ("dead", ("straight-nofill", V))
+                    if len(opts) == 1:
+                        return ("branch", opts)
+                    if best is None or len(opts) < len(best):
+                        best = opts
                     continue
                 opts = [T for T in self.snug_options(P, V, d1)
                         if self.sector_inside(T, V, d1, d2)]
@@ -731,42 +748,167 @@ class Search:
         return None
 
     def flat_options(self, P, V, d1):
-        """Flat fillers of an exact-π gap at V starting at ray d1: tiles with an
-        edge through V along the d1-line, on the gap (ccw-of-d1) side, whose
-        rear endpoint coincides with an existing on-line point (anchored).
-        Unanchored flats exist in principle; the caller defers when the list is
-        empty, so kills stay sound."""
+        """Flat fillers of an exact-π gap at V starting at ray d1: tiles with
+        an edge through V along the d1-line, on the gap (ccw-of-d1) side.
+
+        Exhaustiveness (the fix of the shared defer mechanism): the covered
+        (cw) side of the line carries a contiguous run of placed edges through
+        V.  If a run end O is *pinned* — the line leaves Δ_k at O, or beyond O
+        it runs into the interior of a placed tile — then in any completion
+        the gap side of [O, V] is an edge-union whose first edge starts at O
+        (no overhang past O is possible, and edges cannot cross the line where
+        the covered side is edge-backed), so every gap-side breakpoint lies at
+        O + (ℕ-combination of a, b, c).  The flat's rear endpoint is such a
+        breakpoint, and the enumeration below is exhaustive.
+
+        Returns (pinned, opts): pinned=False means no run end is pinned and
+        the caller must defer (a kill through an incomplete flat list would be
+        unsound); pinned=True means opts, together with the snug corner fills,
+        is exhaustive for this gap."""
         G = self.G
         dh = unit_dir(G, d1)
         lk = line_key(V, dh)
         tV = dot(G, V, dh)
-        # existing on-line anchor points (vertices and edge endpoints)
-        anchors = set()
+        # covered (cw of d1) side intervals of placed edges on this line,
+        # in the exact arclength coordinate dot(·, dh)
+        ivs = []
         for T in P.tiles:
-            for Q in T.pts:
-                if line_key(Q, dh) == lk or (cross(dh, sub(Q, V)) == 0):
-                    anchors.add(dot(G, Q, dh) - tV)
+            for A, B, _ in T.edges():
+                d = sub(B, A)
+                if line_key(A, d) != lk:
+                    continue
+                tA, tB = dot(G, A, dh), dot(G, B, dh)
+                lo, hi = min(tA, tB), max(tA, tB)
+                side = 1 if cross(dh, sub(T.centroid(), A)) > 0 else -1
+                if side == -1:               # covered side (gap is ccw = +1)
+                    ivs.append((lo, hi))
+        # merge the covered run through V
+        ivs.sort()
+        run_lo = run_hi = None
+        for lo, hi in ivs:
+            if run_lo is None:
+                if lo <= tV <= hi:
+                    run_lo, run_hi = lo, hi
+            elif lo <= run_hi:
+                run_hi = max(run_hi, hi)
+        if run_lo is not None:
+            # extend leftward across touching intervals
+            changed = True
+            while changed:
+                changed = False
+                for lo, hi in ivs:
+                    if hi >= run_lo and lo < run_lo:
+                        run_lo = lo
+                        changed = True
+                    if lo <= run_hi and hi > run_hi:
+                        run_hi = hi
+                        changed = True
+        if run_lo is None:
+            return (False, [])
+
+        # exact clip of the line {V + t·dh} against the target region:
+        # every region constraint is linear, const + t·coef ≥ 0
+        cons = []
+        if P.mode == "open":
+            cons.append((V[1], dh[1]))                       # base ŷ ≥ 0
+            cu = lambda X: G.u[0] * X[1] - G.u[1] * X[0]
+            cons.append((-cu(V), -cu(dh)))                   # AB half-plane
+        else:
+            C = (Fr(P.k * G.b), Fr(0))
+            B = (Fr(P.k * G.c) * G.u[0], Fr(P.k * G.c) * G.u[1])
+            det = C[0] * B[1] - C[1] * B[0]
+            sf = lambda X: (X[0] * B[1] - X[1] * B[0]) / det
+            tf = lambda X: (C[0] * X[1] - C[1] * X[0]) / det
+            cons.append((sf(V), sf(dh)))
+            cons.append((tf(V), tf(dh)))
+            cons.append((1 - sf(V) - tf(V), -sf(dh) - tf(dh)))
+        t_enter, t_leave = None, None
+        for const, coef in cons:
+            if coef > 0:
+                t0 = -const / coef
+                if t_enter is None or t0 > t_enter:
+                    t_enter = t0
+            elif coef < 0:
+                t0 = -const / coef
+                if t_leave is None or t0 < t_leave:
+                    t_leave = t0
+
+        def pinned_at(tO, sgn):
+            """Is the run end at t = tO pinned against overhang in the
+            direction sgn·dh?  Either the line leaves the region exactly at
+            tO, or beyond tO it enters a placed tile's interior (tO on the
+            tile's boundary; by convexity every overhang then crosses it)."""
+            if sgn < 0 and t_enter is not None and tO == tV + t_enter:
+                return True
+            if sgn > 0 and t_leave is not None and tO == tV + t_leave:
+                return True
+            O = addm(V, tO - tV, dh)
+            Q = addm(O, sgn * Fr(1, 4096), dh)
+            for T in P.tiles:
+                if self.pt_strictly_in_tile(Q, T) and self.pt_in_closure(O, T):
+                    return True
+            return False
+
+        origin = None
+        if pinned_at(run_lo, -1):
+            origin = run_lo
+        elif pinned_at(run_hi, +1):
+            origin = run_hi
+        if origin is None:
+            return (False, [])
+        # breakpoints: origin ± ℕ⟨a,b,c⟩; rear offsets rear ∈ (tV − ℓ, tV)
+        span = abs(tV - origin) + G.c
+        rep = self.rep_upto(int(span) + 1)
         opts = []
         for letter in "abc":
             x = G.len_of[letter]
-            for q in anchors:
-                for rear_off in ({q} if -x < q < 0 else set()) | \
-                                ({q - x} if 0 < q < x else set()):
-                    s = -rear_off
-                    if not (0 < s < x):
-                        continue
-                    rear = addm(V, Fr(rear_off), dh)
-                    for corner in [c for c in "ABG"
-                                   if letter in G.corner_edges[c]]:
-                        T = place_tile(G, rear, corner, dh, letter, ccw=True)
-                        if T is not None and P.tile_ok(T):
-                            opts.append(T)
+            for s in rep:
+                rear_t = origin + s if origin <= tV else origin - s - x
+                if not (tV - x < rear_t < tV):
+                    continue
+                rear = addm(V, rear_t - tV, dh)
+                for corner in [c for c in "ABG"
+                               if letter in G.corner_edges[c]]:
+                    T = place_tile(G, rear, corner, dh, letter, ccw=True)
+                    if T is not None and P.tile_ok(T):
+                        opts.append(T)
         seen, out = set(), []
         for T in opts:
             if T.key() not in seen:
                 seen.add(T.key())
                 out.append(T)
+        return (True, out)
+
+    def rep_upto(self, bound):
+        """All ℕ-combinations of {a, b, c} up to bound (cached)."""
+        key = ("rep", self.G.e, self.G.f, bound)
+        if key in REPR_CACHE:
+            return REPR_CACHE[key]
+        a, b, c = self.G.a, self.G.b, self.G.c
+        ok = [False] * (bound + 1)
+        ok[0] = True
+        for v in range(1, bound + 1):
+            ok[v] = (v >= a and ok[v - a]) or (v >= b and ok[v - b]) or \
+                    (v >= c and ok[v - c])
+        out = [v for v in range(bound + 1) if ok[v]]
+        REPR_CACHE[key] = out
         return out
+
+    def pt_strictly_in_tile(self, Q, T):
+        s = 1 if tri_area2(T.pts) > 0 else -1
+        for i in range(3):
+            A, B = T.pts[i], T.pts[(i + 1) % 3]
+            if cross(sub(B, A), sub(Q, A)) * s <= 0:
+                return False
+        return True
+
+    def pt_in_closure(self, Q, T):
+        s = 1 if tri_area2(T.pts) > 0 else -1
+        for i in range(3):
+            A, B = T.pts[i], T.pts[(i + 1) % 3]
+            if cross(sub(B, A), sub(Q, A)) * s < 0:
+                return False
+        return True
 
     def sector_inside(self, T, V, d1, d2):
         s = T.sector_at(V)
