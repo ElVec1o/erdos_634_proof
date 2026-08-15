@@ -12,6 +12,7 @@
 --
 -- Verified 2026-08-11: all 67 modules elaborate clean, no `sorry`, no new axioms.
 -- 2026-08-15: 69 modules — `EdgeChain` and `WallChain` (the G3 chain layer) added.
+-- 2026-08-16: 70 modules — `ForcedRow` (the A4 forced-row arithmetic skeleton) added.
 
 import Erdos634.AngleArithmetic
 import Erdos634.AngleSumAssembled
@@ -40,6 +41,7 @@ import Erdos634.EdgeChain
 import Erdos634.EquilateralConic
 import Erdos634.Erdos634
 import Erdos634.FibonacciFamilies
+import Erdos634.ForcedRow
 import Erdos634.Frontier
 import Erdos634.Gamma2Alpha
 import Erdos634.GammaC
