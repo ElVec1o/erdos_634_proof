@@ -56,6 +56,7 @@ import Erdos634.OffsetForcing
 import Erdos634.OrderForcing
 import Erdos634.Pentagon
 import Erdos634.PentagonLemma
+import Erdos634.Primitives
 import Erdos634.PgramTiling22
 import Erdos634.PgramTiling52
 import Erdos634.Rationality
