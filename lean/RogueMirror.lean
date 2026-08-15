@@ -339,7 +339,7 @@ obligations: the two sides of `Δ_f` are inside edge-unions (the
 corners), the corner and junction fills (`Dissection.lean`'s
 vertex-multiplicity layer), and the faithfulness of the `(α,β)`-calculus
 (`α/π` irrational, proved).  Engine verification: every family word at
-every member `f ≤ 9` (55 instances) is `EXHAUSTED_NO_TILING` with the
+every member `f ≤ 9` (72 instances) is `EXHAUSTED_NO_TILING` with the
 other two sides left **free** over their full word lists (`b`-carrying
 `c`-words included, transverse `a`-word included), standard controls
 `FOUND_TILING` — `code/a2_wall_family.py`.  Consequently every rogue-slot
@@ -385,17 +385,18 @@ theorem wall_base_dichotomy (e f b na nb nc : ℕ) (he : 1 ≤ e) (hef : e < f)
     · subst h; simp at hj; omega
     · have : f ≤ f * j := Nat.le_mul_of_pos_right f h
       omega
-  subst hnbeq
   have hef0 : 0 < e * f := Nat.mul_pos (by omega) (by omega)
   have hf2 : 0 < f ^ 2 := pow_pos (by omega : 0 < f) 2
-  constructor
+  have hrest : na * (e * f) + nc * f ^ 2 = 0 := by
+    have hnbb : nb * b = f * b := by rw [hnbeq]
+    omega
+  refine ⟨?_, hnbeq, ?_⟩
   · by_contra h
     have : 1 * (e * f) ≤ na * (e * f) := Nat.mul_le_mul_right _ (by omega)
     omega
-  refine ⟨rfl, ?_⟩
-  by_contra h
-  have : 1 * f ^ 2 ≤ nc * f ^ 2 := Nat.mul_le_mul_right _ (by omega)
-  omega
+  · by_contra h
+    have : 1 * f ^ 2 ≤ nc * f ^ 2 := Nat.mul_le_mul_right _ (by omega)
+    omega
 
 /-- **The wall-scale base reading, assembled.**  Inputs: the base reading
 `(n_a, n_b, n_c)` of `Δ_f`'s `B`-side, the `c`-side reading `(P, Q, R)`,

@@ -1,5 +1,23 @@
 Patch-engine verdicts, RE-CERTIFIED with the fixed engine (code/swap_patch_search.py), 2026-08-15
 
+A2 UPDATE (2026-08-15, wall-scale session).  The wall-scale base
+reading is PROVED: the base (B-side) of every scale-f inflation
+occurrence reads b^f — RogueMirror.wall_base_reading (the c-side
+of Delta_f has length f*c = f^3, the m=1 equal-side equation one
+level down, so the gamma-trap plus SideNoB.side_no_b_uncond make
+it b-free; the alpha-corner tile must then lay its b-flank on the
+base; and one b forces b^f, RogueMirror.wall_base_dichotomy).
+The (*) conditionality below is therefore DISCHARGED: every kill
+at k = f now stands on the same standing geometric hypotheses as
+the k < f kills (corner/junction fills, edge-unions on blocked
+straight segments — the latter now largely proved, WallChain).
+Engine verification of the kill: code/a2_wall_family.py — every
+wall-family base word at every member f <= 9 (72 instances, the
+other two sides FREE over their full word lists, b-carrying
+c-words and the transverse a-word included) EXHAUSTED_NO_TILING;
+standard controls FOUND_TILING (20 members).  Results:
+code/a2_results.txt.
+
 SOUNDNESS NOTE.  The pre-fix engine treated the straight-gap
 (exact-pi) filler list as exhaustive although its flat tiles were
 anchored to already-placed points only; kills reached through such

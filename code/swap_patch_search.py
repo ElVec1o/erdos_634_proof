@@ -128,6 +128,19 @@ def line_key(P, d):
     off = Fr(pq[0]) * P[1] - Fr(pq[1]) * P[0]
     return (pq, off)
 
+def mk_grid(G, origin, direction, step, L):
+    """Grid discipline on the line through `origin` along unit `direction`:
+    edges on it must be single cells [i*step, (i+1)*step] in [0, L] (L=None:
+    unbounded above -- the open-mode base line)."""
+    pq = canon_dir(direction)
+    dd = (Fr(pq[0]), Fr(pq[1]))
+    scale = dot(G, direction, dd)
+    tO = dot(G, origin, dd)
+    arc = lambda P, tO=tO, dd=dd, scale=scale: (dot(G, P, dd) - tO) / scale
+    return {"lk": line_key(origin, direction), "arc": arc,
+            "step": Fr(step), "L": None if L is None else Fr(L)}
+
+
 def tri_area2(T): return cross(sub(T[1], T[0]), sub(T[2], T[0]))
 
 def tris_overlap(T1, T2):
@@ -215,6 +228,13 @@ class Patch:
         self.tiles, self.keys = [], set()
         self.region_segs, self.r0sq = region_segs, r0sq
         self.chord = chord
+        # A2 grid disciplines (opt-in, env A2_GRIDS=1): boundary lines whose
+        # inside reading is a THEOREM-backed grid word -- every placed edge on
+        # such a line must be exactly one grid cell.  Base b-grid: b_side_rigid
+        # (k < f) / RogueMirror.wall_base_reading (k = f).  BC a-grid:
+        # a_side_rigid (k < f only; at k = f it needs the member's transverse
+        # branch dead, gate A2_BCGRID_WALL).
+        self.grids = []
         # boundary lines of Δ_k (outer side counts as covered)
         C = (Fr(k * G.b), Fr(0))
         B = (Fr(k * G.c) * G.u[0], Fr(k * G.c) * G.u[1])
@@ -238,6 +258,7 @@ class Patch:
         p = Patch(self.G, self.mode, self.k, self.M, self.region_segs,
                   self.r0sq, self.chord)
         p.tiles, p.keys = list(self.tiles), set(self.keys)
+        p.grids = self.grids
         p.boundary_lks = self.boundary_lks
         p.corner_pts = self.corner_pts
         p.boundary_spans = self.boundary_spans
@@ -277,6 +298,27 @@ class Patch:
             for A, B, letter in T.edges():
                 if not self.chord_edge_ok(T, A, B):
                     return False
+        if self.grids:
+            for A, B, letter in T.edges():
+                if not self.grid_edge_ok(A, B):
+                    return False
+        return True
+
+    def grid_edge_ok(self, A, B):
+        """Every edge collinear with a grid line and overlapping its span must
+        be exactly one grid cell: length = step, offset a multiple of step."""
+        d = sub(B, A)
+        for gw in self.grids:
+            if line_key(A, d) != gw["lk"]:
+                continue
+            sA, sB = gw["arc"](A), gw["arc"](B)
+            lo, hi = min(sA, sB), max(sA, sB)
+            L = gw["L"]
+            if hi <= 0 or (L is not None and lo >= L):
+                continue
+            st = gw["step"]
+            if hi - lo != st or lo < 0 or lo % st != 0 or                (L is not None and hi > L):
+                return False
         return True
 
     def chord_edge_ok(self, T, A, B):
@@ -542,6 +584,13 @@ class Search:
             chord = {"lk": line_key(Y, G.vh), "dd": dd, "arc": arc,
                      "L": Fr(a + c), "allowed": allowed}
         P = Patch(G, self.mode, k, M, segs, r0sq, chord)
+        import os
+        if os.environ.get("A2_GRIDS"):
+            P.grids.append(mk_grid(G, (Fr(0), Fr(0)), G.w, G.b,
+                                   None if self.mode == "open" else k * G.b))
+            if self.mode != "open" and (k < G.f or os.environ.get("A2_BCGRID_WALL")):
+                Cpt = (Fr(k * G.b), Fr(0))
+                P.grids.append(mk_grid(G, Cpt, G.vh, G.a, k * G.a))
         for j in range(M - 1, M + 3):
             if j < 1 or j > k:
                 continue
@@ -612,6 +661,8 @@ class Search:
         chord = {"kind": "grid", "lk": line_key(Bpt, G.vh), "dd": dd,
                  "arc": arc, "L": Fr(k * a), "allowed": allowed}
         P = Patch(G, "tri", k, 0, segs, r0sq, chord)
+        if os.environ.get("A2_GRIDS"):
+            P.grids.append(mk_grid(G, (Fr(0), Fr(0)), G.w, G.b, k * G.b))
         T = place_tile(G, Bpt, "B", neg(G.vh), "c", ccw=False, name="T0")
         assert T.pts[1] == addm(Bpt, Fr(c), neg(G.vh))
         assert T.pts[2] == addm(Bpt, Fr(a), neg(G.u))

@@ -905,8 +905,11 @@ theorem c_side_b_word_at_f (e f b : ℕ) (hef : e ≤ f) (hb : b + e ^ 2 = f ^ 2
 
 /-- **Sharpness at `k = f`, the `B`-side:** the word `(f−e, 0, f−e)` — `f−e` `a`-edges and `f−e`
 `c`-edges, no `b` at all — decomposes the length `f·b`, so `k < f` in `b_side_rigid` is exact.
-Whether this word is geometrically realizable is not decided here; it is recorded because the
-transverse branch at `k = f` is exactly where such alternatives live. -/
+Arithmetic sharpness only: the word (the `j = 0` member of
+`RogueMirror.base_side_wall_family`'s family) is **not** geometrically realizable —
+`RogueMirror.wall_base_reading` (2026-08-15) forces the wall-scale base to `b^f` via the
+`c`-side's `γ`-trap and the `α`-corner flank coupling, so the whole tower `k ≤ f` now reads
+`b^k` on the `B`-side. -/
 theorem b_side_alt_word_at_f (e f b : ℕ) (hef : e ≤ f) (hb : b + e ^ 2 = f ^ 2) :
     (f - e) * (e * f) + 0 * b + (f - e) * f ^ 2 = f * b := by
   have hz : (b : ℤ) + (e : ℤ) ^ 2 = (f : ℤ) ^ 2 := by exact_mod_cast hb
