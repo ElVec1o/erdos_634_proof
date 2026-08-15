@@ -153,9 +153,19 @@ incomplete: [(5, 7), (3, 8), (5, 8), (7, 8), (4, 9), (5, 9), (7, 9), (8, 9)]
 (4,5): KILLED [nodes=101]
 (5,6): KILLED [nodes=593]
 (2,7): KILLED [nodes=1647]
+(6,7): KILLED [nodes=1628]     (added 2026-08-15; kill site x = fb - eb/f, the Phit_1 foot)
 (3,7): OPEN [nodes=24490]
 (4,7): SURVIVES [nodes=13976]
 (5,7): SURVIVES [nodes=9682]
+(7,8): KILLED [nodes=51996]    (added 2026-08-15)
+
+Every close pair e = f-1 tried is KILLED: (2,3) (3,4) (4,5) (5,6) (6,7) (7,8).
+The COMPLETE transverse block is now dead by theorem for every member
+(lean/TransverseChain.lean: the b^e diagonal wall via Inflation.b_side_rigid,
+mirror forced at C, alpha propagating by the no-two-gamma rule, gamma-gamma
+collision at (e*a, 0) on AB); the engine's remaining work is the straddling
+branches only.  code/trace_transverse.py prints the full forcing tree of a
+member ((2,3): the main branch dies at exactly (2a, 0), the predicted site).
 
 
 == unresolved rows: the one shared mechanism ==

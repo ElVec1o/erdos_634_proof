@@ -63,3 +63,15 @@ admissible `c`-side word returns `EXHAUSTED_NO_TILING` at
 
 — 61 instances in all, each with the standard boundary returning `FOUND_TILING` as its control. At `e = 1`
 the branch also dies by hand: see the discussion in `lean/Inflation.lean`.
+
+**Update (2026-08-15): the complete transverse block dies by theorem, every member.**
+`lean/TransverseChain.lean`: the block, if complete, is the scale-`e` transverse lattice; its inner
+diagonal (`C` to `(ea, 0)` on `AB`, straight of length `eb`) has its far side forced to `b^e` by
+`Inflation.b_side_rigid`, the `C`-fill forces the mirror orientation, the no-two-`γ` rule propagates
+it, and the terminal `γ` collides with the lattice `γ` at `(ea, 0)`. At `e = 1` this is the old hand
+kill. What survives arithmetically is only the *straddling* configurations, which the exact patch
+forcer (`code/swap_patch_search.py --scenario transverse`, results in `code/patch_results.txt`)
+kills per member — including every close pair `e = f−1` tried: `(2,3) (3,4) (4,5) (5,6) (6,7)
+(7,8)`, kill sites at the strip feet `x = fb − s·eb/f` (`TransverseChain.phit_not_breakpoint` is the
+arithmetic of that site). The boundary words feeding all of this are now rigid below scale `f` with
+no open case: `Inflation.b_side_rigid` and `Inflation.c_side_no_b` (the former `s ≥ 2` gap).
