@@ -83,11 +83,15 @@ def main():
         if residual:
             grand_open += len(residual)
             print(f"({e},{f}): residual (M,k) pairs [{len(residual)}]: "
-                  + " ".join(f"({M},{k})" for M, k in residual))
+                  + " ".join(f"({M},{k})" + ("*" if k == f else "")
+                             for M, k in residual))
         else:
             closed_members.append((e, f))
     print(f"\nclosed members (empty residual): {closed_members}")
     print(f"total open (M,k) pairs, f <= {fmax}: {grand_open}")
+    print("(* = wall scale k = f: every kill there, and hence the pair's")
+    print(" openness, sits under the b^f base reading -- Inflation.b_side_rigid")
+    print(" is sharp at k = f: RogueMirror.base_side_wall_family.)")
 
 
 if __name__ == "__main__":
