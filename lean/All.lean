@@ -78,6 +78,7 @@ import Erdos634.Tiling28
 import Erdos634.Tiling44
 import Erdos634.Tiling77
 import Erdos634.Tiling99
+import Erdos634.TransverseChain
 import Erdos634.TwoPiThirdCorners
 import Erdos634.W2Core
 import Erdos634.WalkEquation
