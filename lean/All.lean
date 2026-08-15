@@ -13,9 +13,12 @@
 -- Verified 2026-08-11: all 67 modules elaborate clean, no `sorry`, no new axioms.
 -- 2026-08-15: 69 modules — `EdgeChain` and `WallChain` (the G3 chain layer) added.
 -- 2026-08-16: 70 modules — `ForcedRow` (the A4 forced-row arithmetic skeleton) added.
+-- 2026-08-16: 72 modules — `VertexSector` and `AngleSumDissection` (the G2 payment:
+--   `Dissection.hasAngleSums` is a theorem) added.
 
 import Erdos634.AngleArithmetic
 import Erdos634.AngleSumAssembled
+import Erdos634.AngleSumDissection
 import Erdos634.AngleSumScope
 import Erdos634.ApexRigidity
 import Erdos634.BAdjacency
@@ -85,6 +88,7 @@ import Erdos634.Tiling77
 import Erdos634.Tiling99
 import Erdos634.TransverseChain
 import Erdos634.TwoPiThirdCorners
+import Erdos634.VertexSector
 import Erdos634.W2Core
 import Erdos634.WalkEquation
 import Erdos634.WallChain
