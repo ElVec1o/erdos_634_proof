@@ -148,6 +148,29 @@ theorem strip_top_length (e f : ℤ) : f * (e * f) = e * f ^ 2 := by ring
 /-- Strip tile count: `f` lower tiles plus `f` gap tiles. -/
 theorem strip_count (f : ℤ) : f + f = 2 * f := by ring
 
+
+/-! ### The layer induction, as a schema
+
+The two exclusions above are pointwise facts about one position.  Turning them into "every tile of
+the layer is unreflected" is an induction, and it is stated here as a schema whose hypotheses are
+exactly the two exclusions.  This is the firewall: the geometric content lives in
+`reflected_crosses_mast` and `reflected_overlaps_predecessor` (both VERIFIED above) and in the
+corresponding `CLayerRigid` gap bounds, while the induction itself is pure logic.
+
+Formalizing the *link* — that the exclusions imply the hypotheses `base` and `step` for the actual
+geometric predicate "tile `j` is unreflected" — needs a formalization of tilings that this project
+does not have.  That is the recorded blocker for the remaining formalization debt; it is not
+"not yet attempted".
+-/
+
+/-- **Layer induction schema.**  If the first tile is unreflected and an unreflected tile forces
+its successor to be unreflected, every tile of the layer is unreflected.  Instantiated for
+`a`-layers by `reflected_crosses_mast` (base, via `j = 1`) and `reflected_overlaps_predecessor`
+(step), and for `c`-layers by `CLayerRigid.left_gap_not_tiles` and
+`CLayerRigid.mixed_gap_not_tiles`. -/
+theorem layer_induction (U : ℕ → Prop) (base : U 0) (step : ∀ j, U j → U (j + 1)) :
+    ∀ j, U j := fun j => Nat.rec base step j
+
 end Erdos634.StripRigid
 
 #print axioms Erdos634.StripRigid.no_tower_fills
@@ -162,3 +185,4 @@ end Erdos634.StripRigid
 #print axioms Erdos634.StripRigid.strip_rigid
 #print axioms Erdos634.StripRigid.strip_top_length
 #print axioms Erdos634.StripRigid.strip_count
+#print axioms Erdos634.StripRigid.layer_induction
