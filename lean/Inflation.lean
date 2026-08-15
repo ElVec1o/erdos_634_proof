@@ -715,4 +715,213 @@ computer assistance, not a proof, and it is recorded here so the gap in `prop:in
 silently inherited. -/
 
 
+/-! ## The `B`-side and the `c`-side carry no extra `b`-edge below scale `f`
+
+`a_side_no_b` settled the `a`-side.  The other two sides of `Δ_k` had been settled only for
+`b`-multiplicity `s ≤ 1`; the case `s ≥ 2` — length-feasible only when `f² + f ≤ 2e²`, i.e.
+`f/e < √2`, strictly inside the close pairs — was verified numerically and left open.  It is not
+open: the same two-step descent (mod `f`, then mod `e`, then non-negativity) kills **every**
+`s ≥ 1` on both sides at once, for every member and every `k < f`, with no size hypothesis.
+
+*  `b_side_rigid` — **the `B`-side of a scale-`k` inflation, `k < f`, is `b^k` exactly.**
+   One line each way: reducing the length identity `n_a·a + n_b·b + n_c·c = k·b` mod `f` gives
+   `f ∣ (k − n_b)·e²`, hence `f ∣ k − n_b`; and `n_b·b ≤ k·b` gives `n_b ≤ k < f`, so `n_b = k`
+   and the `a`- and `c`-counts vanish.  No close-pair hypothesis: this holds for all members.
+
+*  `c_side_no_b` — **the `c`-side of a scale-`k` inflation, `k < f`, carries no `b`-edge.**
+   Mod `f` gives `f ∣ n_b`, say `n_b = s·f`; dividing by `f` and reducing mod `e` gives
+   `e ∣ s·f + n_c − k`, say `= e·t`; eliminating `n_c` leaves the linear relation
+
+       n_a + t·f = s·e.
+
+   For `s ≥ 1` and `k ≤ f − 1`:  `e·t = s·f + n_c − k ≥ (s−1)·f + 1`, so `t ≥ 1`; and
+   `t·f ≤ s·e < s·f` forces `t ≤ s − 1`, whence
+   `(s−1)·f + 1 ≤ e·t ≤ e·(s−1) ≤ (f−1)·(s−1)` — i.e. `s ≤ 0`.  Contradiction.
+   The hypothesis `k ≤ f − 1` is used exactly once, in the first bound.
+
+*  `c_side_words_scale` — with the `b`-count dead the `c`-side words are `(n_a, n_c) = (q·f, k − q·e)`:
+   exactly the `p = 0` versus `p ≥ 1` dichotomy of `thm:inflrigid`, which these lemmas do **not**
+   decide and are not meant to.
+
+**Sharpness.**  Both statements fail at `k = f`, and the failures are exhibited below:
+the `c`-side admits `(e, f, 0)` — the `ScaleBreak` word, killed at `k = f` only by the `γ`-trap
+(`SideNoB.side_no_b_uncond`, which is precisely the `k = f` case) — and the `B`-side admits
+`(f−e, 0, f−e)`.  So `k < f` is the exact range, and together with `SideNoB` the whole tower
+`k ≤ f` is covered: the boundary of every sub-scale inflation is `b`-free on the `a`- and
+`c`-sides and exactly `b^k` on the `B`-side.
+
+Verified exhaustively before proving: all 541 members with `f ≤ 42`, every `k < f`, full naive
+enumeration of every word (29 426 side checks, zero violations, both `k = f` witnesses found at
+all 541 members), and the residue-parametrized form on all 48 677 pairs with `f ≤ 400`
+(`code/side_words_scale_k.py`). -/
+
+/-- **The `B`-side is `b^k` exactly, for every `k < f`.**  The two ingredients are the mod-`f`
+residue `f ∣ k − n_b` and the inventory `n_b ≤ k`; coprimality does the rest.  This closes the
+`s ≥ 2` case on the `B`-side for **all** members, not only the close pairs. -/
+theorem b_side_rigid (e f b k na nb nc : ℕ) (he : 1 ≤ e) (hef : e < f)
+    (hcop : Nat.Coprime e f) (hb : b + e ^ 2 = f ^ 2) (hk : k < f)
+    (heq : na * (e * f) + nb * b + nc * f ^ 2 = k * b) :
+    na = 0 ∧ nb = k ∧ nc = 0 := by
+  have hbpos : 0 < b := by
+    have : e ^ 2 < f ^ 2 := Nat.pow_lt_pow_left hef (by norm_num)
+    omega
+  -- inventory: n_b ≤ k
+  have hmul : nb * b ≤ k * b := by omega
+  have hnbk : nb ≤ k := Nat.le_of_mul_le_mul_right hmul hbpos
+  -- the residue: f ∣ (k − n_b)
+  have hdb : na * (e * f) + nc * f ^ 2 = (k - nb) * b := by
+    have h1 : (k - nb) * b + nb * b = k * b := by
+      rw [← Nat.add_mul, Nat.sub_add_cancel hnbk]
+    omega
+  have hfd : f ∣ (k - nb) := by
+    have h1 : f ∣ (k - nb) * b := by
+      rw [← hdb]; exact Nat.dvd_add ⟨na * e, by ring⟩ ⟨nc * f, by ring⟩
+    have hsum : (k - nb) * b + (k - nb) * e ^ 2 = (k - nb) * f ^ 2 := by
+      rw [← Nat.mul_add, hb]
+    have h2 : f ∣ (k - nb) * e ^ 2 := by
+      have h3 : f ∣ (k - nb) * f ^ 2 := ⟨(k - nb) * f, by ring⟩
+      have h4 : (k - nb) * e ^ 2 = (k - nb) * f ^ 2 - (k - nb) * b := by omega
+      rw [h4]; exact Nat.dvd_sub h3 h1
+    exact (Nat.Coprime.pow_right 2 hcop.symm).dvd_of_dvd_mul_right h2
+  -- k − n_b < f and f ∣ (k − n_b) force n_b = k, then the other counts vanish
+  have hnb : nb = k := by
+    rcases hfd with ⟨j, hj⟩
+    rcases Nat.eq_zero_or_pos j with h | h
+    · subst h; simp only [Nat.mul_zero] at hj; omega
+    · exfalso; have : f ≤ f * j := Nat.le_mul_of_pos_right f h; omega
+  subst hnb
+  have hef0 : 0 < e * f := Nat.mul_pos (by omega) (by omega)
+  have hf2 : 0 < f ^ 2 := pow_pos (by omega : 0 < f) 2
+  constructor
+  · by_contra h
+    have : 1 * (e * f) ≤ na * (e * f) := Nat.mul_le_mul_right _ (by omega)
+    omega
+  refine ⟨rfl, ?_⟩
+  by_contra h
+  have : 1 * f ^ 2 ≤ nc * f ^ 2 := Nat.mul_le_mul_right _ (by omega)
+  omega
+
+/-- **The `c`-side of a scale-`k` inflation, `k < f`, carries no `b`-edge** — every `s ≥ 1` at
+once, all members, no size or close-pair hypothesis.  The `s ≥ 2` case had been open exactly on
+`f/e < √2`; the descent does not see the threshold. -/
+theorem c_side_no_b (e f b k na nb nc : ℕ) (he : 1 ≤ e) (hef : e < f)
+    (hcop : Nat.Coprime e f) (hb : b + e ^ 2 = f ^ 2) (hk : k < f)
+    (heq : na * (e * f) + nb * b + nc * f ^ 2 = k * f ^ 2) :
+    nb = 0 := by
+  have hbz : (b : ℤ) + (e : ℤ) ^ 2 = (f : ℤ) ^ 2 := by exact_mod_cast hb
+  have hcast : (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * b + (nc : ℤ) * (f : ℤ) ^ 2
+      = (k : ℤ) * (f : ℤ) ^ 2 := by exact_mod_cast congrArg (Nat.cast : ℕ → ℤ) heq
+  -- step 1, mod f:  f ∣ n_b
+  have hfnb : f ∣ nb :=
+    f_dvd_nb e f b nb hcop hb ⟨(k : ℤ) * f - na * e - nc * f, by linear_combination hcast⟩
+  obtain ⟨s, hs⟩ := hfnb
+  subst hs
+  by_contra hcon
+  have hs1 : 1 ≤ s := by
+    rcases Nat.eq_zero_or_pos s with h | h
+    · exact absurd (by simp [h]) hcon
+    · exact h
+  have hfz : ((f : ℤ)) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  have hez0 : ((e : ℤ)) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  -- divide the identity by f
+  have h2 : (na : ℤ) * e + (s : ℤ) * b + (nc : ℤ) * f = (k : ℤ) * f := by
+    refine mul_left_cancel₀ hfz ?_
+    push_cast at hcast ⊢; linear_combination hcast
+  -- step 2, mod e:  e ∣ s·f + n_c − k, extracted in ℕ (the quantity is nonnegative since s ≥ 1)
+  have hkle : k ≤ s * f + nc := by
+    have : f ≤ s * f := Nat.le_mul_of_pos_left f hs1
+    omega
+  have hcastq : (((s * f + nc - k : ℕ)) : ℤ) = ((s : ℤ) * f + nc) - k := by
+    push_cast [Nat.cast_sub hkle]; ring
+  have hdz : (e : ℤ) ∣ (f : ℤ) * (((s : ℤ) * f + nc) - k) :=
+    ⟨(s : ℤ) * e - na, by linear_combination h2 - (s : ℤ) * hbz⟩
+  have hdn : e ∣ f * (s * f + nc - k) := by
+    rw [← hcastq] at hdz
+    exact_mod_cast hdz
+  obtain ⟨t, ht⟩ := Nat.Coprime.dvd_of_dvd_mul_left hcop hdn
+  have htz : ((s : ℤ) * f + nc) - k = (e : ℤ) * t := by
+    have h3 : ((s * f + nc - k : ℕ) : ℤ) = ((e : ℤ)) * t := by exact_mod_cast ht
+    rw [← hcastq]; exact h3
+  -- the linear relation:  n_a + t·f = s·e
+  have h4 : (na : ℤ) + (t : ℤ) * f = (s : ℤ) * e := by
+    refine mul_left_cancel₀ hez0 ?_
+    linear_combination h2 - (s : ℤ) * hbz - (f : ℤ) * htz
+  -- non-negativity closes: t ≤ s−1 against e·t ≥ (s−1)·f + 1
+  have hsz : (1 : ℤ) ≤ (s : ℤ) := by exact_mod_cast hs1
+  have hez : (1 : ℤ) ≤ (e : ℤ) := by exact_mod_cast he
+  have hefz : (e : ℤ) < f := by exact_mod_cast hef
+  have hkz : (k : ℤ) < f := by exact_mod_cast hk
+  have hnaz : (0 : ℤ) ≤ (na : ℤ) := Int.natCast_nonneg na
+  have hncz : (0 : ℤ) ≤ (nc : ℤ) := Int.natCast_nonneg nc
+  -- t < s:  t·f ≤ s·e < s·f
+  have htf : (t : ℤ) * f ≤ (s : ℤ) * e := by linarith
+  have h9 : (s : ℤ) * e < (s : ℤ) * f := mul_lt_mul_of_pos_left hefz (by linarith)
+  have hts : (t : ℤ) < s := lt_of_mul_lt_mul_right (by linarith) (by linarith : (0 : ℤ) ≤ (f : ℤ))
+  -- e·t ≤ (f−1)(s−1) against e·t ≥ s·f − f + 1
+  have h5a : (e : ℤ) * t ≤ (e : ℤ) * (s - 1) :=
+    mul_le_mul_of_nonneg_left (by linarith) (by linarith)
+  have h5b : (e : ℤ) * (s - 1) ≤ ((f : ℤ) - 1) * (s - 1) :=
+    mul_le_mul_of_nonneg_right (by linarith) (by linarith)
+  have h6 : (s : ℤ) * f - f + 1 ≤ (e : ℤ) * t := by linarith
+  have hexp : ((f : ℤ) - 1) * ((s : ℤ) - 1) = (f : ℤ) * s - f - s + 1 := by ring
+  have hcomm : (s : ℤ) * f = (f : ℤ) * s := by ring
+  linarith
+
+/-- With the `b`-count dead, the `c`-side words are `(q·f, 0, k − q·e)` — the crux dichotomy in
+its exact arithmetic form, the companion of `a_side_words`. -/
+theorem c_side_words_scale (e f k na nc : ℕ) (he : 1 ≤ e) (hef : e < f) (hcop : Nat.Coprime e f)
+    (heq : na * (e * f) + nc * f ^ 2 = k * f ^ 2) :
+    ∃ q, na = q * f ∧ q * e + nc = k := by
+  have hf0 : 0 < f := by omega
+  have h2 : na * e + nc * f = k * f := by
+    have hz : (f : ℤ) * ((na : ℤ) * e + (nc : ℤ) * f) = (f : ℤ) * ((k : ℤ) * f) := by
+      have hc : (na : ℤ) * ((e : ℤ) * f) + (nc : ℤ) * (f : ℤ) ^ 2 = (k : ℤ) * (f : ℤ) ^ 2 := by
+        exact_mod_cast heq
+      linear_combination hc
+    exact_mod_cast mul_left_cancel₀ (Nat.cast_ne_zero.mpr (show f ≠ 0 by omega)) hz
+  have hfna : f ∣ na := by
+    have h3 : f ∣ na * e := by
+      have hk : f ∣ k * f := ⟨k, Nat.mul_comm k f⟩
+      have hc : f ∣ nc * f := ⟨nc, Nat.mul_comm nc f⟩
+      have h5 : na * e = k * f - nc * f := by omega
+      rw [h5]; exact Nat.dvd_sub hk hc
+    exact (Nat.coprime_comm.mp hcop).dvd_of_dvd_mul_right h3
+  obtain ⟨q, hq⟩ := hfna
+  refine ⟨q, by rw [hq, Nat.mul_comm], ?_⟩
+  refine Nat.eq_of_mul_eq_mul_left hf0 ?_
+  calc f * (q * e + nc) = (f * q) * e + nc * f := by ring
+    _ = k * f := by rw [← hq]; exact h2
+    _ = f * k := by ring
+
+/-- **Sharpness at `k = f`, the `c`-side:** the word `(e, f, 0)` — `e` `a`-edges and `f` `b`-edges
+— decomposes the length `f·c`.  This is the `ScaleBreak` word; only the `γ`-trap kills it
+(`SideNoB.side_no_b_uncond`), so `k < f` in `c_side_no_b` is exact. -/
+theorem c_side_b_word_at_f (e f b : ℕ) (hef : e ≤ f) (hb : b + e ^ 2 = f ^ 2) :
+    e * (e * f) + f * b + 0 * f ^ 2 = f * f ^ 2 := by
+  have hz : (b : ℤ) + (e : ℤ) ^ 2 = (f : ℤ) ^ 2 := by exact_mod_cast hb
+  have : (e : ℤ) * ((e : ℤ) * f) + (f : ℤ) * b + 0 * (f : ℤ) ^ 2 = (f : ℤ) * (f : ℤ) ^ 2 := by
+    linear_combination (f : ℤ) * hz
+  exact_mod_cast this
+
+/-- **Sharpness at `k = f`, the `B`-side:** the word `(f−e, 0, f−e)` — `f−e` `a`-edges and `f−e`
+`c`-edges, no `b` at all — decomposes the length `f·b`, so `k < f` in `b_side_rigid` is exact.
+Whether this word is geometrically realizable is not decided here; it is recorded because the
+transverse branch at `k = f` is exactly where such alternatives live. -/
+theorem b_side_alt_word_at_f (e f b : ℕ) (hef : e ≤ f) (hb : b + e ^ 2 = f ^ 2) :
+    (f - e) * (e * f) + 0 * b + (f - e) * f ^ 2 = f * b := by
+  have hz : (b : ℤ) + (e : ℤ) ^ 2 = (f : ℤ) ^ 2 := by exact_mod_cast hb
+  have hz2 : ((f - e : ℕ) : ℤ) = (f : ℤ) - e := by
+    push_cast [Nat.cast_sub hef]; ring
+  have : ((f - e : ℕ) : ℤ) * ((e : ℤ) * f) + 0 * b + ((f - e : ℕ) : ℤ) * (f : ℤ) ^ 2
+      = (f : ℤ) * b := by
+    rw [hz2]; linear_combination (-(f : ℤ)) * hz
+  exact_mod_cast this
+
 end Erdos634.Inflation
+
+#print axioms Erdos634.Inflation.a_side_no_b
+#print axioms Erdos634.Inflation.b_side_rigid
+#print axioms Erdos634.Inflation.c_side_no_b
+#print axioms Erdos634.Inflation.c_side_words_scale
+#print axioms Erdos634.Inflation.c_side_b_word_at_f
+#print axioms Erdos634.Inflation.b_side_alt_word_at_f
