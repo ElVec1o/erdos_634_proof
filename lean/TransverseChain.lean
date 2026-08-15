@@ -312,6 +312,30 @@ theorem double_b_chord (e f b na nb nc : ℕ) (he : 2 ≤ e) (hef : e < f)
     · exact ⟨h, rfl, rfl⟩
     · exfalso; have : 0 < e * f := Nat.mul_pos (by omega) (by omega); omega
 
+/-- **The close-pair chain forcing.**  On the family `e = f − 1`, `f ≥ 5`, an `a`-edge is longer
+than the whole double-`b` diagonal (`a > 2b`), so at every junction chord `[J_j, K_{j-1}]` the
+overhanging `a`-move overruns the diagonal's `AB`-endpoint and dies by containment; with the
+mirror dead by the fills, the entire `BC` chain `T_0 D_0 T_1 D_1 …` is forced tile by tile, and
+the branching retreats strictly below the first strip.  This is where the smallness of
+`b = 2f − 1` finally acts: engine traces confirm the all-`1/1` prefix at `(4,5)` and the deep
+forced prefixes at `(5,6)`, `(6,7)`.  Sharp: at `f = 3, 4` (i.e. `(2,3)`, `(3,4)`) `a < 2b` and
+the overhang move is genuinely live — those trees branch at `J_2`. -/
+theorem a_overruns_double_b (e f : ℕ) (he : e + 1 = f) (hf : 5 ≤ f) :
+    2 * (f ^ 2 - e ^ 2) < e * f := by
+  have h3 : 1 ≤ f := by omega
+  have h4 : f ^ 2 - e ^ 2 = 2 * f - 1 := by
+    have he' : e = f - 1 := by omega
+    subst he'
+    have h2 : (f - 1) ^ 2 + (2 * f - 1) = f ^ 2 := by zify [h3, show 1 ≤ 2 * f by omega]; ring
+    omega
+  have h5 : e * f + f = f ^ 2 := by
+    have he' : e = f - 1 := by omega
+    subst he'
+    zify [h3]; ring
+  have h6 : 5 * f ≤ f * f := Nat.mul_le_mul_right f hf
+  have h7 : f ^ 2 = f * f := sq f
+  omega
+
 /-- The `−v̂` ray from depth `s·a` on `AB` meets the base after run `t_s = e·f² − s·e²`: the
 cleared form of `t_s = (f·c − s·a)·e/f`. -/
 theorem strip_hit (e f s : ℤ) : (f * f ^ 2 - s * (e * f)) * e = (e * f ^ 2 - s * e ^ 2) * f := by
