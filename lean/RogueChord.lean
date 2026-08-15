@@ -48,9 +48,14 @@ staggered partials, `L < Ma`, angle layer) were tabulated for all members with `
 `f ∣ n_b − m_b`, `e ∣ (n_b+n_c) − (m_b+m_c)` of `WallStraddle.lean` — the residue lemmas engage
 legitimately here because both sides are edge-unions of the same segment.
 
-**Geometric inputs, named** (not formalized; same standing obligations as `ChordInterface`):
+**Geometric inputs, named** (same standing obligations as `ChordInterface`):
 (i) both sides of the chord are edge-unions up to the first common breakpoint — the
-`HasEdgeChains`-class covering statement, with `Dissection.contact_is_edge` as its proved core;
+`HasEdgeChains`-class covering statement.  STATUS UPDATE (2026-08-15): the covering itself is now
+PROVED — `WallChain.wall_two_sided` gives each side of a wall segment covered exactly once by
+whole tile edges with equal totals (walls discharged along tile-edge chords by
+`edge_point_not_interior`; breakpoints are tiling vertices by `chain_breakpoint_vertex`); what
+remains named is the ORDER extraction (the run from the blocked end, the first common breakpoint,
+the T-vertex stagger), which is bookkeeping on the proved partition, not new geometry;
 (ii) a tile with interior points in a tile-union region lies in it (containment of covering tiles
 in `Δ_k`); (iii) the chart identities of V1/V2 (exact algebra, checked); (iv) the forced row and
 slot structure from the `W(k)` session (paper).  Axiom-clean.

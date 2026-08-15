@@ -8,11 +8,14 @@
 -- zero-sorry property and the outstanding obligation is named instead of hidden.
 --
 -- SCOPE. The far-side covering itself is NOT introduced here: it is obligation G3 of
--- `Dissection.lean`, `HasEdgeChains`, already stated there with its status ("hard but not
--- research-level; needs a usable notion of edge of a tile and of maximal segment, neither of which
--- Mathlib provides"). What this file adds is only the arithmetic drawn FROM such a covering, in the
--- packaged form the chord arguments use. `FarSide` below is the per-chord shadow of G3, not a new
--- assumption: discharging G3 discharges it.
+-- `Dissection.lean`, `HasEdgeChains`. STATUS UPDATE (2026-08-15): that covering is now PROVED —
+-- `WallChain.lean` shows each side of a wall segment is covered exactly once by whole tile edges
+-- (`Dissection.wall_partition`, `wall_two_sided`, per-edge `edge_two_sided`), with tile edges
+-- walls by `edge_point_not_interior` and breakpoints at tiling vertices by
+-- `EdgeChain.Dissection.chain_breakpoint_vertex`. What `FarSide` still packages beyond that is
+-- bookkeeping, not geometry: the ORDER of the run (edges laid end to end from the blocked end,
+-- so that meeting points sit at prefix sums) is an extraction from the proved partition that is
+-- not yet formalized. `FarSide` remains the per-chord shadow of G3 in that ordered form.
 
 import Mathlib.Tactic
 

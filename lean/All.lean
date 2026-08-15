@@ -11,6 +11,7 @@
 --     lean --root=. lean/All.lean
 --
 -- Verified 2026-08-11: all 67 modules elaborate clean, no `sorry`, no new axioms.
+-- 2026-08-15: 69 modules — `EdgeChain` and `WallChain` (the G3 chain layer) added.
 
 import Erdos634.AngleArithmetic
 import Erdos634.AngleSumAssembled
@@ -35,6 +36,7 @@ import Erdos634.CosetPropagation
 import Erdos634.DirectionGroup
 import Erdos634.Dissection
 import Erdos634.E2Join
+import Erdos634.EdgeChain
 import Erdos634.EquilateralConic
 import Erdos634.Erdos634
 import Erdos634.FibonacciFamilies
@@ -83,6 +85,7 @@ import Erdos634.TransverseChain
 import Erdos634.TwoPiThirdCorners
 import Erdos634.W2Core
 import Erdos634.WalkEquation
+import Erdos634.WallChain
 import Erdos634.Walls13
 import Erdos634.Wedge
 import Erdos634.ZhangTargets

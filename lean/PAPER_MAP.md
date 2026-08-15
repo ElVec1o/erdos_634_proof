@@ -127,6 +127,35 @@ expository or assemble the above; `thm:apexconfig`(a,b) is the coordinate identi
 is `lem:apexid` plus a definition. `prop:nogoauto` and `prop:nogocensus` (the two `p=1` no-go results)
 are finite checks stated in the companion and verified by computation, not in Lean.
 
+## Added 2026-08-15 — G3: the edge chains (obligation discharged)
+
+G3 (`Dissection.HasEdgeChains`) was the one open geometric reduction under the walk equations and
+the chord machinery.  It is now proved, in the sharpened exactly-once forms the consumers need,
+in two new modules (`lean/EdgeChain.lean`, `lean/WallChain.lean`) compiled against
+`Dissection.olean`.  All `#print axioms`: `[propext, Classical.choice, Quot.sound]`.
+
+| Statement | Lean declaration | Status |
+|---|---|---|
+| the crux: two tiles on the same side of a line cannot share an edge-interior point | `Geometry.Dissection.no_second_tile_same_side` (via `Tri.edge_inward`) | VERIFIED |
+| each target side is partitioned exactly once by whole tile edges; lengths sum to the side | `Geometry.Dissection.side_partition`, `.side_walk` | VERIFIED |
+| the interface walk equation `P·a + Q·b + R·c = L` (geometric half of `walk_base`/`walk_side`) | `Geometry.Dissection.side_walk_abc` | VERIFIED |
+| chain breakpoints are tiling vertices | `Geometry.Dissection.chain_breakpoint_vertex` | VERIFIED |
+| tile edges are walls (no vertex exclusion) | `Geometry.Dissection.edge_point_not_interior` | VERIFIED |
+| each side of a wall segment is covered exactly once by whole tile edges | `Geometry.Dissection.wall_partition`, `.wall_cover` | VERIFIED |
+| both sides at once — equal totals, the residue lemmas' input | `Geometry.Dissection.wall_two_sided` | VERIFIED |
+| the per-edge package: both sides of an interior tile edge, hypotheses discharged | `Geometry.Dissection.edge_two_sided` (with `Tri.edge_line`) | VERIFIED |
+
+Residual of G3 after this layer — bookkeeping, not geometry:
+
+* the *ordered run* extraction (`ChordInterface.FarSide.run`'s end-to-end order, prefix sums,
+  first common breakpoint, T-vertex stagger) from the proved per-side partition;
+* the flush/straddle *mixed* covering of a chord that is not a wall (`ChordDecomp.ChordTrace`'s
+  straddler half); its flush-flush disjointness half is `sameside_edges_subsingleton`;
+* instantiating `Interface.BaseBeta.walk_base`/`walk_side` from `side_walk_abc` (ℝ→ℕ cast plus
+  the congruent-tile hypothesis that every edge length lies in `{a,b,c}`).
+
+The remaining open geometric obligation of the corpus is `HasAngleSums` (G2) alone.
+
 ### Verification
 
 `bash lean/check-all.sh` — compiles all 68 modules sequentially against the borrowed Mathlib and runs

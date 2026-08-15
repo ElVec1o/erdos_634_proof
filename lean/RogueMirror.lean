@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 import Erdos634.Inflation
+import Erdos634.SideNoB
 
 /-!
 # The mirror fan: the second chord against the a-side `BC`
@@ -85,9 +86,10 @@ Write `r = k − M ≥ 2` (slots with `r ≤ 1` are already dead: `K3`).
 
 The geometric inputs carry the same standing obligations as
 `ChordInterface`/`RogueChord`: both sides of a straddled segment are
-edge-unions (`Dissection.contact_is_edge` core), containment of covering
-tiles, the forced row, and the faithfulness of the `(α,β)`-calculus
-(`α/π` irrational).  Axiom-clean.
+edge-unions — now PROVED as the exactly-once covering
+`WallChain.wall_two_sided` (2026-08-15; the ordered-run extraction stays
+bookkeeping) — containment of covering tiles, the forced row, and the
+faithfulness of the `(α,β)`-calculus (`α/π` irrational).  Axiom-clean.
 -/
 
 namespace Erdos634.RogueMirror
@@ -307,20 +309,120 @@ the wall scale, where `Δ_f` is the west corner block sitting on the
 target's base — rigidity fails arithmetically: the base equation acquires
 the whole family `a^{(j+1)f−e}·c^{f−(j+1)e}`, `1 ≤ j+1 ≤ ⌊f/e⌋`
 (`base_side_wall_family` below; `Inflation`'s sharpness note exhibits the
-`j = 0` member).  Every rogue-slot kill at scale `k = f` is therefore
-conditional on the `b^f` reading of the target's base — which is part of
-the base-word analysis of the main paper, not of this module — while the
-kills at `k < f` carry no such condition. -/
+`j = 0` member).
+
+**The family is dead (2026-08-15, the A2 session): the wall-scale base
+reads `b^f` after all.**  The kill is three banked steps, none new:
+
+1.  *The `c`-side of `Δ_f` carries no `b`-edge.*  The `c`-side of a
+    scale-`f` inflation has length `f·c = f³` — the **same** walk equation
+    as the `m = 1` equal side, which is the `m = 1` lever one level down —
+    and the region-local `γ`-trap holds verbatim (the region's `c`-side
+    ends are its `α`- and `β`-corners, filled `{α}` (`CChord.fill_alpha`)
+    and `{β}` (`BaseBetaCorners.corner_beta_unique`), neither carrying a
+    `γ`; interior junctions are `π`-figures with at most one `γ`
+    (`BaseBetaCorners.pi_vertex_gamma_le_one`); each `a`- or `b`-edge's
+    tile has a `γ` at one end of that edge — the pigeonhole is
+    `BaseBetaWalks.gamma_injection`/`c_edge_exists`).  So `R ≥ 1`, and
+    `SideNoB.side_no_b_uncond` gives `Q = 0`.
+2.  *The `α`-corner tile lays `b` on the base.*  The single tile at the
+    region's `α`-corner has flanks `{b, c}`, one along the base, one along
+    the `c`-side; step 1 forbids `b` on the `c`-side.
+3.  *One `b` forces `b^f`* — `wall_base_dichotomy` below: the base
+    equation has `f ∣ n_b` (mod-`f` residue, `Inflation.f_dvd_nb`) and
+    `n_b ≤ f`, so `n_b ∈ {0, f}` and `n_b ≥ 1` pins `(0, f, 0)`.
+
+`wall_base_reading` assembles 1+3: its inputs are the two side readings,
+the `γ`-trap count, and the flank disjunction of step 2.  Geometric
+obligations: the two sides of `Δ_f` are inside edge-unions (the
+`WallChain.wall_two_sided` covering, ends blocked at the region's
+corners), the corner and junction fills (`Dissection.lean`'s
+vertex-multiplicity layer), and the faithfulness of the `(α,β)`-calculus
+(`α/π` irrational, proved).  Engine verification: every family word at
+every member `f ≤ 9` (55 instances) is `EXHAUSTED_NO_TILING` with the
+other two sides left **free** over their full word lists (`b`-carrying
+`c`-words included, transverse `a`-word included), standard controls
+`FOUND_TILING` — `code/a2_wall_family.py`.  Consequently every rogue-slot
+kill at scale `k = f` now stands on the same standing hypotheses as the
+`k < f` kills: the `b^f` forced-row input is no longer a condition. -/
 
 /-- **The wall-scale base family.**  At `k = f` the base equation is solved
 by `x = (j+1)f − e`, `y = 0`, `z = f − (j+1)e` for every `j+1 ≤ f/e`:
-`b^f` is not forced by arithmetic on the wall, and the forced-row input at
-`k = f` is exactly the `b^f` reading of the target's base word.  (The
-`j = 0` member is the witness of `Inflation`'s sharpness note; this is the
-full family.) -/
+`b^f` is not forced by arithmetic *alone* on the wall.  (The `j = 0`
+member is the witness of `Inflation`'s sharpness note; this is the full
+family.  The geometric kill is `wall_base_reading` below.) -/
 theorem base_side_wall_family (e f j : ℤ) :
     ((j + 1) * f - e) * (e * f) + (f - (j + 1) * e) * f ^ 2
       = f * (f ^ 2 - e ^ 2) := by ring
+
+/-- **One `b` on the wall forces `b^f`.**  The base equation at `k = f`
+has `f ∣ n_b` — reduce mod `f`: every other term vanishes and
+`b ≡ −e² (mod f)` with `gcd(e, f) = 1` (`Inflation.f_dvd_nb`) — and the
+inventory `n_b·b ≤ f·b` gives `n_b ≤ f`; so `n_b ∈ {0, f}`, and `n_b ≥ 1`
+leaves `n_b = f` with the other counts vanishing by length.  Together with
+`base_side_wall_family` this is the complete wall-scale dichotomy: the
+base of `Δ_f` reads `b^f` or is `b`-free. -/
+theorem wall_base_dichotomy (e f b na nb nc : ℕ) (he : 1 ≤ e) (hef : e < f)
+    (hcop : Nat.Coprime e f) (hb : b + e ^ 2 = f ^ 2) (hnb : 1 ≤ nb)
+    (heq : na * (e * f) + nb * b + nc * f ^ 2 = f * b) :
+    na = 0 ∧ nb = f ∧ nc = 0 := by
+  have hbpos : 0 < b := by
+    have : e ^ 2 < f ^ 2 := Nat.pow_lt_pow_left hef (by norm_num)
+    omega
+  -- f ∣ n_b, via (f : ℤ) ∣ n_b·b and b ≡ −e² (mod f)
+  have hz : (na : ℤ) * ((e : ℤ) * f) + (nb : ℤ) * b + (nc : ℤ) * (f : ℤ) ^ 2
+      = (f : ℤ) * b := by exact_mod_cast heq
+  have hfd : f ∣ nb :=
+    Erdos634.Inflation.f_dvd_nb e f b nb hcop hb
+      ⟨(b : ℤ) - (na : ℤ) * e - (nc : ℤ) * f, by linear_combination hz⟩
+  -- n_b ≤ f by inventory
+  have hnbf : nb ≤ f := by
+    have h1 : nb * b ≤ f * b := by omega
+    exact Nat.le_of_mul_le_mul_right h1 hbpos
+  have hnbeq : nb = f := by
+    rcases hfd with ⟨j, hj⟩
+    rcases Nat.eq_zero_or_pos j with h | h
+    · subst h; simp at hj; omega
+    · have : f ≤ f * j := Nat.le_mul_of_pos_right f h
+      omega
+  subst hnbeq
+  have hef0 : 0 < e * f := Nat.mul_pos (by omega) (by omega)
+  have hf2 : 0 < f ^ 2 := pow_pos (by omega : 0 < f) 2
+  constructor
+  · by_contra h
+    have : 1 * (e * f) ≤ na * (e * f) := Nat.mul_le_mul_right _ (by omega)
+    omega
+  refine ⟨rfl, ?_⟩
+  by_contra h
+  have : 1 * f ^ 2 ≤ nc * f ^ 2 := Nat.mul_le_mul_right _ (by omega)
+  omega
+
+/-- **The wall-scale base reading, assembled.**  Inputs: the base reading
+`(n_a, n_b, n_c)` of `Δ_f`'s `B`-side, the `c`-side reading `(P, Q, R)`,
+the `γ`-trap count `R ≥ 1` (`BaseBetaWalks.gamma_injection` on the
+region's `c`-side), and the flank disjunction — the single `α`-corner tile
+lays its `b`-flank on the base or on the `c`-side (`CChord.fill_alpha`
+pins the corner to one tile; `{b, c}` are `α`'s flanks).  Conclusion: the
+base reads exactly `b^f`, killing every member of
+`base_side_wall_family`'s family at once.  The `Q ≥ 1` horn dies on
+`SideNoB.side_no_b_uncond` — the `m = 1` lever `f·c = f³`, acting one
+level down. -/
+theorem wall_base_reading (e f b na nb nc P Q R : ℕ) (he : 1 ≤ e)
+    (hef : e < f) (hcop : Nat.Coprime e f) (hb : b + e ^ 2 = f ^ 2)
+    (heq : na * (e * f) + nb * b + nc * f ^ 2 = f * b)
+    (hcside : P * (e * f) + Q * b + R * (f * f) = f * f * f)
+    (hgamma : 1 ≤ R) (hflank : 1 ≤ nb ∨ 1 ≤ Q) :
+    na = 0 ∧ nb = f ∧ nc = 0 := by
+  have hbmul : b + e * e = f * f := by
+    have h1 : e ^ 2 = e * e := sq e
+    have h2 : f ^ 2 = f * f := sq f
+    omega
+  rcases hflank with hnb | hQ
+  · exact wall_base_dichotomy e f b na nb nc he hef hcop hb hnb heq
+  · exfalso
+    have hQ0 : Q = 0 :=
+      Erdos634.SideNoB.side_no_b_uncond hcop hef hbmul hcside hgamma
+    omega
 
 end Erdos634.RogueMirror
 
@@ -335,3 +437,5 @@ end Erdos634.RogueMirror
 #print axioms Erdos634.RogueMirror.top2_slot_dies
 #print axioms Erdos634.RogueMirror.top3_slot_flush_dies
 #print axioms Erdos634.RogueMirror.base_side_wall_family
+#print axioms Erdos634.RogueMirror.wall_base_dichotomy
+#print axioms Erdos634.RogueMirror.wall_base_reading

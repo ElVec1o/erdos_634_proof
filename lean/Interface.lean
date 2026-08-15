@@ -258,13 +258,15 @@ theorem pentagon_consumer (a b s x y z : Nat) (hs : 0 < s) (ha : s < a) (hb : s 
 /-! ## The bridge to the geometry, stated precisely.
 `Dissection.lean` isolates the geometric facts it cannot yet derive as named predicates rather than
 axioms. The one this interface needs for `walk_base` and `walk_side` is exactly `HasEdgeChains`:
-that a subset of the target's frontier is a union of whole tile edges. Given it, a side of the
-target is such a union, the multiset of edge labels along it gives `(P,Q,R)`, and the walk equation
-is then just additivity of length — the content below. The remaining three fields (`gamma_trap`,
-`corner_ac`, `base_b_count`) are consequences of the vertex-figure classification, which needs
-`HasAngleSums`, the predicate `Dissection.lean` records as the sharpest gap (Mathlib has no
-angles-around-a-point statement and no machinery to build one). So the geometric debt of the four
-chain steps formalized here is: `HasEdgeChains` + `HasAngleSums`, and nothing else. -/
+that a subset of the target's frontier is a union of whole tile edges. STATUS UPDATE (2026-08-15):
+that half is now DISCHARGED — `EdgeChain.lean` proves the sharpened form
+`Geometry.Dissection.side_walk_abc`: for any dissection whose tile edges all have length `a`, `b`
+or `c`, each side of the target satisfies `P·a + Q·b + R·c = L` over ℝ for some `P Q R : ℕ`.
+Instantiating `walk_base`/`walk_side` from it is cast bookkeeping (the lengths here are naturals),
+plus the congruence hypothesis that every tile edge has length in `{a,b,c}`.  The remaining three
+fields (`gamma_trap`, `corner_ac`, `base_b_count`) are consequences of the vertex-figure
+classification, which needs `HasAngleSums`, still the sharpest gap. So the remaining geometric debt
+of the four chain steps formalized here is: `HasAngleSums`-class facts, and nothing else. -/
 
 /-- Given the edge labels along a side, the walk equation is additivity of length: if a side of
 length `L` is the union of `P` a-edges, `Q` b-edges and `R` c-edges then `P·a + Q·b + R·c = L`.

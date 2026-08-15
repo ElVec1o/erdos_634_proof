@@ -60,7 +60,10 @@ the facts this file cannot yet derive are isolated as named `Prop`-valued predic
 section (`HasAngleSums`, `HasEdgeChains`, `InteriorBalanced`), each with a docstring saying exactly
 what it asserts and why it is not available.  **`InteriorBalanced` is no longer among them**: its
 real-valued form is now *proved* for `Dissection.dirSet` by `Dissection.g4_final`, and the predicate
-is kept only for downstream theorems that were stated against it.  They are *definitions*, not axioms: nothing in this
+is kept only for downstream theorems that were stated against it.  **`HasEdgeChains` is no longer
+among them either** (2026-08-15): the union form is proved below (`hasEdgeChains_edge`), and the
+exactly-once forms with the length identities are proved in `EdgeChain.lean` and `WallChain.lean`;
+only `HasAngleSums` remains open.  They are *definitions*, not axioms: nothing in this
 file assumes them, and any downstream theorem that needs one must take it as a hypothesis.
 
 The single sharpest gap is `HasAngleSums`.  Its difficulty is narrower than first recorded here:
@@ -399,10 +402,11 @@ interior segment, is partitioned into whole tile edges, and the far side of any 
 chain of whole edges.  Stated here as: the set of tile vertices meeting a segment `S` cuts `S` into
 sub-segments each of which is a union of whole tile edges.
 
-**Status: hard but not research-level** — it is a finite combinatorial statement about a finite
-point configuration, but it needs a usable notion of "edge of a tile" and of "maximal segment",
-neither of which Mathlib provides.  This is the input to `BaseBetaWalks`' walk equations
-`P·a + Q·b + R·c = (side length)`. -/
+**Status: PROVED, and sharpened.**  The union form is `hasEdgeChains_edge` below; the
+exactly-once forms with the length identities — what the walk equations and the chord machinery
+actually consume — are proved in `EdgeChain.lean` (boundary) and `WallChain.lean` (interior
+walls).  See the 2026-08-15 NOTE after the definition.  This is the input to `BaseBetaWalks`'
+walk equations `P·a + Q·b + R·c = (side length)`. -/
 def HasEdgeChains {N : ℕ} (D : Dissection N) (edgeOf : Fin N → Fin 3 → Set Plane) : Prop :=
   ∀ i : Fin 3, ∃ (part : Finset (Fin N × Fin 3)),
     (⋃ e ∈ part, edgeOf e.1 e.2) = segment ℝ (D.target.pts i) (D.target.pts (i + 1))
@@ -414,6 +418,24 @@ is not such a union — so any theorem assuming it would have been vacuously tru
 development assumed it, so no result was affected, but the statement is corrected above to the one
 its own docstring describes: each of the target's three sides is a finite union of whole tile edges.
 That is exactly the input the walk equations `P·a + Q·b + R·c = (side length)` need.
+
+NOTE (2026-08-15). The union form is proved below (`hasEdgeChains_edge`), and the *sharpened*
+forms the downstream consumers actually need — a union says nothing about multiplicity, so no
+length identity follows from it — are proved in two sibling modules compiled against this one:
+
+* `EdgeChain.lean` — the same-side overlap exclusion (`Dissection.no_second_tile_same_side`:
+  two distinct tiles in the half-plane `f ≤ c` cannot share an edge-interior point on the line
+  `f = c`), the exactly-once partition of each target side with the length identity
+  (`Dissection.side_partition`, `side_walk`), the interface walk equation `P·a + Q·b + R·c = L`
+  (`side_walk_abc`), and breakpoints-are-vertices (`chain_breakpoint_vertex`).
+* `WallChain.lean` — the interior form: each side of a *wall* segment is an exactly-once chain
+  of whole tile edges (`wall_partition`, `wall_two_sided`), with tile edges being walls with no
+  vertex exclusion (`edge_point_not_interior`) and the packaged per-edge form (`edge_two_sided`).
+
+G3's residual after those is bookkeeping, not geometry: extracting the *ordered run* of a chain
+(`ChordInterface.FarSide.run`'s end-to-end order and prefix sums) from the proved partition, and
+the flush/straddle mixed covering of a chord that is NOT a wall (`ChordDecomp.ChordTrace`'s
+straddler half).
 -/
 
 /-- The `i`-th edge of a triangle: the segment from vertex `i` to vertex `i+1`. This is the

@@ -16,6 +16,17 @@
   compiled" note still in its own header; `volume_pos`, `aedisjoint`, `volume_target`,
   `cornerAngle_sum`, `angle_indep` all elaborate, on `propext`/`Classical.choice`/`Quot.sound`.
   Its header's four "unverified tactic guess" caveats are stale and should be removed.
+* **2026-08-15 — obligation G3 is discharged.** `EdgeChain.lean` and `WallChain.lean` (both
+  compiling against `Dissection.olean`, axioms `propext`/`Classical.choice`/`Quot.sound` only)
+  prove the exactly-once edge chains: the same-side overlap exclusion
+  (`Dissection.no_second_tile_same_side`), each target side partitioned by whole tile edges with
+  the length identity (`side_partition`/`side_walk`) and the interface walk equation
+  (`side_walk_abc`), and the interior form — each side of a wall segment covered exactly once
+  (`wall_partition`/`wall_two_sided`/`edge_two_sided`), tile edges being walls
+  (`edge_point_not_interior`), breakpoints at tiling vertices (`chain_breakpoint_vertex`).
+  Residual: ordered-run extraction (FarSide.run) and the straddled-chord mixed covering
+  (ChordTrace) — bookkeeping layers, no new geometry.  The one remaining open geometric
+  obligation is `HasAngleSums` (G2).  See `PAPER_MAP.md` § "Added 2026-08-15".
 
 To reproduce the Mathlib half without building Mathlib here, run from any project with a
 v4.30.0 build: `lake env lean /path/to/ERDOS/634/lean/<File>.lean`.

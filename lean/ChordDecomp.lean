@@ -12,8 +12,14 @@
 -- flush trace is a whole tile edge — is NOT proved here. It is carried as the fields of
 -- `ChordTrace`, in the style of `ChordInterface.FarSide`: the obligation is named rather than
 -- hidden, and the corpus keeps its zero-`sorry` property. The supporting-line step behind "a flush
--- trace is a whole edge" is `Erdos634.Geometry.contact_is_edge`, already proved in `Dissection.lean`;
--- what is missing is the one-dimensional covering statement, which is the same gap as `HasEdgeChains`.
+-- trace is a whole edge" is `Erdos634.Geometry.contact_is_edge`, already proved in `Dissection.lean`.
+-- STATUS UPDATE (2026-08-15): the one-dimensional covering statement is now proved for WALL
+-- segments (`WallChain.wall_partition` / `wall_two_sided`), and flush-flush disjointness is
+-- `EdgeChain.Dissection.sameside_edges_subsingleton` (two tiles flush from the same side cannot
+-- overlap on the line). What remains named for THIS chord — which is straddled, not a wall — is
+-- the mixed flush/straddle covering: the dichotomy (a tile meeting the line either straddles,
+-- with its trace's relative interior inside the tile's interior, or contacts in a face) and the
+-- one-dimensional additivity across straddler traces.
 --
 -- Per the project rule the corpus was surveyed first. `ChordInterface.lean` carries the far side of a
 -- BLOCKED chord (a run of edges laid end to end from a blocked end, with no relation asserted between
