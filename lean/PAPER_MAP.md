@@ -138,7 +138,7 @@ in two new modules (`lean/EdgeChain.lean`, `lean/WallChain.lean`) compiled again
 |---|---|---|
 | the crux: two tiles on the same side of a line cannot share an edge-interior point | `Geometry.Dissection.no_second_tile_same_side` (via `Tri.edge_inward`) | VERIFIED |
 | each target side is partitioned exactly once by whole tile edges; lengths sum to the side | `Geometry.Dissection.side_partition`, `.side_walk` | VERIFIED |
-| the interface walk equation `P·a + Q·b + R·c = L` (geometric half of `walk_base`/`walk_side`) | `Geometry.Dissection.side_walk_abc` | VERIFIED |
+| the interface walk equation `P·a + Q·b + R·c = L` (geometric half of `walk_base`/`walk_side`) | `Geometry.Dissection.side_walk_abc`, `.side_walk_abc_nat` (ℕ form) | VERIFIED |
 | chain breakpoints are tiling vertices | `Geometry.Dissection.chain_breakpoint_vertex` | VERIFIED |
 | tile edges are walls (no vertex exclusion) | `Geometry.Dissection.edge_point_not_interior` | VERIFIED |
 | each side of a wall segment is covered exactly once by whole tile edges | `Geometry.Dissection.wall_partition`, `.wall_cover` | VERIFIED |
@@ -151,8 +151,9 @@ Residual of G3 after this layer — bookkeeping, not geometry:
   first common breakpoint, T-vertex stagger) from the proved per-side partition;
 * the flush/straddle *mixed* covering of a chord that is not a wall (`ChordDecomp.ChordTrace`'s
   straddler half); its flush-flush disjointness half is `sameside_edges_subsingleton`;
-* instantiating `Interface.BaseBeta.walk_base`/`walk_side` from `side_walk_abc` (ℝ→ℕ cast plus
-  the congruent-tile hypothesis that every edge length lies in `{a,b,c}`).
+* instantiating `Interface.BaseBeta.walk_base`/`walk_side`: `side_walk_abc_nat` already delivers
+  the ℕ-equation `P·a + Q·b + R·c = L`; what an instantiation still supplies is its data — the
+  congruent-tile hypothesis (every edge length lies in `{a,b,c}`) and the side's numeric length.
 
 The remaining open geometric obligation of the corpus is `HasAngleSums` (G2) alone.
 

@@ -650,10 +650,26 @@ theorem Dissection.side_walk_abc {N : ℕ} (D : Dissection N) (i : Fin 3) (a b c
     (fun e _ => habc e.1 e.2)
   exact ⟨P, Q, R, by rw [hPQR, hsum]⟩
 
+/-- **The walk equation over ℕ** — the exact shape of the interface fields
+`Interface.BaseBeta.walk_base` / `walk_side`.  For natural tile-side lengths `a, b, c` and a side
+of natural length `L`, the multiplicities satisfy `P·a + Q·b + R·c = L` in ℕ. -/
+theorem Dissection.side_walk_abc_nat {N : ℕ} (D : Dissection N) (i : Fin 3) (a b c L : ℕ)
+    (habc : ∀ (j : Fin N) (k : Fin 3),
+      dist ((D.tile j).pts k) ((D.tile j).pts (k + 1)) = (a : ℝ)
+      ∨ dist ((D.tile j).pts k) ((D.tile j).pts (k + 1)) = (b : ℝ)
+      ∨ dist ((D.tile j).pts k) ((D.tile j).pts (k + 1)) = (c : ℝ))
+    (hL : dist (D.target.pts i) (D.target.pts (i + 1)) = (L : ℝ)) :
+    ∃ P Q R : ℕ, P * a + Q * b + R * c = L := by
+  obtain ⟨P, Q, R, hPQR⟩ := D.side_walk_abc i (a : ℝ) (b : ℝ) (c : ℝ) habc
+  refine ⟨P, Q, R, ?_⟩
+  rw [hL] at hPQR
+  exact_mod_cast hPQR
+
 end Erdos634.Geometry
 
 #print axioms Erdos634.Geometry.Dissection.no_second_tile_same_side
 #print axioms Erdos634.Geometry.Dissection.side_partition
 #print axioms Erdos634.Geometry.Dissection.side_walk
 #print axioms Erdos634.Geometry.Dissection.side_walk_abc
+#print axioms Erdos634.Geometry.Dissection.side_walk_abc_nat
 #print axioms Erdos634.Geometry.Dissection.chain_breakpoint_vertex
