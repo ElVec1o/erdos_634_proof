@@ -499,3 +499,59 @@ always tileable.  The open seed question therefore TRANSFERS from the base-beta 
 cevian family, whose targets are strictly smaller (2f^2-e^2 < 3f^2-e^2 at every member).
 Note the reverse decomposition fails: cutting the cevian target the same way leaves the atom
 (legs f b m, base e b m, apex alpha), and the atom is proved untileable (the retraction).
+
+================================================================================
+CEVIAN m=1: THE SEED QUESTION IS CLOSED (no m=1 cevian tiling at any member)
+================================================================================
+gen_cevian.py e f 1  ->  cengine_lifo, exact QD arithmetic.  Target sides
+(e(2f^2-e^2), f*b, f^3), count N = 2f^2 - e^2.
+
+  (e,f)   N     verdict                  nodes
+  (1,2)    7    EXHAUSTED_NO_TILING         33
+  (2,3)   14    EXHAUSTED_NO_TILING        678
+  (1,3)   17    EXHAUSTED_NO_TILING        191
+  (3,4)   23    EXHAUSTED_NO_TILING       4624
+  (1,4)   31    EXHAUSTED_NO_TILING        550
+  (4,5)   34    EXHAUSTED_NO_TILING      52345
+  (3,5)   41    EXHAUSTED_NO_TILING      44134
+  (2,5)   46    EXHAUSTED_NO_TILING       4685
+  (1,5)   49    EXHAUSTED_NO_TILING       2974
+  (1,6)   71    EXHAUSTED_NO_TILING       9251
+  (5,6)   47    running
+  f = 7   62..97  queued
+
+Ten members, ten exhaustions, zero tilings -- including the base member (1,2)
+itself.  The two certified cevian tilings are 28 = m^2*7 at m=2 and 63 = m^2*7
+at m=3; m=1 carries none.  Via CevianSplit.transfer this also says the split
+route supplies no m=1 base-beta seed at any of these members.
+
+================================================================================
+r > e: THE AREA FRAME (lean/RogueArea.lean)
+================================================================================
+Chord frame: A=(-Mc, Ma), B=(rc, Ma), C=(rc, -ra); mast s=0, chord t=0.
+Normalisation: the strip [0,ec]x[0,c] is 2f tiles, so
+        area([0,S]x[0,T]) = 2 S T / (e f^3)  tiles.
+Consequences (all verified symbolically, 170739 cases, 0 failures):
+
+  area(Delta_k)                       = (r+M)^2 = k^2      <- frame is exact
+  rogue region [0,rc]x[0,Ma]          = 2 r M
+  column above the strip [0,ec]x[0,Ma]= 2 e M
+  strip [0,ec]x[0,c]                  = 2 f
+  one band [0,ec]x[t,t+a]             = 2 e
+  decomposition                       2rM + M^2 + r^2 = k^2
+
+NEGATIVE: the strip does NOT overflow.  2f < 2rM for every deep rogue
+(strip_fits_region).  A size argument cannot fire.
+
+POSITIVE: the obstruction is DIVISIBILITY, not size.  The column holds 2eM,
+the strip eats 2f, each band is 2e, and
+        2e  does not divide  2eM - 2f      (leftover_not_multiple)
+because f + j e = M e would force e | f, excluded by gcd(e,f)=1, e >= 2
+(band_never_flush).  Equivalently the band stack reaches c + j a and can never
+land flush on AB.  So a deep rogue is forced to admit a NON-BAND tile in its
+own column.
+
+STATUS: this is a new necessary condition on the deep rogue, proved in Lean.
+It is NOT yet a kill: it says the column cannot be strip+bands only, not that
+no filling exists.  Labelled honestly -- proved-in-Lean (the counting), open
+(the kill).
