@@ -2,10 +2,17 @@
 """
 verify_frontier.py  --  the branch sweep for the frontier values (Section 8 of the paper).
 
-For each N in {14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46}, every branch of the Laczkovich classification is checked by an exact
-finite computation. Branches whose published characterizations are equations are decided here;
-the four surviving instances (all equilateral or isosceles targets with a uniquely determined
-tile) are the ones settled by the exhaustive search engine (code/engine/).
+For each composite N excluded by the paper below 90 -- {14, 15, 21, 22, 30, 33, 35, 38, 39, 42,
+46, 51, 55, 56, 57, 60, 62, 66, 69, 70, 76, 78, 86, 87} -- every branch of the Laczkovich
+classification is checked by an exact finite computation. Branches whose published
+characterizations are equations are decided here; the surviving instances (verdict ENGINE) are
+the ones settled by the exhaustive search engine (code/engine/).
+
+RE-AUDIT (rem:63correction): an earlier version applied Beeson III Thm 7's divisibility
+"K | M^2" in the scalene 3a2b branch and thereby falsely excluded 63, whose cevian tiling is
+kernel-certified (CevianTiling63.lean).  The filter is now removed (see the NOTE at that branch)
+and the sweep re-run over every composite exclusion below 90.  The self-test at the end pins the
+corrected branch on the two certified members 63 and 28.
 
 Notation: 120-triple = (a,b,c), gcd(a,b)=1, c^2 = a^2+ab+b^2 (tile with a 2pi/3 angle).
 3a2b-tile = integer (a,b,c) with b = c - a^2/c (tile with 3*alpha + 2*beta = pi).
@@ -30,11 +37,14 @@ def report(N, branch, verdict, detail=""):
     RESULTS.append((N, branch, verdict, detail))
     print(f"  N={N:2d}  {branch:34s} {verdict:10s} {detail}")
 
+SWEEP = (14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46,
+         51, 55, 56, 57, 60, 62, 66, 69, 70, 76, 78, 86, 87)
+
 print("=" * 96)
-print("Branch sweep for N = 14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46  (with the parity law M == N mod 2)")
+print(f"Branch sweep for the composite exclusions below 90 (parity law M == N mod 2): {SWEEP}")
 print("=" * 96)
 
-for N in (14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46):
+for N in SWEEP:
     # ---- commensurable angles: N must be square, sum of two squares, or 2,3,6 x square ----
     forms = (issq(N) or any(issq(N - e * e) for e in range(1, isqrt(N) + 1))
              or (N % 2 == 0 and issq(N // 2)) or (N % 3 == 0 and issq(N // 3))
@@ -118,11 +128,28 @@ for N in (14, 15, 21, 22, 30, 33, 35, 38, 39, 42, 46):
             and issq((9 * N - M * M) * (N - M * M))]
     report(N, "pi/3-equilateral [B-eq Thm 3]", "dead" if not sols else "ALIVE", f"M={sols}")
 
-    # ---- 3a+2b=pi, shape (2b,b,a+b): N = 2K^2 - M^2 with K | M^2  [B-III Thm 7, iff] ----
-    sols = [(M, K) for M in range(1, isqrt(N) + 1) if M * M < N
-            for K in range(1, isqrt((N + M * M) // 2) + 1)
-            if 2 * K * K == N + M * M and M * M % K == 0]
-    report(N, "3a2b (2b,b,a+b) [B-III Thm 7]", "dead" if not sols else "ALIVE", str(sols))
+    # ---- 3a+2b=pi, scalene shape (2a, b, a+b): N = 2K^2 - M^2  [B-III Thm 7] ----
+    # NOTE: Beeson III Thm 7's divisibility "K | M^2" is NOT applied.  It is refuted outright by
+    # the 63-tiling (CevianTiling63.lean): 63 = 2*6^2 - 3^2 has (M,K) = (3,6), K = 6 does not
+    # divide M^2 = 9, yet the tiling exists (angles (beta, 2alpha, alpha+beta), tile (2,3,4),
+    # target (21,24,18), zero-axiom kernel certificate).  Decoding g = gcd(M,K), (e,f,m) =
+    # (M/g, K/g, g), the representation is exactly the cevian family N = m^2 (2f^2 - e^2) and
+    # "K | M^2" is "f | m" -- false at m=3, f=2.  Same disease as Thm 14/19 (both also unapplied,
+    # see the notes there): the g-divisibility chain of that paper rests on its Lemma 8, which is
+    # false.  An earlier version of this sweep applied the filter and thereby falsely excluded 63
+    # (rem:63correction in the paper).  Survivors are finite (tile, target) instances for the
+    # engine, not exclusions.
+    sols = []
+    for M in range(1, isqrt(N) + 1):
+        if M * M >= N or (N - M) % 2:
+            continue
+        for K in range(M + 1, isqrt((N + M * M) // 2) + 1):
+            if 2 * K * K == N + M * M:
+                g = gcd(M, K)
+                e, f, m = M // g, K // g, g
+                sols.append((M, K, f"(e,f,m)=({e},{f},{m})"))
+    report(N, "3a2b scalene (2a,b,a+b) [B-III Thm 7]",
+           "dead" if not sols else "ENGINE", str(sols))
 
     # ---- 3a+2b=pi, shape with second tiling equation [B-III Thm 11, iff] ----
     # N/M^2 = (2-s^2)(3-s^2) / ((1-s)^2 (2+s)^2), rational s in (0,1).
@@ -263,3 +290,21 @@ print("Surviving finite instances (settled by the exhaustive engine):")
 for (N, br, v, d) in RESULTS:
     if v == "ENGINE":
         print(f"  N={N}: {br}: {d}")
+
+# ---- self-test: the corrected scalene 3a2b branch on the two kernel-certified members ----
+# 63 = 2*6^2 - 3^2, (e,f,m) = (1,2,3): the representation MUST survive (CevianTiling63.lean);
+# 28 = 2*4^2 - 2^2, (e,f,m) = (1,2,2): survives with or without the old filter (f | m holds).
+def _thm7_reps(N):
+    out = []
+    for M in range(1, isqrt(N) + 1):
+        if M * M >= N:
+            continue
+        for K in range(M + 1, isqrt((N + M * M) // 2) + 1):
+            if 2 * K * K == N + M * M:
+                out.append((M, K))
+    return out
+assert _thm7_reps(63) == [(3, 6)], "regression: the 63 cevian representation must be found"
+assert _thm7_reps(28) == [(2, 4)], "regression: the 28 cevian representation must be found"
+assert any(M * M % K for (M, K) in _thm7_reps(63)), \
+    "regression guard: the removed 'K | M^2' filter would kill the certified 63 instance"
+print("\nself-test OK: corrected Thm-7 branch finds the certified members 63 and 28")
