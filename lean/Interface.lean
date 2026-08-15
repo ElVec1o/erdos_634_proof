@@ -265,8 +265,11 @@ or `c`, each side of the target satisfies `P·a + Q·b + R·c = L` over ℝ for 
 Instantiating `walk_base`/`walk_side` from it is cast bookkeeping (the lengths here are naturals),
 plus the congruence hypothesis that every tile edge has length in `{a,b,c}`.  The remaining three
 fields (`gamma_trap`, `corner_ac`, `base_b_count`) are consequences of the vertex-figure
-classification, which needs `HasAngleSums`, still the sharpest gap. So the remaining geometric debt
-of the four chain steps formalized here is: `HasAngleSums`-class facts, and nothing else. -/
+classification, which needs `HasAngleSums`.  STATUS UPDATE (2026-08-16): that too is now
+DISCHARGED — `Geometry.Dissection.hasAngleSums` (`AngleSumDissection.lean`) proves the three
+angle-sum clauses outright, so the vertex-figure multiplicities follow through the proved bridge
+`Geometry.vertex_multiplicities` and the remaining debt of the four chain steps is the
+bookkeeping extraction (instantiating the fields against a concrete dissection), not geometry. -/
 
 /-- Given the edge labels along a side, the walk equation is additivity of length: if a side of
 length `L` is the union of `P` a-edges, `Q` b-edges and `R` c-edges then `P·a + Q·b + R·c = L`.

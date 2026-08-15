@@ -3203,10 +3203,15 @@ Lemma~\ref{lem:rowwords} uniformly.
 \begin{remark}[Standing hypotheses, and labels]\label{rem:rowhyps}
 The chain above is proved on paper over exactly the following named inputs, and nothing else.
 (i) \emph{Angle sums}: the tile angles at a point of the region sum to $2\pi$ (interior), $\pi$
-(interior to a side), or the corner angle --- the \texttt{Dissection.HasAngleSums} class, the one
-open geometric obligation; the passage from these real equations to the integer multiplicities
-consumed by the fills is proved (\texttt{Geometry.vertex\_multiplicities}, with
-$\alpha/\pi\notin\Q$ proved at every member). (ii) \emph{Coverings}: each side of a wall segment
+(interior to a side), or the corner angle --- the \texttt{Dissection.HasAngleSums} class, now
+proved for the target (\texttt{Geometry.Dissection.hasAngleSums} in
+\texttt{lean/AngleSumDissection.lean}, with the vertex-sector crux
+\texttt{Tri.volume\_inter\_ball\_vertex} in \texttt{lean/VertexSector.lean}); the passage from
+these real equations to the integer multiplicities consumed by the fills is proved
+(\texttt{Geometry.vertex\_multiplicities}, with $\alpha/\pi\notin\Q$ proved at every member).
+The region-local instances (the figure at a point of a sub-region such as $\Delta_k$ summing to
+the region's angle) are the same computation read inside the region and remain the named form
+in which the row forcing consumes them. (ii) \emph{Coverings}: each side of a wall segment
 is partitioned exactly once by whole tile edges --- proved
 (\texttt{Geometry.Dissection.side\_partition}, \texttt{wall\_two\_sided}); what remains of that
 obligation is the ordered-run extraction (\texttt{ChordInterface.FarSide}'s order), which is

@@ -66,7 +66,15 @@ exactly-once forms with the length identities are proved in `EdgeChain.lean` and
 only `HasAngleSums` remains open.  They are *definitions*, not axioms: nothing in this
 file assumes them, and any downstream theorem that needs one must take it as a hypothesis.
 
-The single sharpest gap is `HasAngleSums`.  Its difficulty is narrower than first recorded here:
+STATUS UPDATE (2026-08-16): **`HasAngleSums` is no longer open either — G2 is discharged.**
+`Erdos634.Geometry.Dissection.hasAngleSums` (`AngleSumDissection.lean`) proves
+`HasAngleSums D (fun p i => (D.tile i).localAngle p)` outright, with the vertex-sector crux —
+a tile occupies `θ/2·r²` of every small enough ball at a vertex of corner angle `θ` — proved in
+`VertexSector.lean` (`Tri.volume_inter_ball_vertex`) by rotating `E2Join`'s wedge onto the
+tile's vertex cone.  The geometric obligation inventory of this file is now empty; the two
+paragraphs below are kept as the historical record of the gap.
+
+The single sharpest gap WAS `HasAngleSums`.  Its difficulty is narrower than first recorded here:
 Mathlib *does* have oriented angles at a point in an oriented plane (`EuclideanGeometry.oangle`,
 valued in `ℝ/2πℤ`) together with additivity, so the statement "the angles around an interior point
 sum to `2π`" is free MODULO `2π` — the oriented angles telescope around the cycle.  What is missing
@@ -383,7 +391,10 @@ at the point `v` (zero if `v` is not on the tile).  `HasAngleSums` asserts the t
 statements: the tile angles at a point interior to the target sum to `2π`; at a point interior to a
 side of the target they sum to `π`; at a corner of the target they sum to that corner's angle.
 
-**Status: research-level in Lean.**  Mathlib has the triangle angle sum
+**Status: PROVED (2026-08-16).**  `Dissection.hasAngleSums` in `AngleSumDissection.lean`
+supplies a witness `angleAt` (the tiles' local angles) satisfying all three clauses; the crux is
+`VertexSector.lean`'s `Tri.volume_inter_ball_vertex`.  The note below records why it was hard:
+Mathlib has the triangle angle sum
 (`EuclideanGeometry.angle_add_angle_add_angle_eq_pi`) and the on-a-line splitting
 (`angle_add_angle_eq_pi_of_angle_eq_pi`), and it has free *mod 2π* additivity for oriented angles
 (`Orientation.oangle_add`).  It has **nothing** that lifts a mod-2π sum to a real-valued one beyond
