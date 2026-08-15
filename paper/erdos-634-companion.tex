@@ -3062,6 +3062,161 @@ The branching at the $k=2$ word falls from $3^{f-1}$ to $f+1$, and the propositi
 The obstruction assumes the dissection is edge-to-edge, which the main paper does not, and it is silent when $e$ and $f$ are both odd --- which includes $(1,3)$ and $(3,7)$. Full discussion in \cite{Obstructions}.
 \end{remark}
 
+\subsection{The forced row and the slot dichotomy: the induction \texorpdfstring{$W(k)$}{W(k)}}\label{sub:forcedrow}
+
+Write $W(k)$ for the statement: \emph{every scale-$k$ inflation occurring inside a tiling of the
+$m=1$ target is subdivided standardly} ($1\le k\le f$; at $k=f$ this is the inflation of
+Proposition~\ref{prop:inflbdy} again, now as an occurrence rather than in isolation). The
+induction $W(k-1)\Rightarrow W(k)$ proceeds by forcing the first row of the occurrence tile by
+tile; the forcing stalls at exactly one per-slot dichotomy, whose surviving branch is the
+\emph{rogue} configuration that the slot-kill theorems
+(\texttt{RogueContainment}, \texttt{RogueChord}, \texttt{RogueFan}, \texttt{RogueMirror}) and the
+engine certificates are stated against. Those modules cite the row forcing as ``the forced row
+(paper)''; this subsection is that reference. The arithmetic skeleton --- the position calculus,
+the junction ledger, the figure forcing and the dichotomy --- is machine-checked in
+\textup{\texttt{lean/ForcedRow.lean}}, cited step by step below.
+
+\emph{Setup.} Let $\Delta_k$ be a scale-$k$ occurrence: a sub-region of the hypothetical tiling,
+bounded by tile edges, congruent to the tile scaled by $k$, with the tiling respecting its
+boundary. Place its $\alpha$-corner at $A$, its $\gamma$-corner at $C=A+kb\,w$ and its
+$\beta$-corner at $B=A+kc\,u$, where $w$, $u$, $\hat v$ are the unit vectors along the base
+$AC$, the $c$-side $AB$, and the $a$-side direction $C\to B$ respectively; the chart identity
+$c\,u-a\,\hat v=b\,w$ (\texttt{RogueMirror.generator\_x/\_y}) relates them. Write
+\[
+Y_i \;=\; A+(i+1)\,b\,w \qquad (0\le i\le k-2)
+\]
+for the base junctions and $X_i=A+i\,b\,w+c\,u$ for the row apexes; the jump identity
+$Y_i+a\,\hat v=X_i$ is \texttt{ForcedRow.jump\_x}.
+
+\begin{lemma}[Boundary words at scale $k$]\label{lem:rowwords}
+For $k<f$ the three side words of $\Delta_k$ are forced outright: the base reads $b^k$
+\textup{(\texttt{Inflation.b\_side\_rigid})}, the $a$-side reads $a^k$
+\textup{(\texttt{.a\_side\_rigid})}, and the $c$-side carries no $b$-edge
+\textup{(\texttt{.c\_side\_no\_b})}. At the wall scale $k=f$ the same three readings hold:
+the $c$-side by the $\gamma$-trap \textup{(\texttt{SideNoB.side\_no\_b\_uncond})}, the base by
+the corner coupling \textup{(\texttt{RogueMirror.wall\_base\_reading})}, and the $a$-side is
+$a^f$ or $c^e$ \textup{(\texttt{Inflation.a\_side\_words}; the $c^e$ branch is the transverse
+configuration, treated separately)}.
+\end{lemma}
+
+\begin{lemma}[The corner tile]\label{lem:rowp0}
+The tile $P_0$ of the occurrence at $A$ is unique and standard: it presents $\alpha$ at $A$ with
+its $b$-flank on the base and its $c$-flank on the $c$-side.
+\end{lemma}
+
+\begin{proof}
+The region's corner angle at $A$ is $\alpha$, and a fill $x\alpha+y\beta+z\gamma=\alpha$ has
+$(x,y,z)=(1,0,0)$ \textup{(\texttt{CChord.fill\_alpha}, via the multiplicity bridge
+\texttt{Geometry.vertex\_multiplicities})}: a single tile presenting $\alpha$, whose two edges at
+$A$ are the flanks $\{b,c\}$ of $\alpha$. The $c$-side carries no $b$-edge
+(Lemma~\ref{lem:rowwords}), so the $b$-flank lies on the base.
+\end{proof}
+
+\begin{lemma}[The first partner, and the parallelogram]\label{lem:rowq0}
+$P_0$'s $a$-edge $[\,b\,w,\;c\,u\,]$ is matched by a single tile $Q_0$, the half-turn image of
+$P_0$ about the edge midpoint; $P_0\cup Q_0$ is the parallelogram $(A,\;b\,w,\;b\,w+c\,u,\;c\,u)$.
+\end{lemma}
+
+\begin{proof}
+Both endpoints of the $a$-edge lie on the region boundary, and its extensions leave the region
+(below the base line at $b\,w$; across the $c$-side at $c\,u$, since $\hat v$ points outward
+there). The far side of the edge is therefore covered by whole tile edges partitioning it exactly
+\textup{(\texttt{Geometry.Dissection.wall\_two\_sided}, with tile edges walls by
+\texttt{edge\_point\_not\_interior} and the covering tiles contained in the region --- the
+containment obligation)}, with lengths summing to $a$; \texttt{Inflation.a\_unsplittable} leaves a
+single $a$-edge, hence a single partner tile carrying $\{\beta,\gamma\}$ at the two ends. The
+reflected assignment puts its $\gamma$ at $b\,w$, where $P_0$ already presents $\gamma$: a
+junction interior to the base carries at most one $\gamma$
+\textup{(\texttt{BaseBetaCorners.pi\_vertex\_gamma\_le\_one}; directly, $2\gamma=\pi+\alpha>\pi$)}.
+So the direct partner is forced, and the half-turn closes the parallelogram
+\textup{(\texttt{ForcedRow.pgram\_x})}.
+\end{proof}
+
+\begin{lemma}[The row advance at $Y_0$]\label{lem:rowp1}
+The tile completing the junction $Y_0=b\,w$ is $P_1=P_0+b\,w$.
+\end{lemma}
+
+\begin{proof}
+At $Y_0$ the figure sums to $\pi$ on the region side; $P_0$'s $\gamma$ and $Q_0$'s $\beta$ leave
+the residual $\alpha$ \textup{(\texttt{ForcedRow.junction\_ledger})}, filled by a single
+$\alpha$-tile \textup{(\texttt{CChord.fill\_alpha})} with flanks $\{b,c\}$ on the rays $w$ (the
+base, forward) and $u$ ($Q_0$'s $c$-edge ray). Laying $c$ on the base would contradict the base
+word $b^k$ ($b\neq c$, \texttt{ForcedRow.base\_letter\_distinct}), so the $b$-flank lies on the
+base and the tile is the translate $P_1$.
+\end{proof}
+
+\begin{proposition}[The slot dichotomy]\label{prop:slotdichotomy}
+Let $1\le i\le k-2$ and suppose the row is standard up to $P_i$. At the junction $Y_i$ the figure
+is $\{\alpha,\beta,\gamma\}$: the $\gamma$ is $P_i$'s, the $\alpha$ is the next row tile
+$P_{i+1}=P_0+(i+1)b\,w$, forced with its $b$-flank on the base, and the $\beta$-tile spans the
+residual between the rays $u$ and $\hat v$ at $Y_i$ with flanks $\{a,c\}$, laid in one of exactly
+two ways:
+\begin{itemize}
+\item[\textup{(std)}] $a$ along $\hat v$ --- its $a$-edge is exactly $P_i$'s, the tile is the
+direct partner $Q_i=Q_0+i\,b\,w$, and the parallelogram closes as before;
+\item[\textup{(rogue)}] $c$ along $\hat v$ --- the $c$-edge overruns the row apex $X_i$ by
+$\Delta=c-a=f(f-e)$ \textup{(\texttt{ForcedRow.overrun\_x};
+\texttt{RogueChord.delta\_identities})}, an overhang shorter than every tile edge, making $X_i$ a
+T-vertex.
+\end{itemize}
+At $i=0$ the rogue branch does not exist, since both ends of the chord are blocked
+(Lemma~\ref{lem:rowq0}); the slot range is exactly $1\le i\le k-2$, i.e.\ $M:=i+1\in[2,k-1]$.
+\end{proposition}
+
+\begin{proof}
+When the forcing reaches $Y_i$ only $P_i$'s $\gamma$ is present there. The junction figure solves
+$x\alpha+y\beta+z\gamma=\pi$, so $(x,y,z)$ is $(3,2,0)$ or $(1,1,1)$
+\textup{(\texttt{BaseBetaCorners.pi\_vertex\_figures})}; the $\gamma$ kills the first, leaving
+exactly one $\alpha$ and one $\beta$ besides it \textup{(\texttt{ForcedRow.slot\_figure})}. The
+$\beta$-tile cannot be base-adjacent: its flanks are $\{a,c\}$
+\textup{(\texttt{Interface.beta\_has\_no\_b\_flank})} and the base letter is $b$, with
+$a\neq b\neq c$ \textup{(\texttt{ForcedRow.base\_letter\_distinct})}. So the base-adjacent tile
+is the $\alpha$, laying $b$ on the base --- the translate $P_{i+1}$, as in
+Lemma~\ref{lem:rowp1} --- and the $\beta$-tile occupies the residual
+$\pi-\gamma-\alpha=\beta$ \textup{(\texttt{ForcedRow.slot\_residual\_beta})} between $u$ and
+$\hat v$, laying $\{a,c\}$ on those rays in one of the two orders
+\textup{(\texttt{ForcedRow.flank\_product}, \texttt{.std\_iff\_chord\_a})}. In the std case the
+$a$-edge coincides with $P_i$'s $a$-edge $[Y_i,X_i]$ (\texttt{ForcedRow.jump\_x}) and the tile is
+the direct partner; in the rogue case $c>a$ produces the stated overrun
+\textup{(\texttt{ForcedRow.rogue\_overrun\_pos})}. Unlike at $i=0$, the chord through $Y_i$ and
+$X_i$ is blocked only at $Y_i$ --- beyond $X_i$ it runs into untiled interior --- so the far-side
+covering may overrun at $X_i$ and \texttt{a\_unsplittable} does not exclude the rogue branch.
+\end{proof}
+
+\begin{corollary}[The induction step]\label{cor:rowinduction}
+If every slot of $\Delta_k$ takes the std branch, the first row is the standard one ---
+$P_0,\dots,P_{k-1}$ and $Q_0,\dots,Q_{k-2}$, $2k-1$ tiles --- and the closure of
+$\Delta_k$ minus the row is the scale-$(k-1)$ occurrence anchored at $A+c\,u$
+\textup{(\texttt{ForcedRow.remainder\_x/\_y}; the count $(2k-1)+(k-1)^2=k^2$ is
+\texttt{ForcedRow.row\_count})}. Hence $W(k-1)\Rightarrow W(k)$ holds whenever every slot's rogue
+branch is refuted, and the whole tower $\{W(k):k\le f\}$ closes when this happens at every scale.
+\end{corollary}
+
+The rogue branches are refuted per slot by the kill theorems: containment for $Me<f$
+(\texttt{RogueContainment}, wired as \texttt{ForcedRow.slot\_dies\_by\_containment}), the first
+slot, boundary exit and top slot (\texttt{RogueChord} K1--K3), the low slots by the fan
+(\texttt{RogueFan}), the top-2/top-3 slots by the corridor (\texttt{RogueMirror}), and the
+residual $(M,k)$ cells by engine certificate. The wall-scale input --- the base of $\Delta_f$
+reads $b^f$ --- is \texttt{RogueMirror.wall\_base\_reading}, so every scale $k\le f$ consumes
+Lemma~\ref{lem:rowwords} uniformly.
+
+\begin{remark}[Standing hypotheses, and labels]\label{rem:rowhyps}
+The chain above is proved on paper over exactly the following named inputs, and nothing else.
+(i) \emph{Angle sums}: the tile angles at a point of the region sum to $2\pi$ (interior), $\pi$
+(interior to a side), or the corner angle --- the \texttt{Dissection.HasAngleSums} class, the one
+open geometric obligation; the passage from these real equations to the integer multiplicities
+consumed by the fills is proved (\texttt{Geometry.vertex\_multiplicities}, with
+$\alpha/\pi\notin\Q$ proved at every member). (ii) \emph{Coverings}: each side of a wall segment
+is partitioned exactly once by whole tile edges --- proved
+(\texttt{Geometry.Dissection.side\_partition}, \texttt{wall\_two\_sided}); what remains of that
+obligation is the ordered-run extraction (\texttt{ChordInterface.FarSide}'s order), which is
+bookkeeping on the proved partition. (iii) \emph{Containment}: a tile with interior points in a
+tile-bounded region lies in it. (iv) \emph{The boundary words} of Lemma~\ref{lem:rowwords},
+themselves standing on (i)--(iii). The tower statement is about occurrences: it does not by
+itself decide Hypothesis~\ref{hyp:walls}, which asks whether the west corner block occurs at all
+(Remark~\ref{rem:inflrigidscope}).
+\end{remark}
+
 \subsection{The tight subfamily \texorpdfstring{$f=2e+1$}{f=2e+1}}\label{sub:tight}
 
 Corollary~\ref{cor:ptwo} leaves the two cases $p\in\{1,2\}$. The case $p=2$ is not uniformly hard:
