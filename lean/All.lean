@@ -93,6 +93,7 @@ import Erdos634.VertexSector
 import Erdos634.W2Core
 import Erdos634.WalkEquation
 import Erdos634.WallChain
+import Erdos634.IntervalChain
 import Erdos634.Walls13
 import Erdos634.Wedge
 import Erdos634.ZhangTargets

@@ -457,3 +457,22 @@ Verified before proving: every odd f in [5,59] and every deep M -- n >= 2 never 
 does, zero violations.
 STATUS.  At e = 2 the strip stack's binary choice is now decided at level 1, uniformly in f.  The
 remaining freedom is the same choice one level up, on the corridor that the c^2 word carries.
+
+== G3 bookkeeping (a): ordered-run extraction (2026-08-16) ==
+lean/IntervalChain.lean, six theorems, axiom-clean.  wall_partition / side_partition give a finite
+family of closed intervals covering the segment with pairwise-subsingleton intersections; the
+consumers (ChordInterface.FarSide, ChordDecomp.ChordTrace, the two-sided chord arguments of
+RogueChord/RogueMirror) need one step more -- that the family read in order is a CHAIN, so the
+breakpoints are prefix sums and a "first common breakpoint" is well defined.
+That step is pure order theory over R and is now proved:
+  no_straddle          no interval straddles another's right endpoint (else the two share an
+                       interval of positive length, contradicting pairwise-subsingleton);
+  starts_right         anything covering a point past b = hi i must start strictly past b;
+  successor            every right endpoint below L is some interval's left endpoint (via the
+                       least left endpoint past b and the midpoint of the gap);
+  first_starts_at_zero some interval starts at 0;
+  chain_of_cover       the packaged chain statement the consumers cite;
+  successor_unique     the successor is unique.
+No geometry is used, and nothing is assumed beyond the Cover structure that wall_partition
+already supplies.  G3 residual (a) is discharged; residual (b) (the straddler half of ChordTrace)
+remains.
