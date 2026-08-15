@@ -10,7 +10,7 @@ Erdős #634, base-`β` branch.  At scale `k = f` the `a`-side of an inflation `�
 `W`-induction not excluded by uniform argument: killed by hand at `e = 1`, by 61 exhaustive engine
 searches over 13 members for `e ≥ 2`, and by the exact 2-D patch forcer
 (`code/swap_patch_search.py --scenario transverse`, three demand layers) at
-`(2,3) (3,4) (2,5) (3,5) (4,5) (5,6) (2,7)` — every close pair tried.
+`(2,3) (3,4) (2,5) (3,5) (4,5) (5,6) (2,7) (6,7) (7,8)` — every close pair `e = f−1` tried.
 
 This file banks the arithmetic cores of what **is** uniform.  Frame: `B` the `β`-corner,
 `J_j = B + jc` along `BC`, `P_2 = B + a` along `AB`, `K_j = P_2 + jc` along the line `ℓ1 ∥ BC`
