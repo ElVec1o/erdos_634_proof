@@ -10,8 +10,10 @@ Erdős #634, base-`β` branch.  At scale `k = f` the `a`-side of an inflation `�
 `W`-induction not excluded by uniform argument: killed by hand at `e = 1`, by 61 exhaustive engine
 searches over 13 members for `e ≥ 2`, and by the exact 2-D patch forcer
 (`code/swap_patch_search.py --scenario transverse`, three demand layers) at
-`(2,3) (3,4) (2,5) (3,5) (4,5) (5,6) (2,7) (6,7) (7,8) (8,9)` — every close pair `e = f−1`
-with `f ≤ 9`.
+`(2,3) (3,4) (2,5) (3,5) (4,5) (5,6) (2,7) (6,7)`.  CORRECTION (2026-08-15): the `(7,8)` and
+`(8,9)` verdicts previously listed here came from the pre-fix engine, whose exact-π flat lists
+were not exhaustive; with the fixed engine both run OPEN at large caps (19 278 and 15 221 nodes)
+and the two kills are RETRACTED — those straddle layers are open, like `(3,7)`.
 
 This file banks the arithmetic cores of what **is** uniform.  Frame: `B` the `β`-corner,
 `J_j = B + jc` along `BC`, `P_2 = B + a` along `AB`, `K_j = P_2 + jc` along the line `ℓ1 ∥ BC`
@@ -102,7 +104,8 @@ Forced opening, the ladder, and the complete-block kill: PROVED here as arithmet
 geometric inputs — edge-unions on straight stretches with blocked ends, wedge-fill bookkeeping,
 edges never crossing edge-covered lines, the `c`-grid discipline of the branch — are the named
 standing hypotheses of `Dissection`/`ChordInterface`.  The straddling branches for `e ≥ 2`:
-VERIFIED per member (engine searches and the exact patch forcer), plus the trace-level check that
+VERIFIED per member with the fixed engine at the members listed above — `(3,7)`, `(7,8)`, `(8,9)`
+are OPEN after the flat-soundness fix — plus the trace-level check that
 the engine's forced prefixes at `(2,3)`, `(3,4)` are exactly `{T_0, D_0, T_1, …}` and that the
 `(2,3)` main-branch kill site is `(e·a, 0)` — the predicted collision point.  A uniform straddle
 kill is **open**; the residual set is exactly: members `e ≥ 2` outside the searched list, straddling

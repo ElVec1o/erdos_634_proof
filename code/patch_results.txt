@@ -1,188 +1,287 @@
-Patch-engine verdicts (code/swap_patch_search.py), generated 2026-08-15
+Patch-engine verdicts, RE-CERTIFIED with the fixed engine (code/swap_patch_search.py), 2026-08-15
 
-Slot scenario: leftmost-rogue seeding; verdict semantics:
-  KILLED   every completion of the demand region is contradictory
-  SURVIVES a locally consistent completion exists (no verdict on the slot)
-  OPEN     caps hit or deferred deficiencies (no verdict)
-open mode: base+AB half-planes only -- a kill covers EVERY scale k >= M+2.
-rN mode: k = M+N with full containment and the BC corridor demanded.
-free chord: no chord-word assumption -- a kill closes the WHOLE slot;
-swap chord: words pinned to R=a.c, S=c.a -- a kill closes the swap only.
+SOUNDNESS NOTE.  The pre-fix engine treated the straight-gap
+(exact-pi) filler list as exhaustive although its flat tiles were
+anchored to already-placed points only; kills reached through such
+a branch were not sound.  The engine now enumerates flats
+exhaustively whenever the line's contact origin is pinned (the
+line leaves the region there, or runs into a placed tile's
+interior) and defers otherwise.  Every verdict below is from the
+fixed engine; the pre-fix table (git history) is superseded, and
+its entries that do not reappear below are RETRACTED.
 
-== swap words (goal 2) ==
-(3,5) slots [3,3]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-(4,5) slots [3,3]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-(5,6) slots [3,4]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-    M=4: open-KILLED (all k)
-(2,7) slots [5,5]: ALL SLOTS, ALL SCALES KILLED
-    M=5: open-KILLED (all k)
-(3,7) slots [4,5]: ALL SLOTS, ALL SCALES KILLED
-    M=4: open-KILLED (all k)
-    M=5: KILLED at k=M+r for all r in [2]
-(4,7) slots [3,5]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-    M=4: KILLED at k=M+r for all r in [2, 3]
-    M=5: KILLED at k=M+r for all r in [2]
-(5,7) slots [3,5]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-    M=4: KILLED at k=M+r for all r in [2, 3]
-    M=5: KILLED at k=M+r for all r in [2]
-(6,7) slots [3,5]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-    M=4: open-KILLED (all k)
-    M=5: KILLED at k=M+r for all r in [2]
-(3,8) slots [4,6]: ALL SLOTS, ALL SCALES KILLED
-    M=4: open-KILLED (all k)
-    M=5: KILLED at k=M+r for all r in [2, 3]
-    M=6: KILLED at k=M+r for all r in [2]
-(5,8) slots [3,6]: incomplete
-    M=3: open-KILLED (all k)
-    M=4: killed r=[2, 3]; unresolved [(4, 'OPEN')]
-    M=5: KILLED at k=M+r for all r in [2, 3]
-    M=6: KILLED at k=M+r for all r in [2]
-(7,8) slots [3,6]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-    M=4: open-KILLED (all k)
-    M=5: open-KILLED (all k)
-    M=6: KILLED at k=M+r for all r in [2]
-(2,9) slots [6,7]: ALL SLOTS, ALL SCALES KILLED
-    M=6: open-KILLED (all k)
-    M=7: KILLED at k=M+r for all r in [2]
-(4,9) slots [4,7]: incomplete
-    M=4: open-KILLED (all k)
-    M=5: killed r=[2, 3]; unresolved [(4, 'SURVIVES')]
-    M=6: killed r=[2]; unresolved [(3, 'OPEN')]
-    M=7: KILLED at k=M+r for all r in [2]
-(5,9) slots [3,7]: incomplete
-    M=3: open-KILLED (all k)
-    M=4: killed r=[2, 3]; unresolved [(4, 'OPEN'), (5, 'OPEN')]
-    M=5: killed r=[2, 3]; unresolved [(4, 'OPEN')]
-    M=6: KILLED at k=M+r for all r in [2, 3]
-    M=7: KILLED at k=M+r for all r in [2]
-(7,9) slots [3,7]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-    M=4: open-KILLED (all k)
-    M=5: KILLED at k=M+r for all r in [2, 3, 4]
-    M=6: KILLED at k=M+r for all r in [2, 3]
-    M=7: KILLED at k=M+r for all r in [2]
-(8,9) slots [3,7]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-    M=4: open-KILLED (all k)
-    M=5: open-KILLED (all k)
-    M=6: KILLED at k=M+r for all r in [2, 3]
-    M=7: KILLED at k=M+r for all r in [2]
-complete members: [(3, 5), (4, 5), (5, 6), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (3, 8), (7, 8), (2, 9), (7, 9), (8, 9)]
-incomplete: [(5, 8), (4, 9), (5, 9)]
+Verdict semantics: open-KILLED = every scale k >= M+2 at once
+(base + AB half-planes only); rN-KILLED = scale k = M+N with full
+containment and the BC corridor; OPEN = no verdict (defers or
+caps); SURVIVES = a locally consistent completion of the demand
+region exists (no verdict on the slot).
 
-== free words (goal 1: the whole chord system) ==
-(3,5) slots [3,3]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-(4,5) slots [3,3]: ALL SLOTS, ALL SCALES KILLED
-    M=3: KILLED at k=M+r for all r in [2]
-(5,6) slots [3,4]: ALL SLOTS, ALL SCALES KILLED
-    M=3: KILLED at k=M+r for all r in [2, 3]
-    M=4: KILLED at k=M+r for all r in [2]
-(2,7) slots [5,5]: ALL SLOTS, ALL SCALES KILLED
-    M=5: open-KILLED (all k)
-(3,7) slots [4,5]: ALL SLOTS, ALL SCALES KILLED
-    M=4: open-KILLED (all k)
-    M=5: KILLED at k=M+r for all r in [2]
-(4,7) slots [3,5]: ALL SLOTS, ALL SCALES KILLED
-    M=3: open-KILLED (all k)
-    M=4: KILLED at k=M+r for all r in [2, 3]
-    M=5: KILLED at k=M+r for all r in [2]
-(5,7) slots [3,5]: incomplete
-    M=3: KILLED at k=M+r for all r in [2, 3, 4]
-    M=4: killed r=[2]; unresolved [(3, None)]
-    M=5: KILLED at k=M+r for all r in [2]
-(6,7) slots [3,5]: ALL SLOTS, ALL SCALES KILLED
-    M=3: KILLED at k=M+r for all r in [2, 3, 4]
-    M=4: KILLED at k=M+r for all r in [2, 3]
-    M=5: KILLED at k=M+r for all r in [2]
-(3,8) slots [4,6]: incomplete
-    M=4: open-KILLED (all k)
-    M=5: killed r=[2]; unresolved [(3, None)]
-    M=6: KILLED at k=M+r for all r in [2]
-(5,8) slots [3,6]: incomplete
-    M=3: KILLED at k=M+r for all r in [2, 3, 4, 5]
-    M=4: killed r=[2, 3]; unresolved [(4, None)]
-    M=5: killed r=[2]; unresolved [(3, None)]
-    M=6: KILLED at k=M+r for all r in [2]
-(7,8) slots [3,6]: incomplete
-    M=3: KILLED at k=M+r for all r in [2, 3, 4, 5]
-    M=4: KILLED at k=M+r for all r in [2, 3, 4]
-    M=5: killed r=[2]; unresolved [(3, None)]
-    M=6: KILLED at k=M+r for all r in [2]
-(2,9) slots [6,7]: ALL SLOTS, ALL SCALES KILLED
-    M=6: KILLED at k=M+r for all r in [2, 3]
-    M=7: KILLED at k=M+r for all r in [2]
-(4,9) slots [4,7]: incomplete
-    M=4: KILLED at k=M+r for all r in [2, 3, 4, 5]
-    M=5: killed r=[2, 3]; unresolved [(4, None)]
-    M=6: killed r=[2]; unresolved [(3, None)]
-    M=7: KILLED at k=M+r for all r in [2]
-(5,9) slots [3,7]: incomplete
-    M=3: killed r=[2]; unresolved [(3, None), (4, None), (5, None), (6, None)]
-    M=4: killed r=[2, 3]; unresolved [(4, None), (5, None)]
-    M=5: killed r=[2]; unresolved [(3, None), (4, None)]
-    M=6: killed r=[2]; unresolved [(3, None)]
-    M=7: KILLED at k=M+r for all r in [2]
-(7,9) slots [3,7]: incomplete
-    M=3: killed r=[2]; unresolved [(3, None), (4, None), (5, None), (6, None)]
-    M=4: killed r=[2, 3, 4]; unresolved [(5, None)]
-    M=5: killed r=[2]; unresolved [(3, None), (4, None)]
-    M=6: killed r=[2]; unresolved [(3, None)]
-    M=7: KILLED at k=M+r for all r in [2]
-(8,9) slots [3,7]: incomplete
-    M=3: KILLED at k=M+r for all r in [2, 3, 4, 5, 6]
-    M=4: KILLED at k=M+r for all r in [2, 3, 4, 5]
-    M=5: killed r=[2]; unresolved [(3, None), (4, None)]
-    M=6: killed r=[2]; unresolved [(3, None)]
-    M=7: KILLED at k=M+r for all r in [2]
-complete members: [(3, 5), (4, 5), (5, 6), (2, 7), (3, 7), (4, 7), (6, 7), (2, 9)]
-incomplete: [(5, 7), (3, 8), (5, 8), (7, 8), (4, 9), (5, 9), (7, 9), (8, 9)]
+THEOREM LAYER (independent of the engine, lean/RogueMirror.lean +
+code/zfan_corridor.py, exact): slot M dies at k = M+2 for e >= 3
+and at k = M+3 for e >= 4, every member, uniformly in f.  The
+engine tables below are the per-scale layer on top of that.
 
-== transverse corner block (G2), deep demand region ==
-(2,3): KILLED [nodes=10]
-(3,4): KILLED [nodes=37]
-(2,5): KILLED [nodes=117]
-(3,5): KILLED [nodes=233]
-(4,5): KILLED [nodes=101]
-(5,6): KILLED [nodes=593]
-(2,7): KILLED [nodes=1647]
-(6,7): KILLED [nodes=1628]     (added 2026-08-15; kill site x = fb - eb/f, the Phit_1 foot)
-(3,7): OPEN [nodes=24490]
-(4,7): SURVIVES [nodes=13976]
-(5,7): SURVIVES [nodes=9682]
-(7,8): KILLED [nodes=51996]    (added 2026-08-15)
-(8,9): KILLED [nodes=9716]     (added 2026-08-15)
+# fixed-engine re-certification: fmax=9 time_cap=90.0
+# semantics: open-KILLED = all k >= M+2; rN-KILLED = k = M+N;
+# OPEN = no verdict (defer or caps).  Every KILLED is sound.
 
-Every close pair e = f-1 with f <= 9 is KILLED: (2,3) (3,4) (4,5) (5,6) (6,7) (7,8) (8,9).
-The COMPLETE transverse block is now dead by theorem for every member
-(lean/TransverseChain.lean: the b^e diagonal wall via Inflation.b_side_rigid,
-mirror forced at C, alpha propagating by the no-two-gamma rule, gamma-gamma
-collision at (e*a, 0) on AB); the engine's remaining work is the straddling
-branches only.  code/trace_transverse.py prints the full forcing tree of a
-member ((2,3): the main branch dies at exactly (2a, 0), the predicted site).
+== chord=free ==
+(3,5) M=3: open:KILLED  r2:KILLED   [all k by open]
+(4,5) M=3: open:SURVIVES  r2:KILLED
+(5,6) M=3: open:SURVIVES  r2:KILLED  r3:OPEN
+(5,6) M=4: open:SURVIVES  r2:KILLED
+(2,7) M=5: open:KILLED  r2:KILLED   [all k by open]
+(3,7) M=4: open:KILLED  r2:KILLED  r3:KILLED   [all k by open]
+(3,7) M=5: open:OPEN  r2:KILLED
+(4,7) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED   [all k by open]
+(4,7) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(4,7) M=5: open:SURVIVES  r2:KILLED
+(5,7) M=3: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN
+(5,7) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(5,7) M=5: open:OPEN  r2:KILLED
+(6,7) M=3: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN
+(6,7) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(6,7) M=5: open:SURVIVES  r2:KILLED
+(3,8) M=4: open:KILLED  r2:KILLED  r3:KILLED  r4:OPEN   [all k by open]
+(3,8) M=5: open:OPEN  r2:KILLED  r3:KILLED
+(3,8) M=6: open:SURVIVES  r2:KILLED
+(5,8) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED  r5:KILLED   [all k by open]
+(5,8) M=4: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN
+(5,8) M=5: open:SURVIVES  r2:KILLED  r3:OPEN
+(5,8) M=6: open:SURVIVES  r2:KILLED
+(7,8) M=3: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN  r5:OPEN
+(7,8) M=4: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN
+(7,8) M=5: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,8) M=6: open:SURVIVES  r2:KILLED
+(2,9) M=6: open:KILLED  r2:KILLED  r3:KILLED   [all k by open]
+(2,9) M=7: open:OPEN  r2:KILLED
+(4,9) M=4: open:KILLED  r2:KILLED  r3:KILLED  r4:OPEN  r5:OPEN   [all k by open]
+(4,9) M=5: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN
+(4,9) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(4,9) M=7: open:OPEN  r2:KILLED
+(5,9) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED  r5:KILLED  r6:KILLED   [all k by open]
+(5,9) M=4: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN  r5:OPEN
+(5,9) M=5: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN
+(5,9) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(5,9) M=7: open:SURVIVES  r2:KILLED
+(7,9) M=3: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN  r5:OPEN  r6:OPEN
+(7,9) M=4: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN  r5:OPEN
+(7,9) M=5: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN
+(7,9) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,9) M=7: open:SURVIVES  r2:KILLED
+(8,9) M=3: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN  r5:OPEN  r6:OPEN
+(8,9) M=4: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN  r5:OPEN
+(8,9) M=5: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN
+(8,9) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(8,9) M=7: open:SURVIVES  r2:KILLED
 
 
-== unresolved rows: the one shared mechanism ==
-Every row above marked 'unresolved' is an engine OPEN (deferred), never a
-survivor: the branch reaches an exact-straight gap whose flat tile has no
-anchored offset (see the module docstring of code/swap_patch_search.py).  The
-known fix is to anchor flat offsets to the partial sums of the two-sided
-covering from the line's contact origin.  Additional partial closures not in
-the matrix: (7,8) M=5 k=8 per-pair 4158/4287 killed (129 flat-deferred);
-(7,9) M=4 k=9 24/28; (5,9) M=5 k=8 6/7 and k=9 3/7; (5,8) M=4 k=8 3/5;
-(4,9) M=5 k=9 0/2, M=6 k=9 5/7, M=7 k=9 25/26; (3,8) M=5 k=8 1/2;
-(5,7) M=4 k=7 10/11 (the single f<=7 holdout, pair R=a.c.c S=c.c.a).
+== chord=swap ==
+(3,5) M=3: open:KILLED  r2:KILLED   [all k by open]
+(4,5) M=3: open:KILLED  r2:KILLED   [all k by open]
+(5,6) M=3: open:KILLED  r2:KILLED  r3:KILLED   [all k by open]
+(5,6) M=4: open:KILLED  r2:KILLED   [all k by open]
+(2,7) M=5: open:KILLED  r2:KILLED   [all k by open]
+(3,7) M=4: open:KILLED  r2:KILLED  r3:KILLED   [all k by open]
+(3,7) M=5: open:SURVIVES  r2:KILLED
+(4,7) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED   [all k by open]
+(4,7) M=4: open:OPEN  r2:KILLED  r3:KILLED
+(4,7) M=5: open:SURVIVES  r2:KILLED
+(5,7) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED   [all k by open]
+(5,7) M=4: open:OPEN  r2:KILLED  r3:KILLED
+(5,7) M=5: open:OPEN  r2:KILLED
+(6,7) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED   [all k by open]
+(6,7) M=4: open:KILLED  r2:KILLED  r3:KILLED   [all k by open]
+(6,7) M=5: open:SURVIVES  r2:KILLED
+(3,8) M=4: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED   [all k by open]
+(3,8) M=5: open:OPEN  r2:KILLED  r3:KILLED
+(3,8) M=6: open:SURVIVES  r2:KILLED
+(5,8) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED  r5:KILLED   [all k by open]
+(5,8) M=4: open:OPEN  r2:KILLED  r3:KILLED  r4:OPEN
+(5,8) M=5: open:SURVIVES  r2:KILLED  r3:KILLED
+(5,8) M=6: open:SURVIVES  r2:KILLED
+(7,8) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED  r5:KILLED   [all k by open]
+(7,8) M=4: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED   [all k by open]
+(7,8) M=5: open:KILLED  r2:KILLED  r3:KILLED   [all k by open]
+(7,8) M=6: open:SURVIVES  r2:KILLED
+(2,9) M=6: open:KILLED  r2:KILLED  r3:KILLED   [all k by open]
+(2,9) M=7: open:OPEN  r2:KILLED
+(4,9) M=4: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED  r5:KILLED   [all k by open]
+(4,9) M=5: open:SURVIVES  r2:KILLED  r3:OPEN  r4:OPEN
+(4,9) M=6: open:SURVIVES  r2:OPEN  r3:OPEN
+(4,9) M=7: open:SURVIVES  r2:OPEN
+(5,9) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED  r5:KILLED  r6:KILLED   [all k by open]
+(5,9) M=4: open:OPEN  r2:KILLED  r3:KILLED  r4:OPEN  r5:OPEN
+(5,9) M=5: open:SURVIVES  r2:KILLED  r3:KILLED  r4:OPEN
+(5,9) M=6: open:SURVIVES  r2:KILLED  r3:KILLED
+(5,9) M=7: open:SURVIVES  r2:KILLED
+(7,9) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED  r5:KILLED  r6:KILLED   [all k by open]
+(7,9) M=4: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED  r5:KILLED   [all k by open]
+(7,9) M=5: open:SURVIVES  r2:KILLED  r3:KILLED  r4:OPEN
+(7,9) M=6: open:SURVIVES  r2:KILLED  r3:KILLED
+(7,9) M=7: open:SURVIVES  r2:KILLED
+(8,9) M=3: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED  r5:KILLED  r6:KILLED   [all k by open]
+(8,9) M=4: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED  r5:KILLED   [all k by open]
+(8,9) M=5: open:KILLED  r2:KILLED  r3:KILLED  r4:KILLED   [all k by open]
+(8,9) M=6: open:SURVIVES  r2:KILLED  r3:KILLED
+(8,9) M=7: open:SURVIVES  r2:KILLED
+
+== f = 10..12, free chord, fixed engine (open / r2 / r3) ==
+(3,10) M=5: open:KILLED  r2:KILLED  r3:KILLED
+(3,10) M=6: open:OPEN  r2:KILLED  r3:OPEN
+(3,10) M=7: open:OPEN  r2:KILLED  r3:SURVIVES
+(3,10) M=8: open:OPEN  r2:KILLED
+(7,10) M=3: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,10) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,10) M=5: open:OPEN  r2:KILLED  r3:OPEN
+(7,10) M=6: open:OPEN  r2:KILLED  r3:OPEN
+(7,10) M=7: open:OPEN  r2:KILLED  r3:OPEN
+(7,10) M=8: open:OPEN  r2:KILLED
+(9,10) M=3: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,10) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,10) M=5: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,10) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,10) M=7: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,10) M=8: open:SURVIVES  r2:KILLED
+(2,11) M=7: open:OPEN  r2:KILLED  r3:OPEN
+(2,11) M=8: open:OPEN  r2:KILLED  r3:OPEN
+(2,11) M=9: open:OPEN  r2:OPEN
+(3,11) M=5: open:KILLED  r2:KILLED  r3:KILLED
+(3,11) M=6: open:OPEN  r2:KILLED  r3:OPEN
+(3,11) M=7: open:OPEN  r2:KILLED  r3:SURVIVES
+(3,11) M=8: open:OPEN  r2:KILLED  r3:OPEN
+(3,11) M=9: open:OPEN  r2:KILLED
+(4,11) M=4: open:KILLED  r2:KILLED  r3:KILLED
+(4,11) M=5: open:OPEN  r2:KILLED  r3:KILLED
+(4,11) M=6: open:OPEN  r2:KILLED  r3:OPEN
+(4,11) M=7: open:OPEN  r2:KILLED  r3:OPEN
+(4,11) M=8: open:OPEN  r2:KILLED  r3:OPEN
+(4,11) M=9: open:SURVIVES  r2:KILLED
+(5,11) M=4: open:KILLED  r2:KILLED  r3:KILLED
+(5,11) M=5: open:SURVIVES  r2:KILLED  r3:KILLED
+(5,11) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(5,11) M=7: open:OPEN  r2:KILLED  r3:KILLED
+(5,11) M=8: open:OPEN  r2:KILLED  r3:KILLED
+(5,11) M=9: open:OPEN  r2:KILLED
+(6,11) M=3: open:KILLED  r2:KILLED  r3:KILLED
+(6,11) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(6,11) M=5: open:SURVIVES  r2:KILLED  r3:OPEN
+(6,11) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(6,11) M=7: open:SURVIVES  r2:KILLED  r3:OPEN
+(6,11) M=8: open:SURVIVES  r2:KILLED  r3:OPEN
+(6,11) M=9: open:SURVIVES  r2:KILLED
+(7,11) M=3: open:KILLED  r2:KILLED  r3:KILLED
+(7,11) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,11) M=5: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,11) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,11) M=7: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,11) M=8: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,11) M=9: open:SURVIVES  r2:KILLED
+(8,11) M=3: open:SURVIVES  r2:KILLED  r3:OPEN
+(8,11) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(8,11) M=5: open:OPEN  r2:KILLED  r3:OPEN
+(8,11) M=6: open:OPEN  r2:KILLED  r3:OPEN
+(8,11) M=7: open:OPEN  r2:KILLED  r3:OPEN
+(8,11) M=8: open:OPEN  r2:KILLED  r3:OPEN
+(8,11) M=9: open:OPEN  r2:KILLED
+(9,11) M=3: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,11) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,11) M=5: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,11) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,11) M=7: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,11) M=8: open:SURVIVES  r2:KILLED  r3:OPEN
+(9,11) M=9: open:SURVIVES  r2:KILLED
+(10,11) M=3: open:SURVIVES  r2:KILLED  r3:OPEN
+(10,11) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(10,11) M=5: open:SURVIVES  r2:KILLED  r3:OPEN
+(10,11) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(10,11) M=7: open:SURVIVES  r2:KILLED  r3:OPEN
+(10,11) M=8: open:SURVIVES  r2:KILLED  r3:OPEN
+(10,11) M=9: open:SURVIVES  r2:KILLED
+(5,12) M=4: open:KILLED  r2:KILLED  r3:KILLED
+(5,12) M=5: open:OPEN  r2:KILLED  r3:KILLED
+(5,12) M=6: open:SURVIVES  r2:KILLED  r3:KILLED
+(5,12) M=7: open:SURVIVES  r2:KILLED  r3:OPEN
+(5,12) M=8: open:SURVIVES  r2:KILLED  r3:OPEN
+(5,12) M=9: open:SURVIVES  r2:KILLED  r3:OPEN
+(5,12) M=10: open:SURVIVES  r2:KILLED
+(7,12) M=3: open:KILLED  r2:KILLED  r3:KILLED
+(7,12) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,12) M=5: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,12) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,12) M=7: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,12) M=8: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,12) M=9: open:SURVIVES  r2:KILLED  r3:OPEN
+(7,12) M=10: open:SURVIVES  r2:KILLED
+(11,12) M=3: open:SURVIVES  r2:KILLED  r3:OPEN
+(11,12) M=4: open:SURVIVES  r2:KILLED  r3:OPEN
+(11,12) M=5: open:SURVIVES  r2:KILLED  r3:OPEN
+(11,12) M=6: open:SURVIVES  r2:KILLED  r3:OPEN
+(11,12) M=7: open:SURVIVES  r2:KILLED  r3:OPEN
+(11,12) M=8: open:SURVIVES  r2:KILLED  r3:OPEN
+(11,12) M=9: open:SURVIVES  r2:KILLED  r3:OPEN
+(11,12) M=10: open:SURVIVES  r2:KILLED
+
+== transverse corner block, fixed engine, TR_DEEP=1 ==
+(The COMPLETE transverse block dies uniformly by theorem --
+lean/TransverseChain.lean; the engine rows below are the
+straddling-branch layer, re-certified with the fixed engine.
+The pre-fix kills at (7,8) and (8,9) do NOT reproduce and are
+RETRACTED: both run OPEN at large caps.)
+(2,3) transverse: KILLED  [nodes=10 0.0s]  ('angle-nofill', (Fraction(12, 1), Fraction(3, 2)))×2; ('angle-nofill', (Fraction(35, 3), Fraction(5, 3)))×1
+(3,4) transverse: KILLED  [nodes=38 0.4s]  ('angle-nofill', (Fraction(22, 1), Fraction(2, 1)))×2; ('angle-nofill', (Fraction(167, 8), Fraction(19, 8)))×1
+(2,5) transverse: KILLED  [nodes=111 1.0s]  ('angle-unfillable', (Fraction(110, 1), Fraction(5, 2)))×4; ('angle-nofill', (Fraction(110, 1), Fraction(5, 2)))×4
+(3,5) transverse: KILLED  [nodes=232 3.4s]  ('angle-unfillable', (Fraction(175, 2), Fraction(5, 2)))×10; ('angle-nofill', (Fraction(80, 1), Fraction(0, 1)))×10
+(4,5) transverse: KILLED  [nodes=147 2.6s]  ('angle-unfillable', (Fraction(36, 1), Fraction(0, 1)))×4; ('angle-nofill', (Fraction(20, 1), Fraction(0, 1)))×3
+(5,6) transverse: KILLED  [nodes=795 23.2s]  ('angle-nofill', (Fraction(341, 6), Fraction(11, 6)))×28; ('angle-nofill', (Fraction(66, 1), Fraction(0, 1)))×26
+(2,7) transverse: KILLED  [nodes=1541 23.8s]  ('angle-unfillable', (Fraction(2143, 7), Fraction(31, 7)))×86; ('angle-unfillable', (Fraction(2129, 7), Fraction(38, 7)))×68
+(3,7) transverse: OPEN  [nodes=8791 240.0s]
+(4,7) transverse: SURVIVES  [nodes=935 29.9s]
+(5,7) transverse: SURVIVES  [nodes=1275 37.0s]
+(6,7) transverse: KILLED  [nodes=2884 158.8s]  ('angle-nofill', (Fraction(598, 7), Fraction(13, 14)))×167; ('angle-nofill', (Fraction(559, 7), Fraction(13, 7)))×48
+(7,8) transverse: OPEN  [nodes=19278 600.0s]
+(8,9) transverse: OPEN  [nodes=15221 900.0s]
+
+== the exact residual, f <= 12 ==
+(5,7): residual (M,k) pairs [1]: (3,7)*
+(6,7): residual (M,k) pairs [1]: (3,7)*
+(5,8): residual (M,k) pairs [1]: (4,8)*
+(7,8): residual (M,k) pairs [3]: (3,7) (3,8)* (4,8)*
+(4,9): residual (M,k) pairs [1]: (5,9)*
+(5,9): residual (M,k) pairs [3]: (4,8) (4,9)* (5,9)*
+(7,9): residual (M,k) pairs [6]: (3,7) (3,8) (3,9)* (4,8) (4,9)* (5,9)*
+(8,9): residual (M,k) pairs [6]: (3,7) (3,8) (3,9)* (4,8) (4,9)* (5,9)*
+(3,10): residual (M,k) pairs [3]: (6,9) (6,10)* (7,10)*
+(7,10): residual (M,k) pairs [10]: (3,7) (3,8) (3,9) (3,10)* (4,8) (4,9) (4,10)* (5,9) (5,10)* (6,10)*
+(9,10): residual (M,k) pairs [10]: (3,7) (3,8) (3,9) (3,10)* (4,8) (4,9) (4,10)* (5,9) (5,10)* (6,10)*
+(2,11): residual (M,k) pairs [4]: (7,10) (7,11)* (8,11)* (9,11)*
+(3,11): residual (M,k) pairs [6]: (6,9) (6,10) (6,11)* (7,10) (7,11)* (8,11)*
+(4,11): residual (M,k) pairs [6]: (5,9) (5,10) (5,11)* (6,10) (6,11)* (7,11)*
+(5,11): residual (M,k) pairs [6]: (5,9) (5,10) (5,11)* (6,10) (6,11)* (7,11)*
+(6,11): residual (M,k) pairs [10]: (4,8) (4,9) (4,10) (4,11)* (5,9) (5,10) (5,11)* (6,10) (6,11)* (7,11)*
+(7,11): residual (M,k) pairs [10]: (4,8) (4,9) (4,10) (4,11)* (5,9) (5,10) (5,11)* (6,10) (6,11)* (7,11)*
+(8,11): residual (M,k) pairs [15]: (3,7) (3,8) (3,9) (3,10) (3,11)* (4,8) (4,9) (4,10) (4,11)* (5,9) (5,10) (5,11)* (6,10) (6,11)* (7,11)*
+(9,11): residual (M,k) pairs [15]: (3,7) (3,8) (3,9) (3,10) (3,11)* (4,8) (4,9) (4,10) (4,11)* (5,9) (5,10) (5,11)* (6,10) (6,11)* (7,11)*
+(10,11): residual (M,k) pairs [15]: (3,7) (3,8) (3,9) (3,10) (3,11)* (4,8) (4,9) (4,10) (4,11)* (5,9) (5,10) (5,11)* (6,10) (6,11)* (7,11)*
+(5,12): residual (M,k) pairs [10]: (5,9) (5,10) (5,11) (5,12)* (6,10) (6,11) (6,12)* (7,11) (7,12)* (8,12)*
+(7,12): residual (M,k) pairs [15]: (4,8) (4,9) (4,10) (4,11) (4,12)* (5,9) (5,10) (5,11) (5,12)* (6,10) (6,11) (6,12)* (7,11) (7,12)* (8,12)*
+(11,12): residual (M,k) pairs [21]: (3,7) (3,8) (3,9) (3,10) (3,11) (3,12)* (4,8) (4,9) (4,10) (4,11) (4,12)* (5,9) (5,10) (5,11) (5,12)* (6,10) (6,11) (6,12)* (7,11) (7,12)* (8,12)*
+
+closed members (empty residual): [(2, 3), (3, 4), (2, 5), (3, 5), (4, 5), (5, 6), (2, 7), (3, 7), (4, 7), (3, 8), (2, 9)]
+total open (M,k) pairs, f <= 12: 178
+(* = wall scale k = f: every kill there, and hence the pair's
+ openness, sits under the b^f base reading -- Inflation.b_side_rigid
+ is sharp at k = f: RogueMirror.base_side_wall_family.)
 
 == provenance ==
-Generated by code/swap_patch_search.py (engine), code/per_pair_chord.py
-(per-pair closures), and the session sweeps of 2026-08-15.  The X-fan closed
-form is banked in lean/RogueFan.lean (axiom-clean) and re-verified from
-scratch by code/verify_xfan_scratch.py (4593 checks, 142 slots, 0 mismatches).
-The transverse scenario ran with TR_DEEP=1 (three demand layers).
+Engine: code/swap_patch_search.py at the flat-fix commit; driver
+code/rerun_patch_campaign.py; f = 10..12 sweep and transverse by
+direct invocation.  The theorem layer is lean/RogueMirror.lean
+(axiom-clean) with the exact closure layer of
+code/zfan_corridor.py; the residual tabulation is
+code/zfan_residual.py against this file's free section.  The
+(5,9) M=3 r6 cell was backfilled by a direct run after an rN-mode
+argparse gap (KILLED, 14 nodes).  Kills at the wall scale k = f
+are conditional on the b^f reading of the target's base word
+(Inflation.b_side_rigid is sharp there:
+RogueMirror.base_side_wall_family).
