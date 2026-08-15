@@ -158,8 +158,9 @@ incomplete: [(5, 7), (3, 8), (5, 8), (7, 8), (4, 9), (5, 9), (7, 9), (8, 9)]
 (4,7): SURVIVES [nodes=13976]
 (5,7): SURVIVES [nodes=9682]
 (7,8): KILLED [nodes=51996]    (added 2026-08-15)
+(8,9): KILLED [nodes=9716]     (added 2026-08-15)
 
-Every close pair e = f-1 tried is KILLED: (2,3) (3,4) (4,5) (5,6) (6,7) (7,8).
+Every close pair e = f-1 with f <= 9 is KILLED: (2,3) (3,4) (4,5) (5,6) (6,7) (7,8) (8,9).
 The COMPLETE transverse block is now dead by theorem for every member
 (lean/TransverseChain.lean: the b^e diagonal wall via Inflation.b_side_rigid,
 mirror forced at C, alpha propagating by the no-two-gamma rule, gamma-gamma
