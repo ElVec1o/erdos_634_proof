@@ -339,3 +339,22 @@ argparse gap (KILLED, 14 nodes).  Kills at the wall scale k = f
 are conditional on the b^f reading of the target's base word
 (Inflation.b_side_rigid is sharp there:
 RogueMirror.base_side_wall_family).
+
+== A2_GRIDS sweep over the exact residual (2026-08-15, driver a2_residual_sweep.py) ==
+All 178 residual cells re-run with the theorem-backed grid layer (base b-grid every
+scale; BC a-grid for k < f, and at k = f only where the transverse branch is dead).
+Verdicts: 4 KILLED, 1 SURVIVES, 173 OPEN (interior defer, grids never reached).
+  KILLED:   (2,11) M7 k10; (3,10) M6 k9; (3,11) M6 k9; (3,11) M7 k10  -- all k = f-1,
+            where the BC a-grid is licensed by a_side_rigid.  (3,11) M7 k10 was one of
+            the two engine-confirmed SURVIVES controls: the a^f flush, a genuine LOCAL
+            completion, dies against the proved a-side rigidity when its strip meets BC.
+  SURVIVES: (3,10) M7 k10 -- wall scale; the BC a-grid is not licensed there because
+            (3,10)'s transverse branch is open.  The mechanism is blocked by that
+            dependency, not absent.
+  OPEN 173: 100 at k < f, 73 at k = f.  These defer at interior unanchored flats
+            before any forced structure reaches a boundary line; the grids prune
+            boundary placements only, so they cannot fire within the patch horizon.
+Conclusion recorded: the global collision mechanism is the flush-strip vs
+boundary-rigidity contradiction (confirmed by the control flip); its reach in the
+patch search is bounded by the interior-defer horizon and the wall-scale licensing.
+Extending its reach is theorem work (strip propagation), not more compute.

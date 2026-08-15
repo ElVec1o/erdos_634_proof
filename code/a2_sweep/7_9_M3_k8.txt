@@ -1,0 +1,5 @@
+# cell (7,9) M=3 k=8 r=5 tcap=240.0 bcwall=False
+# patch search: scenario=slot mode=r5 chord=free fmax=9
+(7,9) M=3: OPEN  [nodes=2811 240.2s]
+
+RESULT OPEN

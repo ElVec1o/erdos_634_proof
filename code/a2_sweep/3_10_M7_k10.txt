@@ -1,0 +1,5 @@
+# cell (3,10) M=7 k=10 r=3 tcap=240.0 bcwall=False
+# patch search: scenario=slot mode=r3 chord=free fmax=10
+(3,10) M=7: SURVIVES  [nodes=987 125.7s]
+
+RESULT SURVIVES

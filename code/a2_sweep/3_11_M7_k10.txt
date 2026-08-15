@@ -1,0 +1,5 @@
+# cell (3,11) M=7 k=10 r=3 tcap=240.0 bcwall=False
+# patch search: scenario=slot mode=r3 chord=free fmax=11
+(3,11) M=7: KILLED  [nodes=757 71.5s]  ('angle-nofill', (Fraction(10954, 11), Fraction(30, 11)))×37; ('angle-nofill', (Fraction(1156, 1), Fraction(12, 1)))×32
+
+RESULT KILLED
