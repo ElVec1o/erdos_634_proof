@@ -39,7 +39,21 @@ R_0 D_0 … R_{f−1} D_{f−1} = parallelogram [0, ec] × [0, c], top reading a
 at t = c.  [proved-on-paper for the forced alternatives; the strip itself is
 one branch, NOT forced alone — the c-overhang branch is live locally]
 
-## THE MAST (the load-bearing new object — slot-uniform, not flush-specific)
+## RETRACTION (same session): the mast IS chord 1
+
+The "mast" below is not new: the two-sided wall on the line s = 0 from Y is
+exactly RogueChord's chord 1 ([Y_i, W], row side starting with P_i's a,
+rogue side with the rogue's c), and the "AB-flush obstruction" is exactly
+K2 = RogueChord.boundary_exit_impossible (proved, axiom-clean).  The
+chord-1 word system was already exhausted (swap_fits; survivor lists to
+f ≤ 9), its low slots killed by the X-fan (RogueFan).  The common stop at
+h = a + c is the swap W.  code/mast_ab_flush.py stands as an independent
+from-scratch re-verification of K2 over the 178 residual pairs + the two
+controls (180/180 unsolvable, z ≥ 1; my j-parametrized closed-form guess
+'solvable iff fb ≤ Ma' is FALSE — 63 mismatches — the correct statement is
+K2's, q = 0 for M < f).  The section is kept for the frame facts.
+
+## THE MAST (= chord 1; kept for the frame derivation)
 
 The line s = 0 (the rogue's c-edge line) is a two-sided wall from Y upward:
   * right side starts with the rogue's c-edge (letter word z ≥ 1 forced);
