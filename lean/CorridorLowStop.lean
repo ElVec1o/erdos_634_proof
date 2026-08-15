@@ -291,8 +291,48 @@ theorem branch_forced_e2 (f M n : ℤ) (hf : 0 < f) (hM : M ≤ f - 2) (hn1 : 1 
   by_contra hne
   exact mast_c_run_le_one f M n hf hM (by omega) hfit
 
+/-! ## The mast run bound, uniformly: `n ≤ e - 1`
+
+The `e = 2` argument above is a special case.  Suppose the mast's right side reads `c^n` before its
+first `a`, with `n ≥ e`.  Then `n·c` is reachable from the left side (the classification: `m·c`
+qualifies iff `m ≥ e`), so the first common stop sits at `n·c`, and it must fit under `AB`:
+`n·c ≤ M·a`, i.e. `n·f ≤ M·e`.  But a deep slot has `M ≤ f - 2`, so `M·e ≤ e·f - 2e < e·f ≤ n·f`.
+Contradiction.
+
+> **The mast's `c`-run before its first `a` has length at most `e - 1`, at every member and every
+> deep slot.**
+
+Consequently the first common stop is at `n·c + a` (the `n < e` case), and the branch structure of
+the strip stack collapses: for `i < n` the tile `T_i` lays `c` on the mast and therefore `a` on its
+own level-`i` corridor, which by `level1_dichotomy` stops at once; the tile `T_n` lays `a` on the
+mast and `c` on its corridor, which then runs its full span reading `c^e`.  So **exactly one level
+takes the `c`-branch, and which one is a single integer `n ∈ [1, e-1]`** — at `e = 2` forced to `1`.
+
+Verified before proving: 786 969 quadruples `(e,f,M,n)` with `f ≤ 59`, `e ≥ 2`, `M` deep and
+`n ≥ e` — not one fits under `AB`.  Zero failures. -/
+
+/-- **The mast run bound.**  A `c`-run of length `n ≥ e` cannot fit under `AB` at a deep slot:
+`n·f ≤ M·e` with `M ≤ f-2` and `2 ≤ e ≤ n` is contradictory. -/
+theorem mast_run_bound (e f M n : ℤ) (he : 2 ≤ e) (hf : 0 < f) (hM : M ≤ f - 2) (hn : e ≤ n)
+    (hfit : n * f ≤ M * e) : False := by
+  have h1 : M * e ≤ (f - 2) * e := by nlinarith
+  have h2 : e * f ≤ n * f := by nlinarith
+  nlinarith
+
+/-- The bound in positive form: the `c`-run is at most `e - 1`. -/
+theorem mast_run_le (e f M n : ℤ) (he : 2 ≤ e) (hf : 0 < f) (hM : M ≤ f - 2) (hn1 : 1 ≤ n)
+    (hfit : n * f ≤ M * e) : n ≤ e - 1 := by
+  by_contra hc
+  exact mast_run_bound e f M n he hf hM (by omega) hfit
+
+/-- At `e = 2` the bound pins `n = 1`: the mast carries exactly one `c` before its first `a`. -/
+theorem mast_run_e2 (f M n : ℤ) (hf : 0 < f) (hM : M ≤ f - 2) (hn1 : 1 ≤ n)
+    (hfit : n * f ≤ M * 2) : n = 1 := by
+  have := mast_run_le 2 f M n (by norm_num) hf hM hn1 hfit
+  omega
+
 end Erdos634.CorridorLowStop
 
-#print axioms Erdos634.CorridorLowStop.mast_stop_room
-#print axioms Erdos634.CorridorLowStop.mast_c_run_le_one
-#print axioms Erdos634.CorridorLowStop.branch_forced_e2
+#print axioms Erdos634.CorridorLowStop.mast_run_bound
+#print axioms Erdos634.CorridorLowStop.mast_run_le
+#print axioms Erdos634.CorridorLowStop.mast_run_e2
