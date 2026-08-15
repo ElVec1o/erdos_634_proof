@@ -476,3 +476,26 @@ That step is pure order theory over R and is now proved:
 No geometry is used, and nothing is assumed beyond the Cover structure that wall_partition
 already supplies.  G3 residual (a) is discharged; residual (b) (the straddler half of ChordTrace)
 remains.
+
+== the cevian split: base-beta = scaled tile + cevian target (2026-08-16) ==
+lean/CevianSplit.lean.  The seed-degeneracy theorem says every certified seed complex closes only
+on f = 2e, which with gcd(e,f)=1 happens ONLY at (1,2) -- so nothing transfers.  Reading the
+skeleton off the certificate instead: scanning the certified 44-tiling for every line no tile
+crosses returns SIX -- the three target sides, two lines cutting off one tile each, and ONE
+interior line.  That one is the apex cevian, and it splits the tiling 28 | 16 with ZERO tiles
+crossed.
+The dissection, general (e,f,m): target (f^3 m, f^3 m, e m N0) with N0 = 3f^2 - e^2.  Drop the
+cevian from the apex to the base point at distance e f^2 m from a base corner; its length is f b m.
+It cuts the target into
+  (e f^2 m, f b m, f^3 m)      = f m * (a,b,c), similar to the TILE, so (f m)^2 tiles by the
+                                 standard subdivision; and
+  (e m (2f^2-e^2), f b m, f^3 m) = the CEVIAN target of thm:63, family count m^2 (2f^2 - e^2).
+Counts add exactly: f^2 + (2f^2 - e^2) = 3f^2 - e^2.  At (1,2,2): 16 + 28 = 44; at (1,2,3):
+36 + 63 = 99 -- CevianTiling28 and CevianTiling63 are precisely the complements of the scaled
+tiles.  (The certified 99-tiling itself does not respect the cevian -- 3 tiles cross -- but the
+dissection is valid regardless, and 63 supplies the second piece.)
+CONSEQUENCE.  A cevian tiling at (e,f,m) yields a base-beta tiling at (e,f,m): the other piece is
+always tileable.  The open seed question therefore TRANSFERS from the base-beta family to the
+cevian family, whose targets are strictly smaller (2f^2-e^2 < 3f^2-e^2 at every member).
+Note the reverse decomposition fails: cutting the cevian target the same way leaves the atom
+(legs f b m, base e b m, apex alpha), and the atom is proved untileable (the retraction).
