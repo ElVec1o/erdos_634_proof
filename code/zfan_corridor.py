@@ -22,8 +22,10 @@ nothing else:
     in the (α,β)-calculus — faithful because α/π is irrational — whose
     chord-adjacent corner lays the next letter on the line;
   * every edge of every fill tile is room-checked: length ℓ at ray angle θ
-    from +u obeys ℓ·p(θ) ≤ (k−M)c − s (BC), ℓ·q(θ) ≤ M·a (AB), and on the
-    row side ℓ·|q| ≤ s·a/c (the base);
+    from +u obeys ℓ·p(θ) ≤ (k−M)c − s (BC), ℓ·q(θ) ≤ M·a (AB), and a
+    descending edge must stay above the forced row's staircase
+    V ≥ −a·⌊U/c⌋ in (u, v̂)-coordinates — the region below it is exactly
+    the row tiles P_{M+1}, P_{M+2}, …, so a violation is an overlap;
   * the first rogue-side junction carries the forced parallelogram: the
     rogue's b-edge is covered by a single b-edge (b unsplittable, e ≥ 2), the
     reflected partner dies on 2γ = π + α, and the direct partner is not
