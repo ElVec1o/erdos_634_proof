@@ -982,7 +982,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--fmax", type=int, default=9)
     ap.add_argument("--mode", default="open",
-                    choices=["open", "r2", "r3", "r4", "r5"])
+                    choices=["open"] + [f"r{n}" for n in range(2, 10)])
     ap.add_argument("--chord", default="swap", choices=["swap", "free"])
     ap.add_argument("--only", default=None, help="e,f[,M]")
     ap.add_argument("--time-cap", type=float, default=90.0)
