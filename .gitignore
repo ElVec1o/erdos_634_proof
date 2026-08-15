@@ -18,3 +18,6 @@ rust/tiler/target/
 build/
 code/finder/target/
 engine/cengine2
+
+# Lean build artefacts and fetched packages (mathlib checkout, ~200MB)
+lean/.lake/
