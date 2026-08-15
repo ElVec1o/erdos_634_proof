@@ -15,6 +15,15 @@ searches over 13 members for `e ≥ 2`, and by the exact 2-D patch forcer
 were not exhaustive; with the fixed engine both run OPEN at large caps (19 278 and 15 221 nodes)
 and the two kills are RETRACTED — those straddle layers are open, like `(3,7)`.
 
+A2 UPDATE (2026-08-15, later the same day): the wall-scale base reading is now proved —
+`RogueMirror.wall_base_reading`, the base of `Δ_f` is `b^f` — so the fixed engine re-ran with the
+theorem-backed base `b`-grid (`A2_GRIDS=1 TR_DEEP=1`): **`(3,7)` KILLED** (10 093 nodes),
+**`(7,8)` KILLED** (2 740, kill site the wall foot `(fb, 0)`), **`(8,9)` KILLED** (13 181), and
+two members flip or close new: `(5,7)` KILLED (was SURVIVES), `(2,9)` KILLED (first run).  The
+grid-layer kills stand on the same standing hypotheses as the rest of this module.  Residual at
+`f ≤ 9`: `(4,7)`, `(5,8)` SURVIVES (locally consistent completions, no verdict) and `(3,8)` OPEN
+at caps — see `code/patch_results.txt`, `== transverse, A2 base grid ==`.
+
 This file banks the arithmetic cores of what **is** uniform.  Frame: `B` the `β`-corner,
 `J_j = B + jc` along `BC`, `P_2 = B + a` along `AB`, `K_j = P_2 + jc` along the line `ℓ1 ∥ BC`
 through `P_2`; wedge fills are counted as in `CChord`: a wedge `Xα + Yβ` filled by corner counts
@@ -104,12 +113,13 @@ Forced opening, the ladder, and the complete-block kill: PROVED here as arithmet
 geometric inputs — edge-unions on straight stretches with blocked ends, wedge-fill bookkeeping,
 edges never crossing edge-covered lines, the `c`-grid discipline of the branch — are the named
 standing hypotheses of `Dissection`/`ChordInterface`.  The straddling branches for `e ≥ 2`:
-VERIFIED per member with the fixed engine at the members listed above — `(3,7)`, `(7,8)`, `(8,9)`
-are OPEN after the flat-soundness fix — plus the trace-level check that
-the engine's forced prefixes at `(2,3)`, `(3,4)` are exactly `{T_0, D_0, T_1, …}` and that the
-`(2,3)` main-branch kill site is `(e·a, 0)` — the predicted collision point.  A uniform straddle
-kill is **open**; the residual set is exactly: members `e ≥ 2` outside the searched list, straddling
-configurations only.  Axiom-clean.
+VERIFIED per member with the fixed engine — after the A2 base-grid layer the killed list is
+`(2,3) (3,4) (2,5) (3,5) (4,5) (5,6) (2,7) (3,7) (5,7) (6,7) (7,8) (2,9) (8,9)` — plus the
+trace-level check that the engine's forced prefixes at `(2,3)`, `(3,4)` are exactly
+`{T_0, D_0, T_1, …}` and that the `(2,3)` main-branch kill site is `(e·a, 0)` — the predicted
+collision point.  A uniform straddle kill is **open**; the residual set at `f ≤ 9` is exactly
+`(4,7)`, `(5,8)` (SURVIVES: locally consistent completions) and `(3,8)` (OPEN at caps), plus
+members `f ≥ 10` never searched.  Axiom-clean.
 -/
 
 namespace Erdos634.TransverseChain

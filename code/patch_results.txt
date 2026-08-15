@@ -246,6 +246,11 @@ lean/TransverseChain.lean; the engine rows below are the
 straddling-branch layer, re-certified with the fixed engine.
 The pre-fix kills at (7,8) and (8,9) do NOT reproduce and are
 RETRACTED: both run OPEN at large caps.)
+(A2 GRID LAYER, 2026-08-15, appended below the base table: with the
+wall-scale base reading proved -- RogueMirror.wall_base_reading --
+the fixed engine re-ran with the theorem-backed base b-grid,
+A2_GRIDS=1 TR_DEEP=1.  The three OPEN straddles DIE, and two more
+members close; see the == transverse, A2 base grid == block.)
 (2,3) transverse: KILLED  [nodes=10 0.0s]  ('angle-nofill', (Fraction(12, 1), Fraction(3, 2)))×2; ('angle-nofill', (Fraction(35, 3), Fraction(5, 3)))×1
 (3,4) transverse: KILLED  [nodes=38 0.4s]  ('angle-nofill', (Fraction(22, 1), Fraction(2, 1)))×2; ('angle-nofill', (Fraction(167, 8), Fraction(19, 8)))×1
 (2,5) transverse: KILLED  [nodes=111 1.0s]  ('angle-unfillable', (Fraction(110, 1), Fraction(5, 2)))×4; ('angle-nofill', (Fraction(110, 1), Fraction(5, 2)))×4
@@ -259,6 +264,35 @@ RETRACTED: both run OPEN at large caps.)
 (6,7) transverse: KILLED  [nodes=2884 158.8s]  ('angle-nofill', (Fraction(598, 7), Fraction(13, 14)))×167; ('angle-nofill', (Fraction(559, 7), Fraction(13, 7)))×48
 (7,8) transverse: OPEN  [nodes=19278 600.0s]
 (8,9) transverse: OPEN  [nodes=15221 900.0s]
+
+== transverse, A2 base grid (fixed engine, A2_GRIDS=1 TR_DEEP=1) ==
+(The base b-grid demand is sound by RogueMirror.wall_base_reading:
+the inside reading of the base of Delta_f is b^f, so every placed
+edge on the base line is a whole b at a grid position.  Same
+standing hypotheses as every other demand layer.  Rows marked
+"was" give the pre-grid verdict from the table above.)
+(2,3) transverse: KILLED  [nodes=10]     (was KILLED)
+(3,4) transverse: KILLED  [nodes=38]     (was KILLED)
+(2,5) transverse: KILLED  [nodes=40]     (was KILLED 111)
+(3,5) transverse: KILLED  [nodes=223]    (was KILLED 232)
+(4,5) transverse: KILLED  [nodes=119]    (was KILLED 147)
+(5,6) transverse: KILLED  [nodes=571]    (was KILLED 795)
+(2,7) transverse: KILLED  [nodes=1543]   (was KILLED 1541)
+(3,7) transverse: KILLED  [nodes=10093 258.2s]   (was OPEN 8791)
+(4,7) transverse: SURVIVES  [nodes=952]  (was SURVIVES 935)
+(5,7) transverse: KILLED  [nodes=3875 134.5s]    (was SURVIVES 1275)
+(6,7) transverse: KILLED  [nodes=2045 105.2s]    (was KILLED 2884)
+(3,8) transverse: OPEN  [nodes=26853 900.0s cap] (never tabulated)
+(5,8) transverse: SURVIVES  [nodes=678]          (never tabulated)
+(7,8) transverse: KILLED  [nodes=2740 246.8s]    (was OPEN 19278;
+    kill site the wall foot (f*b, 0) x428+x110)
+(2,9) transverse: KILLED  [nodes=8948 179.9s]    (never tabulated)
+(8,9) transverse: KILLED  [nodes=13181 1466.0s]  (was OPEN 15221)
+The straddle layers at (3,7), (7,8), (8,9) -- the three retracted-
+or-open rows -- are CLOSED once the base reads b^f.  Residual
+transverse members f <= 9: (4,7) and (5,8) SURVIVES (local
+completion consistent, no verdict), (3,8) OPEN at caps; f = 9
+batch rows for (4,9), (5,9), (7,9) recorded when their runs land.
 
 == the exact residual, f <= 12 ==
 (5,7): residual (M,k) pairs [1]: (3,7)*
@@ -287,9 +321,11 @@ RETRACTED: both run OPEN at large caps.)
 
 closed members (empty residual): [(2, 3), (3, 4), (2, 5), (3, 5), (4, 5), (5, 6), (2, 7), (3, 7), (4, 7), (3, 8), (2, 9)]
 total open (M,k) pairs, f <= 12: 178
-(* = wall scale k = f: every kill there, and hence the pair's
- openness, sits under the b^f base reading -- Inflation.b_side_rigid
- is sharp at k = f: RogueMirror.base_side_wall_family.)
+(* = wall scale k = f.  DISCHARGED 2026-08-15: the b^f base reading
+ these cells sat under is now proved -- RogueMirror.wall_base_reading;
+ the arithmetic sharpness RogueMirror.base_side_wall_family stands,
+ the geometry kills the family.  The * cells' kills and openness are
+ unconditional in the same sense as every other cell.)
 
 == provenance ==
 Engine: code/swap_patch_search.py at the flat-fix commit; driver

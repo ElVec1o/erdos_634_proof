@@ -71,7 +71,19 @@ diagonal (`C` to `(ea, 0)` on `AB`, straight of length `eb`) has its far side fo
 it, and the terminal `γ` collides with the lattice `γ` at `(ea, 0)`. At `e = 1` this is the old hand
 kill. What survives arithmetically is only the *straddling* configurations, which the exact patch
 forcer (`code/swap_patch_search.py --scenario transverse`, results in `code/patch_results.txt`)
-kills per member — including every close pair `e = f−1` tried: `(2,3) (3,4) (4,5) (5,6) (6,7)
-(7,8)`, kill sites at the strip feet `x = fb − s·eb/f` (`TransverseChain.phit_not_breakpoint` is the
-arithmetic of that site). The boundary words feeding all of this are now rigid below scale `f` with
-no open case: `Inflation.b_side_rigid` and `Inflation.c_side_no_b` (the former `s ≥ 2` gap).
+kills per member. (CORRECTION, same day: the `(7,8)` pre-fix kill quoted in an earlier version of
+this paragraph was retracted with the exact-π flat fix; the close pairs killed by the *fixed*
+engine's base table are `(2,3) (3,4) (4,5) (5,6) (6,7)`.) Kill sites at the strip feet
+`x = fb − s·eb/f` (`TransverseChain.phit_not_breakpoint` is the arithmetic of that site). The
+boundary words feeding all of this are now rigid below scale `f` with no open case:
+`Inflation.b_side_rigid` and `Inflation.c_side_no_b` (the former `s ≥ 2` gap).
+
+**Update (2026-08-15, A2): the wall-scale base is `b^f` by theorem, and the open straddles die.**
+`RogueMirror.wall_base_reading` (the base-family kill: c-side `γ`-trap + `side_no_b_uncond` +
+the `α`-corner flank coupling) makes the base `b`-grid a sound engine demand
+(`A2_GRIDS=1`); with it the fixed engine kills the transverse straddles at `(3,7)`, `(5,7)`,
+`(7,8)`, `(2,9)`, `(8,9)` — the three previously-open layers among them.  `f ≤ 9` residual:
+`(4,7)`, `(5,8)` SURVIVES, `(3,8)` OPEN at caps.  The `b`-side alternative family itself
+(`a^{(j+1)f−e} c^{f−(j+1)e}`, `RogueMirror.base_side_wall_family`) is engine-refuted at every
+member `f ≤ 9` — 72 instances, other two sides free over their full word lists —
+`code/a2_wall_family.py`, results in `code/a2_results.txt`.
