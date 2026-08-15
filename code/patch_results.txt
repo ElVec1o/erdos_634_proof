@@ -380,7 +380,19 @@ NOTE: the same recipe (boundary-word theorems + deviant-word exhaustions + ENUM 
 the standard instance) closes ANY residual (M,k) cell at scale k in one member-level run --
 the 173 interior-defer OPEN cells are all subsumable this way, k-instance by k-instance.
 
-== the r = e cell kill (2026-08-16, uniform in f) ==
+== the corridor classification + the r = e cell kill (2026-08-16, uniform in f) ==
+GENERAL FORM (CorridorLowStop.classification): for EVERY m < f, with 2 <= e < f, the solutions of
+(x+1)a + yb + zc = m*c in non-negative integers are exactly the family
+      (x+1, y, z) = (j*f, 0, m - j*e),   j >= 1,  j*e <= m.
+No size hypothesis beyond e < f.  Proof: descent mod f twice, then a squeeze -- Y >= 1 forces
+t >= 1, then Ye >= tf+1 > te gives Y > t, so Yf >= tf + f, while z >= 0 with m < f gives
+Yf < f + te; together tf < te, i.e. f < e.  Contradiction.
+Verified before proving: 11841 (e,f,m) triples, all coprime (e,f) with f <= 40, e >= 2, 0 failures.
+Consequences, all uniform in f: the flush words are exactly a^{jf} c^{r-je}; the reachable stop
+heights are exactly m*c with e <= m; nothing below e*c is reachable from an a
+(unreachable_below_e).
+
+== the r = e cell kill (a corollary of the above) ==
 lean/CorridorLowStop.lean.  The corridor equation (x+1)a + yb + zc = m*c is decided for every
 m <= e, uniformly in (e,f) with 2 <= e < f, gcd(e,f)=1:
   m < e : NO solution -- nothing below height e*c is reachable from an a;

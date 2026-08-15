@@ -55,30 +55,32 @@ theorem descent_solves (e f m Y t : ℤ) :
     ((Y * e - t * f) * (e * f) + (f * Y) * (f ^ 2 - e ^ 2)
       + (m - Y * f + t * e) * f ^ 2) = m * f ^ 2 := by ring
 
-/-- **The squeeze.**  With `m ≤ e`, non-negativity of the three counts forces `Y = 0`.
-`Y ≥ 1` gives `t ≥ 1` (from `z ≥ 0`), and then `Yf ≤ e(1+t)` and `Ye ≥ tf+1` say `Y < 1+t` and
-`Y > t` at once. -/
-theorem squeeze_Y_zero (e f m Y t : ℤ) (he : 2 ≤ e) (hef : e < f) (hme : m ≤ e)
+/-- **The squeeze — general form.**  Non-negativity of the three counts forces `Y = 0` for every
+`m < f`.  No size hypothesis beyond `e < f` is used.
+
+`Y ≥ 1` forces `t ≥ 1` (else `z < 0`, since `Yf ≥ f > m`).  Then `Ye ≥ tf+1 > te` gives `Y > t`,
+so `Y ≥ t+1` and `Yf ≥ tf + f`; but `z ≥ 0` with `m < f` gives `Yf ≤ m + te < f + te`.  Together
+`tf < te`, i.e. `f < e` — contradiction. -/
+theorem squeeze_Y_zero (e f m Y t : ℤ) (he : 2 ≤ e) (hef : e < f) (hmf : m < f)
     (hY : 0 ≤ Y) (hx : 1 ≤ Y * e - t * f) (hz : 0 ≤ m - Y * f + t * e) : Y = 0 := by
   by_contra hne
   have hY1 : 1 ≤ Y := by omega
-  -- z ≥ 0 with m ≤ e forces t ≥ 1
+  have hf0 : 0 < f := by omega
+  -- Yf < f + te, from z ≥ 0 and m < f
+  have hub : Y * f < f + t * e := by nlinarith
+  -- t ≥ 1: else te ≤ 0 and Yf ≥ f contradict hub
   have ht1 : 1 ≤ t := by nlinarith
-  -- Yf ≤ m + te ≤ e(1+t)  and  Ye ≥ tf + 1
-  have hup : Y * f ≤ e * (1 + t) := by nlinarith
-  have hlo : Y * e ≥ t * f + 1 := by linarith
-  -- Y > t  (from Ye ≥ tf+1 and f > e)
-  have h1 : t < Y := by nlinarith
-  -- Y < 1 + t  (from Yf ≤ e(1+t) and f > e)
-  have h2 : Y < 1 + t := by nlinarith
-  omega
+  -- Y > t: from Ye ≥ tf + 1 and f > e
+  have hgt : t < Y := by nlinarith
+  -- Y ≥ t+1 gives Yf ≥ tf + f; with hub, tf < te, i.e. f < e
+  nlinarith
 
 /-- **The classification below `e`.**  For `m ≤ e`, the only solution of the corridor equation is
 `m = e` with the word `a^f`.  In particular nothing is reachable below height `e·c`. -/
 theorem corridor_low (e f m Y t : ℤ) (he : 2 ≤ e) (hef : e < f) (hm : 0 < m) (hme : m ≤ e)
     (hY : 0 ≤ Y) (hx : 1 ≤ Y * e - t * f) (hz : 0 ≤ m - Y * f + t * e) :
     m = e ∧ Y * e - t * f = f ∧ Y = 0 ∧ m - Y * f + t * e = 0 := by
-  have hY0 : Y = 0 := squeeze_Y_zero e f m Y t he hef hme hY hx hz
+  have hY0 : Y = 0 := squeeze_Y_zero e f m Y t he hef (by omega) hY hx hz
   subst hY0
   -- x+1 = −tf ≥ 1 forces t ≤ −1; write j = −t ≥ 1
   have ht : t ≤ -1 := by nlinarith
@@ -86,6 +88,30 @@ theorem corridor_low (e f m Y t : ℤ) (he : 2 ≤ e) (hef : e < f) (hm : 0 < m)
   have hj : t = -1 := by nlinarith
   subst hj
   refine ⟨by omega, by ring_nf, rfl, by omega⟩
+
+/-- **The full classification.**  For every `m < f`, the solutions of the corridor equation are
+exactly the family `a^{jf} c^{m-je}` with `j ≥ 1` and `je ≤ m`: the `b`-count vanishes, `f ∣ x+1`,
+and the `c`-tail is `m - je`.  Uniform in `(e,f)` — the only hypotheses are `2 ≤ e < f` and `m < f`.
+
+This is the arithmetic backbone of the corridor analysis: it gives the flush words (`m = r`), the
+reachable stop heights (`m·c` for `e ≤ m`), and hence the fact that nothing below `e·c` is
+reachable from an `a` at all. -/
+theorem classification (e f m Y t : ℤ) (he : 2 ≤ e) (hef : e < f) (hmf : m < f)
+    (hY : 0 ≤ Y) (hx : 1 ≤ Y * e - t * f) (hz : 0 ≤ m - Y * f + t * e) :
+    Y = 0 ∧ 1 ≤ -t ∧ (-t) * e ≤ m ∧ Y * e - t * f = (-t) * f
+      ∧ m - Y * f + t * e = m - (-t) * e := by
+  have hY0 : Y = 0 := squeeze_Y_zero e f m Y t he hef hmf hY hx hz
+  subst hY0
+  have hf0 : 0 < f := by omega
+  have ht : t ≤ -1 := by nlinarith
+  refine ⟨rfl, by omega, by nlinarith, by ring, by ring⟩
+
+/-- **Nothing below `e·c` is reachable.**  `m < e` admits no solution — a direct corollary of the
+classification, since `je ≤ m < e` with `j ≥ 1` is impossible. -/
+theorem unreachable_below_e (e f m Y t : ℤ) (he : 2 ≤ e) (hef : e < f) (hme : m < e)
+    (hY : 0 ≤ Y) (hx : 1 ≤ Y * e - t * f) (hz : 0 ≤ m - Y * f + t * e) : False := by
+  have h := classification e f m Y t he hef (by omega) hY hx hz
+  nlinarith [h.2.1, h.2.2.1]
 
 /-- **No stop below the exit at `r = e`.**  Taking `m < e`: the equation has no solution at all,
 so the corridor cannot stop at any interior multiple of `c`. -/
@@ -131,3 +157,5 @@ end Erdos634.CorridorLowStop
 #print axioms Erdos634.CorridorLowStop.corridor_low
 #print axioms Erdos634.CorridorLowStop.no_stop_below_e
 #print axioms Erdos634.CorridorLowStop.flush_at_e_is_c_free
+#print axioms Erdos634.CorridorLowStop.classification
+#print axioms Erdos634.CorridorLowStop.unreachable_below_e
