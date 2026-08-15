@@ -53,9 +53,11 @@ $F_1$ targets are \emph{exactly} Zhang's constructed families, closing the neces
 those branches; the equilateral criteria likewise reduce to elementary divisor conditions. Combining the spectra with the published
 branch theorems and an exhaustive exact search of the surviving finite instances, we settle every
 previously undetermined value up to $80$: no triangle can be cut into $14$, $15$, $21$, $22$, $30$,
-$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $63$, $69$, or $76$ congruent triangles
+$33$, $35$, $38$, $39$, $42$, $51$, $55$, $56$, $57$, $60$, $69$, or $76$ congruent triangles
 ($46$, $62$, $78$ likewise, and $79$ --- a prime --- by the main theorem); triangles \emph{can} be cut
-into $44$, $77$ (by Beeson's four-component construction), and $80$ (a sum of two squares) congruent
+into $44$, $63$ (a kernel-certified tiling of the scalene $(2\alpha,\beta,\alpha{+}\beta)$ target
+$(21,24,18)$, correcting an exclusion asserted in an earlier version of this paper), $77$ (by
+Beeson's four-component construction), and $80$ (a sum of two squares) congruent
 triangles; the values $66$ and $70$, previously excluded via theorems of \cite{BeesonIII} whose
 proofs we show to be unsound, are re-excluded here by direct exhaustive search of their single
 surviving instances, so that every $N\le80$ is determined. The same method carries the determined
@@ -70,8 +72,10 @@ knowledge the first tiling in the isosceles $3\alpha+2\beta=\pi$ cases and the s
 tiling in any incommensurable branch. A collar induction driven by a kernel-verified $22$-tile
 parallelogram certificate realizes $N=11m^2$ for every $m\ge2$, and with the branch exclusion at
 $m=1$ the instance spectrum of this (target, tile) pair is completely determined: tileable if and
-only if $m\ne1$, apparently the first incommensurable pair with no undecided instance. The
-phenomenon does not persist along the family. For the next member the scale-$2$ target admits no
+only if $m\ne1$, apparently the first incommensurable pair with no undecided instance. A second
+complete pair over the same tile follows from the cevian decomposition: the scalene
+$(2\alpha,\beta,\alpha{+}\beta)$ target realizes $N=7m^2$ exactly for $m\ge2$, contributing
+$175$. The phenomenon does not persist along the family. For the next member the scale-$2$ target admits no
 tiling at all ($N=104$ on the tile $(3,8,9)$, by exhaustive search), so the unit parallelogram is
 constructible for every member of that family while the seeds of the induction are not, and the
 instance spectrum depends on the member rather than following a single law. Membership in the
@@ -1861,11 +1865,13 @@ $N{=}69$, $M{=}1$ & $(1190,69,1225)$ & $(2415,2415,2346)$ & $37995$\\
 $N{=}69$, $M{=}3$ & $(130,69,169)$ & $(897,897,690)$ & $523$\\
 \end{tabular}
 \end{center}
-The three $N{=}63$ rows close its isosceles-$(\alpha{+}\beta)$ branch. The value $63$ itself then
-hangs on its $\gamma=2\alpha$ instance --- the boundary algorithm (below) leaves exactly one
-candidate, tile $(9,7,12)$ with target $(63,63,84)$ --- and the engine exhausts it too, at
-$884921$ nodes; to our knowledge the first value decided \emph{inside} Beeson's ``swath of
-ignorance'' $[45,1125]$ for the $\gamma=2\alpha$ branch \cite[\S11.6]{BeesonIso}. The values $70$
+The three $N{=}63$ rows close its isosceles-$(\alpha{+}\beta)$ branch, and its $\gamma=2\alpha$
+instance --- the boundary algorithm (below) leaves exactly one candidate, tile $(9,7,12)$ with
+target $(63,63,84)$ --- is exhausted too, at $884921$ nodes, to our knowledge the first instance
+decided \emph{inside} Beeson's ``swath of ignorance'' $[45,1125]$ for the $\gamma=2\alpha$ branch
+\cite[\S11.6]{BeesonIso}. The value $63$ itself is nevertheless \emph{realizable}, through a
+branch the sweep had marked as arithmetically dead: Theorem~\ref{thm:63} and
+Remark~\ref{rem:63correction} below. The values $70$
 and $78$ die in every branch outright, as $42$ and $62$ did. The value $66$ reduces to its
 $\pi/3$-equilateral instance (tile $(11,96,91)$, side $264$, coloring number $M=4$), which Beeson
 rejects \cite[Thm.~7]{BeesonEq}: the tiling must witness a relation $91j=11\ell+96m$ with
@@ -1914,7 +1920,7 @@ equiconstructibility family for $(5,3,7)$ by exact arithmetic; Beeson had report
 unrealizable for this tile in unpublished floating-point work.)
 
 \begin{theorem}\label{thm:frontier3}
-No triangle can be cut into $51$, $55$, $56$, $57$, $60$, $62$, $63$, $69$, or $78$
+No triangle can be cut into $51$, $55$, $56$, $57$, $60$, $62$, $69$, or $78$
 congruent triangles.
 \end{theorem}
 
@@ -1923,9 +1929,48 @@ The branch sweeps and the exhaustive searches above; dependencies as in
 Theorem~\ref{thm:frontier}, together with \cite[Thm.~11.7]{BeesonIso} for the $\gamma=2\alpha$
 branch at the squarefree values $51$, $55$, $57$, $69$; the boundary algorithm (Lemmas 11.2--11.17 of
 \cite{BeesonIso}, \texttt{code/gamma2alpha.py}) for the $\gamma=2\alpha$ branch at $56$ and
-$60$; the boundary algorithm's single surviving candidate plus its $884921$-node exhaustion at
-$63$; and the $7\,232\,464$-node exhaustion at $66$ (Remark~\ref{rem:isobeta}).
+$60$; and the $7\,232\,464$-node exhaustion at $66$ (Remark~\ref{rem:isobeta}).
 \end{proof}
+
+\begin{theorem}[$63$ is realizable]\label{thm:63}
+A triangle can be cut into $63$ congruent triangles: the scalene triangle with sides $(21,24,18)$
+--- angles $(\beta,\,2\alpha,\,\alpha{+}\beta)$ over the same tile $(2,3,4)$ as
+Theorem~\ref{thm:44} --- is tiled by $63$ congruent copies of that tile. The tiling is exhibited
+exactly and its certificate is machine-verified in Lean~4 with no axioms
+(\texttt{lean/CevianTiling63.lean}: all $63$ triangles congruent to $8\cdot(2,3,4)$ over
+$\Z[\sqrt{15}]$, contained in the closed target $8\cdot(21,24,18)$ by half-plane checks, an
+explicit separating edge-line for each of the $1953$ pairs, and the exact area identity), and it
+was re-verified independently of the kernel by a second exact sweep with the separating axes
+recomputed from scratch (\texttt{code/interface\_census.py}). Consequently $63m^2$ is a tile
+count for every $m\ge1$. The same shape at count $28$ is \texttt{lean/CevianTiling28.lean}; the
+two are the $m=3$ and $m=2$ members of the cevian family $N=m^2(2f^2-e^2)$ at $(e,f)=(1,2)$
+(companion note, realizability section).
+\end{theorem}
+
+\begin{remark}[Correction, and its scope]\label{rem:63correction}
+An earlier version of this paper listed $63$ among the excluded values of
+Theorem~\ref{thm:frontier3}. That was wrong: the branch sweep treated the scalene
+$3\alpha+2\beta=\pi$ shapes as arithmetically dead at $63$, and Theorem~\ref{thm:63} refutes that
+step by certificate. The per-instance exhaustions quoted in these subsections are unaffected ---
+each is a statement about a single (tile, target) pair and stands --- but every \emph{composite}
+exclusion below $90$ also invokes the sweep's claim that the branches absent from its surviving
+lists die arithmetically, and that claim has now produced one false exclusion. Until the sweep's
+scalene $3\alpha+2\beta$ step (\texttt{verify\_frontier.py}) is re-audited against the cevian
+family $N=m^2(2f^2-e^2)$ over all members $(e,f)$, the composite exclusions of
+Theorems~\ref{thm:frontier}--\ref{thm:frontier5} carry that caveat; the prime exclusions are
+untouched, resting on Theorem~\ref{thm:main} and the congruence class alone. The re-audit is in
+progress.
+\end{remark}
+
+\begin{corollary}[The cevian spectrum at $(1,2)$ is complete]\label{cor:wfamily}
+The scalene target of Theorem~\ref{thm:63} realizes $N=7m^2$ for every $m\ge2$ and for no other
+$m$: the certified seeds $W_2=28$ and $W_3=63$ propagate by the W-addition law of the companion
+note (the connecting parallelograms are slab-tiled by the $c$-glued two-tile brick), every
+$m\ge2$ being a sum of $2$s and $3$s; and a $7$-tiling at $m=1$ would extend, by the east
+$f$-scaled tile, to an $11$-tiling of $(8,8,11)$, refuted by exhaustion. This is a second
+(target, tile) pair with no undecided instance, over the same tile $(2,3,4)$ as
+Theorem~\ref{thm:realize12}; it adds $175=7\cdot5^2$ to the spectrum below $200$.
+\end{corollary}
 
 \begin{remark}[The value $70$ and the unsound $g\mid M$ exclusions]\label{rem:seventy}
 The value $N=70$ is excluded. Its single surviving instance is isosceles-$\alpha$: tile $(6,5,9)$,
@@ -1973,15 +2018,15 @@ construction \cite{BeesonIII}, and $80=4^2+8^2$ by the biquadratic (commensurabl
 \begin{theorem}\label{thm:frontier4}
 No triangle can be cut into $76$ congruent triangles. Every $N\le 80$ is thereby determined,
 with no exception: the realizable values are exactly $1$--$13$'s known members together with
-$44,77,80$ and the standard commensurable and prime\,$\equiv1\!\pmod4$ values, and all others are
-excluded. The last undetermined value below $80$ was $N=70$, settled by exhaustive search of its
-single surviving instance (Remark~\ref{rem:seventy}).
+$44,63,77,80$ and the standard commensurable and prime\,$\equiv1\!\pmod4$ values, and all others
+are excluded. The last undetermined value below $80$ was $N=70$, settled by exhaustive search of
+its single surviving instance (Remark~\ref{rem:seventy}).
 \end{theorem}
 \begin{proof}
 The branch sweep and $\gamma=2\alpha$ boundary algorithm above settle $76$; Theorem~\ref{thm:main}
 excludes the prime $79$; Theorems~\ref{thm:frontier2}--\ref{thm:frontier3} give the composite
-exclusions through $78$ other than $70$; and the four-component and biquadratic constructions
-realize $77$ and $80$.
+exclusions through $78$ other than $70$; and Theorem~\ref{thm:63}, the four-component and
+biquadratic constructions realize $63$, $77$ and $80$.
 \end{proof}
 
 \subsection*{The values $81$ to $90$.}
@@ -2035,6 +2080,48 @@ Recorded in \cite{Obstructions}.
 \begin{remark}[What $83$ rests on]\label{rem:eightythree}
 Recorded in \cite{Obstructions}.
 \end{remark}
+
+\subsection*{The spectrum below $200$.}
+The determinations above assemble into an explicit answer to Erd\H{o}s's question on the initial
+segment $N\le200$ (generated by \texttt{code/spectrum\_table.py}; every entry cites its reason).
+The \emph{realizable} values, $100$ of the $200$, are the unions of six families: the squares
+$k^2$; the sums of two positive squares $x^2+y^2$ (the biquadratic right-triangle tiling, covering
+$2$ and every prime $\equiv1\bmod4$); $3k^2$ and $6k^2$ (equilateral trisection and sextant);
+the certified incommensurable values $28$, $44$, $63$, $77$, $99$ of this paper and its companion;
+the cevian family $7m^2$, $m\ge2$ (companion, W-addition), whose first member beyond the
+certified ones is $175=7\cdot5^2$; and the $k^2$-ladder over all of these
+(Theorem~\ref{thm:ladder}), which contributes $112=2^2\cdot28$ and $176=2^2\cdot44$. Explicitly:
+\[
+\begin{array}{l}
+1,2,3,4,5,6,8,9,10,12,13,16,17,18,20,24,25,26,27,28,29,32,34,36,37,40,41,44,45,48,49,50,\\
+52,53,54,58,61,63,64,65,68,72,73,74,75,77,80,81,82,85,89,90,96,97,98,99,100,101,104,106,\\
+108,109,112,113,116,117,121,122,125,128,130,136,137,144,145,146,147,148,149,150,153,157,\\
+160,162,164,169,170,173,175,176,178,180,181,185,192,193,194,196,197,200.
+\end{array}
+\]
+The \emph{excluded} values, $42$ in number, are the primes $\equiv7\bmod{12}$
+($7,19,31,43,67,79,103,127,139,151,163,199$; Theorem~\ref{thm:main} with
+Theorem~\ref{thm:mod12}, unconditional), the exhausted primes $\equiv11\bmod{12}$
+($11,23,47,59,71,107$), and the composite values of
+Theorems~\ref{thm:frontier}--\ref{thm:frontier5}
+($14,15,21,22,30,33,35,38,39,42,46,51,55,56,57,60,62,66,69,70,76,78,86,87$), the last group
+subject to the branch-sweep caveat of Remark~\ref{rem:63correction} until the scalene re-audit
+closes. Everything else is \emph{open}, $58$ values:
+\[
+\begin{array}{l}
+83^{*},84,88,91,92,93,94,95,102,105,110,111,114,115,118,119,120,123,124,126,129,131^{*},132,\\
+133,134,135,138,140,141,142,143,152,154,155,156,158,159,161,165,166,167^{*},168,171,172,174,\\
+177,179^{*},182,183,184,186,187,188,189,190,191^{*},195,198,
+\end{array}
+\]
+where the starred values are the unresolved primes $\equiv11\bmod{12}$ ($83$ is excluded under
+the base-$\beta$ hypothesis and not otherwise, Theorem~\ref{thm:frontier5}); $84$ and $88$ are
+the two instances still under search below $91$; $105,120,132,154,184$ are the sporadic
+$2\pi/3$-admissible values of Remark~\ref{rem:zhang}; and $66$'s and $138$'s base-$\beta$ members
+are exhausted while the values themselves differ in kind --- $66$ is excluded
+(Theorem~\ref{thm:frontier3}), $138$ merely branch-dead in base-$\beta$ and otherwise open.
+Below $91$ the spectrum is thus determined except at exactly $83$, $84$, $88$; the first open
+composite is $84$.
 
 \subsection*{Decidability.}
 The pattern of the last two subsections is not an accident. Every branch of the classification now
@@ -2222,6 +2309,8 @@ listed in \cite{Obstructions}.
 \begin{thebibliography}{99}
 
 \bibitem{Companion} V.~Bonfioli, \emph{The base-$\beta$ branch of $3\alpha+2\beta=\pi$: boundary walks, corrections to Triangle Tiling III, and the frontier searches}, companion note to the present paper, 2026.
+
+\bibitem{Obstructions} V.~Bonfioli, \emph{Erd\H{o}s Problem 634: obstructions, scope limits, and closed routes}, 2026.
 
 \bibitem{BeesonI} M.~Beeson, \emph{Triangle tiling I: The tile is similar to ABC or has a right
 angle}, arXiv:1206.2231.
