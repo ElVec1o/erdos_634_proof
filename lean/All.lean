@@ -73,6 +73,7 @@ import Erdos634.RogueChord
 import Erdos634.RogueContainment
 import Erdos634.RogueFan
 import Erdos634.RogueMirror
+import Erdos634.CorridorLowStop
 import Erdos634.ScaleBreak
 import Erdos634.ScaleRigidity
 import Erdos634.SecondEdge

@@ -379,3 +379,17 @@ instance returns found=0 at the identical 427 nodes.
 NOTE: the same recipe (boundary-word theorems + deviant-word exhaustions + ENUM uniqueness of
 the standard instance) closes ANY residual (M,k) cell at scale k in one member-level run --
 the 173 interior-defer OPEN cells are all subsumable this way, k-instance by k-instance.
+
+== the r = e cell kill (2026-08-16, uniform in f) ==
+lean/CorridorLowStop.lean.  The corridor equation (x+1)a + yb + zc = m*c is decided for every
+m <= e, uniformly in (e,f) with 2 <= e < f, gcd(e,f)=1:
+  m < e : NO solution -- nothing below height e*c is reachable from an a;
+  m = e : exactly one, the word a^f (x+1 = f, y = z = 0).
+Proof: descent mod f twice gives y = fY, x+1 = Ye - tf, z = m - Yf + te; with m <= e,
+non-negativity gives Yf <= e(1+t) and Ye >= tf+1, so Y > t and Y < 1+t at once -- Y = 0, then
+e*j <= m <= e pins j = 1.  No size hypothesis beyond e < f.
+CONSEQUENCE.  At a deep slot with r = e and k < f the corridor has no interior stop (the only
+reachable multiple of c is the exit) and its unique flush a^f is c-free, hence dies at E against
+a_side_rigid (strip_exit.py, 963/963).  No terminating height survives: the rogue slot does not
+occur.  Uniform in (e,f,M) -- this is a cell kill valid for every f, not a per-member certificate.
+Verified before proving: 2915 (e,f,m) triples, all coprime (e,f) with f <= 25, e >= 2, 0 failures.
