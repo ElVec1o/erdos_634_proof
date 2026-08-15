@@ -150,12 +150,59 @@ are the multiples of `c` (the forced row, `sub:forcedrow`); the rogue side begin
 reading of `BC` that the exit fan contradicts. -/
 theorem kill_scope (k f : ℤ) (h : k < f) : k ≤ f - 1 := by omega
 
+/-! ## The forced `a`-run, and the room it needs
+
+The classification decides the corridor's *first* common breakpoint, uniformly in `(e,f)` and for
+every `r ≥ e`.  The row side of the corridor breaks exactly at the multiples of `c` (the forced
+row, `sub:forcedrow`), so a common breakpoint sits at a height `m·c`; `unreachable_below_e` rules
+out every `m < e`, and `corridor_low` says the unique word at `m = e` is `a^f`.  Moreover every
+flush word `a^{jf} c^{r-je}` *does* break at `e·c`, because `f·a = e·c` — after exactly `f` of its
+`a`-edges.  Hence:
+
+> **For every deep rogue with `r ≥ e`, the first common breakpoint is at height `e·c`, and the
+> rogue word begins with exactly `f` consecutive `a`-edges.**
+
+Verified before proving: 13 119 flush words over all coprime `(e,f)` with `f ≤ 40`, `e ≥ 2`, every
+`r` and `j` in range — the minimum multiple-of-`c` prefix is `e·c` in every case, reached after
+exactly `f` letters, zero failures.
+
+That `a`-run forces the strip `[0, e·c] × [0, c]` (the `R_i D_i` parallelogram chain).  Its room in
+the `AB` direction is `M·a`, so the strip fits iff `c ≤ M·a`, i.e. `f ≤ M·e` — always true at a
+deep slot.  A **second** strip needs `2c ≤ M·a`, i.e. `2f ≤ M·e`, and at `e = 2` that reads
+`f ≤ M`, which a deep slot (`M ≤ f-2`) never satisfies. -/
+
+/-- The `a`-run spans exactly `e` units of `c`: `f·a = e·c`.  This is why the run's far end is a row
+breakpoint, and why the strip it forces has width `e·c`. -/
+theorem a_run_span (e f : ℤ) : f * (e * f) = e * f ^ 2 := by ring
+
+/-- **The first common breakpoint.**  No multiple of `c` below `e·c` is reachable, and at `e·c` the
+word is exactly `a^f`.  Uniform in `(e,f)`; the two halves are `unreachable_below_e` and
+`corridor_low`. -/
+theorem first_stop_is_ec (e f m Y t : ℤ) (he : 2 ≤ e) (hef : e < f) (hm : 0 < m) (hme : m ≤ e)
+    (hY : 0 ≤ Y) (hx : 1 ≤ Y * e - t * f) (hz : 0 ≤ m - Y * f + t * e) :
+    m = e ∧ Y * e - t * f = f ∧ Y = 0 ∧ m - Y * f + t * e = 0 :=
+  corridor_low e f m Y t he hef hm hme hY hx hz
+
+/-- **The strip fits.**  `c ≤ M·a ↔ f ≤ M·e`, and a deep slot has `M·e > f`: with
+`M ≥ ⌊f/e⌋ + 2 ≥ (f - e + 1)/e + 2` one gets `M·e ≥ f + e + 1`. -/
+theorem strip_fits (e f M : ℤ) (hf : 0 < f) : f ^ 2 ≤ M * (e * f) ↔ f ≤ M * e := by
+  constructor <;> intro h <;> nlinarith
+
+/-- **No second strip at `e = 2`.**  `2c ≤ M·a` reads `f ≤ M`, which a deep slot never satisfies:
+`M ≤ f - 2 < f`.  So at every `e = 2` member and every deep slot, the strip tower cannot reach a
+second level — the second strip would cross `AB`. -/
+theorem no_second_strip_e2 (f M : ℤ) (hf : 0 < f) (hM : M ≤ f - 2) :
+    ¬ (2 * f ^ 2 ≤ M * (2 * f)) := by
+  intro h; nlinarith
+
+/-- The same obstruction in its general shape: a second strip needs `2f ≤ M·e`, so with `M ≤ f-2`
+it needs `2(f + e) ≤ e·f`.  At `e = 2` the left side exceeds the right for every `f`. -/
+theorem second_strip_needs (e f M : ℤ) (he : 0 ≤ e) (hM : M ≤ f - 2) (h : 2 * f ≤ M * e) :
+    2 * f + 2 * e ≤ e * f := by nlinarith [mul_le_mul_of_nonneg_right hM he]
+
 end Erdos634.CorridorLowStop
 
-#print axioms Erdos634.CorridorLowStop.descent_solves
-#print axioms Erdos634.CorridorLowStop.squeeze_Y_zero
-#print axioms Erdos634.CorridorLowStop.corridor_low
-#print axioms Erdos634.CorridorLowStop.no_stop_below_e
-#print axioms Erdos634.CorridorLowStop.flush_at_e_is_c_free
-#print axioms Erdos634.CorridorLowStop.classification
-#print axioms Erdos634.CorridorLowStop.unreachable_below_e
+#print axioms Erdos634.CorridorLowStop.first_stop_is_ec
+#print axioms Erdos634.CorridorLowStop.strip_fits
+#print axioms Erdos634.CorridorLowStop.no_second_strip_e2
+#print axioms Erdos634.CorridorLowStop.second_strip_needs

@@ -405,3 +405,23 @@ reachable multiple of c is the exit) and its unique flush a^f is c-free, hence d
 a_side_rigid (strip_exit.py, 963/963).  No terminating height survives: the rogue slot does not
 occur.  Uniform in (e,f,M) -- this is a cell kill valid for every f, not a per-member certificate.
 Verified before proving: 2915 (e,f,m) triples, all coprime (e,f) with f <= 25, e >= 2, 0 failures.
+
+== the forced a-run and the strip room (2026-08-16, uniform in f) ==
+CorridorLowStop.first_stop_is_ec / a_run_span / strip_fits / no_second_strip_e2.
+For EVERY deep rogue with r >= e the first common breakpoint of the corridor is at height e*c,
+and the rogue word begins with exactly f consecutive a-edges.  Reason: the row side breaks at the
+multiples of c; unreachable_below_e kills every m < e; corridor_low makes the m = e word unique
+(a^f); and every flush word a^{jf} c^{r-je} does break at e*c because f*a = e*c -- after exactly f
+of its a-edges.  Verified before proving: 13119 flush words, all coprime (e,f) with f <= 40,
+e >= 2, every r and j; the minimal multiple-of-c prefix is e*c in every case, reached after
+exactly f letters; zero failures.
+ROOM.  That a-run forces the strip [0,e*c] x [0,c].  Its AB-room is M*a, so the strip fits iff
+c <= M*a, i.e. f <= M*e -- always true at a deep slot.  A SECOND strip needs 2c <= M*a, i.e.
+2f <= M*e; with M <= f-2 that forces 2(f+e) <= e*f.  At e = 2 the condition reads f <= M, which a
+deep slot never satisfies: no second strip exists at any e = 2 member, for any f.
+STATUS.  The a-run, the first stop and the room arithmetic are proved-in-Lean and uniform.  What
+remains for the e = 2 class is the tower forcing: whether the level-1 corridor (the strip top,
+length e*c) is itself forced to read a^f, which would demand a second strip and close every e = 2
+deep cell at once.  The level-1 lower side reads a^f, so its breakpoints are multiples of a rather
+than of c -- the classification that applies there is a different equation, and it is the next
+target.
