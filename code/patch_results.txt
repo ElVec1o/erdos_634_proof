@@ -442,3 +442,18 @@ CONSEQUENCE.  In the c-branch the level-1 corridor has no interior stop: it runs
 and reads c^e.  This is the level-1 analogue of first_stop_is_ec, and it is what a tower argument
 needs at each level.  The a-branch stops at once, so the tower question reduces to which branch T1
 takes -- a single binary choice per level, now the only freedom left in the strip stack.
+
+== the mast forces the branch at e = 2 (2026-08-16, uniform in f) ==
+CorridorLowStop.mast_stop_room / mast_c_run_le_one / branch_forced_e2.
+The mast (wall at s=0 from Y, length <= the AB-room M*a) reads on its right the rogue's c-edge then
+T1, T2, ..., each laying a or c; on its left P_M's riser a-edge.  A common stop at h needs
+h in a + <a,b,c>: by the classification h = m*c qualifies iff m >= e, while h = n*c + a always
+qualifies.  So a right side reading c^n before its first a stops at n*c (if n >= e) or n*c + a.
+At e = 2: n >= 2 means n >= e, so the stop is 2c, needing f <= M -- false at a deep slot
+(M <= f-2).  n = 1 puts the stop at c+a, which fits (deep M >= floor(f/2)+2 gives f+2 <= 2M).
+Hence n = 1: T1 lays a on the mast and c on the level-1 corridor, and by level1_dichotomy the
+level-1 word is forced to c^2 with no interior stop.
+Verified before proving: every odd f in [5,59] and every deep M -- n >= 2 never fits, n = 1 always
+does, zero violations.
+STATUS.  At e = 2 the strip stack's binary choice is now decided at level 1, uniformly in f.  The
+remaining freedom is the same choice one level up, on the corridor that the c^2 word carries.

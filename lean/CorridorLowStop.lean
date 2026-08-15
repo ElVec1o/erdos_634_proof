@@ -246,7 +246,53 @@ theorem level1_dichotomy (e f i Y T : ℤ) (he : 2 ≤ e) (hef : e < f) (hi1 : 1
 the full length of the level-1 corridor. -/
 theorem level1_word_span (e f : ℤ) : e * f ^ 2 = f * (e * f) := by ring
 
+/-! ## The mast's room forces the branch at `e = 2`
+
+The mast is the wall at `s = 0` rising from `Y`, of length at most the `AB`-room `M·a`.  Its right
+side reads the rogue's `c`-edge, then `T₁, T₂, …`, each laying an `a` or a `c`; its left side opens
+with `P_M`'s riser `a`-edge.  A common stop at height `h` needs `h ∈ a + ⟨a,b,c⟩`, and the
+classification decides which multiples of `c` qualify: `h = m·c` is reachable iff `m ≥ e`, while
+`h = n·c + a` is always reachable (`a + n·c`).
+
+So if the mast's right side reads `c^n` before its first `a`, the first common stop sits at `n·c`
+when `n ≥ e`, and at `n·c + a` otherwise.  Either way it must fit under `AB`.
+
+At **`e = 2`** this decides the branch outright.  `n ≥ 2` means `n ≥ e`, so the stop is at `2c`,
+needing `2c ≤ M·a`, i.e. `f ≤ M` — false at a deep slot (`M ≤ f-2`).  And `n = 1` puts the stop at
+`c + a`, which does fit.  Hence `n = 1`: **`T₁` lays its `a` on the mast and its `c` on the level-1
+corridor**, so by `level1_dichotomy` the level-1 word is forced to `c²`.
+
+Verified before proving: every odd `f` from 5 to 59 and every deep `M` — `n ≥ 2` never fits, `n = 1`
+always does; zero violations. -/
+
+/-- **The mast stop must fit.**  A first common stop at `n·c` (the `n ≥ e` case) needs
+`n·f ≤ M·e`; at `n·c + a` (the `n < e` case) it needs `n·f + e ≤ M·e`. -/
+theorem mast_stop_room (e f M n : ℤ) (hf : 0 < f) :
+    (n * f ^ 2 ≤ M * (e * f) ↔ n * f ≤ M * e)
+      ∧ (n * f ^ 2 + e * f ≤ M * (e * f) ↔ n * f + e ≤ M * e) := by
+  constructor <;> constructor <;> intro h <;> nlinarith
+
+/-- **At `e = 2` a `c`-run of length `≥ 2` on the mast is impossible.**  Its stop would sit at `2c`,
+demanding `f ≤ M`, which a deep slot never allows. -/
+theorem mast_c_run_le_one (f M n : ℤ) (hf : 0 < f) (hM : M ≤ f - 2) (hn : 2 ≤ n) :
+    ¬ (n * f ^ 2 ≤ M * (2 * f)) := by
+  intro h; nlinarith
+
+/-- **The `n = 1` stop fits.**  `c + a ≤ M·a` at `e = 2` reads `f + 2 ≤ 2M`, which every deep slot
+satisfies since `M ≥ ⌊f/2⌋ + 2`. -/
+theorem mast_n_one_fits (f M : ℤ) (hf : 0 < f) (hM : f + 2 ≤ 2 * M) :
+    f ^ 2 + 2 * f ≤ M * (2 * f) := by nlinarith
+
+/-- **The branch is forced at `e = 2`.**  Combining: the mast's `c`-run before its first `a` has
+length exactly one, so `T₁` lays `a` on the mast and `c` on the level-1 corridor.  With
+`level1_dichotomy` the level-1 word is then `c²`, with no interior stop. -/
+theorem branch_forced_e2 (f M n : ℤ) (hf : 0 < f) (hM : M ≤ f - 2) (hn1 : 1 ≤ n)
+    (hfit : n * f ^ 2 ≤ M * (2 * f)) : n = 1 := by
+  by_contra hne
+  exact mast_c_run_le_one f M n hf hM (by omega) hfit
+
 end Erdos634.CorridorLowStop
 
-#print axioms Erdos634.CorridorLowStop.level1_dichotomy
-#print axioms Erdos634.CorridorLowStop.level1_word_span
+#print axioms Erdos634.CorridorLowStop.mast_stop_room
+#print axioms Erdos634.CorridorLowStop.mast_c_run_le_one
+#print axioms Erdos634.CorridorLowStop.branch_forced_e2
