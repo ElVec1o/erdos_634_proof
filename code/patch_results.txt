@@ -358,3 +358,24 @@ Conclusion recorded: the global collision mechanism is the flush-strip vs
 boundary-rigidity contradiction (confirmed by the control flip); its reach in the
 patch search is bounded by the interior-defer horizon and the wall-scale licensing.
 Extending its reach is theorem work (strip propagation), not more compute.
+
+== (6,7) (M,k)=(3,7): DEFINITIVELY CLOSED (2026-08-15, enum-exhaustion) ==
+The last named survivor pair dies by full enumeration of W(7)@(6,7), four steps:
+  1. base word b^7            -- THEOREM (RogueMirror.wall_base_reading)
+  2. a-side word a^7          -- transverse c^6 dead at (6,7) (TransverseChain + re-certified
+                                 patch kill; A2 grid layer)
+  3. c-side deviation a^7 c^1 -- EXHAUSTED_NO_TILING, 427 nodes, verified identically on BOTH
+                                 cengine_lifo and cengine_enum (inst w67_k7_p1; q=1 is the only
+                                 deviant wall-scale c-word at (6,7))
+  4. standard boundary        -- ENUM_ALL exhaustion: EXHAUSTED_ENUM found=1, 91,957 nodes;
+                                 the unique tiling equals the standard subdivision by exact
+                                 rational set-comparison (inst w67_k7_p0)
+Hence every occurrence of a scale-7 inflation at (6,7) is standard: W(7)@(6,7) holds on the
+standing hypotheses, subsuming the (3,7) rogue cell that the patch search could only defer on.
+Engine: cengine_enum.cpp, a gated variant of cengine_iso (env ENUM_ALL: a completed leaf is
+counted and dumped instead of stopping the search; branching untouched). Regressions: gate off
+reproduces stock verdicts node-identically (427 / 82,011); ENUM_ALL on the exhausted p1
+instance returns found=0 at the identical 427 nodes.
+NOTE: the same recipe (boundary-word theorems + deviant-word exhaustions + ENUM uniqueness of
+the standard instance) closes ANY residual (M,k) cell at scale k in one member-level run --
+the 173 interior-defer OPEN cells are all subsumable this way, k-instance by k-instance.
