@@ -200,9 +200,53 @@ it needs `2(f + e) ≤ e·f`.  At `e = 2` the left side exceeds the right for ev
 theorem second_strip_needs (e f M : ℤ) (he : 0 ≤ e) (hM : M ≤ f - 2) (h : 2 * f ≤ M * e) :
     2 * f + 2 * e ≤ e * f := by nlinarith [mul_le_mul_of_nonneg_right hM he]
 
+/-! ## The level-1 corridor: a strict dichotomy
+
+The forced `a`-run carries a strip `[0, e·c] × [0, c]` whose **top** reads `a^f`.  That top is a
+two-sided wall of its own — the *level-1 corridor* — of the same length `e·c = f·a`, but its lower
+side now breaks at the multiples of `a`, not of `c`.  Its upper word `W` begins at the mast with the
+forced tile `T₁`, whose flanks are `{a, c}`, so `W` starts with an `a` or with a `c`.
+
+* `W` starts with `a`: its first partial sum is `a`, already on the `a`-grid — the corridor stops
+  immediately and nothing is forced.
+* `W` starts with `c`: `level1_dichotomy` below says it meets the `a`-grid **only at the far end**,
+  and the word is then exactly `c^e`.
+
+So the level-1 corridor admits no interior stop in the `c`-branch: it runs the full `e·c` and reads
+`c^e`.  Verified before proving: all 450 coprime members with `f ≤ 40`, `e ≥ 2`; in every one the
+only `i ∈ [1,f]` with `c + xa + yb + zc = i·a` solvable is `i = f`, zero failures.
+
+The descent is the same as before — `y = fY`, `z+1 = eT - Yf`, `x = i + Ye - Tf` — and the squeeze
+is sharper: `T = 1` forces `Y = 0` (since `Yf ≤ e-1 < f`), while `T ≥ 2` forces `Y ≥ T` (from
+`Ye ≥ (T-1)f > (T-1)e`) and hence `Tf ≤ Yf ≤ eT - 1`, i.e. `T(f-e) ≤ -1`, impossible. -/
+
+/-- **The level-1 dichotomy.**  A `c`-started word on the level-1 corridor meets the `a`-grid only
+at the far end `i = f`, where it reads `c^e` (`x = y = 0`, `z = e-1`).  Uniform in `(e,f)`. -/
+theorem level1_dichotomy (e f i Y T : ℤ) (he : 2 ≤ e) (hef : e < f) (hi1 : 1 ≤ i) (hif : i ≤ f)
+    (hY : 0 ≤ Y) (hz : 1 ≤ e * T - Y * f) (hx : 0 ≤ i + Y * e - T * f) :
+    Y = 0 ∧ T = 1 ∧ i = f ∧ e * T - Y * f = e := by
+  have hf0 : 0 < f := by omega
+  have hT1 : 1 ≤ T := by nlinarith
+  rcases eq_or_lt_of_le hT1 with hT | hT2
+  · -- T = 1 : Yf ≤ e - 1 < f forces Y = 0, then x ≥ 0 with i ≤ f pins i = f
+    have hTeq : T = 1 := hT.symm
+    subst hTeq
+    have hYf : Y * f ≤ e - 1 := by linarith
+    have hY0 : Y = 0 := by nlinarith
+    subst hY0
+    refine ⟨rfl, rfl, by omega, by ring⟩
+  · -- T ≥ 2 : Y ≥ T, so Tf ≤ Yf ≤ eT - 1, i.e. T(f-e) ≤ -1
+    exfalso
+    have hT2' : 2 ≤ T := hT2
+    have hlo : (T - 1) * f ≤ Y * e := by nlinarith
+    have hYT : T ≤ Y := by nlinarith
+    nlinarith
+
+/-- The far-end word of the `c`-branch has exactly `e` letters, all `c`: its total is `e·c = f·a`,
+the full length of the level-1 corridor. -/
+theorem level1_word_span (e f : ℤ) : e * f ^ 2 = f * (e * f) := by ring
+
 end Erdos634.CorridorLowStop
 
-#print axioms Erdos634.CorridorLowStop.first_stop_is_ec
-#print axioms Erdos634.CorridorLowStop.strip_fits
-#print axioms Erdos634.CorridorLowStop.no_second_strip_e2
-#print axioms Erdos634.CorridorLowStop.second_strip_needs
+#print axioms Erdos634.CorridorLowStop.level1_dichotomy
+#print axioms Erdos634.CorridorLowStop.level1_word_span

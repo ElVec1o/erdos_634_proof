@@ -425,3 +425,20 @@ length e*c) is itself forced to read a^f, which would demand a second strip and 
 deep cell at once.  The level-1 lower side reads a^f, so its breakpoints are multiples of a rather
 than of c -- the classification that applies there is a different equation, and it is the next
 target.
+
+== the level-1 dichotomy (2026-08-16, uniform in f) ==
+CorridorLowStop.level1_dichotomy.  The strip carried by the forced a-run has a top reading a^f;
+that top is a two-sided wall of its own -- the level-1 corridor -- of length e*c = f*a, whose LOWER
+side now breaks at multiples of a rather than of c.  Its upper word starts at the mast with the
+forced tile T1 (flanks {a,c}), hence with a or with c.  Then:
+  starts with a : first partial sum is a, already on the a-grid -- immediate stop, nothing forced;
+  starts with c : meets the a-grid ONLY at the far end i = f, and the word is exactly c^e.
+Proof: same descent (y = fY, z+1 = eT - Yf, x = i + Ye - Tf).  T >= 1 always; T = 1 gives
+Yf <= e-1 < f so Y = 0, and x >= 0 with i <= f pins i = f; T >= 2 gives Ye >= (T-1)f > (T-1)e so
+Y >= T, whence Tf <= Yf <= eT-1, i.e. T(f-e) <= -1 -- impossible.  No size hypothesis.
+Verified before proving: all 450 coprime members with f <= 40, e >= 2; in every one the only
+i in [1,f] with c + xa + yb + zc = i*a solvable is i = f.  Zero failures.
+CONSEQUENCE.  In the c-branch the level-1 corridor has no interior stop: it runs its full length
+and reads c^e.  This is the level-1 analogue of first_stop_is_ec, and it is what a tower argument
+needs at each level.  The a-branch stops at once, so the tower question reduces to which branch T1
+takes -- a single binary choice per level, now the only freedom left in the strip stack.
