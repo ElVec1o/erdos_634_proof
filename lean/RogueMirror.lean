@@ -295,6 +295,91 @@ theorem top3_slot_flush_dies (e f b x y z : ℕ) (he : 4 ≤ e) (hef : e < f)
 equation with `r = e`.  The mirror criterion stops exactly at `r < e`. -/
 theorem flush_at_e (e f : ℤ) : f * (e * f) = e * f ^ 2 := by ring
 
+/-!  ### The forced row's own arithmetic, and its exact scope
+
+The forced row under everything above is the base side of `Δ_k` read as
+`b^k`.  Below the wall scale that reading is *rigid* (`base_side_rigid`):
+the base side word of a scale-`k` inflation is `b^k` outright for `k < f`.
+At `k = f` — the wall scale, where `Δ_f` is the west corner block sitting on
+the target's base — rigidity fails arithmetically: `y ≡ k (mod f)` no longer
+pins `y = k`, and the base equation acquires the family
+`a^{(j+1)f−e}·c^{f−(j+1)e}`, `1 ≤ j+1 ≤ ⌊f/e⌋` (`base_side_wall_family`
+exhibits it).  Every rogue-slot kill at scale `k = f` is therefore
+conditional on the `b^f` reading of the target's base — which is part of
+the base-word analysis of the main paper, not of this module — while the
+kills at `k < f` carry no such condition. -/
+
+/-- **The base side is rigid below the wall.**  `x·a + y·b + z·c = k·b`
+with `k < f` forces the word `b^k`: reduction mod `f` gives `f ∣ (k−y)e²`,
+coprimality pins `y = k`, and the `a`/`c` counts vanish. -/
+theorem base_side_rigid (e f k x y z : ℕ) (he : 1 ≤ e) (hef : e < f)
+    (hcop : Nat.Coprime e f) (hk : k < f)
+    (heq : x * (e * f) + y * (f ^ 2 - e ^ 2) + z * f ^ 2
+      = k * (f ^ 2 - e ^ 2)) :
+    x = 0 ∧ y = k ∧ z = 0 := by
+  have hb : e ^ 2 < f ^ 2 := Nat.pow_lt_pow_left hef (by norm_num)
+  have hbpos : 0 < f ^ 2 - e ^ 2 := by omega
+  have hyk : y ≤ k := by
+    by_contra h
+    have h2 : y * (f ^ 2 - e ^ 2) ≤ k * (f ^ 2 - e ^ 2) := by omega
+    have h1 : (k + 1) * (f ^ 2 - e ^ 2) ≤ y * (f ^ 2 - e ^ 2) :=
+      Nat.mul_le_mul_right _ (by omega)
+    have h3 : (k + 1) * (f ^ 2 - e ^ 2)
+        = k * (f ^ 2 - e ^ 2) + (f ^ 2 - e ^ 2) := by ring
+    omega
+  -- f ∣ (k − y)·e², via the ℤ-cast of the equation
+  have hdvd : (f : ℤ) ∣ ((k : ℤ) - y) * e ^ 2 := by
+    refine ⟨(k : ℤ) * f - y * f - x * e - z * f, ?_⟩
+    have hz : (x : ℤ) * (e * f) + y * ((f : ℤ) ^ 2 - e ^ 2) + z * f ^ 2
+        = k * ((f : ℤ) ^ 2 - e ^ 2) := by
+      have hcast : (x : ℤ) * (e * f) + y * ((f ^ 2 - e ^ 2 : ℕ) : ℤ)
+          + z * f ^ 2 = k * ((f ^ 2 - e ^ 2 : ℕ) : ℤ) := by exact_mod_cast heq
+      have hsub : ((f ^ 2 - e ^ 2 : ℕ) : ℤ) = (f : ℤ) ^ 2 - e ^ 2 := by
+        rw [Nat.cast_sub hb.le]
+        push_cast
+        ring
+      rwa [hsub] at hcast
+    linear_combination hz
+  have hcop2 : IsCoprime (f : ℤ) ((e : ℤ) ^ 2) := by
+    have h1 : IsCoprime (f : ℤ) (e : ℤ) := by
+      rw [Int.isCoprime_iff_gcd_eq_one]
+      exact_mod_cast hcop.symm
+    exact h1.pow_right
+  have hky : (f : ℤ) ∣ ((k : ℤ) - y) := hcop2.dvd_of_dvd_mul_right hdvd
+  have hky0 : (0 : ℤ) ≤ (k : ℤ) - y := by omega
+  have hkyf : (k : ℤ) - y < f := by omega
+  have hyeq : (k : ℤ) - y = 0 := by
+    rcases hky with ⟨t, ht⟩
+    have hf0 : (0 : ℤ) < f := by omega
+    rcases lt_trichotomy t 0 with h | h | h
+    · have hneg : (f : ℤ) * t < 0 := mul_neg_of_pos_of_neg hf0 h
+      omega
+    · subst h
+      simp only [mul_zero] at ht
+      omega
+    · have hge : (f : ℤ) ≤ f * t := le_mul_of_one_le_right hf0.le (by omega)
+      omega
+  have hyk2 : y = k := by omega
+  subst hyk2
+  have hxz : x * (e * f) + z * f ^ 2 = 0 := by omega
+  refine ⟨?_, rfl, ?_⟩
+  · by_contra h
+    have h1 : e * f ≤ x * (e * f) := Nat.le_mul_of_pos_left _ (by omega)
+    have h2 : 0 < e * f := Nat.mul_pos (by omega) (by omega)
+    omega
+  · by_contra h
+    have h1 : f ^ 2 ≤ z * f ^ 2 := Nat.le_mul_of_pos_left _ (by omega)
+    have h2 : 0 < f ^ 2 := Nat.one_le_pow 2 f (by omega)
+    omega
+
+/-- **The wall-scale base family.**  At `k = f` the base equation is solved
+by `x = (j+1)f − e`, `y = 0`, `z = f − (j+1)e` for every `j+1 ≤ f/e`:
+`b^f` is not forced by arithmetic on the wall, and the forced-row input at
+`k = f` is exactly the `b^f` reading of the target's base word. -/
+theorem base_side_wall_family (e f j : ℤ) :
+    ((j + 1) * f - e) * (e * f) + (f - (j + 1) * e) * f ^ 2
+      = f * (f ^ 2 - e ^ 2) := by ring
+
 end Erdos634.RogueMirror
 
 #print axioms Erdos634.RogueMirror.generator_x
@@ -307,3 +392,5 @@ end Erdos634.RogueMirror
 #print axioms Erdos634.RogueMirror.corridor_no_flush
 #print axioms Erdos634.RogueMirror.top2_slot_dies
 #print axioms Erdos634.RogueMirror.top3_slot_flush_dies
+#print axioms Erdos634.RogueMirror.base_side_rigid
+#print axioms Erdos634.RogueMirror.base_side_wall_family
