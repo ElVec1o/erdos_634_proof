@@ -45,21 +45,24 @@ imposed `n_c ≥ 2` and was wrong.
 
   | range | primes | (representation, base word) pairs |
   |---|---|---|
-  | `p < 1000` | 42 | **247** |
-  | `p < 4000` | 139 | 897 |
+  | `p < 1000` | 42 | **258** |
 
-  `p = 83`, the smallest open value, admits **seven**.
+  `p = 83`, the smallest open value, admits **eight**.  These counts are by brute-force enumeration
+  of `P a + Q b + R c = e N₀` over `P, Q, R ≥ 0`, with no filter assumed; two earlier counts here
+  (182 and 247) were wrong, the first from imposing `n_c ≥ 2` and the second from applying companion
+  (iv) to the `R = 0` case it does not cover (see `WalkStructure.base_R_zero_bound`).
 
 ## Validation
 
 The running `N = 83` search (`private/inst83_allp.txt`) carries its base words explicitly in its
 `WALKS` block: `(3,23,2)`, `(4,17,3)`, `(5,11,4)`, `(6,5,5)`, `(0,5,10)` — five words.  The family
-above at `(e,f) = (5,6)` yields **seven**: those five plus `a² b²⁹ c¹` and `a¹² b⁵ c⁰`.
+above at `(e,f) = (5,6)` yields **eight**: those five plus `a² b²⁹ c¹`, `a¹² b⁵ c⁰` and
+`a¹ b³⁵ c⁰`.
 
 The two extra words are not excluded by anything in the companion.  The `γ`-trap `R' ≥ 1` is a
 statement about the *side* walk `P'a + Q'b + R'c = f³` (`lem:sidenob`), not about the base, and the
-corner rule above positively permits `n_c = 0`.  `a¹² b⁵ c⁰` is moreover the `hyp:walls` word.  Both
-have been added to the search as separate instances.  Until they return, no exhaustion verdict on
+corner rule above positively permits `n_c = 0`.  `a¹² b⁵ c⁰` is moreover the `hyp:walls` word.  All three
+have been added to the search as separate instances (`w6`, `w7`, `w8`).  Until they return, no exhaustion verdict on
 `N = 83` covers the full base-word space.
 
 Axiom-clean; no `sorry`.  The parametrisation was checked against brute-force enumeration of the
