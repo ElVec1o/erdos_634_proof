@@ -55,12 +55,17 @@ def run_engine(binary, inst, tag, enum=False, timeout=14400):
     if enum:
         env["ENUM_ALL"] = "1"
     base = os.path.basename(inst)
-    r = subprocess.run(["nice", "-n", "12", binary, f"FILE:{base}",
+    # stream to a log instead of capturing: the engine emits done%/ETA every 60s,
+    # and capture_output=True made that invisible until the run finished.
+    log = os.path.join(os.path.dirname(inst), f"{base}.progress")
+    with open(log, "w", buffering=1) as fh:
+        subprocess.run(["nice", "-n", "12", binary, f"FILE:{base}",
                         "1000000000000", f"{base}.ck"],
-                       capture_output=True, text=True, timeout=timeout,
-                       cwd=os.path.dirname(inst), env=env)
-    m = re.search(r"RESULT (\S+)(.*)", r.stdout)
-    return (m.group(1), m.group(0).strip()) if m else ("NO-RESULT", r.stdout[-200:])
+                       stdout=fh, stderr=subprocess.STDOUT, text=True,
+                       timeout=timeout, cwd=os.path.dirname(inst), env=env)
+    out = open(log).read()
+    m = re.search(r"RESULT (\S+)(.*)", out)
+    return (m.group(1), m.group(0).strip()) if m else ("NO-RESULT", out[-200:])
 
 
 def load_tiling(path):

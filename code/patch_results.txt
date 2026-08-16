@@ -555,3 +555,28 @@ STATUS: this is a new necessary condition on the deep rogue, proved in Lean.
 It is NOT yet a kill: it says the column cannot be strip+bands only, not that
 no filling exists.  Labelled honestly -- proved-in-Lean (the counting), open
 (the kill).
+
+================================================================================
+FIRST DECISIVE RESULT ON THE OPEN r>e CELL: (3,8) k=8 CLOSED
+================================================================================
+The smallest deep-rogue cell with r > e is (e,f)=(3,8), k=8, slot M=4, r=4.
+64 tiles.  Run through the full wtower recipe:
+
+  c-side q=1 (8,0,5)   EXHAUSTED_NO_TILING   2,551,060 nodes  maxdepth 46
+  c-side q=2 (16,0,2)  EXHAUSTED_NO_TILING          12 nodes
+  transverse a-side c^e EXHAUSTED_NO_TILING    327,337 nodes  maxdepth 26
+  standard enum        EXHAUSTED_ENUM found=1 10,421,743 nodes maxdepth 64
+  unique tiling == standard subdivision:  True
+
+So Delta_8 at (3,8) has EXACTLY ONE tiling and it is the standard subdivision.
+No rogue of any kind occurs there -- in particular the deep rogue at M=4 with
+r=4 > e=3 does not exist.  W(8) holds for (3,8).
+
+SCOPE.  This is ONE member, proved by exhaustion.  It is NOT the general theorem.
+There are 48 deep-rogue (e,f,k) targets with r>e and k<=f<=13; this is one of
+them.  What it does establish is that the smallest instance of the open cell is
+dead, which makes H1 look like a gap in the proof technique rather than a real
+mathematical obstruction -- but that is an inference about where to spend effort,
+not a proof.
+
+Wall time ~1h55m under load ~10-20 on 10 cores.
