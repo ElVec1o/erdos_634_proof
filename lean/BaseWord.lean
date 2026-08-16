@@ -26,8 +26,15 @@ everything to `t e + j f + n_c = 2 e`, i.e.
 
   `n_a = j e + f t`,   `Q = e + f j`,   `n_c = 2e - t e - j f`   (`base_param`).
 
-A **one-parameter family in `(j, t)`**, with the only side conditions `n_a ≥ 0` and `n_c ≥ 2` —
-the latter because the base needs a `c`-edge at each of its two corners.
+A **one-parameter family in `(j, t)`**, with the only side conditions `n_a ≥ 0` and `n_c ≥ 0`.
+
+**The corner rule.**  The base corner angle is `β`, and `x α + y β + z γ = β` forces `(x,y,z) =
+(0,1,0)`: exactly *one* tile sits at each base corner, and `β` lies between edges `a` and `c`.  So
+at each base corner **exactly one of the two sides begins with a `c`-edge** — the companion observed
+this on the certificates; it is a consequence of the vertex figure.  In particular `n_c = 0` is
+legal: both equal sides then begin with `c` and the base begins with `a` at both ends, which is
+exactly the complete-corner-wall configuration `hyp:walls` asserts.  An earlier version of this file
+imposed `n_c ≥ 2` and was wrong.
 
 ## Consequences
 
@@ -38,19 +45,22 @@ the latter because the base needs a `c`-edge at each of its two corners.
 
   | range | primes | (representation, base word) pairs |
   |---|---|---|
-  | `p < 1000` | 42 | **182** |
-  | `p < 4000` | 139 | 715 |
+  | `p < 1000` | 42 | **247** |
+  | `p < 4000` | 139 | 897 |
 
-  12 representations admit exactly one word, 56 admit two.  `p = 83`, the smallest open value,
-  admits **five**.
+  `p = 83`, the smallest open value, admits **seven**.
 
 ## Validation
 
 The running `N = 83` search (`private/inst83_allp.txt`) carries its base words explicitly in its
-`WALKS` block: `(3,23,2)`, `(4,17,3)`, `(5,11,4)`, `(6,5,5)`, `(0,5,10)`.  The family above,
-instantiated at `(e,f) = (5,6)` with `n_c ≥ 2`, reproduces that set **exactly**.  With `n_c ≥ 1` it
-would produce a sixth word `a² b²⁹ c¹`, which is excluded precisely because one `c`-edge cannot
-serve both base corners; the agreement pins the side condition.
+`WALKS` block: `(3,23,2)`, `(4,17,3)`, `(5,11,4)`, `(6,5,5)`, `(0,5,10)` — five words.  The family
+above at `(e,f) = (5,6)` yields **seven**: those five plus `a² b²⁹ c¹` and `a¹² b⁵ c⁰`.
+
+The two extra words are not excluded by anything in the companion.  The `γ`-trap `R' ≥ 1` is a
+statement about the *side* walk `P'a + Q'b + R'c = f³` (`lem:sidenob`), not about the base, and the
+corner rule above positively permits `n_c = 0`.  `a¹² b⁵ c⁰` is moreover the `hyp:walls` word.  Both
+have been added to the search as separate instances.  Until they return, no exhaustion verdict on
+`N = 83` covers the full base-word space.
 
 Axiom-clean; no `sorry`.  The parametrisation was checked against brute-force enumeration of the
 base equation for every coprime `(e,f)` with `f < 60`: 0 mismatches.
