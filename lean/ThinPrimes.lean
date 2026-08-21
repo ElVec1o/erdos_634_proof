@@ -1,9 +1,30 @@
 import Mathlib.Tactic
 
 /-!
-# An infinite family of primes excluded
+# RETRACTED: an infinite family of primes excluded
 
-Erdős #634 — what the thin-family closure delivers.
+Erdős #634 — **this file's main claim is WITHDRAWN.**  It is kept as the record of the error.
+
+## The retraction
+
+The claim was: no prime of the form `3f² - 1` with `f ≥ 3` is a tile count.  The argument ran
+ThinFamily → `hyp:walls` at `(1,f)` → the companion's `thm:basebeta-full` → no tiling.
+
+**Step two is circular.**  The companion's `thm:e1reduce` proves that at `e = 1`, `m = 1`, `f ≥ 3`
+the base carries exactly one `b`-edge and one `c`-edge and **its first and last edges are
+`a`-edges**.  But `hyp:walls` demands `e` `c`-*feet* at the east corner, i.e. the base must END
+with a `c`-edge.  So at `e = 1`, `hyp:walls` is incompatible with any actual tiling: it holds only
+vacuously, exactly when no tiling exists.  `rem:whyhyp` says so outright — "every hypothetical
+`e = 1` tiling falls into the starved-or-broken clause".
+
+Concluding "no tiling" from `hyp:walls` at `e = 1` therefore assumes what it sets out to prove.
+**No prime is excluded by this argument.**
+
+A second error compounds it: the word result was not new.  `thm:e1reduce` already gives the base
+multiset `a^f b c`, so the word `(0,1,2)`, which has `n_c = 2`, was already excluded.  `ThinFamily`
+is an independent re-derivation, not a new exclusion.
+
+The arithmetic theorems below remain true as stated; only the interpretation was wrong.
 
 ## The chain
 

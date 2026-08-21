@@ -1,7 +1,7 @@
 import Mathlib.Tactic
 
 /-!
-# `hyp:walls` holds for the whole thin family `(1, f)`, `f ≥ 3`
+# The word `(0,1,2)` is dead — but this does NOT close `hyp:walls`
 
 Erdős #634 — a search-free kill for the last surviving word at `e = 1`.
 
@@ -40,10 +40,16 @@ But the word is `c b c`: its second edge is `b`.  **Contradiction.**
 `(0,1,2)` admits no tiling, at any `f`.  For `f ≥ 3` we have `f > 2e = 2`, so by
 `ThreeWords`+`GammaCount` there are exactly two base words and the other is the walls word.  Hence
 
-> **`hyp:walls` holds for every member `(1, f)` with `f ≥ 3`** — the entire thin family.
+> the word `(0,1,2)` admits no tiling.
 
-The companion records `hyp:walls` as proved only at `(1,2)`, `(1,3)`, `(1,4)`, and open for
-`f ≥ 5` on this family.  This closes all of it, and without search.
+**This does NOT close `hyp:walls`, and an earlier version of this file wrongly said it did.**
+At `e = 1` the companion's `thm:e1reduce` forces the base's first and last edges to be `a`-edges,
+while `hyp:walls` requires a `c`-foot at the east corner.  The two are incompatible, so `hyp:walls`
+at `e = 1` holds only vacuously — precisely when no tiling exists.  Deducing "no tiling" from it is
+circular.  See `ThinPrimes` for the full retraction.
+
+Moreover `thm:e1reduce` already gives the base multiset `a^f b c`, so `(0,1,2)`, with `n_c = 2`,
+was excluded before this file.  What follows is an independent re-derivation, not a new result.
 
 Cross-check: the engine had independently exhausted this word at `(1,2)`, `(1,3)`, `(1,4)`, `(1,5)`
 in 67, 477, 2 191 and 15 763 nodes.  All four agree; none contradicts.
