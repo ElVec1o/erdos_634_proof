@@ -25,12 +25,18 @@ along one of the two sides meeting at the corner and a `c`-edge along the other:
 The companion observed this on the 44- and 99-certificates; it is a consequence of the vertex
 figure, and the independence input is isolated in the hypotheses of `corner_figure`.
 
-## Consequence 1 — `R = 0` is the complete-corner-wall configuration
+## Consequence 1 — `R = 0` forces both equal sides to begin with `c`
 
 Counting over the two base corners, `(#corners where the base begins with c) + (#corners where a
 side begins with c) = 2`.  A base with **no** `c`-edge at all cannot begin with one, so
-`R = 0` forces both equal sides to begin with `c` — `both_sides_begin_c`.  That is exactly the
-configuration `hyp:walls` asserts, which is why `R = 0` must be searched and not discarded.
+`R = 0` forces both equal sides to begin with `c` — `both_sides_begin_c`.  `R = 0` is therefore a
+legal configuration and must be searched, not discarded.
+
+**Correction.**  An earlier version of this file called `R = 0` "the complete-corner-wall
+configuration of `hyp:walls`".  That is wrong.  `hyp:walls` demands `e` `c`-**feet** at the east
+corner, i.e. `e` `c`-edges *on the base*, so it forces `R ≥ e`, not `R = 0`.  The `hyp:walls` word
+is `a^f b^e c^e` — see `WallsWord.walls_pins_word`, which shows the two foot conditions pin it
+uniquely.  At `(5,6)` that is `a⁶b⁵c⁵`, not `a¹²b⁵c⁰`.
 
 ## Consequence 2 — at `e = 1`, `hyp:walls` excludes the word `b c²`
 
