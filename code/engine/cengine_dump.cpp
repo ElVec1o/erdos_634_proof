@@ -20,9 +20,6 @@
 // any disagreement.  That build is slow and is meant for validation runs only.
 
 #include <gmpxx.h>
-#include <cstdio>
-static FILE* g_dumpf = nullptr;
-#define TDUMP(r) do { if (g_dumpf) { fprintf(g_dumpf, "%c %ld", (r), d); for (int ix_ : cur_idx) fprintf(g_dumpf, " %d", ix_); fputc('\n', g_dumpf); } } while(0)
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
@@ -741,6 +738,10 @@ static bool containment_ok(const Poly& tri, const Poly& poly) {
 // of their sides satisfy #c >= 1.  Absent from the instance file => prune disabled (bit-identical to
 // the previous engine).
 static bool WALK_PRUNE = false;
+// Most-constrained-corner anchoring. OFF by default so that every certified run reproduces
+// bit-identically; set CENGINE_MRV=1 to enable it for FINDING, where node identity does not matter.
+static bool g_mrv = false;
+static bool g_p7 = false;   // opt-in boundary-run tile-count lower bound
 static int WALK_BASESIDE = 0;   // which side index of `target` is the BASE (flip permutes it)
 // ------------------------------------------------------- P6: forced corner edge types (e=1) ---
 // P5 prunes on edge MULTISETS.  For e = 1, m = 1 the companion additionally pins the ORDER at the
@@ -750,6 +751,11 @@ static int WALK_BASESIDE = 0;   // which side index of `target` is the BASE (fli
 // orientation-independent form: an edge lying on side s and touching either corner of s must have
 // the type CORNER_TYPE[s]  (0=a, 1=b, 2=c; -1 = unconstrained).
 static bool CORNER_PRUNE = false;
+// --- read-only instrumentation: record the deepest partial configuration reached.
+// Gated by DUMP_DEEPEST; when off, nothing here executes and branching is untouched.
+static bool DUMP_DEEPEST = false;
+static std::vector<std::vector<Pt>> g_deepest;
+static long g_deepest_d = -1;
 static int CORNER_TYPE[3] = {-1, -1, -1};
 static std::vector<std::array<long, 3>> WALK_BASE, WALK_SIDE;
 
@@ -802,6 +808,26 @@ static int g_split_k = 4;
 static std::mutex g_qmutex;                              // guards the task queue and the winner slot
 static std::vector<Task> g_queue;
 static size_t g_qhead = 0;
+// Dispatch order.  FIFO (the default, g_lifo=false) drains the queue front-to-back, which is
+// breadth-first over subtrees: every task that blows its budget enqueues g_split_k children that
+// then sit unexplored, so the frontier grows faster than it drains and no finite ETA exists.
+// LIFO takes the most recently enqueued task, i.e. depth-first over subtrees, so a split is worked
+// off immediately.  The set of nodes explored is identical -- only the order changes -- because task
+// paths are deterministic and order-independent (see the comment above Task).  So EXHAUSTED is
+// unaffected; this is a scheduling change, not a search change.
+//
+// MEASURED on N=138 (member (3,7)), and the measurement needs a long window to be meaningful.
+//     FIFO  407 leaves closed  +16.36 pending per leaf  254 leaves/h  ~4,400 nodes/s  -> diverges
+//     LIFO, after a startup transient in which pending rose 11,670 -> 12,113 over ~1080s,
+//           386 leaves closed  - 1.77 pending per leaf  901 leaves/h  -> DRAINS, ETA ~7h
+// Two earlier readings of this run were wrong in opposite directions: -1.00 from a window with one
+// closed leaf, then +3.19 taken across the transient.  Only the post-transient figure above is
+// well founded.  Rule for this engine: quote a per-leaf rate only from >= ~300 leaves AND only
+// after the queue has stopped growing.
+// The remaining headroom is in propagation, not scheduling: at N=47 only ~13.5% of nodes die to an
+// explicit prune (11098 nodes vs 1500 prunes) and the rest is raw branching.
+static bool g_lifo = false;
+static size_t g_dispatched = 0;                          // tasks handed to workers (both modes)
 static bool g_found_any = false;
 static std::vector<Poly> g_found_tiling;
 
@@ -951,7 +977,20 @@ struct Search {
         if (!qd_p_fits_slong(r)) return -1;
         return qd_p_get_si(r);
     }
-    bool runs_ok(const Poly& poly) {
+    // P7 (opt-in, CENGINE_P7).  A maximal run between two convex corners must be covered by whole
+    // tile edges.  Each edge is at most c long, and two distinct edges on one straight run belong
+    // to distinct tiles, because a triangle has no two collinear edges.  Every such tile is among
+    // the `left` still to be placed, so  left >= ceil(L / c)  for every run.  This is a lower bound
+    // on tiles from the BOUNDARY, which the area test cannot see: a long thin region can satisfy
+    // the area count while needing more tiles than remain.  Sound, so it removes no tilings and
+    // EXHAUSTED verdicts are preserved; it does change node counts, which is why it is gated and
+    // validated by verdict identity rather than node identity.
+    bool run_count_ok(long L, long left_) const {
+        if (tile.c <= 0) return true;
+        long need = (L + tile.c - 1) / tile.c;
+        return need <= left_;
+    }
+    bool runs_ok(const Poly& poly, long left_ = -1) {
         size_t n = poly.size();
         std::vector<int> conv(n);
         for (size_t i = 0; i < n; i++)
@@ -980,6 +1019,7 @@ struct Search {
                 if (den != 1) return false;
                 if (!num.fits_slong_p()) return false;
                 if (!semi.contains_int(num.get_si())) return false;
+                if (g_p7 && left_ >= 0 && !run_count_ok(num.get_si(), left_)) return false;
             }
         }
         return true;
@@ -997,6 +1037,46 @@ struct Search {
                 }
             }
         }
+    }
+    // Most-constrained convex corner, the fail-first rule (Haralick & Elliott 1980).
+    //
+    // Correctness needs only SOME convex corner: a tile covering a convex corner must have a vertex
+    // there, since covering it mid-edge would make the tile locally a half-plane, which cannot lie
+    // inside a wedge of angle below pi. `lowest_vertex` takes the globally lowest vertex, which is
+    // one such corner; any other is equally legal. Choosing the corner with the fewest legal
+    // placements adds two things the fixed anchor cannot give:
+    //   * a convex corner with NO legal placement refutes the node immediately;
+    //   * a corner with exactly one placement is forced.
+    // Returns false when some convex corner admits nothing, i.e. the node is dead.
+    //
+    // Only (pi, vi) is returned; `placements` is recomputed by the caller exactly as before, so
+    // candidate indices -- and therefore checkpoint paths -- keep their meaning.
+    bool mrv_vertex(const std::vector<Poly>& polys, int& bpi, int& bvi) {
+        bpi = -1; bvi = -1;
+        size_t best = (size_t)-1;
+        std::vector<Poly> c;
+        for (size_t pi = 0; pi < polys.size(); pi++) {
+            const Poly& p = polys[pi];
+            size_t n = p.size();
+            for (size_t vi = 0; vi < n; vi++) {
+                const Pt& prv = p[(vi + n - 1) % n];
+                const Pt& cur = p[vi];
+                const Pt& nxt = p[(vi + 1) % n];
+                if (qsign(crossv(vsub(cur, prv), vsub(nxt, cur))) <= 0) continue;  // convex only
+                placements(p, (int)vi, c);
+                size_t k = 0;
+                for (size_t i = 0; i < c.size(); i++)
+                    if (containment_ok(c[i], p)) k++;
+                if (k == 0) return false;          // dead corner: the whole node is refuted
+                if (k < best) {
+                    best = k; bpi = (int)pi; bvi = (int)vi;
+                    // constrained enough to branch on; the scan itself is quadratic in the
+                    // boundary size, so looking for a better corner costs more than it saves
+                    if (k <= 2) return true;
+                }
+            }
+        }
+        return bpi >= 0;
     }
     void placements(const Poly& poly, int vi, std::vector<Poly>& out) {
         out.clear();
@@ -1040,6 +1120,7 @@ struct Search {
         if (!resuming) nodes++;            // replayed nodes were counted before the checkpoint
         long d = N - left;
         if (d > maxdepth) maxdepth = d;
+        if (DUMP_DEEPEST && d > g_deepest_d) { g_deepest_d = d; g_deepest = placed; }
         time_t now = time(nullptr);
         if (par_mode) {
             // workers do not print; they publish their node delta so the coordinator can report
@@ -1069,7 +1150,6 @@ struct Search {
         }
         if (polys.empty()) {
             if (left == 0) {
-                if (g_dumpf) { fprintf(g_dumpf, "F %ld\n", d); }
                 found = placed; has_found = true;
                 if (par_mode) {
                     std::lock_guard<std::mutex> lk(g_qmutex);
@@ -1083,16 +1163,20 @@ struct Search {
         long total = 0;
         for (const Poly& p : polys) {
             long m = area_multiple(p);
-            if (m < 0) { prune_area++; TDUMP('A'); return; }
+            if (m < 0) { prune_area++; return; }
             total += m;
         }
-        if (total != left) { prune_area++; TDUMP('A'); return; }
+        if (total != left) { prune_area++; return; }
         for (const Poly& p : polys)
-            if (!runs_ok(p)) { prune_run++; TDUMP('R'); return; }
+            if (!runs_ok(p, left)) { prune_run++; return; }
         for (const Poly& p : polys)
-            if (!corner_ok(p)) { prune_dir++; TDUMP('D'); return; }
+            if (!corner_ok(p)) { prune_dir++; return; }
         int pi, vi;
-        lowest_vertex(polys, pi, vi);
+        if (g_mrv) {
+            if (!mrv_vertex(polys, pi, vi)) { prune_dir++; return; }
+        } else {
+            lowest_vertex(polys, pi, vi);
+        }
         Poly poly = polys[pi];
         std::vector<Poly> rest;
         for (size_t i = 0; i < polys.size(); i++)
@@ -1128,7 +1212,7 @@ struct Search {
                 bool p6reject = false;
                 for (size_t k = 0; k < bedges.size(); k++)
                     if (bedges[k].first < 0) { p6reject = true; break; }
-                if (p6reject) { prune_walk++; TDUMP('S'); continue; }        // P6: forced corner type violated
+                if (p6reject) { prune_walk++; continue; }        // P6: forced corner type violated
                 for (size_t k = 0; k < bedges.size(); k++) walk[bedges[k].first][bedges[k].second]++;
                 bool bad = false;
                 for (size_t k = 0; k < bedges.size(); k++)
@@ -1136,7 +1220,6 @@ struct Search {
                 if (bad) {
                     for (size_t k = 0; k < bedges.size(); k++) walk[bedges[k].first][bedges[k].second]--;
                     prune_walk++;
-                    TDUMP('W');
                     continue;
                 }
             }
@@ -1172,6 +1255,7 @@ struct Search {
         t0 = last_log = last_ckpt = time(nullptr);
         if (const char* e = getenv("CENGINE_LOG_SECS")) log_secs = atol(e);
         if (const char* e = getenv("CENGINE_CKPT_SECS")) ckpt_secs = atol(e);
+        if (getenv("DUMP_DEEPEST")) DUMP_DEEPEST = true;
         frac0 = 0.0;
         frac0_set = !load_ckpt();
         // root checks
@@ -1313,6 +1397,7 @@ struct Search {
         if (const char* e = getenv("CENGINE_BUDGET")) g_budget = atoll(e);
         if (const char* e = getenv("CENGINE_SPLITK")) g_split_k = atoi(e);
         if (const char* e = getenv("CENGINE_QCAP")) g_queue_cap = (size_t)atol(e);
+        if (const char* e = getenv("CENGINE_LIFO")) g_lifo = (atoi(e) != 0);
         long long done_before = par_load_ckpt(cd);
         printf("  parallel: cut depth %d, %zu subtree tasks, %d threads\n",
                cd, g_queue.size(), threads);
@@ -1335,10 +1420,19 @@ struct Search {
                         std::lock_guard<std::mutex> lk(g_qmutex);
                         if (g_stop.load(std::memory_order_relaxed)) break;
                         // skip tasks already completed as leaves in a previous run
-                        while (g_qhead < g_queue.size() &&
-                               g_leafdone.count(path_key(g_queue[g_qhead].path))) g_qhead++;
-                        if (g_qhead >= g_queue.size()) break;
-                        t = std::move(g_queue[g_qhead++]);
+                        if (g_lifo) {
+                            while (!g_queue.empty() &&
+                                   g_leafdone.count(path_key(g_queue.back().path))) g_queue.pop_back();
+                            if (g_queue.empty()) break;
+                            t = std::move(g_queue.back());
+                            g_queue.pop_back();
+                        } else {
+                            while (g_qhead < g_queue.size() &&
+                                   g_leafdone.count(path_key(g_queue[g_qhead].path))) g_qhead++;
+                            if (g_qhead >= g_queue.size()) break;
+                            t = std::move(g_queue[g_qhead++]);
+                        }
+                        g_dispatched++;
                     }
                     std::string key = path_key(t.path);
                     long long n0 = w->nodes, a0 = w->prune_area, r0 = w->prune_run,
@@ -1377,7 +1471,8 @@ struct Search {
                     // machine into swap and was killed).  Past a cap, stop splitting and just run
                     // the task to completion: slower to balance, but bounded.
                     size_t pending;
-                    { std::lock_guard<std::mutex> lk(g_qmutex); pending = g_queue.size() - g_qhead; }
+                    { std::lock_guard<std::mutex> lk(g_qmutex);
+                      pending = g_lifo ? g_queue.size() : (g_queue.size() - g_qhead); }
                     if (pending >= g_queue_cap) {
                         w->nodes = n0; w->prune_area = a0; w->prune_run = r0;
                         w->prune_dir = d0; w->prune_walk = k0; w->maxdepth = md0;
@@ -1439,7 +1534,7 @@ struct Search {
                     { std::lock_guard<std::mutex> lk(g_qmutex); nq = g_queue.size(); }
                     printf("  [%s] par nodes~%lld  leaves %zu  queue %zu/%zu  threads %d  t=%lds\n",
                            name.c_str(), co_nodes + done_before + gn +
-                               g_leafnodes.load(std::memory_order_relaxed), nd, g_qhead, nq, threads,
+                               g_leafnodes.load(std::memory_order_relaxed), nd, g_dispatched, nq, threads,
                            (long)(now - t0));
                     fflush(stdout);
                     if (!ckpt_file.empty() && now - last_ckpt >= ckpt_secs) {
@@ -1468,7 +1563,8 @@ struct Search {
         }
         par_save_ckpt(cd);
         bool all_done;
-        { std::lock_guard<std::mutex> lk(g_qmutex); all_done = (g_qhead >= g_queue.size()); }
+        { std::lock_guard<std::mutex> lk(g_qmutex);
+          all_done = g_lifo ? g_queue.empty() : (g_qhead >= g_queue.size()); }
         if (!g_found_any && !all_done) return "INCONCLUSIVE";   // cap hit / stopped early
         if (g_found_any) { found = g_found_tiling; has_found = true; return "FOUND_TILING"; }
         return "EXHAUSTED_NO_TILING";
@@ -1720,6 +1816,8 @@ int main(int argc, char** argv) {
     long long cap = (argc > 2) ? atoll(argv[2]) : 2000000000LL;
     int threads = 1;
     if (const char* e = getenv("CENGINE_THREADS")) threads = atoi(e);
+    if (const char* e = getenv("CENGINE_MRV")) g_mrv = (atoi(e) != 0);
+    if (const char* e = getenv("CENGINE_P7")) g_p7 = (atoi(e) != 0);
     if (threads < 1) threads = 1;
     Search S;
     if (!make_instance(name, S.tile, S.target, S.N)) {
@@ -1729,12 +1827,10 @@ int main(int argc, char** argv) {
     S.name = name;
     S.node_cap = cap;
     if (argc > 3) S.ckpt_file = argv[3];
-    if (const char* e = getenv("CENGINE_TREEDUMP")) g_dumpf = fopen(e, "w");
     gmp_printf("instance %s: N=%ld D=%Zd cap=%lld threads=%d\n",
                name.c_str(), S.N, QD_D.get_mpz_t(), cap, threads);
     fflush(stdout);
     const char* r = (threads > 1) ? S.run_parallel(threads) : S.run();
-    if (g_dumpf) fclose(g_dumpf);
     printf("RESULT %s nodes=%lld maxdepth=%ld pruneA=%lld pruneR=%lld pruneP4=%lld pruneP5=%lld\n", r, S.nodes,
            S.maxdepth, S.prune_area, S.prune_run, S.prune_dir, S.prune_walk);
     fflush(stdout);  // never lose a verdict to a buffered stream
@@ -1746,6 +1842,23 @@ int main(int argc, char** argv) {
     // a verdict makes the checkpoint meaningless; leaving it would make a rerun resume into a
     // finished search and report a partial count
     if (!S.ckpt_file.empty() && strcmp(r, "INCONCLUSIVE") != 0) remove(S.ckpt_file.c_str());
+    if (DUMP_DEEPEST && g_deepest_d >= 0) {
+        std::string safe = name;
+        for (size_t i = 0; i < safe.size(); i++)
+            if (safe[i] == '/' || safe[i] == ':') safe[i] = '_';
+        std::string fn = "deepest_" + safe + ".txt";
+        FILE* g = fopen(fn.c_str(), "w");
+        if (g) {
+            gmp_fprintf(g, "%s depth %ld of %ld  D=%Zd\n", name.c_str(), g_deepest_d, S.N,
+                        QD_D.get_mpz_t());
+            for (const auto& t : g_deepest) {
+                for (const Pt& p : t) { dump_qd(g, p.x); fprintf(g, "  "); dump_qd(g, p.y); fprintf(g, "  "); }
+                fprintf(g, "\n");
+            }
+            fclose(g);
+            printf("deepest partial configuration (%ld tiles) written to %s\n", g_deepest_d, fn.c_str());
+        }
+    }
     if (S.has_found) {
         // sanitize: FILE:-instance names contain '/' and ':', which made fopen fail (NULL) and the
         // gmp_fprintf below segfault -- losing the buffered RESULT line with it
