@@ -2,14 +2,32 @@ import Mathlib.Tactic
 import Erdos634.DoubleC
 
 /-!
-# The `e = 1` subfamily admits no tiling
+# The `e = 1` subfamily: a case split, CONDITIONAL on the crossing statement
 
 Erdős #634 — closing the thin branch at `m = 1`, unconditionally.
 
-## Statement
+## RETRACTION OF THE HEADLINE CLAIM
 
-For `e = 1`, `m = 1`, `f ≥ 3` the base-β target `(f³, f³, 3f² - 1)` admits no tiling by `N = 3f² - 1`
-congruent copies of `(f, f² - 1, f²)`.
+An earlier version of this file asserted that the `e = 1` subfamily admits no tiling, and that 48
+primes follow unconditionally.  **That is wrong.**  Step 3 below uses `DoubleC.doublec_impossible`
+to dispose of initial `c`-blocks `≥ 2`, and that theorem carries the hypothesis
+`hcov : inSemi 1 f run` — the far side of the chord is covered by whole tile edges.  That *is* the
+crossing assumption.  `rem:onegap` states the position exactly:
+
+> no straddler can sit on any line the chain needs, **provided no tile crosses that line** … this
+> crossing statement is the only remaining hypothesis at `e = 1`; with it, every fork closes.
+
+So nothing here closes `e = 1`.  `N = 191` is **not** settled, and the 48 primes of `ThinHole` do
+**not** fall.  What survives is the case split, conditional on the crossing statement, plus the two
+block-completeness facts, which are unconditional.
+
+Furthermore the reversal step (4) is **not new**: it is part (L3) of the companion's
+`thm:e1cascade`, and `rem:reversal` states the principle in general.  `MirrorKill` duplicates it.
+
+## Statement (conditional)
+
+For `e = 1`, `m = 1`, `f ≥ 3`, **assuming the crossing statement of `rem:onegap`**, the base-β
+target admits no tiling.  Unconditionally, only the block-completeness facts below hold.
 
 ## The argument
 
