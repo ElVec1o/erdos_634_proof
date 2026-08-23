@@ -80,17 +80,38 @@ theorem no_a_block (f : ℕ) (hf : 3 ≤ f) (isA : ℕ → Prop) [DecidablePred 
   rw [mem_range] at hi hk
   omega
 
-/-! ## The `γ`-bound is already in the corpus
+/-! ## What this file does NOT claim
 
-`prop:a2branch`'s third filler exclusion needs `2γ > π`.  An earlier draft of this file
-proved that at `e = 1` via `cos γ = -1/(2f)`.  That is a **rediscovery in a weaker form**:
-`ApexRigidity.two_gamma` already gives `2γ = π + α` outright, from `3α + 2β = π` and
-`γ = 2α + β` alone — exact, valid for every `e`, and with no arithmetic in `f`.  The
-`e = 1` cosine computation is therefore removed; cite `ApexRigidity.two_gamma`.
+Two neighbouring results were attempted here and both turned out to be already in the
+corpus.  They are recorded so the ground is not walked a third time.
 
-What survives from that computation, and is genuinely new, is its consequence for the
-brick lattice: `2γ = π + α` forces `|cos 2γ| = cos α`, which turns `lem:ladder`(i)'s
-horizontal-advance identity into the law of projections.  See `LatticeDescent`.
+* `2γ > π` at `e = 1` via `cos γ = -1/(2f)`.  `ApexRigidity.two_gamma` already gives
+  `2γ = π + α` outright from `3α + 2β = π` and `γ = 2α + β` — exact, every `e`, no
+  arithmetic in `f`.  Strictly stronger.  Cite that.
+* `lem:ladder`(i)'s horizontal advance `f·u_x + b|cos 2γ| = c` is the law of projections
+  `c = a cos β + b cos α`.  True, and it does make the advance family-independent — but
+  `ApexRigidity` line 69 already records the projection formula for this tile
+  ("NOT NEW either"), and `StripRigid.shift_num`/`shift_over_a` already carry
+  `S = 2c cos β = e N₀ / f` and `S/a = N₀/f²` for **every** `(e, f)`, not just `e = 1`.
+
+The rigidity of a straddler-free strip is likewise not provable here.  `StripRigid`
+proves the two pointwise exclusions and supplies `layer_induction` as the schema, and
+states the blocker exactly: formalizing the *link* — that the exclusions give the
+induction hypotheses for the geometric predicate "tile `j` is unreflected" — "needs a
+formalization of tilings that this project does not have."  Reach 4 stays open on that
+blocker, not on anything provable from the arithmetic.
+
+What is new here is only the counting observation above.
 -/
+
+/-- **`prop:a2branch` at row 3, given the descent.**  If the south cover's feet deliver
+`f + 1` distinct base junctions, all of them `a`-junctions, the proposition closes by the
+counting contradiction — with no reference to where on the base the run sits.  The
+descent itself is *not* supplied (see the blocker above). -/
+theorem row_three_closes (f : ℕ) (isA : ℕ → Prop) [DecidablePred isA]
+    (hcount : ((range (f + 2)).filter isA).card = f)
+    (S : Finset ℕ) (hS : S ⊆ range (f + 2)) (hSA : ∀ x ∈ S, isA x)
+    (hcard : S.card = f + 1) : False :=
+  no_f_plus_one_a f isA hcount S hS hSA (le_of_eq hcard.symm)
 
 end Erdos634.BaseWordBlock
