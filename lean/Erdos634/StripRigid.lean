@@ -158,9 +158,17 @@ exactly the two exclusions.  This is the firewall: the geometric content lives i
 corresponding `CLayerRigid` gap bounds, while the induction itself is pure logic.
 
 Formalizing the *link* — that the exclusions imply the hypotheses `base` and `step` for the actual
-geometric predicate "tile `j` is unreflected" — needs a formalization of tilings that this project
-does not have.  That is the recorded blocker for the remaining formalization debt; it is not
-"not yet attempted".
+geometric predicate "tile `j` is unreflected" — needed a formalization of tilings that this project
+did not have.
+
+UPDATED 2026-08-24.  It has one now.  `Congruence` supplies the predicate
+(`CongruentDissection.UnreflectedAt`), and `LayerLink.layer_rigid_of_exclusions` supplies the
+induction against it, instantiated for this layer as `strip_layer_rigid` and for the `c`-layer as
+`c_layer_rigid_link`.  What is still missing is *narrower and nameable*: the two geometric
+bridges, that a reflected tile at the layer's start puts its apex left of the mast, and that a
+reflected tile after an unreflected one overlaps its predecessor.  Both are refuted by
+`shift_gt_two_a` once stated, so the whole remaining blocker is stating them from the geometry.
+That is the recorded blocker now; it is not "not yet attempted".
 -/
 
 /-- **Layer induction schema.**  If the first tile is unreflected and an unreflected tile forces
