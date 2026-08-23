@@ -304,4 +304,44 @@ theorem row_1050 : (25 + 168 - 157 : ℤ) = 36 ∧ (6300 : ℤ) / 36 = 175 ∧ 1
 the `(3,8,7)` family, `k = 15`. -/
 theorem row_1350 : (3 * 180 : ℤ) = 540 ∧ (540 : ℤ) / 4 = 135 ∧ 135 % 2 ≠ 1350 % 2 := by norm_num
 
+/-! ## The assembly, and what one bookkeeping step still needs
+
+`cancellation_sixty_of_two_sided` consumes the two-sided equalities per direction.
+`WallChain.wall_two_sided` delivers them per *wall segment*, in Hausdorff measure.  The step
+between is bookkeeping: `Λ_int d` is the total over the interior walls carrying direction `d`.
+`obstruction_of_walls` states the assembly with that summation as its one hypothesis, `hsum`,
+and proves everything after it.  `hsum` is a definitional identity about how `Λ_int` is built,
+not a geometric claim.
+
+## A second invariant, recorded as a lead
+
+The direction group is `ℤ ⊕ ℤ/3`, and `f = (−1)^j` uses only a `ℤ/2` quotient — the `ℤ/3`
+torsion is unused.  Cancellation needs `f` odd under `j ↦ j+3`.  `ω^j` is even under it and
+fails, but `(−ω)^j` is odd and works, giving a genuine second functional with tile value
+`(−ω)^{j₀}·(c − ωa − b)`.
+
+Its boundary term **vanishes**: the equilateral's sides have `j = 0, 2, 4`, so
+`Φ = s(1 + ω² + ω) = 0`.  The relation is therefore homogeneous, `Σ_t (−ω)^{j₀(t)} = 0`, i.e.
+with `n_r` tiles at orientation `r mod 6`, `n₀−n₃ = n₄−n₁ = n₂−n₅`.
+
+That constrains a tiling's **orientation distribution**, not the pair `(N,s)`, so it yields no
+row test by itself.  Recorded as a lead; it would bite only alongside a boundary-word argument.
+-/
+
+/-- **The obstruction, assembled.**  Given the per-direction totals (`hsum`, bookkeeping) and the
+two-sided equalities `WallChain.wall_two_sided` supplies, the tile sum equals the boundary
+functional.  Everything after `hsum` is proved. -/
+theorem obstruction_of_walls {D : Type*} [Fintype D]
+    (neg : D → D) (hinv : Function.Involutive neg) (Lint Lbd f seg : D → ℤ)
+    (hsum : ∀ d, Lint d = seg d) (hfar : ∀ d, Lint (neg d) = seg d)
+    (hf : ∀ d, f (neg d) = - f d) :
+    ∑ d, (Lint d + Lbd d) * f d = ∑ d, Lbd d * f d :=
+  cancellation_sixty_of_two_sided neg hinv Lint Lbd f seg hsum hfar hf
+
+/-- **The boundary term of the second (cube-root) functional vanishes**, in the cleared form
+`1 + ω² + ω = 0` that the equilateral's three side directions `j = 0, 2, 4` produce.  Stated over
+`ℤ` via the minimal polynomial `1 + x + x² = 0` at `x = ω`. -/
+theorem omega_boundary_vanishes (x : ℤ) (h : 1 + x + x ^ 2 = 0) : 1 + x ^ 2 + x = 0 := by
+  linarith [h]
+
 end Erdos634.SixtyInvariant
