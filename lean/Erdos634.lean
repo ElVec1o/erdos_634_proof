@@ -14,6 +14,7 @@ import Erdos634.BaseBetaWalks
 import Erdos634.BaseWordBlock
 import Erdos634.Congruence
 import Erdos634.DescentUniform
+import Erdos634.UniformFill
 import Erdos634.A2BranchRow3
 import Erdos634.LayerLink
 import Erdos634.BaseIdentity
