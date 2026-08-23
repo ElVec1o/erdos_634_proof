@@ -16,6 +16,7 @@ import Erdos634.Congruence
 import Erdos634.DescentUniform
 import Erdos634.FloorPropagation
 import Erdos634.A36Reduction
+import Erdos634.ChordChart
 import Erdos634.UniformFill
 import Erdos634.A2BranchRow3
 import Erdos634.LayerLink

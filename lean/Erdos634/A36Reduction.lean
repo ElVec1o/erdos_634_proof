@@ -85,4 +85,27 @@ theorem row_three_closes_on_layer_rigidity
   intro i hi
   exact h_slot i hi ((h_det 0 i (h_rigid 0) (h_rigid i)).mp h_one)
 
+/-! ## Bridge (iii), reduced
+
+`Dissection.HasAngleSums` covers three kinds of point: interior (`2π`), target-boundary
+non-corner (`π`), and the three corners.  It does **not** cover a point interior to the target
+that lies on an *edge of the tiling* — which is what a junction on an interior floor is.  So
+(iii) is a genuine carrying, not something already in the corpus; saying otherwise would be
+wrong.
+
+It does reduce, though.  At such a junction the total is `2π` by `HasAngleSums`'s first clause,
+and the fan *above* is `π` because the floor is edged from above — the very fact
+`prop:a2branch` already uses at the top of the figure, and which
+`OrderForcing.straight_junction_cases` consumes there.  Subtracting leaves `π` below.  So (iii)
+is not an independent assumption: it is the *same* straightness fact, applied on the other side
+of a line already known to be edged. -/
+
+/-- **The fan below a junction on an edged interior floor is straight.**  The total at an
+interior point is `2π`; the fan above is `π` because the floor is edged from above; so the fan
+below is `π`, of type `(3,2)`, and `figure_below_cases` applies. -/
+theorem below_fan_is_pi (above below : ℝ)
+    (htotal : above + below = 2 * Real.pi) (habove : above = Real.pi) :
+    below = Real.pi := by
+  rw [habove] at htotal; linarith
+
 end Erdos634.A36Reduction
