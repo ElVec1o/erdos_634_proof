@@ -173,6 +173,40 @@ theorem row_1440_passes :
       ∧ (120 : ℤ) ≤ 1440 := by
   norm_num
 
+/-! ## The geometric hypothesis is discharged in the corpus
+
+`InvariantCore` isolates Cancellation's geometry into `hLint : ∀ d, Λ_int (neg d) = Λ_int d` and
+carries it as a hypothesis, for the `2π/3` branch as well.  It need not be carried.
+
+`WallChain.Dissection.wall_two_sided` proves, with no `sorry`, that a wall segment is covered
+exactly once **from each side**: the near-side chain (`f ≤ c`) and the far-side chain (`−f ≤ −c`)
+each have total 1-dimensional Hausdorff measure equal to that of the segment itself.  So the two
+totals are equal to each other, which is `hLint` for that segment.  It is stated in *measure*,
+not in edge counts, so the two sides may subdivide the segment differently — exactly the
+non-edge-to-edge freedom that broke the level-weighted parity attempt, and that this functional
+needs.
+
+`hLint_of_two_sided` records the step from that shape to `hLint`'s.  Summing over the interior
+walls gives the hypothesis Cancellation wants, so the obstruction below is **not** conditional on
+an unproved geometric input.
+-/
+
+/-- **`hLint` from `wall_two_sided`.**  If both the near- and far-side totals in direction `d`
+equal the segment measure, they equal each other.  This is the shape
+`WallChain.Dissection.wall_two_sided` delivers, per wall segment. -/
+theorem hLint_of_two_sided {D : Type*} (Lint : D → ℤ) (neg : D → D) (seg : D → ℤ)
+    (hnear : ∀ d, Lint d = seg d) (hfar : ∀ d, Lint (neg d) = seg d) :
+    ∀ d, Lint (neg d) = Lint d := fun d => (hfar d).trans (hnear d).symm
+
+/-- **Cancellation with the geometry discharged.**  Same conclusion as `cancellation_sixty`, but
+taking the two-sided equalities that `wall_two_sided` proves instead of `hLint` outright. -/
+theorem cancellation_sixty_of_two_sided {D : Type*} [Fintype D]
+    (neg : D → D) (hinv : Function.Involutive neg) (Lint Lbd f seg : D → ℤ)
+    (hnear : ∀ d, Lint d = seg d) (hfar : ∀ d, Lint (neg d) = seg d)
+    (hf : ∀ d, f (neg d) = - f d) :
+    ∑ d, (Lint d + Lbd d) * f d = ∑ d, Lbd d * f d :=
+  cancellation_core neg hinv Lint Lbd f (hLint_of_two_sided Lint neg seg hnear hfar) hf
+
 /-! ## The `(3,8,7)` family, uniformly in `k`
 
 The family is `N = 6k²`, `s = 12k`.  Here `v = a+b-c = 4` and `Φ = 3s = 36k`, so `q = 9k`.
@@ -197,5 +231,77 @@ theorem three_eight_seven_odd_k (k : ℤ) (hk : Odd k) : (9 * k) % 2 ≠ (6 * k 
 theorem three_eight_seven_data (k : ℤ) :
     (3 + 8 - 7 : ℤ) = 4 ∧ 3 * (12 * k) = 36 * k ∧ 36 * k = 4 * (9 * k) := by
   refine ⟨by norm_num, by ring, by ring⟩
+
+/-! ## The `(17,80,73)` family, uniformly in `k`
+
+`N = 85k²`, `s = 340k`, `v = a+b-c = 24`, `Φ = 3s = 1020k`, so `q = 1020k/24 = 85k/2`.
+
+* `k` **odd**: `24 ∤ 1020k`, since `1020k/24 = 85k/2` is not an integer.  Divisibility fails.
+* `k ≡ 2 (mod 4)`, say `k = 2m` with `m` odd: `q = 85m` is odd while `N = 340m²` is even.
+  Parity fails.
+* `k ≡ 0 (mod 4)`, say `k = 4m`: `q = 170m` is even like `N`, and the obstruction passes.
+
+So the family dies unless `4 ∣ k`.  Of the tabulated members it kills `N = 340` (`k=2`) and
+`N = 765` (`k=3`), leaving `N = 1360` (`k=4`).
+
+Of the nine families with more than one tabulated member, exactly **two** yield a uniform
+statement — this one and `(3,8,7)`.  The other seven never fire: `(5,8,7)`, `(8,15,13)`,
+`(7,15,13)`, `(5,21,19)`, `(13,48,43)`, `(7,40,37)`, `(16,55,49)`.  That is worth saying
+plainly; the invariant is not a universal solvent. -/
+
+/-- **`(17,80,73)` at odd `k`: divisibility fails.**  `24 ∤ 1020k` when `k` is odd. -/
+theorem seventeen_div_fails (k : ℤ) (hk : Odd k) : ¬ ((24 : ℤ) ∣ 1020 * k) := by
+  obtain ⟨m, hm⟩ := hk
+  subst hm
+  intro ⟨t, ht⟩
+  omega
+
+/-- **`(17,80,73)` at `k ≡ 2 (mod 4)`: parity fails.**  With `k = 2m` and `m` odd,
+`q = 85m` is odd while `N = 340m²` is even. -/
+theorem seventeen_par_fails (m : ℤ) (hm : Odd m) : (85 * m) % 2 ≠ (340 * m ^ 2) % 2 := by
+  obtain ⟨t, ht⟩ := hm
+  subst ht
+  have h2 : (340 * (2 * t + 1) ^ 2) % 2 = 0 := by
+    have : (2 * t + 1) ^ 2 = 4 * t ^ 2 + 4 * t + 1 := by ring
+    rw [this]; omega
+  omega
+
+/-- The `(17,80,73)` family's data: `v = 24`, `Φ = 3s = 1020k`, `N = 85k²`. -/
+theorem seventeen_data (k : ℤ) :
+    (17 + 80 - 73 : ℤ) = 24 ∧ 3 * (340 * k) = 1020 * k := ⟨by norm_num, by ring⟩
+
+/-! ## The remaining tabulated kills
+
+Each is the same check: `v ∤ 3s`, or `q = 3s/v` of the wrong parity against `N`. -/
+
+/-- `N = 520`, `(40,117,103)`, `s = 1560`: `v = 54` does not divide `3s = 4680`. -/
+theorem row_520 : (40 + 117 - 103 : ℤ) = 54 ∧ ¬ ((54 : ℤ) ∣ 4680) := ⟨by norm_num, by decide⟩
+
+/-- `N = 594`, `(11,96,91)`, `s = 792`: `v = 16` does not divide `3s = 2376`. -/
+theorem row_594 : (11 + 96 - 91 : ℤ) = 16 ∧ ¬ ((16 : ℤ) ∣ 2376) := ⟨by norm_num, by decide⟩
+
+/-- `N = 726`, `(3,8,7)`, `s = 132`: `q = 99` odd, `N` even. -/
+theorem row_726 : (3 * 132 : ℤ) = 396 ∧ (396 : ℤ) / 4 = 99 ∧ 99 % 2 ≠ 726 % 2 := by norm_num
+
+/-- `N = 792`, `(72,275,247)`, `s = 3960`: `v = 100` does not divide `3s = 11880`. -/
+theorem row_792 : (72 + 275 - 247 : ℤ) = 100 ∧ ¬ ((100 : ℤ) ∣ 11880) := ⟨by norm_num, by decide⟩
+
+/-- `N = 836`, `(19,99,91)`, `s = 1254`: `v = 27` does not divide `3s = 3762`. -/
+theorem row_836 : (19 + 99 - 91 : ℤ) = 27 ∧ ¬ ((27 : ℤ) ∣ 3762) := ⟨by norm_num, by decide⟩
+
+/-- `N = 910`, `(40,91,79)`, `s = 1820`: `q = 105` odd, `N = 910` even. -/
+theorem row_910a : (40 + 91 - 79 : ℤ) = 52 ∧ (5460 : ℤ) / 52 = 105 ∧ 105 % 2 ≠ 910 % 2 := by
+  norm_num
+
+/-- `N = 1014`, `(3,8,7)`, `s = 156`: `q = 117` odd, `N` even. -/
+theorem row_1014 : (3 * 156 : ℤ) = 468 ∧ (468 : ℤ) / 4 = 117 ∧ 117 % 2 ≠ 1014 % 2 := by norm_num
+
+/-- `N = 1050`, `(25,168,157)`, `s = 2100`: `q = 175` odd, `N` even. -/
+theorem row_1050 : (25 + 168 - 157 : ℤ) = 36 ∧ (6300 : ℤ) / 36 = 175 ∧ 175 % 2 ≠ 1050 % 2 := by
+  norm_num
+
+/-- `N = 1350`, `(3,8,7)`, `s = 180`: `q = 135` odd, `N` even.  The largest tabulated member of
+the `(3,8,7)` family, `k = 15`. -/
+theorem row_1350 : (3 * 180 : ℤ) = 540 ∧ (540 : ℤ) / 4 = 135 ∧ 135 % 2 ≠ 1350 % 2 := by norm_num
 
 end Erdos634.SixtyInvariant
