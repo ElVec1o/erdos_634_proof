@@ -12,6 +12,7 @@ import Erdos634.BaseBetaMod12
 import Erdos634.BaseBetaWalkArith
 import Erdos634.BaseBetaWalks
 import Erdos634.BaseWordBlock
+import Erdos634.LatticeDescent
 import Erdos634.BaseIdentity
 import Erdos634.BaseWord
 import Erdos634.Beeson3NotPrime

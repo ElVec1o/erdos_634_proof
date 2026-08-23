@@ -80,31 +80,17 @@ theorem no_a_block (f : ℕ) (hf : 3 ≤ f) (isA : ℕ → Prop) [DecidablePred 
   rw [mem_range] at hi hk
   omega
 
-/-! ## The `γ`-bound, in closed form
+/-! ## The `γ`-bound is already in the corpus
 
-`prop:a2branch`'s third filler exclusion says a whole `b` laid on the brick's ray "repeats
-`γ` at the base junction (`straight_junction_gamma_bound`)".  That bound needs `2γ > π`,
-so that two copies of `γ` overflow a *straight* junction (fan `π`).  At `e = 1` the
-cosine rule gives this in closed form and with no case split at all:
+`prop:a2branch`'s third filler exclusion needs `2γ > π`.  An earlier draft of this file
+proved that at `e = 1` via `cos γ = -1/(2f)`.  That is a **rediscovery in a weaker form**:
+`ApexRigidity.two_gamma` already gives `2γ = π + α` outright, from `3α + 2β = π` and
+`γ = 2α + β` alone — exact, valid for every `e`, and with no arithmetic in `f`.  The
+`e = 1` cosine computation is therefore removed; cite `ApexRigidity.two_gamma`.
 
-  `cos γ = (a² + b² - c²) / (2ab) = (f² + (f²-1)² - f⁴) / (2f(f²-1)) = (1 - f²) / (2f(f²-1)) = -1/(2f)`
-
-so `cos γ < 0` for every `f ≥ 2`, hence `γ > π/2` and `2γ > π`.  The exclusion therefore
-holds at **any** straight junction, on the base or on an interior floor line — provided
-the floor is edged there, which is exactly straddler-freeness.  Only the *first* filler
-exclusion ("a filler laying `c` … exceeds the ray by `c - b = 1` past the base") is
-genuinely tied to the base: at an interior floor that overshoot pokes into the row below
-instead of leaving the target, and that poke is precisely the straddler of `rem:straddler`.
+What survives from that computation, and is genuinely new, is its consequence for the
+brick lattice: `2γ = π + α` forces `|cos 2γ| = cos α`, which turns `lem:ladder`(i)'s
+horizontal-advance identity into the law of projections.  See `LatticeDescent`.
 -/
-
-/-- **`cos γ = -1/(2f)` at `e = 1`**, in cleared-denominator integer form:
-`2f·(a² + b² - c²) + 2ab = 0` for `(a, b, c) = (f, f² - 1, f²)`. -/
-theorem two_f_cos_gamma (f : ℤ) :
-    2 * f * (f ^ 2 + (f ^ 2 - 1) ^ 2 - (f ^ 2) ^ 2) + 2 * (f * (f ^ 2 - 1)) = 0 := by
-  ring
-
-/-- **`γ` is obtuse for every `f ≥ 2`**: the numerator of `cos γ` is `1 - f² < 0`. -/
-theorem gamma_obtuse (f : ℤ) (hf : 2 ≤ f) :
-    f ^ 2 + (f ^ 2 - 1) ^ 2 - (f ^ 2) ^ 2 < 0 := by nlinarith
 
 end Erdos634.BaseWordBlock
