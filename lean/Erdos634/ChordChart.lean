@@ -83,4 +83,22 @@ theorem predecessor_apex_right_of_foot (e f : ℤ) (he : 0 < e) (hef : e < f) :
     2 * (e * f) * f < e * (3 * f ^ 2 - e ^ 2) :=
   Erdos634.StripRigid.shift_gt_two_a e f he hef
 
+/-! ## Bridge (ii): the planar step, isolated
+
+Both apex abscissae are now pinned.  In the chart the shared foot of positions `j-1` and `j`
+sits at `x = (j-1)a`.  The predecessor's apex lies strictly right of it, since `x_u = S/2 > a`
+(`predecessor_apex_right_of_foot`); the reflected tile's apex lies strictly left of it, since
+`x_r < 0` (`reflected_apex_left_of_mast`).  So the two bodies reach across the same vertical
+line at positive height.
+
+`straddle_of_opposite_signs` records that arithmetic.  What it does **not** give is that two
+triangles reaching across a common vertical at positive height must intersect — a single planar
+statement, and the entire residue of bridge (ii). -/
+
+/-- **The two apexes straddle the shared foot.**  With `x_r < 0 < a < x_u`, the reflected apex
+of position `j` and the unreflected apex of position `j-1` lie on opposite sides of the vertical
+through their shared foot. -/
+theorem straddle_of_opposite_signs (a xu xr : ℝ) (ha : 0 < a) (hu : a < xu) (hr : xr < 0) :
+    xr < a ∧ a < xu := ⟨lt_trans hr ha, hu⟩
+
 end Erdos634.ChordChart

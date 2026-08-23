@@ -164,11 +164,15 @@ did not have.
 UPDATED 2026-08-24.  It has one now.  `Congruence` supplies the predicate
 (`CongruentDissection.UnreflectedAt`), and `LayerLink.layer_rigid_of_exclusions` supplies the
 induction against it, instantiated for this layer as `strip_layer_rigid` and for the `c`-layer as
-`c_layer_rigid_link`.  What is still missing is *narrower and nameable*: the two geometric
-bridges, that a reflected tile at the layer's start puts its apex left of the mast, and that a
-reflected tile after an unreflected one overlaps its predecessor.  Both are refuted by
-`shift_gt_two_a` once stated, so the whole remaining blocker is stating them from the geometry.
-That is the recorded blocker now; it is not "not yet attempted".
+`c_layer_rigid_link`.  What is still missing is *narrower and nameable*.
+
+UPDATED again, same day.  `ChordChart` derives the first bridge outright: placing the tile's
+`a`-edge on the floor and subtracting the two distance equations gives the reflected apex at
+`(a²+b²-c²)/(2a)`, whose numerator is `e²(e²-f²) < 0` for every member.  The second bridge is
+reduced to one planar statement — both apexes are now known to straddle the shared foot, and
+what remains is that two triangles reaching across a common vertical at positive height must
+intersect.  The blocker for this file is therefore exactly: that planar intersection step.
+It is not "not yet attempted".
 -/
 
 /-- **Layer induction schema.**  If the first tile is unreflected and an unreflected tile forces
