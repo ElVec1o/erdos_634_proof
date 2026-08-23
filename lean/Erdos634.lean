@@ -13,6 +13,7 @@ import Erdos634.BaseBetaWalkArith
 import Erdos634.BaseBetaWalks
 import Erdos634.BaseWordBlock
 import Erdos634.Congruence
+import Erdos634.StraightEdgeSums
 import Erdos634.DescentUniform
 import Erdos634.FloorPropagation
 import Erdos634.A36Reduction
