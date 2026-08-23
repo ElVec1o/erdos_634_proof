@@ -1,5 +1,6 @@
 import Erdos634.Congruence
 import Erdos634.StripRigid
+import Erdos634.CLayerRigid
 
 /-!
 # Aiming the layer exclusions at the congruence predicate
@@ -82,5 +83,28 @@ theorem strip_layer_rigid (D : CongruentDissection N) (idx : ℕ → Fin N) (e f
   layer_rigid_of_exclusions D idx
     (fun h => absurd (mast h) (not_le.mpr hS))
     (fun j hj h => absurd (overlap j hj h) (not_le.mpr hS))
+
+/-- **The `c`-layer is rigid, against the real predicate.**  `CLayerRigid` proves that three
+gap areas are never nonnegative integer multiples of the tile area.  The two geometric bridges
+say that a reflected tile at the layer's start leaves the left gap, and a reflected tile after
+an unreflected one leaves the mixed gap; each gap would have to be tiled, i.e. its area would
+have to be `n` tile areas with `n ≥ 0`.  Both are refuted directly.
+
+Same schema as `strip_layer_rigid`, which is the point: `CLayerRigid`'s own summary already
+describes this shape, and `layer_rigid_of_exclusions` is where the two meet. -/
+theorem c_layer_rigid_link (D : CongruentDissection N) (idx : ℕ → Fin N) (e f : ℤ)
+    (he : 1 ≤ e) (hef : e < f) (hcop : IsCoprime e f)
+    (left_gap : (D.tile (idx 0)).Reflected D.model →
+      ∃ n : ℤ, 0 ≤ n ∧ n * f ^ 4 = f ^ 4 - e ^ 2 * (3 * f ^ 2 - e ^ 2))
+    (mixed_gap : ∀ j, D.UnreflectedAt (idx j) → (D.tile (idx (j + 1))).Reflected D.model →
+      ∃ n : ℤ, 0 ≤ n ∧ n * f ^ 4 = 2 * f ^ 4 - e ^ 2 * (3 * f ^ 2 - e ^ 2)) :
+    ∀ j, D.UnreflectedAt (idx j) :=
+  layer_rigid_of_exclusions D idx
+    (fun h => by
+      obtain ⟨n, hn, hEq⟩ := left_gap h
+      exact Erdos634.CLayerRigid.left_gap_not_tiles e f n he hef hcop hn hEq)
+    (fun j hj h => by
+      obtain ⟨n, hn, hEq⟩ := mixed_gap j hj h
+      exact Erdos634.CLayerRigid.mixed_gap_not_tiles e f n he hef hcop hn hEq)
 
 end Erdos634.Geometry
