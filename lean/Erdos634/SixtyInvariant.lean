@@ -1,4 +1,5 @@
 import Erdos634.EquilateralScaling
+import Erdos634.InvariantCore
 
 /-!
 # The signed-direction invariant on the `π/3` branch
@@ -60,6 +61,62 @@ exhibited a tiling there, so passing was required.
 
 namespace Erdos634.SixtyInvariant
 
+open Erdos634.InvariantCore
+
+/-! ## Cancellation and the tile value, in Lean
+
+`InvariantCore.cancellation_core` is **branch-agnostic**: it takes an involution `neg`, the split
+`Λ = Λ_int + Λ_bd`, the geometric input `hLint`, and the oddness `hf`, and nothing in it mentions
+the tile.  So it applies verbatim here, and `cancellation_sixty` records that.
+
+The tile value is the one thing that changes.  `InvariantCore`'s bookkeeping: in
+`π/3`-coefficients `π` adds `3`, `α` adds `0`, and the other two angles add whatever they are.
+On the `2π/3` branch `β` adds `1` and `γ` adds `2`, so the exterior turns `π−β`, `π−γ` add `2`
+and `1`, giving coefficients `j₀, j₀+2, j₀+3`.
+
+On the `π/3` branch `γ = π/3` adds `1` and `β = 2π/3 − α` adds `2`, so the turns add `1` and `2`,
+giving coefficients `j₀, j₀+1, j₀+3`.  Since `+1` and `+3` both flip the sign, the weight is
+`ε j₀ · (c − a − b)`. -/
+
+/-- Adding `1` to the `π/3`-coefficient flips the sign. -/
+theorem sign_shift_one (j : ℤ) : ε (j + 1) = - ε j := by
+  unfold ε
+  by_cases hh : Even j
+  · have hodd : ¬ Even (j + 1) := by
+      rcases hh with ⟨k, hk⟩; rintro ⟨m, hm⟩; omega
+    simp [hh, hodd]
+  · have hev : Even (j + 1) := by
+      rcases Int.not_even_iff_odd.mp hh with ⟨k, hk⟩
+      exact ⟨k + 1, by omega⟩
+    simp [hh, hev]
+
+/-- **Tile value on the `π/3` branch.**  Coefficients `j₀, j₀+1, j₀+3` with lengths `c, a, b`:
+both shifts flip the sign, so the weight is `ε j₀ · (c − a − b) = ∓(a + b − c)`. -/
+theorem tile_value_sixty (a b c j₀ : ℤ) :
+    ε j₀ * c + ε (j₀ + 1) * a + ε (j₀ + 3) * b = ε j₀ * (c - a - b) := by
+  rw [sign_shift_one, sign_shift_three]; ring
+
+/-- The `π/3` tile weight is `±(a+b−c)`. -/
+theorem tile_value_sixty_pm (a b c j₀ : ℤ) :
+    ε j₀ * c + ε (j₀ + 1) * a + ε (j₀ + 3) * b = (a + b - c) ∨
+    ε j₀ * c + ε (j₀ + 1) * a + ε (j₀ + 3) * b = -(a + b - c) := by
+  rw [tile_value_sixty]
+  rcases ε_eq_one_or j₀ with h | h <;> rw [h] <;> [right; left] <;> ring
+
+/-- **The `2π/3` cross-check, in Lean.**  The same bookkeeping with coefficients `j₀, j₀+2, j₀+3`
+returns `ε j₀ · (c + a − b)`, which is `InvariantCore.tile_value_core` — the published value.
+Deriving both from one scheme is what certifies the `π/3` computation. -/
+theorem cross_check_two_thirds (a b c j₀ : ℤ) :
+    ε j₀ * c + ε (j₀ + 2) * a + ε (j₀ + 3) * b = ε j₀ * (c + a - b) :=
+  tile_value_core a b c j₀
+
+/-- **Cancellation on this branch**, by direct reuse: nothing in the engine is branch-specific. -/
+theorem cancellation_sixty {D : Type*} [Fintype D]
+    (neg : D → D) (hinv : Function.Involutive neg) (Lint Lbd f : D → ℤ)
+    (hLint : ∀ d, Lint (neg d) = Lint d) (hf : ∀ d, f (neg d) = - f d) :
+    ∑ d, (Lint d + Lbd d) * f d = ∑ d, Lbd d * f d :=
+  cancellation_core neg hinv Lint Lbd f hLint hf
+
 /-- **The parity obstruction.**  If `v = a+b-c` divides `3s` with quotient `q`, and a tiling into
 `N` tiles exists, then `q ≡ N (mod 2)` and `|q| ≤ N`, since `q = n₊ - n₋` with `n₊ + n₋ = N`. -/
 theorem parity_obstruction (N q np nm : ℤ) (hsum : np + nm = N) (hdiff : np - nm = q) :
@@ -115,5 +172,30 @@ theorem row_1440_passes :
     (5 + 8 - 7 : ℤ) = 6 ∧ 3 * 240 = 720 ∧ (720 : ℤ) / 6 = 120 ∧ 120 % 2 = 1440 % 2
       ∧ (120 : ℤ) ≤ 1440 := by
   norm_num
+
+/-! ## The `(3,8,7)` family, uniformly in `k`
+
+The family is `N = 6k²`, `s = 12k`.  Here `v = a+b-c = 4` and `Φ = 3s = 36k`, so `q = 9k`.
+Since `6k²` is always even and `9k` is even exactly when `k` is, the parity obstruction fires
+**precisely for odd `k`** — and that is a statement uniform in `k`, so it reaches every member of
+the family, including those past the end of Beeson's table.
+
+Of the thirteen tabulated members (`k = 3 … 15`) it kills the seven with `k` odd:
+`N = 54, 150, 294, 486, 726, 1014, 1350`. -/
+
+/-- **The `(3,8,7)` family dies at every odd `k`.**  `q = 9k` is odd while `N = 6k²` is even. -/
+theorem three_eight_seven_odd_k (k : ℤ) (hk : Odd k) : (9 * k) % 2 ≠ (6 * k ^ 2) % 2 := by
+  obtain ⟨m, hm⟩ := hk
+  subst hm
+  have h1 : (9 * (2 * m + 1)) % 2 = 1 := by omega
+  have h2 : (6 * (2 * m + 1) ^ 2) % 2 = 0 := by
+    have : (2 * m + 1) ^ 2 = 4 * m ^ 2 + 4 * m + 1 := by ring
+    rw [this]; omega
+  omega
+
+/-- The family's data: `v = 4`, `Φ = 3s = 36k`, `q = 9k`, `N = 6k²`. -/
+theorem three_eight_seven_data (k : ℤ) :
+    (3 + 8 - 7 : ℤ) = 4 ∧ 3 * (12 * k) = 36 * k ∧ 36 * k = 4 * (9 * k) := by
+  refine ⟨by norm_num, by ring, by ring⟩
 
 end Erdos634.SixtyInvariant
