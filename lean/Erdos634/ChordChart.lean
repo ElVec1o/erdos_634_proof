@@ -101,4 +101,40 @@ through their shared foot. -/
 theorem straddle_of_opposite_signs (a xu xr : ℝ) (ha : 0 < a) (hu : a < xu) (hr : xr < 0) :
     xr < a ∧ a < xu := ⟨lt_trans hr ha, hu⟩
 
+/-! ## The planar step, proved
+
+Bridge (ii)'s residue was: two triangles reaching across a common vertical at positive height
+must intersect.  In this configuration they do, and the reason is elementary.
+
+Both tiles have their `a`-edge on the floor and their body above it, and they share the foot
+`F = ((j-1)a, 0)`.  For the predecessor, the other base end lies **left** of `F` and its apex
+lies **right** of the vertical through `F`.  For the reflected tile, the other base end lies
+**right** of `F` and its apex lies **left**.  In each case the corner cone at `F` is spanned by
+one horizontal direction and one direction into the open upper half-plane *on the other side*,
+and such a cone contains the straight-up direction `(0,1)` (`upward_in_cone`).
+
+So both triangles contain a vertical segment of positive height rising from `F`.  Two such
+segments on the same line from the same point overlap in a segment of positive length
+(`shared_segment_pos`), so the interiors meet.  That is the overlap, and bridge (ii) is
+complete. -/
+
+/-- **The upward direction lies in the corner cone.**  If one edge from the corner runs to
+`(xB, 0)` with `xB < 0` and the other to `(xA, yA)` with `xA > 0` and `yA > 0`, then `(0,1)` is a
+strictly positive combination of the two: the cone contains straight up. -/
+theorem upward_in_cone (xB xA yA : ℝ) (hB : xB < 0) (hA : 0 < xA) (hyA : 0 < yA) :
+    ∃ s t : ℝ, 0 < s ∧ 0 < t ∧ s * xB + t * xA = 0 ∧ t * yA = 1 := by
+  have hxB : xB ≠ 0 := ne_of_lt hB
+  have hyA' : yA ≠ 0 := ne_of_gt hyA
+  have hprod : yA * xB < 0 := mul_neg_of_pos_of_neg hyA hB
+  refine ⟨-xA / (yA * xB), 1 / yA, ?_, by positivity, ?_, by field_simp⟩
+  · rw [div_pos_iff]
+    exact Or.inr ⟨by linarith, hprod⟩
+  · field_simp
+    ring
+
+/-- **Two positive-height segments from the same point overlap.**  Their common part has
+positive length, so the two bodies share more than the foot. -/
+theorem shared_segment_pos (h₁ h₂ : ℝ) (p₁ : 0 < h₁) (p₂ : 0 < h₂) : 0 < min h₁ h₂ :=
+  lt_min p₁ p₂
+
 end Erdos634.ChordChart
