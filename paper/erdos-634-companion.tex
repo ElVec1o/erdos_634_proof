@@ -1997,6 +1997,19 @@ land on the row-$2$ floor, edged only as far as the staircase has reached: that 
 incomplete as written, and the structural claim of reach $4$ is open pending its repair. The
 $(1,6)$ conclusion itself is unaffected: it is certified by the independent exhaustion
 \texttt{w107}.
+
+What the repair still owes is now smaller than it was. The proposition's Lean skeleton carried two
+geometric hypotheses about the descent --- that the feet reach the base, and that each lands on an
+$a$-junction --- and the second is close to the conclusion being sought. It is removable. The south
+cover is $f$ whole $a$-edges, so its $f+1$ endpoints span a length $f\cdot a=f^2$; they descend to
+$f+1$ distinct base points, which are base-word junctions since no vertex of a tile lies interior to
+a boundary edge; and they therefore carve a run of $k\ge f$ whole letters of total length $f^2$.
+The three edge lengths then decide the run by themselves: a single $c$ would exhaust $f^2$ in one
+letter, leaving $k=1<f$, and a $b$ would leave a remainder of $1$, below the shortest letter, so
+every letter is an $a$ and $k=f$ exactly. That is $f$ consecutive $a$-letters, which the base word
+cannot carry, its $f$ letters $a$ forming one block while its first and last slots are both $a$.
+So the descent needs only to \emph{land}; what it lands on is forced arithmetically
+(\texttt{A2BranchRow3.span\_all\_a}, \texttt{row\_three\_dies\_of\_span}, axiom-clean).
 \end{theorem}
 
 \begin{corollary}\label{cor:walls16}

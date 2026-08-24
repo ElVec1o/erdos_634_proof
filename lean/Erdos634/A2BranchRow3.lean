@@ -30,7 +30,13 @@ every row, and needs nothing from this file.
 
 Only the **descent**: that the south cover's feet, which at row 3 land on an interior floor,
 reach the base at all.  That is a global structural fact about the strips below, not a local
-angular one, and it is the single thing carried here as a hypothesis.
+angular one.
+
+That description was, until `row_three_dies_of_span` below, an understatement of what the file
+actually assumed: `row_three_dies` also carries `foot_isA`, that every landing foot sits on an
+`a`-junction — which is close to the conclusion being sought.  `row_three_dies_of_span` deletes it.
+The letters under the run are forced by the arithmetic of the three edge lengths alone
+(`span_all_a`), so the descent now needs only to land, and the header's claim is true as written.
 
 The combinatorial half is row-independent (`BaseWordBlock.no_f_plus_one_a`): the base is a
 permutation of `(a^f, b, c)`, `f + 2` letters with exactly `f` of them `a`, so the closing
@@ -94,5 +100,101 @@ theorem row_three_dies (f : ℕ) (isA : ℕ → Prop) [DecidablePred isA]
 /-- **The count that makes it work**, isolated: a south cover of `f` whole `a`-edges has
 `f + 1` endpoints, one more than the base word can supply. -/
 theorem endpoints_exceed_supply (f : ℕ) : f + 1 > f := Nat.lt_succ_self f
+
+/-! ## `foot_isA` is removable: the span decides the letters by itself
+
+`row_three_dies` carries four descent hypotheses.  `DescentUniform` discharged `foot_inj`.  Of the
+rest, `foot_isA` — that every landing foot sits on an `a`-junction — is by far the strongest: it
+asserts the very thing the `A₂` branch is trying to establish.  It is not needed.
+
+The south cover is `f` whole `a`-edges, so its `f + 1` endpoints span a length of `f·a = f²`.  They
+descend to `f + 1` distinct points of the base, and a tiling vertex on the base is a base-word
+junction, no vertex of a tile being interior to a boundary edge.  So the base carries `f + 1`
+junctions spanning `f²`, carving a run of `k ≥ f` whole letters — `k ≥ f` because `f + 1` distinct
+junctions leave `f` gaps and each gap holds at least one letter.
+
+Now the letters decide themselves.  Their lengths lie in `{f, f²-1, f²}` and total `f²`
+(`span_all_a`): a single `c` would exhaust the length in **one** letter, leaving `k = 1 < f`; a `b`
+would leave a remainder of `1`, below the shortest letter; so every letter is an `a` and `k = f`
+exactly.  That is `f` consecutive `a`-letters, which `BaseWordBlock.no_a_block` refutes — the `f`
+letters `a` are then all of them and form one block, while slots `0` and `f + 1` must both be `a`.
+
+So the descent needs only to *land*.  What it lands on is forced by the arithmetic of the three edge
+lengths, and the geometric residue of `prop:a2branch` at row 3 shrinks from "the feet reach the base
+and land on `a`-junctions" to "the feet reach the base".  `row_three_dies_of_span` is the statement
+with `foot_isA` deleted.
+
+The `c`-alternative is worth naming, because it is where the strength went.  A run of length `f²`
+covered by *one* `c`-edge is exactly the configuration in which the interior feet would be vertices
+interior to a boundary edge — impossible — and it is also the only other way to make `f²` out of the
+three lengths.  The two impossibilities are the same fact counted twice, which is why no separate
+geometric input is required. -/
+
+/-- **The span lemma.**  A base run of `k ≥ f` whole letters, of lengths `a = f`, `b = f² - 1`
+(written `B`) and `c = f²`, whose total length is `f²`, consists of exactly `f` letters, all `a`. -/
+theorem span_all_a (f B x y z : ℕ) (hf : 3 ≤ f) (hB : B + 1 = f * f)
+    (hsum : x * f + y * B + z * (B + 1) = B + 1)
+    (hk : f ≤ x + y + z) : y = 0 ∧ z = 0 ∧ x = f := by
+  have hBge : 8 ≤ B := by nlinarith
+  have hz : z = 0 := by
+    by_contra h
+    have h1 : 0 < z := Nat.pos_of_ne_zero h
+    have hzz : B + 1 ≤ z * (B + 1) := Nat.le_mul_of_pos_left _ h1
+    have hx0 : x * f = 0 := by omega
+    have hy0 : y * B = 0 := by omega
+    have hzeq : z * (B + 1) = 1 * (B + 1) := by omega
+    have hz1 : z = 1 := Nat.eq_of_mul_eq_mul_right (by omega) hzeq
+    have hx : x = 0 := by rcases Nat.mul_eq_zero.mp hx0 with h' | h' <;> omega
+    have hy : y = 0 := by rcases Nat.mul_eq_zero.mp hy0 with h' | h' <;> omega
+    omega
+  subst hz
+  have hy : y = 0 := by
+    by_contra h
+    have h1 : 0 < y := Nat.pos_of_ne_zero h
+    have hyy : B ≤ y * B := Nat.le_mul_of_pos_left _ h1
+    have h2 : y * B ≤ B + 1 := by omega
+    have hy1 : y = 1 := by
+      by_contra hne
+      have hy2 : 2 ≤ y := by omega
+      have : 2 * B ≤ y * B := Nat.mul_le_mul_right _ hy2
+      omega
+    subst hy1
+    have hx1 : x * f = 1 := by omega
+    rcases Nat.eq_zero_or_pos x with h' | h'
+    · subst h'; simp at hx1
+    · have : f ≤ x * f := Nat.le_mul_of_pos_left _ h'
+      omega
+  subst hy
+  refine ⟨rfl, rfl, ?_⟩
+  have hxf : x * f = f * f := by omega
+  exact Nat.eq_of_mul_eq_mul_right (by omega) hxf
+
+/-- **The `A₂` branch dies at row 3, given only that the descent lands.**  `foot_isA` is gone: the
+run's letters are forced to be `a` by `span_all_a`, and `no_a_block` finishes. -/
+theorem row_three_dies_of_span (f B x y z j : ℕ) (hf : 3 ≤ f) (hB : B + 1 = f * f)
+    (isA : ℕ → Prop) [DecidablePred isA]
+    (base_count : ((range (f + 2)).filter isA).card = f)
+    (h0 : isA 0) (hlast : isA (f + 1))
+    (hspan : x * f + y * B + z * (B + 1) = B + 1)
+    (hk : f ≤ x + y + z)
+    (hfit : j + (x + y + z) ≤ f + 2)
+    (hAcount : ((range (x + y + z)).filter (fun i => isA (j + i))).card = x) :
+    False := by
+  obtain ⟨hy, hz, hx⟩ := span_all_a f B x y z hf hB hspan hk
+  subst hy; subst hz
+  simp only [Nat.add_zero] at hAcount hfit hk
+  rw [hx] at hAcount hfit
+  have hall : ∀ i, i < f → isA (j + i) := by
+    intro i hi
+    by_contra hcon
+    have hsub : (range f).filter (fun i => isA (j + i)) ⊂ range f := by
+      refine ⟨filter_subset _ _, ?_⟩
+      intro hcontra
+      have : i ∈ (range f).filter (fun i => isA (j + i)) := hcontra (mem_range.mpr hi)
+      exact hcon (mem_filter.mp this).2
+    have := card_lt_card hsub
+    rw [hAcount, card_range] at this
+    omega
+  exact BaseWordBlock.no_a_block f hf isA base_count h0 hlast j (by omega) hall
 
 end Erdos634.A2BranchRow3
