@@ -153,10 +153,10 @@ interior ones cutting off `1, 1, 4, 4, 25` tiles.  The apex cevian there would c
 is uncrossed in the `44`-tiling and crossed in the `99`-tiling, and "`L_f` is uncrossed at every
 `m`" is not a fact.
 
-What the scan does support, across both tilings, is a **necessary** condition: every uncrossed
-interior line cuts off a *perfect square* of tiles — `1, 1, 4, 4, 25` in the `99`-tiling, and
-`1, 1, 16` in the `44`-tiling — that is, a similar copy of the tile at integer scale.  It is not
-sufficient: the `99`-tiling's apex cevian would cut off `36 = 6²` and is crossed anyway.
+A regularity across the scans, **since falsified**: the smaller side of an uncrossed interior
+line is a perfect square in 17 of the 18 such lines across the four triangle certificates.  The
+exception is the `77`-tiling's `48 | 29` line, where neither side is a square.  So this is not a
+theorem; see `CevianSplit` for the counterexample and the data.
 
 So the honest statement is weaker than the one first written here: uncrossed interior lines are
 scarce (five of them among 89 vertices in the `99`-tiling) and each cuts off a scaled tile, but no
@@ -180,13 +180,21 @@ theorem cevian_split_counts (e f m : ℤ) :
 being the tile at scale `fm = 4`. -/
 theorem cevian_split_44 : ((2 : ℤ) * 2) ^ 2 + 2 ^ 2 * (2 * 2 ^ 2 - 1 ^ 2) = 44 := by norm_num
 
-/-- **The `99`-tiling's uncrossed interior lines cut off perfect squares.**  Scanning all lines
-through two of its 89 tiling vertices gives eight uncrossed lines: three target sides and five
-interior, cutting off `1, 1, 4, 4, 25` tiles.  Each count is a square, i.e. a similar copy of the
-tile at integer scale. -/
-theorem uncrossed_cuts_are_squares :
-    (1 : ℕ) = 1 ^ 2 ∧ (4 : ℕ) = 2 ^ 2 ∧ (25 : ℕ) = 5 ^ 2 ∧ (16 : ℕ) = 4 ^ 2 := by
-  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num⟩
+/-- **The square regularity, and its counterexample.**  Across the four triangle certificates the
+smaller side of an uncrossed interior line is a perfect square in 17 of 18 cases (`1, 4, 9` in the
+`28`-tiling; `1, 1, 4, 9, 16` in the `44`; `1, 4, 9, 16` in the `77`; `1, 1, 4, 4, 25` in the
+`99`).  The eighteenth is the `77`-tiling's `48 | 29` line, and **neither `48` nor `29` is a
+square**, so the regularity is not a theorem. -/
+theorem square_regularity_fails :
+    (1 : ℕ) = 1 ^ 2 ∧ (4 : ℕ) = 2 ^ 2 ∧ (25 : ℕ) = 5 ^ 2 ∧ (16 : ℕ) = 4 ^ 2
+      ∧ (∀ k : ℕ, k ^ 2 ≠ 29) ∧ (∀ k : ℕ, k ^ 2 ≠ 48) ∧ 48 + 29 = 77 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num, ?_, ?_, by norm_num⟩
+  · intro k hk
+    have hk6 : k ≤ 6 := by nlinarith
+    interval_cases k <;> omega
+  · intro k hk
+    have hk7 : k ≤ 7 := by nlinarith
+    interval_cases k <;> omega
 
 /-- **The apex cevian's split at `(e,f,m) = (1,2,3)` is `36 | 63`**, and no uncrossed line of the
 `99`-tiling has that split — the uncrossed interior splits are `98|1, 95|4, 74|25, 4|95, 1|98`.

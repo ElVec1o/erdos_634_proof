@@ -20,11 +20,27 @@ and `9` tiles were missed.  Splits verified — `43+1`, `43+1`, `40+4`, `35+9`, 
 summing to `44`.  The cevian claim itself is unaffected; the count was wrong.
 Reproducible: `code/analysis/uncrossed_lines.py lean/Erdos634/Tiling44.lean 15`.
 
-Running the same scan on the certified 99-tiling gives eight as well: three sides and five
-interior lines cutting off `1, 1, 4, 4, 25`.  In **both** tilings every uncrossed interior line
-cuts off a *perfect square* of tiles, i.e. a similar copy of the tile at integer scale.  That is
-necessary but not sufficient: the 99-tiling's apex cevian would cut off `(fm)² = 36` and is
-**crossed** there, so no particular line is guaranteed uncrossed at `m ≥ 2`.
+Running the same scan on all four certified **triangle** tilings gives, for the interior
+uncrossed lines, the smaller-side counts
+
+```
+  28-tiling:  1, 4, 9
+  44-tiling:  1, 1, 4, 9, 16
+  77-tiling:  1, 4, 9, 16, 29
+  99-tiling:  1, 1, 4, 4, 25
+```
+
+Seventeen of the eighteen are perfect squares.  The exception is the 77-tiling's `48 | 29` line:
+**neither side is a square**, and the refinement "the *triangle* side is a square" fails on it too,
+that side holding `48` tiles.  So *"an uncrossed interior line cuts off a perfect square"* is a
+regularity and **not a theorem** — falsified on certificates not used to form it.
+
+The `48`-piece is a triangle tiled by 48 congruent copies, similar to neither the tile (`√48` is
+not an integer) nor the target (`48/77` is not a square ratio); nothing forces a square there.
+
+Also worth recording: the apex cevian is uncrossed in the 44-tiling but **crossed** in the
+99-tiling, whose apex cevian would cut `36 | 63`.  No particular line is guaranteed uncrossed at
+`m ≥ 2`.
 
 Both numbers are structural.  Writing `N₀ = 3f² - e²` for the base-β count, the target at
 multiplier `m` has sides `(f³m, f³m, e·m·N₀)`.  Drop the cevian from the apex to the base point at
