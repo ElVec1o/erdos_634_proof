@@ -1921,9 +1921,12 @@ $(1,6)$ conclusion itself is unaffected: it is certified by the independent exha
 \begin{corollary}\label{cor:walls16}
 Hypothesis~\ref{hyp:walls} holds at $(1,6)$, hence for every $f\le6$: with reach $4$ the four
 kills cover depth $\le5$ and no admissible $(bp,cp)$ escapes (\texttt{pincer\_window\_four}).
-The $(1,5)$ and $(1,6)$ cases are additionally certified by independent exhaustions of the full
-$m=1$ targets ($132{,}519$ and $1{,}251{,}382$ nodes, instances \texttt{w74}, \texttt{w107});
-the $(1,7)$ exhaustion is running.
+The $(1,5)$, $(1,6)$ and $(1,7)$ cases are additionally certified by independent exhaustions of
+the full $m=1$ targets ($132{,}519$, $1{,}251{,}382$ and $13{,}729{,}561$ nodes, instances
+\texttt{w74}, \texttt{w107}, \texttt{w146}). These are exhaustion certificates for the targets
+themselves and are labelled as computations; they are not a reading of
+Hypothesis~\ref{hyp:walls} at those members, which at $e=1$ would require the arrangement check
+of Remark~\ref{rem:whyhyp}.
 \end{corollary}
 
 \begin{lemma}[Corner lines are column lines]\label{lem:columnlines}
@@ -3014,7 +3017,7 @@ neither $\alpha$ (flanks $\{b,c\}$) nor $\beta$ (flanks $\{a,c\}$) can present a
 $a$-side is $a^f$ and the $b$-side $b^f$. The two ends are distinct positions, because the $p=1$ word has
 $f+(f-e)\ge2$ letters. Hence the word carries at least two $c$-edges, and its $c$-count is $f-e$, giving
 $f-e\ge2$. At $e=f-1$ the $c$-count is exactly $1$, so no $p=1$ word exists and the standard boundary is
-the only one. \textup{(}Machine-checked, \texttt{p1\_requires\_two\_c}, \texttt{p1\_excluded\_e\_pred}.\textup{)}
+the only one. \textup{(}Machine-checked, \texttt{p1\_c\_count\_ge\_two}, \texttt{no\_p1\_word\_at\_e\_pred}.\textup{)}
 \end{proof}
 
 \begin{remark}[The word census, and why the search cost is what it is]\label{rem:wordcensus}

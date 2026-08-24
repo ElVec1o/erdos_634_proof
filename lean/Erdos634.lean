@@ -1,4 +1,5 @@
 -- Root module for the Erdos634 library: imports every submodule.
+import Erdos634.PrimeArithmetic
 import Erdos634.AngleArithmetic
 import Erdos634.AngleSumAssembled
 import Erdos634.AngleSumDissection

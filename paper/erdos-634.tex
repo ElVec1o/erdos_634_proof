@@ -573,10 +573,15 @@ almost-everywhere disjoint and volumes add. The angle statement is the local str
 dissection: a small disc about $v$ meets finitely many tiles, each in a single circular sector, and
 the sectors tile the disc's intersection with $ABC$. The $s\pi$ term is the contribution of tiles
 meeting $v$ in an edge interior; it is present exactly when the dissection is not edge-to-edge at
-$v$, which does occur here (Remark~\ref{rem:parityfail}). Mathlib has no theory of planar dissections,
-so this angle statement is not formalized; it is the geometric input flagged in
-Section~\ref{sec:verification}. What \emph{is} formalized is the arithmetic consequence drawn from it
-in Proposition~\ref{prop:vertexfigures} (\texttt{vertex\_multiplicities} and its three corollaries)
+$v$, which does occur here (Remark~\ref{rem:parityfail}). This angle statement is formalized:
+\texttt{Dissection.hasAngleSums} proves all three clauses, the route being measure-theoretic rather
+than angular. A tile meets a small ball at a point in area exactly $\theta/2\cdot r^2$, where
+$\theta$ is its local angle there (\texttt{Tri.volume\_inter\_ball\_localAngle}, resting on
+\texttt{Tri.volume\_inter\_ball\_vertex}); the local angle is $\pi$ at a point interior to one of
+the tile's edges (\texttt{Tri.localAngle\_frontier}), which supplies the $s\pi$ term and makes the
+non-edge-to-edge case automatic. Summing the areas over the tiles and dividing by the ball's own
+area gives the identity. Also formalized are the arithmetic consequence drawn from it in
+Proposition~\ref{prop:vertexfigures} (\texttt{vertex\_multiplicities} and its three corollaries)
 and the angle sum of a tile (\texttt{cornerAngle\_sum}).
 \end{proof}
 

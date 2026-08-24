@@ -398,8 +398,8 @@ which is why it proves less than it appears to.
 
 So the uniform proof of Theorem~\ref{C-thm:inflrigid} remains open. What Proposition~\ref{C-prop:inflparity}
 shows is that any such proof must use more than counting on the both-odd members, since the counting
-invariant is identically satisfied there. \textup{(}Machine-checked, \texttt{parity\_25},
-\texttt{parity\_49}, \texttt{parity\_silent}.\textup{)}
+invariant is identically satisfied there. \textup{(}Machine-checked, \texttt{parity\_kills\_25},
+\texttt{parity\_kills\_49}, \texttt{parity\_silent\_witnesses}.\textup{)}
 
 One caveat should be entered in the hypothesis's favour. The edge multiset of the two standard
 inflations was computed from the certified tilings in \texttt{code/engine/inflation/}: at $(1,3)$ every
@@ -1425,7 +1425,7 @@ statement transported to \texttt{EuclideanSpace} $\R$ \texttt{(Fin 2)}), and fin
 \texttt{AngleSumAssembled.angle\_sum\_interior}. Every step is axiom-clean.
 
 The entire \emph{arithmetic and combinatorial} layer of the proof is formalized and machine-checked
-in Lean~4 with Mathlib (\texttt{lean/Erdos634.lean}, twenty-three theorems); every theorem depends only
+in Lean~4 with Mathlib (\texttt{lean/Erdos634/PrimeArithmetic.lean}, twenty-three theorems); every theorem depends only
 on the standard axioms \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}, with no
 \texttt{sorry}:
 \begin{itemize}
