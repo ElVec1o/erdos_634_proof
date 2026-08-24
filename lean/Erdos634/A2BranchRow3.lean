@@ -197,4 +197,59 @@ theorem row_three_dies_of_span (f B x y z j : ℕ) (hf : 3 ≤ f) (hB : B + 1 = 
     omega
   exact BaseWordBlock.no_a_block f hf isA base_count h0 hlast j (by omega) hall
 
+/-! ## The configuration `(bp, cp) = (4, 2)` has nowhere for the descent to land
+
+`PincerLadder.first_failure_escapes` shows that at the first failing level `f = R + 2` the only
+escaping configurations are `(4,2)` and its mirror, so `(4,2)` is the single obstruction standing
+between the ladder and its next level.  It spells the base word
+
+  `a c a b a^{f-2}`   (`f + 2` letters, exactly `f` of them `a`).
+
+Its `a`-runs have lengths `1`, `1`, `f - 2`, so the longest is `f - 2 < f`: **the word carries no
+block of `f` consecutive `a`-letters** (`word42_no_a_block`).
+
+By `span_all_a` a base run of `k ≥ f` whole letters totalling `f²` must be `f` consecutive `a`s.
+There is no such run here.  The only other way to make `f²` from `{f, f²-1, f²}` is a single `c`, and
+a descent landing on one puts its `f - 1` interior feet interior to a boundary edge, which no tiling
+vertex may be.  So in this configuration the south cover has **nowhere to land at all**.
+
+That is the whole of `(4,2)`: it dies the moment the descent is known to reach the base, and it needs
+nothing else — no reach step, no fan analysis, no case split on the row.  Combined with
+`first_failure_escapes` and `kill_mirror`, discharging the single hypothesis "the feet reach the
+base" advances the reach ladder by a level; three such advances, from `R = 4` to `R = 7`, reach
+`N = 191`.
+
+The three open steps of the prime hole's smallest member are therefore one step, applied three
+times, and that step is now stated in its weakest form. -/
+
+/-- The `(4,2)` base word `a c a b a^{f-2}`: slot `1` is the `c`, slot `3` is the `b`, the rest `a`. -/
+def isA42 (i : ℕ) : Prop := i ≠ 1 ∧ i ≠ 3
+
+instance : DecidablePred isA42 := fun i => inferInstanceAs (Decidable (i ≠ 1 ∧ i ≠ 3))
+
+/-- **The `(4,2)` word carries no block of `f` consecutive `a`-letters**, for `f ≥ 3`: any block
+inside a word of length `f + 2` starts at slot `0`, `1` or `2`, and each of those meets slot `1`
+or slot `3`. -/
+theorem word42_no_a_block (f : ℕ) (hf : 3 ≤ f) (j : ℕ) (hjb : j + f ≤ f + 2)
+    (hblock : ∀ i, i < f → isA42 (j + i)) : False := by
+  have hj : j ≤ 2 := by omega
+  interval_cases j
+  · exact (hblock 1 (by omega)).1 rfl
+  · exact (hblock 0 (by omega)).1 rfl
+  · exact (hblock 1 (by omega)).2 rfl
+
+/-- **So the descent cannot land in the `(4,2)` configuration.**  A landing run of `k ≥ f` whole
+letters of total length `f²` would have to be `f` consecutive `a`s, and the word has none. -/
+theorem word42_no_landing (f B x y z j : ℕ) (hf : 3 ≤ f) (hB : B + 1 = f * f)
+    (hspan : x * f + y * B + z * (B + 1) = B + 1)
+    (hk : f ≤ x + y + z)
+    (hfit : j + (x + y + z) ≤ f + 2)
+    (hletters : ∀ i, i < x + y + z → isA42 (j + i)) :
+    False := by
+  obtain ⟨hy, hz, hx⟩ := span_all_a f B x y z hf hB hspan hk
+  subst hy; subst hz
+  simp only [Nat.add_zero] at hletters hfit
+  rw [hx] at hletters hfit
+  exact word42_no_a_block f hf j hfit hletters
+
 end Erdos634.A2BranchRow3

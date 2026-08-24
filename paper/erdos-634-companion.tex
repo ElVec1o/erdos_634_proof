@@ -2088,6 +2088,32 @@ from $R=4$ to $R=7$, and each step is the exclusion of the base word $a\,c\,a\,b
 which is what $(bp,cp)=(4,2)$ spells.
 \end{remark}
 
+\begin{remark}[The $(4,2)$ configuration has nowhere for the descent to land]\label{rem:word42}
+That target is smaller than it looks. The word $(bp,cp)=(4,2)$ spells is
+\[
+  a\,c\,a\,b\,a^{f-2},
+\]
+$f+2$ letters with exactly $f$ of them $a$, and its $a$-runs have lengths $1$, $1$ and $f-2$. The
+longest is $f-2<f$, so the word carries \emph{no} block of $f$ consecutive $a$-letters
+(\texttt{A2BranchRow3.word42\_no\_a\_block}).
+
+Now recall the span dichotomy of Theorem~\ref{thm:strippbound}'s repair: a base run of $k\ge f$
+whole letters of total length $f^2$ must consist of $f$ consecutive $a$s, those and a single $c$
+being the only ways to make $f^2$ from $\{f,\,f^2-1,\,f^2\}$. This word has no such run; and a
+descent landing on the single $c$ instead would put its $f-1$ interior feet interior to a boundary
+edge, which no tiling vertex may be. In this configuration the south cover therefore has
+\emph{nowhere to land at all} (\texttt{word42\_no\_landing}, axiom-clean).
+
+So $(4,2)$ dies the moment the descent is known to reach the base, and needs nothing else: no reach
+step, no fan analysis, no case split on the row. With Remark~\ref{rem:mirrorwindow} supplying the
+mirror and Remark~\ref{rem:ladder} the ladder, discharging the single hypothesis ``the feet reach
+the base'' advances the bound by one level. Three such advances, $R=4$ to $R=7$, reach $N=191$.
+
+The three open steps of the prime hole's smallest member are thus one step applied three times, and
+that step is now carried in its weakest form --- the descent must land, and nothing is asked about
+what it lands on.
+\end{remark}
+
 \begin{lemma}[Corner lines are column lines]\label{lem:columnlines}
 Let $f\ge3$, $m=1$. Every $b$-direction line through two vertices of the corner lattice
 $\mathbb Z(a,0)+\mathbb Z\,cu$ meets the base at $(kf,0)$ and the left side at $k\,cu$ for an
