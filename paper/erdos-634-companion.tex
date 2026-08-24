@@ -2166,6 +2166,31 @@ barrier applies to it directly. What the same theorem names as surviving is the 
 input: at $m=1$ every admissible equal-side walk is free of $b$-edges, whereas at $m=2$ the walk
 $(P,Q,R)=(3,2,1)$ carries two. Any proof that the descent lands must consume that, or another
 condition separating the scales; a purely local or purely metric argument provably cannot.
+
+Following that instruction reduces the residue further, from a configuration to two points. The
+mechanism of $\texttt{side\_no\_b\_m1}$ is a $\gamma$-trap: on a side of length $f^3$ the walk
+gives $f\mid Q$ modulo $f$, then $Q\ge f$ forces $R=0$ on size, and $R\ge1$ kills that; the $R\ge1$
+holds because every $a$- and every $b$-edge puts a $\gamma$ at a junction of the side, no $\gamma$
+sits at a base corner or the apex, and no other node carries two, so $\#a+\#b\le\#\text{edges}-1$.
+
+The same count runs on the interior stretch. Each of the $f$ tiles above lays an $a$-edge, whose
+flanks are $\beta$ and $\gamma$, so it contributes exactly one $\gamma$ among the $f+1$ junctions,
+and a straight junction carries at most one. Hence \emph{the configuration dies if both endpoints of
+the stretch are $\gamma$-free}, $f$ $\gamma$s being unable to fit in the $f-1$ interior junctions
+(\texttt{A2BranchRow3.c\_under\_run\_dies\_if\_ends\_gamma\_free}, axiom-clean).
+
+The trap does not transport, and the reason is exact. On a side the two ends are a base corner and
+the apex, both $\gamma$-free for boundary reasons. On the interior stretch neither is: an endpoint's
+figure from above may be $\{\alpha,\beta,\gamma\}$, which closes at $\pi$ since
+$\gamma+\alpha+\beta=3\alpha+2\beta$. It is moreover typical, since the $a$-run orientation word
+is monotone, $M^iD^{f-i}$, and the $\gamma$s then occupy every junction but the $i$-th, so both ends
+carry one unless $i\in\{0,f\}$. And \texttt{gamma\_count\_tight} shows the hypothesis cannot be
+weakened: $f$ $\gamma$s do fit in $f+1$ junctions at one apiece, so the count is exactly tight rather
+than merely unproved.
+
+The next input must therefore come from outside the run: a reason the stretch's endpoints cannot
+present $\gamma$ from above, which is a boundary-like fact at an interior line. That is the smallest
+open statement the $e=1$ hole now rests on, and it concerns two vertex figures.
 \end{remark}
 
 \begin{lemma}[Corner lines are column lines]\label{lem:columnlines}

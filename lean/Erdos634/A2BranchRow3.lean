@@ -350,4 +350,62 @@ theorem cover_dichotomy (f B x y z : ℕ) (hf : 3 ≤ f) (hB : B + 1 = f * f)
     have hy : y = 0 := by rcases Nat.mul_eq_zero.mp hy0 with h' | h' <;> omega
     exact ⟨hx, hy, hz1⟩
 
+/-! ## CRUX-1 reduced from a configuration to two points, and the obstruction named
+
+`ScaleRigidity` says any proof here must be scale-sensitive and names the lever: `side_no_b_m1`, that
+at `m = 1` every admissible equal-side walk is free of `b`-edges.  Its mechanism is worth isolating,
+because it is a **gamma-trap**.  On a side of length `f^3` the walk `P a + Q b + R c = f^3` gives
+`f | Q` mod `f`; `Q >= f` then forces `R = 0` on size; and `R >= 1` kills that.  The `R >= 1` is the
+trap: every `a`-edge and every `b`-edge puts a `gamma` at a junction of the side, no `gamma` sits at
+a base corner (one `beta`-tile there) or at the apex (three `alpha`s), and every other node carries
+at most one, so `#a + #b <= #edges - 1`.
+
+Run the same count on the interior stretch.  Each of the `f` tiles above lays an `a`-edge, whose
+flanks are `beta` and `gamma`, so it contributes exactly one `gamma` among the `f + 1` junctions, and
+a straight junction carries at most one.  Hence
+
+  **the configuration dies if both endpoints of the stretch are gamma-free**
+  (`c_under_run_dies_if_ends_gamma_free`),
+
+since `f` gammas cannot fit in the `f - 1` interior junctions.  CRUX-1's residue is therefore no
+longer a configuration but a statement about **two points**.
+
+## The obstruction (Rule 2)
+
+The trap does not transport, and here is exactly why.  On a side the two ends are a base corner and
+the apex, both gamma-free for boundary reasons.  On the interior stretch neither end is: an
+endpoint's figure from above may be `{alpha, beta, gamma}`, which closes at `pi` because
+`gamma + alpha + beta = (2a+b) + a + b = 3a + 2b = pi`.  So a `gamma` at an endpoint is legal.  Worse,
+it is typical: by `OrderForcing`'s `a`-run rigidity the orientation word is monotone, `M^i D^(f-i)`,
+and the gammas then occupy every junction except the `i`-th, so both endpoints carry one unless
+`i = 0` or `i = f`.
+
+`gamma_count_tight` shows the hypothesis is not removable: `f` gammas do fit in `f + 1` junctions at
+one apiece.  The count is exactly tight, not merely unproved.
+
+So the next input must come from outside the run -- a reason the stretch's endpoints cannot present
+`gamma` from above, which is a boundary-like fact at an interior line.  That is the smallest open
+statement the `e = 1` hole now rests on, and it is two vertex figures. -/
+
+/-- **The gamma-count kills the configuration when both ends are gamma-free.**  `G` is the set of
+junctions carrying a `gamma` from above: `f` of them, one per tile, at most one per junction. -/
+theorem c_under_run_dies_if_ends_gamma_free (f : ℕ) (hf : 3 ≤ f) (G : Finset ℕ)
+    (hsub : G ⊆ range (f + 1)) (hcard : G.card = f)
+    (h0 : 0 ∉ G) (hend : f ∉ G) : False := by
+  have hsub' : G ⊆ ((range (f + 1)).erase 0).erase f := by
+    intro x hx
+    exact mem_erase.mpr ⟨fun h => hend (h ▸ hx), mem_erase.mpr ⟨fun h => h0 (h ▸ hx), hsub hx⟩⟩
+  have hc := card_le_card hsub'
+  rw [card_erase_of_mem (mem_erase.mpr ⟨by omega, by simp⟩), card_erase_of_mem (by simp),
+      card_range] at hc
+  omega
+
+/-- **The count is exactly tight without that hypothesis**, so it is not removable: excluding one
+junction still leaves `f`.  Under the monotone orientation word the free junction is `i`, an endpoint
+only at `i = 0` or `i = f`. -/
+theorem gamma_count_tight (f i : ℕ) (hi : i ≤ f) :
+    ((range (f + 1)).erase i).card = f := by
+  rw [card_erase_of_mem (by simp [mem_range]; omega), card_range]
+  omega
+
 end Erdos634.A2BranchRow3
