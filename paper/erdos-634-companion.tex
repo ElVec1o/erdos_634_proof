@@ -1292,6 +1292,43 @@ forces $a$-edges at both ends. The contradiction is immediate. Hypothesis~\ref{h
 a step towards the $e=1$ case; at $e=1$ it \emph{is} the case.
 \end{remark}
 
+\begin{remark}[Correction to Remark~\ref{rem:sidenoa}: $p=0$ is not the open step, and fails for one side]\label{rem:pnotzero}
+Both supports of the previous remark's identification have to be withdrawn, and the target replaced.
+
+The \emph{derivation} of $p=0$ there is ``the complete west block is the tile scaled by $f$, so its
+far side --- the whole equal side at $m=1$ --- is subdivided into exactly $f$ $c$-edges''. A complete
+west block puts $f$ consecutive $a$-feet at the corner, so it needs the base word to begin with
+$a^f$; with exactly $f$ letters $a$ and a final $a$ forced by Theorem~\ref{thm:e1reduce}, that is
+$f+1$ of them. The premise never holds, so the derivation is vacuous.
+
+The \emph{sufficiency} of $p=0$ --- ``note that $p=0$ closes the subfamily outright'' --- is
+justified there by an argument every step of which is about complete blocks: ``complete blocks put
+$f$ $a$-feet at one base corner and $e=1$ $c$-foot at the other, so the base reads $a^f\,b\,c$''.
+That silently substitutes complete blocks for $p=0$, which requires the converse implication
+$p=0\Rightarrow$ (walls). The converse appears only as part of the statement of
+Conjecture~\ref{conj:advance}, proved at $f=2,3,4$ alone.
+
+Moreover the symmetric reading is not merely unsupported but false. By
+Remark~\ref{rem:nocomplete} both corners break; a base-break consumes the walk's single $c$, so at
+most one break is on the base, and some corner breaks on a side. A corner block breaks on a side by
+failing to read a $c$ where the block demands one, and the block's partial far side lies on the
+adjacent equal side. Hence
+\[
+  \textup{at $e=1$, $m=1$, $f\ge3$: at least one equal side carries an }a\textup{-edge,}
+\]
+so no tiling has $p=0$ on both sides, and a single symmetric $p$ satisfies $p\ge1$.
+Formalised as \texttt{Erdos634.WallsCircular.some\_side\_carries\_a} and
+\texttt{symmetric\_p\_zero\_false}.
+
+What survives as the open step is the \emph{cascade}, not the parameter: whether the chain from such
+an $a$-edge terminates in a collision, which is Conjecture~\ref{conj:advance}. Its premise,
+``suppose an equal side carries an $a$-edge'', is now discharged rather than hypothetical --- it
+holds in every tiling of every member. In the language of the crossing statement, $\ell$, the
+initial $c$-block of the side, is exactly the level at which the corner block breaks, and the open
+inequality $\ell\ge b_p-1$ is a race between where the block gives out and where the base $b$ sits.
+It was never the claim that the block does not give out.
+\end{remark}
+
 \begin{lemma}[First-run orientation]\label{lem:firstrun}
 In any tiling of the $(1,f)$ target at $m=1$, every tile of the first $a$-run of an equal side is
 mirrored: its $\gamma$ sits at the upper junction and its label is $-2$. In particular at $(1,3)$,

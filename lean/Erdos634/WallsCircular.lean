@@ -202,6 +202,68 @@ theorem walls_b_hits_tail_iff_e_one (e f : ℕ) (he : 1 ≤ e) :
 /-- At `e ≥ 2` the `b`-block is strictly clear of the forbidden tail, by `e - 1` slots. -/
 theorem walls_b_clear_of_tail (e f : ℕ) (he : 2 ≤ e) : f + e < f + 2 * e - 1 := by omega
 
+/-! ## `p = 0` is not the open step at `e = 1`; it is false for at least one side
+
+`rem:sidenoa` concludes: "the open step at `e = 1` is the single statement `p = 0`", where `p` is the
+`a`-edge parameter of an equal side, and it reads `p` symmetrically — "every equal side therefore
+reads `c(⋯)c` with `fp` interior `a`-edges".  Its two supports are now both gone.
+
+*The derivation of `p = 0`* was "the complete west block is the tile scaled by `f`, so its far side —
+the whole equal side at `m = 1` — is subdivided into exactly `f` `c`-edges".  Vacuous, by
+`west_block_never_complete`.
+
+*The sufficiency of `p = 0`* was "note that `p = 0` closes the subfamily outright", justified by an
+argument whose every step is about **complete blocks**: "complete blocks put `f` `a`-feet at one base
+corner and `e = 1` `c`-foot at the other, so the base reads `a^f b c`".  That substitutes complete
+blocks for `p = 0`, which needs the converse `p = 0 → walls`.  The converse is stated only inside
+`conj:advance` ("Consequently `p = 0`: Hypothesis (walls) holds for every `(1,f)`") — a conjecture,
+proved at `f = 2, 3, 4` only.
+
+Worse for the target, the symmetric reading is **refutable**.  Both corners break; at most one break
+is on the base; so some corner breaks on a side.  A block breaking on a side is a block whose partial
+far side fails to read `c` where the block demands one — that side carries an `a`-edge.  Hence at
+`e = 1`, `m = 1`, `f ≥ 3`:
+
+  **at least one equal side carries an `a`-edge** (`some_side_carries_a`),
+
+so `p = 0` cannot hold for both sides and is not the statement to aim at.  What survives as the open
+step is the *cascade*: `conj:advance` asks whether the chain from such an `a`-edge collides.  Its
+premise, "suppose an equal side carries an `a`-edge", is now discharged rather than hypothetical — it
+holds in every tiling of every member.
+
+This also relocates `ℓ`.  `CrossingCharacterised` shows crossing holds for `k ≤ ℓ` and fails at
+`ℓ + 1`, with `ℓ` the initial `c`-block of the side; `ℓ` is exactly the level at which the corner
+block breaks.  The open statement `ℓ ≥ bp - 1` is therefore a race between where the block gives out
+and where the base `b` sits — not a claim that the block never gives out at all. -/
+
+/-- **At least one equal side carries an `a`-edge.**  From `some_side_break` and the reading of a
+side-break: the block's partial far side lies on that equal side, and it breaks by failing to read a
+`c` where the block demands one. -/
+theorem some_side_carries_a {Corner Side : Type*} (Breaks BaseBreak SideBreak : Corner -> Prop)
+    (sideOf : Corner -> Side) (HasAEdge : Side -> Prop) (K L : Corner)
+    (breaks : forall M, Breaks M) (split : forall M, Breaks M -> BaseBreak M \/ SideBreak M)
+    (notBoth : ¬ (BaseBreak K ∧ BaseBreak L))
+    (breakGivesA : forall M, SideBreak M -> HasAEdge (sideOf M)) :
+    HasAEdge (sideOf K) \/ HasAEdge (sideOf L) := by
+  rcases some_side_break Breaks BaseBreak SideBreak K L breaks split notBoth with h | h
+  · exact Or.inl (breakGivesA K h)
+  · exact Or.inr (breakGivesA L h)
+
+/-- **The symmetric `p = 0` reading is refuted.**  If a single `p` is read off both equal sides, then
+`p ≥ 1`: no tiling has `a`-edge-free sides at `e = 1`. -/
+theorem symmetric_p_zero_false {Corner Side : Type*} (Breaks BaseBreak SideBreak : Corner -> Prop)
+    (sideOf : Corner -> Side) (HasAEdge : Side -> Prop) (K L : Corner)
+    (breaks : forall M, Breaks M) (split : forall M, Breaks M -> BaseBreak M \/ SideBreak M)
+    (notBoth : ¬ (BaseBreak K ∧ BaseBreak L))
+    (breakGivesA : forall M, SideBreak M -> HasAEdge (sideOf M))
+    (symmetric : forall S T : Side, HasAEdge S -> HasAEdge T) :
+    forall S : Side, HasAEdge S := by
+  intro S
+  rcases some_side_carries_a Breaks BaseBreak SideBreak sideOf HasAEdge K L breaks split notBoth
+      breakGivesA with h | h
+  · exact symmetric _ S h
+  · exact symmetric _ S h
+
 end Erdos634.WallsCircular
 
 #print axioms Erdos634.WallsCircular.prefix_run_contradicts_last
