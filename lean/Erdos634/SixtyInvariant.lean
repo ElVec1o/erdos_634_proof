@@ -435,4 +435,55 @@ theorem row_1360_combined : (17 + 80 - 73 : ℤ) = 24 ∧ ¬ ((24 : ℤ) ∣ 136
 as it must. -/
 theorem row_1440_combined_passes : (5 + 8 - 7 : ℤ) = 6 ∧ (6 : ℤ) ∣ 240 := ⟨by norm_num, by decide⟩
 
+/-! ## The method is exhausted: there are exactly three characters
+
+Cancellation needs the weight `f` odd under a half-turn, which on the grid
+`G = { j·(π/3) + k·α }` is `j ↦ j+3`.  Writing `f(j,k) = z^j · e^k` gives `f(j+3,k) = z³ f(j,k)`,
+so the requirement is exactly `z³ = −1`.
+
+`z³ = −1` has **three** roots: `−1`, `−ω`, `−ω²` (`cube_roots_of_neg_one`).  All three are used:
+`−1` is the sign character (`Φ = 3s`), `−ω` the cube-root one (`Φ = 0`), and `−ω²` is its
+conjugate, carrying the same information.
+
+The `α`-coordinate `e` is unconstrained by cancellation, since a half-turn fixes `k`.  But `α` is
+an irrational multiple of `π` (`BaseBetaE1.tile_alpha_irrational`, from Niven), so `k` is a
+genuine `ℤ`-coordinate taking unboundedly many values across a tiling; unless `e = 1` the weights
+`e^k` take infinitely many values and no finite obstruction results.  So `e = 1` is forced.
+
+Hence this method yields exactly `v ∣ s`, the parity `3s/v ≡ N (mod 2)`, and `|3s/v| ≤ N` — and
+nothing further.  **Any additional exclusion must come from a different mechanism.**  Recorded so
+the search for a fourth character is not repeated.
+
+## The edge-length identity, and why it does not bite
+
+Each interior edge is shared by two tiles and each boundary edge by one, so
+
+  `N(a+b+c) = 2·L_int + 3s`,   i.e.   `L_int = (N(a+b+c) − 3s)/2`,
+
+which requires `N(a+b+c) − 3s` to be non-negative and even (`edge_length_identity`).  Checked on
+all 25 rows surviving the invariant and Lemma 3: the parity holds every time, **zero kills**.
+The reason is structural — `a+b+c` and `s` are both even or the counts conspire — so this is a
+true identity with no discriminating power here.  Logged so it is not re-derived.
+-/
+
+/-- **The three characters.**  `z³ = −1` factors as `(z+1)(z² − z + 1)`, so a root is `−1` or a
+root of `z² − z + 1`, the two primitive sixth roots of unity.  Three in all. -/
+theorem cube_roots_of_neg_one {K : Type*} [Field K] (z : K) (h : z ^ 3 = -1) :
+    z = -1 ∨ z ^ 2 - z + 1 = 0 := by
+  have hfac : (z + 1) * (z ^ 2 - z + 1) = 0 := by linear_combination h
+  rcases mul_eq_zero.mp hfac with h1 | h2
+  · exact Or.inl (by linear_combination h1)
+  · exact Or.inr h2
+
+/-- **The half-turn condition.**  `f(j,k) = z^j·e^k` is odd under `j ↦ j+3` exactly when
+`z³ = −1`. -/
+theorem half_turn_odd {K : Type*} [Field K] (z e : K) (j k : ℕ) (h : z ^ 3 = -1) :
+    z ^ (j + 3) * e ^ k = - (z ^ j * e ^ k) := by
+  rw [pow_add, h]; ring
+
+/-- **The edge-length identity.**  `N(a+b+c) = 2·L_int + 3s`: every interior edge is counted by
+two tiles, every boundary edge by one. -/
+theorem edge_length_identity (N a b c s Lint : ℤ)
+    (h : N * (a + b + c) = 2 * Lint + 3 * s) : 2 * Lint = N * (a + b + c) - 3 * s := by linarith
+
 end Erdos634.SixtyInvariant
