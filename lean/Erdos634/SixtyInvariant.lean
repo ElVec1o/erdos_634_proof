@@ -528,4 +528,60 @@ theorem row_945_zhang_check : Squarefree ((5 : ℕ) * 21) ∧ (5 * 21 : ℕ) ∣
   exact (Nat.squarefree_mul (by norm_num)).mpr
     ⟨(Nat.squarefree_mul (by norm_num)).mpr ⟨h3, h5⟩, h7⟩
 
+/-! ## Vertex-type classification, mirroring Laczkovich's graph method
+
+Beeson & Zhang, *Rationality of certain triangle tilings* (arXiv:2604.01314), prove a
+rationality theorem for the `γ = 2π/3` branch — a different branch from Beeson's Table 2
+(`γ = π/3`), and the `π/3` direction of their combined Theorem 1.2 was already known, cited to
+Laczkovich.  So the paper's *result* does not bear on Table 2.  Its *method* — Laczkovich's
+graphs `Γ_a, Γ_b, Γ_c` with a directed degree-counting argument over vertex types — is a
+genuinely different mechanism from the character/cancellation approach used everywhere above:
+it counts **vertices by combinatorial type**, with no reference to edge lengths at all, where
+the character method sums **signed lengths** by direction.  The two are complementary, not
+dual restatements of each other.
+
+## The vertex types, mirrored for `γ = π/3`
+
+Beeson–Zhang's branch has `γ = 2π/3`, `α + β = π/3`. Table 2's branch has the two swapped:
+`γ = π/3`, `α + β = 2π/3`.  Substituting `β = 2π/3 − α` into `nα·α + nβ·β + nγ·γ = Xπ` and using
+irrationality of `α/π` (`BaseBetaE1.tile_alpha_irrational`, cited, not re-derived) forces
+`nα = nβ = n`, leaving
+
+  `2n + nγ = 3X`.
+
+* `X = 1` (a `π`-vertex): `(n, nγ) ∈ {(0,3), (1,1)}` — **three `γ`'s**, or one of each
+  (`simple`, matching Beeson–Zhang's name for the analogous `(1,1,1)` type).
+* `X = 2` (a `2π`-vertex): `(n, nγ) ∈ {(0,6), (1,4), (2,2), (3,0)}` — six `γ`'s, one-one-four,
+  `double simple` `(2,2,2)`, or `star` `(3,3,0)` — the last two again matching their names.
+
+**The structural difference from their branch**: in Beeson–Zhang's setup `γ = 2π/3` is the
+*large* angle, so three `γ`'s alone already reach `2π` (their `center`, a `2π`-vertex).  Here
+`γ = π/3` is the *small* angle, so three `γ`'s reach only `π` — a `π`-vertex type with **no
+analogue** in their classification, a straight junction where three tiles meet `γ`-to-`γ`-to-`γ`.
+Named `triple` below.
+
+## What is proved here, and what is not
+
+The classification itself — `vertex_type_pi`, `vertex_type_two_pi` — is exact arithmetic,
+verified.  Laczkovich's actual theorem (Lemma 3.5 in Beeson–Zhang, `S + 2S₂ = C − 1`) is a
+**degree-counting argument on the graphs `Γ_a`, `Γ_b`** built from these vertex types, spanning
+several pages of case analysis in their paper.  Reproducing it faithfully for this branch, and
+checking whether the resulting linear relation among vertex-type counts yields a genuinely new
+constraint on `N` beyond what the character method already gives, is **not attempted here** —
+it is scoped as the concrete next step, not claimed as done. -/
+
+/-- **The `π`-vertex classification.**  `2n + nγ = 3` has exactly two solutions: three `γ`'s
+(`triple`), or one of each (`simple`). -/
+theorem vertex_type_pi (n nγ : ℕ) (h : 2 * n + nγ = 3) :
+    (n = 0 ∧ nγ = 3) ∨ (n = 1 ∧ nγ = 1) := by omega
+
+/-- **The `2π`-vertex classification.**  `2n + nγ = 6` has exactly four solutions. -/
+theorem vertex_type_two_pi (n nγ : ℕ) (h : 2 * n + nγ = 6) :
+    (n = 0 ∧ nγ = 6) ∨ (n = 1 ∧ nγ = 4) ∨ (n = 2 ∧ nγ = 2) ∨ (n = 3 ∧ nγ = 0) := by omega
+
+/-- **The `triple` vertex has no analogue in the `2π/3` branch.**  Three `γ`'s sum to `π` here
+(`γ = π/3`) but to `2π` there (`γ = 2π/3`) — the source of the asymmetry between the two
+classifications. -/
+theorem triple_is_pi_not_two_pi : (3 : ℕ) * 1 ≠ 3 * 2 := by norm_num
+
 end Erdos634.SixtyInvariant
