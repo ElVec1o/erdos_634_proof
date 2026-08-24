@@ -18,14 +18,47 @@
 #   (R2) Before writing "X is open/carried/blocked/not available", run this script on X.
 #        If X names a declaration that is proved anywhere in the corpus, the claim is stale.
 #
-# Usage:  code/staleness_check.sh            # audit every staleness claim in the corpus
-#         code/staleness_check.sh <name>     # check one declaration before citing it as open
+# Usage:  code/staleness_check.sh              # audit every staleness claim in the corpus
+#         code/staleness_check.sh <name>       # check one declaration before citing it as open
+#         code/staleness_check.sh --blockers   # list every blocker/scope claim by age (git blame),
+#                                              # flagging any that carries no date stamp
+#
+# WHY --blockers EXISTS.  On the same day the name-matching audit was written, it MISSED a stale
+# blocker of my own: StripRigid named its remaining step in PROSE ("that planar intersection
+# step") without naming the declaration that later proved it, so no name matched.  Name-matching
+# is a backstop; the primary defence is R1 plus dating every claim so its age is visible.
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 LEAN="$ROOT/lean/Erdos634"
 KEYWORDS='is (still )?(open|carried|assumed)|remains open|not available|not formalizable|is not proved|NOT proved|cannot be (proved|expressed)|Mathlib (has no|cannot|does not)|blocker'
 
 proved_names() { grep -rhoE "^(theorem|lemma|def) +[A-Za-z0-9_'.]+" "$LEAN"/*.lean | awk '{print $2}' | sort -u; }
+
+if [ "${1:-}" = "--blockers" ]; then
+  echo "=============================================================="
+  echo "BLOCKER / SCOPE CLAIMS BY AGE  (oldest first)"
+  echo "A claim older than the work around it is a re-read candidate, whether or not"
+  echo "it names a declaration.  Undated claims are flagged: date them (R1)."
+  echo "=============================================================="
+  undated=0; total=0
+  while IFS= read -r line; do
+    file="${line%%:*}"; rest="${line#*:}"; lno="${rest%%:*}"; text="${rest#*:}"
+    total=$((total+1))
+    when="$(cd "$ROOT" && git blame -L "$lno,$lno" --date=short -- "$file" 2>/dev/null \
+            | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1)"
+    [ -z "$when" ] && when="uncommitted"
+    if printf '%s' "$text" | grep -qE '[0-9]{4}-[0-9]{2}-[0-9]{2}'; then dated="dated"; else dated="UNDATED"; undated=$((undated+1)); fi
+    printf '%s\t%s\t%s:%s\t%s\n' "$when" "$dated" "${file#$ROOT/}" "$lno" "$(printf '%s' "$text" | cut -c1-78)"
+  done < <(grep -rnE "$KEYWORDS" "$LEAN"/*.lean 2>/dev/null | grep -vE ":[0-9]+:(theorem|lemma|def|structure)") \
+    | sort | awk -F'\t' '{printf "  %-12s %-8s %-42s %s\n", $1, $2, $3, $4}'
+  echo ""
+  echo "=============================================================="
+  echo "$total blocker/scope claims; $undated carry NO date stamp."
+  echo "R1: never append a status update without editing what it falsifies."
+  echo "Date every blocker so its age is visible to the next reader (including you)."
+  echo "=============================================================="
+  exit 0
+fi
 
 if [ "$#" -ge 1 ]; then
   for name in "$@"; do

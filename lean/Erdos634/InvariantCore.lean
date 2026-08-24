@@ -12,10 +12,18 @@ proves two lemmas:
 * **Cancellation** — `Σ_tiles C_f(t) = Φ_f(∂ABC)`;
 * **Tile value** — `C_f(t) = ±(c+a−b)` for every placement of the tile.
 
-Neither is formalizable end to end: both quantify over *tilings*, and Mathlib has no theory of
-triangle dissections. What is formalized here is each lemma's **combinatorial engine**, with the
-geometric input isolated into explicit hypotheses — the same interface discipline used in
-`BaseBetaWalks.lean` (where the vertex-figure facts enter `gamma_injection` as hypotheses).
+What is formalized here is each lemma's **combinatorial engine**, with the geometric input
+isolated into explicit hypotheses — the same interface discipline used in `BaseBetaWalks.lean`
+(where the vertex-figure facts enter `gamma_injection` as hypotheses).
+
+**STATUS (corrected 2026-08-24).**  This paragraph used to open "Neither is formalizable end to
+end: both quantify over *tilings*, and Mathlib has no theory of triangle dissections."  That is
+now too strong for Cancellation.  Its sole geometric input `hLint` is **proved**:
+`WallChain.Dissection.wall_two_sided` gives that a wall segment's near- and far-side chains each
+have total trace measure equal to the segment's, hence agree, which is `hLint` per segment
+(`SixtyInvariant.wall_totals_agree`, `hLint_of_two_sided`).  What remains for Cancellation is the
+summation bookkeeping from per-segment to per-direction, not a missing theory.  The Tile value
+half is unaffected by this correction.
 
 Concretely:
 

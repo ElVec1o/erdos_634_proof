@@ -1,5 +1,6 @@
 import Erdos634.Congruence
 import Erdos634.AngleSumDissection
+import Erdos634.VertexSector
 
 /-!
 # What (iii) is: `HasAngleSums`, extended from the target boundary to interior edges
@@ -102,6 +103,22 @@ above contribute `π`, those below contribute `π`. -/
 theorem half_split (above below : ℝ) (htot : above + below = 2 * Real.pi)
     (habove : above = Real.pi) : below = Real.pi := by
   rw [habove] at htot; linarith
+
+/-- **The lower half-disc has area `π/2 · r²`.**  `Dissection.volume_halfplane_inter_ball_at`
+gives `2·(half-ball) = ball`, and `volume_ball_plane` gives `ball = π r²`.  This is the `harea`
+input of `below_angle_sum_of_area`, once the below-tiles are known to exhaust that half-disc. -/
+theorem half_ball_area (g : Plane →ᵃ[ℝ] ℝ) (hL : g.linear ≠ 0)
+    {x : Plane} (hx : g x = 0) {r : ℝ} (hr : 0 ≤ r) :
+    MeasureTheory.volume ({y : Plane | 0 ≤ g y} ∩ Metric.ball x r)
+      = ENNReal.ofReal (Real.pi / 2 * r ^ 2) := by
+  have h := volume_halfplane_inter_ball_at g hL hx r
+  rw [volume_ball_plane x hr] at h
+  have hsplit : ENNReal.ofReal (Real.pi * r ^ 2)
+      = (2 : ENNReal) * ENNReal.ofReal (Real.pi / 2 * r ^ 2) := by
+    rw [show (2 : ENNReal) = ENNReal.ofReal 2 by simp, ← ENNReal.ofReal_mul (by norm_num)]
+    congr 1; ring
+  rw [hsplit] at h
+  exact (ENNReal.mul_right_inj (by norm_num) (by norm_num)).mp h
 
 /-- **(iii), assembled on the discharged machinery.**  If the tiles below the line contribute
 their local-angle areas to a ball at `p`, and those contributions total the lower half-disc's

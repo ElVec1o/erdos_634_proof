@@ -53,7 +53,11 @@ convexity and measure-theory primitives that *do* exist.
   the form those theorems consume, so that half of the vertex-figure classification is no longer
   assumed.
 
-## What is NOT proved, and is taken as an explicit hypothesis
+## The three predicates (ALL DISCHARGED as of 2026-08-16; kept for downstream statements)
+
+This section was headed "What is NOT proved, and is taken as an explicit hypothesis" until
+2026-08-24.  That heading is now wrong: the list it introduces is EMPTY.  See the status update
+at the end of this block.
 
 Following the discipline of `BaseBetaWalks.gamma_injection` and `InvariantCore.cancellation_core`,
 the facts this file cannot yet derive are isolated as named `Prop`-valued predicates in the final
