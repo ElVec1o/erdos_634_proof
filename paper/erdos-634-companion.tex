@@ -2179,18 +2179,21 @@ and a straight junction carries at most one. Hence \emph{the configuration dies 
 the stretch are $\gamma$-free}, $f$ $\gamma$s being unable to fit in the $f-1$ interior junctions
 (\texttt{A2BranchRow3.c\_under\_run\_dies\_if\_ends\_gamma\_free}, axiom-clean).
 
-The trap does not transport, and the reason is exact. On a side the two ends are a base corner and
-the apex, both $\gamma$-free for boundary reasons. On the interior stretch neither is: an endpoint's
-figure from above may be $\{\alpha,\beta,\gamma\}$, which closes at $\pi$ since
-$\gamma+\alpha+\beta=3\alpha+2\beta$. It is moreover typical, since the $a$-run orientation word
-is monotone, $M^iD^{f-i}$, and the $\gamma$s then occupy every junction but the $i$-th, so both ends
-carry one unless $i\in\{0,f\}$. And \texttt{gamma\_count\_tight} shows the hypothesis cannot be
-weakened: $f$ $\gamma$s do fit in $f+1$ junctions at one apiece, so the count is exactly tight rather
-than merely unproved.
+That criterion is true but \emph{vacuous}, and we state so rather than leave it looking like a
+route. By the $a$-run rigidity the orientation word is monotone, $M^iD^{f-i}$, beta-far tiles first
+and gamma-far after; so tile $1$ presents $\gamma$ at its left end, the stretch's left endpoint,
+unless $i=0$, and tile $f$ presents $\gamma$ at its right end unless $i=f$. Both endpoints
+$\gamma$-free would need $i=0$ and $i=f$ together, impossible for $f\ge1$
+(\texttt{ends\_gamma\_free\_impossible}). Since \texttt{gamma\_count\_tight} shows the count is
+exactly tight --- $f$ $\gamma$s do fit in $f+1$ junctions at one apiece --- the endpoint condition
+was the only way to break it, and it cannot hold. The $\gamma$-count is a dead end.
 
-The next input must therefore come from outside the run: a reason the stretch's endpoints cannot
-present $\gamma$ from above, which is a boundary-like fact at an interior line. That is the smallest
-open statement the $e=1$ hole now rests on, and it concerns two vertex figures.
+What survives is the diagnosis. On a side the two ends are a base corner and the apex, both
+$\gamma$-free for boundary reasons; on an interior stretch an endpoint's figure from above may be
+$\{\alpha,\beta,\gamma\}$, which closes at $\pi$ since $\gamma+\alpha+\beta=3\alpha+2\beta$.
+The $\gamma$-trap behind \texttt{side\_no\_b\_m1} is a boundary phenomenon and does not survive
+the move inward. Any further attempt must couple the run to something other than its own junction
+count.
 \end{remark}
 
 \begin{lemma}[Corner lines are column lines]\label{lem:columnlines}\lab{PROVED}

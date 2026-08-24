@@ -367,25 +367,30 @@ a straight junction carries at most one.  Hence
   **the configuration dies if both endpoints of the stretch are gamma-free**
   (`c_under_run_dies_if_ends_gamma_free`),
 
-since `f` gammas cannot fit in the `f - 1` interior junctions.  CRUX-1's residue is therefore no
-longer a configuration but a statement about **two points**.
+since `f` gammas cannot fit in the `f - 1` interior junctions.
 
-## The obstruction (Rule 2)
+## That route is closed: the hypothesis is unsatisfiable (Rule 2)
 
-The trap does not transport, and here is exactly why.  On a side the two ends are a base corner and
-the apex, both gamma-free for boundary reasons.  On the interior stretch neither end is: an
-endpoint's figure from above may be `{alpha, beta, gamma}`, which closes at `pi` because
-`gamma + alpha + beta = (2a+b) + a + b = 3a + 2b = pi`.  So a `gamma` at an endpoint is legal.  Worse,
-it is typical: by `OrderForcing`'s `a`-run rigidity the orientation word is monotone, `M^i D^(f-i)`,
-and the gammas then occupy every junction except the `i`-th, so both endpoints carry one unless
-`i = 0` or `i = f`.
+The theorem above is true and correctly stated, but it is **vacuous as an attack**, and an earlier
+version of this section wrongly offered its hypothesis as "the smallest open statement the `e = 1`
+hole rests on".  It is not open.  It is false.
 
-`gamma_count_tight` shows the hypothesis is not removable: `f` gammas do fit in `f + 1` junctions at
-one apiece.  The count is exactly tight, not merely unproved.
+By `OrderForcing`'s `a`-run rigidity the orientation word is monotone, `M^i D^(f-i)` -- beta-far
+tiles first, then gamma-far.  So tile `1` presents `gamma` at its **left** end, which is the stretch's
+left endpoint, unless `i = 0`; and tile `f` presents `gamma` at its **right** end, the right endpoint,
+unless `i = f`.  Both endpoints gamma-free therefore needs `i = 0` and `i = f` at once, impossible for
+`f >= 1` (`ends_gamma_free_impossible`).  Equivalently, the gammas occupy every junction but the
+`i`-th, and erasing one element cannot remove both `0` and `f`.
 
-So the next input must come from outside the run -- a reason the stretch's endpoints cannot present
-`gamma` from above, which is a boundary-like fact at an interior line.  That is the smallest open
-statement the `e = 1` hole now rests on, and it is two vertex figures. -/
+`gamma_count_tight` already showed the count is exactly tight -- `f` gammas do fit in `f + 1`
+junctions at one apiece -- so the only way to break it was the endpoint condition, and that is now
+ruled out.  **The gamma-count is a dead end.**
+
+What survives is the diagnosis, not the attack.  On a side the two ends are a base corner and the
+apex, gamma-free for boundary reasons; on an interior stretch an endpoint's figure from above may be
+`{alpha, beta, gamma}`, which closes at `pi` since `gamma + alpha + beta = 3a + 2b`.  The gamma-trap
+of `side_no_b_m1` is a boundary phenomenon and does not survive the move inward.  Any further attempt
+must couple the run to something other than its own junction count. -/
 
 /-- **The gamma-count kills the configuration when both ends are gamma-free.**  `G` is the set of
 junctions carrying a `gamma` from above: `f` of them, one per tile, at most one per junction. -/
@@ -401,11 +406,27 @@ theorem c_under_run_dies_if_ends_gamma_free (f : ℕ) (hf : 3 ≤ f) (G : Finset
   omega
 
 /-- **The count is exactly tight without that hypothesis**, so it is not removable: excluding one
-junction still leaves `f`.  Under the monotone orientation word the free junction is `i`, an endpoint
-only at `i = 0` or `i = f`. -/
+junction still leaves `f`.  Under the monotone orientation word the free junction is `i`. -/
 theorem gamma_count_tight (f i : ℕ) (hi : i ≤ f) :
     ((range (f + 1)).erase i).card = f := by
   rw [card_erase_of_mem (by simp [mem_range]; omega), card_range]
   omega
+
+/-- **The monotone word always leaves a `gamma` at an endpoint.**  The free junction is a single `i`,
+and erasing one element cannot remove both `0` and `f`. -/
+theorem monotone_leaves_gamma_at_an_end (f i : ℕ) (hf : 1 ≤ f) :
+    0 ∈ (range (f + 1)).erase i ∨ f ∈ (range (f + 1)).erase i := by
+  by_cases h : i = 0
+  · right; exact mem_erase.mpr ⟨by omega, mem_range.mpr (by omega)⟩
+  · left; exact mem_erase.mpr ⟨by omega, mem_range.mpr (by omega)⟩
+
+/-- **So the hypothesis of `c_under_run_dies_if_ends_gamma_free` is unsatisfiable**, and that
+theorem, though true, cannot be used to attack the configuration. -/
+theorem ends_gamma_free_impossible (f i : ℕ) (hf : 1 ≤ f) :
+    ¬ (0 ∉ (range (f + 1)).erase i ∧ f ∉ (range (f + 1)).erase i) := by
+  rintro ⟨h0, hf0⟩
+  rcases monotone_leaves_gamma_at_an_end f i hf with h | h
+  · exact h0 h
+  · exact hf0 h
 
 end Erdos634.A2BranchRow3
