@@ -257,7 +257,7 @@ $N=59$ ($(e,f)=(4,5)$, super-thick: $25\le32$) the piercer starts at distance $9
 every non-super-thick member it starts at the T-junction itself.
 \end{proposition}
 
-\begin{theorem}[Alignment of the mismatch ray]\label{thm:align}\lab{PROVED}
+\begin{theorem}[Alignment of the mismatch ray]\label{thm:align}\lab{VERIFIED}
 Let $m=1$, $e\ge2$, and let $r$ be the mismatch inner apex ray of Theorem~\ref{thm:pierce}, of inner
 length $f\cdot b$ (Proposition~\ref{prop:rung2}, $b=f^2-e^2$). Along $r$, the near side is $T2$'s
 single unsplittable $c$-edge covering $[0,f^2]$, and the far side begins with $T1$'s $b$-edge. Then:
@@ -311,13 +311,13 @@ $t=1$, $n_a=f-e$, and then $n_cf=f(f-1-e)$ gives $n_c=f-e-1$. Adding $T2$'s own 
 multiset $\{a^{f-e},c^{f-e}\}$, whose total length is $(f-e)(ef+f^2)=f(f-e)(e+f)=f\,b$ as required.
 \end{proof}
 
-\begin{theorem}[Unique representation of $k\,b$]\label{thm:kbrep}\lab{PROVED}
+\begin{theorem}[Unique representation of $k\,b$]\label{thm:kbrep}\lab{VERIFIED}
 For $1\le k\le f-1$ the only way to write $k\,b$ as $n_a\,ef+n_b\,b+n_c f^2$ in nonnegative integers
 is $b^{k}$. \textup{(}Machine-checked, \texttt{kb\_unique\_rep}; it generalizes
 Theorem~\ref{thm:align}\textup{(ii)}, which needed $n_b\ge1$.\textup{)}
 \end{theorem}
 
-\begin{theorem}[The angle $(\pi-\alpha)/2$]\label{thm:halfangle}\lab{PROVED}
+\begin{theorem}[The angle $(\pi-\alpha)/2$]\label{thm:halfangle}\lab{VERIFIED}
 A vertex figure filling $(\pi-\alpha)/2$ is $\alpha+\beta$, and nothing else.
 \textup{(}Machine-checked, \texttt{halfpi\_minus\_alpha\_unique}.\textup{)}
 \end{theorem}
@@ -450,7 +450,7 @@ Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
-\begin{theorem}[Walk structure at $m=1$]\label{thm:walkstruct}\lab{PROVED}
+\begin{theorem}[Walk structure at $m=1$]\label{thm:walkstruct}\lab{VERIFIED}
 Let $m=1$, $\gcd(e,f)=1$, $1\le e<f$, and consider a tiling of the base-$\beta$ target.
 \begin{enumerate}
 \item[\textup{(i)}] If $f^2>2e^2$, then each equal side carries \emph{no} $b$-edge. Its edges are
@@ -1381,7 +1381,7 @@ single-run combinatorics and the count bound (\texttt{two\_c\_single\_run},
 \texttt{p\_le\_f\_sub\_three}).
 \end{lemma}
 
-\begin{lemma}[c-chord dichotomy]\label{lem:cchord}\lab{PROVED}
+\begin{lemma}[c-chord dichotomy]\label{lem:cchord}\lab{VERIFIED}
 Let a chord of length $c$ be blocked at both ends, so that its far side partitions into whole tile
 edges of total $c$. Then $xa+yb+zc=c$ forces $(x,y,z)=(0,0,1)$, or, exactly when $e=1$,
 $(x,y,z)=(f,0,0)$: the far side is a single $c$-edge or (at $e=1$ only) a run of $f$ $a$-edges.
@@ -1728,7 +1728,7 @@ $c$-edge blocks the mid-junction and the through-edge figure forces the partner)
 collision closes the configuration.
 \end{proof}
 
-\begin{lemma}[The $jb$-line partition]\label{lem:jbline}\lab{PROVED}
+\begin{lemma}[The $jb$-line partition]\label{lem:jbline}\lab{VERIFIED}
 For $1\le j<f$ the only decomposition of $j\,b$ as $xa+yb+zc$ is $x=z=0$, $y=j$. Hence a line
 of length $jb$ that is covered by whole edges on a side splits there into exactly $j$ whole
 $b$-edges. (Whether a given line is so covered is a separate question: see
@@ -1926,7 +1926,7 @@ Hypothesis~\ref{hyp:walls} holds at $(1,5)$: together with blocks $\le2$
 the first member closed with no engine certificate.
 \end{corollary}
 
-\begin{lemma}[The apex]\label{lem:apex}\lab{PROVED}
+\begin{lemma}[The apex]\label{lem:apex}\lab{VERIFIED}
 The target's apex angle is $\pi-2\beta=3\alpha$, and the only vertex figure filling it is three
 $\alpha$-corners (\texttt{apex\_figure}). Since the sides carry no $b$-edge
 (\texttt{side\_no\_b\_uncond}), the two outer apex tiles lay $c$-edges on the sides --- the top
@@ -2231,7 +2231,7 @@ of any proof: the crossing statement admits no $m$-independent argument, and mus
 $m=1$ hypothesis exactly where the corner block is rigid. That input is not supplied here.
 \end{remark}
 
-\begin{lemma}[The vertex census]\label{lem:census}\lab{PROVED}
+\begin{lemma}[The vertex census]\label{lem:census}\lab{VERIFIED}
 In every tiling of the base-$\beta$ target, write $n_1,n_2$ for the numbers of straight figures
 $\{\gamma,\alpha,\beta\}$ and $\{3\alpha,2\beta\}$, and $v_1,\dots,v_4$ for the interior figures
 $\{\beta,3\gamma\}$, $\{2\alpha,2\beta,2\gamma\}$, $\{4\alpha,3\beta,\gamma\}$, $\{6\alpha,4\beta\}$.
@@ -2765,7 +2765,7 @@ therefore a $c$. Hence the first junction $J$ of the side sits at distance $c=f^
 $C$ for the chord through $J$ parallel to the base. It cuts off a triangle similar to the target with
 ratio $f^{2}/f^{3}=1/f$, so the area above $C$ is $N/f^{2}$ tile areas and $|C|=e(3f^{2}-e^{2})/f$.
 
-\begin{lemma}[The apex identities]\label{lem:apexid}\lab{PROVED}
+\begin{lemma}[The apex identities]\label{lem:apexid}\lab{VERIFIED}
 For every $(e,f)$,
 \[
 b\cos\tfrac{\alpha}{2}=c\cos\tfrac{3\alpha}{2},
@@ -3272,7 +3272,7 @@ the $a$-side, $f$ on the $b$-side, and $f + (f-e)$ on the $c$-side, so $B=4f-e$ 
 This is odd exactly when $e\not\equiv f$, and an odd value contradicts the count.
 \end{proof}
 
-\begin{corollary}[The $p=1$ word needs two $c$-edges, so $e=f-1$ is rigid]\label{cor:twoc}\lab{PROVED}
+\begin{corollary}[The $p=1$ word needs two $c$-edges, so $e=f-1$ is rigid]\label{cor:twoc}\lab{VERIFIED}
 A $p=1$ word exists only if $e+2\le f$. Consequently the inflation is rigid at every member with
 $e=f-1$, uniformly in $f$ and with no search.
 \end{corollary}
@@ -3300,7 +3300,7 @@ $\binom{12}{3}=220$ tasks. The table below shows the count beside the measured n
 $k=2$ members are cheap for a structural reason rather than an accidental one.
 \end{remark}
 
-\begin{proposition}[The orientation of a boundary $a$-run is monotone]\label{prop:orientmono}\lab{PROVED}
+\begin{proposition}[The orientation of a boundary $a$-run is monotone]\label{prop:orientmono}\lab{VERIFIED}
 Let a maximal run of consecutive $a$-edges lie on a straight side of the target, or on a side of the
 inflated tile, and let $T_1,\dots,T_L$ be the tiles laying them. Each $T_i$ presents $\beta$ at one end
 of its $a$-edge and $\gamma$ at the other; write its orientation as $\mathrm{BG}$ or $\mathrm{GB}$
@@ -3879,7 +3879,7 @@ determined by $x$.
 \textup{(\texttt{close\_pair\_column}, \texttt{close\_pair\_column\_unique}, \texttt{one\_column\_per\_k}.)}
 \end{proposition}
 
-\begin{proposition}[Sharp criterion for an extra base column]\label{prop:sharpcolumn}\lab{PROVED}
+\begin{proposition}[Sharp criterion for an extra base column]\label{prop:sharpcolumn}\lab{VERIFIED}
 Let $\gcd(e,f)=1$, $1\le e<f$, $b=f^2-e^2$. For $k\ge1$ let $x_k$ be the least positive integer with
 $x_k\equiv ke\pmod f$, and write $x_k=ke-m_kf$, so that $1\le x_k\le f$. Put
 \[
@@ -3967,7 +3967,7 @@ explicit separating edge-line for each of the $231$ tile pairs, and the exact ar
 $\sum 2A_i = 528\sqrt{15}$ --- no axioms, no imports.
 \end{lemma}
 
-\begin{lemma}[Collar decomposition]\label{lem:collar}\lab{PROVED}
+\begin{lemma}[Collar decomposition]\label{lem:collar}\lab{VERIFIED}
 For $m\ge 3$, let $\Delta_{m-2}^{\mathrm{apex}}\subset\Delta_m$ be the scale-$(m-2)$ copy anchored
 at the apex. The closure of $\Delta_m\setminus\Delta_{m-2}^{\mathrm{apex}}$ --- the \emph{collar},
 the bottom two cell rows, $4(m-1)$ cells --- decomposes into

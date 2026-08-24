@@ -395,7 +395,7 @@ base-$\alpha$ prime exclusion (Theorem~20). Proposition~\ref{prop:isoalphaprime}
 latter without any appeal to $g\mid M$.
 \end{remark}
 
-\begin{proposition}[Base-$\alpha$ prime exclusion, replacing {\cite[Thm.~20]{BeesonIII}}]\label{prop:isoalphaprime}\lab{PROVED}
+\begin{proposition}[Base-$\alpha$ prime exclusion, replacing {\cite[Thm.~20]{BeesonIII}}]\label{prop:isoalphaprime}\lab{VERIFIED}
 No isosceles triangle with base angles $\alpha$, where $3\alpha+2\beta=\pi$ and
 $\alpha\notin\Q\pi$, is $N$-tiled for $N$ prime.
 \end{proposition}
@@ -621,7 +621,7 @@ only on $g\mid M$ ($21,39,66,70$) are demoted (Remarks~\ref{rem:seventy},
 is not a square, a sum of two squares, nor $2n^2,3n^2,6n^2$, so it is not commensurably realizable.
 \end{remark}
 
-\begin{proposition}[Dissection basics]\label{prop:dissection}\lab{PROVED}
+\begin{proposition}[Dissection basics]\label{prop:dissection}\lab{VERIFIED}
 Let $ABC$ be cut into $N$ triangles $T_1,\dots,T_N$ with pairwise disjoint interiors and union $ABC$.
 Then $\sum_i\lvert T_i\rvert=\lvert ABC\rvert$, and if the $T_i$ are pairwise congruent to a tile $T$
 then $\lvert ABC\rvert=N\lvert T\rvert$. Moreover, at a point $v\in ABC$ the tiles whose closure
@@ -653,7 +653,7 @@ Proposition~\ref{prop:vertexfigures} (\texttt{vertex\_multiplicities} and its th
 and the angle sum of a tile (\texttt{cornerAngle\_sum}).
 \end{proof}
 
-\begin{proposition}[Vertex figures]\label{prop:vertexfigures}\lab{PROVED}
+\begin{proposition}[Vertex figures]\label{prop:vertexfigures}\lab{VERIFIED}
 Let the tile satisfy $3\alpha+2\beta=\pi$ with $\alpha\notin\Q\pi$, so $\gamma=2\alpha+\beta$ and
 $2\gamma=\pi+\alpha$. If the angles at $v$ have multiplicities $(p,q,r)$ for $(\alpha,\beta,\gamma)$
 together with $s$ straight angles, then $p\alpha+q\beta+r\gamma=t\pi$ with $t=1$ or $t=2$, and
@@ -678,7 +678,7 @@ integer equations is \texttt{vertex\_pi\_multiplicities},
 \texttt{Dissection.lean}.
 \end{proof}
 
-\begin{proposition}[Corner figures]\label{prop:cornerfig}\lab{PROVED}
+\begin{proposition}[Corner figures]\label{prop:cornerfig}\lab{VERIFIED}
 On a base-$\beta$ target, the vertex figure at each base corner is a \emph{single} tile presenting
 $\beta$, and the figure at the apex is \emph{exactly three} tiles, each presenting $\alpha$. In
 particular no corner of $ABC$ carries a $\gamma$. The two edges of the base-corner tile at that
@@ -724,7 +724,7 @@ at $J_n$ --- a corner. Contradiction.
 Recorded in \cite{Obstructions}.
 \end{remark}
 
-\begin{proposition}[$b$ is unsplittable]\label{prop:bunsplit}\lab{PROVED}
+\begin{proposition}[$b$ is unsplittable]\label{prop:bunsplit}\lab{VERIFIED}
 $b$ is not a sum of two or more tile edges: if $n_a\,a+n_b\,b+n_c\,c=b$ with $n_a,n_b,n_c\ge0$, then
 $(n_a,n_b,n_c)=(0,1,0)$.
 \end{proposition}
@@ -815,7 +815,7 @@ preprint's colouring theorem: the direction-group foundation is machine-checked,
 cancellation step is the same $\Phi$-style argument proved in Section~\ref{sec:invariant}.
 \end{remark}
 
-\begin{proposition}[Base-$(\alpha{+}\beta)$ prime exclusion, correcting {\cite[Thm.~18]{BeesonIII}}]\label{prop:b3prime}\lab{PROVED}
+\begin{proposition}[Base-$(\alpha{+}\beta)$ prime exclusion, correcting {\cite[Thm.~18]{BeesonIII}}]\label{prop:b3prime}\lab{VERIFIED}
 No isosceles triangle with base angles $\alpha+\beta$, where $3\alpha+2\beta=\pi$ and
 $\alpha\notin\Q\pi$, is $N$-tiled for $N$ prime.
 \end{proposition}
@@ -927,7 +927,7 @@ proposition recovers it from the invariant alone, with no citation, on any targe
 takes integer values --- which is how it is used in Sections~\ref{sec:invariant} onwards. We state it
 first because it is logically prior to everything that follows.
 
-\begin{proposition}[Rationality from integrality of the invariant]\label{prop:rationality}\lab{PROVED}
+\begin{proposition}[Rationality from integrality of the invariant]\label{prop:rationality}\lab{VERIFIED}
 Let $T$ have sides $a,b,c$ with $c^2=a^2+ab+b^2$ (equivalently, the angle opposite $c$ is $2\pi/3$),
 let $P\ne0$ be a real scale, and suppose the three quantities
 \[
@@ -1108,7 +1108,7 @@ is a sum of $N$ signs, whence $M_\alpha\equiv N\pmod 2$; likewise for $f_\beta$.
 The two counts are usually treated as independent conditions. They are not: on each of the eleven
 shapes their \emph{product} is a fixed rational multiple of the tile count.
 
-\begin{proposition}[The invariant product]\label{prop:product}\lab{PROVED}
+\begin{proposition}[The invariant product]\label{prop:product}\lab{VERIFIED}
 Let $T$ be a $2\pi/3$ tile with $\alpha/\pi$ irrational and let $ABC$ be one of the eleven shapes of
 Section~\ref{sub:shapes}, $N$-tiled by $T$. Then, up to the global sign fixed by the choice of
 reference direction,
@@ -1138,7 +1138,7 @@ The computation is exact and is carried out for all eleven shapes in
 (\texttt{lean/InvariantProduct.lean}, axiom-clean).
 \end{proof}
 
-\begin{corollary}[Tile-similar target, citation-free]\label{cor:similar}\lab{PROVED}
+\begin{corollary}[Tile-similar target, citation-free]\label{cor:similar}\lab{VERIFIED}
 If $ABC$ is similar to $T$, then $N=M_\alpha^2$. In particular $N$ is a perfect square and is never
 prime.
 \end{corollary}
@@ -1700,7 +1700,7 @@ proportions.
 \subsection*{The equilateral criteria as divisor conditions.}
 Both equilateral square criteria --- ours and Beeson's --- complete the square.
 
-\begin{proposition}[Conic form]\label{prop:conic}\lab{PROVED}
+\begin{proposition}[Conic form]\label{prop:conic}\lab{VERIFIED}
 For an equilateral target: a $2\pi/3$ tile requires a factorization $uv=16N^2$ with
 $u+v\equiv0\pmod2$ and $\tfrac{u+v}2-5N=s^2$ for a divisor $s$ of $3N$ with
 $s\equiv 3N/s\equiv N\pmod2$; a $\pi/3$ tile requires a factorization $uv=16N^2$ with
