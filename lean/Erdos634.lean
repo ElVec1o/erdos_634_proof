@@ -1,4 +1,5 @@
 -- Root module for the Erdos634 library: imports every submodule.
+import Erdos634.CornerBlock
 import Erdos634.StripIteration
 import Erdos634.PrimeArithmetic
 import Erdos634.AngleArithmetic
