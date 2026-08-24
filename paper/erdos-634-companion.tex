@@ -29,6 +29,10 @@
 \author{Vico Bonfioli}
 \date{\today}
 
+
+%% Rule 0 label macro: exactly one label per numbered statement.
+\newcommand{\lab}[1]{\hfill\textnormal{\footnotesize\textsc{[#1]}}}
+
 \begin{document}
 
 \title{The base-$\beta$ branch of $3\alpha+2\beta=\pi$: boundary walks, and the structure of a
@@ -497,7 +501,7 @@ $23$, $131$ and $167$, since \textup{(i)} needs only $f/e>\sqrt2$ --- and $17$ s
 \textup{(ii)}. The theorem structures those cases; it does not by itself exclude any of them.
 \end{remark}
 
-\begin{theorem}[The $e=1$ subfamily reduces to one walk]\label{thm:e1reduce}
+\begin{theorem}[The $e=1$ subfamily reduces to one walk]\label{thm:e1reduce}\lab{PROVED}
 Let $e=1$, $m=1$ and $f\ge3$, so the target is $(f^3,f^3,3f^2-1)$, the tile is $(f,f^2-1,f^2)$ and
 $N=3f^2-1$. Both hypotheses of Theorem~\ref{thm:walkstruct} hold ($f^2>2$ and $f^2>2f+1$). In any
 tiling:
@@ -642,7 +646,7 @@ seven to four, for $N=66$ from four to three.
 
 \section{The $e=1$ family}\label{sec:compe1}
 
-\begin{theorem}[The $e=1$ base-$\beta$ family]\label{thm:e1family}
+\begin{theorem}[The $e=1$ base-$\beta$ family]\label{thm:e1family}\lab{CONJECTURE: effective, the strip-and-column exposition being deferred}
 Let $f\ge 2$, and consider the base-$\beta$ instance $(e,f)=(1,f)$ at $m=1$: the tile
 $(f,\,f^2-1,\,f^2)$ on the isosceles target with base angles $\beta$, base $Y=3f^2-1$ and equal
 sides $X=f^3$, with tile count $N=3f^2-1$. No such tiling exists. In particular no prime
@@ -735,7 +739,7 @@ is absorbed into the parametrisation. The forcing is
 \texttt{lean/W2Core.lean}.
 \end{remark}
 
-\begin{lemma}[Interior multiples]\label{lem:interior}
+\begin{lemma}[Interior multiples]\label{lem:interior}\lab{CONJECTURE: effective, resting on the deferred column}
 A base edge of length $f^2-1$ or $f^2$ placed with its left end below $f^2$ contains a multiple
 of $f$ in its open interior, which would be a column apex interior to a boundary edge ---
 impossible. Hence the letters covering $[0,f^2)$ are exactly $f$ copies of $a$.
@@ -779,7 +783,7 @@ The argument below is \emph{conditional}, on one geometric statement about the b
 isolate here and do not prove. We state it first, so that nothing downstream is read as
 unconditional.
 
-\begin{hypothesis}[Complete corner walls]\label{hyp:walls}
+\begin{hypothesis}[Complete corner walls]\label{hyp:walls}\lab{CONJECTURE: open at $e\ge2$, and at $e=1$ equivalent to its own conclusion}
 Let $\mathcal T$ be a tiling of the base-$\beta$ target at $m=1$. Then neither base-corner structure
 is starved or broken: each is the complete block --- $f$ $a$-feet at the west corner, $e$ $c$-feet at
 the east --- whose hypotenuse is a straight segment, of length $f\,b$ resp.\ $e\,b$, partitioned into
@@ -1614,7 +1618,7 @@ target: every length in the display is exact and independent of $f$.
 Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
-\begin{conjecture}[Advance-and-collide]\label{conj:advance}
+\begin{conjecture}[Advance-and-collide]\label{conj:advance}\lab{CONJECTURE, proved at $f=2,3,4$}
 Let $e=1$, $m=1$, $f\ge3$, and suppose an equal side carries an $a$-edge. Then the corner cascade
 --- the $b$-partner of the corner tile, the $c$-chord dichotomy on successive both-ends-blocked
 chords, and the $\beta$-slot at each base point reached --- terminates in every branch with a
@@ -1916,7 +1920,7 @@ sits at depth $\le4$ with the $b$ adjacent. For $f\le5$ no admissible $(bp,cp)$ 
 (\texttt{pincer\_window}).
 \end{theorem}
 
-\begin{corollary}\label{cor:walls15}
+\begin{corollary}\label{cor:walls15}\lab{PROVED, from reach $3$}
 Hypothesis~\ref{hyp:walls} holds at $(1,5)$: together with blocks $\le2$
 (Theorems~\ref{thm:e1cascade},~\ref{thm:elltwo}) the window covers every configuration. This is
 the first member closed with no engine certificate.
@@ -2012,7 +2016,7 @@ So the descent needs only to \emph{land}; what it lands on is forced arithmetica
 (\texttt{A2BranchRow3.span\_all\_a}, \texttt{row\_three\_dies\_of\_span}, axiom-clean).
 \end{theorem}
 
-\begin{corollary}\label{cor:walls16}
+\begin{corollary}\label{cor:walls16}\lab{CONJECTURE: effective, resting on reach $4$, which is open}
 Hypothesis~\ref{hyp:walls} holds at $(1,6)$, hence for every $f\le6$: with reach $4$ the four
 kills cover depth $\le5$ and no admissible $(bp,cp)$ escapes (\texttt{pincer\_window\_four}).
 The $(1,5)$, $(1,6)$ and $(1,7)$ cases are additionally certified by independent exhaustions of

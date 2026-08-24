@@ -25,6 +25,10 @@
 \author{Vico Bonfioli}
 \date{\today}
 
+
+%% Rule 0 label macro: exactly one label per numbered statement.
+\newcommand{\lab}[1]{\hfill\textnormal{\footnotesize\textsc{[#1]}}}
+
 \begin{document}
 
 \begin{abstract}
@@ -104,7 +108,7 @@ into which some triangle can be cut. In particular, since $19$ is not of that fo
 cut into $19$ congruent triangles.
 \end{theorem}
 
-\begin{theorem}[Full prime exclusion, conditional]\label{thm:fullprime}
+\begin{theorem}[Full prime exclusion, conditional]\label{thm:fullprime}\lab{CONJECTURE: effective, its hypothesis being open at $e\ge2$ and equivalent to the conclusion at $e=1$}
 Assume the complete-corner-wall hypothesis of the companion note \cite[Hyp.~5.1]{Companion}. Then no
 prime $N\equiv 3\pmod 4$ with $N>3$ is a number of congruent triangles into which some triangle can
 be cut.
@@ -194,7 +198,7 @@ strengthening at $e\ge2$, and Theorem~\ref{thm:fullprime} retains its content on
 which is where the prime problem now lives.
 \end{remark}
 
-\begin{theorem}[The exceptional set is a congruence class]\label{thm:mod12}
+\begin{theorem}[The exceptional set is a congruence class]\label{thm:mod12}\lab{VERIFIED}
 Let $p>3$ be prime with $p=3f^2-e^2$ for some coprime $e,f$. Then $p\equiv11\pmod{12}$. Conversely
 every prime $p\equiv11\pmod{12}$ is of that form. Hence the base-$\beta$ candidates among the primes
 are exactly the primes $\equiv11\pmod{12}$.
@@ -2281,7 +2285,7 @@ prime candidates the two halves of Theorem~\ref{thm:fullprime} can reach. It is 
 identity rather than by any modular inversion, and it converts what had been a census into a
 statement about all primes.
 
-\begin{proposition}[Uniqueness of the base-$\beta$ representation]\label{prop:repunique}
+\begin{proposition}[Uniqueness of the base-$\beta$ representation]\label{prop:repunique}\lab{VERIFIED}
 Let $p$ be a prime and suppose $p=3f_1^2-e_1^2=3f_2^2-e_2^2$ with $1\le e_i<f_i$ and
 $\gcd(e_i,f_i)=1$ for $i=1,2$. Then $(e_1,f_1)=(e_2,f_2)$. Consequently a prime candidate lies in
 the $e=1$ family if and only if it has the form $3f^2-1$, and no prime of that form admits any
