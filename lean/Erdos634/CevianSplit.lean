@@ -9,9 +9,22 @@ The seed-degeneracy theorem says every certified seed complex closes only on `f 
 `gcd(e,f) = 1` that happens **only** at `(e,f) = (1,2)` — which is exactly why nothing transferred.
 So instead of a seed complex, read the skeleton off the certificate itself.
 
-Scanning the Lean-certified 44-tiling for every line that no tile crosses returns just six: the
-three sides of the target, two tiny lines cutting off a single tile each, and **one** interior line.
-That one is an apex cevian, and it splits the tiling `28 | 16` with **zero tiles crossed**.
+Scanning the Lean-certified 44-tiling for every line that no tile crosses returns **eight**: the
+three sides of the target, and five interior lines cutting off `1, 1, 4, 9, 16` tiles.  The one
+cutting off `16` is an apex cevian, and it splits the tiling `28 | 16` with **zero tiles crossed**.
+
+**CORRECTED 2026-08-24.**  This paragraph read "returns just six … two tiny lines cutting off a
+single tile each, and **one** interior line".  Re-running the scan in exact `ℤ[√15]` over all
+lines through two of the tiling's 38 vertices gives eight, not six: the two lines cutting off `4`
+and `9` tiles were missed.  Splits verified — `43+1`, `43+1`, `40+4`, `35+9`, `28+16`, each
+summing to `44`.  The cevian claim itself is unaffected; the count was wrong.
+Reproducible: `code/analysis/uncrossed_lines.py lean/Erdos634/Tiling44.lean 15`.
+
+Running the same scan on the certified 99-tiling gives eight as well: three sides and five
+interior lines cutting off `1, 1, 4, 4, 25`.  In **both** tilings every uncrossed interior line
+cuts off a *perfect square* of tiles, i.e. a similar copy of the tile at integer scale.  That is
+necessary but not sufficient: the 99-tiling's apex cevian would cut off `(fm)² = 36` and is
+**crossed** there, so no particular line is guaranteed uncrossed at `m ≥ 2`.
 
 Both numbers are structural.  Writing `N₀ = 3f² - e²` for the base-β count, the target at
 multiplier `m` has sides `(f³m, f³m, e·m·N₀)`.  Drop the cevian from the apex to the base point at

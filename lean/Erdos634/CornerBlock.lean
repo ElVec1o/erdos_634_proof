@@ -144,11 +144,23 @@ So the picture is:
 * `L_k`, `k < f` — exactly the lines the argument **does** need, and crossed at `m ≥ 2`
   (`42, 15, 24, 10, 98` incidences, `CrossingHypothesis.crossings_positive`).
 
-**The only interior line that resists crossing is useless to the argument, and every line the
-argument uses is crossed at `m ≥ 2`.**  The `m = 1` input must therefore make the `L_k` with
-`k < f` behave the way `L_f` already behaves at every `m`.  That is what a proof has to achieve,
-stated in terms of objects that already exist, and it is strictly sharper than "consume `m = 1`
-somewhere at the corner block".
+**CORRECTED 2026-08-24, by scanning the `99`-tiling.**  The paragraph above generalised from the
+`44`-tiling alone and said the apex cevian "resists crossing even at `m ≥ 2`".  **That is false at
+`m = 3`.**  Scanning the certified `99`-tiling's 99 tiles over all lines through two tiling
+vertices, in exact `ℤ[√15]`, gives **eight** uncrossed lines: the three target sides, and five
+interior ones cutting off `1, 1, 4, 4, 25` tiles.  The apex cevian there would cut off
+`(fm)² = 36`, leaving `m²(2f² − e²) = 63`; **no `36 | 63` line is uncrossed.**  So the apex cevian
+is uncrossed in the `44`-tiling and crossed in the `99`-tiling, and "`L_f` is uncrossed at every
+`m`" is not a fact.
+
+What the scan does support, across both tilings, is a **necessary** condition: every uncrossed
+interior line cuts off a *perfect square* of tiles — `1, 1, 4, 4, 25` in the `99`-tiling, and
+`1, 1, 16` in the `44`-tiling — that is, a similar copy of the tile at integer scale.  It is not
+sufficient: the `99`-tiling's apex cevian would cut off `36 = 6²` and is crossed anyway.
+
+So the honest statement is weaker than the one first written here: uncrossed interior lines are
+scarce (five of them among 89 vertices in the `99`-tiling) and each cuts off a scaled tile, but no
+particular line is guaranteed uncrossed at `m ≥ 2`.
 
 `needed_lines_are_not_apex` records the disjointness of the two ranges; the geometric statement
 about crossings is not proved here and is the gap. -/
@@ -167,5 +179,20 @@ theorem cevian_split_counts (e f m : ℤ) :
 /-- **The `44`-tiling's split, as reported by `CevianSplit`**: `16 + 28 = 44`, the cut-off piece
 being the tile at scale `fm = 4`. -/
 theorem cevian_split_44 : ((2 : ℤ) * 2) ^ 2 + 2 ^ 2 * (2 * 2 ^ 2 - 1 ^ 2) = 44 := by norm_num
+
+/-- **The `99`-tiling's uncrossed interior lines cut off perfect squares.**  Scanning all lines
+through two of its 89 tiling vertices gives eight uncrossed lines: three target sides and five
+interior, cutting off `1, 1, 4, 4, 25` tiles.  Each count is a square, i.e. a similar copy of the
+tile at integer scale. -/
+theorem uncrossed_cuts_are_squares :
+    (1 : ℕ) = 1 ^ 2 ∧ (4 : ℕ) = 2 ^ 2 ∧ (25 : ℕ) = 5 ^ 2 ∧ (16 : ℕ) = 4 ^ 2 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, by norm_num⟩
+
+/-- **The apex cevian's split at `(e,f,m) = (1,2,3)` is `36 | 63`**, and no uncrossed line of the
+`99`-tiling has that split — the uncrossed interior splits are `98|1, 95|4, 74|25, 4|95, 1|98`.
+So the apex cevian is crossed there, and being a scaled-tile cut is not sufficient for being
+uncrossed. -/
+theorem apex_cevian_split_99 : ((2 : ℕ) * 3) ^ 2 = 36 ∧ 3 ^ 2 * (2 * 2 ^ 2 - 1 ^ 2) = 63 ∧
+    36 + 63 = 99 := by refine ⟨by norm_num, by norm_num, by norm_num⟩
 
 end Erdos634.CornerBlock
