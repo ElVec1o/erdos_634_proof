@@ -232,9 +232,16 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 
 These carry no formalization. The blocker is recorded per group rather than per row, since it is the
 same in each case: the statement quantifies over tilings, tile placements or boundary walks of a
-planar region, and Mathlib has no theory of polygonal dissections to state it against. What would
-unblock them is the `Dissection` layer of `lean/Dissection.lean` extended to boundary words; that
-layer exists for area and vertex degree but not for edge sequences along a side.
+planar region, and Mathlib has no theory of polygonal dissections to state it against.
+
+**STATUS (corrected 2026-08-24).** The last sentence of this paragraph used to read "that layer
+exists for area and vertex degree but not for edge sequences along a side". That is no longer
+true, and had already stopped being true when it was written: `EdgeChain.lean` supplies the
+exactly-once edge chain along a supporting line together with the length identity the walk
+equations consume, and `WallChain.lean` does the same for interior walls, both landed 2026-08-15.
+`Dissection.hasAngleSums` (2026-08-16) closes the vertex-degree side outright. So the remaining
+blocker for this group is not the absence of the layer but the step from these per-side and
+per-wall statements to the *boundary word* as a sequence, which is a different and smaller gap.
 
 | Paper | Statement |
 |---|---|
