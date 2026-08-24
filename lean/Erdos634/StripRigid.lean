@@ -169,10 +169,19 @@ induction against it, instantiated for this layer as `strip_layer_rigid` and for
 UPDATED again, same day.  `ChordChart` derives the first bridge outright: placing the tile's
 `a`-edge on the floor and subtracting the two distance equations gives the reflected apex at
 `(a²+b²-c²)/(2a)`, whose numerator is `e²(e²-f²) < 0` for every member.  The second bridge is
-reduced to one planar statement — both apexes are now known to straddle the shared foot, and
-what remains is that two triangles reaching across a common vertical at positive height must
-intersect.  The blocker for this file is therefore exactly: that planar intersection step.
-It is not "not yet attempted".
+reduced and then CLOSED: both apexes straddle the shared foot, and `ChordChart.upward_in_cone`
+together with `ChordChart.shared_segment_pos` prove that two triangles reaching across a common
+vertical at positive height do intersect — each corner cone contains the straight-up direction,
+so both contain a vertical segment of positive height from the shared foot.
+
+**STATUS (corrected 2026-08-24).**  An earlier version of this paragraph named that planar step
+as the blocker; it was proved the same day and this note was not updated — exactly the
+append-don't-edit failure that `code/staleness_check.sh` now exists to catch.  BOTH bridges are
+theorems.  What remains for this file is only ASSEMBLY: turning `ChordChart`'s geometric
+conclusions into the inequality-shaped hypotheses `LayerLink.strip_layer_rigid` consumes, via
+`Dissection.covers` (an apex left of the mast lies outside the target) and
+`Dissection.interiors_disjoint` (overlapping bodies are impossible).  That is ordinary work with
+every input proved, not an open obstruction.
 -/
 
 /-- **Layer induction schema.**  If the first tile is unreflected and an unreflected tile forces

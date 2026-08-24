@@ -1,4 +1,5 @@
 import Erdos634.Congruence
+import Erdos634.AngleSumDissection
 
 /-!
 # What (iii) is: `HasAngleSums`, extended from the target boundary to interior edges
@@ -101,5 +102,33 @@ above contribute `π`, those below contribute `π`. -/
 theorem half_split (above below : ℝ) (htot : above + below = 2 * Real.pi)
     (habove : above = Real.pi) : below = Real.pi := by
   rw [habove] at htot; linarith
+
+/-- **(iii), assembled on the discharged machinery.**  If the tiles below the line contribute
+their local-angle areas to a ball at `p`, and those contributions total the lower half-disc's
+area `π/2 · r²`, then their local angles sum to `π` — which is the straight-fan statement.
+
+The per-tile area input `hcontrib` is `Tri.volume_inter_ball_localAngle`, the crux that
+discharged `Dissection.hasAngleSums`; the total `harea` is the half-disc area, `volume_ball_plane`
+halved by `volume_halfspace_inter_ball`.  No new geometric principle enters — this is the same
+area computation, applied to a half-ball. -/
+theorem below_angle_sum_of_area {N : ℕ} (D : Dissection N) (p : Plane)
+    (below : Finset (Fin N)) (r : ℝ) (hr : 0 < r)
+    (hcontrib : ∀ i ∈ below, MeasureTheory.volume ((D.tile i).carrier ∩ Metric.ball p r)
+        = ENNReal.ofReal ((D.tile i).localAngle p / 2 * r ^ 2))
+    (harea : ∑ i ∈ below, MeasureTheory.volume ((D.tile i).carrier ∩ Metric.ball p r)
+        = ENNReal.ofReal (Real.pi / 2 * r ^ 2)) :
+    ∑ i ∈ below, (D.tile i).localAngle p = Real.pi := by
+  rw [Finset.sum_congr rfl hcontrib,
+      ← ENNReal.ofReal_sum_of_nonneg (fun i _ => by
+        have := (D.tile i).localAngle_nonneg p; positivity)] at harea
+  have hnn : (0:ℝ) ≤ ∑ i ∈ below, (D.tile i).localAngle p / 2 * r ^ 2 :=
+    Finset.sum_nonneg (fun i _ => by have := (D.tile i).localAngle_nonneg p; positivity)
+  have heq := (ENNReal.ofReal_eq_ofReal_iff hnn (by positivity)).mp harea
+  have hpull : ∑ i ∈ below, (D.tile i).localAngle p / 2 * r ^ 2
+      = (∑ i ∈ below, (D.tile i).localAngle p) * (r ^ 2 / 2) := by
+    rw [Finset.sum_mul]; exact Finset.sum_congr rfl (fun i _ => by ring)
+  have key : (∑ i ∈ below, (D.tile i).localAngle p) * (r ^ 2 / 2) = Real.pi * (r ^ 2 / 2) := by
+    rw [← hpull, heq]; ring
+  exact mul_right_cancel₀ (by positivity) key
 
 end Erdos634.Geometry
