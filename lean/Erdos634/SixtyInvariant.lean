@@ -1,5 +1,6 @@
 import Erdos634.EquilateralScaling
 import Erdos634.InvariantCore
+import Erdos634.WallChain
 
 /-!
 # The signed-direction invariant on the `π/3` branch
@@ -304,6 +305,36 @@ theorem row_1050 : (25 + 168 - 157 : ℤ) = 36 ∧ (6300 : ℤ) / 36 = 175 ∧ 1
 the `(3,8,7)` family, `k = 15`. -/
 theorem row_1350 : (3 * 180 : ℤ) = 540 ∧ (540 : ℤ) / 4 = 135 ∧ 135 % 2 ≠ 1350 % 2 := by norm_num
 
+/-! ## `hLint` per wall segment, straight from `WallChain`
+
+`WallChain.Dissection.wall_two_sided` gives, for a wall segment `S`, that the near-side chain
+(`lineChain f c`) and the far-side chain (`lineChain (−f) (−c)`) each have total trace measure on
+`S` equal to `μH¹ S`.  So the two totals are equal — and that equality, per segment, *is* `hLint`
+in the shape Cancellation consumes, with the involution `(f,c) ↦ (−f,−c)` (`WallChain` names the
+far side exactly that way).
+
+`wall_totals_agree` derives it in one step from the corpus theorem, with no new geometry.  The
+only thing left between it and `Λ_int` is that `Λ_int` on a line is the total over the walls
+lying on it — which is how `Λ_int` is defined, not a fact to prove.
+-/
+
+/-- **`hLint`, per wall segment, from `WallChain`.**  Both side-chains have total trace `μH¹ S`,
+so they agree.  The involution is `(f,c) ↦ (−f,−c)`. -/
+theorem wall_totals_agree {N : ℕ} (D : Erdos634.Geometry.Dissection N)
+    (f : Erdos634.Geometry.Plane →ₗ[ℝ] ℝ) (c : ℝ) (hf : f ≠ 0)
+    {u₁ u₂ : Erdos634.Geometry.Plane} (hu : u₁ ≠ u₂)
+    (hS : segment ℝ u₁ u₂ ⊆ {y | f y = c})
+    (hint : openSegment ℝ u₁ u₂ ⊆ interior D.target.carrier)
+    (hwall : ∀ y ∈ openSegment ℝ u₁ u₂, ∀ i, y ∉ interior (D.tile i).carrier) :
+    (∑ e ∈ D.lineChain f c,
+        (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Erdos634.Geometry.Plane)
+          ((D.tile e.1).edge e.2 ∩ segment ℝ u₁ u₂))
+      = ∑ e ∈ D.lineChain (-f) (-c),
+        (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Erdos634.Geometry.Plane)
+          ((D.tile e.1).edge e.2 ∩ segment ℝ u₁ u₂) := by
+  obtain ⟨hnear, hfar⟩ := D.wall_two_sided f c hf hu hS hint hwall
+  rw [hnear, hfar]
+
 /-! ## The assembly, and what one bookkeeping step still needs
 
 `cancellation_sixty_of_two_sided` consumes the two-sided equalities per direction.
@@ -343,5 +374,65 @@ theorem obstruction_of_walls {D : Type*} [Fintype D]
 `ℤ` via the minimal polynomial `1 + x + x² = 0` at `x = ω`. -/
 theorem omega_boundary_vanishes (x : ℤ) (h : 1 + x + x ^ 2 = 0) : 1 + x ^ 2 + x = 0 := by
   linarith [h]
+
+/-! ## Combining the two characters: `v ∣ s`, not merely `v ∣ 3s`
+
+The sign character gives `n₊ − n₋ = 3s/v`.  The cube-root character gives, homogeneously,
+`n₀ − n₃ = n₄ − n₁ = n₂ − n₅`.  Writing `n₊ = n₀+n₂+n₄` (the even orientations) and
+`n₋ = n₁+n₃+n₅`, the three equal differences sum to
+
+  `n₊ − n₋ = (n₀−n₃) + (n₂−n₅) + (n₄−n₁) = 3D`,
+
+so `3 ∣ n₊ − n₋`.  Combined with `n₊ − n₋ = 3s/v` this forces `3 ∣ 3s/v`, i.e.
+
+  **`v ∣ s`**, where `v = a + b − c`,
+
+strictly stronger than the `v ∣ 3s` the sign character gives alone.  On Beeson's Table 2 the sign
+character alone fails 23 of 60 rows; the combination fails **35 of 60**.
+
+### Controls
+* `N = 54`, `(3,8,7)` — fails the sign test, and is independently dead by exhaustion (96,199
+  nodes).
+* `N = 105`, `(7,15,13)` — passes the sign test but **fails the combined test**, and is
+  independently dead by exhaustion (1,922,194 nodes).  A second control, on the stronger form.
+* `N = 1440`, `(5,8,7)` — passes both, and Herdt exhibited a tiling there.  Required.
+-/
+
+/-- **The three equal differences sum to the sign imbalance.**  With the even orientations
+`n₀, n₂, n₄` and the odd ones `n₁, n₃, n₅`, the cube-root relations give `n₊ − n₋ = 3D`. -/
+theorem sign_imbalance_of_cube_root (n₀ n₁ n₂ n₃ n₄ n₅ D : ℤ)
+    (h₁ : n₀ - n₃ = D) (h₂ : n₄ - n₁ = D) (h₃ : n₂ - n₅ = D) :
+    (n₀ + n₂ + n₄) - (n₁ + n₃ + n₅) = 3 * D := by omega
+
+/-- **Hence `v ∣ s`.**  If `v·q = 3s` and `3 ∣ q`, then `v ∣ s`. -/
+theorem v_dvd_s (s v q : ℤ) (hq : v * q = 3 * s) (h3 : (3 : ℤ) ∣ q) : v ∣ s := by
+  obtain ⟨m, hm⟩ := h3
+  refine ⟨m, ?_⟩
+  subst hm
+  linarith [hq]
+
+/-- **`N = 105`, tile `(7,15,13)`, side `105`.**  `v = 9` does not divide `s = 105`, so the
+combined test fires.  This row is independently dead by exhaustion — the control for the
+stronger form. -/
+theorem row_105_combined : (7 + 15 - 13 : ℤ) = 9 ∧ ¬ ((9 : ℤ) ∣ 105) := ⟨by norm_num, by decide⟩
+
+/-- `N = 156`, `(13,48,43)`, `s = 312`: `v = 18 ∤ 312`.  This was the next row queued for a
+~74 hour search; it is now excluded without one. -/
+theorem row_156_combined : (13 + 48 - 43 : ℤ) = 18 ∧ ¬ ((18 : ℤ) ∣ 312) := ⟨by norm_num, by decide⟩
+
+/-- `N = 385`, `(11,35,31)`, `s = 385`: `v = 15 ∤ 385`. -/
+theorem row_385_combined : (11 + 35 - 31 : ℤ) = 15 ∧ ¬ ((15 : ℤ) ∣ 385) := ⟨by norm_num, by decide⟩
+
+/-- `N = 490`, `(5,8,7)`, `s = 140`: `v = 6 ∤ 140`. -/
+theorem row_490_combined : (5 + 8 - 7 : ℤ) = 6 ∧ ¬ ((6 : ℤ) ∣ 140) := ⟨by norm_num, by decide⟩
+
+/-- `N = 1360`, `(17,80,73)`, `s = 1360`: `v = 24 ∤ 1360`.  The `k = 4` member that survived the
+sign test on this family now falls. -/
+theorem row_1360_combined : (17 + 80 - 73 : ℤ) = 24 ∧ ¬ ((24 : ℤ) ∣ 1360) :=
+  ⟨by norm_num, by decide⟩
+
+/-- **The Herdt control on the stronger form.**  `v = 6` divides `s = 240`, so `N = 1440` passes,
+as it must. -/
+theorem row_1440_combined_passes : (5 + 8 - 7 : ℤ) = 6 ∧ (6 : ℤ) ∣ 240 := ⟨by norm_num, by decide⟩
 
 end Erdos634.SixtyInvariant
