@@ -157,7 +157,12 @@ case: both routes to them --- the companion's forcing chain and our own assembly
 (\texttt{lean/Erdos634/E1Assembly.lean}) --- run to the same single geometric fact, that the
 multiples of $f$ in $[0,f^2)$ are tiling vertices on the base, and neither invokes the hypothesis at
 any point. What is lost is only the appearance that the hypothesis was doing work at $e=1$; the real
-state of the subfamily is a reduction to that one fact, not a closure. We note in passing that the
+state of the subfamily is a reduction to that one fact, not a closure. Something is also gained.
+The hypothesis is precisely the assertion that the corner growth \emph{completes} rather than
+breaks, so knowing that it never holds removes the completion branch from the companion's case split
+at $e=1$: both corners break, at most one break is on the base because the walk carries a single
+$c$, and therefore some corner breaks on a side. The forced column of $f$ tiles is then present in
+every tiling of every $e=1$ member rather than in one branch of an alternative. We note in passing that the
 prime candidates in the subfamily all have $f$ even, since $3f^2-1$ is even for odd $f$
 (\texttt{lean/Erdos634/ThinHole.lean}, \texttt{thin\_prime\_f\_even}); the odd-$f$ members
 $N=26,74,146,\dots$ are composite, so the parity hypothesis whose removal is recorded in the

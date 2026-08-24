@@ -667,6 +667,29 @@ $(f^2,0)$ carries exactly $\gamma+\alpha$ from the filler and column, leaving a 
 $\beta$, whose tile presents $a$ or $c$ --- never $b$. Every case terminates in one of these
 contradictions.
 
+\begin{remark}[At $e=1$ the completion branch is empty, so the column is unconditional]\label{rem:nocomplete}
+The chain above carries, at each corner, the alternative ``either the quadratic growth completes
+($k=f$) or a first break occurs''. At $e=1$ the first alternative never occurs, and this can be seen
+from the letter budget alone. A complete west block has $f$ $a$-feet on the base; feet are
+consecutive from the corner, so it requires the base word to begin with $a^f$. A complete east block
+at $e=1$ has a single $c$-foot, so it requires the base word to end with $c$. But
+Theorem~\ref{thm:e1reduce} makes the base word a permutation of $(a^f,b,c)$ beginning \emph{and}
+ending with $a$: the first requirement asks for $f+1$ letters $a$ out of $f$, and the second
+contradicts the final $a$ outright.
+
+So both corners break. A base-break consumes the walk's $c$, and $(f,1,1)$ has only one, so at most
+one of the two breaks is on the base; hence at least one corner breaks on a \emph{side}, and the
+forced horizontal column of $f$ tiles exists in every tiling of every $e=1$ member. The column is
+therefore not one branch of a case split at $e=1$ --- it is unconditional, and the subfamily rests
+on the single deferred step that the column reaches the base.
+
+This also settles the status of Hypothesis~\ref{hyp:walls} at $e=1$, since the hypothesis is
+precisely the assertion that the completion branch is the one that occurs: it holds there exactly
+when no tiling exists, so no exclusion of an $e=1$ member may cite it. Formalised in
+\texttt{lean/Erdos634/WallsCircular.lean} (\texttt{west\_block\_never\_complete},
+\texttt{both\_corners\_break}, \texttt{some\_side\_break}), axiom-clean.
+\end{remark}
+
 \begin{lemma}[Filler identity]\label{lem:filler}
 With $J_i$ the $i$-th column junction and $\mathrm{ap}_i$ the $i$-th apex, the triangle
 $(J_i,\mathrm{ap}_i,\mathrm{ap}_{i+1})$ has sides exactly $c,b,a$:
