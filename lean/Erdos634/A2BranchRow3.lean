@@ -252,4 +252,88 @@ theorem word42_no_landing (f B x y z j : ℕ) (hf : 3 ≤ f) (hB : B + 1 = f * f
   rw [hx] at hletters hfit
   exact word42_no_a_block f hf j hfit hletters
 
+/-! ## Where "the feet reach the base" can fail, and why no local argument settles it
+
+One hypothesis is left.  Here is exactly what it costs, and why it is not cheap.
+
+Drop the `k ≥ f` premise --- available on the base, where the `f + 1` feet are forced to be
+junctions, but *not* at an interior floor, where a vertex of an upper tile may sit interior to a
+lower tile's edge.  The length arithmetic still decides the cover of a length-`f²` stretch, but now
+with **two** cases (`cover_dichotomy`): `f` `a`-edges, or a single `c`-edge.
+
+* `f` `a`-edges below: the run is reproduced one level down and the descent continues.
+* one `c`-edge below: the `f - 1` interior feet become `T`-vertices interior to that `c`, and the
+  descent is blocked.
+
+So the descent reaches the base **unless** at some interior level a single `c`-edge lies directly
+under the run.  That is the entire residue, and it is one named configuration.
+
+It is not locally refutable, and the reason is worth recording so the ground is not walked again.
+At each interior foot the wedge from below is `π` (the `c` passes straight through), so the tiles
+above sum to `π` and the figure is `{α,β,γ}` or `{α,α,α,β,β}` --- at most one `γ`
+(`OrderForcing.straight_junction_cases`).  Each upper tile lays an `a`, whose flanks are `β` and `γ`,
+contributing exactly one of each.  By `OrderForcing`'s `a`-run rigidity the orientation word is
+monotone, `M^i D^{f-i}`, and then the `γ`s land on the feet `{0,…,i-1} ∪ {i+1,…,f}` --- `f` of them
+on `f` distinct feet, one each, with foot `i` free.  Every constraint is met exactly.  The ends give
+nothing either: the stretch's endpoints are interior to the floor, so the tiles above them sum to `π`
+on their own and never meet the lower tile's `α` and `β` in a single equation.
+
+The configuration is therefore locally consistent at every junction, and any proof that it cannot
+occur must be global --- which is the same barrier `StripIteration` records as boundary-versus-interior.
+What is new is that the barrier is now a *single* configuration rather than a general claim about
+descents, and that the base case is settled: on the base the `c`-alternative dies outright, because
+there the interior feet would be vertices interior to a *boundary* edge. -/
+
+/-- **The cover dichotomy.**  A stretch of length `f²` covered by whole tile edges of lengths
+`a = f`, `b = B = f² - 1`, `c = f²` is either `f` `a`-edges or one `c`-edge.  No `k ≥ f` premise. -/
+theorem cover_dichotomy (f B x y z : ℕ) (hf : 3 ≤ f) (hB : B + 1 = f * f)
+    (hsum : x * f + y * B + z * (B + 1) = B + 1) :
+    (y = 0 ∧ z = 0 ∧ x = f) ∨ (x = 0 ∧ y = 0 ∧ z = 1) := by
+  have hBge : 8 ≤ B := by nlinarith
+  rcases Nat.eq_zero_or_pos z with hz | hz
+  · subst hz
+    left
+    refine ⟨?_, rfl, ?_⟩
+    · by_contra h
+      have h1 : 0 < y := Nat.pos_of_ne_zero h
+      have hyy : B ≤ y * B := Nat.le_mul_of_pos_left _ h1
+      have hy1 : y = 1 := by
+        by_contra hne
+        have hy2 : 2 ≤ y := by omega
+        have : 2 * B ≤ y * B := Nat.mul_le_mul_right _ hy2
+        omega
+      subst hy1
+      have hx1 : x * f = 1 := by omega
+      rcases Nat.eq_zero_or_pos x with h' | h'
+      · subst h'; simp at hx1
+      · have : f ≤ x * f := Nat.le_mul_of_pos_left _ h'
+        omega
+    · have hy0 : y = 0 := by
+        by_contra h
+        have h1 : 0 < y := Nat.pos_of_ne_zero h
+        have hyy : B ≤ y * B := Nat.le_mul_of_pos_left _ h1
+        have hy1 : y = 1 := by
+          by_contra hne
+          have hy2 : 2 ≤ y := by omega
+          have : 2 * B ≤ y * B := Nat.mul_le_mul_right _ hy2
+          omega
+        subst hy1
+        have hx1 : x * f = 1 := by omega
+        rcases Nat.eq_zero_or_pos x with h' | h'
+        · subst h'; simp at hx1
+        · have : f ≤ x * f := Nat.le_mul_of_pos_left _ h'
+          omega
+      subst hy0
+      have hxf : x * f = f * f := by omega
+      exact Nat.eq_of_mul_eq_mul_right (by omega) hxf
+  · right
+    have hzz : B + 1 ≤ z * (B + 1) := Nat.le_mul_of_pos_left _ hz
+    have hx0 : x * f = 0 := by omega
+    have hy0 : y * B = 0 := by omega
+    have hzeq : z * (B + 1) = 1 * (B + 1) := by omega
+    have hz1 : z = 1 := Nat.eq_of_mul_eq_mul_right (by omega) hzeq
+    have hx : x = 0 := by rcases Nat.mul_eq_zero.mp hx0 with h' | h' <;> omega
+    have hy : y = 0 := by rcases Nat.mul_eq_zero.mp hy0 with h' | h' <;> omega
+    exact ⟨hx, hy, hz1⟩
+
 end Erdos634.A2BranchRow3

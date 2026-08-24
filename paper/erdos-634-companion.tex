@@ -2114,6 +2114,34 @@ that step is now carried in its weakest form --- the descent must land, and noth
 what it lands on.
 \end{remark}
 
+\begin{remark}[Where the landing hypothesis can fail, and why it is not local]\label{rem:landingfail}
+It is worth saying exactly what the remaining hypothesis costs. On the base the $f+1$ feet are
+forced to be junctions, since no tiling vertex lies interior to a boundary edge, and the span
+dichotomy then leaves only $f$ consecutive $a$s. At an \emph{interior} floor that premise is
+unavailable: a vertex of an upper tile may sit interior to a lower tile's edge. Dropping it, the
+length arithmetic still decides the cover of a length-$f^2$ stretch, but with two cases
+(\texttt{A2BranchRow3.cover\_dichotomy}): $f$ $a$-edges, or a single $c$-edge. In the first the run
+is reproduced one level down and the descent continues; in the second the $f-1$ interior feet become
+$T$-vertices inside that $c$ and the descent is blocked.
+
+So the feet reach the base \emph{unless} at some interior level a single $c$-edge lies directly
+under the run. That is the whole residue, and it is one named configuration.
+
+It is not locally refutable, and we record why so the ground is not walked again. At each interior
+foot the wedge from below is $\pi$, so the tiles above sum to $\pi$ and the figure is
+$\{\alpha,\beta,\gamma\}$ or $\{\alpha,\alpha,\alpha,\beta,\beta\}$ --- at most one
+$\gamma$. Each upper tile lays an $a$, whose flanks are $\beta$ and $\gamma$, contributing exactly
+one of each; by the $a$-run rigidity of \texttt{OrderForcing} the orientation word is monotone,
+$M^iD^{f-i}$, and the $\gamma$s then fall on the feet $\{0,\dots,i-1\}\cup\{i+1,\dots,f\}$ ---
+$f$ of them on $f$ distinct feet, one apiece, with foot $i$ free. Every constraint is met exactly.
+The endpoints give nothing either: they are interior to the floor, so the tiles above them close to
+$\pi$ by themselves and never meet the lower tile's $\alpha$ and $\beta$ in one equation.
+
+Any proof must therefore be global, which is the boundary-versus-interior barrier already recorded
+for the strip iteration. What has changed is that the barrier is now a single configuration rather
+than a general claim about descents, and that its base case is settled outright.
+\end{remark}
+
 \begin{lemma}[Corner lines are column lines]\label{lem:columnlines}
 Let $f\ge3$, $m=1$. Every $b$-direction line through two vertices of the corner lattice
 $\mathbb Z(a,0)+\mathbb Z\,cu$ meets the base at $(kf,0)$ and the left side at $k\,cu$ for an
