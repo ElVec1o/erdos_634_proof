@@ -56,4 +56,50 @@ theorem straight_sums_to_two_pi (above below : Plane → ℝ) (E : Set Plane)
   obtain ⟨ha, hb⟩ := h v hv
   rw [ha, hb]; ring
 
+/-! ## (iii) is not an assumption after all: the area route
+
+An earlier note in this file said `HasAngleSums` covers interior, boundary and corner points but
+not a point interior to the target lying on an *edge of the tiling*, so (iii) had to be carried.
+That is now out of date on the crucial point.
+
+`Dissection.hasAngleSums` was **discharged** (2026-08-16, `AngleSumDissection.lean`), and the
+crux it was built on is exactly what (iii) needs:
+
+* `Tri.volume_inter_ball_localAngle` — every small enough ball at `p` meets a tile in area
+  **exactly** `localAngle p / 2 · r²`;
+* `Dissection.volume_inter_ball_eq_sum` — those contributions sum to the target's own
+  ball-intersection, by `covers` and `aedisjoint`.
+
+So the angles at a point are *measured by area*, and area splits across a line.  At a junction on
+an edged interior floor no tile's interior meets the segment (this is `wall_two_sided`'s own
+hypothesis `hwall`), so every tile lies locally in one closed half-plane, and the tiles below
+exhaust the lower half-disc, of area `π r² / 2`.  Matching against `Σ θ_i / 2 · r²` gives
+`Σ θ_i = π` — which is (iii).
+
+`angle_sum_of_half_disc` and `half_split` below are that final matching step.  What they consume,
+`below_covers`, is the statement that the below-tiles exhaust the lower half-disc; its geometric
+input is `hwall`, already present wherever `wall_two_sided` is applied.  So (iii) is no longer a
+free-standing geometric assumption of a *different kind* from the rest of the project — it is the
+same area computation that discharged `HasAngleSums`, applied to a half-ball instead of a ball.
+
+**Scope, stated exactly.**  The two lemmas below are proved.  Assembling them into a single
+statement about a `Dissection` — carrying the partition of tiles by side and the half-disc
+covering through Mathlib's measure API — is *not* done here, and is the remaining work. -/
+
+/-- **From half-disc area to angle sum.**  If the tiles below a line contribute total area
+`S/2 · r²` and together exhaust the lower half-disc, of area `π/2 · r²`, then `S = π`. -/
+theorem angle_sum_of_half_disc (S r : ℝ) (hr : 0 < r)
+    (h : S / 2 * r ^ 2 = Real.pi / 2 * r ^ 2) : S = Real.pi := by
+  have hr2 : (0:ℝ) < r ^ 2 := by positivity
+  have : S / 2 = Real.pi / 2 := by
+    field_simp at h
+    nlinarith [h, hr2]
+  linarith
+
+/-- **The two sides split the full angle.**  At an interior point the total is `2π`; if the tiles
+above contribute `π`, those below contribute `π`. -/
+theorem half_split (above below : ℝ) (htot : above + below = 2 * Real.pi)
+    (habove : above = Real.pi) : below = Real.pi := by
+  rw [habove] at htot; linarith
+
 end Erdos634.Geometry
