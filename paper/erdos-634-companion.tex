@@ -97,7 +97,7 @@ n_a\,ef+n_b\,(f^2-e^2)+n_c\,f^2=L,\qquad n_a,n_b,n_c\ge0 ,
 together with $n_c\ge1$ from the $\gamma$-trap. The results of this section solve those equations
 and then constrain the order in which the edges occur.
 
-\begin{theorem}[The base-$\beta$ family at $e=1$, $f=2$]\label{thm:basebeta-e1}
+\begin{theorem}[The base-$\beta$ family at $e=1$, $f=2$]\label{thm:basebeta-e1}\lab{PROVED}
 The isosceles triangle with base angles $\beta$ and sides $(8,8,11)$ admits no tiling by $N=11$
 copies of the tile $(2,3,4)$. Consequently the base-$\beta$ branch is closed for $N=11$,
 unconditionally.
@@ -130,7 +130,7 @@ $3,\dots,1$. At $f=2$, $B_1$ also dies by (a): $k=4$ leaves positions $3,\dots,2
 survives, and $N=11$ admits no tiling. \qedhere
 \end{proof}
 
-\begin{theorem}[Boundary walks of the base-$\beta$ target at $m=1$]\label{thm:walks}
+\begin{theorem}[Boundary walks of the base-$\beta$ target at $m=1$]\label{thm:walks}\lab{PROVED}
 Let $(a,b,c)=(ef,\,f^2-e^2,\,f^2)$ be the primitive $3\alpha+2\beta$ tile ($1\le e<f$,
 $\gcd(e,f)=1$) and let $m=1$, so that the target is $(f^3,f^3,e(3f^2-e^2))$ and $N=3f^2-e^2$. Write a
 walk along a side as $P\cdot a+Q\cdot b+R\cdot c$ equal to that side's length. Then both walk sets are
@@ -198,7 +198,7 @@ so $R\ge1$ forces $j(f-e)\le e-1$, which is (iv) (and it holds trivially at $j=0
 $e=1$ this reads $j(f-1)\le0$, so $j=0$; for $f>2e$ we get $je<j(f-e)\le e-1$, so $j=0$.
 \end{proof}
 
-\begin{theorem}[Apex mismatch: the pierced corner]\label{thm:pierce}
+\begin{theorem}[Apex mismatch: the pierced corner]\label{thm:pierce}\lab{PROVED}
 Let a base-$\beta$ target be tiled at any scale $m$ such that both equal sides end (at the apex) with
 a $c$-edge --- automatic at $m=1$, where the sides are $b$-free. Then, writing $T_2$ for the middle
 of the three apex tiles:
@@ -246,7 +246,7 @@ constraint, uniform in $(e,f)$ and unconditional at $m=1$: every hypothetical th
 $N=59$ included, must contain it.
 \end{remark}
 
-\begin{proposition}[Rung two: the pre-piercer chain]\label{prop:rung2}
+\begin{proposition}[Rung two: the pre-piercer chain]\label{prop:rung2}\lab{PROVED}
 In the configuration of Theorem~\ref{thm:pierce}, every full far-side edge strictly between the
 T-junction and the piercer lies inside $[b,f^2]$, hence has length $\le e^2$; among the tile edges
 only $b=f^2-e^2$ can satisfy this, and only in the \emph{super-thick} regime $f^2\le 2e^2$. So the
@@ -257,7 +257,7 @@ $N=59$ ($(e,f)=(4,5)$, super-thick: $25\le32$) the piercer starts at distance $9
 every non-super-thick member it starts at the T-junction itself.
 \end{proposition}
 
-\begin{theorem}[Alignment of the mismatch ray]\label{thm:align}
+\begin{theorem}[Alignment of the mismatch ray]\label{thm:align}\lab{PROVED}
 Let $m=1$, $e\ge2$, and let $r$ be the mismatch inner apex ray of Theorem~\ref{thm:pierce}, of inner
 length $f\cdot b$ (Proposition~\ref{prop:rung2}, $b=f^2-e^2$). Along $r$, the near side is $T2$'s
 single unsplittable $c$-edge covering $[0,f^2]$, and the far side begins with $T1$'s $b$-edge. Then:
@@ -285,7 +285,7 @@ $b\mid\gcd(f^2,e^2)=1$, so $b=1$, impossible as $b\ge2e+1\ge5$. The far junction
 $kb$, none equal to $f^2$, so the $b$-edge containing $f^2$ straddles it.
 \end{proof}
 
-\begin{theorem}[The mismatch ray is completely determined]\label{thm:ray}
+\begin{theorem}[The mismatch ray is completely determined]\label{thm:ray}\lab{PROVED}
 Let $m=1$, $e\ge2$, and let the family be thick, $f\le2e$. Then along the mismatch inner apex ray,
 of inner length $f\,b$:
 \[
@@ -311,18 +311,18 @@ $t=1$, $n_a=f-e$, and then $n_cf=f(f-1-e)$ gives $n_c=f-e-1$. Adding $T2$'s own 
 multiset $\{a^{f-e},c^{f-e}\}$, whose total length is $(f-e)(ef+f^2)=f(f-e)(e+f)=f\,b$ as required.
 \end{proof}
 
-\begin{theorem}[Unique representation of $k\,b$]\label{thm:kbrep}
+\begin{theorem}[Unique representation of $k\,b$]\label{thm:kbrep}\lab{PROVED}
 For $1\le k\le f-1$ the only way to write $k\,b$ as $n_a\,ef+n_b\,b+n_c f^2$ in nonnegative integers
 is $b^{k}$. \textup{(}Machine-checked, \texttt{kb\_unique\_rep}; it generalizes
 Theorem~\ref{thm:align}\textup{(ii)}, which needed $n_b\ge1$.\textup{)}
 \end{theorem}
 
-\begin{theorem}[The angle $(\pi-\alpha)/2$]\label{thm:halfangle}
+\begin{theorem}[The angle $(\pi-\alpha)/2$]\label{thm:halfangle}\lab{PROVED}
 A vertex figure filling $(\pi-\alpha)/2$ is $\alpha+\beta$, and nothing else.
 \textup{(}Machine-checked, \texttt{halfpi\_minus\_alpha\_unique}.\textup{)}
 \end{theorem}
 
-\begin{theorem}[The $b$-run orientation lemma]\label{thm:chain}
+\begin{theorem}[The $b$-run orientation lemma]\label{thm:chain}\lab{PROVED}
 Let a run of $b$-edges be laid end to end along a ray, seeded at an apex tile. Then every $b$-edge of
 the run carries $\alpha$ at its apex end and $\gamma$ at its far end, and every junction interior to
 the run is an $(\alpha,\beta,\gamma)$ $\pi$-vertex. In particular the $3\alpha+2\beta$ figure never
@@ -338,7 +338,7 @@ outgoing corner, so the next edge again ends in $\gamma$. An apex tile has $\alp
 $\gamma$ at the far end of its $b$-edge, which seeds the induction; it proceeds with no branching.
 \end{proof}
 
-\begin{theorem}[The far region is a scaled tile]\label{thm:farregion}
+\begin{theorem}[The far region is a scaled tile]\label{thm:farregion}\lab{PROVED}
 Suppose the mismatch apex ray is a complete wall, of inner length $f\,b$. Then it cuts off a triangle
 with angle $\alpha$ at the apex, $\beta$ at the base corner and hence $\gamma$ at its third vertex,
 and with sides $f\,c,\ f\,a,\ f\,b$ --- that is, \emph{the tile scaled by $f$}. It therefore has area
@@ -346,7 +346,7 @@ $f^2$ times the tile's and is tiled by the standard $f$-subdivision into $f^2$ c
 is exactly $b^{f}$ with the junction chain of Theorem~\ref{thm:chain}.
 \end{theorem}
 
-\begin{corollary}[The far side can never give a contradiction]\label{cor:farvacuous}
+\begin{corollary}[The far side can never give a contradiction]\label{cor:farvacuous}\lab{PROVED}
 \emph{Under the hypothesis of Theorem~\textup{\ref{thm:farregion}}} --- that the mismatch apex ray is
 a complete wall --- no obstruction to a base-$\beta$ tiling can be derived from the far side of that
 ray, at any $(e,f)$: that side admits a genuine tiling. The hypothesis may not be dropped; if the ray
@@ -450,7 +450,7 @@ Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
-\begin{theorem}[Walk structure at $m=1$]\label{thm:walkstruct}
+\begin{theorem}[Walk structure at $m=1$]\label{thm:walkstruct}\lab{PROVED}
 Let $m=1$, $\gcd(e,f)=1$, $1\le e<f$, and consider a tiling of the base-$\beta$ target.
 \begin{enumerate}
 \item[\textup{(i)}] If $f^2>2e^2$, then each equal side carries \emph{no} $b$-edge. Its edges are
@@ -700,7 +700,7 @@ when no tiling exists, so no exclusion of an $e=1$ member may cite it. Formalise
 \texttt{both\_corners\_break}, \texttt{some\_side\_break}), axiom-clean.
 \end{remark}
 
-\begin{lemma}[Filler identity]\label{lem:filler}
+\begin{lemma}[Filler identity]\label{lem:filler}\lab{PROVED}
 With $J_i$ the $i$-th column junction and $\mathrm{ap}_i$ the $i$-th apex, the triangle
 $(J_i,\mathrm{ap}_i,\mathrm{ap}_{i+1})$ has sides exactly $c,b,a$:
 $\bigl(\tfrac{3f^2-1}{2f}\bigr)^2+c^2\sin^2\beta=f^4$ and
@@ -710,7 +710,7 @@ Hence the column and its fillers tile the full inter-level strip and lay a run o
 level down, whose far sides decompose only as single $a$-edges.
 \end{lemma}
 
-\begin{lemma}[Offset congruence]\label{lem:offsets}
+\begin{lemma}[Offset congruence]\label{lem:offsets}\lab{PROVED}
 The terminal column's base apex lies at $\bigl[j(3f^2-1)+\sum_{i}\varepsilon_i\bigr]/(2f)+kf$ with
 $\varepsilon_i\in\{-(f^2-1),\,3f^2-1\}$ per level. Modulo $f$ --- for every $f$, of either parity,
 since $f^2\equiv0$ --- these are $+1$ and $-1$. Let $p$ be the number of levels taking $+1$ and
@@ -876,7 +876,7 @@ hard is absent from it. This does not affect \S\ref{sub:apex}, whose results are
 equal side and stand on their own proofs.
 \end{remark}
 
-\begin{theorem}[The base-$\beta$ branch, conditional on Hypothesis~\ref{hyp:walls}]\label{thm:basebeta-full}
+\begin{theorem}[The base-$\beta$ branch, conditional on Hypothesis~\ref{hyp:walls}]\label{thm:basebeta-full}\lab{CONJECTURE}
 Assume Hypothesis~\ref{hyp:walls}. Then $\Delta$ admits no tiling by $N$ congruent copies of the
 tile. Consequently no prime $N\equiv 11 \pmod{12}$ is a number of congruent triangles into which a
 triangle can be cut, and with the results of the main paper the folklore conjecture would follow:
@@ -963,7 +963,7 @@ solution of $n_\alpha+2n_\gamma=X$, $n_\beta+n_\gamma=Y$ in nonnegative integers
 following are that system, solved; each is machine-checked in
 \textup{\texttt{lean/AngleArithmetic.lean}} (core toolchain, no \texttt{sorry}).
 
-\begin{lemma}[Angle calculus]\label{lem:anglecalc}
+\begin{lemma}[Angle calculus]\label{lem:anglecalc}\lab{PROVED}
 For every member $(e,f)$:
 \begin{enumerate}
 \item \textup{(No right angle.)} $\pi/2$ has no representation: it would force $2x=3$. Hence no
@@ -992,7 +992,7 @@ not be treated as typical of $e=1$.
 Before the forcing arguments, one structural fact about the whole branch, which does not seem to have
 been noticed and which costs two lines.
 
-\begin{proposition}[$\gamma$-grading]\label{prop:gammagrading}
+\begin{proposition}[$\gamma$-grading]\label{prop:gammagrading}\lab{PROVED}
 Let $\mathcal T$ be any tiling of any target by a base-$\beta$ tile. Then every edge direction
 occurring in $\mathcal T$ is an integer multiple of $\gamma$ modulo $\pi$. Writing a direction as
 $x\alpha+y\beta$, the integer is $L=2x-3y$; it is well defined because $3\alpha+2\beta=\pi$.
@@ -1036,7 +1036,7 @@ work --- the $44$-tilings, the $99$-tiling, the $28$-tiling on a cevian target a
 four-component $77$-tiling --- with no direction failing.
 \end{remark}
 
-\begin{proposition}[The direction group of a branch]\label{prop:dirgroup}
+\begin{proposition}[The direction group of a branch]\label{prop:dirgroup}\lab{PROVED}
 Let $T$ be a triangle whose angles satisfy a single primitive relation, i.e.\ the lattice
 $\Lambda=\{(x,y)\in\Z^2:\ x\alpha+y\beta\equiv0 \pmod\pi\}$ is generated by one vector $(p,q)$. Then
 in any tiling by congruent copies of $T$ all edge directions lie in one coset of
@@ -1126,7 +1126,7 @@ $a$-prefix regardless (the apex lattice), and the $\beta$-wedge at a column term
 $\gamma$ + column $\alpha$ leave exactly $\beta$, whose tile presents $a$ or $c$) forbids a
 $b$-letter there; the walk arithmetic then kills exactly as in the $e=1$ case.
 
-\begin{lemma}[Terminal wedge]\label{lem:termwedge}
+\begin{lemma}[Terminal wedge]\label{lem:termwedge}\lab{PROVED}
 Let a base-reaching column terminate at base vertex $V=(x_0+fa,0)$, $x_0$ its anchor offset. Then
 the angle at $V$ decomposes as $\gamma$ (the last filler) $+\ \alpha$ (the last column tile)
 $+\ \beta$, and the base edge east of $V$ is an $a$- or a $c$-letter.
@@ -1139,7 +1139,7 @@ $\beta$-tile; its flanks are $a$ and $c$, one of which lies along the base east 
 $b$-letter there would have to be that flank, and $b\notin\{a,c\}$.
 \end{proof}
 
-\begin{lemma}[Pentagon]\label{lem:pentagon}
+\begin{lemma}[Pentagon]\label{lem:pentagon}\lab{PROVED}
 In the walk $(0,e,2e)$, after both dual blocks complete, the middle region --- base $b^e$, dual
 hypotenuses $b^e$, side segments of length $fb$, apex $3\alpha$, containing $3(f^2-e^2)$ tiles ---
 admits no tiling.
@@ -1172,7 +1172,7 @@ Lemma~\ref{lem:stubgap} --- so no whole-edge partition exists and the region die
 occurs: both stubs are gaps at the first step, for every member. (Certificate at
 $(2,3)$: $85$ nodes, all dead, kills exclusively of run/wedge type.)
 
-\begin{lemma}[The second stub is a gap]\label{lem:stubgap}
+\begin{lemma}[The second stub is a gap]\label{lem:stubgap}\lab{PROVED}
 Let $\gcd(e,f)=1$ with $1\le e<f$, and let $(a,b,c)=(ef,\,f^2-e^2,\,f^2)$. Then $|a-b|$ is a gap of
 the numerical semigroup $\langle a,b,c\rangle$: it is nonzero and admits no representation
 $xa+yb+zc$ with $x,y,z\ge0$.
@@ -1207,7 +1207,7 @@ different gaps: at $(1,3)$ the tile is $(3,8,9)$, $\min(a,b)=3$, and $|a-b|=5$ l
 $(0,3)$ while still being a gap of $\langle3,8,9\rangle$.
 \end{remark}
 
-\begin{lemma}[Two $c$-edges are forced; $p\le f-2$]\label{lem:ple}
+\begin{lemma}[Two $c$-edges are forced; $p\le f-2$]\label{lem:ple}\lab{CONJECTURE}
 At $e=1$, $m=1$, the first and last edges of each equal side are $c$-edges: the first is the
 base-corner tile's side flank (its base flank is an $a$-edge by Theorem~\ref{thm:e1reduce}), and the
 last belongs to the apex figure $\{3\alpha\}$, whose side edge is $b$ or $c$, with $b$ excluded by
@@ -1220,7 +1220,7 @@ $0\le j\le3$, so the entire boundary configuration space at $(1,3)$ consists of 
 placements.
 \end{lemma}
 
-\begin{lemma}[The equal sides carry no $b$-edge]\label{lem:sidenob}
+\begin{lemma}[The equal sides carry no $b$-edge]\label{lem:sidenob}\lab{PROVED}
 Let $m=1$ and let $(e,f)$ be any member. Then every side walk $P'a+Q'b+R'c=f^3$ obeying the
 $\gamma$-trap $R'\ge1$ has $Q'=0$.
 \end{lemma}
@@ -1333,7 +1333,7 @@ inequality $\ell\ge b_p-1$ is a race between where the block gives out and where
 It was never the claim that the block does not give out.
 \end{remark}
 
-\begin{lemma}[First-run orientation]\label{lem:firstrun}
+\begin{lemma}[First-run orientation]\label{lem:firstrun}\lab{CONJECTURE}
 In any tiling of the $(1,f)$ target at $m=1$, every tile of the first $a$-run of an equal side is
 mirrored: its $\gamma$ sits at the upper junction and its label is $-2$. In particular at $(1,3)$,
 where Lemma~\ref{lem:ple} forces the side word $c\,a\,a\,a\,c$, the boundary configuration is
@@ -1356,7 +1356,7 @@ the run rigidity (\texttt{gamma\_far\_absorbing}: mirrored is absorbing along th
 whole run mirrored.
 \end{proof}
 
-\begin{lemma}[Top junction; $p\le f-3$ for $f\ge4$]\label{lem:topjunction}
+\begin{lemma}[Top junction; $p\le f-3$ for $f\ge4$]\label{lem:topjunction}\lab{CONJECTURE}
 Let an $a$-run end at the last side junction $J$ (final $c$-block of length $1$) with the run's last
 tile mirrored. The junction figure is $\{\gamma,\alpha,\beta\}$, its interior $\alpha$-filler has
 its edges along the two junction rays, and the edge along the top tile's $a$-ray is $c=f^2$
@@ -1381,7 +1381,7 @@ single-run combinatorics and the count bound (\texttt{two\_c\_single\_run},
 \texttt{p\_le\_f\_sub\_three}).
 \end{lemma}
 
-\begin{lemma}[c-chord dichotomy]\label{lem:cchord}
+\begin{lemma}[c-chord dichotomy]\label{lem:cchord}\lab{PROVED}
 Let a chord of length $c$ be blocked at both ends, so that its far side partitions into whole tile
 edges of total $c$. Then $xa+yb+zc=c$ forces $(x,y,z)=(0,0,1)$, or, exactly when $e=1$,
 $(x,y,z)=(f,0,0)$: the far side is a single $c$-edge or (at $e=1$ only) a run of $f$ $a$-edges.
@@ -1395,7 +1395,7 @@ Two ends of a chord can be blocked by the target boundary; they can also be bloc
 enter it. Forced tiles thereby create new fully-blocked chords, and the forcing propagates.
 \end{remark}
 
-\begin{theorem}[Hypothesis~\ref{hyp:walls} holds at $(1,3)$]\label{thm:walls13}
+\begin{theorem}[Hypothesis~\ref{hyp:walls} holds at $(1,3)$]\label{thm:walls13}\lab{CONJECTURE}
 No tiling of the $(1,3)$ target at $m=1$ carries an $a$-edge on an equal side. Hence, by
 Remark~\ref{rem:sidenoa}, no tiling of the $(1,3)$ target at $m=1$ exists at all.
 \end{theorem}
@@ -1498,7 +1498,7 @@ further $a$-edges, and the filler's own $a$-edge, whose endpoint is exactly the 
 $E=Q+(c,0)=(20,0)+cu$; the direct-filler sub-case leaves $E$ unblocked and remains open.
 \end{remark}
 
-\begin{proposition}[The double-$c$ kill at any initial block length]\label{prop:doublec}
+\begin{proposition}[The double-$c$ kill at any initial block length]\label{prop:doublec}\lab{PROVED}
 Let $e=1$, $m=1$, $f\ge3$, and let an equal side carry an $a$-edge and have initial $c$-block of
 length $j\ge2$. Write $u$ for the unit vector along that side and place the base corner at the
 origin. Then:
@@ -1653,7 +1653,7 @@ Remark~\ref{rem:walls14}, while for $f\ge5$ there are $f-3$ walks and the argume
 covers an initial block of exactly $2$ followed by an $a$-run.
 \end{conjecture}
 
-\begin{theorem}[Hypothesis~\ref{hyp:walls} holds at $(1,4)$]\label{thm:walls14}
+\begin{theorem}[Hypothesis~\ref{hyp:walls} holds at $(1,4)$]\label{thm:walls14}\lab{CONJECTURE}
 No tiling of the $(1,4)$ target at $m=1$ carries an $a$-edge on an equal side; hence, by
 Remark~\ref{rem:sidenoa}, no such tiling exists, re-deriving the exclusion of the $(1,4)$ instance
 ($N=47$) established by certified exhaustion ($12\,440$ nodes).
@@ -1697,7 +1697,7 @@ cascade kills every word with second letter $a$ and every word whose $b$-edge oc
 four-$a$ branch's first slot, and that the survivors' reversals always lie in the killed class.
 \end{remark}
 
-\begin{theorem}[The cascade closes every initial-block-1 configuration, for all $f$]\label{thm:e1cascade}
+\begin{theorem}[The cascade closes every initial-block-1 configuration, for all $f$]\label{thm:e1cascade}\lab{CONJECTURE}
 Let $f\ge3$, $m=1$, and suppose an equal side of the $(1,f)$ target carries an $a$-edge whose first
 run is preceded by exactly one $c$-edge, and that the opposite side either has no $a$-edge or also
 has initial $c$-block $1$. Then no tiling exists. Consequently Hypothesis~\ref{hyp:walls} fails to
@@ -1728,7 +1728,7 @@ $c$-edge blocks the mid-junction and the through-edge figure forces the partner)
 collision closes the configuration.
 \end{proof}
 
-\begin{lemma}[The $jb$-line partition]\label{lem:jbline}
+\begin{lemma}[The $jb$-line partition]\label{lem:jbline}\lab{PROVED}
 For $1\le j<f$ the only decomposition of $j\,b$ as $xa+yb+zc$ is $x=z=0$, $y=j$. Hence a line
 of length $jb$ that is covered by whole edges on a side splits there into exactly $j$ whole
 $b$-edges. (Whether a given line is so covered is a separate question: see
@@ -1761,7 +1761,7 @@ means closing this array; that is the precise remaining content of Conjecture~\r
 at $e=1$.
 \end{remark}
 
-\begin{lemma}[The east fan at the fork is forced]\label{lem:eastfan}
+\begin{lemma}[The east fan at the fork is forced]\label{lem:eastfan}\lab{PROVED}
 Let $f\ge3$, $\ell\ge2$, and let the second base letter be $a$, so that the brick $X_1$ and the
 mate $M$ are in place. At the fork point $Q_1=cu+(f,0)$ the tiles east of the chord form the
 figure $\{\gamma,\alpha,\beta\}$ in that angular order from the base side: the mate $M_1$ of
@@ -1787,7 +1787,7 @@ alternative would again double $C_2$'s $\gamma$ at $Q_1$. That tile is therefore
 remaining tile carries $\beta$, whose flanks are $\{a,c\}$.
 \end{proof}
 
-\begin{theorem}[The row fork kill]\label{thm:forkkill}
+\begin{theorem}[The row fork kill]\label{thm:forkkill}\lab{CONJECTURE}
 Let $f\ge3$. In a residual configuration (initial $c$-block $\ell\ge2$) whose base word has second
 letter $a$, the row-$2$ fork resolves single-$c$: the $\beta$-tile lays $a$ along the floor.
 \end{theorem}
@@ -1796,7 +1796,7 @@ Lemma~\ref{lem:eastfan} leaves exactly two configurations, and
 Proposition~\ref{prop:a2branch} excludes the second.
 \end{proof}
 
-\begin{proposition}[The $A_2$ branch dies]\label{prop:a2branch}
+\begin{proposition}[The $A_2$ branch dies]\label{prop:a2branch}\lab{CONJECTURE}
 In a residual configuration (initial $c$-block $\ell\ge2$) whose base word has second letter $a$,
 suppose the tile east of the row-$2$ fork is the mirrored $L=-2$ tile $A_2$, laying a horizontal
 $c$-edge along the floor line east of the fork point. Then no tiling exists.
@@ -1841,7 +1841,7 @@ which. Both uses in Theorem~\ref{thm:e1cascade} are of that kind: its chords are
 the first $a$-tile's horizontal $c$-edge, and its doubled $b$-line runs boundary to boundary.
 \end{remark}
 
-\begin{lemma}[The wall climb]\label{lem:wallclimb}
+\begin{lemma}[The wall climb]\label{lem:wallclimb}\lab{PROVED}
 For every $\ell\ge2$ and $2\le j\le\ell$, the block tile $C_j$ is direct and its mate $M_j$ is
 forced, with $M_j$'s $c$-edge $[Q_{j-1},Q_j]$ continuing the interior wall; the first run tile
 above the block is mirrored. This is unconditional: no base-letter hypothesis and no line
@@ -1873,7 +1873,7 @@ hyp:walls at $e=1$ is therefore reduced to the leak exclusion.
 \end{remark}
 
 
-\begin{theorem}[L2 at every reached slot]\label{thm:l2slot}
+\begin{theorem}[L2 at every reached slot]\label{thm:l2slot}\lab{PROVED}
 Let $f\ge3$ and suppose the chain from a corner has closed slots $1,\dots,k$. If the base letter
 presented at slot $k$ is $c$ and the next letter is $b$, no tiling exists. This holds for every
 block length of that corner's side.
@@ -1889,7 +1889,7 @@ $\gamma$ lands at $(kf+c,0)$, the figure there closes with exactly one $\beta$ w
 $\{a,c\}$, and it must present the $b$-edge: impossible.
 \end{proof}
 
-\begin{theorem}[The block-two chain runs to arbitrary depth]\label{thm:elltwo}
+\begin{theorem}[The block-two chain runs to arbitrary depth]\label{thm:elltwo}\lab{CONJECTURE}
 Let $f\ge3$ and let a side carry its first $a$-run behind exactly two $c$-edges. Then the chain
 from that corner closes every slot it needs: the base letters are presented one by one, a $b$
 collides at its slot, and a $c$ followed by $b$ collides by Theorem~\ref{thm:l2slot}. In
@@ -1909,7 +1909,7 @@ south feet lie on the base and whose leak inventory is closed by \texttt{east\_c
 the directional overshoot (both valid one strip above the base). Induction on the column.
 \end{proof}
 
-\begin{theorem}[Reach three behind a thick block, and the pincer window]\label{thm:depthwindow}
+\begin{theorem}[Reach three behind a thick block, and the pincer window]\label{thm:depthwindow}\lab{CONJECTURE}
 Let $f\ge3$. From a corner whose side has initial block $\ell\ge3$ (including the all-$c$ side),
 slots $1,2,3$ close: the lines for columns $k\le2$ terminate on the wall
 (Lemma~\ref{lem:wallclimb}) with $k+1$ pieces and split by Lemma~\ref{lem:jbline}; the single
@@ -1926,7 +1926,7 @@ Hypothesis~\ref{hyp:walls} holds at $(1,5)$: together with blocks $\le2$
 the first member closed with no engine certificate.
 \end{corollary}
 
-\begin{lemma}[The apex]\label{lem:apex}
+\begin{lemma}[The apex]\label{lem:apex}\lab{PROVED}
 The target's apex angle is $\pi-2\beta=3\alpha$, and the only vertex figure filling it is three
 $\alpha$-corners (\texttt{apex\_figure}). Since the sides carry no $b$-edge
 (\texttt{side\_no\_b\_uncond}), the two outer apex tiles lay $c$-edges on the sides --- the top
@@ -1953,7 +1953,7 @@ descent-to-the-base argument applies. Killing this one shape at rows $\ge3$ is e
 full chain reach, hence to Conjecture~\ref{conj:advance} at $e=1$.
 \end{remark}
 
-\begin{lemma}[Descent identities and the ladder]\label{lem:ladder}
+\begin{lemma}[Descent identities and the ladder]\label{lem:ladder}\lab{PROVED}
 Let $f\ge3$. (i) A line in the $b$-direction (label $-1$) crosses the horizontal strip lines at
 intervals of exactly $b$ along itself and advances exactly $c$ horizontally per crossing:
 $\sin\beta=b\sqrt D/(2f^3)$ with $D=4f^2-1$, and $fu_x+b\,|\cos2\gamma|=c$
@@ -1971,7 +1971,7 @@ at least $b+c=2f^2-1$ of doubly edged ladder, descending two full strips and gli
 east of the strip ends.
 \end{lemma}
 
-\begin{lemma}[Termination is one condition, boundary or interior]\label{lem:termination}
+\begin{lemma}[Termination is one condition, boundary or interior]\label{lem:termination}\lab{PROVED}
 A ladder terminates only where \emph{both} of its staggered covers end: at an interior mutual
 vertex by definition, and at a boundary point because the boundary ends both covers at once. So
 side exit is not a separate escape route; every termination satisfies the same condition. With
@@ -1989,7 +1989,7 @@ four cases give $f\mid1$, $f\mid2$, or a direct size contradiction. Hence $m+1\g
 $T=b+(m+1)\ge b+c$.
 \end{proof}
 
-\begin{theorem}[Straddlers need three strips, so rows $1,2,3$ are clean]\label{thm:strippbound}
+\begin{theorem}[Straddlers need three strips, so rows $1,2,3$ are clean]\label{thm:strippbound}\lab{CONJECTURE}
 Let $f\ge3$. The target is exactly $f$ strips tall ($f^3\sin\beta$ over $c\sin\beta$), and a
 ladder descends exactly $b$ along itself per strip (Lemma~\ref{lem:ladder}). By
 Lemma~\ref{lem:termination} its length satisfies $T\ge b+c>2b$, so it crosses strictly more than
@@ -2193,7 +2193,7 @@ present $\gamma$ from above, which is a boundary-like fact at an interior line. 
 open statement the $e=1$ hole now rests on, and it concerns two vertex figures.
 \end{remark}
 
-\begin{lemma}[Corner lines are column lines]\label{lem:columnlines}
+\begin{lemma}[Corner lines are column lines]\label{lem:columnlines}\lab{PROVED}
 Let $f\ge3$, $m=1$. Every $b$-direction line through two vertices of the corner lattice
 $\mathbb Z(a,0)+\mathbb Z\,cu$ meets the base at $(kf,0)$ and the left side at $k\,cu$ for an
 integer $k$, and its horizontal distance to the side at row $r$ is exactly $(k-r)a$. Its length is
@@ -2204,7 +2204,7 @@ of the left corner that escapes is $k=f$ --- the line from $(f^2,0)$ to $f\,cu$,
 apex. A ladder is staggered by $c-b=1$, so no straddler sits on a corner line with $k<f$.
 \end{lemma}
 
-\begin{lemma}[The chain never needs the apex line]\label{lem:noapexline}
+\begin{lemma}[The chain never needs the apex line]\label{lem:noapexline}\lab{PROVED}
 The base $b$-letter sits at a position $bp\in[3,f]$. With the preceding letters forced to $a$ it
 begins at $\bigl((bp-1)f,0\bigr)$, and the collision figure there consumes only the brick and
 mate of column $bp-2$, hence only the lines $L_k$ with $k\le bp-1\le f-1$. Every line the chain
@@ -2228,7 +2228,7 @@ of any proof: the crossing statement admits no $m$-independent argument, and mus
 $m=1$ hypothesis exactly where the corner block is rigid. That input is not supplied here.
 \end{remark}
 
-\begin{lemma}[The vertex census]\label{lem:census}
+\begin{lemma}[The vertex census]\label{lem:census}\lab{PROVED}
 In every tiling of the base-$\beta$ target, write $n_1,n_2$ for the numbers of straight figures
 $\{\gamma,\alpha,\beta\}$ and $\{3\alpha,2\beta\}$, and $v_1,\dots,v_4$ for the interior figures
 $\{\beta,3\gamma\}$, $\{2\alpha,2\beta,2\gamma\}$, $\{4\alpha,3\beta,\gamma\}$, $\{6\alpha,4\beta\}$.
@@ -2261,7 +2261,7 @@ Admissibility is decidable, and it is preserved by no tiling step: a tiling of t
 exactly a sequence of placements through admissible frontiers ending at the empty frontier.
 \end{definition}
 
-\begin{lemma}[The angle threshold]\label{lem:anglethreshold}
+\begin{lemma}[The angle threshold]\label{lem:anglethreshold}\lab{PROVED}
 For the tile $(a,b,c)=(f,f^2-1,f^2)$ one has $\cos\alpha=(2f^2-1)/(2f^2)$
 (\texttt{cos\_alpha\_closed}), alongside $\cos\gamma=-1/(2f)$ and
 $\cos\beta=(3f^2-1)/(2f^3)$. Condition (P4) is therefore the statement that the uncovered region
@@ -2285,7 +2285,7 @@ survives past depth $Cf$. That statement is open and the figures quoted are meas
 evidence for the constant.
 \end{remark}
 
-\begin{lemma}[The thick-member monochotomy]\label{lem:monochotomy}
+\begin{lemma}[The thick-member monochotomy]\label{lem:monochotomy}\lab{PROVED}
 Let $e\ge2$, $e<f$, $\gcd(e,f)=1$, tile $(a,b,c)=(ef,\,f^2-e^2,\,f^2)$. The only decomposition of
 $c$ as $xa+yb+zc$ is the single $c$: writing $xef+y(f^2-e^2)=f^2$, coprimality forces
 $e\mid y-1$, and both $y=1$ (then $xf=e<f$) and $y\ge e+1$ (then the sum exceeds $f^2$ since
@@ -2294,21 +2294,21 @@ of Lemma~\ref{lem:cchord} is an $e=1$ phenomenon: at thick members every $c$-cho
 corner chain is forced, and the chain machinery, where it applies, is stiffer than at $e=1$.
 \end{lemma}
 
-\begin{lemma}[Thick-side quantization]\label{lem:sidequant}
+\begin{lemma}[Thick-side quantization]\label{lem:sidequant}\lab{CONJECTURE}
 At any member $(e,f)$, $e\ge1$, a side's edge counts satisfy $xe+zf=f^2$ with no $b$
 (\texttt{side\_no\_b\_uncond}), so $f\mid x$ by coprimality (\texttt{side\_quantized}): the number
 of $a$-edges on a side is a multiple of $f$. For $e\ge2$ this quantizes the walls violation: any
 bound $p<f$ forces $p=0$, the side condition of Hypothesis~\ref{hyp:walls}.
 \end{lemma}
 
-\begin{lemma}[The thick base trichotomy]\label{lem:basetri}
+\begin{lemma}[The thick base trichotomy]\label{lem:basetri}\lab{PROVED}
 For a separated member ($f^2>2ef+e^2$) the base admits exactly three edge decompositions:
 $(x,y,z)\in\{(0,e,2e),\,(f,e,e),\,(2f,e,0)\}$ (\texttt{base\_trichotomy}); the walls form is the
 middle one, $f$ $a$-feet, $e$ $b$-edges, $e$ $c$-feet. Close pairs ($f^2\le2ef+e^2$) admit in
 addition finitely many decompositions with $y>e$, computable per member.
 \end{lemma}
 
-\begin{lemma}[The shadow at a $c$-corner]\label{lem:shadow}
+\begin{lemma}[The shadow at a $c$-corner]\label{lem:shadow}\lab{PROVED}
 Suppose a base corner tile lays $c$ on the base (then it is mirrored with its $a$-edge first on
 the side), and the first side run has length at least $2$. The run is $\gamma$-upper by
 absorption, so its second tile lays a horizontal $c$-edge at height $a\sin\beta$ --- exactly one
@@ -2322,14 +2322,14 @@ $3f^2>1$), an independent exclusion of $c$-corners; at $e\ge2$ the comparison re
 shadow is a constraint rather than a kill.
 \end{lemma}
 
-\begin{lemma}[The thick base dichotomy]\label{lem:basedi}
+\begin{lemma}[The thick base dichotomy]\label{lem:basedi}\lab{PROVED}
 The $\gamma$-trap (Proposition~\ref{M-prop:gammatrap}, every side of a base-$\beta$ target carries
 a $c$-edge, general in $(e,f)$) forces $z\ge1$, deleting the third column of
 Lemma~\ref{lem:basetri}. At a separated thick member only two base decompositions survive:
 $(0,e,2e)$ and the walls form $(f,e,e)$ (\texttt{base\_dichotomy\_thick}).
 \end{lemma}
 
-\begin{lemma}[The $c$-corner is rigid]\label{lem:ccorner}
+\begin{lemma}[The $c$-corner is rigid]\label{lem:ccorner}\lab{CONJECTURE}
 Suppose a base corner tile lays $c$ on the base. Since the corner angle is $\beta$, with flanks
 $\{a,c\}$, that tile lays $a$ on the side. Its $b$-edge is a chord joining the base point $(c,0)$
 to the side point $a\,u$, so both of its ends lie on the boundary and its far side carries a
@@ -2354,7 +2354,7 @@ unconditionally; the stub arithmetic itself is already general and machine-check
 (Lemma~\ref{lem:stubgap}).
 \end{lemma}
 
-\begin{theorem}[The column $(0,e,2e)$ admits no tiling]\label{thm:n1}
+\begin{theorem}[The column $(0,e,2e)$ admits no tiling]\label{thm:n1}\lab{PROVED}
 Let $(e,f)$ be a separated member with $e\ge1$, $\gcd(e,f)=1$, $f\ge2$, and suppose the base walk
 is $(0,e,2e)$: no $a$-edge on the base. Then no tiling exists.
 \end{theorem}
@@ -2390,7 +2390,7 @@ The base has length $e(3f^2-e^2)$, so this requires $f^2\mid e(3f^2-e^2)$, hence
 hence $f=1$ by coprimality (\texttt{base\_not\_all\_c}), contradicting $f\ge2$.
 \end{proof}
 
-\begin{corollary}\label{cor:basewalls}
+\begin{corollary}\label{cor:basewalls}\lab{PROVED}
 At a separated thick member the base walk is the walls form $(f,e,e)$: Lemma~\ref{lem:basetri}
 gives three columns, the $\gamma$-trap deletes $(2f,e,0)$ (Lemma~\ref{lem:basedi}), and
 Theorem~\ref{thm:n1} deletes $(0,e,2e)$.
@@ -2402,7 +2402,7 @@ extend. Proposition~\ref{prop:sharpcolumn} is not available for this purpose, be
 $x,z\ge1$ while Lemma~\ref{lem:basetri} allows $x=0$ and $z=0$; the argument below is run with
 $x,z\ge0$ throughout.
 
-\begin{corollary}[The base trichotomy and dichotomy without separation]\label{cor:basedi2e}
+\begin{corollary}[The base trichotomy and dichotomy without separation]\label{cor:basedi2e}\lab{PROVED}
 Let $\gcd(e,f)=1$ and $f>2e$. Then the base admits exactly the three decompositions
 $(0,e,2e)$, $(f,e,e)$, $(2f,e,0)$ of Lemma~\ref{lem:basetri}, and after the $\gamma$-trap exactly
 the two of Lemma~\ref{lem:basedi}, namely $(0,e,2e)$ and the walls form $(f,e,e)$.
@@ -2509,7 +2509,7 @@ the column $(0,e,2e)$ the base carries no $a$-edge, so both corner tiles lay $c$
 equal sides begin with an $a$-edge, and by Lemma~\ref{lem:sidequant} each carries at least $f$ of
 them. In the notation of \S\ref{sub:sidep} that is $p\ge1$ on both sides. Hence
 
-\begin{proposition}\label{prop:n1fromwalls}
+\begin{proposition}\label{prop:n1fromwalls}\lab{CONJECTURE}
 Assume Hypothesis~\ref{hyp:walls} at the member $(e,f)$, i.e.\ $p=0$. Then no tiling has base walk
 $(0,e,2e)$, for every $e\ge1$.
 \end{proposition}
@@ -2564,7 +2564,7 @@ Second, $a$-edges with one anchored end are crossed in none of them. That one is
 and the next lemma explains it with a sharp constant.
 \end{remark}
 
-\begin{lemma}[Blocked-end quantization]\label{lem:anchorclear}
+\begin{lemma}[Blocked-end quantization]\label{lem:anchorclear}\lab{PROVED}
 Let $[X,Y]$ be an edge of a tile of the tiling whose extension beyond $X$ is blocked --- either
 because $X\in\partial ABC$, or because the continuation enters the interior of another tile
 (Remark~\ref{rem:tib}). Then every vertex of the tiling lying in the relative interior of $[X,Y]$ is
@@ -2592,7 +2592,7 @@ interior to $[X,Y]$.) The two consequences are immediate, the second because
 $\langle a,b,c\rangle$ has no element strictly between $0$ and its smallest generator.
 \end{proof}
 
-\begin{corollary}[One-end-blocked chord dichotomy]\label{cor:onebloc}
+\begin{corollary}[One-end-blocked chord dichotomy]\label{cor:onebloc}\lab{PROVED}
 Let $[X,Y]$ be a tile edge with the extension beyond $X$ blocked. Then the far side of $[X,Y]$ is
 covered by whole tile edges laid end to end from $X$, and exactly one of the following holds:
 \begin{enumerate}
@@ -2672,7 +2672,7 @@ excludes crossings outright, and because it fixes the exact radius within which 
 controls the interior.
 \end{remark}
 
-\begin{corollary}[The walls form at $e=1$, $f\ge3$]\label{cor:wallsf2e}
+\begin{corollary}[The walls form at $e=1$, $f\ge3$]\label{cor:wallsf2e}\lab{PROVED}
 Let $e=1$ and $f\ge3$. Then the base walk is the walls form $(f,1,1)$.
 \end{corollary}
 
@@ -2702,7 +2702,7 @@ $fj$ with $je\le f-1$'', and the Lean statements are
 recorded: on the close pairs with $f>2e$ the range of $p$ is not merely bounded but equal to
 $\{0,1,2\}$, uniformly in the member.
 
-\begin{corollary}[A uniform two-case side problem]\label{cor:ptwo}
+\begin{corollary}[A uniform two-case side problem]\label{cor:ptwo}\lab{CONJECTURE}
 In the setting above, suppose in addition that $2e<f$ and that $(e,f)$ is a close pair,
 $f^2\le2ef+e^2$. Then
 $\lfloor(f-1)/e\rfloor=2$. Hence on that family Hypothesis~\ref{hyp:walls} reduces to excluding
@@ -2726,7 +2726,7 @@ Lemma~\ref{lem:census} records three counting identities whose published consequ
 $v_1=1+n_2+v_3+2v_4$. The $\alpha$-identity also carries a parity statement, which we record together
 with the reason it does \emph{not} exclude any member.
 
-\begin{lemma}[Straight-figure parity]\label{lem:parity}
+\begin{lemma}[Straight-figure parity]\label{lem:parity}\lab{PROVED}
 Write $S=n_1+n_2$ for the total number of straight ($\pi$) figures. Then $S\equiv N+1\pmod 2$.
 \end{lemma}
 
@@ -2762,7 +2762,7 @@ therefore a $c$. Hence the first junction $J$ of the side sits at distance $c=f^
 $C$ for the chord through $J$ parallel to the base. It cuts off a triangle similar to the target with
 ratio $f^{2}/f^{3}=1/f$, so the area above $C$ is $N/f^{2}$ tile areas and $|C|=e(3f^{2}-e^{2})/f$.
 
-\begin{lemma}[The apex identities]\label{lem:apexid}
+\begin{lemma}[The apex identities]\label{lem:apexid}\lab{PROVED}
 For every $(e,f)$,
 \[
 b\cos\tfrac{\alpha}{2}=c\cos\tfrac{3\alpha}{2},
@@ -2805,7 +2805,7 @@ the work. The consequences drawn from it in this section, Theorems~\ref{thm:seco
 underneath them is not.
 \end{remark}
 
-\begin{theorem}[The first chord is covered exactly]\label{thm:apexconfig}
+\begin{theorem}[The first chord is covered exactly]\label{thm:apexconfig}\lab{PROVED}
 Let $T_1,T_2,T_3$ be the three tiles at $A$, with $T_1,T_3$ the outer ones. Then:
 \begin{enumerate}
 \item[(a)] $T_1$'s remaining apex edge is its $b$, ending at a point $P$ lying \emph{exactly} on $C$;
@@ -2838,7 +2838,7 @@ $b/c$ (\texttt{middle\_fraction}). The length of $PP'$ is $2b\sin\frac{\alpha}{2
 it, nothing else can.
 \end{proof}
 
-\begin{corollary}[The tile below $T_1$'s $a$-edge has a vertex at $P$]\label{cor:noTP}
+\begin{corollary}[The tile below $T_1$'s $a$-edge has a vertex at $P$]\label{cor:noTP}\lab{PROVED}
 $T_1$ presents $\gamma$ at $P$, and either $T_2$ presents $\gamma$ at $P$ as well, or $P$ lies interior
 to an edge of $T_2$. In both cases no \emph{further} tile has $P$ interior to an edge; in particular
 the tile below $T_1$'s $a$-edge has a vertex at $P$, and the residual figure there is
@@ -2871,7 +2871,7 @@ visible in Remark~\ref{rem:dichotomy}. It does not affect what follows: Corollar
 delivers the same conclusion on both sides.
 \end{remark}
 
-\begin{theorem}[The second edge of an equal side is a $c$]\label{thm:secondc}
+\begin{theorem}[The second edge of an equal side is a $c$]\label{thm:secondc}\lab{PROVED}
 Assume $e^{2}+ef<f^{2}$, equivalently $a<b$. Then on every equal side the tile edge immediately below
 the first junction $J$ is a $c$. \emph{The hypothesis is removable}: Proposition~\ref{prop:nogolden}
 reaches the same conclusion assuming only $\gcd(e,f)=1$, and it is that form the corollaries below use.
@@ -2894,7 +2894,7 @@ side presents $\alpha$. Its flanks are $b$ and $c$, and the side edge below $J$ 
 Lemma~\ref{lem:sidenob} it is not a $b$, hence it is a $c$.
 \end{proof}
 
-\begin{proposition}[The golden-ratio hypothesis is removable]\label{prop:nogolden}
+\begin{proposition}[The golden-ratio hypothesis is removable]\label{prop:nogolden}\lab{PROVED}
 Theorem~\ref{thm:secondc} holds at every member with $\gcd(e,f)=1$, with no assumption relating $a$
 and $b$.
 \end{proposition}
@@ -2923,7 +2923,7 @@ $\langle a,b,c\rangle$.
 The hypothesis $a<b$ was later removed entirely by Proposition~\ref{prop:nogolden}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
-\begin{theorem}[The side parameter vanishes on the family $e=f-1$]\label{thm:efminus1}
+\begin{theorem}[The side parameter vanishes on the family $e=f-1$]\label{thm:efminus1}\lab{CONJECTURE}
 Let $e=f-1$ with $f\ge2$. Then every equal side of the base-$\beta$ target at $m=1$ carries no
 $a$-edge: $p=0$.
 
@@ -2947,7 +2947,7 @@ The theorem is \emph{proved}, not machine-checked: steps~2--3 of its chain are p
 \end{remark}
 
 
-\begin{corollary}[A bound on the side parameter]\label{cor:pbound}
+\begin{corollary}[A bound on the side parameter]\label{cor:pbound}\lab{PROVED}
 Let $\gcd(e,f)=1$. Then $n_c\ge2$, hence
 \[
 pe+2\le f .
@@ -2996,7 +2996,7 @@ member alone, the next target having $N=227$ and a target triangle nine times la
 \end{remark}
 
 
-\begin{proposition}[The descent is self-similar]\label{prop:selfsim}
+\begin{proposition}[The descent is self-similar]\label{prop:selfsim}\lab{PROVED}
 Suppose a tile $Z$ lays a $c$-edge of an equal side between consecutive junctions $J'$ (nearer the
 apex) and $J$, and presents $\alpha$ at $J'$. Let $W$ be its third vertex. Then $W$ lies \emph{exactly}
 on the chord $C$ through $J$; the segment $JW$ is $Z$'s $a$-edge, of length $a$, lying along $C$; and
@@ -3026,7 +3026,7 @@ the residual is $\pi-\alpha<\pi$ and no tile can have $P$ interior to an edge. T
 comes from $T_2$, which exists only because the apex figure is $\{3\alpha\}$. At $W$ only $Z$'s
 $\gamma$ is forced, and no counting argument can supply the other:
 
-\begin{lemma}[A single $\gamma$ never excludes a $T$-junction]\label{lem:onegamma}
+\begin{lemma}[A single $\gamma$ never excludes a $T$-junction]\label{lem:onegamma}\lab{PROVED}
 Let $x$ be an interior point at which one tile presents $\gamma$ and one tile has $x$ interior to an
 edge. Then the remaining tiles at $x$ present angles totalling exactly $\alpha+\beta$, realised by one
 $\alpha$ and one $\beta$. The angle count is therefore always consistent.
@@ -3057,7 +3057,7 @@ $\alpha$ at the junction above. By Proposition~\ref{prop:selfsim} that tile's th
 chord through $J$ at distance exactly $a$ from $J$; call it $W(J)$.
 \end{definition}
 
-\begin{theorem}[An $a$-edge forces a $T$-junction]\label{thm:aforcesT}
+\begin{theorem}[An $a$-edge forces a $T$-junction]\label{thm:aforcesT}\lab{PROVED}
 Assume $e^{2}+ef<f^{2}$. Let $J$ be as in Definition~\ref{def:WJ} and suppose the side edge
 \emph{below} $J$ is an $a$. Then $W(J)$ lies in the \emph{interior} of an edge of some tile.
 \end{theorem}
@@ -3092,7 +3092,7 @@ $c$, so the edge $M$ lays along the chord ray has length $b$ or $c$, and $e^{2}+
 $a<b<c$. Since $|JW|=a$, the point $W$ lies strictly inside that edge.
 \end{proof}
 
-\begin{corollary}[A sufficient condition for Hypothesis~\ref{hyp:walls}]\label{cor:walls-from-T}
+\begin{corollary}[A sufficient condition for Hypothesis~\ref{hyp:walls}]\label{cor:walls-from-T}\lab{CONJECTURE}
 Assume $e^{2}+ef<f^{2}$. If for every junction $J$ as in Definition~\ref{def:WJ} the point $W(J)$ is a
 \emph{vertex} of every tile meeting it, then $p=0$ on every equal side, i.e.\
 Hypothesis~\ref{hyp:walls} holds at that member.
@@ -3131,7 +3131,7 @@ is the tile scaled by $f$, containing $f^2$ tiles, and that at $m=1$ its far sid
 side. Read the other way, that says the equal side's edge word is the $c$-side word of an inflated
 tile, and the side question becomes a question about the inflation alone.
 
-\begin{proposition}[The inflated boundary]\label{prop:inflbdy}
+\begin{proposition}[The inflated boundary]\label{prop:inflbdy}\lab{PROVED}
 Let the tile be inflated by $f$, so its sides are $fa$, $fb$, $fc$. Then the $\alpha$- and $\beta$-corners of the inflated triangle are each met by a single
 tile, which lays along the two sides the flanks of that angle. No assumption is made at the
 $\gamma$-corner, and none is needed: the $c$-side joins the $\alpha$- and $\beta$-vertices, so both its
@@ -3165,7 +3165,7 @@ $\beta$-corner is single at every member, with no hypothesis
 (\texttt{Inflation.beta\_not\_nat\_multiple}, \texttt{.beta\_corner\_single}).
 \end{proof}
 
-\begin{corollary}[The crux, on $f^2$ tiles]\label{cor:inflcrux}
+\begin{corollary}[The crux, on $f^2$ tiles]\label{cor:inflcrux}\lab{PROVED}
 At $m=1$ the inflated $c$-side is the whole equal side, so the two $c$-side words of
 Proposition~\ref{prop:inflbdy} are exactly $p=0$ and $p=1$. Deciding which occurs --- that is,
 deciding whether the inflation is rigid --- decides the side parameter on that side.
@@ -3176,7 +3176,7 @@ Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 
-\begin{theorem}[The inflation is rigid at every member searched]\label{thm:inflrigid}
+\begin{theorem}[The inflation is rigid at every member searched]\label{thm:inflrigid}\lab{CONJECTURE}
 The inflated tile of Proposition~\ref{prop:inflbdy} admits no tiling by $f^2$ copies whose $c$-side
 carries the $p=1$ word, at each of the ten members
 \[
@@ -3234,7 +3234,7 @@ should be read as one degree weaker than the first three until the control retur
 formalized.
 \end{proof}
 
-\begin{corollary}[Remark~\ref{rem:sidenoa}'s step, proved]\label{cor:sidenoa-proved}
+\begin{corollary}[Remark~\ref{rem:sidenoa}'s step, proved]\label{cor:sidenoa-proved}\lab{CONJECTURE}
 At each of the ten members of Theorem~\ref{thm:inflrigid}: if the west corner block is complete, then the equal side on that side
 carries no $a$-edge.
 \end{corollary}
@@ -3252,7 +3252,7 @@ Theorem~\ref{thm:inflrigid} is proved one member at a time by search, which is u
 statement is uniform in $(e,f)$ and ought to have a uniform proof. One is available for half the
 family, at the cost of an extra hypothesis.
 
-\begin{proposition}[Edge parity kills the $p=1$ boundary when $e$ and $f$ differ in parity]\label{prop:inflparity}
+\begin{proposition}[Edge parity kills the $p=1$ boundary when $e$ and $f$ differ in parity]\label{prop:inflparity}\lab{PROVED}
 Assume the dissection of the inflated tile is \emph{edge-to-edge}. If $e\not\equiv f \pmod 2$, then the
 boundary word with $p=1$ is impossible.
 \end{proposition}
@@ -3269,7 +3269,7 @@ the $a$-side, $f$ on the $b$-side, and $f + (f-e)$ on the $c$-side, so $B=4f-e$ 
 This is odd exactly when $e\not\equiv f$, and an odd value contradicts the count.
 \end{proof}
 
-\begin{corollary}[The $p=1$ word needs two $c$-edges, so $e=f-1$ is rigid]\label{cor:twoc}
+\begin{corollary}[The $p=1$ word needs two $c$-edges, so $e=f-1$ is rigid]\label{cor:twoc}\lab{PROVED}
 A $p=1$ word exists only if $e+2\le f$. Consequently the inflation is rigid at every member with
 $e=f-1$, uniformly in $f$ and with no search.
 \end{corollary}
@@ -3297,7 +3297,7 @@ $\binom{12}{3}=220$ tasks. The table below shows the count beside the measured n
 $k=2$ members are cheap for a structural reason rather than an accidental one.
 \end{remark}
 
-\begin{proposition}[The orientation of a boundary $a$-run is monotone]\label{prop:orientmono}
+\begin{proposition}[The orientation of a boundary $a$-run is monotone]\label{prop:orientmono}\lab{PROVED}
 Let a maximal run of consecutive $a$-edges lie on a straight side of the target, or on a side of the
 inflated tile, and let $T_1,\dots,T_L$ be the tiles laying them. Each $T_i$ presents $\beta$ at one end
 of its $a$-edge and $\gamma$ at the other; write its orientation as $\mathrm{BG}$ or $\mathrm{GB}$
@@ -3355,7 +3355,7 @@ Y_i \;=\; A+(i+1)\,b\,w \qquad (0\le i\le k-2)
 for the base junctions and $X_i=A+i\,b\,w+c\,u$ for the row apexes; the jump identity
 $Y_i+a\,\hat v=X_i$ is \texttt{ForcedRow.jump\_x}.
 
-\begin{lemma}[Boundary words at scale $k$]\label{lem:rowwords}
+\begin{lemma}[Boundary words at scale $k$]\label{lem:rowwords}\lab{PROVED}
 For $k<f$ the three side words of $\Delta_k$ are forced outright: the base reads $b^k$
 \textup{(\texttt{Inflation.b\_side\_rigid})}, the $a$-side reads $a^k$
 \textup{(\texttt{.a\_side\_rigid})}, and the $c$-side carries no $b$-edge
@@ -3366,7 +3366,7 @@ $a^f$ or $c^e$ \textup{(\texttt{Inflation.a\_side\_words}; the $c^e$ branch is t
 configuration, treated separately)}.
 \end{lemma}
 
-\begin{lemma}[The corner tile]\label{lem:rowp0}
+\begin{lemma}[The corner tile]\label{lem:rowp0}\lab{PROVED}
 The tile $P_0$ of the occurrence at $A$ is unique and standard: it presents $\alpha$ at $A$ with
 its $b$-flank on the base and its $c$-flank on the $c$-side.
 \end{lemma}
@@ -3379,7 +3379,7 @@ $A$ are the flanks $\{b,c\}$ of $\alpha$. The $c$-side carries no $b$-edge
 (Lemma~\ref{lem:rowwords}), so the $b$-flank lies on the base.
 \end{proof}
 
-\begin{lemma}[The first partner, and the parallelogram]\label{lem:rowq0}
+\begin{lemma}[The first partner, and the parallelogram]\label{lem:rowq0}\lab{PROVED}
 $P_0$'s $a$-edge $[\,b\,w,\;c\,u\,]$ is matched by a single tile $Q_0$, the half-turn image of
 $P_0$ about the edge midpoint; $P_0\cup Q_0$ is the parallelogram $(A,\;b\,w,\;b\,w+c\,u,\;c\,u)$.
 \end{lemma}
@@ -3399,7 +3399,7 @@ So the direct partner is forced, and the half-turn closes the parallelogram
 \textup{(\texttt{ForcedRow.pgram\_x})}.
 \end{proof}
 
-\begin{lemma}[The row advance at $Y_0$]\label{lem:rowp1}
+\begin{lemma}[The row advance at $Y_0$]\label{lem:rowp1}\lab{PROVED}
 The tile completing the junction $Y_0=b\,w$ is $P_1=P_0+b\,w$.
 \end{lemma}
 
@@ -3412,7 +3412,7 @@ word $b^k$ ($b\neq c$, \texttt{ForcedRow.base\_letter\_distinct}), so the $b$-fl
 base and the tile is the translate $P_1$.
 \end{proof}
 
-\begin{proposition}[The slot dichotomy]\label{prop:slotdichotomy}
+\begin{proposition}[The slot dichotomy]\label{prop:slotdichotomy}\lab{PROVED}
 Let $1\le i\le k-2$ and suppose the row is standard up to $P_i$. At the junction $Y_i$ the figure
 is $\{\alpha,\beta,\gamma\}$: the $\gamma$ is $P_i$'s, the $\alpha$ is the next row tile
 $P_{i+1}=P_0+(i+1)b\,w$, forced with its $b$-flank on the base, and the $\beta$-tile spans the
@@ -3450,7 +3450,7 @@ $X_i$ is blocked only at $Y_i$ --- beyond $X_i$ it runs into untiled interior --
 covering may overrun at $X_i$ and \texttt{a\_unsplittable} does not exclude the rogue branch.
 \end{proof}
 
-\begin{corollary}[The induction step]\label{cor:rowinduction}
+\begin{corollary}[The induction step]\label{cor:rowinduction}\lab{PROVED}
 If every slot of $\Delta_k$ takes the std branch, the first row is the standard one ---
 $P_0,\dots,P_{k-1}$ and $Q_0,\dots,Q_{k-2}$, $2k-1$ tiles --- and the closure of
 $\Delta_k$ minus the row is the scale-$(k-1)$ occurrence anchored at $A+c\,u$
@@ -3494,7 +3494,7 @@ itself decide Hypothesis~\ref{hyp:walls}, which asks whether the west corner blo
 Corollary~\ref{cor:ptwo} leaves the two cases $p\in\{1,2\}$. The case $p=2$ is not uniformly hard:
 on one infinite subfamily it is completely rigid, and the rigidity is visible in a counting budget.
 
-\begin{lemma}[The $\gamma$-injection budget at $p=2$]\label{lem:tight}
+\begin{lemma}[The $\gamma$-injection budget at $p=2$]\label{lem:tight}\lab{PROVED}
 A side of parameter $p$ carries $n_a=pf$, $n_b=0$, $n_c=f-pe$, hence $k=pf+(f-pe)$ edges and $k-1$
 junctions, so the $\gamma$-injection bound $\#a+\#b\le k-1$ has slack $f-pe-1$. At $p=1$ the slack is
 $f-e-1>0$ for every member. At $p=2$ it is $f-2e-1$, which vanishes exactly when $f=2e+1$.
@@ -3506,7 +3506,7 @@ members $(1,3)$ at $N=26$, $(2,5)$ at $71$, $(3,7)$ at $138$, $(4,9)$ at $227$, 
 The first is closed by Theorem~\ref{thm:walls13} and the second by search, so $(3,7)$ is the smallest
 tight member not already settled.
 
-\begin{proposition}[The $p=2$ side is forced]\label{prop:tightside}
+\begin{proposition}[The $p=2$ side is forced]\label{prop:tightside}\lab{PROVED}
 Let $f=2e+1$ and suppose an equal side has $p=2$. Then $n_c=f-2e=1$, and the side word is
 $a^{2f}c$, read from the base corner to the apex. Every one of its $2f$ junctions carries exactly one
 $\gamma$ and is the figure $\{\gamma,\alpha,\beta\}$; each $a$-tile presents $\beta$ at its left
@@ -3529,7 +3529,7 @@ $\beta$ there.
 Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
-\begin{lemma}[The chord at the last junction]\label{lem:chord}
+\begin{lemma}[The chord at the last junction]\label{lem:chord}\lab{PROVED}
 Let $f=2e+1$ and let a side have $p=2$. The apex $c$-tile presents $\beta$ at $J_{2f}$ with its
 $a$-ray pointing along the horizontal, and $J_{2f}$ lies at height fraction $2e/f$, so the horizontal
 chord from $J_{2f}$ to the opposite side has length exactly $e(3f^2-e^2)(f-2e)/f=eN/f$. At $(3,7)$
@@ -3543,7 +3543,7 @@ at the end of the $c$-tile's $a$-edge, and convexity of the target keeps every e
 chord.
 \end{lemma}
 
-\begin{theorem}[$p=2$ is excluded on the tight subfamily]\label{thm:ptwodead}
+\begin{theorem}[$p=2$ is excluded on the tight subfamily]\label{thm:ptwodead}\lab{PROVED}
 Let $f=2e+1$. Then no equal side of the base-$\beta$ target at $m=1$ has $p=2$.
 \end{theorem}
 
@@ -3587,7 +3587,7 @@ Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
 
-\begin{theorem}[The last-junction dichotomy]\label{thm:lastjunction}
+\begin{theorem}[The last-junction dichotomy]\label{thm:lastjunction}\lab{PROVED}
 Let $(e,f)$ be any member with $f=2e+1$, and consider the last junction $J$ of an equal side --- the
 junction where the final $c$-edge begins, at distance $f^3-f^2$ from the base corner, hence at height
 fraction $(f-1)/f$ for every value of $p$. Let $X$ be the tile angularly adjacent to the apex
@@ -3630,7 +3630,7 @@ Hypothesis~\ref{hyp:walls} on the whole subfamily $f=2e+1$, requires a further m
 and \cite{Obstructions} rules out the two most natural candidates, so that mechanism must be metric.
 \end{remark}
 
-\begin{theorem}[The side carrying $T_2$'s $c$-edge is not mirrored]\label{thm:nobothmirror}
+\begin{theorem}[The side carrying $T_2$'s $c$-edge is not mirrored]\label{thm:nobothmirror}\lab{PROVED}
 Assume $e^{2}+ef<f^{2}$. The middle apex tile $T_2$ lays its $b$ on one of the two inner rays at $A$
 and its $c$ on the other. Then the equal side on the ray carrying the $c$ has figure
 $\{\gamma,\alpha,\beta\}$ at its last junction, not $\{3\alpha,2\beta\}$.
@@ -3664,7 +3664,7 @@ $T_2$ and of the mirror partner meet --- contradicting the dissection. Only the 
 ray carrying the $c$ enters the test, so one side suffices; the other ray is handled by reflection.
 \end{proof}
 
-\begin{corollary}[The figure at $P$ on that side is fully determined]\label{cor:figureP}
+\begin{corollary}[The figure at $P$ on that side is fully determined]\label{cor:figureP}\lab{PROVED}
 On the equal side carrying $T_2$'s $c$-edge, the point $P$ lies at distance $b<c$ from $A$ along that
 edge, hence interior to it, so $T_2$ is the straight tile at $P$. The figure at $P$ is then forced:
 \[
@@ -3682,7 +3682,7 @@ leaves $2\pi-\gamma-\pi-\beta=\pi-\gamma-\beta=\alpha$, so exactly one further t
 presents $\alpha$.
 \end{proof}
 
-\begin{proposition}[The two placements of $U$]\label{prop:Uplacements}
+\begin{proposition}[The two placements of $U$]\label{prop:Uplacements}\lab{PROVED}
 On the side carrying $T_2$'s $c$-edge, the tile $U$ of Corollary~\ref{cor:figureP} has $\alpha$ at $P$,
 so its flanks there are $b$ and $c$, one on the ray shared with $Y$ and one on the ray shared with
 $T_2$. Exactly two placements arise.
@@ -3741,7 +3741,7 @@ configuration on the unmirrored side is now determined down to this single binar
 vertex located exactly.
 \end{remark}
 
-\begin{proposition}[The figure at $P'$ on the mirrored side]\label{prop:figurePprime}
+\begin{proposition}[The figure at $P'$ on the mirrored side]\label{prop:figurePprime}\lab{PROVED}
 On the equal side carrying $T_2$'s $b$-edge, the figure at $P'$ is \emph{exactly} $\{\beta,3\gamma\}$,
 whichever straight figure that side carries at its last junction.
 \end{proposition}
@@ -3861,7 +3861,7 @@ residual question is one linear congruence per $k$, with $k$ in an explicit fini
 an unstructured three-variable family.
 \end{remark}
 
-\begin{proposition}[The extra base columns at a close pair]\label{prop:closepaircolumns}
+\begin{proposition}[The extra base columns at a close pair]\label{prop:closepaircolumns}\lab{PROVED}
 Let $\gcd(e,f)=1$ and $1\le e<f$, let $b=f^2-e^2$, and let $(x,y,z)$ be a base column with
 $y=e+kf$, $k\ge1$, satisfying $x,z\ge1$ and $x+z\ge4$. Then
 \begin{enumerate}
@@ -3876,7 +3876,7 @@ determined by $x$.
 \textup{(\texttt{close\_pair\_column}, \texttt{close\_pair\_column\_unique}, \texttt{one\_column\_per\_k}.)}
 \end{proposition}
 
-\begin{proposition}[Sharp criterion for an extra base column]\label{prop:sharpcolumn}
+\begin{proposition}[Sharp criterion for an extra base column]\label{prop:sharpcolumn}\lab{PROVED}
 Let $\gcd(e,f)=1$, $1\le e<f$, $b=f^2-e^2$. For $k\ge1$ let $x_k$ be the least positive integer with
 $x_k\equiv ke\pmod f$, and write $x_k=ke-m_kf$, so that $1\le x_k\le f$. Put
 \[
@@ -3953,7 +3953,7 @@ each a translate of $\Delta_1$ (``up-cells'') or of its half-turn (``down-cells'
 \emph{not} individually tileable --- that is exactly the $m=1$ exclusion --- so all constructions
 below use two larger blocks whose interfaces are full straight segments.
 
-\begin{lemma}[Unit parallelogram]\label{lem:pgram}
+\begin{lemma}[Unit parallelogram]\label{lem:pgram}\lab{PROVED}
 The parallelogram $P_1$ with vertices $(0,0)$, $(Y_1,0)$,
 $(Y_1+X_1\cos\beta,\,X_1\sin\beta)$, $(X_1\cos\beta,\,X_1\sin\beta)$ --- one up-cell and one
 down-cell, glued along a full cell edge --- admits a tiling by $2N_1=22$ congruent copies of the
@@ -3964,7 +3964,7 @@ explicit separating edge-line for each of the $231$ tile pairs, and the exact ar
 $\sum 2A_i = 528\sqrt{15}$ --- no axioms, no imports.
 \end{lemma}
 
-\begin{lemma}[Collar decomposition]\label{lem:collar}
+\begin{lemma}[Collar decomposition]\label{lem:collar}\lab{PROVED}
 For $m\ge 3$, let $\Delta_{m-2}^{\mathrm{apex}}\subset\Delta_m$ be the scale-$(m-2)$ copy anchored
 at the apex. The closure of $\Delta_m\setminus\Delta_{m-2}^{\mathrm{apex}}$ --- the \emph{collar},
 the bottom two cell rows, $4(m-1)$ cells --- decomposes into
@@ -3993,7 +3993,7 @@ altitude). Each column splits into two translates of $P_1$ along the full segmen
 $X_1\sin\beta$.
 \end{proof}
 
-\begin{theorem}[Realizability, member $(1,2)$]\label{thm:realize12}
+\begin{theorem}[Realizability, member $(1,2)$]\label{thm:realize12}\lab{CONJECTURE}
 $N=11m^2$ is realizable for every $m\ge 2$. With Theorem~\ref{thm:basebeta-full} the instance
 spectrum of the member $(1,2)$ is completely determined:
 \[
@@ -4024,7 +4024,7 @@ class: every admissible $m$ is realized. Member $(1,2)$ is thus, to our knowledg
 incommensurable-angles (target, tile) pair with no undecided instance.
 \end{remark}
 
-\begin{theorem}[The family is not uniform]\label{thm:notuniform}
+\begin{theorem}[The family is not uniform]\label{thm:notuniform}\lab{CONJECTURE}
 For the member $(e,f)=(1,3)$ --- tile $(3,8,9)$, $N_1=26$ --- the scale-$2$ target admits no tiling:
 $N=104$ is not realized. \textup{(Exhaustive search, $43\,541\,916$ nodes.)} Hence the conclusion of
 Theorem~\ref{thm:realize12} does not extend along the family: $\Delta_2$ exists for $(1,2)$ and does
@@ -4051,7 +4051,7 @@ state this as a question rather than a conjecture, and the search is running.
 The failure of the seeds to travel is not an accident of the search; it is visible in the
 certified tilings themselves.
 
-\begin{proposition}[The relation lattice, and the interface floor]\label{prop:rellattice}
+\begin{proposition}[The relation lattice, and the interface floor]\label{prop:rellattice}\lab{PROVED}
 For the tile $(a,b,c)=(ef,f^2-e^2,f^2)$ with $\gcd(e,f)=1$, the lattice
 $\Lambda(e,f)=\{n\in\Z^3:\ n_aa+n_bb+n_cc=0\}$ is free of rank two, generated by
 \[
@@ -4074,7 +4074,7 @@ $n=y\,v_2-t\,v_1$. For the floor: if $n_b\neq0$ one side carries at least $f$ $b
 $\ge fb$); if $n_b=0$ and $n=sv_1\neq0$ one side carries at least $f$ $a$-edges (length $\ge fa$).
 \end{proof}
 
-\begin{theorem}[The certified seeds are $(1,2)$-degenerate]\label{thm:seeddegenerate}
+\begin{theorem}[The certified seeds are $(1,2)$-degenerate]\label{thm:seeddegenerate}\lab{CONJECTURE}
 Sweep, exactly over $\Q(\sqrt{15})$, all eight kernel-certified tilings of the $(1,2)$ family ---
 \texttt{Tiling44} $=$ \texttt{N44B}, \texttt{N44C}, \texttt{Tiling99}, \texttt{PgramTiling22},
 \texttt{CevianTiling28}, \texttt{CevianTiling63}, \texttt{Tiling28}, \texttt{Tiling77}
@@ -4094,7 +4094,7 @@ Theorem~\ref{thm:pgram-e1} is the one known construction that manages with the u
 relations alone, and it is exactly the one that generalises.
 \end{theorem}
 
-\begin{proposition}[Cevian reduction: two tiles and an atom]\label{prop:cevianatom}
+\begin{proposition}[Cevian reduction: two tiles and an atom]\label{prop:cevianatom}\lab{PROVED}
 In $\Delta_m$ let $P_e$ be the base point at distance $ecm$ from the east corner. The cevian from
 the apex to $P_e$ has length $fbm$ and cuts $\Delta_m$ into the triangle
 $(ef^2m,\,fbm,\,f^3m)=fm\cdot(a,b,c)$ --- the tile at scale $fm$, tileable by $(fm)^2$ copies for
@@ -4124,7 +4124,7 @@ branch.
 The cevian piece, unlike the atom, has seeds --- and at $e=1$ its own addition law, which closes
 its spectrum at $(1,2)$ completely.
 
-\begin{lemma}[The W-parallelogram, $e=1$]\label{lem:wpgram}
+\begin{lemma}[The W-parallelogram, $e=1$]\label{lem:wpgram}\lab{PROVED}
 Let $e=1$. The parallelogram spanned by $fb$ (cevian direction) and $2f^2-1$ (base direction),
 included angle $\alpha+\beta$, admits a tiling by $2(2f^2-1)$ tiles. Explicitly: the $c$-glued
 two-tile brick is the parallelogram with sides $a,b$ and angle $\alpha+\beta$; the base side is
@@ -4135,7 +4135,7 @@ $a$-along) fill it with $f^2+b=2f^2-1$ bricks
 straight segment.
 \end{lemma}
 
-\begin{theorem}[W-addition, and the second complete pair]\label{thm:wfamily}
+\begin{theorem}[W-addition, and the second complete pair]\label{thm:wfamily}\lab{CONJECTURE}
 Let $e=1$ and write $S_W=\{m:\ W_m\ \text{admits a tiling}\}$. Then $S_W$ is closed under
 addition: $W_{m_1+m_2}$ decomposes as $W_{m_1}$ anchored at the $\beta$-corner, the parallelogram
 of Lemma~\ref{lem:wpgram} at scale $m_1\times m_2$, and an upright translate of $W_{m_2}$, all
@@ -4181,7 +4181,7 @@ $1326$ separating lines, zero axioms).
 For the family $e=1$ the seed is not needed at all: the parallelogram can be written down.
 \end{remark}
 
-\begin{theorem}[The unit parallelogram, $e=1$]\label{thm:pgram-e1}
+\begin{theorem}[The unit parallelogram, $e=1$]\label{thm:pgram-e1}\lab{PROVED}
 Let $e=1$ and $f\ge2$, so $(a,b,c)=(f,\,f^2-1,\,f^2)$ and $N_1=3f^2-1$. Then $P_1$ admits an
 explicit tiling by $2N_1$ copies of the tile.
 \end{theorem}
@@ -4233,7 +4233,7 @@ width $s=21$ returns \textsc{no tiling} ($72$ nodes), while the $e=1$ control is
 nodes.
 \end{remark}
 
-\begin{theorem}[The dichotomy]\label{thm:dichotomy}
+\begin{theorem}[The dichotomy]\label{thm:dichotomy}\lab{PROVED}
 The unit parallelogram of the member $(e,f)=(2,3)$ --- sides $Y_1=46$ and $X_1=27$ with angle
 $\beta$, tile $(6,5,9)$, $46$ tiles --- admits no tiling. \textup{(Exhaustive search,
 $4\,334\,789$ nodes.)} Together with Theorem~\ref{thm:pgram-e1} this separates the branch: at
@@ -4248,14 +4248,14 @@ cell (Theorem~\ref{thm:basebeta-full}) and the unit parallelogram are untileable
 Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
-\begin{proposition}[Wide parallelograms, all $(e,f)$]\label{prop:widecol}
+\begin{proposition}[Wide parallelograms, all $(e,f)$]\label{prop:widecol}\lab{PROVED}
 A parallelogram with sides $p\,Y_1$ (base direction) and $q\,X_1$ (leg direction), angle $\beta$,
 is a pure $a\times c$ lattice --- a $(pN_1/f)\times(qf)$ grid of two-tile cells, hence tileable by
 $2pqN_1$ tiles --- if and only if $f\mid p$ (the side divisibilities and count are
 \texttt{pgram\_cols}, \texttt{pgram\_cell\_count} in \textup{\texttt{lean/Primitives.lean}}).
 \end{proposition}
 
-\begin{theorem}[Addition law]\label{thm:addlaw}
+\begin{theorem}[Addition law]\label{thm:addlaw}\lab{PROVED}
 Fix a member $(e,f)$ and $m_1,m_2\ge1$ with $\Delta_{m_1}$ and $\Delta_{m_2}$ tileable. If
 $f\mid m_1$, or if $e=1$, then $\Delta_{m_1+m_2}$ is tileable.
 \end{theorem}

@@ -26,6 +26,10 @@
 \author{Vico Bonfioli}
 \date{\today}
 
+
+%% Rule 0 label macro: exactly one label per numbered statement.
+\newcommand{\lab}[1]{\hfill\textnormal{\footnotesize\textsc{[#1]}}}
+
 \begin{document}
 \begin{abstract}
 This note collects the negative results of the base-$\beta$ programme: the exact scope of each theorem
@@ -725,7 +729,7 @@ tile, and the two angles of that tile at the ends of the edge are the two angles
 it: an $a$-edge is flanked by $\beta$ and $\gamma$, a $c$-edge by $\alpha$ and $\beta$. Call the
 choice of which flank sits at the lower end the \emph{orientation} of the edge.
 
-\begin{lemma}[Endpoint angles]\label{lem:endpoints}
+\begin{lemma}[Endpoint angles]\label{lem:endpoints}\lab{PROVED}
 The angle at the top of the last edge is $\alpha$, and the angle at the bottom of the first edge is
 $\beta$.
 \end{lemma}
@@ -737,7 +741,7 @@ the tile at the apex presents $\alpha$, so the top angle is $\alpha$. The single
 corner presents $\beta$, so the bottom angle of the first edge is $\beta$.
 \end{proof}
 
-\begin{proposition}[The junction automaton is consistent, and hugely so]\label{prop:nogoauto}
+\begin{proposition}[The junction automaton is consistent, and hugely so]\label{prop:nogoauto}\lab{PROVED}
 Regard the side as a transfer system: a state is the angle at the top of the current edge, and a
 transition is admissible when the pair (top angle of one edge, bottom angle of the next) extends to a
 straight figure at their junction. Then the only inadmissible pair is $(\gamma,\gamma)$, which can
@@ -757,7 +761,7 @@ equal and involves $\gamma$; and $\gamma$ occurs only as a flank of an $a$-edge.
 finite check over $120\cdot2^{11}$ cases.
 \end{proof}
 
-\begin{proposition}[The census contributes one relation, and it is already spent]\label{prop:nogocensus}
+\begin{proposition}[The census contributes one relation, and it is already spent]\label{prop:nogocensus}\lab{PROVED}
 Let $x$ be the number of junctions of the side carrying $\{\gamma,\alpha,\beta\}$. Then $x\ge7$, and
 the $\alpha$- and $\beta$-counts along the side are linearly dependent: they sum to the identity
 $13=13$. Both $x=7$ and $x=10$ occur in solutions, so the census does not determine $x$.
@@ -788,7 +792,7 @@ $\sum_i a_i\le3$.
 Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
-\begin{proposition}[Every junction chord is straddled]\label{prop:straddle}
+\begin{proposition}[Every junction chord is straddled]\label{prop:straddle}\lab{PROVED}
 Let $J$ be a junction of an equal side at distance $d$ from the apex, and let $C$ be the chord of the
 target through $J$ parallel to the base. Then some tile of the tiling meets both open sides of $C$.
 \end{proposition}
@@ -807,7 +811,7 @@ $C$ is not an integral number of tiles. If no tile met both open sides of $C$, e
 weakly on one side and the area above $C$ would be a sum of whole tile areas, a contradiction.
 \end{proof}
 
-\begin{proposition}[The general form]\label{prop:straddlegen}
+\begin{proposition}[The general form]\label{prop:straddlegen}\lab{PROVED}
 Let $(e,f)$ be any member with $\gcd(e,f)=1$. Then the area above the chord through any junction
 strictly between the apex and the base is never an integral number of tile areas, so some tile meets
 both open sides of that chord.
@@ -828,7 +832,7 @@ no exception.
 Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
-\begin{proposition}[Chord decomposition at the last junction]\label{prop:chorddecomp}
+\begin{proposition}[Chord decomposition at the last junction]\label{prop:chorddecomp}\lab{PROVED}
 Let $C$ be the chord of the target through the last junction $J$ of an equal side at $(3,7)$, so
 $|C|=414/7$. Let $\mathcal U$ be the set of tiles whose interiors meet the open half-plane above $C$.
 Each $T\in\mathcal U$ either \emph{straddles} $C$ (its interior meets both open sides) or is
@@ -913,7 +917,7 @@ $k\ge1$. In general $g(k)\le g(1)-(k-1)(f-e)$, and $g(K)\ge0$ gives the stated b
 Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
-\begin{lemma}[A $c$-corner carries a side $a$-edge]\label{lem:ccornerside}
+\begin{lemma}[A $c$-corner carries a side $a$-edge]\label{lem:ccornerside}\lab{PROVED}
 The base corner angle is $\beta$, with flanks $\{a,c\}$. If a corner tile lays $c$ on the base it
 lays $a$ on the side, so that side's $a$-count $P'$ is positive; by Lemma~\ref{C-lem:sidequant}
 $P'=fp$, hence $P'\ge f$, and with $p e+R'=f$ and the $\gamma$-trap $R'\ge1$ one gets
@@ -925,7 +929,7 @@ lemma; the boundary alone does not do it, since $a$ and $c$ are both available a
 position once the walls column is in force.
 \end{lemma}
 
-\begin{proposition}[The chain machinery is member-independent]\label{prop:unify}
+\begin{proposition}[The chain machinery is member-independent]\label{prop:unify}\lab{PROVED}
 Every ingredient of the corner chain holds at all members $(e,f)$, not only at $e=1$:
 \begin{enumerate}
 \item[\textup{(i)}] the branch relations $3\alpha+2\beta=\pi$ and $\gamma=2\alpha+\beta$ define
@@ -946,7 +950,7 @@ $e=1$ arguments that used $c-b=1$ as a unit therefore carry over with $e^2$ in i
 those that used its being the smallest positive integer do not.
 \end{proposition}
 
-\begin{lemma}[The $\alpha$-vertex gap, general]\label{lem:avgen}
+\begin{lemma}[The $\alpha$-vertex gap, general]\label{lem:avgen}\lab{PROVED}
 A cover piece of a horizontal $a$-edge has its foot at $(k+1)a$ from the row origin if it is
 direct, and at $(k+3)a-e^3/f$ if it is mirrored, since $2\,cu_x-3a=-e^3/f$. The mirrored foot is a
 lattice point only if $f^2\mid e^2$, and at row $1$, where feet land on the base and every
@@ -966,7 +970,7 @@ runs along the base from either corner, and what it cannot do is pass a base $b$
 mechanism behind Theorem~\ref{C-thm:e1cascade} at $e=1$ and it is available verbatim at every member.
 \end{remark}
 
-\begin{lemma}[The corner step, unconditional at every member]\label{lem:cornerstep}
+\begin{lemma}[The corner step, unconditional at every member]\label{lem:cornerstep}\lab{PROVED}
 Let a base corner tile lay $a$ on the base. It presents $\gamma$ at the far end of that $a$-edge,
 where the junction is straight, so the remainder is $\alpha+\beta$ with the unique fill
 $\{\alpha,\beta\}$. The corner tile's $b$-edge joins a base vertex to a side vertex, so both of
@@ -991,7 +995,7 @@ $(2,3)$. The refutation profile differs from the thin members: the semigroup-run
 $57\%$ of the kills (against $8\%$ at $(1,5)$), consistent with Lemma~\ref{C-lem:monochotomy}
 strengthening the run arithmetic, and the maximal depth is $5.7f$ against $4.8f$. \end{remark}
 
-\begin{lemma}[The crossing kill, and solitude of branches]\label{lem:solitary}
+\begin{lemma}[The crossing kill, and solitude of branches]\label{lem:solitary}\lab{PROVED}
 A transversal edge crossing a ladder's line within parameter $b+c$ of its start is fatal: the
 covers cannot cross it, every T-junction forces the next cover edge, and
 Lemma~\ref{C-lem:termination} forbids termination below $b+c$. A branch's own ceilings never
@@ -1004,7 +1008,7 @@ straddler, and its fills are mates: at most one $A$-branch per $2f$-column windo
 carries any straddler at all.
 \end{lemma}
 
-\begin{lemma}[The mirrored piece is charged]\label{lem:charge}
+\begin{lemma}[The mirrored piece is charged]\label{lem:charge}\lab{PROVED}
 A cover piece of a horizontal $c$-edge is direct, with foot at the row lattice, or mirrored, with
 foot displaced by $1/f$; the mirrored piece presents $\beta$ at its left junction, as does its
 left neighbour, so that junction carries $n_\beta\ge2$ and its figure is $\{3\alpha,2\beta\}$
@@ -1014,7 +1018,7 @@ forces an additional $\{\beta,3\gamma\}$ vertex: a single mirrored piece already
 globally, in climber vertices, of which the kernel-checked tilings carry between one and four.
 \end{lemma}
 
-\begin{lemma}[Climbers detect deviation]\label{lem:climberdetect}
+\begin{lemma}[Climbers detect deviation]\label{lem:climberdetect}\lab{PROVED}
 At an interior lattice point of the brick/mate structure exactly six tiles meet, contributing
 $\beta,\gamma,\alpha$ from the row above and $\alpha,\gamma,\beta$ from the row below; the counts
 are $(2,2,2)$ and the figure is $\{2\alpha,2\beta,2\gamma\}$. Hence a $\{\beta,3\gamma\}$ vertex

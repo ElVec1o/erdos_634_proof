@@ -101,7 +101,7 @@ $6n^2$ occur as well; in particular $3=3\cdot 1^2$ occurs. The outstanding quest
 primes $\equiv 3\pmod 4$ that exceed $3$, which are exactly the odd primes that are neither sums of
 two squares nor of the form $3n^2$, are excluded.
 
-\begin{theorem}\label{thm:main}
+\begin{theorem}\label{thm:main}\lab{PROVED}
 Let $N>3$ be a prime with $N\equiv 3\pmod 4$ which is \emph{not} a base-$\beta$ candidate --- that is,
 $N\ne 3f^2-e^2$ for every coprime pair $1\le e<f$. Then $N$ is not a number of congruent triangles
 into which some triangle can be cut. In particular, since $19$ is not of that form, no triangle can be
@@ -221,7 +221,7 @@ the second $p\equiv2\pmod3$, so $p$ is represented by $3y^2-x^2$. Primitivity is
 prime $p$.
 \end{proof}
 
-\begin{theorem}[The first complete member]\label{thm:realize12}
+\begin{theorem}[The first complete member]\label{thm:realize12}\lab{CONJECTURE}
 Let the tile be $(2,3,4)$ and the target the isosceles triangle with base angles $\beta$
 (the base-$\beta$ member $(e,f)=(1,2)$, instances $N=11m^2$). Then the instance is tileable if and
 only if $m\ne1$: every $N=11m^2$ with $m\ge2$ is realized, and $N=11$ is excluded. This is, to our
@@ -245,7 +245,7 @@ statement and proof.
 Recorded in \cite{Obstructions}.
 \end{remark}
 
-\begin{corollary}[Theorem~\ref{thm:main}, congruence form]\label{cor:mod12}
+\begin{corollary}[Theorem~\ref{thm:main}, congruence form]\label{cor:mod12}\lab{PROVED}
 No prime $p\equiv7\pmod{12}$ is a number of congruent triangles into which a triangle can be cut.
 Equivalently: a prime $p>3$ with $p\equiv3\pmod4$ is excluded unconditionally unless
 $p\equiv11\pmod{12}$.
@@ -395,7 +395,7 @@ base-$\alpha$ prime exclusion (Theorem~20). Proposition~\ref{prop:isoalphaprime}
 latter without any appeal to $g\mid M$.
 \end{remark}
 
-\begin{proposition}[Base-$\alpha$ prime exclusion, replacing {\cite[Thm.~20]{BeesonIII}}]\label{prop:isoalphaprime}
+\begin{proposition}[Base-$\alpha$ prime exclusion, replacing {\cite[Thm.~20]{BeesonIII}}]\label{prop:isoalphaprime}\lab{PROVED}
 No isosceles triangle with base angles $\alpha$, where $3\alpha+2\beta=\pi$ and
 $\alpha\notin\Q\pi$, is $N$-tiled for $N$ prime.
 \end{proposition}
@@ -529,7 +529,7 @@ shows why $m=1$ --- the prime case --- is the rigid one. It is machine-checked
 
 
 
-\begin{proposition}[Unsplittability, and the rigidity of the thick regime]\label{prop:unsplit}
+\begin{proposition}[Unsplittability, and the rigidity of the thick regime]\label{prop:unsplit}\lab{PROVED}
 For every coprime $1\le e<f$, neither $a=ef$ nor $b=f^2-e^2$ is a sum of two or more tile edges; and
 $c=f^2$ is such a sum if and only if $e=1$, in which case uniquely $c=a^{f}$. Consequently \emph{in the
 entire open thick regime, where $e\ge2$, no tile edge splits at all}.
@@ -621,7 +621,7 @@ only on $g\mid M$ ($21,39,66,70$) are demoted (Remarks~\ref{rem:seventy},
 is not a square, a sum of two squares, nor $2n^2,3n^2,6n^2$, so it is not commensurably realizable.
 \end{remark}
 
-\begin{proposition}[Dissection basics]\label{prop:dissection}
+\begin{proposition}[Dissection basics]\label{prop:dissection}\lab{PROVED}
 Let $ABC$ be cut into $N$ triangles $T_1,\dots,T_N$ with pairwise disjoint interiors and union $ABC$.
 Then $\sum_i\lvert T_i\rvert=\lvert ABC\rvert$, and if the $T_i$ are pairwise congruent to a tile $T$
 then $\lvert ABC\rvert=N\lvert T\rvert$. Moreover, at a point $v\in ABC$ the tiles whose closure
@@ -653,7 +653,7 @@ Proposition~\ref{prop:vertexfigures} (\texttt{vertex\_multiplicities} and its th
 and the angle sum of a tile (\texttt{cornerAngle\_sum}).
 \end{proof}
 
-\begin{proposition}[Vertex figures]\label{prop:vertexfigures}
+\begin{proposition}[Vertex figures]\label{prop:vertexfigures}\lab{PROVED}
 Let the tile satisfy $3\alpha+2\beta=\pi$ with $\alpha\notin\Q\pi$, so $\gamma=2\alpha+\beta$ and
 $2\gamma=\pi+\alpha$. If the angles at $v$ have multiplicities $(p,q,r)$ for $(\alpha,\beta,\gamma)$
 together with $s$ straight angles, then $p\alpha+q\beta+r\gamma=t\pi$ with $t=1$ or $t=2$, and
@@ -678,7 +678,7 @@ integer equations is \texttt{vertex\_pi\_multiplicities},
 \texttt{Dissection.lean}.
 \end{proof}
 
-\begin{proposition}[Corner figures]\label{prop:cornerfig}
+\begin{proposition}[Corner figures]\label{prop:cornerfig}\lab{PROVED}
 On a base-$\beta$ target, the vertex figure at each base corner is a \emph{single} tile presenting
 $\beta$, and the figure at the apex is \emph{exactly three} tiles, each presenting $\alpha$. In
 particular no corner of $ABC$ carries a $\gamma$. The two edges of the base-corner tile at that
@@ -698,7 +698,7 @@ $\alpha,\gamma$, $c$ joins $\alpha,\beta$. Machine-checked (\texttt{corner\_beta
 \texttt{corner\_apex\_unique} in \texttt{lean/BaseBetaCorners.lean}).
 \end{proof}
 
-\begin{proposition}[$\gamma$-trap]\label{prop:gammatrap}
+\begin{proposition}[$\gamma$-trap]\label{prop:gammatrap}\lab{PROVED}
 Every side of a base-$\beta$ target carries at least one $c$-edge.
 \end{proposition}
 
@@ -724,7 +724,7 @@ at $J_n$ --- a corner. Contradiction.
 Recorded in \cite{Obstructions}.
 \end{remark}
 
-\begin{proposition}[$b$ is unsplittable]\label{prop:bunsplit}
+\begin{proposition}[$b$ is unsplittable]\label{prop:bunsplit}\lab{PROVED}
 $b$ is not a sum of two or more tile edges: if $n_a\,a+n_b\,b+n_c\,c=b$ with $n_a,n_b,n_c\ge0$, then
 $(n_a,n_b,n_c)=(0,1,0)$.
 \end{proposition}
@@ -736,7 +736,7 @@ $n_b\,b>b$ already, as $b>0$. So $n_b=1$, the remaining terms sum to zero, and $
 $n_a=n_c=0$. Machine-checked (\texttt{b\_unsplittable}).
 \end{proof}
 
-\begin{proposition}[Corner parallelogram]\label{prop:cornerpara}
+\begin{proposition}[Corner parallelogram]\label{prop:cornerpara}\lab{PROVED}
 Let $T_A$ be the tile at a base corner $A$. Its $b$-edge is a chord $[P,Q]$ with both endpoints on
 $\partial ABC$, matched by exactly one tile $T_3$, which presents $\alpha$ where $T_A$ presents
 $\gamma$ and conversely; so $T_A\cup T_3$ is a parallelogram with sides $a$ and $c$. Consequently
@@ -815,7 +815,7 @@ preprint's colouring theorem: the direction-group foundation is machine-checked,
 cancellation step is the same $\Phi$-style argument proved in Section~\ref{sec:invariant}.
 \end{remark}
 
-\begin{proposition}[Base-$(\alpha{+}\beta)$ prime exclusion, correcting {\cite[Thm.~18]{BeesonIII}}]\label{prop:b3prime}
+\begin{proposition}[Base-$(\alpha{+}\beta)$ prime exclusion, correcting {\cite[Thm.~18]{BeesonIII}}]\label{prop:b3prime}\lab{PROVED}
 No isosceles triangle with base angles $\alpha+\beta$, where $3\alpha+2\beta=\pi$ and
 $\alpha\notin\Q\pi$, is $N$-tiled for $N$ prime.
 \end{proposition}
@@ -927,7 +927,7 @@ proposition recovers it from the invariant alone, with no citation, on any targe
 takes integer values --- which is how it is used in Sections~\ref{sec:invariant} onwards. We state it
 first because it is logically prior to everything that follows.
 
-\begin{proposition}[Rationality from integrality of the invariant]\label{prop:rationality}
+\begin{proposition}[Rationality from integrality of the invariant]\label{prop:rationality}\lab{PROVED}
 Let $T$ have sides $a,b,c$ with $c^2=a^2+ab+b^2$ (equivalently, the angle opposite $c$ is $2\pi/3$),
 let $P\ne0$ be a real scale, and suppose the three quantities
 \[
@@ -960,7 +960,7 @@ Multiplying by $(a+b)/b=a/b+1\in\Q$ gives $c/b\in\Q$. Machine-checked in
 Recorded in \cite{Obstructions}.
 \end{remark}
 
-\begin{proposition}\label{prop:reduction}
+\begin{proposition}\label{prop:reduction}\lab{PROVED}
 Let $T$ be a tile with angles $(\alpha,\beta,2\pi/3)$, $\alpha/\pi$ irrational. If $T$ $N$-tiles a
 triangle and $N$ is prime, then $ABC$ is isosceles and not equilateral.
 \end{proposition}
@@ -1025,7 +1025,7 @@ weight $L\,f(\theta)$. For a tile $t$ with boundary traversed counterclockwise, 
 $C_f(t)=\sum_{\text{edges}}L\,f(\theta)$, and for the boundary of $ABC$ put
 $\Phi_f(\partial ABC)=\sum_{\text{sides}}L\,f(\theta)$ (counterclockwise).
 
-\begin{lemma}[Cancellation]\label{lem:cancel}
+\begin{lemma}[Cancellation]\label{lem:cancel}\lab{PROVED}
 For each $f\in\{f_\alpha,f_\beta\}$, $\displaystyle\sum_{\text{tiles}}C_f(t)=\Phi_f(\partial ABC)$.
 \end{lemma}
 
@@ -1061,7 +1061,7 @@ by~\eqref{eq:antisym}, so $\sum_{\text{tiles}}C_f(t)=\sum_\theta\Lambda_{\mathrm
 =\Phi_f(\partial ABC)$.
 \end{proof}
 
-\begin{lemma}[Tile value]\label{lem:value}
+\begin{lemma}[Tile value]\label{lem:value}\lab{PROVED}
 For every placement of $T$, $C_{f_\alpha}(t)=\pm(c+a-b)$ and $C_{f_\beta}(t)=\pm(c+b-a)$.
 \end{lemma}
 
@@ -1088,7 +1088,7 @@ Repeating in the $\beta$-frame (where $\gamma=\frac{2\pi}3$ adds $0$ to $j'$ and
 makes the $a$-edge the odd one out, giving $C_{f_\beta}(t)=\pm(c+b-a)$.
 \end{proof}
 
-\begin{corollary}[Integrality and parity]\label{cor:int}
+\begin{corollary}[Integrality and parity]\label{cor:int}\lab{PROVED}
 Each of $M_\alpha=\dfrac{\Phi_{f_\alpha}(\partial ABC)}{c+a-b}$ and
 $M_\beta=\dfrac{\Phi_{f_\beta}(\partial ABC)}{c+b-a}$ is an integer, and moreover
 \[
@@ -1108,7 +1108,7 @@ is a sum of $N$ signs, whence $M_\alpha\equiv N\pmod 2$; likewise for $f_\beta$.
 The two counts are usually treated as independent conditions. They are not: on each of the eleven
 shapes their \emph{product} is a fixed rational multiple of the tile count.
 
-\begin{proposition}[The invariant product]\label{prop:product}
+\begin{proposition}[The invariant product]\label{prop:product}\lab{PROVED}
 Let $T$ be a $2\pi/3$ tile with $\alpha/\pi$ irrational and let $ABC$ be one of the eleven shapes of
 Section~\ref{sub:shapes}, $N$-tiled by $T$. Then, up to the global sign fixed by the choice of
 reference direction,
@@ -1138,7 +1138,7 @@ The computation is exact and is carried out for all eleven shapes in
 (\texttt{lean/InvariantProduct.lean}, axiom-clean).
 \end{proof}
 
-\begin{corollary}[Tile-similar target, citation-free]\label{cor:similar}
+\begin{corollary}[Tile-similar target, citation-free]\label{cor:similar}\lab{PROVED}
 If $ABC$ is similar to $T$, then $N=M_\alpha^2$. In particular $N$ is a perfect square and is never
 prime.
 \end{corollary}
@@ -1154,7 +1154,7 @@ $N=\mu^2$. Machine-checked (\texttt{tile\_similar\_not\_prime}).
 alone, in place of \cite{SWW, BeesonI}. The $F_1$ row can likewise be made citation-free, and this is
 worth isolating because it removes a use of the rationality input.
 
-\begin{proposition}[$F_1$ excluded for prime $N$, without a rationality hypothesis]\label{prop:F1free}
+\begin{proposition}[$F_1$ excluded for prime $N$, without a rationality hypothesis]\label{prop:F1free}\lab{PROVED}
 Let $N>3$ be prime. No $F_1$ target, and no reflected $F_1'$ target, is $N$-tiled by a $2\pi/3$ tile
 with $\alpha/\pi$ irrational. The proof does not assume the tile rational.
 \end{proposition}
@@ -1211,7 +1211,7 @@ The invariant removes the tile-similar and right-angled branches, and nothing el
 
 \section{The isosceles obstruction}\label{sec:isosceles}
 
-\begin{lemma}[Non-integrality]\label{lem:nonint}
+\begin{lemma}[Non-integrality]\label{lem:nonint}\lab{PROVED}
 Let $a,k$ be positive integers with $\gcd(a,k)=1$, put $b=k^2$, and let $c>0$ satisfy
 $c^2=a^2+ab+b^2$. Then $k\nmid(a+b-c)$.
 \end{lemma}
@@ -1229,7 +1229,7 @@ while the right side is $k\cdot\frac k2\cdot\frac{3k}2=\frac{3k^3}4>0$, a contra
 $k\nmid(a+b-c)$.
 \end{proof}
 
-\begin{theorem}\label{thm:iso}
+\begin{theorem}\label{thm:iso}\lab{PROVED}
 Let $T$ be a tile with angles $(\alpha,\beta,2\pi/3)$, $\alpha/\pi$ irrational. Then no prime number
 of copies of $T$ tiles an isosceles, non-equilateral triangle.
 \end{theorem}
@@ -1298,7 +1298,7 @@ primes; this section records what the present methods contribute to the full det
 complete answer for primes, and, for each sporadic $2\pi/3$ branch, a determination of its
 \emph{admissible spectrum} --- the set of counts compatible with the area and invariant conditions.
 
-\begin{theorem}[Fibonacci families are the extremal ones]\label{thm:fib}
+\begin{theorem}[Fibonacci families are the extremal ones]\label{thm:fib}\lab{PROVED}
 For a base-$\beta$ family $(e,f)$ with $\gcd(e,f)=1$, $1\le e<f$, write $M=f+e$ and
 $N_0=3f^2-e^2$. Then
 \[
@@ -1327,7 +1327,7 @@ Fibonacci pairs. Then $M=F_n+F_{n+1}=F_{n+2}$ and $f^2-ef-e^2=(-1)^n$ give the d
 Recorded in \cite{Obstructions}.
 \end{remark}
 
-\begin{theorem}[Scaling ladder]\label{thm:ladder}
+\begin{theorem}[Scaling ladder]\label{thm:ladder}\lab{PROVED}
 Let a triangle $T$ be cut into $N$ copies of a tile $t$. Then for every integer $k\ge1$ the scaled
 triangle $kT$ is cut into $k^2N$ copies of $t$.
 \end{theorem}
@@ -1338,7 +1338,7 @@ $\binom{k+1}{2}$ are translates of $T$ and $\binom{k}{2}$ are its point-reflecti
 $T$. Cut each into $N$ copies of $t$.
 \end{proof}
 
-\begin{corollary}[The realizable set of a base-$\beta$ family is a union of multiples]\label{cor:ladder}
+\begin{corollary}[The realizable set of a base-$\beta$ family is a union of multiples]\label{cor:ladder}\lab{PROVED}
 Fix coprime $1\le e<f$ and put $N_0=3f^2-e^2$. Since the base-$\beta$ target at scale $m$ is
 $m\cdot(f^3,f^3,eN_0)$ --- the same shape for every $m$ --- the set
 \[
@@ -1348,7 +1348,7 @@ satisfies $m\in S(e,f)\Rightarrow km\in S(e,f)$ for every $k\ge1$. Hence $S(e,f)
 multiples of its minimal elements, and $1\in S(e,f)$ is \emph{not} implied by $S(e,f)\ne\emptyset$.
 \end{corollary}
 
-\begin{corollary}[An infinite family of tilings in an incommensurable branch]\label{cor:elevenm}
+\begin{corollary}[An infinite family of tilings in an incommensurable branch]\label{cor:elevenm}\lab{PROVED}
 For $(e,f)=(1,2)$, tile $(2,3,4)$ and $N_0=11$: $1\notin S$ (Table~\ref{tab:basebeta}: the target
 $(8,8,11)$ is exhausted at $135$ nodes), while $2\in S$ and $3\in S$ by the explicit $44$- and
 $99$-tilings. Therefore $S\supseteq 2\Z_{\ge1}\cup 3\Z_{\ge1}$, and
@@ -1365,7 +1365,7 @@ $N=11m^2$ with $\gcd(m,6)=1$ --- the smallest being $275$ --- are undetermined.
 Recorded in \cite{Obstructions}.
 \end{remark}
 
-\begin{theorem}[The prime case]\label{thm:primefull}
+\begin{theorem}[The prime case]\label{thm:primefull}\lab{PROVED}
 Let $p$ be a prime with $p\not\equiv11\pmod{12}$. Then $p$ is a number of congruent triangles into
 which some triangle can be cut if and only if
 \[
@@ -1400,7 +1400,7 @@ quadratically with $e^2$ and $f^2$ congruent copies realizes $N=e^2+f^2$ (the bi
 direction inherits.
 \end{proof}
 
-\begin{theorem}[Isosceles admissible spectrum]\label{thm:admissible}
+\begin{theorem}[Isosceles admissible spectrum]\label{thm:admissible}\lab{PROVED}
 Let $(a,b,c)$ be a primitive $120^\circ$-triple and write $b=de^2$ with $d$ squarefree. Every
 $N$-tiling of the base-$\alpha$ isosceles target has scale $k=dew$ for a positive integer $w$, and
 \[
@@ -1423,7 +1423,7 @@ $e\mid w(c-a-b)$; and $M=w(c-a-b)/e\equiv N\pmod2$ by Corollary~\ref{cor:int}.
 $e\mid(c-a-b)$, which Lemma~\ref{lem:nonint} refutes. The residual divisibility is governed by the
 following classification.
 
-\begin{proposition}[Solvability of $e\mid(a+b-c)$]\label{prop:solv}
+\begin{proposition}[Solvability of $e\mid(a+b-c)$]\label{prop:solv}\lab{PROVED}
 Let $b=de^2$, $d$ squarefree, $\gcd(a,b)=1$. Then $e\mid(a+b-c)$ holds for a primitive
 $120^\circ$-triple if and only if there is an integer $j$ with $d<j<2d$ such that $ej$ is even,
 \[
@@ -1444,7 +1444,7 @@ $t=ej/2$, $a$ as displayed and $c=a+et$ reverses the computation: $c^2=a^2+ab+b^
 $a+b-c=e(de-t)$ is divisible by $e$.
 \end{proof}
 
-\begin{theorem}[Spectrum lattice]\label{thm:lattice}
+\begin{theorem}[Spectrum lattice]\label{thm:lattice}\lab{PROVED}
 Let $(a,b,c)$ be a primitive $120^\circ$-triple, $b=de^2$ with $d$ squarefree, $r=c-a-b$,
 $g=\gcd(e,r)$, $e_1=e/g$, and
 \[
@@ -1470,7 +1470,7 @@ so the parity clause holds for all $u$ when $T$ is even, and exactly for even $u
 Theorem~\ref{thm:lattice} uses only the base-aligned invariant. The mirror invariant is also a
 necessary condition on the same target, and it closes the spectrum completely.
 
-\begin{theorem}[Spectrum theorem]\label{thm:spectrum}
+\begin{theorem}[Spectrum theorem]\label{thm:spectrum}\lab{PROVED}
 Let $(a,b,c)$ be a primitive $120^\circ$-triple. The tile counts satisfying \emph{all} the
 invariant conditions on the base-$\alpha$ isosceles target --- integrality and parity of both
 $M_\alpha$ and $M_\beta$, together with the area equation --- are exactly Zhang's family
@@ -1562,7 +1562,7 @@ spectrum bounds the realized set from outside, and Theorem~\ref{thm:lattice} det
 exactly.
 \end{remark}
 
-\begin{proposition}[The rationality input, partly internalised]\label{prop:ratfree}
+\begin{proposition}[The rationality input, partly internalised]\label{prop:ratfree}\lab{PROVED}
 On the six shapes whose invariant-product constant is $\kappa=-a/(a+2b)$ or $-b/(2a+b)$
 \textup{(iso base-$\alpha$, iso base-$\beta$, $F_3$, $F_4$, $F_3'$, $F_4'$)}, the tile's side ratios
 are rational, provided the configuration \textup{(}$\star$\textup{)} below does not occur. No
@@ -1653,7 +1653,7 @@ also that $N=24$ and $N=33$ do occur elsewhere in the spectrum, by commensurable
 statement decided here is per (target, tile) pair.
 \end{remark}
 
-\begin{proposition}[The other branches]\label{prop:otherspectra}
+\begin{proposition}[The other branches]\label{prop:otherspectra}\lab{PROVED}
 With the same normalizations:
 $F_1$ forces $N=dw^2(a+b)$ where $b=de^2$, $d$ squarefree (from $b\mid k^2$ as above);
 $F_2,F_3,F_4$ force $N=N_0k^2$ exactly, with $N_0=(a+2b)(2a+b)$, $3(a+b)(a+2b)$, $(a+b)(2a+b)$;
@@ -1674,7 +1674,7 @@ Corollary~\ref{cor:int} gives the two divisibilities, and the area identity give
 The equilateral divisibilities of Proposition~\ref{prop:otherspectra} reduce to a clean finite
 criterion.
 
-\begin{proposition}[Equilateral admissibility]\label{prop:eqspec}
+\begin{proposition}[Equilateral admissibility]\label{prop:eqspec}\lab{PROVED}
 Let an equilateral triangle of side $S$ be $N$-tiled by a $2\pi/3$ tile $(a,b,c)$, and put
 $X=c+a-b$, $Y=c+b-a$. Then $XY=3ab$, and $s:=3S/X$, $t:=3S/Y$ are positive integers with
 \[
@@ -1700,7 +1700,7 @@ proportions.
 \subsection*{The equilateral criteria as divisor conditions.}
 Both equilateral square criteria --- ours and Beeson's --- complete the square.
 
-\begin{proposition}[Conic form]\label{prop:conic}
+\begin{proposition}[Conic form]\label{prop:conic}\lab{PROVED}
 For an equilateral target: a $2\pi/3$ tile requires a factorization $uv=16N^2$ with
 $u+v\equiv0\pmod2$ and $\tfrac{u+v}2-5N=s^2$ for a divisor $s$ of $3N$ with
 $s\equiv 3N/s\equiv N\pmod2$; a $\pi/3$ tile requires a factorization $uv=16N^2$ with
@@ -1782,7 +1782,7 @@ $N=15$, iso-$(\alpha{+}\beta)$ & $(4,15,16)$ & $(60,60,15)$ & exhausted, no tili
 \end{tabular}
 \end{center}
 
-\begin{theorem}\label{thm:frontier}
+\begin{theorem}\label{thm:frontier}\lab{PROVED}
 No triangle can be cut into $14$ congruent triangles, and none into $15$.
 \end{theorem}
 
@@ -1848,7 +1848,7 @@ $N{=}39$, $M{=}3$ & $(40,39,64)$ & $(312,312,195)$ & $67$\\
 \end{tabular}
 \end{center}
 
-\begin{theorem}\label{thm:frontier2}
+\begin{theorem}\label{thm:frontier2}\lab{PROVED}
 No triangle can be cut into $21$, $22$, $30$, $33$, $35$, $38$, $39$, $42$, or $46$ congruent
 triangles.
 \end{theorem}
@@ -1871,7 +1871,7 @@ $3\alpha+2\beta=\pi$, $\cos\alpha=\tfrac78$, $\cos\beta=\tfrac{11}{16}$,
 $\cos\gamma=-\tfrac14$ --- and the target $(16,16,22)$ with base angles $\beta$. Here the
 exhaustive search does not exhaust: \emph{it finds a tiling}, at node $858163$.
 
-\begin{theorem}\label{thm:44}
+\begin{theorem}\label{thm:44}\lab{PROVED}
 A triangle can be cut into $44$ congruent triangles: the isosceles triangle with sides
 $(16,16,22)$ is tiled by $44$ congruent copies of the $(2,3,4)$ triangle (Fig.~\ref{fig:44}).
 Consequently $44m^2$ is a tile count for every $m\ge1$.
@@ -1992,7 +1992,7 @@ nodes: $N=60$ is excluded. (This also settles the $m{=}2$ member $X=30$ of Zhang
 equiconstructibility family for $(5,3,7)$ by exact arithmetic; Beeson had reported $X<105$
 unrealizable for this tile in unpublished floating-point work.)
 
-\begin{theorem}\label{thm:frontier3}
+\begin{theorem}\label{thm:frontier3}\lab{PROVED}
 No triangle can be cut into $51$, $55$, $56$, $57$, $60$, $62$, $69$, or $78$
 congruent triangles.
 \end{theorem}
@@ -2005,7 +2005,7 @@ branch at the squarefree values $51$, $55$, $57$, $69$; the boundary algorithm (
 $60$; and the $7\,232\,464$-node exhaustion at $66$ (Remark~\ref{rem:isobeta}).
 \end{proof}
 
-\begin{theorem}[$63$ is realizable]\label{thm:63}
+\begin{theorem}[$63$ is realizable]\label{thm:63}\lab{PROVED}
 A triangle can be cut into $63$ congruent triangles: the scalene triangle with sides $(21,24,18)$
 --- angles $(\beta,\,2\alpha,\,\alpha{+}\beta)$ over the same tile $(2,3,4)$ as
 Theorem~\ref{thm:44} --- is tiled by $63$ congruent copies of that tile. The tiling is exhibited
@@ -2053,7 +2053,7 @@ the sole change to the paper's conclusions remains the realizability of $63$ its
 Theorem~\ref{thm:main} and the congruence class alone.
 \end{remark}
 
-\begin{corollary}[The cevian spectrum at $(1,2)$ is complete]\label{cor:wfamily}
+\begin{corollary}[The cevian spectrum at $(1,2)$ is complete]\label{cor:wfamily}\lab{CONJECTURE}
 The scalene target of Theorem~\ref{thm:63} realizes $N=7m^2$ for every $m\ge2$ and for no other
 $m$: the certified seeds $W_2=28$ and $W_3=63$ propagate by the W-addition law of the companion
 note (the connecting parallelograms are slab-tiled by the $c$-glued two-tile brick), every
@@ -2106,7 +2106,7 @@ Theorem~\ref{thm:main}; and $77$, $80$ are realizable --- $77$ by Beeson's four-
 construction \cite{BeesonIII}, and $80=4^2+8^2$ by the biquadratic (commensurable) tiling
 \cite{BeesonSeven}.
 
-\begin{theorem}\label{thm:frontier4}
+\begin{theorem}\label{thm:frontier4}\lab{PROVED}
 No triangle can be cut into $76$ congruent triangles. Every $N\le 80$ is thereby determined,
 with no exception: the realizable values are exactly $1$--$13$'s known members together with
 $44,63,77,80$ and the standard commensurable and prime\,$\equiv1\!\pmod4$ values, and all others
@@ -2143,7 +2143,7 @@ All four are exhausted with no tiling. For $87$ that settles the value. For $88$
 instance must be treated, from a family that cannot arise below it; see
 Remark~\ref{rem:F4at88}.
 
-\begin{theorem}\label{thm:frontier5}
+\begin{theorem}\label{thm:frontier5}\lab{CONJECTURE}
 No triangle can be cut into $86$ or $87$ congruent triangles. In the range $81\le N\le 90$ the
 realizable values are exactly $81,82,85,89,90$; $86$ and $87$ are excluded unconditionally; $83$ is
 excluded under the hypothesis of Theorem~\ref{thm:fullprime} and not otherwise
@@ -2227,7 +2227,7 @@ candidates by their tiling equations~\cite{BeesonIII}. Each surviving instance i
 existence question, and the corner-anchored search of \texttt{code/engine/} decides it in
 finitely many steps (the branching is provably complete and the depth is $N$). Hence:
 
-\begin{theorem}[Decidability]\label{thm:decidable}
+\begin{theorem}[Decidability]\label{thm:decidable}\lab{PROVED}
 It is decidable, given $N$, whether some triangle can be cut into $N$ congruent triangles
 (under the same cited inputs as Theorem~\ref{thm:main}).
 \end{theorem}
