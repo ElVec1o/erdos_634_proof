@@ -486,4 +486,46 @@ two tiles, every boundary edge by one. -/
 theorem edge_length_identity (N a b c s Lint : ℤ)
     (h : N * (a + b + c) = 2 * Lint + 3 * s) : 2 * Lint = N * (a + b + c) - 3 * s := by linarith
 
+/-! ## Zhang's `ab ∣ X`: a proved, independent necessary condition
+
+Zhang, *Tiling triangles with 2π/3 angles* (arXiv:2512.22696), Lemma 3: if a triangle of side
+`X` is tiled by `N` copies of `(a,b,c)`, then `X² = N·ab` (the area equation), so `ab ∣ X²`; if
+`ab` is squarefree, `ab ∣ X` follows from Mathlib's `Squarefree.dvd_pow_iff_dvd`, which is the
+general fact that a squarefree element dividing a power divides the base.  (An earlier draft of
+this file tried to drop the squarefree hypothesis via `(ab)² ∣ X²`, which is false in general —
+`ab = 4` and `X = 2` is a counterexample to that intermediate step, even though the final claim
+can still hold; squarefree-ness is where the argument is genuinely used.)
+
+This is a different mechanism from the character obstruction — a bare counting identity, not a
+direction functional — so it is independent evidence, not a duplicate.
+
+Checked against the 25 rows surviving both our invariant and Beeson's Lemma 3: `ab` is
+squarefree on six of them, and the conclusion **holds on all six**, including the Herdt control
+`N = 1440`, `(5,8,7)` (`ab = 40 = 2²·10`... not squarefree, so it does not even apply there —
+corrected from an earlier miscomputation).  Zero new kills — recorded so the check is not
+repeated. -/
+
+/-- **Zhang's `ab ∣ X`.**  If `X² = N·ab` and `ab` is squarefree, then `ab ∣ X`. -/
+theorem zhang_ab_dvd_X (X N a b : ℕ) (hab : Squarefree (a * b))
+    (h : X ^ 2 = N * (a * b)) : (a * b) ∣ X := by
+  have hdvd : (a * b) ∣ X ^ 2 := ⟨N, by linarith⟩
+  exact (hab.dvd_pow_iff_dvd (two_ne_zero)).mp hdvd
+
+/-- **The Herdt row satisfies the area equation** (`X² = N·ab`), as it must for any tiling —
+this is not Zhang's divisibility test, which does not even apply here since
+`ab = 40 = 2³·5` is *not* squarefree.  Recorded to avoid re-deriving the same confusion. -/
+theorem herdt_area_equation : (240 : ℕ) ^ 2 = 1440 * (5 * 8) := by norm_num
+
+/-- **A row where Zhang's test genuinely applies and holds.**  `N = 945`, tile `(5,21,19)`,
+`X = 315`: `ab = 105 = 3·5·7` is squarefree, and `105 ∣ 315`. -/
+theorem row_945_zhang_check : Squarefree ((5 : ℕ) * 21) ∧ (5 * 21 : ℕ) ∣ 315 := by
+  refine ⟨?_, by norm_num⟩
+  have h3 : Squarefree (3 : ℕ) := (Nat.prime_iff.mp (by norm_num)).squarefree
+  have h5 : Squarefree (5 : ℕ) := (Nat.prime_iff.mp (by norm_num)).squarefree
+  have h7 : Squarefree (7 : ℕ) := (Nat.prime_iff.mp (by norm_num)).squarefree
+  have heq : (5 : ℕ) * 21 = 3 * 5 * 7 := by norm_num
+  rw [heq]
+  exact (Nat.squarefree_mul (by norm_num)).mpr
+    ⟨(Nat.squarefree_mul (by norm_num)).mpr ⟨h3, h5⟩, h7⟩
+
 end Erdos634.SixtyInvariant
