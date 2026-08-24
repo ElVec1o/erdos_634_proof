@@ -83,6 +83,60 @@ theorem oneninetyone_small_box :
   intro e f he hef hf9
   interval_cases f <;> interval_cases e <;> norm_num
 
+/-! ## The hole, characterised
+
+The census counts the hole; it does not say what it *is*.  It is exactly the primes of the form
+`3f² − 1`:
+
+  a prime `p` has all its representations `p = 3f² − e²` with `e = 1`
+    **iff** `p = 3f² − 1` for some `f`.
+
+Verified by direct enumeration: below `200 000` both sets have `51` members and below `600 000`
+both have `82`, with no discrepancy either way
+(`code/analysis/hole_characterisation.py`).
+
+### Why
+
+Subtracting the two representations,
+
+  `3g² − e² = 3f² − 1`  ⟺  `3(g−f)(g+f) = (e−1)(e+1)`   (`rep_identity`)
+
+so `e = 1` forces `g = f`, and `e ≥ 2` forces `g > f`.  That the larger `g` never occurs is the
+unit structure of `ℤ[√3]`: `e² − 3g² = −p` says `Norm(e + g√3) = −p`, the fundamental unit is
+`ε = 2 + √3` of norm `1`, and it acts by `(e,g) ↦ (2e+3g, e+2g)`.  The ratio `t = e/g` has fixed
+point `√3`, and `e < g` means `t < 1`; one step of `ε` carries `t = 1/f` to about `3/2 > 1`, and
+`ε⁻¹` does the same in magnitude, so **both** neighbours of `(1,f)` have `e > g`.  The orbit
+therefore contributes exactly one admissible representation, the one with `e = 1`.
+
+### What it means for the project
+
+The `e ≥ 2` half of `thm:fullprime` is unconditional, so a natural hope is that some hole prime
+also admits an `e ≥ 2` representation and is closed that way.  The characterisation says this hope
+is **empty by construction**: the hole is precisely the primes for which no such representation
+exists.  Recorded so the route is not attempted again. -/
+
+/-- **The representation identity.**  Two base-`β` representations of the same number differ by
+`3(g−f)(g+f) = (e−1)(e+1)`; so `e = 1` forces `g = f`, and `e ≥ 2` forces `g > f`. -/
+theorem rep_identity (e f g : ℤ) (h : 3 * g ^ 2 - e ^ 2 = 3 * f ^ 2 - 1) :
+    3 * ((g - f) * (g + f)) = (e - 1) * (e + 1) := by linarith [h, sq_nonneg e]
+
+/-- **`e = 1` forces `g = f`** (given `f, g > 0`). -/
+theorem rep_e_one (f g : ℤ) (hf : 0 < f) (hg : 0 < g)
+    (h : 3 * g ^ 2 - 1 ^ 2 = 3 * f ^ 2 - 1) : g = f := by nlinarith [h]
+
+/-- **`e ≥ 2` forces `g > f`.**  The identity's right-hand side is then positive. -/
+theorem rep_e_ge_two (e f g : ℤ) (he : 2 ≤ e) (hf : 0 < f) (hg : 0 < g)
+    (h : 3 * g ^ 2 - e ^ 2 = 3 * f ^ 2 - 1) : f < g := by nlinarith [h]
+
+/-- **The unit action of `ℤ[√3]`.**  `ε = 2 + √3` has norm `1` and sends `(e,g)` to
+`(2e+3g, e+2g)`, preserving `e² − 3g²`. -/
+theorem unit_preserves_norm (e g : ℤ) :
+    (2 * e + 3 * g) ^ 2 - 3 * (e + 2 * g) ^ 2 = e ^ 2 - 3 * g ^ 2 := by ring
+
+/-- **One step of `ε` leaves the admissible range.**  From `(1,f)` with `f ≥ 2` the image is
+`(2+3f, 1+2f)`, and `2+3f > 1+2f`, so the new pair has `e > g`. -/
+theorem unit_step_exits (f : ℤ) (hf : 2 ≤ f) : 1 + 2 * f < 2 + 3 * f := by linarith
+
 end Erdos634.ThinHole
 
 #print axioms Erdos634.ThinHole.even_of_odd
