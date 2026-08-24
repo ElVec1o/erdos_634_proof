@@ -1,6 +1,7 @@
 import Erdos634.Congruence
 import Erdos634.AngleSumDissection
 import Erdos634.VertexSector
+import Erdos634.WallChain
 
 /-!
 # What (iii) is: `HasAngleSums`, extended from the target boundary to interior edges
@@ -185,5 +186,33 @@ theorem below_angle_sum_of_covering {N : ℕ} (D : Dissection N) (below : Finset
     ∑ i ∈ below, (D.tile i).localAngle p = Real.pi :=
   below_angle_sum_of_area D p below r hr hcontrib
     (harea_of_covering D below p hr.le g hL hx hcov)
+
+/-! ## Towards the covering: a tile lies in one closed half-plane
+
+The covering hypothesis `hcov` is supplied by `hwall`.  The mechanism is that a tile whose
+vertices all lie on one side of an affine functional lies wholly on that side, so a tile can only
+straddle the line by having vertices on both sides, and then its interior meets the line, which
+`hwall` forbids.
+
+`Tri.carrier_subset_halfplane_affine` is that first half, for an *affine* functional rather than
+the linear one `WallChain` states it for; the reduction is the same translation
+`volume_halfplane_inter_ball_at` uses. -/
+
+/-- **A triangle whose vertices satisfy `0 ≤ g` lies in `{0 ≤ g}`**, for affine `g`.  Reduces to
+`Tri.carrier_subset_halfplane` by writing `g y - g z = g.linear y - g.linear z`. -/
+theorem Tri.carrier_subset_halfplane_affine (T : Tri) (g : Plane →ᵃ[ℝ] ℝ)
+    (h : ∀ i, 0 ≤ g (T.pts i)) : ∀ y ∈ T.carrier, 0 ≤ g y := by
+  have hlin : ∀ y z : Plane, g y - g z = g.linear y - g.linear z := by
+    intro y z
+    have := g.map_vadd z (y - z)
+    simp [vadd_eq_add, map_sub] at this
+    linarith [this]
+  intro y hy
+  have key := T.carrier_subset_halfplane (-g.linear) (-(g.linear (T.pts 0)) + g (T.pts 0)) ?_ y hy
+  · simp only [LinearMap.neg_apply] at key
+    linarith [h 0, key, hlin y (T.pts 0)]
+  · intro i
+    simp only [LinearMap.neg_apply]
+    linarith [h i, hlin (T.pts i) (T.pts 0)]
 
 end Erdos634.Geometry
