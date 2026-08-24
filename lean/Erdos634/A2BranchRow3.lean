@@ -280,6 +280,20 @@ on their own and never meet the lower tile's `α` and `β` in a single equation.
 
 The configuration is therefore locally consistent at every junction, and any proof that it cannot
 occur must be global --- which is the same barrier `StripIteration` records as boundary-versus-interior.
+
+**And scale-sensitive**, which is sharper.  `ScaleRigidity.no_similarity_invariant_proof` says a
+criterion depending only on similarity-invariant data of tile and target cannot exclude `m = 1`,
+since it would equally exclude `m = 2`, where `Tiling44` exists.  The `c`-under-run configuration is
+scale-free --- it asserts a ratio between edge lengths, `f` `a`s matching one `c` --- and the
+interface census finds it in every certificate we hold, all at `m > 1` (`c = aa` occurring
+`3, 2, 2, 10, 1, 2, 7, 2, 5` times across the eight).  Its survival is therefore not an accident of
+the local analysis: it is what the barrier theorem predicts.
+
+That fixes the shape of any future attempt.  The theorem's own answer to "what survives" is
+`side_no_b_m1`: at `m = 1` every admissible equal-side walk is free of `b`-edges, while at `m = 2`
+the walk `(3,2,1)` carries two.  Any proof that the descent lands must consume that input, or some
+other walk condition separating the scales.  A purely local or purely metric argument cannot work,
+and that is now a theorem about the attempt rather than a tally of failed ones.
 What is new is that the barrier is now a *single* configuration rather than a general claim about
 descents, and that the base case is settled: on the base the `c`-alternative dies outright, because
 there the interior feet would be vertices interior to a *boundary* edge. -/
