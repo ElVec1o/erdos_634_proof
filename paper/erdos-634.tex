@@ -2317,8 +2317,16 @@ $f=5$ and $1\,251\,382$ at $f=6$). These searches concern one instance each and 
 about the base-$\beta$ branch at $m=1$; they are not exclusions of the integers themselves, and
 indeed $74=5^2+7^2$ is a tile count by the commensurable construction.
 
-For $e\ge2$ the base walk is now determined. The walk of a separated member, meaning one with
-$f^2>2ef+e^2$, admits exactly three edge decompositions; the $\gamma$-trap deletes the one with no
+For $e\ge2$ the base walk is determined \emph{on the separated members}, and it is worth being
+precise about how much of the residue that is. Separation, $f^2>2ef+e^2$, is the condition
+$f/e>1+\sqrt2$. Of the $4438$ primes below $200\,000$ whose representation has $e\ge2$, only
+$1609$ --- $36.3\%$ --- are separated; the remaining $2829$ are not reached by the result at all,
+and they include every one of the smallest cases: $23, 59, 83, 131, 167, 179, 227, 251, 263, 311$.
+In particular $N=83$, the first prime not settled unconditionally, has $(e,f)=(5,6)$ with
+$f/e=1.2$ and is \emph{not} separated. The determined-walk result should therefore not be read as
+covering the $e\ge2$ branch; it covers a minority of it that excludes the cases of interest
+(\texttt{code/analysis/separated\_census.py}). With that said: the walk of a separated member,
+meaning one with $f^2>2ef+e^2$, admits exactly three edge decompositions; the $\gamma$-trap deletes the one with no
 $c$-edge, and the remaining non-walls column $(0,e,2e)$ is excluded outright: with no $a$-edge on
 the base each corner tile lays $c$ on the base and $a$ on the side, the unique fills of $\beta$,
 $\alpha$ and $\alpha+\beta$ force the corner partner and then every subsequent one, and the base is

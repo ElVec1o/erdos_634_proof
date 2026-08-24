@@ -25,8 +25,13 @@ nothing here (it would force `f` even, which already holds).
 
 ## The census
 
-Enumerating primes `p = 3f² - e²` with `gcd(e,f) = 1`, `1 ≤ e < f`, below `200000`: 4000 primes,
-of which 3949 admit some representation with `e ≥ 2` and **51** admit only `e = 1`.  Three of those
+Enumerating primes `p = 3f² - e²` with `gcd(e,f) = 1`, `1 ≤ e < f`, below `200000`: **4489**
+primes, of which 4438 have `e ≥ 2` and **51** have `e = 1`.  (An earlier count here said 4000 and
+3949; its sweep capped `f` near 260, while `p < 200000` needs `f` up to 316, so it dropped 489
+primes.  The `e = 1` count was unaffected, hole primes having `f ≤ 258`.)  The corrected total is
+exactly the number of primes `≡ 11 (mod 12)` below `200000`, as `thm:mod12` requires, and no prime
+in the range has two representations, as `rep_unique` requires --- two independent checks passed by
+the same sweep (`code/analysis/separated_census.py`).  Three of those
 (`11, 47, 107`) are already excluded unconditionally by certified exhaustion, leaving **48**.  The
 smallest unsettled is `191 = 3·8² - 1`, with the single representation `(e,f) = (1,8)`.
 
