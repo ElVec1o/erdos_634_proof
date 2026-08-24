@@ -794,8 +794,9 @@ form of the hypothesis: it has no premise at all at $e=1$. The correct conclusio
 the hypothesis holds exactly when no tiling exists, so any exclusion of an $e=1$ member citing it is
 circular. This is \texttt{lean/Erdos634/WallsCircular.lean}, axiom-clean; the counting step is
 \texttt{BaseWordBlock.no\_f\_plus\_one\_a}. The $e=1$ members remain excluded by the
-unconditional even-$f$ theorem and by the reduction of the odd case to the column fact, neither of
-which mentions the hypothesis.
+reduction of Theorem~\ref{thm:e1family}, which nowhere mentions the hypothesis; that reduction
+rests in turn on the deferred strip-and-column step, so the subfamily stands reduced rather than
+closed, and the hypothesis is of no help in closing it.
 
 So the hypothesis is genuinely asymmetric, and for $e\ge2$ the identification with $p=0$ holds for the west side.
 Both tilings we possess have west side all $c$-edges; the $99$-tiling's east side begins with

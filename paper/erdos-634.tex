@@ -152,11 +152,16 @@ the sole premise of the derivation of $p=0$, and a structure that provably never
 support a derivation. The argument is formalised in \texttt{lean/Erdos634/WallsCircular.lean}
 (\texttt{west\_block\_never\_complete}, \texttt{walls\_iff\_no\_tiling}), axiom-clean.
 
-No member is lost to this. The $e=1$ primes are excluded by two routes that never mention the
-hypothesis: the companion's unconditional theorem on the $e=1$ family for all even $f$, and the
-reduction of every $f$ to the single geometric fact that the multiples of $f$ in $[0,f^2)$ are
-tiling vertices on the base (\texttt{lean/Erdos634/E1Assembly.lean}). What is lost is only the
-appearance that the hypothesis was doing work at $e=1$. For $e\ge2$ the collapse does not occur: the
+No progress is lost to this. The $e=1$ members were never reached through the hypothesis in any
+case: both routes to them --- the companion's forcing chain and our own assembly
+(\texttt{lean/Erdos634/E1Assembly.lean}) --- run to the same single geometric fact, that the
+multiples of $f$ in $[0,f^2)$ are tiling vertices on the base, and neither invokes the hypothesis at
+any point. What is lost is only the appearance that the hypothesis was doing work at $e=1$; the real
+state of the subfamily is a reduction to that one fact, not a closure. We note in passing that the
+prime candidates in the subfamily all have $f$ even, since $3f^2-1$ is even for odd $f$
+(\texttt{lean/Erdos634/ThinHole.lean}, \texttt{thin\_prime\_f\_even}); the odd-$f$ members
+$N=26,74,146,\dots$ are composite, so the parity hypothesis whose removal is recorded in the
+companion was never binding on the prime problem. For $e\ge2$ the collapse does not occur: the
 base word has $f+2e$ letters with $e$ $b$'s and $e$ $c$'s, an $a^f$ prefix costs no more than the
 $f$ available $a$'s, and the east block's $c$-feet can still occupy the final positions.
 \end{remark}
@@ -413,8 +418,13 @@ $g^{11}$; the divisibility count is wrong and the contradiction does not follow.
 that the base-$\beta$ isosceles target remains open in the published record at the time of writing,
 and that the present note's contribution --- the $e=1$ family, and the conditional
 Theorem~\ref{thm:fullprime} --- addresses a live gap rather than a closed one. For the subfamily $e=1$ the companion note \cite{Companion}
-now proves the exclusion outright (its Theorem on the $e=1$ family, for all even $f$): this
-settles by argument the candidates $11, 47, 107, 191, 431,\dots$ --- and, by
+gives a theorem covering every $f\ge2$, whose parity hypothesis was removed at modulus $f$; but its
+proof is stated as an architecture with ``the full strip-and-column exposition'' deferred, and the
+deferred step is precisely that the forced column \emph{reaches the base}. We do not claim the
+$e=1$ family as closed. What is established is a reduction, reached independently twice: the
+companion's chain and our own assembly (\texttt{lean/Erdos634/E1Assembly.lean}) both terminate on
+the single geometric fact that the multiples of $f$ in $[0,f^2)$ are tiling vertices on the base.
+The candidates so reduced are $11, 47, 107, 191, 431,\dots$ --- and, by
 Proposition~\ref{prop:repunique} below, that is exactly the set of prime candidates the $e\ge2$
 half can never reach --- leaving $e\ge2$ as the open residue on a set disjoint from these. This assessment includes the recent preprint \cite{BeesonNoPrime}
 (21~July~2026), which asserts that no isosceles triangle admits a prime tiling: its Theorem~1
