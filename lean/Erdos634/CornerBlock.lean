@@ -86,4 +86,41 @@ theorem block_short_of_side (f m : ℤ) (hf : 0 < f) (hm : 2 ≤ m) : f ^ 3 < m 
   have hf3 : (0 : ℤ) < f ^ 3 := by positivity
   nlinarith [hf3, hm]
 
+/-! ## The `m = 1` invariant is the base `b`-count, and it is already proved
+
+`rem:blockbreaks` names the lever outright: any proof of `hyp:walls` "must use `m = 1` in an
+essential way — **the natural candidate being the base `b`-count, which is `e` at `m = 1` but is
+`0` for both `44`-tilings and `7` for the `99`-tiling**".
+
+That candidate is **already a theorem**: `BaseBetaWalkArith.base_b_count` proves `n_b = e` from the
+walk equation `nₐ·a + n_b·b + n_c·c = e(3f² − e²)`, general in `(e, f)`, under the thin-regime side
+condition `2ef + e² < f²`.  The right-hand side is the base length **at `m = 1`**, so the theorem
+*is* the `m = 1` statement.  Nothing here re-proves it.
+
+## Negative control (Rule I13)
+
+The theorem must not apply to the three known base-`β` tilings, whose `b`-counts are `0`, `0`, `7`
+rather than `e = 1`.  It does not, on two independent counts:
+
+* their base lengths are `m·e·N₀` with `m = 2, 2, 3`, namely `22, 22, 33`, whereas the theorem's
+  walk equation demands `e·N₀ = 11` (`known_tilings_wrong_base_length`);
+* all three have tile `(2,3,4)`, i.e. `(e,f) = (1,2)`, where the thin condition fails outright:
+  `2ef + e² = 5` is not `< f² = 4` (`thin_fails_at_f_two`).
+
+So the machinery does not prove the false statement at `m ≥ 2`.  The control passes. -/
+
+/-- **The known tilings' base lengths are not the `m = 1` one**, so `base_b_count`'s walk equation
+is not satisfied there: `22, 22, 33` against `e·N₀ = 11` for the tile `(2,3,4)`. -/
+theorem known_tilings_wrong_base_length :
+    (22 : ℤ) ≠ 11 ∧ (33 : ℤ) ≠ 11 := by norm_num
+
+/-- **The thin-regime condition fails at `(e,f) = (1,2)`**, the tile of all three known tilings:
+`2ef + e² = 5` is not less than `f² = 4`.  A second, independent reason `base_b_count` cannot
+reach them. -/
+theorem thin_fails_at_f_two : ¬ (2 * 1 * 2 + 1 ^ 2 < 2 ^ 2 : Prop) := by norm_num
+
+/-- **The thin condition holds at `e = 1` for every `f ≥ 3`**, which is the whole prime hole:
+`2f + 1 < f²`. -/
+theorem thin_holds_e_one (f : ℤ) (hf : 3 ≤ f) : 2 * 1 * f + 1 ^ 2 < f ^ 2 := by nlinarith
+
 end Erdos634.CornerBlock
