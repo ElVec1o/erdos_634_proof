@@ -214,40 +214,13 @@ theorem rep_unique (p e1 f1 e2 f2 : ℤ) (hp : Prime p)
   subst hee
   exact (mul_left_cancel₀ (by linarith : e1 ≠ 0) h).symm
 
-/-! ## Every hole prime has `f` even, so the even-`f` theorem is not a partial result
+/-! ## The consequence of `rep_unique` for the two halves of `thm:fullprime`
 
-`thm:mod12` already contains the parity step: `e` and `f` are never both odd, since then
-`p = 3f² - e² ≡ 3 - 1 = 2 \pmod 4` would be an even prime exceeding `3`.  At `e = 1` that reads
-simply: **`f` is even**, because `3f² - 1` is even whenever `f` is odd.
-
-The consequence for the branch was never drawn.  The companion proves the `e = 1` exclusion
-unconditionally *for all even `f`*, which sounds like half of the subfamily; by the parity step it
-is in fact **all of the prime candidates in it**, since no prime candidate has odd `f` at all.  The
-odd-`f` members are the composites `N = 3f² - 1` — `26, 74, 146, 242, …` — which the prime branch
-never needed.
-
-With `rep_unique`, the assembly is complete and exact: a prime has one representation; a prime whose
-representation has `e = 1` is a prime of the form `3f² - 1`; every such prime has `f` even; and every
-such member is unconditionally excluded.  So the primes reachable at `e = 1` are settled outright,
-with no appeal to Hypothesis (walls) and no appeal to the deferred column fact.  The residue of the
-prime problem is exactly the primes whose unique representation has `e ≥ 2`. -/
-
-/-- **A hole prime has `f` even.**  If `3f² - 1` is prime and `f ≥ 2`, then `f` is even: odd `f`
-makes `3f² - 1` an even number exceeding `2`. -/
-theorem thin_prime_f_even (f : ℤ) (hf : 2 ≤ f) (hp : Prime (3 * f ^ 2 - 1)) : Even f := by
-  by_contra hodd
-  rw [Int.not_even_iff_odd] at hodd
-  obtain ⟨k, hk⟩ := hodd
-  have h2 : (3 * f ^ 2 - 1) = 2 * (6 * k ^ 2 + 6 * k + 1) := by subst hk; ring
-  have hge : 11 ≤ 3 * f ^ 2 - 1 := by nlinarith
-  rcases hp.irreducible.isUnit_or_isUnit h2 with h | h
-  · rcases Int.isUnit_iff.mp h with h1 | h1 <;> omega
-  · rcases Int.isUnit_iff.mp h with h1 | h1 <;> rw [h1] at h2 <;> linarith
-
-/-- **The `e = 1` prime candidates are exactly the primes of the form `3f² - 1`, and each has `f`
-even.**  Packaged for citation: uniqueness fixes "exactly", parity fixes "even". -/
-theorem hole_primes_have_even_f (p f : ℤ) (hf : 2 ≤ f) (hp : Prime p) (h : 3 * f ^ 2 - 1 = p) :
-    Even f := thin_prime_f_even f hf (h ▸ hp)
+With uniqueness proved, the sketch above is retired and the characterisation is exact: a prime whose
+representation has `e = 1` is a prime of the form `3f² - 1`, and by `f_even_of_prime` every such
+prime has `f` even.  The `e ≥ 2` half of `thm:fullprime` is therefore not merely unhelpful on the
+hole — it is *provably* inapplicable, since no hole prime has an `e ≥ 2` representation to apply it
+to, and that is now a theorem rather than a census of 82 numbers. -/
 
 end Erdos634.ThinHole
 

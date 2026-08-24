@@ -174,11 +174,9 @@ $p\ge1$. Both of that identification's supports fail independently as well --- t
 $p=0$ runs through the complete west block, and its claimed sufficiency substitutes complete blocks
 for $p=0$, which needs a converse stated only inside a conjecture proved at $f=2,3,4$. What survives
 as the open step is the cascade rather than the parameter: whether the chain from such an $a$-edge
-terminates in a collision. Its premise is now discharged rather than hypothetical. We note in passing that the
-prime candidates in the subfamily all have $f$ even, since $3f^2-1$ is even for odd $f$
-(\texttt{lean/Erdos634/ThinHole.lean}, \texttt{thin\_prime\_f\_even}); the odd-$f$ members
-$N=26,74,146,\dots$ are composite, so the parity hypothesis whose removal is recorded in the
-companion was never binding on the prime problem. The failure at $e=1$ is in fact twofold, the second
+terminates in a collision. Its premise is now discharged rather than hypothetical. (The prime candidates in the subfamily all have $f$ even, since $3f^2-1$ is even for odd $f$
+--- \texttt{lean/Erdos634/ThinHole.lean}, \texttt{f\_even\_of\_prime}, where the consequence
+that an argument biting only on odd $f$ is irrelevant to the primes is already recorded.) The failure at $e=1$ is in fact twofold, the second
 kill being independent of the companion's reduction theorem altogether. The hypothesis pins the base word
 to $a^fb^ec^e$; its length is $f+2e$, its $b$'s occupy positions $f+1,\dots,f+e$, and
 Proposition~\ref{prop:cornerpara} forbids a $b$ in the last two positions, which begin at $f+2e-1$.
