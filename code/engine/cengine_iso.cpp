@@ -754,6 +754,17 @@ static bool CORNER_PRUNE = false;
 static int CORNER_TYPE[3] = {-1, -1, -1};
 static std::vector<std::array<long, 3>> WALK_BASE, WALK_SIDE;
 
+// ------------------------------------------------------------ P7: forced edge ORDER on one side ---
+// P5 prunes edge multisets, P6 pins only the two end types.  P7 pins the entire sequence on one
+// side, which is what a base-word configuration (bp, cp) names.  Opt-in via a trailing BASEWORD
+// section; with it absent nothing changes, so existing node counts are untouched.
+// Edge lengths are integers, so a junction at prefix length L sits at squared distance L*L from the
+// side's first corner -- compared exactly in QD, the same way edge types are identified.
+static bool WORD_PRUNE = false;
+static int WORD_SIDE = -1;
+static std::vector<int> WORD_SEQ;        // types in order from target[WORD_SIDE]
+static std::vector<long> WORD_PREFIX;    // prefix lengths, size = WORD_SEQ.size() + 1
+
 // ------------------------------------------------------------------------------ search ------
 // ---------------------------------------------------------------- parallel search -----------
 // The tree is split at a shallow cut into independent subtree tasks (gen_frontier), each carrying
@@ -943,6 +954,23 @@ struct Search {
                         (p == A || q == A || p == B || q == B) && idx != CORNER_TYPE[s]) {
                         out.push_back(std::make_pair(-1, -1));      // signal: reject this placement
                         return;
+                    }
+                    // P7: the edge must occupy the slot the seeded word assigns it
+                    if (WORD_PRUNE && s == WORD_SIDE) {
+                        Pt dp = vsub(p, A), dq = vsub(q, A);
+                        QD dp2 = dot(dp, dp), dq2 = dot(dq, dq);
+                        int slot = -1;
+                        for (size_t j = 0; j + 1 < WORD_PREFIX.size(); j++) {
+                            QD lo = qd_frac(WORD_PREFIX[j] * WORD_PREFIX[j], 1);
+                            QD hi = qd_frac(WORD_PREFIX[j + 1] * WORD_PREFIX[j + 1], 1);
+                            if ((dp2 == lo && dq2 == hi) || (dq2 == lo && dp2 == hi)) {
+                                slot = (int)j; break;
+                            }
+                        }
+                        if (slot < 0 || WORD_SEQ[slot] != idx) {
+                            out.push_back(std::make_pair(-1, -1));
+                            return;
+                        }
                     }
                     out.push_back(std::make_pair(s, idx));
                     break;
@@ -1624,6 +1652,24 @@ static bool make_instance_file(const std::string& path, Tile& tile, Poly& target
             CORNER_PRUNE = true;
             fprintf(stderr, "P6 corner-type prune ON: sides = {%d,%d,%d}  (0=a 1=b 2=c, -1=free)\n",
                     CORNER_TYPE[0], CORNER_TYPE[1], CORNER_TYPE[2]);
+            // optional "BASEWORD <side> <n> <t1 ... tn>" section (P7): the full edge order on <side>
+            if (fscanf(fp, "%4095s", tok) == 1 && std::string(tok) == "BASEWORD") {
+                WORD_SIDE = (int)rd_long();
+                long n = rd_long();
+                long len[3] = {tile.a, tile.b, tile.c};
+                long acc = 0;
+                WORD_PREFIX.push_back(0);
+                for (long i = 0; i < n; i++) {
+                    int t = (int)rd_long();
+                    if (t < 0 || t > 2) { fprintf(stderr, "FATAL: BASEWORD type out of range\n"); exit(6); }
+                    WORD_SEQ.push_back(t);
+                    acc += len[t];
+                    WORD_PREFIX.push_back(acc);
+                }
+                WORD_PRUNE = true;
+                fprintf(stderr, "P7 base-word prune ON: side=%d, %ld edges, total length %ld\n",
+                        WORD_SIDE, n, acc);
+            }
         }
     }
     fclose(fp);

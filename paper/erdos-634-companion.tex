@@ -2140,6 +2140,19 @@ $\pi$ by themselves and never meet the lower tile's $\alpha$ and $\beta$ in one 
 Any proof must therefore be global, which is the boundary-versus-interior barrier already recorded
 for the strip iteration. What has changed is that the barrier is now a single configuration rather
 than a general claim about descents, and that its base case is settled outright.
+
+The configuration is moreover not refutable by any argument blind to $m$ and $f$, and we record the
+ground covered. At $e=1$ a run of $f$ $a$-edges has length $f\cdot ef=f^2=c$, so it matches one
+$c$-edge exactly; for $e\ge2$ the match needs $e\mid f$ and cannot occur. The interface census
+(\texttt{code/interface\_census.py}) reports the two-sided edge words of every maximal straight
+interface in all eight certificates, and the equation $c=aa$ --- which at $f=2$ \emph{is} the
+relation $c=f\cdot a$ --- occurs in every one of them: $3$ times in N44C, $2$ in N44B, $2$ in
+\texttt{Tiling44}, $10$ in \texttt{Tiling99}, $1$ in \texttt{PgramTiling22}, $2$ in
+\texttt{CevianTiling28}, $7$ in \texttt{CevianTiling63}, $2$ in \texttt{Tiling28} and $5$ in
+\texttt{Tiling77}. So the configuration is not merely locally consistent, it is abundant in the
+tilings we possess, all of which have $f=2$ and $m>1$. Any proof that it cannot occur must consume
+$m=1$ and $f\ge3$ essentially, which is the same asymmetry Remark~\ref{rem:blockbreaks} identifies
+as the only admissible shape of an argument here.
 \end{remark}
 
 \begin{lemma}[Corner lines are column lines]\label{lem:columnlines}

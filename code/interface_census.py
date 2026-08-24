@@ -231,11 +231,11 @@ def main():
 
     t = parse_txt(os.path.join(ENG, 'tiling_N44B.txt'))
     report("N44B (txt, scale 1)", t, sym_table(1))
-    t = parse_lean(os.path.join(LEAN, 'Tiling44.lean'))
+    t = parse_lean(os.path.join(LEAN, 'Erdos634', 'Tiling44.lean'))
     report("Tiling44.lean (scale 8)", t, sym_table(8))
 
     # Tiling99 (scale 16): target (0,0),(528,0),(264,72r15); unit blocks and fm walls at scale 16
-    t = parse_lean(os.path.join(LEAN, 'Tiling99.lean'))
+    t = parse_lean(os.path.join(LEAN, 'Erdos634', 'Tiling99.lean'))
     segs = [
         ("unit west f-block wall", Pt(R(64, 0), R(0, 0)), Pt(R(88, 0), R(0, 24))),
         ("unit east e-block wall", Pt(R(464, 0), R(0, 0)), Pt(R(506, 0), R(0, 6))),
@@ -244,21 +244,21 @@ def main():
     ]
     report("Tiling99.lean (scale 16)", t, sym_table(16), segs)
 
-    t = parse_lean(os.path.join(LEAN, 'PgramTiling22.lean'))
+    t = parse_lean(os.path.join(LEAN, 'Erdos634', 'PgramTiling22.lean'))
     report("PgramTiling22.lean (scale 4)", t, sym_table(4))
 
     # CevianTiling28 (scale 8): chart (0,0),(112,0),(24,24r15); atom wall (48,0)-(24,24r15)
-    t = parse_lean(os.path.join(LEAN, 'CevianTiling28.lean'))
+    t = parse_lean(os.path.join(LEAN, 'Erdos634', 'CevianTiling28.lean'))
     report("CevianTiling28.lean (scale 8)", t, sym_table(8),
            [("atom wall (48,0)-(24,24r15)", Pt(R(48, 0), R(0, 0)), Pt(R(24, 0), R(0, 24)))])
     # CevianTiling63 (scale 8): chart (0,0),(168,0),(36,36r15); atom wall (72,0)-(36,36r15)
-    t = parse_lean(os.path.join(LEAN, 'CevianTiling63.lean'))
+    t = parse_lean(os.path.join(LEAN, 'Erdos634', 'CevianTiling63.lean'))
     report("CevianTiling63.lean (scale 8)", t, sym_table(8),
            [("atom wall (72,0)-(36,36r15)", Pt(R(72, 0), R(0, 0)), Pt(R(36, 0), R(0, 36)))])
 
-    t = parse_lean(os.path.join(LEAN, 'Tiling28.lean'))
+    t = parse_lean(os.path.join(LEAN, 'Erdos634', 'Tiling28.lean'))
     report("Tiling28.lean (scale 16)", t, sym_table(16))
-    t = parse_lean(os.path.join(LEAN, 'Tiling77.lean'))
+    t = parse_lean(os.path.join(LEAN, 'Erdos634', 'Tiling77.lean'))
     report("Tiling77.lean (scale 16)", t, sym_table(16))
 
     # the equations, reduced on (a,b,c) = (ef, f^2-e^2, f^2)
