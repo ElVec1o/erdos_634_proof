@@ -137,6 +137,83 @@ theorem unit_preserves_norm (e g : ℤ) :
 `(2+3f, 1+2f)`, and `2+3f > 1+2f`, so the new pair has `e > g`. -/
 theorem unit_step_exits (f : ℤ) (hf : 2 ≤ f) : 1 + 2 * f < 2 + 3 * f := by linarith
 
+/-! ## The characterisation is a THEOREM: every representable prime has ONE representation
+
+The census and the `ℤ[√3]` orbit sketch above are superseded by an elementary proof.  The point is
+an exact identity, with no modular inverse anywhere: if `p = 3f₁² − e₁² = 3f₂² − e₂²` then
+
+  `(e₁f₂)² − (e₂f₁)² = p·(f₁² − f₂²)`   (`rep_cross_identity`)
+
+so `p ∣ (e₁f₂ − e₂f₁)(e₁f₂ + e₂f₁)`.  The admissibility condition `e < f` forces
+`p = 3f² − e² ≥ 2f² + 2f − 1 > 2f²`, hence `2f₁f₂ < p`; so both `e₁f₂` and `e₂f₁` lie strictly
+below `p/2`.  Their **sum** then lies strictly in `(0, p)` and cannot be divisible by `p`, so `p`
+divides the **difference**, which lies in `(−p, p)` and is therefore `0`.  Coprimality of each
+pair upgrades `e₁f₂ = e₂f₁` to `(e₁,f₁) = (e₂,f₂)`.
+
+**Consequently a representable prime has exactly one representation**, and it lies in the hole
+precisely when that representation has `e = 1`, i.e. precisely when `p = 3f² − 1`.  What was a
+census of 51 primes below `200 000` (and 82 below `600 000`, `code/analysis/hole_characterisation.py`)
+is a theorem.
+
+The practical consequence is the one already recorded: no hole prime can be reached through the
+unconditional `e ≥ 2` half of `thm:fullprime`, because no hole prime *has* an `e ≥ 2`
+representation, and now that is proved rather than observed. -/
+
+/-- **The cross identity.**  Two representations of the same `p` satisfy
+`(e₁f₂)² − (e₂f₁)² = p(f₁² − f₂²)` exactly, over `ℤ`. -/
+theorem rep_cross_identity (p e1 f1 e2 f2 : ℤ)
+    (h1 : 3 * f1 ^ 2 - e1 ^ 2 = p) (h2 : 3 * f2 ^ 2 - e2 ^ 2 = p) :
+    (e1 * f2) ^ 2 - (e2 * f1) ^ 2 = p * (f1 ^ 2 - f2 ^ 2) := by
+  linear_combination (-f2 ^ 2) * h1 + f1 ^ 2 * h2
+
+/-- **Admissibility bounds the parameter**: `e < f` gives `2f² < p`. -/
+theorem two_sq_lt_of_admissible (p e f : ℤ) (he : 1 ≤ e) (hlt : e < f)
+    (h : 3 * f ^ 2 - e ^ 2 = p) : 2 * f ^ 2 < p := by nlinarith [h, hlt, he]
+
+/-- **The cross products agree.**  For a prime `p` with two admissible representations,
+`e₁f₂ = e₂f₁`. -/
+theorem rep_cross_eq (p e1 f1 e2 f2 : ℤ) (hp : Prime p)
+    (h1 : 3 * f1 ^ 2 - e1 ^ 2 = p) (h2 : 3 * f2 ^ 2 - e2 ^ 2 = p)
+    (he1 : 1 ≤ e1) (hlt1 : e1 < f1) (he2 : 1 ≤ e2) (hlt2 : e2 < f2) :
+    e1 * f2 = e2 * f1 := by
+  have hf1 : 0 < f1 := by linarith
+  have hf2 : 0 < f2 := by linarith
+  have hb1 : 2 * f1 ^ 2 < p := two_sq_lt_of_admissible p e1 f1 he1 hlt1 h1
+  have hb2 : 2 * f2 ^ 2 < p := two_sq_lt_of_admissible p e2 f2 he2 hlt2 h2
+  have hppos : 0 < p := by nlinarith [hb1, hf1]
+  have hprod : 2 * (f1 * f2) < p := by nlinarith [hb1, hb2, hf1, hf2, hppos]
+  have key := rep_cross_identity p e1 f1 e2 f2 h1 h2
+  have hdvd : p ∣ (e1 * f2 - e2 * f1) * (e1 * f2 + e2 * f1) :=
+    ⟨f1 ^ 2 - f2 ^ 2, by linarith [key]⟩
+  have hs1 : e1 * f2 < f1 * f2 := by nlinarith [hlt1, hf2]
+  have hs2 : e2 * f1 < f2 * f1 := by nlinarith [hlt2, hf1]
+  have hp1 : 0 < e1 * f2 := by positivity
+  have hp2 : 0 < e2 * f1 := by positivity
+  rcases hp.2.2 _ _ hdvd with hA | hB
+  · have habs : |e1 * f2 - e2 * f1| < p := by
+      rw [abs_lt]; constructor <;> nlinarith [hprod, hs1, hs2, hp1, hp2]
+    have := Int.eq_zero_of_abs_lt_dvd hA habs
+    linarith
+  · exfalso
+    have hlt : e1 * f2 + e2 * f1 < p := by nlinarith [hprod, hs1, hs2]
+    have := Int.le_of_dvd (by positivity) hB
+    linarith
+
+/-- **Uniqueness of the representation.**  A prime has at most one admissible base-`β`
+representation.  Hence it lies in the `e = 1` hole exactly when `p = 3f² − 1`. -/
+theorem rep_unique (p e1 f1 e2 f2 : ℤ) (hp : Prime p)
+    (h1 : 3 * f1 ^ 2 - e1 ^ 2 = p) (h2 : 3 * f2 ^ 2 - e2 ^ 2 = p)
+    (he1 : 1 ≤ e1) (hlt1 : e1 < f1) (hc1 : IsCoprime e1 f1)
+    (he2 : 1 ≤ e2) (hlt2 : e2 < f2) (hc2 : IsCoprime e2 f2) :
+    e1 = e2 ∧ f1 = f2 := by
+  have h := rep_cross_eq p e1 f1 e2 f2 hp h1 h2 he1 hlt1 he2 hlt2
+  have hd1 : e1 ∣ e2 := hc1.dvd_of_dvd_mul_right ⟨f2, h.symm⟩
+  have hd2 : e2 ∣ e1 := hc2.dvd_of_dvd_mul_right ⟨f1, h⟩
+  have hee : e1 = e2 := Int.dvd_antisymm (by linarith) (by linarith) hd1 hd2
+  refine ⟨hee, ?_⟩
+  subst hee
+  exact (mul_left_cancel₀ (by linarith : e1 ≠ 0) h).symm
+
 end Erdos634.ThinHole
 
 #print axioms Erdos634.ThinHole.even_of_odd

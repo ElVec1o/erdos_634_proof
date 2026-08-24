@@ -389,8 +389,9 @@ that the base-$\beta$ isosceles target remains open in the published record at t
 and that the present note's contribution --- the $e=1$ family, and the conditional
 Theorem~\ref{thm:fullprime} --- addresses a live gap rather than a closed one. For the subfamily $e=1$ the companion note \cite{Companion}
 now proves the exclusion outright (its Theorem on the $e=1$ family, for all even $f$): this
-settles by argument the candidates $11, 47, 107, 191, 431,\dots$ --- every prime
-$p=3f^2-1$ with no second base-$\beta$ representation --- and leaves $e\ge2$ as the open residue. This assessment includes the recent preprint \cite{BeesonNoPrime}
+settles by argument the candidates $11, 47, 107, 191, 431,\dots$ --- and, by
+Proposition~\ref{prop:repunique} below, that is exactly the set of prime candidates the $e\ge2$
+half can never reach --- leaving $e\ge2$ as the open residue on a set disjoint from these. This assessment includes the recent preprint \cite{BeesonNoPrime}
 (21~July~2026), which asserts that no isosceles triangle admits a prime tiling: its Theorem~1
 disposes of the whole $3\alpha+2\beta=\pi$ branch by citation to \cite{BeesonIII}
 (``by considering the possible shapes of $T$ one by one''), and for the present shape the argument
@@ -2212,6 +2213,40 @@ $3\alpha+2\beta=\pi$ at $m=1$. The companion records the following unconditional
 progress on that hypothesis, and also an unresolved tension between its corner-block statement and the
 reading of it as ``no $a$-edge on an equal side'' that the side arguments use.
 
+Before turning to the hypothesis we record an arithmetic fact that fixes, once and for all, which
+prime candidates the two halves of Theorem~\ref{thm:fullprime} can reach. It is proved by an exact
+identity rather than by any modular inversion, and it converts what had been a census into a
+statement about all primes.
+
+\begin{proposition}[Uniqueness of the base-$\beta$ representation]\label{prop:repunique}
+Let $p$ be a prime and suppose $p=3f_1^2-e_1^2=3f_2^2-e_2^2$ with $1\le e_i<f_i$ and
+$\gcd(e_i,f_i)=1$ for $i=1,2$. Then $(e_1,f_1)=(e_2,f_2)$. Consequently a prime candidate lies in
+the $e=1$ family if and only if it has the form $3f^2-1$, and no prime of that form admits any
+representation with $e\ge2$.
+\end{proposition}
+
+\begin{proof}
+Eliminating $p$ between the two equations gives the exact identity
+\[
+  (e_1f_2)^2-(e_2f_1)^2 \;=\; p\,(f_1^2-f_2^2),
+\]
+obtained as $-f_2^2$ times the first equation plus $f_1^2$ times the second. Hence $p$ divides the
+product $(e_1f_2-e_2f_1)(e_1f_2+e_2f_1)$. Admissibility bounds the parameters: from $e<f$ we get
+$p=3f^2-e^2>2f^2$, so $2f_i^2<p$ for both $i$, and therefore $2f_1f_2<p$ by the arithmetic--geometric
+inequality. Since $e_i<f_i$, both $e_1f_2$ and $e_2f_1$ are strictly less than $f_1f_2<p/2$, and both
+are positive. Their \emph{sum} therefore lies strictly between $0$ and $p$ and cannot be divisible by
+$p$; so $p$ divides the \emph{difference}, which lies strictly between $-p$ and $p$ and is hence $0$.
+Thus $e_1f_2=e_2f_1$. Coprimality of each pair gives $e_1\mid e_2$ and $e_2\mid e_1$, so $e_1=e_2$,
+and cancelling the nonzero $e_1$ yields $f_1=f_2$.
+\end{proof}
+
+The proposition is formalised as \texttt{Erdos634.ThinHole.rep\_unique}, axiom-clean. It explains the
+census that motivated it: the primes representable only at $e=1$ --- $11,47,107,191,431,587,971,\dots$,
+$82$ of them below $600\,000$ --- are exactly the primes of the form $3f^2-1$, and this is now a
+theorem rather than an observation. In particular the unconditional $e\ge2$ half of
+Theorem~\ref{thm:fullprime} is not merely unhelpful on these candidates: it is \emph{provably}
+inapplicable to them, so the $e=1$ argument is not redundant with it on any prime.
+
 For the thin subfamily $e=1$ the hypothesis holds for $f\le6$, that is for the members with
 $N=3f^2-1$ equal to $11,26,47,74,107$. For two of them the corresponding $m=1$ target is in
 addition shown to admit no tiling by an independent exhaustive search ($132\,519$ nodes at
@@ -2351,9 +2386,6 @@ in Integers.
 arXiv:1811.09723.
 
 \bibitem{BeesonEq} M.~Beeson, \emph{Tiling an equilateral triangle}, arXiv:1812.07014.
-
-\bibitem{BeesonNoPrime} M.~Beeson, \emph{No prime tiling of an isosceles triangle},
-arXiv:2607.19572, 21~July~2026.
 
 \bibitem{BeesonZhang} M.~Beeson and Y.~X.~Zhang, \emph{Rationality of certain triangle tilings},
 arXiv:2604.01314.
