@@ -62,9 +62,10 @@ what it asserts and why it is not available.  **`InteriorBalanced` is no longer 
 real-valued form is now *proved* for `Dissection.dirSet` by `Dissection.g4_final`, and the predicate
 is kept only for downstream theorems that were stated against it.  **`HasEdgeChains` is no longer
 among them either** (2026-08-15): the union form is proved below (`hasEdgeChains_edge`), and the
-exactly-once forms with the length identities are proved in `EdgeChain.lean` and `WallChain.lean`;
-only `HasAngleSums` remains open.  They are *definitions*, not axioms: nothing in this
-file assumes them, and any downstream theorem that needs one must take it as a hypothesis.
+exactly-once forms with the length identities are proved in `EdgeChain.lean` and `WallChain.lean`.
+**`HasAngleSums` is no longer among them either** — see the status update immediately below; as of
+2026-08-16 this list is EMPTY.  They are *definitions*, not axioms: nothing in this file assumes
+them, and any downstream theorem that needs one must take it as a hypothesis.
 
 STATUS UPDATE (2026-08-16): **`HasAngleSums` is no longer open either — G2 is discharged.**
 `Erdos634.Geometry.Dissection.hasAngleSums` (`AngleSumDissection.lean`) proves
@@ -290,7 +291,9 @@ multiplicities* satisfying two linear equations.  The step from a *real* vertex 
 integers was, until now, entirely on paper.  It has two halves:
 
 * the geometric half — a vertex figure of the dissection yields naturals `x, y, z` with
-  `x·α + y·β + z·γ` equal to `2π`, `π`, or a corner angle.  **Not available** (see `HasAngleSums`).
+  `x·α + y·β + z·γ` equal to `2π`, `π`, or a corner angle.  **Available since 2026-08-16**:
+  `HasAngleSums` is discharged by `Dissection.hasAngleSums` (`AngleSumDissection.lean`), so this
+  half is no longer an obligation.  (Earlier text here read "Not available"; corrected.)
 * the arithmetic half — from such a real equation, together with `3α+2β = π` and `α ∉ ℚπ`, the two
   integer equations follow.  **That is what is proved here**, and it is unconditional.
 
@@ -379,12 +382,17 @@ theorem vertex_apex_multiplicities {α β : ℝ} (hrel : 3 * α + 2 * β = Real.
   obtain ⟨h1, h2⟩ := vertex_multiplicities hrel hirr x y z 3 0 h
   omega
 
-/-! ## What is still assumed
+/-! ## The predicates (all now discharged; kept for downstream statements)
 
-The following are `Prop`-valued **definitions**, not axioms.  Nothing above uses them.  They name,
-precisely, the geometric facts the paper still supplies by hand, so that a downstream theorem can
-take one as an explicit hypothesis — the discipline of `BaseBetaWalks.gamma_injection` and
-`InvariantCore.cancellation_core`. -/
+The following are `Prop`-valued **definitions**, not axioms.  Nothing above uses them.
+
+**STATUS (2026-08-16): none of these is an open obligation any more.**  `InteriorBalanced` is
+proved by `Dissection.g4_final`, `HasEdgeChains` by `hasEdgeChains_edge` together with
+`EdgeChain.lean` / `WallChain.lean`, and `HasAngleSums` by `Dissection.hasAngleSums`
+(`AngleSumDissection.lean`).  They are retained only because downstream theorems were stated
+against them as explicit hypotheses, following the discipline of `BaseBetaWalks.gamma_injection`
+and `InvariantCore.cancellation_core`.  A downstream file taking one as a hypothesis is carrying
+a *provable* fact, not an open one — do not cite these as gaps. -/
 
 /-- **G2 — the angle sums.**  `angleAt D v i` is intended to be the angle the `i`-th tile subtends
 at the point `v` (zero if `v` is not on the tile).  `HasAngleSums` asserts the three classical

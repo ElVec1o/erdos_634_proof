@@ -22,9 +22,13 @@ analysis, and proves that `b` is unsplittable in the edge semigroup.
 
 Everything proved here is arithmetic.  The geometric input — that the tile angles meeting at a
 point sum to `2π`, to `π`, or to the corner angle, with non-negative integer multiplicities — is
-`Dissection.lean` (`vertex_multiplicities` and its corollaries); Mathlib has no theory of planar
-dissections and that step is not formalized anywhere.  What follows is the arithmetic that step
-feeds into.
+`Dissection.lean` (`vertex_multiplicities` and its corollaries).
+
+**STATUS (corrected 2026-08-24).**  This paragraph used to end "Mathlib has no theory of planar
+dissections and that step is not formalized anywhere."  That is **false as of 2026-08-16**: the
+angle-sum half is proved outright by `Dissection.hasAngleSums` (`AngleSumDissection.lean`), via
+the vertex-sector area computation in `VertexSector.lean`, which needs no theory of planar
+dissections from Mathlib.  What follows is the arithmetic that step feeds into.
 
 ## Contents
 

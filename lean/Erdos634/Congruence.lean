@@ -31,11 +31,14 @@ here is new geometry; it is the connective tissue.
 
 It makes the predicate stateable, so `StripRigid`'s two pointwise exclusions can be aimed
 at something real.  It does **not** discharge those exclusions' geometric content, and it
-does not touch the *other* gap `Dissection` documents at lines 396–402: Mathlib cannot lift
-a mod-`2π` angle sum to a real-valued one beyond two summands, so an `n`-fold fan at a
-junction "must be built from scratch".  Fan arguments — which is what `prop:a2branch` is,
-end to end — still have to be carried as hypotheses in the style of
-`Dissection.HasAngleSums`.  Reach 4 is not closed by this file.
+does not by itself assemble the fan facts.  (An earlier version of this paragraph cited
+`Dissection` lines 396–402 as an open gap — "Mathlib cannot lift a mod-`2π` angle sum to a
+real-valued one".  That is **stale**: `HasAngleSums` was discharged on 2026-08-16 by
+`Dissection.hasAngleSums`, via the area route in `VertexSector.lean`, which sidesteps the
+mod-`2π` lift entirely.  Corrected here.)  Fan arguments — which is what `prop:a2branch` is,
+end to end — are carried here as hypotheses, in the style of `Dissection.HasAngleSums`; note
+that carrying one of those predicates now means carrying a *provable* fact, not an open one.
+Reach 4 is not closed by this file.
 -/
 
 namespace Erdos634.Geometry

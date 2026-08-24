@@ -15,7 +15,9 @@ and therefore onto that theorem's own two bridges.
    from below by a *single* `a`-edge, so the floor is edged at every one of the `f + 1`
    junctions, with no new subdivision.
 2. An edged floor makes the fan *below* each junction a straight angle, of type `(3,2)`.  This
-   is the one geometric step, and it is carried (`fan_below_straight`).
+   is the one geometric step.  Since 2026-08-16 it is **assemblable, not open**: see
+   `StraightEdgeSums`, where it is reduced to the same area computation that discharged
+   `Dissection.hasAngleSums`.
 3. `OrderForcing.straight_junction_cases` (PROVED) — a `(3,2)` figure is `{α,α,α,β,β}` or
    `{γ,α,β}`.  Two possibilities: *not yet* uniform.
 4. The tiles below those `a`-edges form a layer, and
