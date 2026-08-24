@@ -166,9 +166,22 @@ every tiling of every $e=1$ member rather than in one branch of an alternative. 
 prime candidates in the subfamily all have $f$ even, since $3f^2-1$ is even for odd $f$
 (\texttt{lean/Erdos634/ThinHole.lean}, \texttt{thin\_prime\_f\_even}); the odd-$f$ members
 $N=26,74,146,\dots$ are composite, so the parity hypothesis whose removal is recorded in the
-companion was never binding on the prime problem. For $e\ge2$ the collapse does not occur: the
-base word has $f+2e$ letters with $e$ $b$'s and $e$ $c$'s, an $a^f$ prefix costs no more than the
-$f$ available $a$'s, and the east block's $c$-feet can still occupy the final positions.
+companion was never binding on the prime problem. The failure at $e=1$ is in fact twofold, the second
+kill being independent of Theorem~\ref{thm:e1reduce} altogether. The hypothesis pins the base word
+to $a^fb^ec^e$; its length is $f+2e$, its $b$'s occupy positions $f+1,\dots,f+e$, and
+Proposition~\ref{prop:cornerpara} forbids a $b$ in the last two positions, which begin at $f+2e-1$.
+A $b$ reaches them exactly when $f+e\ge f+2e-1$, that is exactly when $e=1$ --- and then the word is
+$a^fbc$, whose $b$ sits in the penultimate slot.
+
+That computation also shows why the collapse does not propagate. At $e\ge2$ the $b$-block clears the
+forbidden tail by $e-1$ slots, being separated from it by the $e$ $c$-feet of the east block; only at
+$e=1$ does that block shrink to a single foot and let the $b$ touch the tail. We have tested the
+walls word against the rest of what is proved at $e\ge2$ --- the walk counts $(f,e,e)$ at a
+separated thick member, which it realises; Proposition~\ref{prop:cornerpara}, which it satisfies;
+and the $e=1$ argument that the base ends with an $a$, which runs on the uniqueness of the single
+$c$ and is unavailable --- and found no clash. Hypothesis (walls) is a genuine positional
+strengthening at $e\ge2$, and Theorem~\ref{thm:fullprime} retains its content on that residue,
+which is where the prime problem now lives.
 \end{remark}
 
 \begin{theorem}[The exceptional set is a congruence class]\label{thm:mod12}

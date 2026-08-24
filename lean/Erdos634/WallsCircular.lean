@@ -163,6 +163,39 @@ theorem some_side_break {Corner : Type*} (Breaks BaseBreak SideBreak : Corner ->
     · exact Or.inr hL
   · exact Or.inl hK
 
+/-! ## A second, independent kill at `e = 1`, and the reason `e ≥ 2` survives
+
+`prop:cornerpara` (main paper) places the `b` away from the first two and the last two positions of
+the base word.  Test the walls word `a^f b^e c^e` against it directly.  Its length is `f + 2e`, its
+`b`'s occupy positions `f+1, …, f+e`, and the forbidden tail is `f+2e-1, f+2e`.  So a `b` lands in
+the tail exactly when `f + e ≥ f + 2e - 1`, i.e. exactly when `e = 1`.
+
+At `e = 1` the walls word is `a^f b c`, whose `b` sits at position `f+1` — the second-to-last slot.
+That is a contradiction with `prop:cornerpara` alone, needing nothing from `thm:e1reduce`.  So the
+hypothesis fails at `e = 1` twice over, by two independent routes: the letter count against the
+final `a`, and the position of the `b` against the corner figures.
+
+At `e ≥ 2` the same test passes with room to spare, and this is the precise reason the collapse does
+not propagate: the `b`-block is separated from the tail by the `e` `c`-feet of the east block, and
+only at `e = 1` does that block shrink to a single foot and let the `b` touch the forbidden zone.
+The first two positions are `a, a`, also fine, since `e < f` and `e ≥ 2` force `f ≥ 3`.
+
+Checked against the rest of the corpus: the counts at a separated thick member are proved to be the
+walls form `(f, e, e)`, and the walls word realises them; `prop:cornerpara` is satisfied; and the
+`e = 1` argument that the base ends with an `a` is unavailable at `e ≥ 2`, since it runs on the
+uniqueness of the single `c`.  No contradiction with a proved theorem was found at `e ≥ 2`, so
+Hypothesis (walls) is a genuine positional strengthening there and `thm:fullprime` retains its
+content on the `e ≥ 2` residue. -/
+
+/-- **The walls word violates `prop:cornerpara` exactly at `e = 1`.**  The last `b` of `a^f b^e c^e`
+sits at position `f + e`; the forbidden tail begins at `f + 2e - 1`.  They meet iff `e = 1`. -/
+theorem walls_b_hits_tail_iff_e_one (e f : ℕ) (he : 1 ≤ e) :
+    (f + 2 * e - 1 ≤ f + e) ↔ e = 1 := by
+  constructor <;> intro h <;> omega
+
+/-- At `e ≥ 2` the `b`-block is strictly clear of the forbidden tail, by `e - 1` slots. -/
+theorem walls_b_clear_of_tail (e f : ℕ) (he : 2 ≤ e) : f + e < f + 2 * e - 1 := by omega
+
 end Erdos634.WallsCircular
 
 #print axioms Erdos634.WallsCircular.prefix_run_contradicts_last
