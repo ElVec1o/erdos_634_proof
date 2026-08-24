@@ -20,11 +20,17 @@ These cannot both hold.  If the first `f` letters are `a` they exhaust the suppl
 letter is `b` or `c`, not `a`.  The clash is `BaseWordBlock.no_f_plus_one_a` applied to the `f + 1`
 slots `{0, …, f-1} ∪ {f+1}`.
 
-## The consequence, which is not the one previously drawn
+## Prior art, and what is actually new here
 
-`rem:wallsfix` already records an incompatibility, located at the *east* corner: the block form puts
-`e` `c`-feet there, while `thm:e1reduce` ends the base with an `a`.  It resolves the clash by
-retreating to a weakened, west-only reading, "`hyp:walls` is exactly `p = 0`".
+The collapse itself is **not new**: `rem:sidenoa` states it outright --- "Hypothesis (walls) is thus
+not a step towards the `e = 1` case; at `e = 1` it *is* the case" --- deriving it from the east
+corner's `c`-foot, which makes the base read `a^f b c` against `thm:e1reduce`'s final `a`.
+`rem:wallsfix` records the same incompatibility and resolves it by retreating to a weakened,
+west-only reading, "`hyp:walls` is exactly `p = 0`".
+
+New here are three things: the clash located at the **west** corner by letter count alone, which is
+what closes that retreat; the fact that it is confined to `e = 1` exactly
+(`walls_b_hits_tail_iff_e_one`); and the structural dividend below, which nobody took.
 
 That retreat is not available.  The clash proved here is at the **west** corner, which is the very
 half the weakened reading keeps, and the west block is also the sole premise of the derivation of

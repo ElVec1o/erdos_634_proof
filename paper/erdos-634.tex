@@ -135,22 +135,23 @@ $N=11,23,26,47,59,66,71,107$, each by a certified exhaustive search of every sur
 which depend on no branch theorem whatever. The class $11\pmod{12}$ beyond those values, $N=83$
 first among them, is \emph{not} settled unconditionally.
 
-We can now say something sharper about the hypothesis's strength, and it is not favourable. At
-$e=1$, $m=1$, $f\ge3$ the hypothesis is not weaker than its conclusion --- it is \emph{equivalent}
-to it. The block form places $f$ $a$-feet on the base at the west corner, feet being consecutive and
-starting at the corner, so it asserts that the base word begins with $a^f$. But the companion's
-reduction theorem for the $e=1$ subfamily proves unconditionally that the base word is a permutation
-of $(a^f,b,c)$ beginning \emph{and} ending with an $a$-edge, and $f+1$ letters $a$ are not
-available. So no tiling of an $e=1$ member has a complete west corner, and to assert the hypothesis
-of every tiling at those members is precisely to assert that there are none. Theorem~\ref{thm:fullprime}
-accordingly carries no $e=1$ content beyond the vacuous.
+That the hypothesis collapses at $e=1$ is recorded in the companion, whose Remark on the side
+parameter ends: complete blocks make the base read $a^fbc$, ending in a $c$-edge, while its
+reduction theorem forces $a$-edges at both ends, so ``Hypothesis (walls) is thus not a step towards
+the $e=1$ case; at $e=1$ it \emph{is} the case.'' We restate it because its consequences for the
+present theorem were not drawn: at those members the hypothesis is equivalent to its own conclusion,
+so Theorem~\ref{thm:fullprime} carries no $e=1$ content beyond the vacuous.
 
-It matters that the clash is at the \emph{west} corner. The companion's Remark on the asymmetry of
-the hypothesis locates an incompatibility at the east corner and retreats to a west-only reading,
-``the hypothesis is exactly $p=0$''; that retreat is unavailable, because the west block is itself
-the sole premise of the derivation of $p=0$, and a structure that provably never occurs cannot
-support a derivation. The argument is formalised in \texttt{lean/Erdos634/WallsCircular.lean}
-(\texttt{west\_block\_never\_complete}, \texttt{walls\_iff\_no\_tiling}), axiom-clean.
+Two things are added here. First, the clash can be located at the \emph{west} corner alone. A
+complete west block has $f$ $a$-feet, consecutive and starting at the corner, so it asks the base
+word to begin with $a^f$; with exactly $f$ letters $a$ available and a final $a$ forced, that is
+$f+1$ of them. The companion's own argument invokes the east corner's $c$-foot, and a separate
+remark, finding the same incompatibility there, retreats to a west-only reading of the hypothesis as
+``$p=0$''. That retreat is not available: the west is precisely where the west-only argument fails,
+and the west block is the sole premise the derivation of $p=0$ ever had. Second, the failure is
+sharply confined to $e=1$, as the next paragraph shows. Both are formalised in
+\texttt{lean/Erdos634/WallsCircular.lean} (\texttt{west\_block\_never\_complete},
+\texttt{walls\_b\_hits\_tail\_iff\_e\_one}), axiom-clean.
 
 No progress is lost to this. The $e=1$ members were never reached through the hypothesis in any
 case: both routes to them --- the companion's forcing chain and our own assembly
