@@ -148,4 +148,42 @@ theorem below_angle_sum_of_area {N : ℕ} (D : Dissection N) (p : Plane)
     rw [← hpull, heq]; ring
   exact mul_right_cancel₀ (by positivity) key
 
+/-- **The area input, from the covering.**  If the below-tiles' ball-traces exhaust the lower
+half-ball, their volumes sum to that half-ball's area.  Disjointness is `Dissection.aedisjoint`;
+the value is `half_ball_area`. -/
+theorem harea_of_covering {N : ℕ} (D : Dissection N) (below : Finset (Fin N)) (p : Plane)
+    {r : ℝ} (hr : 0 ≤ r) (g : Plane →ᵃ[ℝ] ℝ) (hL : g.linear ≠ 0) (hx : g p = 0)
+    (hcov : (⋃ i ∈ below, ((D.tile i).carrier ∩ Metric.ball p r))
+            = {y : Plane | 0 ≤ g y} ∩ Metric.ball p r) :
+    ∑ i ∈ below, MeasureTheory.volume ((D.tile i).carrier ∩ Metric.ball p r)
+      = ENNReal.ofReal (Real.pi / 2 * r ^ 2) := by
+  have hsum : MeasureTheory.volume (⋃ i ∈ below, ((D.tile i).carrier ∩ Metric.ball p r))
+      = ∑ i ∈ below, MeasureTheory.volume ((D.tile i).carrier ∩ Metric.ball p r) := by
+    refine MeasureTheory.measure_biUnion_finset₀ ?_ ?_
+    · intro i _ j _ hij
+      exact MeasureTheory.measure_mono_null
+        (Set.inter_subset_inter Set.inter_subset_left Set.inter_subset_left) (D.aedisjoint hij)
+    · intro i _
+      exact ((D.tile i).nullMeasurableSet).inter
+        Metric.isOpen_ball.measurableSet.nullMeasurableSet
+  rw [← hsum, hcov, half_ball_area g hL hx hr]
+
+/-- **(iii), from the covering alone.**  The straight-fan statement now needs exactly one
+geometric input: that the tiles below the line exhaust the lower half-ball at `p`.  Everything
+else is proved -- the per-tile area is `Tri.volume_inter_ball_localAngle`, the half-ball area is
+`half_ball_area`, disjointness is `Dissection.aedisjoint`.
+
+The covering itself follows from `Dissection.covers` together with `wall_two_sided`'s hypothesis
+`hwall` (no tile interior meets the segment, so each tile lies locally in one closed half-plane);
+supplying it in this shape is the remaining step. -/
+theorem below_angle_sum_of_covering {N : ℕ} (D : Dissection N) (below : Finset (Fin N))
+    (p : Plane) {r : ℝ} (hr : 0 < r) (g : Plane →ᵃ[ℝ] ℝ) (hL : g.linear ≠ 0) (hx : g p = 0)
+    (hcontrib : ∀ i ∈ below, MeasureTheory.volume ((D.tile i).carrier ∩ Metric.ball p r)
+        = ENNReal.ofReal ((D.tile i).localAngle p / 2 * r ^ 2))
+    (hcov : (⋃ i ∈ below, ((D.tile i).carrier ∩ Metric.ball p r))
+            = {y : Plane | 0 ≤ g y} ∩ Metric.ball p r) :
+    ∑ i ∈ below, (D.tile i).localAngle p = Real.pi :=
+  below_angle_sum_of_area D p below r hr hcontrib
+    (harea_of_covering D below p hr.le g hL hx hcov)
+
 end Erdos634.Geometry
