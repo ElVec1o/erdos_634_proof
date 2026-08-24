@@ -584,4 +584,65 @@ theorem vertex_type_two_pi (n nγ : ℕ) (h : 2 * n + nγ = 6) :
 classifications. -/
 theorem triple_is_pi_not_two_pi : (3 : ℕ) * 1 ≠ 3 * 2 := by norm_num
 
+/-! ## The vertex-count identity, and why the graph method cannot close rows
+
+Every tile carries exactly one `α`, one `β` and one `γ`, each sitting at exactly one vertex, so
+summing over **all** vertices gives `#α = #β = #γ = N`.  Hence for any weights summing to zero
+the total weighted count vanishes; Beeson–Zhang take `(1, 1, −2)`.  Mirroring that here:
+
+| type | `(nα,nβ,nγ)` | angle | `#α+#β−2#γ` |
+|---|---|---|---|
+| corner | `(0,0,1)` | `π/3` | `−2` |
+| simple | `(1,1,1)` | `π` | `0` |
+| triple | `(0,0,3)` | `π` | `−6` |
+| star | `(3,3,0)` | `2π` | `+6` |
+| double simple | `(2,2,2)` | `2π` | `0` |
+| `γ`-heavy | `(1,1,4)` | `2π` | `−6` |
+| hexagon | `(0,0,6)` | `2π` | `−12` |
+
+An equilateral target's corner has angle `π/3`, so `2n + nγ = 1` and the corner is **exactly one
+`γ`** (`corner_is_single_gamma`) — three corners contributing `−6`.  Setting the total to zero:
+
+  `−6 − 6T + 6·St − 6G − 12H = 0`,  i.e.  **`St = 1 + T + G + 2H`**.
+
+In particular `St ≥ 1`: every such tiling has at least one *star* vertex — six tiles meeting at
+an interior point, three `α`'s and three `β`'s and no `γ`.  That is a genuine structural fact
+about this branch, and it is the exact analogue of Beeson–Zhang's own `C − S = 2S₂ + 1 > 0`.
+
+## Why this does **not** close any Table 2 row — checked against the Herdt control
+
+Their relation feeds a degree-counting argument on `Γ_a` yielding `Σf ≥ C − S > 0` against
+`Σf = 0`.  Mirroring the degree bounds here inverts the roles — `(0,0,3)` is a `π`-vertex for us
+but `2π` for them, and `(3,3,0)` the reverse — and appears to give `Σf ≥ St + G > 0`, hence a
+contradiction.
+
+**That reading is wrong, and the Herdt control exposes it**: a contradiction there would kill
+every row, including `N = 1440`, where a tiling demonstrably exists.  Re-reading their Lemma 3.5,
+the contradiction is with its own internal hypothesis *"suppose there is no `a`-relation"* — so
+the conclusion is that an `a`-relation **exists**, not that no tiling does.  The machinery's
+output is Lemma 3.6, *`a/b` is rational*, and thence Theorem 1.1, *commensurable sides*.
+
+So the graph method produces **rationality of side ratios, never constraints on `N`** — and for
+the `π/3` branch rationality was already known before that paper.  It therefore cannot close
+Table 2 rows even if mirrored perfectly.  Recorded so this direction is not re-entered. -/
+
+/-- **An equilateral corner is exactly one `γ`.**  Angle `π/3` forces `2n + nγ = 1`. -/
+theorem corner_is_single_gamma (n nγ : ℕ) (h : 2 * n + nγ = 1) : n = 0 ∧ nγ = 1 := by omega
+
+/-- **The vertex-count identity.**  Weighting each vertex by `#α + #β − 2#γ` and summing to zero,
+with the three corners contributing `−6`. -/
+theorem vertex_count_relation (simple triple star dsimple gheavy hexagon : ℤ)
+    (hsum : -6 + 0 * simple + (-6) * triple + 6 * star + 0 * dsimple
+              + (-6) * gheavy + (-12) * hexagon = 0) :
+    star = 1 + triple + gheavy + 2 * hexagon := by linarith
+
+/-- **Every such tiling has a star vertex.**  From the identity and nonnegativity of the counts. -/
+theorem star_exists (simple triple star dsimple gheavy hexagon : ℤ)
+    (hT : 0 ≤ triple) (hG : 0 ≤ gheavy) (hH : 0 ≤ hexagon)
+    (hsum : -6 + 0 * simple + (-6) * triple + 6 * star + 0 * dsimple
+              + (-6) * gheavy + (-12) * hexagon = 0) :
+    1 ≤ star := by
+  have h := vertex_count_relation simple triple star dsimple gheavy hexagon hsum
+  linarith
+
 end Erdos634.SixtyInvariant
