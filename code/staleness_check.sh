@@ -107,5 +107,31 @@ echo "$total staleness claims scanned; $flagged mention a declaration that IS pr
 echo "A flag is not proof of staleness -- read the line.  But every one must be read."
 echo "RULE R1: never append a status update without editing what it falsifies."
 echo "=============================================================="
-[ "$flagged" -gt 0 ] && exit 1
+
+# ---------------------------------------------------------------------------
+# RULE R3: no orphaned module.  A module that nothing imports is never compiled
+# by `lake build`, so it can rot silently against a Mathlib bump while the paper
+# goes on citing it.  Seventeen had accumulated before this check existed.
+# ---------------------------------------------------------------------------
+echo ""
+echo "=============================================================="
+echo "ORPHAN AUDIT: modules no import reaches, hence never built"
+echo "=============================================================="
+orphans=0
+for f in "$LEAN"/*.lean; do
+  m="$(basename "$f" .lean)"
+  [ "$m" = "All" ] && continue
+  if ! grep -qE "^import Erdos634\.$m\b" "$LEAN".lean "$LEAN"/*.lean 2>/dev/null; then
+    echo "  ORPHAN: Erdos634.$m  (add it to lean/Erdos634.lean)"
+    orphans=$((orphans+1))
+  fi
+done
+if [ "$orphans" -eq 0 ]; then
+  echo "  none -- every module is reachable from the root."
+fi
+echo "=============================================================="
+echo "RULE R3: a new module is not done until lean/Erdos634.lean imports it."
+echo "=============================================================="
+
+[ "$flagged" -gt 0 ] || [ "$orphans" -gt 0 ] && exit 1
 exit 0
