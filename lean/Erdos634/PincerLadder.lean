@@ -33,10 +33,13 @@ shows exactly two families — the constant `(4, 2)` and a growing `(f−1, f+1)
   R= 6, f= 8: [(4,2), (7,9)]      R= 9, f=11: [(4,2), (10,12)]
 ```
 
-Killing `(4, 2)` by a separate argument gains **nothing** — the second family still escapes.
-Killing *both* families gains exactly `+1` in `f`, after which four new escapes appear
-(`(5,2), (5,3)` and the shifted pair).  So the window admits no shortcut: each `f` costs its own
-reach step, and picking off individual configurations buys one level each at best.
+**Corrected below** (`first_failure_escapes`): those two are not two families but one, seen from
+the two base corners — `(f-1, f+1)` is the mirror `(f+3-4, f+3-2)` of `(4,2)`.  An earlier version
+of this paragraph read "killing `(4,2)` by a separate argument gains nothing — the second family
+still escapes"; by `kill_mirror` a kill of `(4,2)` stated generally in `f` transports to its mirror,
+so it gains the whole `+1`.  After the gain four new escapes appear (`(5,2), (5,3)` and their
+mirrors, again two orbits).  What survives of the sharpness claim is that each `f` costs its own
+reach step; what does not is the count — the step is one configuration, not two families.
 
 ## What this says about the prime hole
 
@@ -134,5 +137,51 @@ theorem mirror_admissible (f bp cp : ℕ) (hb3 : 3 ≤ bp) (hbf : bp ≤ f)
 /-- The reflection is an involution on the box. -/
 theorem mirror_involutive (f bp : ℕ) (hb3 : 3 ≤ bp) (hbf : bp ≤ f) :
     f + 3 - (f + 3 - bp) = bp := by omega
+
+/-! ## Correction: the two escaping families are one, and `(4,2)` is worth a level
+
+The sharpness discussion above reads: "Killing `(4, 2)` by a separate argument gains **nothing** —
+the second family still escapes.  Killing *both* families gains exactly `+1` in `f`."
+
+That is wrong, and `kill_mirror` is why.  At the first failing level `f = R + 2` the escapes are
+exactly two configurations, `(4,2)` and `(f-1, f+1)`, and these are **mirror images**:
+`(f+3-4, f+3-2) = (f-1, f+1)`.  The tabulated pairs are all of this shape —
+`R=4, f=6: (4,2),(5,7)`; `R=7, f=9: (4,2),(8,10)` — which the table displays without remarking
+on it.  So the "constant family" and the "growing family" are one orbit seen from the two base
+corners, and a kill of `(4,2)` stated generally in `f` transports to the other by reflecting the
+tiling.  It does not gain nothing; it gains the whole `+1`.
+
+`first_failure_escapes` proves the escape set at `f = R + 2` is exactly that orbit.
+
+The practical reading changes accordingly.  Each level still costs its own step — that much of the
+sharpness claim survives, since new escapes appear after the gain — but the step is **one
+configuration**, not two families, and it is the same configuration `(4,2)` at every level.  For the
+prime hole this is the difference between a vague programme and a single named target: `N = 191`
+needs the reach ladder driven from `R = 4` to `R = 7`, and each of those three steps is a proof that
+the base word `a\,c\,a\,b\,a^{f-3}` — the word `(bp, cp) = (4, 2)` names — cannot occur. -/
+
+/-- **At the first failing level the escapes are exactly the mirror orbit of `(4,2)`.** -/
+theorem first_failure_escapes {R bp cp : ℕ} (hR : 4 ≤ R)
+    (hb3 : 3 ≤ bp) (hbf : bp ≤ R + 2) (hc2 : 2 ≤ cp) (hcf : cp ≤ R + 3) (hne : bp ≠ cp)
+    (hesc : ¬ Kill (R + 2) bp cp R) :
+    (bp = 4 ∧ cp = 2) ∨ (bp = R + 1 ∧ cp = R + 3) := by
+  unfold Kill at hesc
+  push_neg at hesc
+  omega
+
+/-- `(4,2)` really does escape at its own level. -/
+theorem four_two_escapes {R : ℕ} (hR : 4 ≤ R) : ¬ Kill (R + 2) 4 2 R := by
+  unfold Kill; push_neg; omega
+
+/-- And so does its mirror, necessarily. -/
+theorem four_two_mirror_escapes {R : ℕ} (hR : 4 ≤ R) : ¬ Kill (R + 2) (R + 1) (R + 3) R := by
+  unfold Kill; push_neg; omega
+
+/-- The two are mirror images: reflecting `(4,2)` at `f = R + 2` gives `(f-1, f+1)`. -/
+theorem four_two_mirror {R : ℕ} (hR : 4 ≤ R) :
+    (R + 2 + 3 - 4, R + 2 + 3 - 2) = (R + 1, R + 3) := by
+  have h1 : R + 2 + 3 - 4 = R + 1 := by omega
+  have h2 : R + 2 + 3 - 2 = R + 3 := by omega
+  rw [h1, h2]
 
 end Erdos634.PincerLadder

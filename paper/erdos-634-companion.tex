@@ -2071,10 +2071,21 @@ extending Corollary~\ref{cor:walls16} past $f=6$ requires only the geometric rea
 further case analysis in $(bp,cp)$ at any $f$.
 
 The bound is sharp. At $f=R+2$ the configuration $(bp,cp)=(4,2)$ escapes all four kills
-(\texttt{pincer\_sharp}), and enumerating the escapes at that $f$ gives exactly two families, the
-constant $(4,2)$ and a growing $(f-1,f+1)$. Excluding the constant one alone changes nothing, and
-excluding both advances the bound by exactly one before four further escapes appear. Each $f$
-therefore costs its own reach step.
+(\texttt{pincer\_sharp}), and enumerating the escapes at that $f$ gives exactly $(4,2)$ and
+$(f-1,f+1)$ and nothing else (\texttt{first\_failure\_escapes}).
+
+Those are not two families. They are one configuration seen from the two base corners:
+$(f-1,f+1)$ is the mirror $(f+3-4,\,f+3-2)$ of $(4,2)$, and by Remark~\ref{rem:mirrorwindow} the
+kills are invariant under that reflection. An earlier version of this remark concluded that
+excluding $(4,2)$ alone ``changes nothing''; on the contrary, a proof that $(4,2)$ cannot occur,
+stated generally in $f$, transports to its mirror by reflecting the tiling, and so advances the
+bound by the full step. After the gain two further orbits appear, $(5,2)$ and $(5,3)$ with their
+mirrors. What survives is that each $f$ costs its own reach step; what does not is the count --- the
+step is a single configuration.
+
+That makes the route to $N=191$ a named target rather than a programme. It needs the ladder driven
+from $R=4$ to $R=7$, and each step is the exclusion of the base word $a\,c\,a\,b\,a^{f-3}$,
+which is what $(bp,cp)=(4,2)$ spells.
 \end{remark}
 
 \begin{lemma}[Corner lines are column lines]\label{lem:columnlines}
