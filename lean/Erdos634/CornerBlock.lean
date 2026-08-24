@@ -123,4 +123,49 @@ theorem thin_fails_at_f_two : ¬ (2 * 1 * 2 + 1 ^ 2 < 2 ^ 2 : Prop) := by norm_n
 `2f + 1 < f²`. -/
 theorem thin_holds_e_one (f : ℤ) (hf : 3 ≤ f) : 2 * 1 * f + 1 ^ 2 < f ^ 2 := by nlinarith
 
+/-! ## Why `L_f` is uncrossed and useless, and every needed line is crossed
+
+Two facts already in the corpus, put together, sharpen the gap considerably.
+
+* `CevianSplit`: scanning the certified `44`-tiling for every line no tile crosses returns **six**
+  — the three sides, two lines cutting off a single tile each, and **one** interior line.  That
+  one is the **apex cevian**, and it splits the tiling `28 | 16` with zero tiles crossed.  So the
+  apex cevian resists crossing even at `m ≥ 2`.
+* `lem:noapexline` (`OrderForcing.chain_needs_small_lines`): the forcing chain needs `L_k` only for
+  `k ≤ bp - 1 ≤ f - 1`, so **the apex line `L_f` is never required**.
+
+The apex cevian *is* `L_f`: dropping it from the apex to the base point at distance `ef²m` gives
+length `f·b·m` and cuts off the tile scaled by `fm`, which at `m = 1` is exactly the corner block
+of `rem:blockbreaks`, whose hypotenuse the remark identifies as that cevian.
+
+So the picture is:
+
+* `L_f` — uncrossed at every `m`, and the one line the argument does **not** need;
+* `L_k`, `k < f` — exactly the lines the argument **does** need, and crossed at `m ≥ 2`
+  (`42, 15, 24, 10, 98` incidences, `CrossingHypothesis.crossings_positive`).
+
+**The only interior line that resists crossing is useless to the argument, and every line the
+argument uses is crossed at `m ≥ 2`.**  The `m = 1` input must therefore make the `L_k` with
+`k < f` behave the way `L_f` already behaves at every `m`.  That is what a proof has to achieve,
+stated in terms of objects that already exist, and it is strictly sharper than "consume `m = 1`
+somewhere at the corner block".
+
+`needed_lines_are_not_apex` records the disjointness of the two ranges; the geometric statement
+about crossings is not proved here and is the gap. -/
+
+/-- **The chain never needs the apex line.**  `k ≤ bp - 1` and `bp ≤ f` give `k < f`, so `k ≠ f`:
+the one interior line known to resist crossing is precisely the one the argument cannot use. -/
+theorem needed_lines_are_not_apex {f bp k : ℕ} (hf : 3 ≤ f) (hb3 : 3 ≤ bp) (hbf : bp ≤ f)
+    (hk : k ≤ bp - 1) : k ≠ f := by omega
+
+/-- **The cevian split's counts**, at the scale where the cut-off piece is the corner block:
+`(fm)² + m²(2f² - e²) = m²(3f² - e²) = m²N₀`.  At `m = 1` the first summand is `f²`, the block's
+tile count. -/
+theorem cevian_split_counts (e f m : ℤ) :
+    (f * m) ^ 2 + m ^ 2 * (2 * f ^ 2 - e ^ 2) = m ^ 2 * (3 * f ^ 2 - e ^ 2) := by ring
+
+/-- **The `44`-tiling's split, as reported by `CevianSplit`**: `16 + 28 = 44`, the cut-off piece
+being the tile at scale `fm = 4`. -/
+theorem cevian_split_44 : ((2 : ℤ) * 2) ^ 2 + 2 ^ 2 * (2 * 2 ^ 2 - 1 ^ 2) = 44 := by norm_num
+
 end Erdos634.CornerBlock
