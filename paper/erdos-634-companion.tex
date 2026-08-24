@@ -1929,6 +1929,26 @@ Hypothesis~\ref{hyp:walls} at those members, which at $e=1$ would require the ar
 of Remark~\ref{rem:whyhyp}.
 \end{corollary}
 
+\begin{remark}[The reach ladder, uniform in the reach]\label{rem:ladder}
+Theorem~\ref{thm:depthwindow} and Corollary~\ref{cor:walls16} instantiate one statement twice.
+If the four kills cover depth $\le R$, then no admissible $(bp,cp)$ escapes for any $f\le R+1$;
+since reach $r$ makes the kills cover depth $\le r+1$, this reads
+\[
+  \text{reach } r \;\Longrightarrow\; f\le r+2 .
+\]
+Reach $3$ gives $R=4$ and $f\le5$, reach $4$ gives $R=5$ and $f\le6$, recovering both statements
+(\texttt{pincer\_ladder}, with \texttt{ladder\_reach\_three} and \texttt{ladder\_reach\_four} as
+its instances). The arithmetic half of the ladder is therefore settled at every height at once:
+extending Corollary~\ref{cor:walls16} past $f=6$ requires only the geometric reach step, and no
+further case analysis in $(bp,cp)$ at any $f$.
+
+The bound is sharp. At $f=R+2$ the configuration $(bp,cp)=(4,2)$ escapes all four kills
+(\texttt{pincer\_sharp}), and enumerating the escapes at that $f$ gives exactly two families, the
+constant $(4,2)$ and a growing $(f-1,f+1)$. Excluding the constant one alone changes nothing, and
+excluding both advances the bound by exactly one before four further escapes appear. Each $f$
+therefore costs its own reach step.
+\end{remark}
+
 \begin{lemma}[Corner lines are column lines]\label{lem:columnlines}
 Let $f\ge3$, $m=1$. Every $b$-direction line through two vertices of the corner lattice
 $\mathbb Z(a,0)+\mathbb Z\,cu$ meets the base at $(kf,0)$ and the left side at $k\,cu$ for an
