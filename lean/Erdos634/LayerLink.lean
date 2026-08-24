@@ -34,12 +34,20 @@ exactly the economy its own docstring claims — "**This single inequality carri
 exclusions below**" — now discharged against the geometric predicate rather than against an
 abstract placeholder.
 
-**What is still assumed.**  The two bridges are *not* proved.  They are the geometric step
-from "this tile is the reflected placement" to "its apex/edge lands where the arithmetic
-says", and proving them needs the fan machinery that `Dissection` lines 396–402 record as
-absent from Mathlib.  They are isolated here as two named hypotheses and nothing else, which
-is the point: the layer's rigidity now rests on exactly two geometric facts, not on an
-unformalized notion of tiling.
+**Status of the two bridges (updated 2026-08-24).**  They are taken as hypotheses *here*, but
+they are no longer unproved: `ChordChart` derives both.  Placing the tile's `a`-edge on the floor
+and subtracting the two distance equations puts the reflected apex at `(a²+b²-c²)/(2a)`, whose
+numerator is `e²(e²-f²) < 0` for every member, so it lies left of the mast
+(`ChordChart.reflected_apex_left_of_mast`); and the overlap follows because each corner cone
+contains the straight-up direction, so both bodies contain a vertical segment of positive height
+from the shared foot (`ChordChart.upward_in_cone`, `shared_segment_pos`).
+
+The earlier text here read "The two bridges are *not* proved ... proving them needs the fan
+machinery that `Dissection` lines 396–402 record as absent from Mathlib."  Both halves of that
+are now wrong: the bridges are proved, and that `Dissection` note was itself superseded when
+`HasAngleSums` was discharged on 2026-08-16.  What remains is assembly: feeding `ChordChart`'s
+geometric conclusions into the inequality-shaped hypotheses below, via `Dissection.covers` and
+`Dissection.interiors_disjoint`.
 -/
 
 namespace Erdos634.Geometry

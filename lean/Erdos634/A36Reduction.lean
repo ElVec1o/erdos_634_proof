@@ -71,7 +71,9 @@ theorem gamma_bound_below (na nb ng : ℕ) (h1 : na + 2 * ng = 3) (h2 : nb + ng 
 holds; feeding it to `FloorPropagation.reaches_base_of_uniform_below` closes row 3.
 
 The hypotheses named here are exactly the ones `LayerLink.strip_layer_rigid` already consumes,
-so nothing new is assumed beyond its two bridges and the edged-floor step. -/
+so nothing new is assumed beyond its two bridges and the edged-floor step.  (Both bridges are
+themselves derived in `ChordChart`, and the edged-floor step is reduced to the discharged
+angle-sum machinery in `StraightEdgeSums`; updated 2026-08-24.) -/
 theorem row_three_closes_on_layer_rigidity
     (f : ℕ) (hf : 3 ≤ f) (isA : ℕ → Prop) [DecidablePred isA]
     (base_count : ((range (f + 2)).filter isA).card = f)

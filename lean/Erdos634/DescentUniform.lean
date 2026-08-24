@@ -36,8 +36,15 @@ images land in the base word and are `a`-junctions.
 governs.  `prop:selfsim` is about junctions along an equal side; the row-3 feet descend through
 strips, whose step is `lem:ladder`(i) (`OrderForcing.descent_ident`, also formalized).  Both
 descents are uniform, and the skeleton below is stated for *any* uniform step, so it applies to
-whichever governs — but identifying which one governs the row-3 feet is open, and is now the
-whole of the remaining gap.
+whichever governs.
+
+**Superseded 2026-08-24.**  This file went on to say that identifying which descent governs the
+row-3 feet "is open, and is now the whole of the remaining gap".  That question does not need
+answering: `UniformFill` shows the feet's spacing is forced by *congruence of the fills* — the
+wedge dichotomy plus the exclusion of the straddler leaves the same mate at every junction, so the
+`f` fills are translates of one another and the feet inherit the spacing — with no metric identity
+entering.  The skeleton below stays because it is correct and general, not because the question it
+was aimed at is still live.
 -/
 
 namespace Erdos634.DescentUniform
