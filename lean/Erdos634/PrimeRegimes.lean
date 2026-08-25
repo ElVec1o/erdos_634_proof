@@ -71,7 +71,30 @@ attack.  That is the argument for going at it — and also the reason to expect 
 
 **Not to be confused with `β`-minimality.**  `f < eφ` is a different and wrong criterion; see above.
 
-Axiom-clean; no `sorry`.
+## TENSION (I12): the wedge condition may be unnecessary, and CRUX-2 may be empty
+
+Nothing is to be built on CRUX-2 until this is resolved, and it is recorded before any further work.
+
+`lem:wallclimb`'s step is: the west fan at `Q_{j-1}` is `β`, `C_j`'s `γ`, and a wedge of exactly
+`π - γ - β`, which the branch relations make exactly `α` (`wedge_is_alpha`).  The tiles meeting that
+apex inside the wedge each have a vertex there, so their angles sum to exactly `α`, and a fill is a
+solution of the integer system `n_α + 2n_γ = 1`, `n_β + n_γ = 0`.  That system has the single
+solution `(1,0,0)` (`wedge_fill_unique`), by nothing more than `α/β` irrational
+(`BaseBetaE1.tile_alpha_irrational`).
+
+So the fill is forced at **every** member.  The parenthetical "(`α` is the minimal angle)" in the
+proof is redundant, and `Frontier`'s replacement — that what the step needs is `α < π/4` — appears
+to be redundant too, since neither is used in deriving the unique solution.
+
+If that is right then the wedge step is safe everywhere, the `27.9%` regime is not blocked at all,
+and CRUX-2 as gated above is empty.  The alternative is that some *other* part of `lem:wallclimb`
+consumes the condition — the proof also excludes the reflected partner "by the wedge's `α`", and
+that step is not the fill — in which case `Frontier`'s claim is right but attached to the wrong
+sentence.
+
+Either way one of the two must be corrected.  **The condition has not been shown to be needed, and
+CRUX-2's gate is suspended pending resolution.**  Resolving it is worth more than attacking it: one
+outcome unblocks `1253` primes.
 -/
 
 namespace Erdos634.PrimeRegimes
@@ -102,5 +125,21 @@ theorem twentythree_close_but_ok :
 /-- **`(11,14)`, omitted from `Frontier`'s enumeration, does fail.** -/
 theorem eleven_fourteen_fails : ¬ WedgeOK 11 14 := by
   unfold WedgeOK; norm_num
+
+
+/-- **The wedge is exactly `α`.**  `π - γ - β = α` for the branch relations `γ = 2α + β` and
+`3α + 2β = π`. -/
+theorem wedge_is_alpha (a b g p : ℝ) (hg : g = 2*a + b) (hp : p = 3*a + 2*b) :
+    p - g - b = a := by rw [hg, hp]; ring
+
+/-- **The exact fill of a wedge of angle `α` is unique**, and the proof uses only the integer
+system: `n_α + 2n_γ = 1` and `n_β + n_γ = 0`, which come from `α/β` irrational
+(`BaseBetaE1.tile_alpha_irrational`).  No minimality of `α`, and no `α < π/4`. -/
+theorem wedge_fill_unique (na nb ng : ℕ) (h1 : na + 2 * ng = 1) (h2 : nb + ng = 0) :
+    na = 1 ∧ nb = 0 ∧ ng = 0 := by omega
+
+/-- The same for the neighbouring wedges the chain meets, so the phenomenon is not special to `α`. -/
+theorem wedge_fill_unique_two_alpha (na nb ng : ℕ) (h1 : na + 2 * ng = 2) (h2 : nb + ng = 0) :
+    na = 2 ∧ nb = 0 ∧ ng = 0 := by omega
 
 end Erdos634.PrimeRegimes
