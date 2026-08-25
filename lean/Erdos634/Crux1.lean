@@ -1,5 +1,6 @@
 import Erdos634.A2BranchRow3
 import Erdos634.PincerLadder
+import Erdos634.ChordDecomp
 
 /-!
 # CRUX-1: the crux ledger entry (Rule I1), and what clears it
@@ -73,6 +74,34 @@ property no available tool supplies is
 
 `side_no_b_m1` is scale-sensitive but boundary-bound; the γ-count is boundary-shaped but
 scale-blind.  Nothing in the corpus is both, and CRUX-1 needs both.
+
+## A first instance of P, and why it is not enough
+
+`P` does have one instance already in the corpus, and it is worth recording where it lands.
+`ChordDecomp.area_never_integral` says the area above an interior junction chord is never an integral
+number of tiles: with `N` coprime to `f` and `1 ≤ m < f²`, `f⁴ ∤ N·m²`.  Take the chord to be a
+horizontal **level line**.  The line at level `j` has height fraction `(f-j)/f`, i.e. `m = f(f-j)`,
+and `1 ≤ f(f-j) < f²` exactly when `1 ≤ j ≤ f-1`.  So
+
+  **every interior level line has non-integral area above it, and is therefore straddled**
+  (`interior_level_straddled`).
+
+Only `j = 0` (the base) and `j = f` (the apex) are clean.  That is a boundary-like constraint at an
+interior line, which is what `P` asked for, and it costs nothing -- it is a corollary of a theorem
+already proved for a different purpose.
+
+It does not close CRUX-1, and the reason sharpens what is still missing.  The statement is about the
+**line**: some tile straddles it somewhere.  The `c`-under-run configuration lives on a **stretch**,
+a sub-segment of the line, and a straddler a long way off is entirely compatible with that stretch
+being covered cleanly on both sides.  Localising the defect would need the fractional part
+`u²/f²` (writing `u = f - j`) to be forced into the stretch, and nothing does that.
+
+So `P` refines to:
+
+  **P′: a boundary-like constraint at a POINT of an interior line**, not merely at the line.
+
+The area defect is global by construction -- it is an area -- so it cannot supply `P′`, and neither
+can anything else in the sweep.  That is the shape of what is missing.
 -/
 
 namespace Erdos634.Crux1
@@ -97,5 +126,15 @@ theorem four_two_is_the_level {R bp cp : ℕ} (hR : 4 ≤ R)
     (hesc : ¬ PincerLadder.Kill (R + 2) bp cp R) :
     (bp = 4 ∧ cp = 2) ∨ (bp = R + 1 ∧ cp = R + 3) :=
   PincerLadder.first_failure_escapes hR hb3 hbf hc2 hcf hne hesc
+
+/-- **Every interior level line is straddled.**  The level-`j` line has height fraction `(f-j)/f`,
+so the area above it is the `m = f(f-j)` case of `ChordDecomp.area_never_integral`, and `m` lies in
+`[1, f²)` exactly for `1 ≤ j ≤ f-1`.  Only the base and the apex are clean. -/
+theorem interior_level_straddled {N f u : ℕ} (hf : 0 < f) (hcop : Nat.Coprime N f)
+    (h1 : 1 ≤ u) (h2 : u < f) : ¬ (f ^ 4 ∣ N * (f * u) ^ 2) := by
+  refine ChordDecomp.area_never_integral hf hcop ?_ ?_
+  · exact Nat.one_le_iff_ne_zero.mpr (by positivity)
+  · have h : f * u < f * f := by nlinarith
+    simpa [pow_two] using h
 
 end Erdos634.Crux1
