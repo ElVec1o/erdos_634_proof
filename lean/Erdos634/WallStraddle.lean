@@ -296,6 +296,72 @@ theorem b_counts_equal_horizontal (f L n1 n2 : ℤ) (hf : 4 ≤ f)
   · subst hk0; simp at hk; omega
   · exfalso; nlinarith
 
+
+/-! ## Ladder re-cut (I4): `S2` was false, `S2''` and `S3'` replace it
+
+`S2` asked the `b`-counts to *locate* the opposite edge, and counts do not locate; the enumeration
+above shows `n_b = 2` and `n_b = 3` are both admissible on a near-horizontal wall at `f = 8`, so
+"exactly one" is false as an arithmetic consequence.  The rung is withdrawn.
+
+The re-cut uses the observation that the residue argument applies to **prefixes**, not only to whole
+walls, and a prefix statement is local where a wall statement is not.
+
+* `S1`   — `b`-counts equal on a short interior wall.  **PROVED** above.
+* `S2''` — at any junction **common to both sides**, the numbers of `b`-edges before it agree
+  exactly.  **PROVED** below.  The prefix of length `x` is a tile-edge decomposition on each side,
+  so `f ∣ x + k_i`, giving `k_1 ≡ k_2 (mod f)` with both in `[0,3]`.
+* `S3'`  — a `b`-edge whose endpoints are junctions on both sides is matched by exactly one `b`-edge
+  opposite it.  **PROVED** below, from `S2''` at the two endpoints.
+* `S4'`  — in the `c`-under-run configuration the blocking `c`-tile's `b`-edge has its endpoints
+  common to both sides.  **Open.**  This is where the `T`-vertex freedom now sits, and it is the
+  whole of the remaining gap: a vertex on one side of a wall need not be a vertex on the other.
+* `S5`   = the dream lemma.
+
+So the pairing that `S2` wanted is now a theorem, conditional on one hypothesis about vertices
+rather than on a count.  That is a better shape: `S4'` is a statement about two points, and unlike
+the earlier two-point statement (`Crux1`'s `γ`-free endpoints, which was unsatisfiable) nothing yet
+shows it false.
+-/
+
+
+private theorem b_count_le_three' (f L n : ℤ) (hf : 2 ≤ f) (hL : L ≤ 3 * f ^ 2 - 1)
+    (hfit : n * (f ^ 2 - 1) ≤ L) (hn : 0 ≤ n) : n ≤ 3 := by
+  by_contra h
+  push_neg at h
+  have h4 : 4 ≤ n := by omega
+  have hpos : (0:ℤ) ≤ f ^ 2 - 1 := by nlinarith
+  have : 4 * (f ^ 2 - 1) ≤ n * (f ^ 2 - 1) := by nlinarith
+  nlinarith [hfit, hL, this]
+
+/-- **Rung S2''.**  At any junction common to both sides of a short wall, the numbers of `b`-edges
+BEFORE it agree exactly.  The prefix of length `x` is itself a tile-edge decomposition on each side,
+so `f ∣ x + k_i`; hence `k_1 ≡ k_2 (mod f)`, and both lie in `[0,3]`. -/
+theorem prefix_b_counts_equal (f x k1 k2 : ℤ) (hf : 4 ≤ f)
+    (hx : x ≤ 3 * f ^ 2 - 1)
+    (h1 : f ∣ x + k1) (h2 : f ∣ x + k2)
+    (hk1 : 0 ≤ k1) (hk2 : 0 ≤ k2)
+    (b1 : k1 * (f ^ 2 - 1) ≤ x) (b2 : k2 * (f ^ 2 - 1) ≤ x) : k1 = k2 := by
+  have t1 := b_count_le_three' f x k1 (by omega) hx b1 hk1
+  have t2 := b_count_le_three' f x k2 (by omega) hx b2 hk2
+  obtain ⟨u, hu⟩ := h1
+  obtain ⟨v, hv⟩ := h2
+  have hd : f ∣ (k1 - k2) := ⟨u - v, by linarith⟩
+  obtain ⟨w, hw⟩ := hd
+  rcases lt_trichotomy w 0 with hn | h0 | hp
+  · exfalso; nlinarith
+  · subst h0; simp at hw; omega
+  · exfalso; nlinarith
+
+/-- **Rung S3'.**  A `b`-edge whose two endpoints are junctions on BOTH sides is matched by exactly
+one `b`-edge opposite it.  Applying S2'' at each endpoint, the prefix counts agree there; the near
+side gains exactly one `b` across the edge, so the far side gains exactly one too. -/
+theorem b_pairs_at_common_junctions
+    (kNear kFar : ℤ → ℤ) (p q : ℤ)
+    (agreeP : kNear p = kFar p) (agreeQ : kNear q = kFar q)
+    (nearGainsOne : kNear q = kNear p + 1) :
+    kFar q = kFar p + 1 := by
+  rw [← agreeP, ← agreeQ]; exact nearGainsOne
+
 end Erdos634.WallStraddle
 
 #print axioms Erdos634.WallStraddle.residue_mod_f
