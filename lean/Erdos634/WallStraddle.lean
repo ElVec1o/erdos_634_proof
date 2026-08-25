@@ -232,7 +232,15 @@ exactly `f` `a`-edges: the cover of `S` from below is `f` `a`-edges, not a singl
 
 * `S1` — on a horizontal wall the two `b`-counts are **equal** (`f ≥ 4`).  **PROVED**, below.
 * `S2` — the blocking `c`-tile's `b`-edge has exactly one `b`-edge opposite it, and that `b` belongs
-  to a tile whose own `c`-edge lies on the same floor.  Open.
+  to a tile whose own `c`-edge lies on the same floor.  **Open, and the obstruction is named.**
+
+  `S1` gives equal `b`-*counts* on the two sides of the wall, not a pairing or an alignment of
+  individual `b`-edges.  `S2` needs the opposite `b` *located*, and counts do not locate.  Nor can
+  the count be forced down to one: at `f = 8` a near-horizontal wall is at most `191` long, and
+  enumerating the decompositions shows `n_b = 2` is admissible at `9` wall lengths and `n_b = 3` at
+  one more (`W = 189 = 3b`).  So "exactly one" is false as an arithmetic consequence and needs
+  geometry the wall invariant does not carry.  The gap between "the same number" and "matched in
+  position" is the whole of `S2`.
 * `S3` — `S2` iterates, so a blocking configuration forces a chain of `b`-edges longer than the
   target admits.  Open.
 * `S4` = the dream lemma.
@@ -245,6 +253,15 @@ equal.
 Note the sharpening over `b_on_both_sides_or_neither` above, which only gave "at least one".  The
 gap is entirely the regime: at `f = 2` the base is `11` and `f³ - f = 6`, so asymmetric walls fit
 and do occur; from `f = 4` the base is `47` against a threshold of `60`, and they cannot.
+
+**Too-strong test (I13).**  `S1` invites a two-line "proof" of the whole branch: the base is a
+horizontal wall, its exterior carries no `b`-edge, so by `S1` its interior carries none either --
+contradicting `thm:e1reduce`'s single base `b`, and killing every tiling at once.  That is wrong, and
+the reason is worth stating because the trap is inviting.  `residue_mod_f` takes the hypothesis
+`L = n_a(ef) + n_b(f²-e²) + n_c f²`: the side must *be* a decomposition into tile edges.  The
+exterior of the base is not tiled, so there is no second equation and `S1` never applies to a
+boundary wall.  `S1` is a statement about **interior** horizontal walls only.  The trap is blocked by
+an explicit hypothesis rather than by good luck, which is the point of the interface discipline.
 
 **Battery (I7) and negative control (I13).**  `code/analysis/a36_battery.py` runs the prediction
 against every maximal interface of all eight certificates: **50 interface equations, 23 asymmetric,
