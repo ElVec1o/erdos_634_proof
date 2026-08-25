@@ -51,8 +51,22 @@ theorem step_pos (f : ℕ) (hf : 3 ≤ f) : 1 ≤ f := by omega
 /-- **`prop:a2branch` at row 3, with the descent's shape fully discharged.**
 
 The fills are congruent, so the feet form a progression of step `a = f`; that makes them
-distinct, and the base word's `f` letters `a` cannot supply `f + 1`.  The only hypothesis left
-is `reaches_base`: that the feet are slots of the base word at all.
+distinct, and the base word's `f` letters `a` cannot supply `f + 1`.
+
+**Correction (2026-08-25).**  This paragraph used to end "the only hypothesis left is
+`reaches_base`: that the feet are slots of the base word at all".  That understates it.
+`reaches_base` is `∀ i, x₀ + i*f < f + 2 ∧ isA (x₀ + i*f)`: it assumes the feet lie in the word
+*and that every one of them is an `a`-slot*, which is most of what the `A₂` branch is trying to
+establish.  It also presupposes the progression form.
+
+The `a`-slot half is now removable.  `A2BranchRow3.row_three_dies_of_span` reaches the same `False`
+from the landing alone: the run's `f + 1` junctions carve `k ≥ f` whole letters of total length
+`f²`, and `span_all_a` forces those letters to be `a` from the arithmetic of the three edge lengths,
+with no assumption about what the feet land on.  Prefer it.
+
+Note also that the congruence argument above is carried in prose here.  Its only formal residue in
+this file is `feet_of_uniform_fill`, which is `(x₀ + j*a) + Δ = (x₀ + Δ) + j*a` — associativity.  It
+records that a translated fill has translated feet; it does not show the fills are translates.
 
 At row 1 that is immediate — the mates' `b`-edges run to the base.  At row 3 it is exactly the
 open step, because the same argument lands the feet one strip higher. -/
