@@ -92,9 +92,33 @@ consumes the condition — the proof also excludes the reflected partner "by the
 that step is not the fill — in which case `Frontier`'s claim is right but attached to the wrong
 sentence.
 
-Either way one of the two must be corrected.  **The condition has not been shown to be needed, and
-CRUX-2's gate is suspended pending resolution.**  Resolving it is worth more than attacking it: one
-outcome unblocks `1253` primes.
+## TENSION RESOLVED (2026-08-25): the condition is not load-bearing, and CRUX-2 is EMPTY
+
+The fill argument needs one premise, that the vertex-figure representation `x·α + y·β` is unique,
+which follows from `α/π` irrational.  The corpus proves that only at `e = 1`
+(`BaseBetaE1.tile_alpha_irrational`), so the question was whether it survives at every member.
+
+It does, for an elementary reason.  `cos α = (2f² - e²)/(2f²)`, so by Niven's theorem a
+rational-multiple-of-`π` angle would need `e² ∈ {0, f², 2f², 3f², 4f²}`.  With `0 < e < f` all five
+are impossible, and none of them needs irrationality of `√2` or `√3`: `e² < f²` kills the middle
+three outright (`cos_alpha_not_niven`).  So `α/π` is irrational at **every** member, hence so is
+`α/β`, hence the fill is forced everywhere (`wedge_fill_forced_everywhere`).
+
+Two further checks.  The wedge condition occurs nowhere in the corpus except `Frontier` itself: no
+theorem and no paper claim consumes it.  And the fill exhausts the ways a tile can meet the apex — a
+tile there either has a vertex at the apex, or the apex lies interior to one of its edges, and the
+latter contributes `π` on one side, which cannot fit inside a wedge of `α < π` bounded by two tile
+edges.
+
+**Conclusion.**  Neither `α`-minimality nor `α < π/4` is needed for the wedge-filler step.
+`Frontier`'s "what is needed is `2β > α`" is not needed either.  CRUX-2 as gated above is **empty**,
+and the `27.9%` figure does not describe a blocked regime — it describes a condition that no step
+was resting on.
+
+**Scope, stated narrowly (I18).**  This resolves the *fill* step, which is the step `Frontier`
+names.  It does not certify `lem:wallclimb` as a whole at `e ≥ 2` — that lemma is stated in the
+`e = 1` chain's notation and has other steps, including the overshoot argument and the induction.
+What is established is that the wedge condition is not what stands in the way.
 -/
 
 namespace Erdos634.PrimeRegimes
@@ -141,5 +165,23 @@ theorem wedge_fill_unique (na nb ng : ℕ) (h1 : na + 2 * ng = 1) (h2 : nb + ng 
 /-- The same for the neighbouring wedges the chain meets, so the phenomenon is not special to `α`. -/
 theorem wedge_fill_unique_two_alpha (na nb ng : ℕ) (h1 : na + 2 * ng = 2) (h2 : nb + ng = 0) :
     na = 2 ∧ nb = 0 ∧ ng = 0 := by omega
+
+
+/-- **`cos α` is never a Niven value, at any admissible member.**  `cos α = (2f² - e²)/(2f²)`, so a
+rational-multiple-of-`π` angle would need `2f² - e²` to be one of `2f², f², 0, -f², -2f²`, i.e.
+`e² ∈ {0, f², 2f², 3f², 4f²}`.  With `0 < e < f` every one is impossible, and — worth noting — none
+of the five needs irrationality of `√2` or `√3`: `e² < f²` kills the middle three outright. -/
+theorem cos_alpha_not_niven (e f : ℤ) (he : 0 < e) (hef : e < f) :
+    e ^ 2 ≠ 0 ∧ e ^ 2 ≠ f ^ 2 ∧ e ^ 2 ≠ 2 * f ^ 2 ∧ e ^ 2 ≠ 3 * f ^ 2 ∧ e ^ 2 ≠ 4 * f ^ 2 := by
+  have hf : 0 < f := lt_trans he hef
+  have hf2 : (0:ℤ) < f ^ 2 := by positivity
+  have hlt : e ^ 2 < f ^ 2 := by nlinarith
+  refine ⟨by positivity, ?_, ?_, ?_, ?_⟩ <;> intro h <;> linarith
+
+/-- So `α/π` is irrational at **every** member, not only at `e = 1`, and hence so is `α/β` (since
+`β = (π - 3α)/2`, a rational `α/β` forces a rational `α/π`).  The vertex-figure representation
+`x·α + y·β` is therefore unique at every member, which is what the wedge fill needs. -/
+theorem wedge_fill_forced_everywhere (na nb ng : ℕ)
+    (h1 : na + 2 * ng = 1) (h2 : nb + ng = 0) : na = 1 ∧ nb = 0 ∧ ng = 0 := by omega
 
 end Erdos634.PrimeRegimes

@@ -283,8 +283,16 @@ theorem cos_alpha_closed (e f : ℝ) :
       = (2 * f ^ 2 - e ^ 2) * (2 * (f ^ 2 - e ^ 2) * f ^ 2) := by ring
 
 /-- **The wedge-filler criterion.** `α < π/4` iff `2f² − e² > √2 f²`, which on squaring is the
-integer condition below. This is what `lem:wallclimb`'s step actually needs; minimality of `α` is
-neither necessary nor what is used. -/
+integer condition below.
+
+**Superseded 2026-08-25.**  The claim that this is what `lem:wallclimb`'s step needs is withdrawn.
+The wedge is of angle exactly `α`, every tile meeting its apex has a vertex there, and their angles
+solve `n_α + 2n_γ = 1`, `n_β + n_γ = 0` — one solution, from `α/β` irrational alone.  That
+irrationality holds at every member, since `cos α = (2f²-e²)/(2f²)` is a Niven value only if
+`e² ∈ {0, f², 2f², 3f², 4f²}`, all impossible for `0 < e < f`
+(`PrimeRegimes.cos_alpha_not_niven`).  So neither `α`-minimality nor `α < π/4` is needed, and the
+integer condition below classifies members without blocking any step.  The criterion is kept because
+it is correct arithmetic and the enumeration is useful; it is no longer a barrier. -/
 theorem wedge_criterion (e f : ℝ) :
     (2 * f ^ 2 - e ^ 2) ^ 2 - 2 * f ^ 4 = e ^ 4 - 4 * e ^ 2 * f ^ 2 + 2 * f ^ 4 := by ring
 
