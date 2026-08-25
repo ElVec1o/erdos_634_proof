@@ -43,6 +43,10 @@ open Finset
 same figure, its far vertex sits at a constant offset `Δ`, so the `j`-th foot is
 `(x₀ + Δ) + j·a`: an arithmetic progression with the junctions' own common difference.  No
 metric identity enters — this is congruence of the fills. -/
+-- CONTENT-FREE (code/trivia_audit.py, 2026-08-25): this statement asserts nothing --
+-- associativity: a translated fill has translated feet, which is not that the fills ARE translates.
+-- Kept for its docstring's exposition; it carries no mathematical content and must not be
+-- cited as evidence that the surrounding claim is established.
 theorem feet_of_uniform_fill (x₀ a Δ j : ℕ) : (x₀ + j * a) + Δ = (x₀ + Δ) + j * a := by ring
 
 /-- **The step is `a`, hence at least `1`.**  At `e = 1` the mate spacing is `a = f ≥ 3`. -/

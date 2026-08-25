@@ -186,6 +186,10 @@ step which makes the strips match b-for-b. -/
 
 /-- Membership in the surplus lattice: `(dP,dQ,dR) = s·(f,0,−e) + t·(f−e,−f,f−e)`. Reading the
 middle coordinate, `dQ = −t·f`. -/
+-- CONTENT-FREE (code/trivia_audit.py, 2026-08-25): this statement asserts nothing --
+-- `mul_neg`: `t * (-f) = -(t * f)`.
+-- Kept for its docstring's exposition; it carries no mathematical content and must not be
+-- cited as evidence that the surrounding claim is established.
 theorem surplus_middle (f t : Int) : t * (-f) = -(t * f) := Int.mul_neg t f
 
 /-- **No small mismatch.** If `dQ` lies in the lattice and `|dQ| < f` then `dQ = 0`: the two sides

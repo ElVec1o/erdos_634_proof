@@ -65,6 +65,10 @@ namespace Erdos634.WallNeighbour
 /-- **Placement A is a genuine tile.**  With apex at chart `(ec + a, 0)` relative to `(ec, 0)`,
 the squared distance in the chart metric `s² + t² + 2 s t cos β` is `a²` to the lower end.
 Trivially, since the displacement is `(a, 0)`. -/
+-- CONTENT-FREE (code/trivia_audit.py, 2026-08-25): this statement asserts nothing --
+-- reflexivity: `(e*f)^2 = (e*f)^2`.
+-- Kept for its docstring's exposition; it carries no mathematical content and must not be
+-- cited as evidence that the surrounding claim is established.
 theorem placement_A_lower (e f : ℤ) : (e * f) ^ 2 = (e * f) ^ 2 := rfl
 
 /-- Placement A's distance to the upper end `(ec, c)` is `b`: displacement `(a, -c)` gives

@@ -249,6 +249,10 @@ theorem add_count (m1 m2 N : ℤ) :
 
 /-- The connecting parallelogram is a whole `a × c` grid when `f ∣ m₁`: its base `m₁·(e·N₁)` is
 `s·N₁` whole `a`-edges and its slant `m₂·f³` is `m₂·f` whole `c`-edges. -/
+-- CONTENT-FREE (code/trivia_audit.py, 2026-08-25): this statement asserts nothing --
+-- rearrangement only (commutativity/associativity).
+-- Kept for its docstring's exposition; it carries no mathematical content and must not be
+-- cited as evidence that the surrounding claim is established.
 theorem pgram_cols (s N1 e f m2 : ℤ) :
     (f * s) * (e * N1) = (s * N1) * (e * f) ∧ m2 * f ^ 3 = (m2 * f) * f ^ 2 :=
   ⟨by ring, by ring⟩

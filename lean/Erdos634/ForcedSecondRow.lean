@@ -87,6 +87,10 @@ theorem matching_forced (n : ℕ) (assign : ℕ → ℕ)
     · exact hstep k hk (by omega) (ih hk (by omega))
 
 /-- The `e = 1` walk's edge and junction counts: `f + 2` edges, `f + 1` junctions, `f + 1` `γ`s. -/
+-- CONTENT-FREE (code/trivia_audit.py, 2026-08-25): this statement asserts nothing --
+-- trivial: `f + 1 = f + 1`.
+-- Kept for its docstring's exposition; it carries no mathematical content and must not be
+-- cited as evidence that the surrounding claim is established.
 theorem counts (f : ℕ) : (f + 1 + 1) - 1 = f + 1 ∧ f + 1 = f + 1 := ⟨by omega, rfl⟩
 
 /-- The walk spans the base: `f·a + b + c = 3f² - 1` with `(a,b,c) = (f, f²-1, f²)`. -/
@@ -94,6 +98,10 @@ theorem walk_spans (f : ℤ) : f * f + 1 * (f ^ 2 - 1) + 1 * f ^ 2 = 3 * f ^ 2 -
 
 /-- The apex offsets: an `a`-tile with `β` at its left foot and `γ` at its right has its apex at
 distance `c` from the left and `b` from the right.  Recorded as the tile's side identity. -/
+-- CONTENT-FREE (code/trivia_audit.py, 2026-08-25): this statement asserts nothing --
+-- reflexivity: `f^2 = f^2` and `f^2 - 1 = f^2 - 1`.
+-- Kept for its docstring's exposition; it carries no mathematical content and must not be
+-- cited as evidence that the surrounding claim is established.
 theorem apex_offsets (f : ℤ) : (f ^ 2 : ℤ) = f ^ 2 ∧ (f ^ 2 - 1 : ℤ) = f ^ 2 - 1 :=
   ⟨rfl, rfl⟩
 

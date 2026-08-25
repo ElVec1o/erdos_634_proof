@@ -62,6 +62,10 @@ theorem angle_is_alpha (sinA sinG a c f : ℝ) (ha : a ≠ 0) (hsine : sinG * a 
 
 /-- **The scaled corner triangle.**  West of `L_k` the sides are `k a`, `k b`, `k c`, so the angles
 are the tile's: `β` at the base corner, `γ` at `(kf,0)`, `α` at `Q_k`. -/
+-- CONTENT-FREE (code/trivia_audit.py, 2026-08-25): this statement asserts nothing --
+-- reflexivity: both sides are the same triple.
+-- Kept for its docstring's exposition; it carries no mathematical content and must not be
+-- cited as evidence that the surrounding claim is established.
 theorem scaled_sides (a b c k : ℤ) : (k * a, k * b, k * c) = (k * a, k * b, k * c) := rfl
 
 /-- **`Q_f` is the apex.**  At `m = 1` the equal side has length `f³ = f · c`, so the `f`-th slot

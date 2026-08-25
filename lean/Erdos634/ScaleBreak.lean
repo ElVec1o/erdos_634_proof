@@ -61,6 +61,10 @@ theorem no_b_m1_3_4 (P R : Nat) (hR : 1 ≤ R) : P * 3 + R * 4 ≠ 3 * 3 := by o
 
 /-- m = 2, q = 1: the residual is `f² + e²`, and `(P,R) = (e,f)` solves it with `R = f ≥ 1`,
 so the γ-trap does not close the slot. Same members. -/
+-- CONTENT-FREE (code/trivia_audit.py, 2026-08-25): this statement asserts nothing --
+-- commutativity of `+` on two numerals.
+-- Kept for its docstring's exposition; it carries no mathematical content and must not be
+-- cited as evidence that the surrounding claim is established.
 theorem b_ok_m2_1_2 : 1 * 1 + 2 * 2 = 2 * 2 + 1 * 1 := by decide
 theorem b_ok_m2_1_3 : 1 * 1 + 3 * 3 = 3 * 3 + 1 * 1 := by decide
 theorem b_ok_m2_1_4 : 1 * 1 + 4 * 4 = 4 * 4 + 1 * 1 := by decide

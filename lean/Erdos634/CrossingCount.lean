@@ -83,6 +83,10 @@ theorem area_identity (k n : ℕ) (S : ℝ) (h : (k : ℝ) ^ 2 = n + S) : S = (k
 
 /-- **`W_k` is a scaled tile.**  Its three sides are `k` times the tile's, so its area is `k²`
 times the tile's — recorded as the side identity at `e = 1`, where `(a,b,c) = (f, f²-1, f²)`. -/
+-- CONTENT-FREE (code/trivia_audit.py, 2026-08-25): this statement asserts nothing --
+-- reflexivity: both sides are the same triple.
+-- Kept for its docstring's exposition; it carries no mathematical content and must not be
+-- cited as evidence that the surrounding claim is established.
 theorem west_region_similar (f k : ℤ) :
     (k * f, k * (f ^ 2 - 1), k * f ^ 2) = (k * f, k * (f ^ 2 - 1), k * f ^ 2) := rfl
 

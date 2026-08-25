@@ -100,6 +100,10 @@ theorem shift_num (e f : ℤ) :
     (e * f) ^ 2 + (f ^ 2) ^ 2 - (f ^ 2 - e ^ 2) ^ 2 = e ^ 2 * (3 * f ^ 2 - e ^ 2) := by ring
 
 /-- `S / a = N₀ / f²`, cleared of denominators: `f · (e N₀) = N₀ · a` with `a = ef`. -/
+-- CONTENT-FREE (code/trivia_audit.py, 2026-08-25): this statement asserts nothing --
+-- rearrangement only (commutativity/associativity).
+-- Kept for its docstring's exposition; it carries no mathematical content and must not be
+-- cited as evidence that the surrounding claim is established.
 theorem shift_over_a (e f : ℤ) :
     f * (e * (3 * f ^ 2 - e ^ 2)) = (3 * f ^ 2 - e ^ 2) * (e * f) := by ring
 
