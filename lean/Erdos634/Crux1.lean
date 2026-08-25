@@ -100,8 +100,37 @@ So `P` refines to:
 
   **P′: a boundary-like constraint at a POINT of an interior line**, not merely at the line.
 
-The area defect is global by construction -- it is an area -- so it cannot supply `P′`, and neither
-can anything else in the sweep.  That is the shape of what is missing.
+The area defect is global by construction -- it is an area -- so it cannot supply `P′`.
+
+## `P′` does not exist: the endpoint is unconstrained
+
+And nothing else can supply it either, because there is nothing to supply.  Work the vertex systems
+at the stretch's endpoint `P` directly, in the `AngleArithmetic` encoding
+(`α ↦ (1,0)`, `β ↦ (0,1)`, `γ = 2α+β ↦ (2,1)`, `π = 3α+2β ↦ (3,2)`), where a figure of type `(X,Y)`
+solves `n_α + 2n_γ = X`, `n_β + n_γ = Y`.
+
+* **Above** `P` the tiles close at `π`, type `(3,2)`: solutions `{α,α,α,β,β}` and `{γ,α,β}`.
+* **Below** `P` the blocking `c`-tile presents `α` or `β`, `c`'s flanking angles.
+  * showing `α`: the rest is `π - α`, type `(2,2)`: solutions `{α,α,β,β}` and `{γ,β}`.
+  * showing `β`: the rest is `π - β`, type `(3,1)`: solutions `{α,α,α,β}` and `{γ,α}`.
+
+Every case has **two** solutions (`endpoint_systems_solvable`).  The half-figures above and below a
+point of a line are independent -- each closes at `π` on its own side -- so no combination of them
+contradicts, whichever angle the `c`-tile presents.  The endpoint of an interior stretch is not a
+constrained point, and no local statement there can be true.
+
+This is the fourth independent confirmation of the same theme: `prop:nogoauto` found the side's local
+combinatorics almost unconstrained (`10 560` configurations surviving one forbidden adjacency),
+`prop:nogocensus` found corner counting dependent, `D-7` found the `γ`-count tight, and now the
+endpoint figures are solvable in every case.
+
+## What that leaves
+
+`P` exists but is global (an area).  `P′` does not exist at all.  So a proof of CRUX-1 can be neither
+local nor scale-blind, and the only remaining shape is the one the companion's chain already attempts:
+**trace the forced column outward until it meets the boundary**, where the constraints do bite -- a
+base corner carries one `β`-tile, the apex three `α`s.  Every other route in the sweep is now closed
+by name.
 -/
 
 namespace Erdos634.Crux1
@@ -136,5 +165,23 @@ theorem interior_level_straddled {N f u : ℕ} (hf : 0 < f) (hcop : Nat.Coprime 
   · exact Nat.one_le_iff_ne_zero.mpr (by positivity)
   · have h : f * u < f * f := by nlinarith
     simpa [pow_two] using h
+
+/-- **The endpoint of an interior stretch is unconstrained.**  Above closes at `π` (type `(3,2)`);
+below, the `c`-tile shows `α` leaving `(2,2)`, or `β` leaving `(3,1)`.  All three systems are
+solvable, so no local contradiction is available at the endpoint. -/
+theorem endpoint_systems_solvable :
+    (∃ na nb ng : ℕ, na + 2 * ng = 3 ∧ nb + ng = 2) ∧
+    (∃ na nb ng : ℕ, na + 2 * ng = 2 ∧ nb + ng = 2) ∧
+    (∃ na nb ng : ℕ, na + 2 * ng = 3 ∧ nb + ng = 1) :=
+  ⟨⟨3, 2, 0, by omega, by omega⟩, ⟨2, 2, 0, by omega, by omega⟩, ⟨3, 1, 0, by omega, by omega⟩⟩
+
+/-- Each of the three also has a second, `γ`-bearing solution, so the freedom is not an artefact of
+picking the `γ`-free witness. -/
+theorem endpoint_systems_solvable_gamma :
+    (∃ na nb ng : ℕ, na + 2 * ng = 3 ∧ nb + ng = 2 ∧ ng = 1) ∧
+    (∃ na nb ng : ℕ, na + 2 * ng = 2 ∧ nb + ng = 2 ∧ ng = 1) ∧
+    (∃ na nb ng : ℕ, na + 2 * ng = 3 ∧ nb + ng = 1 ∧ ng = 1) :=
+  ⟨⟨1, 1, 1, by omega, by omega, rfl⟩, ⟨0, 1, 1, by omega, by omega, rfl⟩,
+   ⟨1, 0, 1, by omega, by omega, rfl⟩⟩
 
 end Erdos634.Crux1
