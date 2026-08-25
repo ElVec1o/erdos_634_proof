@@ -126,9 +126,9 @@ endpoint figures are solvable in every case.
 
 ## The descent is a bounded induction with a proved base case
 
-One corollary, and it is only a corollary -- `HeightLadder.width_at_rung` already gives the target's
-width at rung `j` as `Y(f-j)/f`, and `h_c = H/f²` already says the blocking `c`-tile stands `1/f` of
-a level.  A column has footprint `f²`, so it fits at rung `j` only when `f² ≤ Y(f-j)/f`, i.e.
+One corollary.  `HeightLadder.h_c = H/f²` already says the blocking `c`-tile stands `1/f` of a level;
+the width at rung `j` is `HeightLadder.width_at_rung_real`, which had to be proved -- the previous
+`width_at_rung` was commutativity and asserted nothing (see that file's correction note).  A column has footprint `f²`, so it fits at rung `j` only when `f² ≤ Y(f-j)/f`, i.e.
 
   `j ≤ f(2f²-1)/(3f²-1)`,  which is about `2f/3`  (`column_fits_bound`).
 
@@ -202,7 +202,7 @@ theorem endpoint_systems_solvable_gamma :
    ⟨1, 0, 1, by omega, by omega, rfl⟩⟩
 
 /-- **A column fits only in the lower part of the ladder.**  Footprint `f³ = f·f²` against the width
-`Y(f-j)/f` at rung `j` (`HeightLadder.width_at_rung`) gives `f³ ≤ Y·u` with `u = f - j` and
+`Y(f-j)/f` at rung `j` (`HeightLadder.width_at_rung_real`) gives `f³ ≤ Y·u` with `u = f - j` and
 `Y = 3f² - 1`; then `f ≤ 3u`, i.e. `j ≤ f - f/3`.  Stated additively so no truncated subtraction
 appears. -/
 theorem column_fits_bound (f u Y : ℕ) (hf : 3 ≤ f) (hY : Y + 1 = 3 * f ^ 2)
