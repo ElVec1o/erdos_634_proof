@@ -46,6 +46,26 @@ CRUX-1 at **PROVED** suffices, and the chain from it is already formalised:
 So one advance of the ladder per proof of CRUX-1, and three advances (`R = 4` to `R = 7`) reach
 `f = 8`.  `crux1_clears_a_level` below is that composition, stated on the hypotheses it consumes.
 
+## Re-gate (I1, 2026-08-25): what the crux needs, stated
+
+Two invention rounds have now died on CRUX-1, and both died the same way.  That common cause is the
+sharpest thing known about the crux, so it belongs in the ledger entry rather than only in the
+autopsies:
+
+  **Every tool the sweep produces COUNTS; the crux needs one that LOCATES.**
+
+The `γ`-count (`D-7`) gives the number of `γ`s at the run's junctions but not which junction carries
+which, and the monotone orientation word then makes the endpoint condition unsatisfiable.  The
+residue machinery (`WallStraddle`) gives the number of `b`-edges on each side of a wall, exactly and
+locally, but not which `b` faces which — and the locating hypothesis it needs, that a `b`-edge's
+endpoints are junctions on both sides, fails for `58` of the `60` `b`-edges in the certified
+tilings.  Both rounds reached a true theorem whose hypothesis is essentially never satisfied.
+
+So a future attack is admissible only if it can say **where** something is, not how many there are.
+Anything that produces a count, a residue, a parity, an area or an angle sum is already known to
+stop at the same place.  Two independent failures of the same shape is the evidence for this, and it
+is why the ladder was not re-cut a third time (`I11` churn diagnostic).
+
 ## Autopsies (Rule I2 sweep; do not re-enter without a stated new reason)
 
 * **D-1** linear/character direction invariants -- closed by `LambdaFactor` (commutative ring).
@@ -58,6 +78,9 @@ So one advance of the ladder per proof of CRUX-1, and three advances (`R = 4` to
 * **D-5** the reach ladder as a route -- each `f` costs its own reach step (`pincer_sharp`).
 * **D-6** nonabelian boundary-word invariants (Conway--Lagarias tiling groups) -- the group collapses
   to its rank-two abelianisation; checked to nilpotency class 4 and over finite nonabelian quotients.
+* **D-8** the `b`-residue ladder (`WallStraddle` rounds).  `S1` and `S2''` proved and salvaged;
+  `S2` false (counts do not locate); `S4'` false, `58/60` counterexamples in the certificates.
+  Exit DEAD, autopsy in `WallStraddle`.
 * **D-7** the γ-count on the stretch -- `c_under_run_dies_if_ends_gamma_free` is true but has an
   **unsatisfiable** hypothesis (`ends_gamma_free_impossible`), the monotone orientation word always
   leaving a `γ` at an endpoint.  The γ-trap behind `side_no_b_m1` is a boundary phenomenon and does
