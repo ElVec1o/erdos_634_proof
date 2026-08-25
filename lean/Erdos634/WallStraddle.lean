@@ -415,8 +415,19 @@ theorem bb_eq_aaa_junctions :
   have : (3 : ℕ) ∈ ({0, 2, 4, 6} : Finset ℕ) := h ▸ (by decide : (3:ℕ) ∈ ({0,3,6} : Finset ℕ))
   revert this; decide
 
-/-- Both sides do have the same total length, so the configuration is a genuine wall: `2b = 3a`. -/
-theorem bb_eq_aaa_length : 2 * 3 = 3 * 2 := by norm_num
+/-- **The `bb = aaa` interface exists only at `f = 2e`.**  It requires `2b = 3a`, i.e.
+`2(f² - e²) = 3ef`, which factors as `(2f + e)(f - 2e) = 0`; with `e, f > 0` the first factor is
+positive.  Among coprime pairs that forces `(e,f) = (1,2)` -- which is exactly the family every
+certificate we hold comes from, and why the counterexample to `S4'` shows up there. -/
+theorem bb_eq_aaa_iff (e f : ℤ) (he : 0 < e) (hf : 0 < f) :
+    2 * (f ^ 2 - e ^ 2) = 3 * (e * f) ↔ f = 2 * e := by
+  constructor
+  · intro h
+    have hfac : (2 * f + e) * (f - 2 * e) = 0 := by linarith [h]
+    rcases mul_eq_zero.mp hfac with h1 | h2
+    · omega
+    · omega
+  · intro h; subst h; ring
 
 end Erdos634.WallStraddle
 
