@@ -124,6 +124,23 @@ combinatorics almost unconstrained (`10 560` configurations surviving one forbid
 `prop:nogocensus` found corner counting dependent, `D-7` found the `γ`-count tight, and now the
 endpoint figures are solvable in every case.
 
+## The descent is a bounded induction with a proved base case
+
+One corollary, and it is only a corollary -- `HeightLadder.width_at_rung` already gives the target's
+width at rung `j` as `Y(f-j)/f`, and `h_c = H/f²` already says the blocking `c`-tile stands `1/f` of
+a level.  A column has footprint `f²`, so it fits at rung `j` only when `f² ≤ Y(f-j)/f`, i.e.
+
+  `j ≤ f(2f²-1)/(3f²-1)`,  which is about `2f/3`  (`column_fits_bound`).
+
+At `f = 8` that is `j ≤ 5`, against `9` rungs.  So the descent runs at most `⌊2f/3⌋` steps, and its
+last step lands on the base, where the `c`-alternative is already dead -- the interior feet would be
+vertices interior to a boundary edge.  CRUX-1 is therefore a **finite induction with a proved base
+case**, of length about `2f/3`.
+
+That does not close it: every step is the same open statement, so bounding the count buys nothing on
+its own.  It is recorded because it says what shape a proof by induction would have, and because the
+bound is small.
+
 ## What that leaves
 
 `P` exists but is global (an area).  `P′` does not exist at all.  So a proof of CRUX-1 can be neither
@@ -183,5 +200,16 @@ theorem endpoint_systems_solvable_gamma :
     (∃ na nb ng : ℕ, na + 2 * ng = 3 ∧ nb + ng = 1 ∧ ng = 1) :=
   ⟨⟨1, 1, 1, by omega, by omega, rfl⟩, ⟨0, 1, 1, by omega, by omega, rfl⟩,
    ⟨1, 0, 1, by omega, by omega, rfl⟩⟩
+
+/-- **A column fits only in the lower part of the ladder.**  Footprint `f³ = f·f²` against the width
+`Y(f-j)/f` at rung `j` (`HeightLadder.width_at_rung`) gives `f³ ≤ Y·u` with `u = f - j` and
+`Y = 3f² - 1`; then `f ≤ 3u`, i.e. `j ≤ f - f/3`.  Stated additively so no truncated subtraction
+appears. -/
+theorem column_fits_bound (f u Y : ℕ) (hf : 3 ≤ f) (hY : Y + 1 = 3 * f ^ 2)
+    (hfit : f ^ 3 ≤ Y * u) : f ≤ 3 * u := by
+  by_contra h
+  push_neg at h
+  have h1 : 3 * u + 1 ≤ f := by omega
+  nlinarith [hfit, hY, h1, hf]
 
 end Erdos634.Crux1
