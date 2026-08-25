@@ -23,8 +23,18 @@ PAPERS = ['paper/erdos-634.tex', 'paper/erdos-634-companion.tex', 'paper/erdos-6
 # statements known to be open, conditional, or resting on a deferral
 WEAK_ROOTS = {
     'hyp:walls', 'conj:advance', 'lem:interior', 'thm:e1family', 'cor:walls16',
-    'prop:a2branch', 'thm:fullprime', 'thm:basebeta-full', 'thm:strippbound',
-    'thm:depthwindow', 'thm:inflrigid', 'cor:sidenoa-proved', 'rem:sidenoa',
+    'thm:fullprime', 'thm:basebeta-full', 'thm:strippbound',
+    # NOT thm:depthwindow either.  It establishes reach THREE; what is open is reach FOUR, which is
+    # thm:strippbound / prop:a2branch at row 3, a root above.  All four of its citations
+    # (lem:wallclimb, lem:jbline, thm:forkkill, thm:l2slot) are PROVED or VERIFIED and its argument
+    # is inline with no deferral.
+    # NOT prop:a2branch.  Its stated form (the row-2 fork) is complete -- its proof ends "their
+    # feet force base junctions at (kf,0)", the wedge being bounded by the brick's b-edge running
+    # DOWN TO THE BASE.  Only its row-3 EXTENSION is open, and that is thm:strippbound, which is a
+    # root above.  Seeding the proposition itself propagated the row-3 gap to thm:forkkill and
+    # thm:depthwindow, which need only the stated form (see the citations at companion lines 1796
+    # and 1907, the latter saying "whose south feet lie on the base").
+    'thm:inflrigid', 'cor:sidenoa-proved', 'rem:sidenoa',
 }
 
 def blocks(path):
