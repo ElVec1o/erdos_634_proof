@@ -362,6 +362,62 @@ theorem b_pairs_at_common_junctions
     kFar q = kFar p + 1 := by
   rw [← agreeP, ← agreeQ]; exact nearGainsOne
 
+
+/-! ## `S4'` is FALSE, and the round exits DEAD (I20, I21)
+
+`S4'` asked the blocking `c`-tile's `b`-edge to have its endpoints common to both sides of its wall.
+Falsified before any proof effort (Rule 3), against the certified tilings: of the **60** `b`-edges
+appearing in the interface census of the eight certificates, **58** have an endpoint that is not a
+junction on the opposite side.  `T`-vertices at `b`-endpoints are the norm, not the exception.  The
+smallest witness is the interface `bb = aaa`, junction sets `{0,3,6}` against `{0,2,4,6}`
+(`bb_eq_aaa_junctions`).
+
+So `S3'`, though true, has a hypothesis that essentially never holds -- the same defect as
+`Crux1.c_under_run_dies_if_ends_gamma_free`.  Two two-point hypotheses in a row have turned out
+unsatisfiable.
+
+**Autopsy (I20).**  Cause of death: the residue machinery *counts* `b`-edges and cannot *locate*
+them.  Every rung that would locate one needs its endpoints to be junctions on both sides, and that
+fails 58 times out of 60 in the only tilings we can inspect.  Locating is exactly what the crux
+needs, so the spec was wrong rather than the wording, and by `I11`'s churn diagnostic the ladder is
+not re-cut a third time.
+
+**Exit state: DEAD.**  No cash value was banked on the crux (`I15`): the battery is a regression
+pass, and `I21` is explicit that passing one's own regression table is not an event.
+
+**Salvage (I20).**  These outlive the framework and are already banked, each VERIFIED:
+* `b_counts_equal_horizontal` (`S1`) -- on an interior wall of length `≤ 3f² - 1` with `f ≥ 4` the
+  two `b`-counts are equal.  Genuinely new, sharp, and independent of the dead ladder.
+* `prefix_b_counts_equal` (`S2''`) -- the same at every common junction.
+* `b_count_le_three` -- at most three `b`-edges on such a wall.
+* `b_on_both_sides_or_neither` and the `f³ - f` length bound.
+* The battery `code/analysis/a36_battery.py`: 50 interface equations, 0 violations, 16 attaining the
+  bound exactly.  It is now a regression suite (Rule 9).
+* The too-strong control: `S1` does not apply to a boundary wall, because `residue_mod_f` needs the
+  side to *be* a tile-edge decomposition and the target's exterior is not tiled.
+* The `T`-vertex census itself, `58/60`, which is a structural fact about these tilings and the
+  reason every locating argument fails.
+
+Reviving any of this requires a stated new reason (Rule 2).
+-/
+
+
+/-- **The `T`-vertex counterexample, as arithmetic.**  In the certified `(1,2)` tilings the interface
+`bb = aaa` occurs: one side of a wall of length `6` is two `b`-edges (`b = 3`), the other is three
+`a`-edges (`a = 2`).  The junction sets are `{0,3,6}` and `{0,2,4,6}`.  The interior `b`-endpoint `3`
+is not a junction on the far side, so `S3'`'s hypothesis fails.  This is not exotic: it happens for
+`58` of the `60` `b`-edges across the eight certificates. -/
+theorem bb_eq_aaa_junctions :
+    ({0, 3, 6} : Finset ℕ) ≠ {0, 2, 4, 6} ∧ (3 : ℕ) ∈ ({0, 3, 6} : Finset ℕ) ∧
+      (3 : ℕ) ∉ ({0, 2, 4, 6} : Finset ℕ) := by
+  refine ⟨?_, by decide, by decide⟩
+  intro h
+  have : (3 : ℕ) ∈ ({0, 2, 4, 6} : Finset ℕ) := h ▸ (by decide : (3:ℕ) ∈ ({0,3,6} : Finset ℕ))
+  revert this; decide
+
+/-- Both sides do have the same total length, so the configuration is a genuine wall: `2b = 3a`. -/
+theorem bb_eq_aaa_length : 2 * 3 = 3 * 2 := by norm_num
+
 end Erdos634.WallStraddle
 
 #print axioms Erdos634.WallStraddle.residue_mod_f
