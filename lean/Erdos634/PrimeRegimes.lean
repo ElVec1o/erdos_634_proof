@@ -43,6 +43,34 @@ fails exactly at
 `Frontier`'s list of the same range omits `(11,14)`, where
 `11⁴ - 4·11²·14² + 2·14⁴ = 14641 - 94864 + 76832 = -3391 < 0`.
 
+## CRUX-2, gated (I1)
+
+The wedge-failing regime is a distinct wall from CRUX-1 and gets its own ledger entry rather than a
+reuse of that one.
+
+**Statement.**  Let `1 ≤ e < f`, `gcd(e,f) = 1`, with `e⁴ - 4e²f² + 2f⁴ ≤ 0` (equivalently
+`α ≥ π/4`, equivalently `2β ≤ α`).  Supply a replacement for the wedge-filler step: a wedge of angle
+exactly `α` need no longer be filled by a single `α`-tile, since two smaller angles now fit.
+Determine the admissible fills and re-derive the corner chain from them.
+
+**What it blocks.**  Atom A15 on `1253` of the `4489` primes `≡ 11 (mod 12)` below `200 000`,
+`27.9%` of the residue — a strictly larger set than the `e = 1` hole's `51`.
+
+**Smallest instance.**  `(e,f) = (4,5)`, `N = 59`; settled by certified exhaustion, so the smallest
+*unsettled* instance is `(5,6)`, `N = 83`, which has absorbed roughly `815` million nodes without
+resolving.
+
+**Unblocking criterion.**  The replacement fill lemma at PROVED clears the wall for the whole
+regime, since the criterion is uniform in `(e,f)`.
+
+**What is already known, and it is not much.**  The condition is exact and integral
+(`Frontier`), the failing pairs are enumerated for `e ≤ 11`, `f ≤ 19`, and every one is a close
+pair.  No autopsies: unlike CRUX-1, this wall has no logged dead ends, because it has had almost no
+attack.  That is the argument for going at it — and also the reason to expect the standard sweep
+(I2) to be required first rather than skipped.
+
+**Not to be confused with `β`-minimality.**  `f < eφ` is a different and wrong criterion; see above.
+
 Axiom-clean; no `sorry`.
 -/
 
