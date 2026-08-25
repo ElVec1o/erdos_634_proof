@@ -157,6 +157,66 @@ theorem Q_step_mod_f (Qk Qk1 e f : ℤ) (h : Qk1 = -e * Qk - f ^ 2 * Qk) :
     f ∣ (Qk1 + e * Qk) :=
   ⟨-(f * Qk), by rw [h]; ring⟩
 
+
+/-! ## Consequence: a `b`-edge on a short wall forces a `b` opposite it
+
+`residue_mod_f` above is stated and used for the corner wall.  Applied to **both sides of any**
+straight edge-union it says more, and the consequence is the first tool here that is simultaneously
+scale-sensitive (it compares against `f³`, the equal side) and boundary-aware (against `3f² - 1`,
+the base).  `Crux1`'s sweep records that CRUX-1 needs exactly such a tool.
+
+At `e = 1`: both sides of a wall of length `L` satisfy `f ∣ L + n_b`, so the two `b`-counts agree
+mod `f`.  If one side carries none, the other carries a multiple of `f`, hence at least `f`, hence
+the wall is at least `f·b = f³ - f` long.  But the widest chord of the target is the base, `3f² - 1`,
+and `f³ - f > 3f² - 1` once `f ≥ 4`.  So on any wall short enough to fit across the target,
+
+  **a `b`-edge on one side forces a `b`-edge on the other.**
+
+This bites on the `c`-under-run configuration of CRUX-1: the blocking `c`-tile's `b`-edge is nearly
+horizontal, so its wall is bounded by the target's width, and a `b`-edge is forced directly opposite
+it.  What that forced `b` costs is not settled here.
+-/
+
+
+/-- **The two sides of a wall carry congruent `b`-counts.**  At `e = 1` the residue lemma
+(`WallStraddle.residue_mod_f`) gives `f ∣ L + n_b` on each side of a straight edge-union of length
+`L`; subtracting, the counts agree mod `f`. -/
+theorem b_counts_congruent (f L n1 n2 : ℤ) (h1 : f ∣ L + n1) (h2 : f ∣ L + n2) : f ∣ (n1 - n2) := by
+  obtain ⟨k1, hk1⟩ := h1
+  obtain ⟨k2, hk2⟩ := h2
+  exact ⟨k1 - k2, by linarith⟩
+
+/-- **A wall with `b` on one side and none on the other is nearly as long as an equal side.**
+`f ∣ n₁` with `n₁ ≥ 1` forces `n₁ ≥ f`, so the length is at least `f·b = f³ - f`. -/
+theorem b_asymmetric_forces_long_wall (f L n1 : ℤ) (hf : 3 ≤ f) (hn : 1 ≤ n1)
+    (hdvd : f ∣ n1) (hlen : n1 * (f ^ 2 - 1) ≤ L) : f ^ 3 - f ≤ L := by
+  obtain ⟨k, hk⟩ := hdvd
+  have hk1 : 1 ≤ k := by nlinarith
+  have hn1f : f ≤ n1 := by nlinarith
+  have hpos : (0:ℤ) ≤ f ^ 2 - 1 := by nlinarith
+  have hmul : f * (f ^ 2 - 1) ≤ n1 * (f ^ 2 - 1) := mul_le_mul_of_nonneg_right hn1f hpos
+  nlinarith [hlen, hmul]
+
+/-- **But no such wall fits across the target.**  The base is the widest chord, of length `3f² - 1`,
+and `f³ - f > 3f² - 1` for `f ≥ 4`.  So a wall confined to the target's width cannot be that long,
+and its `b`-counts must therefore be nonzero on **both** sides. -/
+theorem long_wall_exceeds_width (f : ℤ) (hf : 4 ≤ f) : 3 * f ^ 2 - 1 < f ^ 3 - f := by nlinarith
+
+/-- Assembled: a wall whose length is bounded by the target's width carries a `b` on both sides or
+neither. -/
+theorem b_on_both_sides_or_neither (f L n1 n2 : ℤ) (hf : 4 ≤ f)
+    (h1 : f ∣ L + n1) (h2 : f ∣ L + n2)
+    (hwidth : L ≤ 3 * f ^ 2 - 1) (hn0 : 0 ≤ n2)
+    (hlen : n1 * (f ^ 2 - 1) ≤ L) (hn : 1 ≤ n1) : 1 ≤ n2 := by
+  by_contra h
+  push_neg at h
+  have hn2 : n2 = 0 := by omega
+  subst hn2
+  have hdvd : f ∣ n1 := by simpa using b_counts_congruent f L n1 0 h1 h2
+  have hlong := b_asymmetric_forces_long_wall f L n1 (by omega) hn hdvd hlen
+  have := long_wall_exceeds_width f hf
+  omega
+
 end Erdos634.WallStraddle
 
 #print axioms Erdos634.WallStraddle.residue_mod_f
