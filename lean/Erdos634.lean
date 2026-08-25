@@ -40,6 +40,7 @@ import Erdos634.CrossingChirality
 import Erdos634.CrossingCount
 import Erdos634.CrossingHoldsInBlock
 import Erdos634.CrossingHypothesis
+import Erdos634.Crux1
 import Erdos634.DescentUniform
 import Erdos634.DirectionGroup
 import Erdos634.Dissection
