@@ -217,6 +217,68 @@ theorem b_on_both_sides_or_neither (f L n1 n2 : ℤ) (hf : 4 ≤ f)
   have := long_wall_exceeds_width f hf
   omega
 
+
+/-! ## Invention round on CRUX-1 (Rules I0-I21): the rung ladder, and rung S1
+
+Gates passed: I1 (crux ledger, `Crux1.lean`), I2 (sweep D-1..D-7, missing property `P`).
+Budget and kill criteria declared before starting (I20): kill if the spec is inconsistent at toy
+scale, or if the redundancy screen shows the invariant is a function of an existing one.
+
+**Dream lemma (I4).**  For every `f ≥ 4`, every tiling `T` of `(f³, f³, 3f² - 1)` by `(f, f²-1, f²)`,
+every interior floor `L` of `T` and every stretch `S ⊆ L` of length `f²` covered from above by
+exactly `f` `a`-edges: the cover of `S` from below is `f` `a`-edges, not a single `c`-edge.
+
+**Rung ladder (I4).**  Fully quantified, ordered by strength, lowest open rung attacked first.
+
+* `S1` — on a horizontal wall the two `b`-counts are **equal** (`f ≥ 4`).  **PROVED**, below.
+* `S2` — the blocking `c`-tile's `b`-edge has exactly one `b`-edge opposite it, and that `b` belongs
+  to a tile whose own `c`-edge lies on the same floor.  Open.
+* `S3` — `S2` iterates, so a blocking configuration forces a chain of `b`-edges longer than the
+  target admits.  Open.
+* `S4` = the dream lemma.
+
+**Rung S1.**  `residue_mod_f` gives `f ∣ L + n_b` on each side, so the counts agree mod `f`.  A
+horizontal chord has length at most the base, `3f² - 1`, and `4b = 4f² - 4 > 3f² - 1` once `f² > 3`,
+so each side carries at most **three** `b`-edges.  Two numbers in `[0,3]` congruent mod `f ≥ 4` are
+equal.
+
+Note the sharpening over `b_on_both_sides_or_neither` above, which only gave "at least one".  The
+gap is entirely the regime: at `f = 2` the base is `11` and `f³ - f = 6`, so asymmetric walls fit
+and do occur; from `f = 4` the base is `47` against a threshold of `60`, and they cannot.
+
+**Battery (I7) and negative control (I13).**  `code/analysis/a36_battery.py` runs the prediction
+against every maximal interface of all eight certificates: **50 interface equations, 23 asymmetric,
+0 violations, 16 attaining the bound exactly.**  A bound attained 16 times out of 23 is the right
+bound, not a slack one.  The certificates are all `f = 2`, the one regime where asymmetry is
+permitted, and the machinery sees them as exactly that rather than as violations. -/
+
+
+/-- **At most three `b`-edges fit on a horizontal wall.**  A horizontal chord of the target has
+length at most the base, `3f² - 1`, and `4b = 4f² - 4 > 3f² - 1` once `f² > 3`. -/
+theorem b_count_le_three (f L n : ℤ) (hf : 2 ≤ f) (hL : L ≤ 3 * f ^ 2 - 1)
+    (hfit : n * (f ^ 2 - 1) ≤ L) (hn : 0 ≤ n) : n ≤ 3 := by
+  by_contra h
+  push_neg at h
+  have h4 : 4 ≤ n := by omega
+  have hpos : (0:ℤ) ≤ f ^ 2 - 1 := by nlinarith
+  have : 4 * (f ^ 2 - 1) ≤ n * (f ^ 2 - 1) := by nlinarith
+  nlinarith [hfit, hL, this]
+
+/-- **On a horizontal wall the two `b`-counts are EQUAL, for `f ≥ 4`.**  They are congruent mod `f`
+by the residue lemma, and both lie in `[0,3]`, a range shorter than `f`. -/
+theorem b_counts_equal_horizontal (f L n1 n2 : ℤ) (hf : 4 ≤ f)
+    (hL : L ≤ 3 * f ^ 2 - 1)
+    (h1 : n1 * (f ^ 2 - 1) ≤ L) (h2 : n2 * (f ^ 2 - 1) ≤ L)
+    (hn1 : 0 ≤ n1) (hn2 : 0 ≤ n2)
+    (hcong : f ∣ (n1 - n2)) : n1 = n2 := by
+  have b1 := b_count_le_three f L n1 (by omega) hL h1 hn1
+  have b2 := b_count_le_three f L n2 (by omega) hL h2 hn2
+  obtain ⟨k, hk⟩ := hcong
+  rcases lt_trichotomy k 0 with hkn | hk0 | hkp
+  · exfalso; nlinarith
+  · subst hk0; simp at hk; omega
+  · exfalso; nlinarith
+
 end Erdos634.WallStraddle
 
 #print axioms Erdos634.WallStraddle.residue_mod_f
