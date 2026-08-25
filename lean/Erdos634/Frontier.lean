@@ -269,8 +269,12 @@ fail somewhere, and the criterion is exact and integral.
 `cos α = 1 − e²/(2f²)`, since `b² + c² − a² = (f²−e²)(2f²−e²)` and `2bc = 2f²(f²−e²)`. So
 `α < π/4` iff `2f² − e² > √2 f²`, and squaring (both sides positive as `f > e`) gives the integer
 criterion `e⁴ − 4e²f² + 2f⁴ > 0`. It fails on `(4,5), (5,6), (6,7), (7,8), (7,9), (8,9), (9,10),
-(9,11), (10,11), (10,13), (11,12), (11,13)` among `e ≤ 11`, `f ≤ 19` — every one a close pair, and
-including `(5,6)`, which is `N = 83`. -/
+(9,11), (10,11), (10,13), (11,12), (11,13), (11,14)` among `e ≤ 11`, `f ≤ 19` — every one a close pair, and
+including `(5,6)`, which is `N = 83`.
+
+(Corrected 2026-08-25: `(11,14)` was missing from this list.  There
+`11⁴ − 4·11²·14² + 2·14⁴ = 14641 − 94864 + 76832 = −3391 < 0`, with `gcd(11,14) = 1` and `f ≤ 19`,
+so it belongs.  Formalised as `PrimeRegimes.eleven_fourteen_fails`.) -/
 
 /-- **The closed form of `cos α`.** `(b²+c²−a²)·2f² = (2f²−e²)·2bc` for the family
 `(a,b,c) = (ef, f²−e², f²)`, i.e. `cos α = 1 − e²/(2f²)`. At `e = 1` this is `(2f²−1)/(2f²)`. -/
