@@ -2232,7 +2232,17 @@ $x\,A+y\,B+z\,C$ in the model's three edge lengths
 (\texttt{wall\_run\_equation}, assembling the partition, the segment classification,
 \texttt{congruent\_edge\_lengths} and a counting lemma) --- precisely the hypothesis form the
 semigroup gap kills consume. The partial-edge variant, for runs met by a `T`-vertex from the far
-side, is the remaining case of the conversion. Also open: the
+side, is the remaining case of the conversion. The ladder's invariant is now measured in exact
+form: every stub has length exactly $1$, the stub directions are $\beta+k\alpha$, turning
+$\alpha$ per block, and each block's $c$-edge carries the previous structure's tip as a
+$T$-vertex at parameter exactly $b$ --- one pattern at every block and every member probed. The
+escape in which a covering edge sails past an apex is excluded by theorem: at an interior point
+three distinct tiles cannot each hold the point interior to an edge, since they would contribute
+$3\pi$ against the interior budget of $2\pi$
+(\texttt{at\_most\_two\_through}), so transversal edge crossings are impossible and an edge
+along the stub line cannot cross the next block's $c$-edge. The termination therefore reduces to
+the invariant induction: when the trailing $a$-letters are exhausted, no continuation tile exists,
+the final stub must be covered by whole edges, and $x\,a+y\,b+z\,c=1$ is the gap. Also open: the
 mirrored ladder's termination, the per-word content --- its T-vertex step being already forced
 (\texttt{t\_vertex\_fill}).
 
