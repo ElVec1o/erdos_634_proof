@@ -11,6 +11,13 @@ mkdir -p private/inst
 for f in 4 5 6 7 8 9 10; do
   inst=private/inst/uni_f${f}_b4c2.txt
   [ -f "$inst" ] || python3 code/engine/gen_basebeta.py 1 $f 4 2 > "$inst"
-  echo "=== f=$f ==="
+  echo "=== (4,2) f=$f ==="
+  $ENGINE FILE:$inst 1000000 2>&1 | grep -E "^RESULT"
+done
+# second orbit: same fan constant, three cascades, side-case count 18
+for f in 5 6 7 8; do
+  inst=private/inst/uni_f${f}_b5c2.txt
+  [ -f "$inst" ] || python3 code/engine/gen_basebeta.py 1 $f 5 2 > "$inst"
+  echo "=== (5,2) f=$f ==="
   $ENGINE FILE:$inst 1000000 2>&1 | grep -E "^RESULT"
 done
