@@ -242,4 +242,41 @@ theorem wall_run_equation {N : ℕ} (D : Dissection N) (model : Tri)
   rw [← hsum]
   exact wall_partition_length D f c hf hu hS hint hwall
 
+/-! ## No transversal edge crossings, and the interior two-edge maximum
+
+At an interior point the tiles' local angles sum to `2π`.  A tile holding the point interior to
+one of its edges contributes `π`, so at most two tiles can do so — and a transversal crossing of
+two tile edges, which would put the point interior to the edges of four tiles, is impossible.
+This is the lemma that blocks the "covering edge sails past the apex" escape in the ladder
+analysis: an edge through the stub's line cannot cross the next partner's `c`-edge. -/
+
+/-- **The interior angle sum**: at an interior point of the target the tiles' local angles sum to
+`2π`. -/
+theorem pin_angle_sum_interior {N : ℕ} (D : Dissection N) {p : Plane}
+    (hp : p ∈ interior D.target.carrier) :
+    ∑ i, (D.tile i).localAngle p = 2 * Real.pi := by
+  rw [D.sum_localAngle_eq p, D.target.localAngle_interior hp]
+
+/-- **At most two edges through an interior point.**  Three distinct tiles each holding the point
+interior to an edge would contribute `3π > 2π`. -/
+theorem at_most_two_through {N : ℕ} (D : Dissection N) {p : Plane}
+    (hp : p ∈ interior D.target.carrier) (i j k : Fin N)
+    (hij : i ≠ j) (hik : i ≠ k) (hjk : j ≠ k)
+    (hi : (D.tile i).localAngle p = Real.pi)
+    (hj : (D.tile j).localAngle p = Real.pi)
+    (hk : (D.tile k).localAngle p = Real.pi) : False := by
+  have hsum := pin_angle_sum_interior D hp
+  have hle : (D.tile i).localAngle p + (D.tile j).localAngle p + (D.tile k).localAngle p
+      ≤ ∑ m, (D.tile m).localAngle p := by
+    have h1 : ({i, j, k} : Finset (Fin N)) ⊆ Finset.univ := Finset.subset_univ _
+    have h2 : ∑ m ∈ ({i, j, k} : Finset (Fin N)), (D.tile m).localAngle p
+        ≤ ∑ m, (D.tile m).localAngle p :=
+      Finset.sum_le_sum_of_subset_of_nonneg h1
+        (fun m _ _ => (D.tile m).localAngle_nonneg p)
+    rw [Finset.sum_insert (by simp [hij, hik]),
+        Finset.sum_insert (by simp [hjk]), Finset.sum_singleton] at h2
+    linarith
+  rw [hsum, hi, hj, hk] at hle
+  nlinarith [Real.pi_pos]
+
 end Erdos634.PinPlumbing
