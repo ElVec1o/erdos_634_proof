@@ -760,6 +760,16 @@ static std::vector<std::array<long, 3>> WALK_BASE, WALK_SIDE;
 // section; with it absent nothing changes, so existing node counts are untouched.
 // Edge lengths are integers, so a junction at prefix length L sits at squared distance L*L from the
 // side's first corner -- compared exactly in QD, the same way edge types are identified.
+// CENGINE_TRACE=1: print one line per node (N <depth> <path>) and per prune leaf
+// (L <type> <path>) to stderr.  Structure-only dump for proof-mining small refutation trees;
+// meaningful in serial mode.  Off by default; zero cost when off.
+static bool TRACE = false;
+static std::string trace_path(const std::vector<int>& v) {
+    std::string r;
+    for (size_t i = 0; i < v.size(); i++) { if (i) r += '.'; r += std::to_string(v[i]); }
+    return r.empty() ? std::string("-") : r;
+}
+
 static bool WORD_PRUNE = false;
 static int WORD_SIDE = -1;
 static std::vector<int> WORD_SEQ;        // types in order from target[WORD_SIDE]
@@ -1143,6 +1153,7 @@ struct Search {
         if (!resuming) nodes++;            // replayed nodes were counted before the checkpoint
         long d = N - left;
         if (d > maxdepth) maxdepth = d;
+        if (TRACE) fprintf(stderr, "N %ld %s\n", d, trace_path(cur_idx).c_str());
         time_t now = time(nullptr);
         if (par_mode) {
             // workers do not print; they publish their node delta so the coordinator can report
@@ -1185,17 +1196,17 @@ struct Search {
         long total = 0;
         for (const Poly& p : polys) {
             long m = area_multiple(p);
-            if (m < 0) { prune_area++; return; }
+            if (m < 0) { prune_area++; if (TRACE) fprintf(stderr, "L P1a %s\n", trace_path(cur_idx).c_str()); return; }
             total += m;
         }
-        if (total != left) { prune_area++; return; }
+        if (total != left) { prune_area++; if (TRACE) fprintf(stderr, "L P1t %s\n", trace_path(cur_idx).c_str()); return; }
         for (const Poly& p : polys)
-            if (!runs_ok(p, left)) { prune_run++; return; }
+            if (!runs_ok(p, left)) { prune_run++; if (TRACE) fprintf(stderr, "L P2 %s\n", trace_path(cur_idx).c_str()); return; }
         for (const Poly& p : polys)
-            if (!corner_ok(p)) { prune_dir++; return; }
+            if (!corner_ok(p)) { prune_dir++; if (TRACE) fprintf(stderr, "L P4c %s\n", trace_path(cur_idx).c_str()); return; }
         int pi, vi;
         if (g_mrv) {
-            if (!mrv_vertex(polys, pi, vi)) { prune_dir++; return; }
+            if (!mrv_vertex(polys, pi, vi)) { prune_dir++; if (TRACE) fprintf(stderr, "L P4m %s\n", trace_path(cur_idx).c_str()); return; }
         } else {
             lowest_vertex(polys, pi, vi);
         }
@@ -1234,7 +1245,7 @@ struct Search {
                 bool p6reject = false;
                 for (size_t k = 0; k < bedges.size(); k++)
                     if (bedges[k].first < 0) { p6reject = true; break; }
-                if (p6reject) { prune_walk++; continue; }        // P6: forced corner type violated
+                if (p6reject) { prune_walk++; if (TRACE) fprintf(stderr, "L P6 %s\n", trace_path(cur_idx).c_str()); continue; }        // P6: forced corner type violated
                 for (size_t k = 0; k < bedges.size(); k++) walk[bedges[k].first][bedges[k].second]++;
                 bool bad = false;
                 for (size_t k = 0; k < bedges.size(); k++)
@@ -1242,6 +1253,7 @@ struct Search {
                 if (bad) {
                     for (size_t k = 0; k < bedges.size(); k++) walk[bedges[k].first][bedges[k].second]--;
                     prune_walk++;
+                    if (TRACE) fprintf(stderr, "L P5 %s\n", trace_path(cur_idx).c_str());
                     continue;
                 }
             }
@@ -1626,6 +1638,7 @@ static bool make_instance_file(const std::string& path, Tile& tile, Poly& target
         QD cs = rd_qd(), sn = rd_qd();
         tile.corners[i] = {cs, sn, adj[i][0], adj[i][1], adj[i][1], adj[i][0]};
     }
+    if (getenv("CENGINE_TRACE")) TRACE = true;
     tile.area2 = rd_qd();
     N = rd_long();
     target.clear();
