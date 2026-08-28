@@ -2185,10 +2185,19 @@ with both chirality stubs equal to the same gap $c-b=1$ (\texttt{step\_exhaustio
 $k\alpha=\beta$ is impossible for every $k$, since it would force $\alpha=\pi/(3+2k)$ against the
 irrationality of $\alpha/\pi$, which holds at every member; the remainder at
 $k=\lfloor\beta/\alpha\rfloor$ is trapped strictly in $(0,\alpha)$; and nothing whose angle is at
-least the minimal tile angle fits in it. What remains outside arithmetic has shrunk to two standard interface facts --- a straight tiling
-segment is covered by whole tile edges, and the tiles at a vertex inside a wedge have angles
-summing to at most the wedge --- together with the completeness of the candidate enumeration,
-which is the engine's own certified soundness. Under those, the $(4,2)$ word dies at every
+least the minimal tile angle fits in it. What remains outside arithmetic has shrunk to two instantiations of theorems the corpus already
+holds in full strength: \texttt{Dissection.wall\_partition} (a straight interior wall segment is
+measure-partitioned by the tile edges along it) at the pin's flanking rays, and
+\texttt{Dissection.vertex\_multiplicities} (the angle arithmetic at a vertex) at the pin itself
+--- together with the completeness of the candidate enumeration, which is the engine's certified
+soundness. The assembled conditional statement is
+\texttt{FanStep.word42\_junction\_dies}: the only exact fill of the $\beta$-wedge is a single
+$\beta$-tile (\texttt{beta\_fill\_unique}), which dies on the two-gap contract, and every
+non-exact fill stalls at the sub-$\alpha$ fan remainder, which no tile angle fits. An adversarial
+control is recorded: the $(3,2)$ word shares the junction but not the fate --- its tree grows
+sevenfold per unit of $f$ --- because the fan governs only the wedge-west branches, and the rest of
+a word's tree depends on the word; the window's $L2$ kill, not the fan, is what covers
+$(3,2)$-type words. Under those, the $(4,2)$ word dies at every
 $f$ simultaneously; since $(4,2)$ and its mirror are the only escapes of the pincer window at each
 level (Remark~\ref{rem:ladder}, Remark~\ref{rem:mirrorwindow}), this would advance the reach
 ladder uniformly. The signature is not special to $(4,2)$. The $(5,2)$-seeded instances show the same structure at
