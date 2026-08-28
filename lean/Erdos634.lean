@@ -51,6 +51,7 @@ import Erdos634.EdgeChain
 import Erdos634.EquilateralConic
 import Erdos634.EquilateralSpectrum
 import Erdos634.FanKill
+import Erdos634.FanStep
 import Erdos634.FibonacciFamilies
 import Erdos634.FloorPropagation
 import Erdos634.ForcedRow

@@ -2175,13 +2175,20 @@ chain kill on the run $1=c-b$, and both lengths were already formalized as gaps
 \texttt{two\_gap\_contract}). The $P2$ layer of the refutation therefore consumes exactly two
 verified identities.
 
-The arithmetic half is formalized (\texttt{lean/Erdos634/FanKill.lean}, axiom-clean):
+The step itself is also closed arithmetically (\texttt{lean/Erdos634/FanStep.lean}, axiom-clean):
+in the remaining wedge after $k\ge1$ steps, a tile at the pin presents $\alpha$, $\beta$ or
+$\gamma$, or passes an edge through it; $\gamma$ and the through-edge never fit, $\beta$ fits
+only at $k=0$ where it dies on the two gaps, and the $\alpha$-step advances by exactly $\alpha$
+with both chirality stubs equal to the same gap $c-b=1$ (\texttt{step\_exhaustion},
+\texttt{stub\_is\_gap}). The termination arithmetic is formalized in
+\texttt{lean/Erdos634/FanKill.lean} (axiom-clean):
 $k\alpha=\beta$ is impossible for every $k$, since it would force $\alpha=\pi/(3+2k)$ against the
 irrationality of $\alpha/\pi$, which holds at every member; the remainder at
 $k=\lfloor\beta/\alpha\rfloor$ is trapped strictly in $(0,\alpha)$; and nothing whose angle is at
-least the minimal tile angle fits in it. The open half is the geometric forcing --- that every tile
-meeting the junction from inside the wedge presents exactly $\alpha$ there --- together with the
-finite side-case analysis that the traces enumerate. Under those, the $(4,2)$ word dies at every
+least the minimal tile angle fits in it. What remains outside arithmetic has shrunk to two standard interface facts --- a straight tiling
+segment is covered by whole tile edges, and the tiles at a vertex inside a wedge have angles
+summing to at most the wedge --- together with the completeness of the candidate enumeration,
+which is the engine's own certified soundness. Under those, the $(4,2)$ word dies at every
 $f$ simultaneously; since $(4,2)$ and its mirror are the only escapes of the pincer window at each
 level (Remark~\ref{rem:ladder}, Remark~\ref{rem:mirrorwindow}), this would advance the reach
 ladder uniformly. The signature is not special to $(4,2)$. The $(5,2)$-seeded instances show the same structure at
