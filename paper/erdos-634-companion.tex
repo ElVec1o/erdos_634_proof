@@ -2167,7 +2167,13 @@ $f=10$ row was frozen, with the exact leaf count $2^{15}$ and depth $20$, before
 returned; all five registered quantities matched). The side-case counts are constant --- the
 traces at $f=4$ and $f=5$ agree leaf for leaf on all $21$ of them --- and the secondary chain is
 the march along the base word, its side branches dying by the overrun identity $c-b=1$, a leftover
-of length $1$ lying below every generator of $\langle f,f^2-1,f^2\rangle$.
+of length $1$ lying below every generator of $\langle f,f^2-1,f^2\rangle$. Instrumenting the
+semigroup prune to print its failing run settles the side-case arithmetic completely: at
+$f=4,\dots,7$ all seven $f$-independent semigroup kills fire on the run $f^2-f-1=b-a$ and every
+chain kill on the run $1=c-b$, and both lengths were already formalized as gaps
+(\texttt{east\_cover\_gap}; \texttt{FanKill.one\_is\_gap}, packaged as
+\texttt{two\_gap\_contract}). The $P2$ layer of the refutation therefore consumes exactly two
+verified identities.
 
 The arithmetic half is formalized (\texttt{lean/Erdos634/FanKill.lean}, axiom-clean):
 $k\alpha=\beta$ is impossible for every $k$, since it would force $\alpha=\pi/(3+2k)$ against the
@@ -2181,8 +2187,10 @@ level (Remark~\ref{rem:ladder}, Remark~\ref{rem:mirrorwindow}), this would advan
 ladder uniformly. The signature is not special to $(4,2)$. The $(5,2)$-seeded instances show the same structure at
 $f=5,\dots,8$: a constant side-case count (18), three fans in place of two, and binary fan depth
 again exactly $\lfloor\beta/\alpha\rfloor$ ($6,7,9,11$), with leaf counts $3\cdot2^{\lfloor
-\beta/\alpha\rfloor}$. The fan constant is thus shared across orbits; what varies per orbit is
-the finite head. We state plainly that the forcing is an instance of the crossing question and is
+\beta/\alpha\rfloor}$. The $(5,3)$ instances replicate it a third time, with identical fan counts
+$3\cdot2^{\lfloor\beta/\alpha\rfloor}$ and their own constants ($9$ area, $30$ corner-type).
+The fan constant is thus shared across all three orbits probed; what varies per orbit is the
+finite head. We state plainly that the forcing is an instance of the crossing question and is
 open; the contribution of the law is that the question now has a measured, quantitative instance
 with its arithmetic core proved, replicated on a second orbit.
 

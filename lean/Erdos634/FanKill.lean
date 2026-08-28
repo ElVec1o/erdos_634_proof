@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 import Erdos634.BaseBetaE1
+import Erdos634.OrderForcing
 
 /-!
 # The fan kill: the arithmetic half of the (4,2) refutation, parametric in `f`
@@ -122,5 +123,26 @@ theorem one_is_gap (f x y z : ℕ) (hf : 2 ≤ f)
       omega
   · have : f ≤ x * f := Nat.le_mul_of_pos_left _ hx
     omega
+
+/-! ## The two-gap contract: every fixed `P2` case dies on `b - a` or `c - b`
+
+Instrumenting the semigroup prune to print its failing run settles the arithmetic of the fixed
+cases completely.  At `f = 4, 5, 6, 7` all seven `f`-independent `P2` leaves die on the run
+`11, 19, 29, 41 = f² - f - 1 = b - a`, and every march-chain leaf dies on the run `1 = c - b`.
+Both lengths are semigroup gaps, and both were already formalized:
+`OrderForcing.east_cover_gap` for `b - a`, and `one_is_gap` above for `c - b`.  So the entire
+`P2` layer of the `(4,2)` refutation consumes exactly two verified identities. -/
+
+/-- **The two-gap contract.**  The only run lengths on which the `(4,2)` refutation's semigroup
+prune ever fires are `b - a = f² - 1 - f` and `c - b = 1`, and neither is expressible:
+the first by `OrderForcing.east_cover_gap`, the second by `one_is_gap`. -/
+theorem two_gap_contract (f x y z : ℕ) (hf : 3 ≤ f) :
+    (x * f + y * (f * f - 1) + z * (f * f) = f * f - 1 - f → False) ∧
+    (x * f + y * (f ^ 2 - 1) + z * f ^ 2 = 1 → False) := by
+  constructor
+  · intro h
+    exact Erdos634.OrderForcing.east_cover_gap hf h
+  · intro h
+    exact one_is_gap f x y z (by omega) h
 
 end Erdos634.FanKill

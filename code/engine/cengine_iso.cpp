@@ -770,6 +770,10 @@ static std::string trace_path(const std::vector<int>& v) {
     return r.empty() ? std::string("-") : r;
 }
 
+// CENGINE_TRACE=2 additionally prints each recursed placement: T <path> then the triangle's
+// three vertices as (p q d) pairs per coordinate, meaning (p + q*sqrt(D))/d.
+static int TRACE_LVL = 0;
+
 static bool WORD_PRUNE = false;
 static int WORD_SIDE = -1;
 static std::vector<int> WORD_SEQ;        // types in order from target[WORD_SIDE]
@@ -1049,9 +1053,12 @@ struct Search {
                 if (conv[j] != 0) break;
             }
             if (conv[i] > 0 && conv[j] > 0) {
-                if (den != 1) return false;
+                if (den != 1) { if (TRACE) fprintf(stderr, "R irr\n"); return false; }
                 if (!num.fits_slong_p()) return false;
-                if (!semi.contains_int(num.get_si())) return false;
+                if (!semi.contains_int(num.get_si())) {
+                    if (TRACE) gmp_fprintf(stderr, "R gap %Zd\n", num.get_mpz_t());
+                    return false;
+                }
                 if (g_p7 && left_ >= 0 && !run_count_ok(num.get_si(), left_)) return false;
             }
         }
@@ -1264,6 +1271,17 @@ struct Search {
             std::vector<Poly> next = rest;
             for (Poly& pc : pieces) next.push_back(pc);
             placed.push_back(tri);
+            if (TRACE_LVL >= 2) {
+                mpz_class P, Q, Dn;
+                fprintf(stderr, "T %s", trace_path(cur_idx).c_str());
+                for (const Pt& v : tri) {
+                    qd_mpz(v.x, P, Q, Dn);
+                    gmp_fprintf(stderr, " (%Zd %Zd %Zd", P.get_mpz_t(), Q.get_mpz_t(), Dn.get_mpz_t());
+                    qd_mpz(v.y, P, Q, Dn);
+                    gmp_fprintf(stderr, " | %Zd %Zd %Zd)", P.get_mpz_t(), Q.get_mpz_t(), Dn.get_mpz_t());
+                }
+                fprintf(stderr, "\n");
+            }
             if (cut_depth >= 0 && d + 1 >= cut_depth) {
                 // coordinator: hand the child subtree off as a task instead of descending.
                 // The child is NOT counted here; the worker's dfs counts it on entry, exactly as
@@ -1638,7 +1656,7 @@ static bool make_instance_file(const std::string& path, Tile& tile, Poly& target
         QD cs = rd_qd(), sn = rd_qd();
         tile.corners[i] = {cs, sn, adj[i][0], adj[i][1], adj[i][1], adj[i][0]};
     }
-    if (getenv("CENGINE_TRACE")) TRACE = true;
+    if (getenv("CENGINE_TRACE")) { TRACE = true; TRACE_LVL = atoi(getenv("CENGINE_TRACE")); }
     tile.area2 = rd_qd();
     N = rd_long();
     target.clear();
