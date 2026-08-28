@@ -2,6 +2,7 @@ import Mathlib.Tactic
 import Erdos634.AngleSumDissection
 import Erdos634.PinLemma
 import Erdos634.WallChain
+import Erdos634.CongruentAngles
 
 /-!
 # The pin plumbing: the angle equation at a base junction, from the dissection layer
@@ -152,5 +153,93 @@ theorem inter_measure_is_dist {u₁ u₂ : Plane} (hu : u₁ ≠ u₂) (T : Tri)
   obtain ⟨v₁, v₂, hv⟩ := convex_compact_in_segment hconv hcomp hne
     Set.inter_subset_right hu
   exact ⟨v₁, v₂, by rw [hv]; exact MeasureTheory.hausdorffMeasure_segment v₁ v₂⟩
+
+/-! ## The run equation: whole-edge wall runs sum to `x·a + y·b + z·c`
+
+When every chain edge lies wholly inside the wall segment, each partition term is a full edge
+length; classifying by `congruent_edge_lengths` and counting gives the `x·a + y·b + z·c = L` form
+the semigroup kills consume. -/
+
+/-- **A model tile has three edge lengths**: any pair distance is one of the three, up to
+symmetry. -/
+theorem model_three_lengths (T : Tri) (i i' : Fin 3) (h : i ≠ i') :
+    edist (T.pts i) (T.pts i') = edist (T.pts 0) (T.pts 1) ∨
+    edist (T.pts i) (T.pts i') = edist (T.pts 1) (T.pts 2) ∨
+    edist (T.pts i) (T.pts i') = edist (T.pts 0) (T.pts 2) := by
+  fin_cases i <;> fin_cases i' <;>
+    first
+      | (exfalso; exact h rfl)
+      | (left; rfl)
+      | (right; left; rfl)
+      | (right; right; rfl)
+      | (left; exact edist_comm _ _)
+      | (right; left; exact edist_comm _ _)
+      | (right; right; exact edist_comm _ _)
+
+/-- **Counting a three-valued sum.**  A finite sum whose terms each equal `A`, `B`, or `C` is
+`x•A + y•B + z•C` for counts `x + y + z = card`. -/
+theorem sum_of_three_valued {ι : Type*} (S : Finset ι) (g : ι → ENNReal) (A B C : ENNReal)
+    (h : ∀ e ∈ S, g e = A ∨ g e = B ∨ g e = C) :
+    ∃ x y z : ℕ, x + y + z = S.card ∧ ∑ e ∈ S, g e = x * A + y * B + z * C := by
+  classical
+  induction S using Finset.induction_on with
+  | empty => exact ⟨0, 0, 0, by simp, by simp⟩
+  | insert a s ha ih =>
+    obtain ⟨x, y, z, hcard, hsum⟩ := ih (fun e he => h e (Finset.mem_insert_of_mem he))
+    rcases h a (Finset.mem_insert_self a s) with hA | hB | hC
+    · exact ⟨x + 1, y, z, by rw [Finset.card_insert_of_notMem ha]; omega,
+        by rw [Finset.sum_insert ha, hsum, hA]; push_cast; ring⟩
+    · exact ⟨x, y + 1, z, by rw [Finset.card_insert_of_notMem ha]; omega,
+        by rw [Finset.sum_insert ha, hsum, hB]; push_cast; ring⟩
+    · exact ⟨x, y, z + 1, by rw [Finset.card_insert_of_notMem ha]; omega,
+        by rw [Finset.sum_insert ha, hsum, hC]; push_cast; ring⟩
+
+/-- **The run equation.**  If every chain edge lies wholly inside the wall segment and every tile
+is congruent to the model, the run length is `x·A + y·B + z·C` in the model's three edge
+lengths — the form the semigroup kills consume. -/
+theorem wall_run_equation {N : ℕ} (D : Dissection N) (model : Tri)
+    (hcong : ∀ i, model.Congruent (D.tile i))
+    (f : Plane →ₗ[ℝ] ℝ) (c : ℝ) (hf : f ≠ 0) {u₁ u₂ : Plane} (hu : u₁ ≠ u₂)
+    (hS : segment ℝ u₁ u₂ ⊆ {y | f y = c})
+    (hint : openSegment ℝ u₁ u₂ ⊆ interior D.target.carrier)
+    (hwall : ∀ y ∈ openSegment ℝ u₁ u₂, ∀ i, y ∉ interior (D.tile i).carrier)
+    (hwhole : ∀ e ∈ D.lineChain f c, (D.tile e.1).edge e.2 ⊆ segment ℝ u₁ u₂) :
+    ∃ x y z : ℕ,
+      (x : ENNReal) * edist (model.pts 0) (model.pts 1)
+        + y * edist (model.pts 1) (model.pts 2)
+        + z * edist (model.pts 0) (model.pts 2) = edist u₁ u₂ := by
+  classical
+  set g : Fin N × Fin 3 → ENNReal := fun e =>
+    (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)
+      ((D.tile e.1).edge e.2 ∩ segment ℝ u₁ u₂) with hg
+  have hval : ∀ e ∈ D.lineChain f c,
+      g e = edist (model.pts 0) (model.pts 1) ∨
+      g e = edist (model.pts 1) (model.pts 2) ∨
+      g e = edist (model.pts 0) (model.pts 2) := by
+    intro e he
+    have hinter : (D.tile e.1).edge e.2 ∩ segment ℝ u₁ u₂ = (D.tile e.1).edge e.2 :=
+      Set.inter_eq_left.mpr (hwhole e he)
+    have hne : e.2 ≠ e.2 + 1 := by
+      intro hcontra
+      have hv := congrArg Fin.val hcontra
+      have hlt := (e.2).isLt
+      simp [Fin.val_add] at hv
+      omega
+    obtain ⟨i, i', hii, hd⟩ := congruent_corner_angles_aux (hcong e.1) e.2 (e.2 + 1) hne
+    have hedge : g e = edist ((D.tile e.1).pts e.2) ((D.tile e.1).pts (e.2 + 1)) := by
+      rw [hg]; simp only
+      rw [hinter, Tri.edge]
+      exact MeasureTheory.hausdorffMeasure_segment _ _
+    have hde : edist ((D.tile e.1).pts e.2) ((D.tile e.1).pts (e.2 + 1))
+        = edist (model.pts i) (model.pts i') := by
+      rw [edist_dist, edist_dist, hd]
+    rw [hedge, hde]
+    exact model_three_lengths model i i' hii
+  obtain ⟨x, y, z, _, hsum⟩ := sum_of_three_valued (D.lineChain f c) g
+    (edist (model.pts 0) (model.pts 1)) (edist (model.pts 1) (model.pts 2))
+    (edist (model.pts 0) (model.pts 2)) hval
+  refine ⟨x, y, z, ?_⟩
+  rw [← hsum]
+  exact wall_partition_length D f c hf hu hS hint hwall
 
 end Erdos634.PinPlumbing

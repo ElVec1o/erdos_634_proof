@@ -116,4 +116,10 @@ theorem congruent_edge_lengths {T U : Tri} (h : T.Congruent U) (j j' : Fin 3) (h
   have := hd (σ.symm j) (σ.symm j')
   simpa using this.symm
 
+/-- `congruent_edge_lengths`, stated from the congruent tile's side: every side of `U` matches a
+model pair distance. -/
+theorem congruent_corner_angles_aux {T U : Tri} (h : T.Congruent U) (j j' : Fin 3) (hjj : j ≠ j') :
+    ∃ i i' : Fin 3, i ≠ i' ∧ dist (U.pts j) (U.pts j') = dist (T.pts i) (T.pts i') :=
+  congruent_edge_lengths h j j' hjj
+
 end Erdos634.Geometry

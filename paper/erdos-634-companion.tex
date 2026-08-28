@@ -2226,9 +2226,13 @@ half is now closed as well: a nonempty convex compact subset of a segment is its
 (\texttt{convex\_compact\_in\_segment}, by pulling back along the line's parametrization and
 applying the connected-compact classification on $\mathbb R$), so each edge-segment intersection
 term of the partition is the distance between two points
-(\texttt{inter\_measure\_is\_dist}). What still separates this from the run equation is only
-the identification of those distances with model or partial edge lengths, fed by
-\texttt{congruent\_edge\_lengths}. Also open: the
+(\texttt{inter\_measure\_is\_dist}). The run equation itself is now delivered: for any dissection whose tiles are congruent to a
+model, a wall segment whose chain edges lie wholly inside it has length
+$x\,A+y\,B+z\,C$ in the model's three edge lengths
+(\texttt{wall\_run\_equation}, assembling the partition, the segment classification,
+\texttt{congruent\_edge\_lengths} and a counting lemma) --- precisely the hypothesis form the
+semigroup gap kills consume. The partial-edge variant, for runs met by a `T`-vertex from the far
+side, is the remaining case of the conversion. Also open: the
 mirrored ladder's termination, the per-word content --- its T-vertex step being already forced
 (\texttt{t\_vertex\_fill}).
 
