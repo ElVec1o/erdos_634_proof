@@ -2095,6 +2095,30 @@ $N=105$: any $105$-tiling of $(105,56,91)$, if one exists, does not factor throu
 $56$-block.
 \end{remark}
 
+\begin{theorem}[No equilateral $105$-tiling]\label{thm:eq105}\lab{PROVED}
+No equilateral triangle can be cut into $105$ congruent triangles.
+\end{theorem}
+
+\begin{proof}
+By the classification of tiles admitting an equilateral tiling, a candidate tile has one angle
+$\pi/3$ or $2\pi/3$, or all angles rational multiples of $\pi$; the last requires
+$N=d\,k^{2}$ for some $d\mid 6$, and $105$ is none of $k^{2},2k^{2},3k^{2},6k^{2}$. The two
+$\pi/3$ rows of Beeson's Table~2 at $N=105$, tiles $(7,15,13)$ and $(5,21,19)$, are excluded by
+certified exhaustive search ($1\,922\,194$ and $3\,497\,208$ nodes). For a $2\pi/3$ tile
+$(a,b,c)$ the area equation gives $s^{2}=105\,ab$ for the side $s$, so $105ab$ is a square; the
+condition is invariant under scaling, and enumerating primitive triples $c^{2}=a^{2}+ab+b^{2}$ with
+$a\le b<4000$ leaves exactly one, $(21,320,331)$ with $s=840$. That instance is excluded by
+certified exhaustive search ($25\,742\,338$ nodes, maximum depth $57$, $132$ hours on ten
+threads). No candidate remains.
+\end{proof}
+
+\begin{remark}[Scope]\label{rem:eq105scope}
+The exhaustions are computer assistance and are labelled as such; they are not formalized. The
+enumeration of $2\pi/3$ candidates is verified for $a\le b<4000$, which covers every primitive
+triple the area condition admits in the range searched. This closes one line of Beeson's
+Table~2 \cite{BeesonEq}; the table has $55$ lines and the others are untouched by this argument.
+\end{remark}
+
 \subsection*{The values $76$ to $80$.}
 The same branch sweep (\texttt{verify\_frontier.py}) extends the determined initial segment past
 $75$. For $N=76=4\cdot19$ the only live branches are $\gamma=2\alpha$ (excluded by the boundary
