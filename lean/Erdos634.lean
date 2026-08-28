@@ -30,6 +30,7 @@ import Erdos634.ChordInterface
 import Erdos634.Collar
 import Erdos634.ConeScaling
 import Erdos634.Congruence
+import Erdos634.CongruentAngles
 import Erdos634.CornerBlock
 import Erdos634.CornerCascade
 import Erdos634.CornerRule

@@ -2215,11 +2215,23 @@ two-line composition of the dissection layer's theorems
 (\texttt{PinPlumbing.pin\_angle\_sum}); the per-tile case split of the local angle is proved
 from the definition (\texttt{localAngle\_cases}); a tile covering the pin in its interior is
 excluded (\texttt{no\_interior\_tile\_at\_pin}); and the flank identification is derived
-combinatorially (\texttt{west\_flank\_gamma}, \texttt{east\_flank\_cases}). What remains:
-identifying a congruent tile's corner angles with $\{\alpha,\beta,\gamma\}$ through the
-congruence layer, the covering data (\texttt{wall\_partition}) along the flanking rays, and the
-mirrored ladder's termination, which is the per-word content --- the T-vertex step of that ladder
-being already forced (\texttt{t\_vertex\_fill}). An adversarial
+combinatorially (\texttt{west\_flank\_gamma}, \texttt{east\_flank\_cases}). The congruence layer is
+closed as well: congruent tiles have equal corner angles at matched vertices, by the law of cosines
+from the matched distances (\texttt{angle\_of\_sss}, \texttt{congruent\_corner\_angles}), and
+matching edge lengths (\texttt{congruent\_edge\_lengths}) --- so every tile of a congruent
+dissection contributes one of $\{\alpha,\beta,\gamma\}$ at any vertex and one of $\{a,b,c\}$
+to any wall run, which is what the multiplicity and semigroup arguments consume. What remains: the
+conversion of \texttt{wall\_partition}'s measure statement into the run-length equation, and the
+mirrored ladder's termination, the per-word content --- its T-vertex step being already forced
+(\texttt{t\_vertex\_fill}).
+
+The consequence worth stating for the branch as a whole: the direct-orientation kill at the
+$a|c$ junction uses no property of the word beyond $c$ in second position. Every escape orbit of
+the pincer window with $cp=2$ --- $(4,2),(5,2),(6,2),\dots$ at every level --- shares it, and the
+engine confirms the shared fan law on the three orbits probed. The uniform statement, that every
+$(bp,2)$ word with $bp\ge4$ admits no tiling at any $f$, is the current target; its direct branch
+is the assembled argument above, and its mirrored branch is the ladder whose step is forced and
+whose termination is the one open ingredient. An adversarial
 control is recorded: the $(3,2)$ word shares the junction but not the fate --- its tree grows
 sevenfold per unit of $f$ --- because the fan governs only the wedge-west branches, and the rest of
 a word's tree depends on the word; the window's $L2$ kill, not the fan, is what covers
