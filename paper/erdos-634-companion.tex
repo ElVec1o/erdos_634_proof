@@ -2193,7 +2193,25 @@ measure-partitioned by the tile edges along it) at the pin's flanking rays, and
 soundness. The assembled conditional statement is
 \texttt{FanStep.word42\_junction\_dies}: the only exact fill of the $\beta$-wedge is a single
 $\beta$-tile (\texttt{beta\_fill\_unique}), which dies on the two-gap contract, and every
-non-exact fill stalls at the sub-$\alpha$ fan remainder, which no tile angle fits. An adversarial
+non-exact fill stalls at the sub-$\alpha$ fan remainder, which no tile angle fits.
+
+In fact the fan induction is not needed for the mathematics at all. Since the angle sums are a
+theorem of the dissection layer (\texttt{sum\_localAngle\_eq}, the discharged $G2$), a
+\emph{completed} tiling has tile angles summing to exactly $\pi$ at every base junction; between a
+$\gamma$-flank and an $\alpha$-flank the interior multiset must sum to exactly $\beta$, and the
+multiplicity system forces it to be a single $\beta$-tile
+(\texttt{PinLemma.pin\_forces\_single\_beta}, via \texttt{vertex\_multiplicities}); a tile
+holding the junction inside one of its edges is excluded outright, contributing $\pi$ against two
+positive flanks (\texttt{no\_through\_tile}); and the forced $\beta$-tile dies on the two gaps
+(\texttt{beta\_tile\_dies}). The engine's fans are what this impossibility looks like to a
+solver: partial states advancing by $\alpha$ that can never close, their depth
+$\lfloor\beta/\alpha\rfloor$ being the law measured above. The argument applies to the direct
+orientation of the $c$-tile in \emph{every} word with $c$ in the second position, $(3,2)$
+included; what remains per word is the mirrored orientation, where the forced fill is a single
+$\alpha$-tile (\texttt{pin\_forces\_single\_alpha}) and the configuration advances to the next
+junction --- the head of the engine's second cascade. The remaining instantiations are the flank
+identification (the corner theory of Theorem~\ref{thm:e1reduce}) and the covering data
+(\texttt{wall\_partition}) at the junction. An adversarial
 control is recorded: the $(3,2)$ word shares the junction but not the fate --- its tree grows
 sevenfold per unit of $f$ --- because the fan governs only the wedge-west branches, and the rest of
 a word's tree depends on the word; the window's $L2$ kill, not the fan, is what covers
