@@ -1933,10 +1933,12 @@ sits at depth $\le4$ with the $b$ adjacent. For $f\le5$ no admissible $(bp,cp)$ 
 (\texttt{pincer\_window}).
 \end{theorem}
 
-\begin{corollary}\label{cor:walls15}\lab{PROVED, from reach $3$}
+\begin{corollary}\label{cor:walls15}\lab{PROVED via the certified exhaustion \texttt{w74}; the argument-only route inherits Theorem~\ref{thm:e1cascade}'s effective label}
 Hypothesis~\ref{hyp:walls} holds at $(1,5)$: together with blocks $\le2$
 (Theorems~\ref{thm:e1cascade},~\ref{thm:elltwo}) the window covers every configuration. This is
-the first member closed with no engine certificate.
+the first member closed with no engine certificate under the chain's own hypotheses; the member is
+independently certified by the exhaustion \texttt{w74} ($132\,519$ nodes), so its exclusion does
+not rest on the chain.
 \end{corollary}
 
 \begin{lemma}[The apex]\label{lem:apex}\lab{VERIFIED}
@@ -2370,7 +2372,7 @@ unconditionally; the stub arithmetic itself is already general and machine-check
 (Lemma~\ref{lem:stubgap}).
 \end{lemma}
 
-\begin{theorem}[The column $(0,e,2e)$ admits no tiling]\label{thm:n1}\lab{PROVED}
+\begin{theorem}[The column $(0,e,2e)$ admits no tiling]\label{thm:n1}\lab{CONJECTURE: proved at $e=1$; open at $e\ge2$, the induction being gapped (Remark~\ref{rem:n1gap})}
 Let $(e,f)$ be a separated member with $e\ge1$, $\gcd(e,f)=1$, $f\ge2$, and suppose the base walk
 is $(0,e,2e)$: no $a$-edge on the base. Then no tiling exists.
 \end{theorem}
@@ -2406,7 +2408,7 @@ The base has length $e(3f^2-e^2)$, so this requires $f^2\mid e(3f^2-e^2)$, hence
 hence $f=1$ by coprimality (\texttt{base\_not\_all\_c}), contradicting $f\ge2$.
 \end{proof}
 
-\begin{corollary}\label{cor:basewalls}\lab{PROVED}
+\begin{corollary}\label{cor:basewalls}\lab{CONJECTURE: rests on Theorem~\ref{thm:n1} at $e\ge2$, which is open}
 At a separated thick member the base walk is the walls form $(f,e,e)$: Lemma~\ref{lem:basetri}
 gives three columns, the $\gamma$-trap deletes $(2f,e,0)$ (Lemma~\ref{lem:basedi}), and
 Theorem~\ref{thm:n1} deletes $(0,e,2e)$.

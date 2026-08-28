@@ -24,6 +24,10 @@ PAPERS = ['paper/erdos-634.tex', 'paper/erdos-634-companion.tex', 'paper/erdos-6
 WEAK_ROOTS = {
     'hyp:walls', 'conj:advance', 'lem:interior', 'thm:e1family', 'cor:walls16',
     'thm:fullprime', 'thm:basebeta-full', 'thm:strippbound',
+    # thm:n1: its induction applies the straight-junction identity at interior points, where the
+    # residue is pi+alpha, not alpha (obstructions O-n1gap).  Proved at e=1 only by the three-letter
+    # argument; OPEN at e>=2, and cor:basewalls depends on it there.
+    'thm:n1',
     # NOT thm:depthwindow either.  It establishes reach THREE; what is open is reach FOUR, which is
     # thm:strippbound / prop:a2branch at row 3, a root above.  All four of its citations
     # (lem:wallclimb, lem:jbline, thm:forkkill, thm:l2slot) are PROVED or VERIFIED and its argument
@@ -63,13 +67,24 @@ for p in PAPERS:
 refs = {}
 for lab, body, proof, env, path, pos in allb:
     if lab:
-        refs[lab] = set(re.findall(r'\\ref\{([^}]*)\}', body + proof))
+        # strip cross-paper prefixes (C- companion, M- main, O- obstructions) so weak-root
+        # propagation follows citations BETWEEN the papers; missing this hid the thm:n1 gap,
+        # recorded in the obstructions paper as C-thm:n1.
+        raw = re.findall(r'\\ref\{([^}]*)\}', body + proof)
+        refs[lab] = set(re.sub(r'^[CMO]-', '', r) for r in raw)
+
+# Adjudicated false positives: statements that MENTION a weak result without depending on it.
+# The closure counts every \ref as a dependency edge; these were read by hand.
+ADJUDICATED = {
+    'lem:ccornerside',   # cites hyp:walls only to record that its side condition FAILS at a
+                         # c-corner; its own content rests on lem:sidequant and is proved.
+}
 
 weak = set(WEAK_ROOTS)
 for _ in range(40):                      # transitive closure
     grew = False
     for lab, r in refs.items():
-        if lab not in weak and (r & weak):
+        if lab not in weak and lab not in ADJUDICATED and (r & weak):
             weak.add(lab); grew = True
     if not grew:
         break
