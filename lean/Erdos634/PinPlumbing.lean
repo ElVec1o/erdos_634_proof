@@ -1,6 +1,7 @@
 import Mathlib.Tactic
 import Erdos634.AngleSumDissection
 import Erdos634.PinLemma
+import Erdos634.WallChain
 
 /-!
 # The pin plumbing: the angle equation at a base junction, from the dissection layer
@@ -60,5 +61,27 @@ theorem no_interior_tile_at_pin {N : ℕ} (D : Dissection N) {p : Plane}
     Finset.single_le_sum (fun j _ => (D.tile j).localAngle_nonneg p) (Finset.mem_univ i)
   rw [hsum, hi] at hle
   nlinarith [Real.pi_pos]
+
+/-! ## The measure-to-length bridge, right half
+
+`Dissection.wall_partition` partitions a wall segment's `H¹`-measure among the tile edges along
+it.  Mathlib's `hausdorffMeasure_segment` evaluates the right side: the measure of a segment IS
+the distance between its endpoints.  So a wall run's total edge measure equals its length, as a
+one-line composition.  The left half — each `edge ∩ segment` is itself a segment whose length is
+one of the model lengths or a partial thereof — is the remaining conversion, fed by
+`congruent_edge_lengths`. -/
+
+/-- **A wall segment's edge measures sum to its length.** -/
+theorem wall_partition_length {N : ℕ} (D : Dissection N)
+    (f : Plane →ₗ[ℝ] ℝ) (c : ℝ) (hf : f ≠ 0) {u₁ u₂ : Plane} (hu : u₁ ≠ u₂)
+    (hS : segment ℝ u₁ u₂ ⊆ {y | f y = c})
+    (hint : openSegment ℝ u₁ u₂ ⊆ interior D.target.carrier)
+    (hwall : ∀ y ∈ openSegment ℝ u₁ u₂, ∀ i, y ∉ interior (D.tile i).carrier) :
+    ∑ e ∈ D.lineChain f c,
+        (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)
+          ((D.tile e.1).edge e.2 ∩ segment ℝ u₁ u₂)
+      = edist u₁ u₂ := by
+  rw [D.wall_partition f c hf hu hS hint hwall]
+  exact MeasureTheory.hausdorffMeasure_segment u₁ u₂
 
 end Erdos634.PinPlumbing
