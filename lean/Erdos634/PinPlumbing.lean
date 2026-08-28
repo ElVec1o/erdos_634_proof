@@ -84,4 +84,73 @@ theorem wall_partition_length {N : ℕ} (D : Dissection N)
   rw [D.wall_partition f c hf hu hS hint hwall]
   exact MeasureTheory.hausdorffMeasure_segment u₁ u₂
 
+/-! ## The measure-to-length bridge, left half
+
+Each term of `wall_partition` is the measure of `edge ∩ segment` — a nonempty convex compact
+subset of a segment, hence itself a segment, hence of measure the distance between its endpoints.
+With `congruent_edge_lengths` bounding those endpoints to the model's edge structure, the run
+equation the semigroup kills consume follows. -/
+
+/-- **A nonempty convex compact subset of a segment is a segment.**  Parametrize the carrier
+segment by `lineMap`, pull back, and apply `eq_Icc_of_connected_compact` on the line. -/
+theorem convex_compact_in_segment {u₁ u₂ : Plane} {K : Set Plane}
+    (hK : Convex ℝ K) (hc : IsCompact K) (hne : K.Nonempty)
+    (hsub : K ⊆ segment ℝ u₁ u₂) (hu : u₁ ≠ u₂) :
+    ∃ v₁ v₂ : Plane, K = segment ℝ v₁ v₂ := by
+  set γ : ℝ →ᵃ[ℝ] Plane := AffineMap.lineMap u₁ u₂ with hγ
+  have hinj : Function.Injective γ := AffineMap.lineMap_injective ℝ hu
+  have hseg : segment ℝ u₁ u₂ = γ '' Set.Icc 0 1 := by
+    rw [hγ, segment_eq_image_lineMap]
+  set T : Set ℝ := γ ⁻¹' K with hT
+  have hTsub : T ⊆ Set.Icc 0 1 := by
+    intro t ht
+    have : γ t ∈ γ '' Set.Icc 0 1 := hseg ▸ hsub ht
+    obtain ⟨t', ht', he⟩ := this
+    rwa [← hinj he]
+  have hTconv : Convex ℝ T := hK.affine_preimage γ
+  have hTcl : IsClosed T := hc.isClosed.preimage AffineMap.lineMap_continuous
+  have hTcomp : IsCompact T := (isCompact_Icc).of_isClosed_subset hTcl hTsub
+  have hTne : T.Nonempty := by
+    obtain ⟨x, hx⟩ := hne
+    have : x ∈ γ '' Set.Icc 0 1 := hseg ▸ hsub hx
+    obtain ⟨t, _, he⟩ := this
+    exact ⟨t, by rw [hT]; simp only [Set.mem_preimage, he]; exact hx⟩
+  have hTconn : IsConnected T := ⟨hTne, hTconv.isPreconnected⟩
+  have hIcc := eq_Icc_of_connected_compact hTconn hTcomp
+  have hKrange : K ⊆ Set.range γ := fun x hx => by
+    have : x ∈ γ '' Set.Icc 0 1 := hseg ▸ hsub hx
+    exact ⟨this.choose, this.choose_spec.2⟩
+  have hKT : K = γ '' T := by
+    rw [hT, Set.image_preimage_eq_inter_range]
+    exact (Set.inter_eq_left.mpr hKrange).symm
+  have hle : sInf T ≤ sSup T := by
+    obtain ⟨t, ht⟩ := hTne
+    rw [hIcc] at ht
+    exact le_trans ht.1 ht.2
+  have himg : γ '' T = segment ℝ (γ (sInf T)) (γ (sSup T)) := by
+    conv_lhs => rw [hIcc]
+    rw [← segment_eq_Icc hle]
+    exact image_segment ℝ γ (sInf T) (sSup T)
+  exact ⟨γ (sInf T), γ (sSup T), hKT.trans himg⟩
+
+/-- **Each wall-partition term is a distance.**  The measure of `edge ∩ segment` is `edist` of two
+points (or the term vanishes when the intersection is empty). -/
+theorem inter_measure_is_dist {u₁ u₂ : Plane} (hu : u₁ ≠ u₂) (T : Tri) (k : Fin 3)
+    (hne : (T.edge k ∩ segment ℝ u₁ u₂).Nonempty) :
+    ∃ v₁ v₂ : Plane,
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)
+        (T.edge k ∩ segment ℝ u₁ u₂) = edist v₁ v₂ := by
+  have hconv : Convex ℝ (T.edge k ∩ segment ℝ u₁ u₂) := by
+    rw [Tri.edge]
+    exact (convex_segment _ _).inter (convex_segment u₁ u₂)
+  have hsegcomp : IsCompact (segment ℝ u₁ u₂) := by
+    rw [segment_eq_image_lineMap]
+    exact isCompact_Icc.image AffineMap.lineMap_continuous
+  have hcomp : IsCompact (T.edge k ∩ segment ℝ u₁ u₂) :=
+    hsegcomp.of_isClosed_subset ((T.isClosed_edge k).inter hsegcomp.isClosed)
+      Set.inter_subset_right
+  obtain ⟨v₁, v₂, hv⟩ := convex_compact_in_segment hconv hcomp hne
+    Set.inter_subset_right hu
+  exact ⟨v₁, v₂, by rw [hv]; exact MeasureTheory.hausdorffMeasure_segment v₁ v₂⟩
+
 end Erdos634.PinPlumbing
