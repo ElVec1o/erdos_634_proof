@@ -1,6 +1,7 @@
 import Mathlib.Tactic
 import Erdos634.Dissection
 import Erdos634.FanStep
+import Erdos634.Interface
 
 /-!
 # The pin lemma: a `γ|α` base junction holds exactly one further tile, and it presents `β`
@@ -69,5 +70,64 @@ theorem beta_tile_dies (f x y z : ℕ) (hf : 3 ≤ f)
   rcases hcover with h | h
   · exact (Erdos634.FanKill.two_gap_contract f x y z hf).1 h
   · exact (Erdos634.FanKill.two_gap_contract f x y z hf).2 h
+
+/-! ## The mirrored branch: a T-vertex ladder of forced `{α, β}` pairs
+
+Read from the traces (f = 4): the mirrored `c`-tile shows `β` at the pin, forcing the single
+`α`-tile (`pin_forces_single_alpha`), which lays its `b`-edge flush along the corner tile's
+`b`-edge; the mirrored `c`-tile's apex then lands interior to the forced `α`-tile's `c`-edge — a
+T-vertex.  There the angle budget is `2π`, the `γ`-apex and the through-edge (`π`) are already
+present, and the remaining wedge is `2π - γ - π = π - γ = α + β`.  Its fill is forced to be
+exactly one `α` and one `β` (`t_vertex_fill`) — the corpus's column-with-fillers structure, here
+arising from the angle arithmetic alone.  The pair's two cyclic orders are the binary choices of
+the engine's second cascade.  So the mirrored branch advances by forced `{α,β}` pairs along the
+ladder of T-vertices; the induction's step is this lemma, and its termination is the base word —
+which is where the per-word variation ((4,2) dying, (3,2) resisting) enters. -/
+
+/-- **The T-vertex wedge is `α + β`.**  `2π - γ - π = π - γ = α + β` from the branch relations. -/
+theorem t_vertex_wedge (a b g p : ℝ) (hg : g = 2*a + b) (hp : p = 3*a + 2*b) :
+    2 * p - g - p = a + b := by rw [hg, hp]; ring
+
+/-- **The T-vertex fill is forced: exactly one `α` and one `β`.**  A multiset of tile angles
+summing to `α + β` has multiplicities solving `(x + 2z, y + z) = (1, 1)`, whose only solution is
+`(1, 1, 0)`. -/
+theorem t_vertex_fill {α β : ℝ} (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (x y z : ℕ)
+    (hsum : (x : ℝ) * α + (y : ℝ) * β + (z : ℝ) * (2 * α + β) = α + β) :
+    x = 1 ∧ y = 1 ∧ z = 0 := by
+  have h := Erdos634.Geometry.vertex_multiplicities hrel hirr x y z 1 1 (by push_cast; linarith)
+  omega
+
+/-- **The ladder's own coverage arithmetic**: the segment of the forced `α`-tile's `c`-edge beyond
+the mirrored `c`-tile's `a`-edge has length `c - a = f² - f = f·(f-1)`, which IS in the semigroup
+(`f - 1` copies of `a`) — so no gap kill fires there, and the ladder genuinely advances.  Recorded
+because a silent assumption that it dies would be wrong. -/
+theorem ladder_advances (f : ℤ) : f ^ 2 - f = (f - 1) * f := by ring
+
+/-! ## The flank wiring: both pin hypotheses derived combinatorially
+
+`Interface.flanks` records which sides flank which corner.  Two computations close the flank
+identification:
+
+* the corners flanking the `a`-side are exactly `{β, γ}` — so the corner tile, presenting `β` at
+  the base corner with its `a` on the base (`corner_beta_unique` + the first letter of
+  `thm:e1reduce`), presents `γ` at the pin  (`west_flank_gamma`);
+* the corners flanking the `c`-side are exactly `{α, β}` — so the `c`-tile presents `α` or `β` at
+  the pin, which is precisely the two-branch case split of the pin analysis
+  (`east_flank_cases`). -/
+
+open Erdos634.Interface in
+/-- **The `a`-side's two ends carry `β` and `γ`**: if the near end is `β`, the far end is `γ`. -/
+theorem west_flank_gamma (far : Corner)
+    (hfar : (flanks far).1 = Edge.a ∨ (flanks far).2 = Edge.a)
+    (hne : far ≠ Corner.beta) : far = Corner.gamma := by
+  cases far <;> simp_all [flanks]
+
+open Erdos634.Interface in
+/-- **The `c`-side's two ends carry `α` and `β`**: the `c`-tile's pin corner is one of the two. -/
+theorem east_flank_cases (c : Corner)
+    (hc : (flanks c).1 = Edge.c ∨ (flanks c).2 = Edge.c) :
+    c = Corner.alpha ∨ c = Corner.beta := by
+  cases c <;> simp_all [flanks]
 
 end Erdos634.PinLemma
