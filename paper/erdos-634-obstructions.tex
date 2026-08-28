@@ -1398,6 +1398,57 @@ exhausts in $3{,}954$ nodes against $19{,}677$, whereas on the thin member $N=47
 the rigid side, the apex-down orientation is slower. The thick searches $N=59,66$ are run apex-down.
 \end{remark}
 
+\section{The crossing question is the single obstruction}\label{sec:onewall}
+
+The preceding sections record failures one route at a time. This section states the consolidated
+fact they add up to, which is sharper than any of them separately: every route to the base-$\beta$
+primes known to this programme reduces to one question, and every invariant class available to the
+field is provably unable to answer it.
+
+\begin{definition}[The crossing question]\label{def:crossQ}
+Let $(e,f)$ be coprime with $1\le e<f$, let $\mathcal T$ be a tiling of the base-$\beta$ target at
+$m=1$, and let $S$ be a maximal run of forced tiles whose far sides lie along a segment $L$ of a
+line (a corner chain along a wall, or a column footprint along a level line), with $V$ the endpoint
+of $L$ beyond the run's last forced tile. The question: \emph{must the next tile along $L$ lay a
+whole edge on $L$ without overrunning $V$, or can it cross $L$ at $V$?}
+\end{definition}
+
+\begin{proposition}[Three reductions]\label{prop:threecostumes}\lab{PROVED}
+\emph{(i)} At $e=1$ the entire subfamily --- every prime $3f^2-1$ --- reduces to the instance of the
+crossing question at the column footprint: the forced column exists in every hypothetical tiling
+(both corners break; a base-break consumes the single $c$), its descent is decided by the length
+arithmetic except at the crossing, and a landing closes the family
+(\texttt{A2BranchRow3.row\_three\_dies\_of\_span}, \texttt{span\_all\_a}).
+\emph{(ii)} At $e\ge2$ the walk narrowing of Corollary~\ref{C-cor:basewalls} rests on
+Theorem~\ref{C-thm:n1}, whose induction fails at the interior points $V_k$
+(Remark~\ref{O-n1gap}); Remark~\ref{O-n1gapexact} shows the missing step \emph{is} the crossing
+question at $V_k$, verbatim.
+\emph{(iii)} Conjecture~\ref{C-conj:advance} is the crossing question by construction.
+No fourth wall exists: the wedge-filler condition, once conjectured to block the regime
+$e^4-4e^2f^2+2f^4\le0$, blocks nothing (the fill is forced at every member by the integrality of the
+vertex system; \texttt{PrimeRegimes}).
+\end{proposition}
+
+\begin{proposition}[Nine tool classes cannot answer it]\label{prop:ninetools}\lab{PROVED}
+Each of the following is closed with a recorded failure point: linear direction invariants and their
+metric bounds (\texttt{LambdaFactor}); Euler and angle-sum counting, which coincide in a single
+relation (\S\ref{sec:nogo}); edge-pairing parity; the non-abelian Conway--Lagarias tiling group,
+which collapses to its rank-two abelianisation (Remark~\ref{OM-tilinggroup}); every criterion built
+from similarity-invariant data of tile and target separately (\texttt{ScaleRigidity}, using only the
+existence of the $m=2$ tiling); the $\gamma$-count on a stretch, whose two-endpoint hypothesis is
+unsatisfiable under the monotone orientation word; the $b$-residue calculus, which constrains counts
+exactly and locations not at all ($58$ of $60$ $b$-edges in the certificates have an endpoint that
+is not a junction of the far side); De Bruijn--Hamel functionals, which require metric
+incommensurability while every side of the family is an integer; and equilibrium stresses, whose
+balance equations have slack at least two at every vertex type of the configuration, so that no
+local forcing exists.
+\end{proposition}
+
+The common feature is exact: each tool computes a quantity invariant under relocating edges within
+the tiling, and the crossing question asks \emph{where} an edge lies. The searches, which do decide
+members, decide them precisely because a search tracks locations. Any future attack should be
+measured against this requirement before effort is spent.
+
 \section{Verification, claim by claim}\label{sec:verif}
 
 The finite and numerical claims are checked by the scripts in the repository (exact arithmetic).
