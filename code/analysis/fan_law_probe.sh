@@ -14,6 +14,8 @@ for f in 4 5 6 7 8 9 10; do
   echo "=== (4,2) f=$f ==="
   $ENGINE FILE:$inst 1000000 2>&1 | grep -E "^RESULT"
 done
+# after tracing, the exact ladder-invariant check re-verifies the T-vertex parameter claim:
+#   python3 code/analysis/ladder_invariant_check.py   (needs CENGINE_TRACE=2 traces in /tmp)
 # second orbit: same fan constant, three cascades, side-case count 18
 for f in 5 6 7 8; do
   inst=private/inst/uni_f${f}_b5c2.txt

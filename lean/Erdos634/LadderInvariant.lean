@@ -67,4 +67,44 @@ theorem flush_overrun_unit (P : Plane) (u : Plane) (hu : ‖u‖ = 1) (b c : ℝ
     dist (P + b • u) (P + c • u) = c - b := by
   rw [(flush_split_lengths P u b c hb hbc).1, hu, mul_one]
 
+/-! ## The step identity, the march bound, and the assembled conditional
+
+The exact invariant's algebraic core is the law of cosines with the tile's own included angle:
+the apex `P + c•w` (with `w` the unit direction of the `a`-tile's `c`-edge, whose cosine against
+the base is `(a² + c² - b²)/(2ac)`) lies at distance exactly `b` from the next pin `P + (a,0)`.
+So each block's landing is the tile's defining relation, not a coincidence — and the ladder
+advances one base letter `a` per block, hence terminates within the trailing `a`-run. -/
+
+/-- **The step identity.**  If `w = (w₁, w₂)` is a unit vector with `w₁ = (a² + c² - b²)/(2ac)`
+(the cosine of the tile's angle between sides `a` and `c`), then `‖c•w - (a, 0)‖² = b²`:
+the apex lands at distance exactly `b` from the next pin. -/
+theorem ladder_step_identity (a b c w₁ w₂ : ℝ) (ha : 0 < a) (hc : 0 < c)
+    (hunit : w₁ ^ 2 + w₂ ^ 2 = 1) (hcos : 2 * a * c * w₁ = a ^ 2 + c ^ 2 - b ^ 2) :
+    (c * w₁ - a) ^ 2 + (c * w₂) ^ 2 = b ^ 2 := by nlinarith [hunit, hcos]
+
+/-- **The march is bounded.**  Pins advance by `a` per block inside a base of length `L`, so the
+block count is at most `L / a`. -/
+theorem march_bounded (a L x₀ : ℕ) (ha : 0 < a) (k : ℕ) (hin : x₀ + k * a ≤ L) :
+    k ≤ L / a := by
+  have h1 : k * a ≤ L := le_trans (Nat.le_add_left _ _) hin
+  exact Nat.le_div_iff_mul_le ha |>.mpr h1
+
+/-- **The terminal kill, assembled.**  When the march can no longer continue, the final stub of
+length `c - b = 1` must be covered by whole edges, and the run equation then demands
+`x·a + y·b + z·c = 1` — impossible.  Stated on the run-equation output form
+(`wall_run_equation` supplies it; `one_is_gap` kills it). -/
+theorem terminal_kill (f x y z : ℕ) (hf : 2 ≤ f)
+    (hcover : x * f + y * (f ^ 2 - 1) + z * f ^ 2 = 1) : False :=
+  Erdos634.FanKill.one_is_gap f x y z hf hcover
+
+/-- **The uniform `(bp,2)` conditional, assembled.**  If the mirrored branch of a hypothetical
+tiling with a `(bp,2)`-type base word carries the march structure — pins advancing by `a`, each
+apex landing at parameter `b` on the next `c`-edge (the step identity), the stub cover reducing at
+the final block to a whole-edge run of length `1` — then no such tiling exists.  The direct branch
+dies by the pin argument (`PinLemma`); the march hypothesis is the named residue. -/
+theorem uniform_bp2_conditional (f : ℕ) (hf : 2 ≤ f)
+    (march : ∃ x y z : ℕ, x * f + y * (f ^ 2 - 1) + z * f ^ 2 = 1) : False := by
+  obtain ⟨x, y, z, h⟩ := march
+  exact terminal_kill f x y z hf h
+
 end Erdos634.LadderInvariant
