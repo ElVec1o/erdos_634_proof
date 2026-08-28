@@ -2240,9 +2240,15 @@ escape in which a covering edge sails past an apex is excluded by theorem: at an
 three distinct tiles cannot each hold the point interior to an edge, since they would contribute
 $3\pi$ against the interior budget of $2\pi$
 (\texttt{at\_most\_two\_through}), so transversal edge crossings are impossible and an edge
-along the stub line cannot cross the next block's $c$-edge. The termination therefore reduces to
-the invariant induction: when the trailing $a$-letters are exhausted, no continuation tile exists,
-the final stub must be covered by whole edges, and $x\,a+y\,b+z\,c=1$ is the gap. Also open: the
+along the stub line cannot cross the next block's $c$-edge. The invariant is verified exactly: in $\mathbb Q(\sqrt D)$ arithmetic over the engine's exact
+coordinates, $\mathrm{apex}=\mathrm{pin}+(b/c)(\mathrm{tip}-\mathrm{pin})$ holds identically at
+both members traced, and its algebra is formalized
+(\texttt{flush\_overrun\_mem}, \texttt{flush\_split\_lengths}: the apex lies on the $c$-edge
+at parameter $b/c$ and the split lengths are exactly $b$ and $c-b$). The termination therefore
+reduces to the invariant induction: when the trailing $a$-letters are exhausted, no continuation
+tile exists, the final stub must be covered by whole edges, and $x\,a+y\,b+z\,c=1$ is the gap.
+Every step ingredient of that induction is now machine-checked; the assembly is the remaining
+work. Also open: the
 mirrored ladder's termination, the per-word content --- its T-vertex step being already forced
 (\texttt{t\_vertex\_fill}).
 
