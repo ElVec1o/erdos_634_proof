@@ -2209,9 +2209,17 @@ $\lfloor\beta/\alpha\rfloor$ being the law measured above. The argument applies 
 orientation of the $c$-tile in \emph{every} word with $c$ in the second position, $(3,2)$
 included; what remains per word is the mirrored orientation, where the forced fill is a single
 $\alpha$-tile (\texttt{pin\_forces\_single\_alpha}) and the configuration advances to the next
-junction --- the head of the engine's second cascade. The remaining instantiations are the flank
-identification (the corner theory of Theorem~\ref{thm:e1reduce}) and the covering data
-(\texttt{wall\_partition}) at the junction. An adversarial
+junction --- the head of the engine's second cascade. The instantiations themselves have begun landing: the pin equation --- at any boundary point of
+the target that is not a target vertex, the tiles' local angles sum to exactly $\pi$ --- is now a
+two-line composition of the dissection layer's theorems
+(\texttt{PinPlumbing.pin\_angle\_sum}); the per-tile case split of the local angle is proved
+from the definition (\texttt{localAngle\_cases}); a tile covering the pin in its interior is
+excluded (\texttt{no\_interior\_tile\_at\_pin}); and the flank identification is derived
+combinatorially (\texttt{west\_flank\_gamma}, \texttt{east\_flank\_cases}). What remains:
+identifying a congruent tile's corner angles with $\{\alpha,\beta,\gamma\}$ through the
+congruence layer, the covering data (\texttt{wall\_partition}) along the flanking rays, and the
+mirrored ladder's termination, which is the per-word content --- the T-vertex step of that ladder
+being already forced (\texttt{t\_vertex\_fill}). An adversarial
 control is recorded: the $(3,2)$ word shares the junction but not the fate --- its tree grows
 sevenfold per unit of $f$ --- because the fan governs only the wedge-west branches, and the rest of
 a word's tree depends on the word; the window's $L2$ kill, not the fan, is what covers
