@@ -72,6 +72,7 @@ import Erdos634.InvariantProduct
 import Erdos634.Irregular
 import Erdos634.IsoAlphaPrime
 import Erdos634.LabelCalculus
+import Erdos634.LadderInvariant
 import Erdos634.LambdaFactor
 import Erdos634.LayerLink
 import Erdos634.LayerWord
