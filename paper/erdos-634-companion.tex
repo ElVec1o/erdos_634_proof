@@ -2133,6 +2133,56 @@ that step is now carried in its weakest form --- the descent must land, and noth
 what it lands on.
 \end{remark}
 
+\subsection{The $(4,2)$ word dies by an $\alpha$-fan: a quantitative law}\label{sub:fanlaw}
+
+The refutation of the $(4,2)$ base word was mined from full traces of the seeded engine
+(placements and prune sites, node-identical to the untraced runs) at $f=4,\dots,7$, and its
+structure is uniform in $f$. At the base junction between the word's first $a$ and its $c$, the
+west corner tile presents $\gamma$ and the $c$-tile presents $\alpha$, leaving a wedge of exactly
+$\pi-\gamma-\alpha=\beta$. The growing part of the tree is a fan of $\alpha$-tiles pinned at that
+junction, each pivoting on the previous tile's $b$-edge; the tree's binary choices are chiralities
+that do not alter the angle, which is why every branch terminates identically. After
+$k=\lfloor\beta/\alpha\rfloor$ fan steps the remainder $\beta-k\alpha$ is a corner smaller than
+every tile angle, and the branch dies.
+
+\begin{proposition}[The fan law]\label{prop:fanlaw}\lab{HEURISTIC}
+For the $(4,2)$-seeded instance at $(1,f)$, the engine's refutation consists of two such fans
+(behind the two chiralities of the $c$-tile, the second four levels deeper), a set of local side
+cases whose number is independent of $f$, and one secondary chain that advances one block per unit
+of $f$ along the trailing $a$-run of the base word. The fan depth is exactly
+$\lfloor\beta/\alpha\rfloor$, with $\beta/\alpha=\pi/(2\alpha)-3/2$.
+\end{proposition}
+
+The law is verified at seven consecutive members:
+\[
+\begin{array}{r|ccccccc}
+f & 4 & 5 & 6 & 7 & 8 & 9 & 10\\\hline
+\lfloor\beta/\alpha\rfloor & 4 & 6 & 7 & 9 & 11 & 12 & 14\\
+\text{measured fan depth} & 4 & 6 & 7 & 9 & 11 & 12 & 14\\
+\text{nodes} & 139 & 517 & 1025 & 4019 & 15953 & 31873 & 127183
+\end{array}
+\]
+the last two columns as pre-registered predictions scored out of sample (research protocol: the
+$f=10$ row was frozen, with the exact leaf count $2^{15}$ and depth $20$, before that run
+returned; all five registered quantities matched). The side-case counts are constant --- the
+traces at $f=4$ and $f=5$ agree leaf for leaf on all $21$ of them --- and the secondary chain is
+the march along the base word, its side branches dying by the overrun identity $c-b=1$, a leftover
+of length $1$ lying below every generator of $\langle f,f^2-1,f^2\rangle$.
+
+The arithmetic half is formalized (\texttt{lean/Erdos634/FanKill.lean}, axiom-clean):
+$k\alpha=\beta$ is impossible for every $k$, since it would force $\alpha=\pi/(3+2k)$ against the
+irrationality of $\alpha/\pi$, which holds at every member; the remainder at
+$k=\lfloor\beta/\alpha\rfloor$ is trapped strictly in $(0,\alpha)$; and nothing whose angle is at
+least the minimal tile angle fits in it. The open half is the geometric forcing --- that every tile
+meeting the junction from inside the wedge presents exactly $\alpha$ there --- together with the
+finite side-case analysis that the traces enumerate. Under those, the $(4,2)$ word dies at every
+$f$ simultaneously; since $(4,2)$ and its mirror are the only escapes of the pincer window at each
+level (Remark~\ref{rem:ladder}, Remark~\ref{rem:mirrorwindow}), this would advance the reach
+ladder uniformly. We state plainly that the forcing is an instance of the crossing question and is
+open; the contribution of the law is that the question now has a measured, quantitative instance
+with its arithmetic core proved.
+
+
 \begin{remark}[Where the landing hypothesis can fail, and why it is not local]\label{rem:landingfail}
 It is worth saying exactly what the remaining hypothesis costs. On the base the $f+1$ feet are
 forced to be junctions, since no tiling vertex lies interior to a boundary edge, and the span
