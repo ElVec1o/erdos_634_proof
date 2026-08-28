@@ -93,4 +93,34 @@ theorem fan_dies (a b : ℝ) (ha : 0 < a) (hb : 0 < b)
     ¬ θ ≤ b - (⌊b / a⌋₊ : ℝ) * a :=
   fan_kill a _ θ (fan_remainder a b ha hb hsum hirr).2 hθ
 
+/-! ## First fixed cases of (FanForcing), and the chain's kill arithmetic
+
+The traces hand us the case analysis; these are its first arithmetic entries.
+
+* The **overrun identity**: an edge of length `c` laid along a ray of length `b` overruns by
+  exactly `c - b = 1`.
+* A leftover run of length `1` is a **semigroup gap**: `1 < f = min generator`, so no tile edge and
+  no sum of tile edges covers it.  This is the mechanism killing the side branches of the base-word
+  march (the `P2` leaves), and the reason the roof-tile alternatives at the pin die. -/
+
+/-- **The overrun is exactly one.**  `c - b = f² - (f² - 1) = 1`, for every `f`. -/
+theorem overrun_is_one (f : ℤ) : f ^ 2 - (f ^ 2 - 1) = 1 := by ring
+
+/-- **A run of length `1` is a semigroup gap** for `⟨f, f²-1, f²⟩` once `f ≥ 2`: any nonzero
+nonnegative combination is at least `f > 1`. -/
+theorem one_is_gap (f x y z : ℕ) (hf : 2 ≤ f)
+    (h : x * f + y * (f ^ 2 - 1) + z * f ^ 2 = 1) : False := by
+  have hf2 : 4 ≤ f ^ 2 := by nlinarith
+  have hb : 3 ≤ f ^ 2 - 1 := by omega
+  rcases Nat.eq_zero_or_pos x with hx | hx
+  · rcases Nat.eq_zero_or_pos y with hy | hy
+    · rcases Nat.eq_zero_or_pos z with hz | hz
+      · simp [hx, hy, hz] at h
+      · have : f ^ 2 ≤ z * f ^ 2 := Nat.le_mul_of_pos_left _ hz
+        omega
+    · have : f ^ 2 - 1 ≤ y * (f ^ 2 - 1) := Nat.le_mul_of_pos_left _ hy
+      omega
+  · have : f ≤ x * f := Nat.le_mul_of_pos_left _ hx
+    omega
+
 end Erdos634.FanKill
