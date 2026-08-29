@@ -138,4 +138,37 @@ theorem overrun_amounts (f : ℕ) (hf : 2 ≤ f) :
     | succ n => simp only [Nat.succ_sub_one]; ring_nf; omega
   omega
 
+/-! ## The sub-`a` remainder forces a further overrun — it does not kill the branch
+
+It is tempting to argue that the `b`-overrun dies because `f - 1 < a`, a segment shorter than the
+shortest side being uncoverable.  **That argument does not apply here.**  The `f-1` is not a
+segment awaiting coverage; it is part of the `b`-edge itself.  At `Q` exactly one tile has the
+point interior to an edge (the `b`-tile, contributing `π`) while `X` has a vertex there, so
+`AnchoredChain`'s three-tile exclusion is not triggered, and the budget is satisfied:
+`β + π = 3α + 3β` leaves `3α + β`, whose figures `(3,1,0)` and `(1,0,1)` are admissible.
+
+What *is* true, and is the usable residue, is weaker and one step further out: past `Q` the
+`b`-edge continues for only `f - 1`, while **every** tile edge is at least `a = f`.  So the first
+tile filling the wedge at `Q` must overrun the `b`-edge's far endpoint.  The branch is pushed one
+step, not closed.
+
+For the `c`-overrun the corresponding remainder is exactly `a`: a `c` laid from the runway's start
+overruns `Q` by `c - (f-1)a = f`, one whole `a`-edge, flush. -/
+
+/-- **Every tile edge exceeds `f - 1`.**  Hence any edge laid along a segment of that length
+overruns it: the sub-`a` remainder forces a further overrun rather than a contradiction. -/
+theorem sub_a_forces_overrun (f L : ℕ) (hf : 2 ≤ f)
+    (hL : L = f ∨ L = f * f - 1 ∨ L = f * f) : f - 1 < L := by
+  have hF : 2 * f ≤ f * f := by nlinarith
+  rcases hL with h | h | h <;> omega
+
+/-- **The `c`-overrun is exactly one `a`-edge.** -/
+theorem c_overrun_is_flush (f : ℕ) (hf : 2 ≤ f) : f * f - (f - 1) * f = f := by
+  have hF : 2 * f ≤ f * f := by nlinarith
+  have h : (f - 1) * f = f * f - f := by
+    cases f with
+    | zero => simp
+    | succ n => simp only [Nat.succ_sub_one]; ring_nf; omega
+  omega
+
 end Erdos634.PinBuffer

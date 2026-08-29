@@ -2232,9 +2232,16 @@ at all (\texttt{runway\_forces\_a\_edges}). What this does not yield is a contra
 far end. If the run is confined, the terminal vertex carries $X$'s $\beta$ against the last tile's
 $\gamma$, leaving $4\alpha+2\beta$ with three admissible figures; and the run need not be
 confined, since a $b$ laid from the runway's start overruns the terminal vertex by $f-1$ and a $c$
-by $f$ (\texttt{overrun\_amounts}). The first of those is strictly below the minimal edge and so
-is a gap, which is the sharpest form the residue has taken --- but closing it requires the same
-anchoring the crossing question has always demanded.
+by $f$ (\texttt{overrun\_amounts}). The first of those is strictly below the minimal edge, which invites the thought that it is
+therefore impossible; it is not. That remainder is part of the covering edge rather than a segment
+awaiting coverage, and at the terminal vertex exactly one tile has the point interior to an edge
+while $X$ has a vertex there, so the three-tile exclusion does not apply and the budget is
+satisfied, $\beta+\pi$ leaving $3\alpha+\beta$ with two admissible figures. What does follow is
+weaker and one step further out: past that vertex the edge continues for only $f-1$ while every
+tile edge is at least $a=f$, so the first tile of the wedge must overrun its far endpoint
+(\texttt{sub\_a\_forces\_overrun}). The branch is displaced, not closed, and the $c$-overrun
+leads to the same wedge with remainder exactly one $a$-edge
+(\texttt{c\_overrun\_is\_flush}).
 \end{remark}
 
 \begin{remark}[The unbuilt obligations of the pin programme]\label{rem:pingaps}\lab{OPEN}
