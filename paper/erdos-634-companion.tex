@@ -2251,6 +2251,18 @@ At $f=12$ its far endpoint sits at height $153.79$, some $308.70$ from the $b\mi
 residue therefore recurses at another interior point, with no boundary anchor --- which is the
 character of the crossing question, and the reason the $V_1$ repair, which worked precisely because
 both of its anchors lay on the boundary, has no analogue here.
+
+The recursion is nevertheless collinear. Every overrunning edge lies along $X$'s $c$-edge, so the
+successive endpoints march along one fixed ray from the pin, in steps of $f-1$ or $a$. Since the
+$c$-tile presents $\beta$ at the pin, that ray is parallel to the target's left side and leaves
+through the right side, at distance $T = f^{3}(N_0 - pf)/N_0$ with $N_0 = 3f^{2}-1$ and the pin at
+$J = pf$. This is never an integer: $\gcd(f,N_0)=1$, so $N_0 \mid f^{3}(N_0-pf)$ would force
+$N_0 \mid p$, while $1\le p\le f-1<N_0$ (\texttt{PinRay.exit\_not\_integral}). Tile edges have
+integer lengths, so if the chain of edges along the ray ever reaches the boundary its length would
+have to be an integer, and the configuration dies at once. What is not available is the chain's
+propagation: past an edge's far endpoint the ray may pass through a tile's interior instead of
+along another edge. That single implication --- that the chain, once started at the pin, reaches
+the boundary --- is the whole of what remains.
 \end{remark}
 
 \begin{remark}[The unbuilt obligations of the pin programme]\label{rem:pingaps}\lab{OPEN}
