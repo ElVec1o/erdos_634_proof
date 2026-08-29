@@ -2247,8 +2247,15 @@ both members traced, and its algebra is formalized
 at parameter $b/c$ and the split lengths are exactly $b$ and $c-b$). The termination therefore
 reduces to the invariant induction: when the trailing $a$-letters are exhausted, no continuation
 tile exists, the final stub must be covered by whole edges, and $x\,a+y\,b+z\,c=1$ is the gap.
-Every step ingredient of that induction is now machine-checked; the assembly is the remaining
-work. Also open: the
+Every step ingredient of that induction is now machine-checked, including the junction
+catalogue: the march visits exactly two kinds of base junction, and every flank combination's
+forced fill is a proved multiplicity statement --- one $\alpha$ (the partner), three $\alpha$s,
+one $\beta$, the $\gamma$-wedge dichotomy, or the impossibility of two $\gamma$-flanks
+($2\gamma=\pi+\alpha>\pi$) --- so no junction type the march can meet is missing
+(\texttt{MarchJunctions}). The landing itself is the tile's own law of cosines: the apex lies at
+distance exactly $b$ from the next pin because $a^2+c^2-2ac\cos\beta=b^2$
+(\texttt{ladder\_step\_identity}). The assembly of these rows along the word, with the run
+equations, is the remaining work. Also open: the
 mirrored ladder's termination, the per-word content --- its T-vertex step being already forced
 (\texttt{t\_vertex\_fill}).
 
