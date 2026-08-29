@@ -20,6 +20,7 @@ import Erdos634.ChordInterface
 import Erdos634.Collar
 import Erdos634.ConeScaling
 import Erdos634.CongruentAngles
+import Erdos634.Contiguity
 import Erdos634.CorridorLowStop
 import Erdos634.CosetPropagation
 import Erdos634.DirectionGroup
