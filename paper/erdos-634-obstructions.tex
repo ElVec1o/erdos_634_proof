@@ -1466,6 +1466,17 @@ the base is roughly halved rather than the complexity class changed --- and the 
 uneven across orbits: at $f=12$ most exhaust within a few thousand nodes while $(6,5)$ does not
 finish. What the prune bought is the exclusion of $N=191$; it does not by itself reach $N=431$.
 
+Two further search improvements belong here, both sound and both measured. The corner test above
+generalises: a convex corner is fillable exactly when its angle is $X\alpha+Y\beta$ for integers
+$X,Y\ge0$, since the tiles at it contribute $x\alpha+y\beta+z\gamma=(x{+}2z)\alpha+(y{+}z)\beta$;
+all of $\cos\alpha,\sin\alpha,\cos\beta,\sin\beta$ lie in $\mathbb Q(\sqrt D)$ for this family, so
+the table of admissible corner cosines is computed exactly once per instance. And the vertex
+ordering may be changed to fill the most constrained vertex first, which is sound for an
+exhaustive search because every tiling fills every vertex, so the choice affects only the node
+count. The second is by far the larger: it takes $N=23$'s instance from $19\,677$ nodes to $385$,
+$N=11$'s from $135$ to $40$, and finds the certified $44$-tiling in $145\,506$ nodes rather than
+$831\,344$, with every verdict unchanged. Neither, however, reaches the words identified below.
+
 The residue is sharply located. Among the $f=12$ orbits, every word whose $c$ and $b$ letters are
 not adjacent in the order $c$ then $b$ finishes within a few thousand nodes, while the single word
 with $c$ immediately followed by $b$ does not finish at all; at $f=8$ the seven orbits contain no
