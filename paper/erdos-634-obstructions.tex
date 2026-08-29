@@ -146,9 +146,18 @@ not representable in $\langle a,b,c\rangle$ for coprime $f>2e$; no whole-edge pr
 and covering edge $L$ satisfy $\sigma+L=2b-xa$ with the overrun strictly inside $L$; and at
 $e\ge2$ the length $c$ has the unique representation $(0,0,1)$ --- precisely the statement that
 fails at $e=1$, where $c=fa$ is the crossing configuration itself. Consequently, at proof-sketch
-rigor: the column $(0,e,2e)$ is excluded at $e=2$ for every coprime $f>4$, by counting --- the
-west chain and its mirror force six $c$-letters against the four available --- so the base walk
-there is the walls form unconditionally. At $e=3$ the same forcing pins the column word to
+rigor: the column $(0,e,2e)$ is excluded at $e=2$ for every coprime $f>4$. The count is sharper
+than a mirror argument needs. At $e=2$ the word has six letters, two $b$ and four $c$, and no
+$a$; Proposition~\ref{M-prop:cornerpara}, which is two-sided and needs no separation, pins the
+first two and last two positions to $\{a,c\}$, so with no $a$ available those four positions
+consume all four $c$s and the word is $ccbbcc$. The repair forces the third position to be $c$ as
+well --- a fifth $c$ where four exist. The reflection argument is therefore \emph{not} needed at
+$e=2$ (it is needed at $e=3$, where the same forcing leaves $c^3b^3c^3$ consistent). Two scope
+notes: no new range in $f$ is gained, since $f>2e$ and separation both give $f\ge5$ at $e=2$ ---
+what is gained is that the dichotomy step there no longer cites Hypothesis~\ref{C-hyp:walls};
+and \emph{formalized} describes the number theory alone, every geometric step of the repair
+lying on the far side of the obligations named in \cite{Companion}'s
+Remark~\ref{C-rem:pingaps}. At $e=3$ the same forcing pins the column word to
 $c^3b^3c^3$, and the $V_2$ step, whose anchors are interior, is the named residue. Engine
 verification with a corrected instance generator: all fifteen column words at $(2,5)$ are
 exhausted, including the word this paper records below as surviving every filter.
