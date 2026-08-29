@@ -1435,6 +1435,58 @@ exhausts in $3{,}954$ nodes against $19{,}677$, whereas on the thin member $N=47
 the rigid side, the apex-down orientation is slower. The thick searches $N=59,66$ are run apex-down.
 \end{remark}
 
+\section{Four macroscopic routes, closed}\label{sec:macro}
+
+The routes recorded elsewhere in this paper are local. This section closes four \emph{global}
+ones --- algebraic, spectral, topological and homological --- each proposed as a way to force the
+tile count composite as $N\to\infty$. All four fail, and the reasons are worth having.
+
+\begin{proposition}[The area ratio cannot exclude primes]\label{prop:norm}\lab{PROVED}
+For the base-$\beta$ branch the area ratio is $N=m^{2}(3f^{2}-e^{2})$, and
+$3f^{2}-e^{2}=-\mathrm{N}_{\mathbb Q(\sqrt3)/\mathbb Q}(e+f\sqrt3)$ is a norm form. Norms of prime
+elements are prime, so no Galois or Diophantine obstruction in the ratio can force $N$ composite;
+and indeed $144$ primes of this form occur with $\gcd(e,f)=1$, $e<f<40$. What the algebra supplies
+is the \emph{identification} of the candidates --- a prime value forces $N\equiv11\pmod{12}$
+(Theorem~\ref{M-thm:mod12}) with a unique representation --- not their exclusion.
+\end{proposition}
+
+\begin{proposition}[The global angle--Euler system admits prime solutions]\label{prop:globalsys}\lab{PROVED}
+Independence of $\alpha,\beta$ over $\mathbb Q$ permits the vertex figures $(3,2,0),(1,1,1)$ at a
+boundary non-corner point, $(6,4,0),(4,3,1),(2,2,2),(0,1,3)$ at an interior point, and the unique
+corner fills. Each tile contributes one corner of each type, so each type sums to $N$; with the
+Euler relation this yields
+\[
+  N \;=\; 2I + B + 1 ,
+\]
+and the Euler count and the angle count give \emph{the same} relation, no more. Solving the full
+system over the nonnegative integers gives $17$ solutions at $N=11$, $172$ at $N=23$ and $1968$ at
+$N=47$. Since $N=11$ is excluded by certified exhaustion, the global system is strictly weaker than
+the truth, and its only congruence --- $N$ odd iff $B$ even --- holds for every prime.
+\end{proposition}
+
+\begin{remark}[Spectral invariants of the dual graph]\label{rem:spectral}\lab{PROVED}
+The dual graph of our certified $44$-tiling, built from its exact coordinates, has $44$ vertices,
+$45$ shared full edges, degree distribution $\{1^{11},2^{20},3^{13}\}$ and four components of
+orders $4,8,16,16$ --- not isomorphic, so a decomposition into isomorphic subgraphs does not occur
+in the one realized example available. More decisively, a spectral criterion is a function of the
+dual graph, whose admissible constraints are exactly the vertex-figure counts of
+Proposition~\ref{prop:globalsys}; those admit prime solutions, so no such criterion excludes a
+prime order.
+\end{remark}
+
+\begin{remark}[No higher nilpotent layer]\label{rem:nilptower}\lab{VERIFIED}
+The lower central series satisfies $\gamma_{k+1}=[G,\gamma_k]$. The tiling group's class-2 layer
+collapses (Remark~\ref{OM-tilinggroup}), i.e.\ $\gamma_2=\gamma_3$; then
+$\gamma_4=[G,\gamma_3]=[G,\gamma_2]=\gamma_3$ and inductively $\gamma_k=\gamma_2$ for all $k\ge2$.
+Every nilpotent quotient therefore equals the abelianization: the obstruction is not that class $2$
+was the layer chosen, but that the tower has no further layers.
+\end{remark}
+
+The four share a cause. Each is a counting invariant --- of areas, of spectra, of vertices, of
+commutators --- and \S\ref{sec:onewall} records that counting cannot answer the crossing question.
+Proposition~\ref{prop:globalsys} is the sharpest form of that statement we have: the complete
+global system is satisfied, in seventeen ways, by a value proved untileable.
+
 \section{The crossing question is the single obstruction}\label{sec:onewall}
 
 The preceding sections record failures one route at a time. This section states the consolidated
