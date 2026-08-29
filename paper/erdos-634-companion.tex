@@ -2222,10 +2222,12 @@ combinatorial layer rests on one forbidden transition --- two $\gamma$s cannot m
 sum to $\pi$, while $2\gamma=\pi+\alpha$ exceeds it
 (\texttt{OrientBridge.no\_two\_gamma\_at\_boundary\_junction}). The same file records why the
 constraint is a boundary phenomenon: at an interior point the budget is $2\pi$ and $2\gamma<2\pi$,
-which is exactly the reason the corner-chain induction fails at interior $V_k$. What remains of (c)
-is the indexing --- a map from a dissection and its base edge to an ordered list of orientations,
-whose adjacency relation is that theorem --- and until it exists the combinatorial results still do
-not apply to tilings.
+which is exactly the reason the corner-chain induction fails at interior $V_k$. The obligation is discharged in indexed form too: given the two readings the indexing must supply
+--- that a `BG` tile meets the junction at its east end and a `GB` tile at its west --- consecutive
+base tiles satisfy the admissibility relation of the combinatorial layer
+(\texttt{adjacent\_admissible}). What remains of (c) is therefore the map itself --- from a
+dissection and its base edge to an ordered list of orientations --- and not any further geometric
+fact; until that map exists the combinatorial results still do not apply to tilings.
 \end{remark}
 
 In fact the fan induction is not needed for the mathematics at all. Since the angle sums are a

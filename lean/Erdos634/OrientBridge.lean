@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 import Erdos634.PinPlumbing
+import Erdos634.Inflation
 
 /-!
 # Bridge (c), first span: the forbidden transition is a fact about dissections
@@ -68,5 +69,36 @@ is `π + α`, not `α`. -/
 theorem interior_residue (α β γ : ℝ) (hγ : γ = 2 * α + β) (hπ : 3 * α + 2 * β = Real.pi) :
     2 * Real.pi - γ - β = Real.pi + α := by
   rw [hγ]; linarith
+
+/-! ## The span in indexed form: adjacency along the base
+
+The indexing construction must produce, for consecutive base tiles, orientations satisfying
+`Inflation.admissiblePair`.  Its only non-trivial obligation is the `BG,GB` case, and that is
+exactly the theorem above once the indexing supplies two readings:
+
+* if tile `i` has orientation `BG`, the junction is its **east** end, where `BG` shows `γ`;
+* if tile `j` has orientation `GB`, the junction is its **west** end, where `GB` shows `γ`.
+
+`adjacent_admissible` discharges the obligation from those two readings.  They are hypotheses
+here — supplying them *is* the indexing construction, and it remains unbuilt — but every other
+part of the bridge is now closed, so the remaining work is the map, not a further geometric fact. -/
+
+open Erdos634.Inflation in
+/-- **Adjacency along the base.**  Two distinct tiles meeting at a boundary junction cannot carry
+the transition `BG,GB`: that would put `γ` on both sides of the junction.  Given the indexing's
+two readings, consecutive base tiles satisfy `admissiblePair`. -/
+theorem adjacent_admissible {N : ℕ} (D : Dissection N) {p : Plane}
+    (hp : p ∈ frontier D.target.carrier) (hv : p ∉ Set.range D.target.pts)
+    (α β γ : ℝ) (hα : 0 < α) (hγ : γ = 2 * α + β) (hπ : 3 * α + 2 * β = Real.pi)
+    (i j : Fin N) (hij : i ≠ j) (oi oj : Orient)
+    (hi : oi = Orient.BG → (D.tile i).localAngle p = γ)
+    (hj : oj = Orient.GB → (D.tile j).localAngle p = γ) :
+    admissiblePair oi oj = true := by
+  cases oi <;> cases oj
+  · rfl
+  · exact absurd (no_two_gamma_at_boundary_junction D hp hv α β γ hα hγ hπ i j hij
+      (hi rfl) (hj rfl)) (by simp)
+  · rfl
+  · rfl
 
 end Erdos634.OrientBridge
