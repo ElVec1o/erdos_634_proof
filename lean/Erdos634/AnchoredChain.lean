@@ -4,9 +4,14 @@ import Erdos634.PinPlumbing
 /-!
 # The anchored-chain kill: a locating consequence of the angle budget
 
-Erdős #634.  The ledger's central diagnosis is that every invariant the sweep produces *counts*,
-while the open step needs one that *locates*.  This file records a fact that does locate: it pins
-an endpoint of a covering chain to a specific point.
+Erdős #634.  **Novelty, stated first because I got the order wrong.**  This file was written as
+a "new locating tool"; the novelty check afterwards showed it is not new.  The through-edge
+principle it rests on is already in the corpus (`DoubleC`, `PinLemma`, `V1Gaps.N2`) and in the
+companion, which states the general form: a through-edge occupies the whole of what it meets.  The
+descent this was meant to feed — a row of `f` `a`-edges forcing a row of `f-1` above — is the
+known forced row, and its alternative branch is the known *rogue* (`RogueContainment`,
+`RogueChord`, `RogueMirror`).  What is here is a formalization of a previously paper-level special
+case, which is worth having, and nothing more.
 
 At an interior point of a dissection the tile angles sum to `2π`.  Suppose one tile has the point
 interior to an edge — contributing `π` — and another tile shows `γ = 2α + β` there.  Then
@@ -17,10 +22,9 @@ and a *second* through-edge would need a further `π = 3α + 2β > α + β`.  So
 through-edge: **every remaining tile at that point has a vertex there**, and the residue `α + β`
 admits the single figure `(n_α, n_β, n_γ) = (1,1,0)`.
 
-The consequence is positional.  A chain of edges covering a stretch of that line cannot pass
-through such a point; it must *begin* there.  Where the semigroup gap lemmas say a run of a given
-length cannot be assembled, this says where a run's endpoint must sit — which is the ingredient
-those lemmas need and cannot themselves supply.
+The consequence is positional: a chain covering that line cannot pass through such a point, it
+must begin there.  That is the right *kind* of statement for the open step, but it is a special
+case of a principle already used, so it does not advance the crux.
 
 Axiom-clean; no `sorry`.
 -/
