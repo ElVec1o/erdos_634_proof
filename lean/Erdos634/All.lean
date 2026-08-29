@@ -52,6 +52,7 @@ import Erdos634.MidTriangle
 import Erdos634.Mod12
 import Erdos634.OffsetForcing
 import Erdos634.OrderForcing
+import Erdos634.OrientBridge
 import Erdos634.Pentagon
 import Erdos634.PentagonLemma
 import Erdos634.PgramTiling22
@@ -108,4 +109,3 @@ import Erdos634.ZhangTargets
 -- 2026-08-16: 70 modules — `ForcedRow` (the A4 forced-row arithmetic skeleton) added.
 -- 2026-08-16: 72 modules — `VertexSector` and `AngleSumDissection` (the G2 payment:
 --   `Dissection.hasAngleSums` is a theorem) added.
-

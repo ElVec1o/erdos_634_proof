@@ -2215,6 +2215,17 @@ constrain no tiling until a functor from tilings to orientation words is built, 
 hypothesis --- that the run begins at a corner tile presenting $\beta$ --- is likewise an
 assumption at the combinatorial level rather than a consequence of the corner theory.
 These three, not bookkeeping, are what separate the sketch from a theorem.
+
+Of these, (c)'s mathematical content is now discharged, though its bookkeeping is not. The whole
+combinatorial layer rests on one forbidden transition --- two $\gamma$s cannot meet at a junction
+--- and that is a theorem about actual dissections: at a boundary junction the tiles' local angles
+sum to $\pi$, while $2\gamma=\pi+\alpha$ exceeds it
+(\texttt{OrientBridge.no\_two\_gamma\_at\_boundary\_junction}). The same file records why the
+constraint is a boundary phenomenon: at an interior point the budget is $2\pi$ and $2\gamma<2\pi$,
+which is exactly the reason the corner-chain induction fails at interior $V_k$. What remains of (c)
+is the indexing --- a map from a dissection and its base edge to an ordered list of orientations,
+whose adjacency relation is that theorem --- and until it exists the combinatorial results still do
+not apply to tilings.
 \end{remark}
 
 In fact the fan induction is not needed for the mathematics at all. Since the angle sums are a
