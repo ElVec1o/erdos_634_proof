@@ -937,7 +937,8 @@ struct Search {
     QD cosmin2;
     QD cosmin;        // cos of the smallest tile angle (rational)
     QD cossec2;       // cos^2 of the second-smallest tile angle
-    std::vector<QD> angtab;   // cos(X*alpha + Y*beta) for every fillable combination in (0,pi)
+    std::vector<QD> angtab;    // cos(X a + Y b) for fillable angles in (0,pi)
+    std::vector<QD> angtab_rx; // ... and in (pi,2pi), for REFLEX corners
     // ---- conflict learning (CENGINE_LEARN) -------------------------------------------------
     // When a corner test fails, the tiles meeting that corner are jointly inconsistent.  Record
     // that set; any later branch that reassembles it can be cut without re-deriving the failure.
@@ -1062,20 +1063,53 @@ struct Search {
         QD sa = sin_of(na, da), sb = sin_of(nb, db);
         if (qsign(sa) <= 0 || qsign(sb) <= 0) return;        // table unavailable -> prune disabled
         // iterate Y then X, stopping when the angle passes pi (cos increasing past -1 is the cue)
+        // Walk Y*beta for Y = 0,1,... and, from each, X*alpha for X = 0,1,...  Track the angle's
+        // half-turn by the SIGN OF THE SINE: state 0 means (0,pi), state 1 means (pi,2pi), state 2
+        // means we have passed 2pi and must stop.  (The old loop terminated on sin == 0, which for
+        // irrational alpha/pi never happens, so it ran past 2pi and polluted the tables.)
         QD cY = qd_raw(1,0,1), sY = qd_raw(0,0,1);
-        for (int Y = 0; Y <= 6; Y++) {
+        int stateY = 0;                                       // Y*beta starts at 0
+        for (int Y = 0; Y <= 8; Y++) {
+            int st = stateY;
+            if (st >= 2) break;
             QD cX = cY, sX = sY;
-            for (int X = 0; X <= 8192; X++) {
-                // angle in (0,pi) iff sin > 0, or (sin == 0 and it is 0 itself)
-                if (qsign(sX) > 0) angtab.push_back(cX);
-                else if (X + Y > 0) break;                   // reached pi or beyond for this Y
+            for (int X = 0; X <= 4096; X++) {
+                if (X + Y > 0) {
+                    if (st == 0) angtab.push_back(cX);
+                    else if (st == 1) angtab_rx.push_back(cX);
+                }
                 QD cn = cX * ca - sX * sa, sn = sX * ca + cX * sa;
+                int so = qsign(sX), sn2 = qsign(sn);
+                if (st == 0 && so > 0 && sn2 <= 0) st = 1;    // crossed pi
+                else if (st == 1 && so < 0 && sn2 >= 0) { st = 2; }  // crossed 2pi
                 cX = cn; sX = sn;
+                if (st >= 2) break;
             }
             QD cn = cY * cb - sY * sb, sn = sY * cb + cY * sb;
+            int so = qsign(sY), sn2 = qsign(sn);
+            if (stateY == 0 && so >= 0 && sn2 < 0) stateY = 1;
+            else if (stateY == 1 && so < 0 && sn2 >= 0) stateY = 2;
             cY = cn; sY = sn;
-            if (qsign(sY) <= 0 && Y > 0) break;
         }
+        auto desc = [&](const QD& A, const QD& B) { return qsign(A - B) > 0; };
+        std::sort(angtab.begin(), angtab.end(), desc);
+        std::sort(angtab_rx.begin(), angtab_rx.end(), desc);
+        angtab.erase(std::unique(angtab.begin(), angtab.end(),
+            [&](const QD& A, const QD& B){ return qsign(A - B) == 0; }), angtab.end());
+        angtab_rx.erase(std::unique(angtab_rx.begin(), angtab_rx.end(),
+            [&](const QD& A, const QD& B){ return qsign(A - B) == 0; }), angtab_rx.end());
+        if (getenv("CENGINE_TABDBG"))
+            fprintf(stderr, "angle table: convex %zu, reflex %zu\n", angtab.size(), angtab_rx.size());
+    }
+    bool tab_has(const std::vector<QD>& tab, const QD& uw, const QD& uu, const QD& ww) {
+        size_t lo = 0, hi = tab.size();
+        while (lo < hi) {
+            size_t mid = (lo + hi) / 2;
+            int c = cmp_cos(uw, uu, ww, tab[mid]);
+            if (c == 0) return true;
+            if (c > 0) hi = mid; else lo = mid + 1;
+        }
+        return false;
     }
     bool corner_ok(const Poly& poly) {
         size_t n = poly.size();
@@ -1083,9 +1117,25 @@ struct Search {
             const Pt& pv = poly[(i + n - 1) % n];
             const Pt& v = poly[i];
             const Pt& nx = poly[(i + 1) % n];
-            if (qsign(cross3(pv, v, nx)) <= 0) continue;
+            int cr0 = qsign(cross3(pv, v, nx));
+            if (cr0 < 0) {
+                // REFLEX corner: interior angle 2pi - theta, and cos(2pi - theta) = cos(theta).
+                // It must be fillable too: equal to X*alpha + Y*beta for some X,Y >= 0.
+                if (GEN_PRUNE && !angtab_rx.empty()) {
+                    Pt ur = vsub(pv, v), wr = vsub(nx, v);
+                    if (!tab_has(angtab_rx, dot(ur, wr), dot(ur, ur), dot(wr, wr)))
+                        { have_fail = true; fail_v = v; return false; }
+                }
+                continue;
+            }
+            if (cr0 <= 0) continue;
             Pt u = vsub(pv, v), w = vsub(nx, v);
             QD uw = dot(u, w);
+            // convex corner: angle in (0,pi), must be fillable.  Runs for OBTUSE ones too.
+            if (GEN_PRUNE && !angtab.empty()) {
+                if (!tab_has(angtab, uw, dot(u, u), dot(w, w)))
+                    { have_fail = true; fail_v = v; return false; }
+            }
             if (qsign(uw) <= 0) continue;
             QD uu = dot(u, u), ww = dot(w, w), uw2 = uw * uw;
             if (qsign(uw2 - cosmin2 * uu * ww) > 0) { have_fail = true; fail_v = v; return false; }
