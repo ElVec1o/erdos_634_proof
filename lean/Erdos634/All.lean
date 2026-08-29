@@ -63,6 +63,7 @@ import Erdos634.PgramTiling52
 import Erdos634.PinBuffer
 import Erdos634.PinLemma
 import Erdos634.PinPlumbing
+import Erdos634.PinRay
 import Erdos634.Primitives
 import Erdos634.Rationality
 import Erdos634.RationalityFree

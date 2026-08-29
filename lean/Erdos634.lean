@@ -96,6 +96,7 @@ import Erdos634.PgramTiling52
 import Erdos634.PinBuffer
 import Erdos634.PinLemma
 import Erdos634.PinPlumbing
+import Erdos634.PinRay
 import Erdos634.PincerLadder
 import Erdos634.PrimeArithmetic
 import Erdos634.PrimeRegimes
