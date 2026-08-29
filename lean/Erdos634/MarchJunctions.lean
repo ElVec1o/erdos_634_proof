@@ -51,4 +51,50 @@ theorem gamma_wedge_fill {α β : ℝ} (hrel : 3 * α + 2 * β = Real.pi)
   have h := Erdos634.Geometry.vertex_multiplicities hrel hirr x y z 2 1 (by push_cast; linarith)
   omega
 
+/-! ## The composition's spine: orientation propagates down the march
+
+An `a`-edge's two ends carry `β` and `γ`, one each.  At a straight junction two `γ`-flanks are
+impossible (`gamma_gamma_impossible`), so once one march `a`-tile shows `γ` at its east end, the
+next tile's west end must be `β` — and `β`-west forces `γ`-east.  By induction the whole trailing
+run is uniformly oriented, which is exactly what the traces show and what the ladder invariant
+assumed.  The seed orientation comes from the head's forced structure; the propagation is now a
+theorem. -/
+
+open Erdos634.Interface in
+/-- **An `a`-edge's ends are `β` and `γ`, one each**: if the west end is `β` the east is `γ`, and
+conversely. -/
+theorem a_edge_ends_pair (w e : Corner)
+    (hw : (flanks w).1 = Edge.a ∨ (flanks w).2 = Edge.a)
+    (he : (flanks e).1 = Edge.a ∨ (flanks e).2 = Edge.a)
+    (hne : w ≠ e) :
+    (w = Corner.beta ∧ e = Corner.gamma) ∨ (w = Corner.gamma ∧ e = Corner.beta) := by
+  cases w <;> cases e <;> simp_all [flanks]
+
+open Erdos634.Interface in
+/-- **Orientation propagates.**  Along a run of `a`-tiles whose end corners flank the `a`-side,
+with no junction carrying two `γ`-flanks, if the first tile shows `γ` east then every tile shows
+`γ` east (and hence `β` west from the second on). -/
+theorem march_orientation_propagates (n : ℕ)
+    (west east : ℕ → Corner)
+    (hflank : ∀ k ≤ n, ((flanks (west k)).1 = Edge.a ∨ (flanks (west k)).2 = Edge.a) ∧
+                       ((flanks (east k)).1 = Edge.a ∨ (flanks (east k)).2 = Edge.a))
+    (hpair : ∀ k ≤ n, west k ≠ east k)
+    (hnogg : ∀ k < n, ¬ (east k = Corner.gamma ∧ west (k+1) = Corner.gamma))
+    (hseed : east 0 = Corner.gamma) :
+    ∀ k ≤ n, east k = Corner.gamma := by
+  intro k hk
+  induction k with
+  | zero => exact hseed
+  | succ m ih =>
+    have hm : m ≤ n := Nat.le_of_succ_le hk
+    have hem : east m = Corner.gamma := ih hm
+    have hwm1 : west (m+1) ≠ Corner.gamma := by
+      intro hcontra
+      exact hnogg m (Nat.lt_of_succ_le hk) ⟨hem, hcontra⟩
+    have hfl := hflank (m+1) hk
+    rcases a_edge_ends_pair (west (m+1)) (east (m+1)) hfl.1 hfl.2 (hpair (m+1) hk) with
+      ⟨_, he⟩ | ⟨hw, _⟩
+    · exact he
+    · exact absurd hw hwm1
+
 end Erdos634.MarchJunctions
