@@ -1466,6 +1466,17 @@ the base is roughly halved rather than the complexity class changed --- and the 
 uneven across orbits: at $f=12$ most exhaust within a few thousand nodes while $(6,5)$ does not
 finish. What the prune bought is the exclusion of $N=191$; it does not by itself reach $N=431$.
 
+The residue is sharply located. Among the $f=12$ orbits, every word whose $c$ and $b$ letters are
+not adjacent in the order $c$ then $b$ finishes within a few thousand nodes, while the single word
+with $c$ immediately followed by $b$ does not finish at all; at $f=8$ the seven orbits contain no
+such word and all finish in at most $743$ nodes, whereas the one $f=8$ word of that shape takes
+forty times as long. The reason is structural: when $c$ and $b$ are adjacent the base splits into
+two $a$-runs and one block of length $c+b=2f^{2}-1$, two thirds of the base, holding a single
+internal junction --- and the propagation that pins the rest, namely that an $a$-edge's ends carry
+$\beta$ and $\gamma$ while two $\gamma$s cannot meet, has nothing to act on inside it. The
+$c\mid b$ junction is therefore the one junction type the orientation argument cannot reach, and
+its analysis is what separates the present exclusions from $N=431$.
+
 \section{Four macroscopic routes, closed}\label{sec:macro}
 
 The routes recorded elsewhere in this paper are local. This section closes four \emph{global}
