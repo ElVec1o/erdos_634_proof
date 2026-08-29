@@ -165,4 +165,38 @@ theorem orient_GB_west_gamma {N : ℕ} (D : Dissection N) (i : Fin N) (west : Pl
   · rw [tileOrient, if_pos hcon] at h; exact absurd h (by simp)
   · exact hw.resolve_left hcon
 
+/-! ## The corner input: an `a`-edge's ends carry `β` and `γ`
+
+`orient_reading` needs to know that each end of the base edge shows `β` or `γ` — never `α`.  The
+reason is that the `a`-edge is the side *opposite* the `α`-corner, so `α` sits at the third vertex
+and the two ends carry the other two angles.  The arithmetic half of that is here: if a tile's
+three vertex angles are `α, β, γ` as a multiset, the three being distinct, and the opposite vertex
+carries `α`, then neither endpoint can.
+
+The remaining input is the side–angle correspondence itself — that the shortest side faces the
+smallest angle, so the `a`-edge is opposite `α`.  It is standard, it is not proved here, and it is
+the last geometric fact bridge (c) consumes. -/
+
+/-- **Neither endpoint carries `α`.**  With the three vertex angles equal to `α, β, γ` as a
+multiset and pairwise distinct, if the opposite vertex carries `α` then each endpoint carries `β`
+or `γ`. -/
+theorem endpoints_avoid_alpha (x y α β γ : ℝ)
+    (hmul : ({x, y, α} : Multiset ℝ) = {α, β, γ})
+    (hxa : x ≠ α) (hya : y ≠ α) :
+    (x = β ∨ x = γ) ∧ (y = β ∨ y = γ) := by
+  classical
+  have hx : x ∈ ({α, β, γ} : Multiset ℝ) := by rw [← hmul]; simp
+  have hy : y ∈ ({α, β, γ} : Multiset ℝ) := by rw [← hmul]; simp
+  simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hx hy
+  exact ⟨hx.resolve_left hxa, hy.resolve_left hya⟩
+
+/-- **The tile's angles are pairwise distinct**, which is what supplies `hxa`/`hya` above: a tile
+with `a < b < c` is scalene, so its three angles are distinct.  Stated on the side comparison the
+base-`β` family satisfies (`f < f² - 1 < f²` for `f ≥ 2`). -/
+theorem sides_strict (f : ℕ) (hf : 2 ≤ f) : f < f ^ 2 - 1 ∧ f ^ 2 - 1 < f ^ 2 := by
+  constructor
+  · nlinarith [Nat.sub_add_cancel (show 1 ≤ f ^ 2 by nlinarith)]
+  · have : 1 ≤ f ^ 2 := by nlinarith
+    omega
+
 end Erdos634.OrientBridge

@@ -138,4 +138,42 @@ theorem mem_sortedPositions {ι : Type*} [DecidableEq ι] (chain : Finset ι) (p
   rw [sortedPositions, Finset.mem_sort]
   exact Finset.mem_image_of_mem pos hi
 
+/-! ## Reading the edge back: the chain as an ordered list
+
+The last step of the ordering.  Each sorted position came from a chain edge, and by injectivity
+from exactly one, so mapping the sorted positions back recovers the chain in base order. -/
+
+/-- Every sorted position comes from a chain edge. -/
+theorem exists_of_mem_sortedPositions {ι : Type*} [DecidableEq ι] (chain : Finset ι) (pos : ι → ℝ)
+    {p : ℝ} (hp : p ∈ sortedPositions chain pos) : ∃ i, i ∈ chain ∧ pos i = p := by
+  classical
+  rw [sortedPositions, Finset.mem_sort, Finset.mem_image] at hp
+  obtain ⟨i, hi, hip⟩ := hp
+  exact ⟨i, hi, hip⟩
+
+open Classical in
+/-- **The chain, in base order.**  The orientation word is read off this list. -/
+noncomputable def orderedChain {ι : Type*} [Inhabited ι] (chain : Finset ι) (pos : ι → ℝ) :
+    List ι :=
+  (sortedPositions chain pos).map fun p =>
+    if h : ∃ i, i ∈ chain ∧ pos i = p then h.choose else default
+
+/-- **One entry per chain edge.** -/
+theorem orderedChain_length {ι : Type*} [Inhabited ι] [DecidableEq ι]
+    (chain : Finset ι) (pos : ι → ℝ) (hinj : Set.InjOn pos chain) :
+    (orderedChain chain pos).length = chain.card := by
+  classical
+  rw [orderedChain, List.length_map, sortedPositions_length chain pos hinj]
+
+/-- **Every entry is a chain edge**, and sits at the position it was sorted by. -/
+theorem orderedChain_mem {ι : Type*} [Inhabited ι] [DecidableEq ι]
+    (chain : Finset ι) (pos : ι → ℝ) {i : ι} (hi : i ∈ orderedChain chain pos) :
+    i ∈ chain := by
+  classical
+  rw [orderedChain, List.mem_map] at hi
+  obtain ⟨p, hp, hip⟩ := hi
+  have hex : ∃ j, j ∈ chain ∧ pos j = p := exists_of_mem_sortedPositions chain pos hp
+  rw [dif_pos hex] at hip
+  exact hip ▸ hex.choose_spec.1
+
 end Erdos634.Contiguity

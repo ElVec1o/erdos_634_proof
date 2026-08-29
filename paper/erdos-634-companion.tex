@@ -2242,11 +2242,18 @@ endpoint would have overlapping interiors (\texttt{distinct\_left\_endpoints}), 
 keys leave no gap, since a point between them would be covered by neither while full coverage says
 it must be covered (\texttt{gap\_forces\_meet}). The sort is now built: the chain's positions form a finite set of reals, and sorting them yields
 a strictly increasing list with one entry per chain edge, every edge represented
-(\texttt{sortedPositions} and its three lemmas). What remains of bridge (c) is therefore the
-single step of reading the tile back from its position --- immediate from the key's injectivity
---- and the input that an
-$a$-edge's two ends carry $\beta$ and $\gamma$, which is the corner theory applied to a real
-tile. No further geometric obstacle stands in the way, but until those two are supplied the
+(\texttt{sortedPositions} and its three lemmas). Reading the tile back is done too: every sorted position comes from a chain edge, and by
+injectivity from exactly one, so mapping back recovers the chain in base order with one entry per
+edge (\texttt{orderedChain} and its lemmas). What remains of bridge (c) is therefore the input
+that an
+$a$-edge's two ends carry $\beta$ and $\gamma$. Its arithmetic is now in place: if a tile's three
+vertex angles are $\alpha,\beta,\gamma$ as a multiset and the vertex opposite the edge carries
+$\alpha$, then --- the tile being scalene, so that its angles are distinct --- each endpoint
+carries $\beta$ or $\gamma$ (\texttt{endpoints\_avoid\_alpha}, with
+\texttt{sides\_strict} supplying $f<f^2-1<f^2$). The one input still not proved is the
+side--angle correspondence itself, that the shortest side faces the smallest angle, so that the
+$a$-edge is the one opposite $\alpha$. It is standard, and it is the last geometric fact the
+bridge consumes. No further geometric obstacle stands in the way, but until those two are supplied the
 combinatorial results still do not apply to tilings.
 \end{remark}
 
