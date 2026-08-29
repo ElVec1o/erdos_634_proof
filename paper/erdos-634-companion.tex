@@ -2199,6 +2199,24 @@ which no tile angle fits --- together with the sketch that composes them. The co
 is not formalized, and three obligations it needs are unbuilt, which we name rather than leave
 implicit.
 
+\begin{remark}[Where the pin configuration is expensive, and what it forces]\label{rem:pinbuffer}\lab{PROVED}
+The base words that resist exhaustive search are sharply identified: those in which a
+corner-anchored $a$-run meets an $a\mid c$ junction whose $c$ is immediately followed by $b$. At
+$f=12$ every orbit of another shape exhausts within a few thousand nodes, while these do not, and
+the pattern was confirmed on a prediction made before the runs.
+
+The configuration forces more than the search sees. At the junction the west $a$-tile presents
+$\gamma$ and the $c$-tile $\beta$, leaving a wedge of exactly $\alpha$ filled by a single
+$\alpha$-tile $X$ (\texttt{PinLemma.pin\_forces\_single\_alpha}). $X$'s flanks are $b$ and $c$, but the rays it
+lies along are the $c$-tile's $a$-edge, of length only $a$, and the west tile's $b$-edge. Its flank
+along the short ray therefore \emph{overflows} that tile's apex, by $L-a$ with $L\in\{b,c\}$, and
+the two cases are decided arithmetically: $b-a$ is a semigroup gap, so the $b$-chirality admits no
+whole-edge covering beyond the apex, while $c-a=f^{2}-f=(f-1)a$ is exactly $f-1$ $a$-edges, and the
+remaining flank $b$ is then flush with the west tile's $b$-edge. One chirality dies algebraically;
+the other is rigidly pinned with an overflow that is an exact multiple of the shortest edge
+(\texttt{PinBuffer.buffer\_overflow\_b\_is\_gap}, \texttt{buffer\_dichotomy}).
+\end{remark}
+
 \begin{remark}[The unbuilt obligations of the pin programme]\label{rem:pingaps}\lab{OPEN}
 \emph{(a) The model identification.} The dissection layer's output is phrased in the corner
 angles of a model triangle. Nothing in the formal development identifies those with

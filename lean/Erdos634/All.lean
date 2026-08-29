@@ -60,6 +60,7 @@ import Erdos634.Pentagon
 import Erdos634.PentagonLemma
 import Erdos634.PgramTiling22
 import Erdos634.PgramTiling52
+import Erdos634.PinBuffer
 import Erdos634.PinLemma
 import Erdos634.PinPlumbing
 import Erdos634.Primitives
