@@ -1481,7 +1481,18 @@ the $(4,2)$ orbit at $f=12$ exhausts in $565$ nodes under the default ordering a
 terminate at all under the most-constrained one. The ordering is sound either way --- completeness
 cannot depend on which vertex is filled first --- but it must be chosen per instance family, and
 for the words identified below the default is the right choice. Neither improvement reaches those
-words.
+words. A third does, and it is the one that matters. The fillability criterion above was being
+applied only at \emph{acute convex} corners, because the corner routine skipped every non-convex
+vertex and the criterion sat behind an acute-only guard. Yet the same equation binds at obtuse
+convex corners, and at reflex corners as well, where the interior angle is $2\pi-\theta$ and the
+cosine is that of $\theta$, so the test is made against a table for the second half turn. A first
+implementation was unsound --- its table was built with a termination test on $\sin=0$, which for
+irrational $\alpha/\pi$ never occurs, so angles beyond $2\pi$ entered the tables --- and the
+positive control caught it at once, the certified $44$-tiling being reported as absent. With the
+table bounded correctly by the sign of the sine, the certified tiling is found again and every
+prior verdict and node count is reproduced, while the words that had resisted collapse: the two
+$f=12$ words that never terminated exhaust at $506$ and $807$ nodes, the whole of $f=12$ in under
+$150$ seconds, and $f=14$ likewise. That is what settles $N=431$ and $N=587$.
 
 The residue is sharply located. Among the $f=12$ orbits, every word whose $c$ and $b$ letters are
 not adjacent in the order $c$ then $b$ finishes within a few thousand nodes, while the single word

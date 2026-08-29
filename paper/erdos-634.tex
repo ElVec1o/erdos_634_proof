@@ -140,8 +140,8 @@ mathematical step, and until it is supplied, the folklore conjecture is not reso
 Unconditionally, this paper proves: no prime $N\equiv7\pmod{12}$ is a tile count (such $N$ are not
 base-$\beta$ candidates at all, by Theorem~\ref{thm:mod12}, so Theorem~\ref{thm:main} applies with no
 exception) --- in particular $N=19$; and the individual exclusions
-$N=11,23,26,47,59,66,71,107$ and $191$, each by a certified exhaustive search of every surviving
-instance, which depend on no branch theorem whatever. The class $11\pmod{12}$ beyond those values,
+$N=11,23,26,47,59,66,71,107$, $191$, $431$ and $587$, each by a certified exhaustive search of
+every surviving instance, which depend on no branch theorem whatever. The class $11\pmod{12}$ beyond those values,
 $N=83$ first among them, is \emph{not} settled unconditionally.
 
 The value $191$ is new here and deserves its mechanism. At $e=1$, $f=8$ the base walk is one of
@@ -155,6 +155,14 @@ explored through its $2^{k}$ chirality branches. The orbit that had previously r
 $f=8$, ran over three million nodes without terminating and now exhausts in under thirty thousand.
 Since $191$ is prime it forces $m=1$, and its representation $191=3\cdot8^{2}-1^{2}$ is unique, so
 no other instance arises.
+
+The values $431$ and $587$ follow the same route at $f=12$ and $f=14$, with $33$ and $52$ orbits
+respectively, and were reached by a second prune described in \cite{Obstructions}: a corner of the
+uncovered region is fillable precisely when its angle is $X\alpha+Y\beta$ for integers
+$X,Y\ge0$, and the search had been testing that criterion only at \emph{acute convex} corners.
+Extending it to obtuse and to reflex corners --- where the interior angle is $2\pi-\theta$ and the
+cosine is unchanged --- collapses the two words that had previously resisted every configuration we
+tried, from searches that never terminated to $506$ and $807$ nodes.
 
 That the hypothesis collapses at $e=1$ is recorded in the companion, whose Remark on the side
 parameter ends: complete blocks make the base read $a^fbc$, ending in a $c$-edge, while its
