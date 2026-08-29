@@ -136,6 +136,24 @@ pinned. Here the would-be blocking edge at the upper end is $P_k$'s own $c$-edge
 being derived.
 \end{remark}
 
+\begin{remark}[The $V_1$ step is repairable, and its arithmetic is machine-checked]\label{O-v1repair}\lab{CONJECTURE: complete proof sketch; the arithmetic cores VERIFIED}
+The induction step \emph{is} recoverable at $k=1$, where --- and only where --- both relevant
+anchors are boundary points: the west end $V_0=a\,u$ of the level segment and the far tip
+$W=2a\,u$ of the chord's extension both lie on the equal side, so every escape of the interior
+analysis, each of which must overrun one of them, is blocked. The closures then die on three
+arithmetic facts, formalized and axiom-clean (\texttt{lean/Erdos634/V1Gaps.lean}): $f^2-2e^2$ is
+not representable in $\langle a,b,c\rangle$ for coprime $f>2e$; no whole-edge prefix $\sigma$
+and covering edge $L$ satisfy $\sigma+L=2b-xa$ with the overrun strictly inside $L$; and at
+$e\ge2$ the length $c$ has the unique representation $(0,0,1)$ --- precisely the statement that
+fails at $e=1$, where $c=fa$ is the crossing configuration itself. Consequently, at proof-sketch
+rigor: the column $(0,e,2e)$ is excluded at $e=2$ for every coprime $f>4$, by counting --- the
+west chain and its mirror force six $c$-letters against the four available --- so the base walk
+there is the walls form unconditionally. At $e=3$ the same forcing pins the column word to
+$c^3b^3c^3$, and the $V_2$ step, whose anchors are interior, is the named residue. Engine
+verification with a corrected instance generator: all fifteen column words at $(2,5)$ are
+exhausted, including the word this paper records below as surviving every filter.
+\end{remark}
+
 \begin{remark}[The gap is exactly one crossing, and there is no cheaper repair]\label{O-n1gapexact}
 
 The step admits a sharp reduction. Let $Q$ be the tile across $T_k$'s $b$-edge
