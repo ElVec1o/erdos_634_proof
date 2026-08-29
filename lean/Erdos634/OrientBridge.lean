@@ -101,4 +101,68 @@ theorem adjacent_admissible {N : ℕ} (D : Dissection N) {p : Plane}
   · rfl
   · rfl
 
+/-! ## The reading: a tile's orientation, defined from its angles
+
+`adjacent_admissible` takes the two readings as hypotheses.  This section *defines* the
+orientation so that they become consequences, leaving the indexing's remaining obligations
+sharply visible.
+
+`tileOrient` calls a tile `BG` when it presents `β` at the west end of its base edge.  Given the
+one geometric input — that the two ends of an `a`-edge carry `β` and `γ`, distinct
+(`Interface.flanks`' content, here as a hypothesis about a real tile) — `orient_reading` says
+`BG` west-`β` is equivalent to east-`γ`, which is exactly the reading `adjacent_admissible`
+needs, and `orient_BG_east_gamma` / `orient_GB_west_gamma` deliver it in that theorem's shape. -/
+
+open Erdos634.Inflation in
+/-- The orientation of a tile along its base edge: `BG` when it shows `β` at the west end. -/
+noncomputable def tileOrient {N : ℕ} (D : Dissection N) (β : ℝ) (i : Fin N) (west : Plane) :
+    Orient :=
+  open Classical in
+  if (D.tile i).localAngle west = β then Orient.BG else Orient.GB
+
+/-- **The reading.**  If the two ends of the edge carry `β` and `γ` in some order and the three
+tile angles are distinct, then showing `β` west is equivalent to showing `γ` east. -/
+theorem orient_reading {N : ℕ} (D : Dissection N) (i : Fin N) (west east : Plane) (β γ : ℝ)
+    (hbg : β ≠ γ)
+    (hw : (D.tile i).localAngle west = β ∨ (D.tile i).localAngle west = γ)
+    (he : (D.tile i).localAngle east = β ∨ (D.tile i).localAngle east = γ)
+    (hne : (D.tile i).localAngle west ≠ (D.tile i).localAngle east) :
+    (D.tile i).localAngle west = β ↔ (D.tile i).localAngle east = γ := by
+  constructor
+  · intro hwb
+    rcases he with h | h
+    · exact absurd (hwb.trans h.symm) hne
+    · exact h
+  · intro heg
+    rcases hw with h | h
+    · exact h
+    · exact absurd (h.trans heg.symm) hne
+
+open Erdos634.Inflation in
+/-- **`BG` shows `γ` at the east end** — the first reading `adjacent_admissible` requires. -/
+theorem orient_BG_east_gamma {N : ℕ} (D : Dissection N) (i : Fin N) (west east : Plane) (β γ : ℝ)
+    (hbg : β ≠ γ)
+    (hw : (D.tile i).localAngle west = β ∨ (D.tile i).localAngle west = γ)
+    (he : (D.tile i).localAngle east = β ∨ (D.tile i).localAngle east = γ)
+    (hne : (D.tile i).localAngle west ≠ (D.tile i).localAngle east)
+    (h : tileOrient D β i west = Orient.BG) :
+    (D.tile i).localAngle east = γ := by
+  classical
+  have hwb : (D.tile i).localAngle west = β := by
+    by_contra hcon
+    rw [tileOrient, if_neg hcon] at h
+    exact absurd h (by simp)
+  exact (orient_reading D i west east β γ hbg hw he hne).mp hwb
+
+open Erdos634.Inflation in
+/-- **`GB` shows `γ` at the west end** — the second reading. -/
+theorem orient_GB_west_gamma {N : ℕ} (D : Dissection N) (i : Fin N) (west : Plane) (β γ : ℝ)
+    (hw : (D.tile i).localAngle west = β ∨ (D.tile i).localAngle west = γ)
+    (h : tileOrient D β i west = Orient.GB) :
+    (D.tile i).localAngle west = γ := by
+  classical
+  by_cases hcon : (D.tile i).localAngle west = β
+  · rw [tileOrient, if_pos hcon] at h; exact absurd h (by simp)
+  · exact hw.resolve_left hcon
+
 end Erdos634.OrientBridge

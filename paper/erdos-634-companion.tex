@@ -2225,9 +2225,17 @@ constraint is a boundary phenomenon: at an interior point the budget is $2\pi$ a
 which is exactly the reason the corner-chain induction fails at interior $V_k$. The obligation is discharged in indexed form too: given the two readings the indexing must supply
 --- that a `BG` tile meets the junction at its east end and a `GB` tile at its west --- consecutive
 base tiles satisfy the admissibility relation of the combinatorial layer
-(\texttt{adjacent\_admissible}). What remains of (c) is therefore the map itself --- from a
-dissection and its base edge to an ordered list of orientations --- and not any further geometric
-fact; until that map exists the combinatorial results still do not apply to tilings.
+(\texttt{adjacent\_admissible}). The reading itself is now a definition rather than an assumption: a tile is called $BG$ when it
+presents $\beta$ at the west end of its base edge, and given only that the edge's two ends carry
+$\beta$ and $\gamma$ in some order, showing $\beta$ west is equivalent to showing $\gamma$ east
+(\texttt{tileOrient}, \texttt{orient\_reading}), which delivers both hypotheses of
+\texttt{adjacent\_admissible}. What remains of (c) is therefore two things and no more: the
+\emph{ordering} --- \texttt{lineChain} is a finite set, and turning it into a list requires
+sorting the chain along the base and knowing that consecutive edges share an endpoint, which is a
+contiguity fact not supplied by the measure-theoretic partition --- and the input that an
+$a$-edge's two ends carry $\beta$ and $\gamma$, which is the corner theory applied to a real
+tile. No further geometric obstacle stands in the way, but until those two are supplied the
+combinatorial results still do not apply to tilings.
 \end{remark}
 
 In fact the fan induction is not needed for the mathematics at all. Since the angle sums are a
