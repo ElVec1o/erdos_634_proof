@@ -774,6 +774,7 @@ static std::string trace_path(const std::vector<int>& v) {
 // three vertices as (p q d) pairs per coordinate, meaning (p + q*sqrt(D))/d.
 static int TRACE_LVL = 0;
 
+static bool FAN_PRUNE = false;   // CENGINE_FAN=1: collapse alpha-fans
 static bool WORD_PRUNE = false;
 static int WORD_SIDE = -1;
 static std::vector<int> WORD_SEQ;        // types in order from target[WORD_SIDE]
@@ -932,6 +933,8 @@ struct Search {
     long maxdepth = 0;
     Semigroup semi;
     QD cosmin2;
+    QD cosmin;        // cos of the smallest tile angle (rational)
+    QD cossec2;       // cos^2 of the second-smallest tile angle
     std::vector<Poly> found;
     bool has_found = false;
     time_t t0 = 0, last_log = 0;
@@ -1003,7 +1006,28 @@ struct Search {
             Pt u = vsub(pv, v), w = vsub(nx, v);
             QD uw = dot(u, w);
             if (qsign(uw) <= 0) continue;
-            if (qsign(uw * uw - cosmin2 * dot(u, u) * dot(w, w)) > 0) return false;
+            QD uu = dot(u, u), ww = dot(w, w), uw2 = uw * uw;
+            if (qsign(uw2 - cosmin2 * uu * ww) > 0) return false;
+            // ---- FAN COLLAPSE (opt-in, CENGINE_FAN) -----------------------------------
+            // A convex corner smaller than the SECOND-smallest tile angle admits only the
+            // minimal angle a: an edge through the corner would contribute pi > W, so every
+            // covering tile has a vertex here, and its angle must fit.  Each such tile
+            // reduces the corner by exactly a, so the corner completes only if W is an exact
+            // integer multiple of a.  If it is not, the entire subtree is dead and is cut
+            // here rather than explored through its 2^k chirality branches.  Sound: removes
+            // no tiling.  cos(k a) by the Chebyshev recurrence, in exact arithmetic.
+            if (FAN_PRUNE && qsign(uw2 - cossec2 * uu * ww) > 0) {
+                QD ck = cosmin, ckm1 = QD(1);
+                bool exact = false;
+                for (int k = 1; k <= 4096; k++) {
+                    if (qsign(ck) <= 0) break;
+                    int c = qsign(ck * ck * uu * ww - uw2);
+                    if (c == 0) { exact = true; break; }
+                    if (c < 0) break;
+                    QD cn = QD(2) * cosmin * ck - ckm1; ckm1 = ck; ck = cn;
+                }
+                if (!exact) return false;
+            }
         }
         return true;
     }
@@ -1161,6 +1185,24 @@ struct Search {
         long d = N - left;
         if (d > maxdepth) maxdepth = d;
         if (TRACE) fprintf(stderr, "N %ld %s\n", d, trace_path(cur_idx).c_str());
+        if (TRACE_LVL >= 3) {
+            std::vector<std::string> ts;
+            mpz_class P, Q, Dn;
+            for (const Poly& tp : placed) {
+                std::string one;
+                for (const Pt& v : tp) {
+                    qd_mpz(v.x, P, Q, Dn);
+                    one += P.get_str() + "/" + Q.get_str() + "/" + Dn.get_str() + ",";
+                    qd_mpz(v.y, P, Q, Dn);
+                    one += P.get_str() + "/" + Q.get_str() + "/" + Dn.get_str() + ";";
+                }
+                ts.push_back(one);
+            }
+            std::sort(ts.begin(), ts.end());
+            std::string all;
+            for (const std::string& t : ts) all += t + "|";
+            fprintf(stderr, "S %ld %zu\n", d, std::hash<std::string>{}(all));
+        }
         time_t now = time(nullptr);
         if (par_mode) {
             // workers do not print; they publish their node delta so the coordinator can report
@@ -1324,6 +1366,10 @@ struct Search {
         mpz_class num = (mpz_class)s[1] * s[1] + (mpz_class)s[2] * s[2] - (mpz_class)s[0] * s[0];
         mpz_class den = 2 * (mpz_class)s[1] * s[2];
         cosmin2 = qd_raw(num * num, 0, den * den);
+        cosmin = qd_raw(num, 0, den);
+        { mpz_class n2 = (mpz_class)s[0]*s[0] + (mpz_class)s[2]*s[2] - (mpz_class)s[1]*s[1];
+          mpz_class d2 = 2 * (mpz_class)s[0] * s[2];
+          cossec2 = (n2 < 0) ? qd_raw(0, 0, 1) : qd_raw(n2 * n2, 0, d2 * d2); }
         semi.g[0] = tile.a; semi.g[1] = tile.b; semi.g[2] = tile.c;
         std::vector<Poly> polys{target};
         std::vector<Poly> placed;
@@ -1347,6 +1393,10 @@ struct Search {
         mpz_class num = (mpz_class)s[1] * s[1] + (mpz_class)s[2] * s[2] - (mpz_class)s[0] * s[0];
         mpz_class den = 2 * (mpz_class)s[1] * s[2];
         cosmin2 = qd_raw(num * num, 0, den * den);
+        cosmin = qd_raw(num, 0, den);
+        { mpz_class n2 = (mpz_class)s[0]*s[0] + (mpz_class)s[2]*s[2] - (mpz_class)s[1]*s[1];
+          mpz_class d2 = 2 * (mpz_class)s[0] * s[2];
+          cossec2 = (n2 < 0) ? qd_raw(0, 0, 1) : qd_raw(n2 * n2, 0, d2 * d2); }
         semi.g[0] = tile.a; semi.g[1] = tile.b; semi.g[2] = tile.c;
     }
 
@@ -1399,7 +1449,7 @@ struct Search {
     Search make_worker() const {
         Search w;
         w.tile = tile; w.target = target; w.N = N; w.name = name;
-        w.semi = semi; w.cosmin2 = cosmin2;
+        w.semi = semi; w.cosmin2 = cosmin2; w.cosmin = cosmin; w.cossec2 = cossec2;
         w.node_cap = (long long)4e18; w.par_mode = true; w.cut_depth = -1;
         w.log_secs = 1L << 60; w.ckpt_secs = 1L << 60;
         return w;
@@ -1657,6 +1707,7 @@ static bool make_instance_file(const std::string& path, Tile& tile, Poly& target
         tile.corners[i] = {cs, sn, adj[i][0], adj[i][1], adj[i][1], adj[i][0]};
     }
     if (getenv("CENGINE_TRACE")) { TRACE = true; TRACE_LVL = atoi(getenv("CENGINE_TRACE")); }
+    if (getenv("CENGINE_FAN")) FAN_PRUNE = true;
     tile.area2 = rd_qd();
     N = rd_long();
     target.clear();
