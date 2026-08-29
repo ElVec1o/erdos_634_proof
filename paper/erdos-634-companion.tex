@@ -2215,6 +2215,15 @@ whole-edge covering beyond the apex, while $c-a=f^{2}-f=(f-1)a$ is exactly $f-1$
 remaining flank $b$ is then flush with the west tile's $b$-edge. One chirality dies algebraically;
 the other is rigidly pinned with an overflow that is an exact multiple of the shortest edge
 (\texttt{PinBuffer.buffer\_overflow\_b\_is\_gap}, \texttt{buffer\_dichotomy}).
+
+The surviving chirality lands in machinery already in place. At the apex $A$ the $c$-tile shows
+$\gamma$ --- its angles are $\beta$ at the junction and $\alpha$ at the far base end --- while
+$X$'s $c$-edge passes straight through, contributing $\pi$; the pocket that remains is
+$2\pi-\gamma-\pi=\alpha+\beta$, whose figure is unique, one $\alpha$ and one $\beta$, and no
+further edge passes through $A$. That is exactly the $\alpha+\beta$ pocket of the $T$-vertex
+ladder, so the hard configuration reduces to the ladder's termination --- the same residue this
+programme has carried throughout --- rather than to new geometry
+(\texttt{pocket\_at\_apex}, \texttt{pocket\_at\_apex\_figure}).
 \end{remark}
 
 \begin{remark}[The unbuilt obligations of the pin programme]\label{rem:pingaps}\lab{OPEN}

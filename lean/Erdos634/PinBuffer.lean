@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 import Erdos634.Frontier
+import Erdos634.AnchoredChain
 
 /-!
 # The `a|c|b` pin: the buffer overflow decides the chirality
@@ -68,5 +69,30 @@ theorem buffer_dichotomy {f a b : ℕ} (hf : 2 ≤ f) (ha : a = f) (hb : b + 1 =
       subst h; subst ha; omega
     exact buffer_overflow_b_is_gap hf ha hb hd hcon
   · exact Or.inr ⟨h, by rw [h, ha]; exact buffer_overflow_c f⟩
+
+/-! ## The surviving chirality feeds the ladder
+
+With the `b`-chirality dead, `X` lays its `c` along the short ray and overruns the `c`-tile's apex
+`A` by `(f-1)a`.  At `A` the `c`-tile shows `γ` — its angles are `β` at the junction, `α` at the far
+base end, hence `γ` at the apex — and `X`'s `c`-edge passes straight through, contributing `π`.
+The pocket that remains is therefore
+
+  `2π - γ - π = π - γ = α + β`,
+
+whose figure is unique: one `α` and one `β` (`pocket_at_apex_figure`).  By
+`AnchoredChain.no_second_through_with_gamma` no further edge passes through `A`, so both of those
+tiles have a vertex there.
+
+That is exactly the `α+β` pocket the `T`-vertex ladder runs on
+(`PinLemma.t_vertex_fill`), so the surviving chirality of the hard configuration feeds directly
+into machinery already formalized rather than into new geometry. -/
+
+/-- **The pocket at the apex is `α + β`.**  From `γ = 2α + β` and `3α + 2β = π`. -/
+theorem pocket_at_apex (α β γ : ℝ) (hγ : γ = 2 * α + β) (hπ : 3 * α + 2 * β = Real.pi) :
+    2 * Real.pi - γ - Real.pi = α + β := by rw [hγ]; linarith
+
+/-- **Its figure is forced: one `α` and one `β`.** -/
+theorem pocket_at_apex_figure (x y z : ℕ) (h1 : x + 2 * z = 1) (h2 : y + z = 1) :
+    x = 1 ∧ y = 1 ∧ z = 0 := by omega
 
 end Erdos634.PinBuffer
