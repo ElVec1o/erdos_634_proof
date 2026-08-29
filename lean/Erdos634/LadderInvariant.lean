@@ -97,14 +97,12 @@ theorem terminal_kill (f x y z : ℕ) (hf : 2 ≤ f)
     (hcover : x * f + y * (f ^ 2 - 1) + z * f ^ 2 = 1) : False :=
   Erdos634.FanKill.one_is_gap f x y z hf hcover
 
-/-- **The uniform `(bp,2)` conditional, assembled.**  If the mirrored branch of a hypothetical
-tiling with a `(bp,2)`-type base word carries the march structure — pins advancing by `a`, each
-apex landing at parameter `b` on the next `c`-edge (the step identity), the stub cover reducing at
-the final block to a whole-edge run of length `1` — then no such tiling exists.  The direct branch
-dies by the pin argument (`PinLemma`); the march hypothesis is the named residue. -/
-theorem uniform_bp2_conditional (f : ℕ) (hf : 2 ≤ f)
-    (march : ∃ x y z : ℕ, x * f + y * (f ^ 2 - 1) + z * f ^ 2 = 1) : False := by
-  obtain ⟨x, y, z, h⟩ := march
-  exact terminal_kill f x y z hf h
+/-! ## WITHDRAWN (2026-08-29): `uniform_bp2_conditional` was circular
+
+That theorem's `march` hypothesis was `∃ x y z, x·f + y·(f²-1) + z·f² = 1` — verbatim the
+negation of `FanKill.one_is_gap`'s conclusion — so it read `False → False`, mentioned no
+`Dissection`, no word and no junction, and its `f` was a bare natural.  Adversarial review caught
+it; it is deleted.  `terminal_kill` above is retained only as the named endpoint of the intended
+argument, and is itself a direct alias of `one_is_gap`. -/
 
 end Erdos634.LadderInvariant

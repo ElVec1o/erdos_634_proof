@@ -2190,10 +2190,32 @@ holds in full strength: \texttt{Dissection.wall\_partition} (a straight interior
 measure-partitioned by the tile edges along it) at the pin's flanking rays, and
 \texttt{Dissection.vertex\_multiplicities} (the angle arithmetic at a vertex) at the pin itself
 --- together with the completeness of the candidate enumeration, which is the engine's certified
-soundness. The assembled conditional statement is
-\texttt{FanStep.word42\_junction\_dies}: the only exact fill of the $\beta$-wedge is a single
-$\beta$-tile (\texttt{beta\_fill\_unique}), which dies on the two-gap contract, and every
-non-exact fill stalls at the sub-$\alpha$ fan remainder, which no tile angle fits.
+soundness. There is, we must record, \emph{no} assembled conditional statement: an earlier draft carried one
+and adversarial review found it vacuous (its hypothesis negated the multiplicity system, which is
+satisfiable, rather than the geometric completion), so it has been withdrawn. What is established
+is the arithmetic --- the only exact fill of the $\beta$-wedge is a single $\beta$-tile, which
+dies on the two-gap contract, and every non-exact fill stalls at the sub-$\alpha$ fan remainder,
+which no tile angle fits --- together with the sketch that composes them. The composition itself
+is not formalized, and three obligations it needs are unbuilt, which we name rather than leave
+implicit.
+
+\begin{remark}[The unbuilt obligations of the pin programme]\label{rem:pingaps}\lab{OPEN}
+\emph{(a) The model identification.} The dissection layer's output is phrased in the corner
+angles of a model triangle. Nothing in the formal development identifies those with
+$\alpha,\beta,\gamma=2\alpha+\beta$ satisfying $3\alpha+2\beta=\pi$ with $\alpha/\pi$
+irrational, for the tile of sides $(f,f^2-1,f^2)$; that identification is the precondition for
+feeding the multiplicity theorems, and it is assumed at every point of use.
+\emph{(b) The units bridge.} The run equation concludes in extended-real distances, while the
+semigroup gap lemmas consume natural-number equations over $\langle f,f^2-1,f^2\rangle$. No
+theorem converts between them; doing so requires pinning the tiling's absolute scale.
+\emph{(c) The combinatorics--geometry bridge.} The orientation and flank machinery
+(\texttt{Interface}, \texttt{Inflation}, \texttt{RunOrientation}, \texttt{MarchAssembly}) is
+self-contained finite combinatorics that never mentions a dissection. Its theorems therefore
+constrain no tiling until a functor from tilings to orientation words is built, and the seed
+hypothesis --- that the run begins at a corner tile presenting $\beta$ --- is likewise an
+assumption at the combinatorial level rather than a consequence of the corner theory.
+These three, not bookkeeping, are what separate the sketch from a theorem.
+\end{remark}
 
 In fact the fan induction is not needed for the mathematics at all. Since the angle sums are a
 theorem of the dissection layer (\texttt{sum\_localAngle\_eq}, the discharged $G2$), a
@@ -2214,8 +2236,11 @@ the target that is not a target vertex, the tiles' local angles sum to exactly $
 two-line composition of the dissection layer's theorems
 (\texttt{PinPlumbing.pin\_angle\_sum}); the per-tile case split of the local angle is proved
 from the definition (\texttt{localAngle\_cases}); a tile covering the pin in its interior is
-excluded (\texttt{no\_interior\_tile\_at\_pin}); and the flank identification is derived
-combinatorially (\texttt{west\_flank\_gamma}, \texttt{east\_flank\_cases}). The congruence layer is
+excluded (\texttt{no\_interior\_tile\_at\_pin}); and the flank identification is reduced to a
+combinatorial statement about which corners meet which sides (\texttt{west\_flank\_gamma},
+\texttt{east\_flank\_cases}) --- reduced, not established: what these prove is that \emph{given}
+a west flank that is not $\beta$ it is $\gamma$, and that a $c$-side end is $\alpha$ or $\beta$.
+Nothing in the formal development establishes the antecedent at a junction of an actual tiling. The congruence layer is
 closed as well: congruent tiles have equal corner angles at matched vertices, by the law of cosines
 from the matched distances (\texttt{angle\_of\_sss}, \texttt{congruent\_corner\_angles}), and
 matching edge lengths (\texttt{congruent\_edge\_lengths}) --- so every tile of a congruent

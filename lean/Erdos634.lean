@@ -139,6 +139,7 @@ import Erdos634.TransverseChain
 import Erdos634.TrichotomyCut
 import Erdos634.TwoPiThirdCorners
 import Erdos634.UniformFill
+import Erdos634.V1Assembly
 import Erdos634.V1Gaps
 import Erdos634.VertexSector
 import Erdos634.W2Core

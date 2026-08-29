@@ -91,44 +91,21 @@ theorem step_exhaustion (a b g p θ : ℝ) (ha : 0 < a) (hb : 0 < b)
     rw [h] at hfit
     linarith
 
-/-! ## The assembly: the `(4,2)` junction dies, conditional on two corpus-level instantiations
+/-! ## WITHDRAWN (2026-08-29): the assembled conditional was vacuous
 
-The two interface facts the argument consumes exist in the corpus in full strength:
-`Dissection.wall_partition` (a straight interior wall segment is measure-partitioned by the tile
-edges along it) and `Dissection.vertex_multiplicities` (the angle arithmetic at a vertex, from
-`α/π` irrational).  What remains is instantiating them at the pin of a hypothetical `(1,f)` tiling
-with a `(4,2)`-type base word.  The assembly below states the death of the junction with exactly
-those two instantiations as hypotheses, so the residue is visible and names its providers.
+An earlier version of this file carried `word42_junction_dies`, presented as the assembled
+statement of the junction's death.  Adversarial review found it **vacuous**: its hypothesis
+`H2 : ¬ ∃ x y z : ℕ, x + 2*z = 0 ∧ y + z = 1` is refuted by `(0,1,0)`, so the theorem was
+`False → False` and every other hypothesis went unused.  The error was negating the *multiplicity
+system* (which has the solution "one `β`-tile") instead of the *geometric completion* (which is
+what actually fails).  It is deleted rather than repaired.
 
-* `beta_fill_unique` — the only exact fill of the `β`-wedge is a single `β`-tile: the multiplicity
-  system `(x + 2z, y + z) = (0, 1)` has one solution.  This is `vertex_multiplicities`' output
-  shape at the pin.
-* `word42_junction_dies` — given (H1) the pin's wedge angles sum exactly to `β` (the
-  `hasAngleSums` instantiation), and (H2) the single `β`-tile dies on the two-gap contract (the
-  `wall_partition` instantiation along the flanking rays), the junction admits no completion:
-  the fill is not exact by `no_exact_fan` unless it is the `β`-tile, which (H2) kills; a non-exact
-  fan stalls at a sub-`α` remainder by `fan_remainder`, which no tile angle fits by
-  `step_exhaustion`. -/
-
-/-- **The only exact fill of the `β`-wedge is one `β`-tile.**  `x·α + y·β + z·γ = β` with `γ = 2α+β`
-and nonnegative multiplicities forces `(x,y,z) = (0,1,0)`, by the integer system
-`x + 2z = 0`, `y + z = 1`. -/
-theorem beta_fill_unique (x y z : ℕ) (h1 : x + 2 * z = 0) (h2 : y + z = 1) :
-    x = 0 ∧ y = 1 ∧ z = 0 := by omega
-
-/-- **The `(4,2)` junction dies**, conditional on the two named instantiations.  `H1` delivers the
-exact-fill dichotomy; `H2` kills its only exact branch; the fan branch dies by termination. -/
-theorem word42_junction_dies (a b : ℝ) (ha : 0 < a) (hb : 0 < b)
-    (hsum : 3 * a + 2 * b = Real.pi) (hirr : ¬ ∃ r : ℚ, a = (r : ℝ) * Real.pi)
-    -- (H1) the fill of the wedge is exact or stalls at the fan remainder:
-    (H1 : (∃ x y z : ℕ, x + 2 * z = 0 ∧ y + z = 1) ∨
-          (∃ θ : ℝ, a ≤ θ ∧ θ ≤ b - (⌊b / a⌋₊ : ℝ) * a))
-    -- (H2) the single β-tile's flanks die on the gaps (two_gap_contract instantiated):
-    (H2 : ¬ ∃ x y z : ℕ, x + 2 * z = 0 ∧ y + z = 1) :
-    False := by
-  rcases H1 with h | h
-  · exact H2 h
-  · obtain ⟨θ, hθ1, hθ2⟩ := h
-    exact FanKill.fan_dies a b ha hb hsum hirr θ hθ1 hθ2
+The honest position: the assembled theorem "no tiling has a `(4,2)`-type base word" **does not
+exist in this corpus**.  What exists is the arithmetic above and in `FanKill` — each a real fact
+about `⟨f, f²-1, f²⟩` and the angle system — and a proof sketch in the companion paper.  A
+non-vacuous assembly must take a `Dissection` and a word as hypotheses and derive `False`; every
+attempt that instead assumes the case analysis is a restatement of its own conclusion.  That is
+the same failure that voided `hyp:walls` at `e = 1`, and it recurred here undetected until review.
+-/
 
 end Erdos634.FanStep
