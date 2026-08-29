@@ -176,4 +176,39 @@ theorem orderedChain_mem {ι : Type*} [Inhabited ι] [DecidableEq ι]
   rw [dif_pos hex] at hip
   exact hip ▸ hex.choose_spec.1
 
+/-! ## Span disjointness, from the measure identity rather than from raw geometry
+
+Bridge (c)'s last obligation is that distinct chain edges have disjoint open spans.  The direct
+route is planar — two tiles sharing a stretch of wall on the same side would overlap near it — and
+needs a half-disk argument.  There is a cheaper route through facts already in hand: the wall
+partition says the edge measures sum to the wall's length, and contiguity says their union *is*
+the wall.  Together those force the pairwise intersections to be null, and two intervals meeting
+in a null set have disjoint interiors, an interval of positive length having positive measure.
+
+* `null_inter_of_add_le` — the equality case of subadditivity, for a pair.
+* `disjoint_interiors_of_null_inter` — a null intersection leaves the open spans disjoint. -/
+
+/-- **The equality case, for two sets.**  If `μ A + μ B ≤ μ (A ∪ B)` then the overlap is null. -/
+theorem null_inter_of_add_le (A B : Set ℝ) (hA : MeasurableSet A) (hB : MeasurableSet B)
+    (hfin : volume (A ∪ B) ≠ ⊤) (hle : volume A + volume B ≤ volume (A ∪ B)) :
+    volume (A ∩ B) = 0 := by
+  have hid := measure_union_add_inter (μ := volume) A hB
+  -- μ(A ∪ B) + μ(A ∩ B) = μ A + μ B ≤ μ(A ∪ B)
+  have hchain : volume (A ∪ B) + volume (A ∩ B) ≤ volume (A ∪ B) := by
+    rw [hid]; exact hle
+  have h0 : volume (A ∪ B) + volume (A ∩ B) ≤ volume (A ∪ B) + 0 := by simpa using hchain
+  have heq : volume (A ∪ B) + volume (A ∩ B) = volume (A ∪ B) + 0 :=
+    le_antisymm h0 (by simp)
+  exact (ENNReal.add_right_inj hfin).mp heq
+
+/-- **Null intersection gives disjoint open spans.**  Two open intervals whose intersection is null
+are disjoint, since a nonempty open interval has positive measure. -/
+theorem disjoint_interiors_of_null_inter {p q r s : ℝ}
+    (h : volume (Ioo p q ∩ Ioo r s) = 0) : Ioo p q ∩ Ioo r s = ∅ := by
+  by_contra hne
+  obtain ⟨x, hx⟩ := nonempty_iff_ne_empty.mpr hne
+  have hopen : IsOpen (Ioo p q ∩ Ioo r s) := isOpen_Ioo.inter isOpen_Ioo
+  have : 0 < volume (Ioo p q ∩ Ioo r s) := hopen.measure_pos volume ⟨x, hx⟩
+  exact absurd h (ne_of_gt this)
+
 end Erdos634.Contiguity
