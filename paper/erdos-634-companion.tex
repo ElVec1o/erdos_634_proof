@@ -2259,8 +2259,14 @@ junction of a congruent dissection with two flank tiles of positive angle, the r
 angles are each zero or a model corner angle, and their multiset satisfies
 $x\,\alpha+y\,\beta+z\,\gamma=\pi-\mathrm{flank}_W-\mathrm{flank}_E$
 (\texttt{junction\_equation}, composing the pin equation, the case split, the interior-tile and
-through-tile exclusions, the congruence layer, and a counting lemma). The assembly of the
-catalogue rows along the word, with the run equations, is the remaining work. Also open: the
+through-tile exclusions, the congruence layer, and a counting lemma). The composition's spine is also closed: an $a$-edge's two ends carry $\beta$ and $\gamma$, one
+each, and since two $\gamma$-flanks are impossible at a junction, a $\gamma$-east orientation at
+one tile of the trailing run forces $\gamma$-east at every subsequent tile
+(\texttt{march\_orientation\_propagates}, by induction; axioms \texttt{propext} alone) --- the
+uniform orientation observed in every trace is a theorem given its seed. What remains of the
+assembly: the seed orientation from the head's forced structure, the per-junction instantiation of
+the junction equation with the propagated flanks, and the terminal kill --- bookkeeping over
+proved pieces. Also open: the
 mirrored ladder's termination, the per-word content --- its T-vertex step being already forced
 (\texttt{t\_vertex\_fill}).
 
