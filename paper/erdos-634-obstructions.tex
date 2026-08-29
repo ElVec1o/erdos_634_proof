@@ -1514,6 +1514,56 @@ $\beta$ and $\gamma$ while two $\gamma$s cannot meet, has nothing to act on insi
 $c\mid b$ junction is therefore the one junction type the orientation argument cannot reach, and
 its analysis is what separates the present exclusions from $N=431$.
 
+\section{A self-reducing family}\label{sec:march}
+
+Completing the corner criterion did more than settle two values: it made the refutation trees small
+enough to read, and reading them exposes a structure.
+
+\begin{proposition}[The adjacent family is independent of the member]\label{prop:findep}\lab{VERIFIED}
+For a base word in which $c$ is immediately followed by $b$ --- that is, $cp=bp-1$ --- the
+refutation is the same at every $f$: identical node count, identical depth, and identical values of
+every prune counter. At $f=12,14,16,18,20$ the word $(6,5)$ gives $506$ nodes with depth $13$ in
+every case, and $(5,4)$, $(7,6)$, $(8,7)$, $(9,8)$, $(10,9)$ give $299$, $807$, $1315$, $2124$,
+$3441$ likewise. Every other shape grows exponentially in $f$.
+\end{proposition}
+
+\begin{proposition}[Its size is Fibonacci in $bp$]\label{prop:fib}\lab{VERIFIED}
+Those sizes satisfy $a(n)=a(n-1)+a(n-2)+2$, equivalently $a(n)+2$ is a pure Fibonacci sequence
+(\texttt{MarchRecurrence.shift\_to\_fibonacci}), with growth $\varphi$ --- the measured ratio being
+$1.6181$ per unit $bp$. The recurrence holds at $bp=7,\dots,15$ against measured values, three of
+them recorded earlier for an unrelated purpose, and its two untested values, $9010$ and $23591$,
+were predicted before measurement and confirmed exactly.
+\end{proposition}
+
+The mechanism is visible in the traces. The forced spine is an $a$-tile, a second $a$-tile, the
+$\alpha$-filler joining their two apexes, and a third $a$-tile --- the march along the $a$-run --- and
+the branch is that filler's chirality, the two children differing by one unit in apex height. The
+subtree sizes identify what the two choices do: one advances the march by a single position, giving
+$a(n-1)$, the other by two, giving $a(n-2)$. It is a monomer--dimer march, which is why the count is
+Fibonacci, and the $+2$ counts the spine nodes consumed at each step. The independence of $f$
+follows: the march's length is set by $bp$, so the $a$-run beyond the $b$-letter never enters.
+
+The decomposition is exact in the trees. $(6,5)$'s $506$ nodes split, after a four-node spine, into
+subtrees of $205$ and $296$, where $205$ is the measured refutation of $(4,3)$ appearing verbatim
+and $296$ is that of $(5,4)$ less its three shared spine nodes; $(5,4)$'s $299$ split as $92$ and
+$202$ in the same way.
+
+\begin{remark}[What would close the family]\label{rem:marchobl}\lab{OPEN}
+An inductive proof needs the base cases $bp=3,4$ together with one step: that at an $a\mid a$
+junction of the run the $\alpha$-filler admits exactly two chiralities, advancing the configuration
+by one and by two positions, and that both reduce to the same problem at smaller $bp$. That step is
+geometry and is not proved here. With it, the entire $cp=bp-1$ family is excluded for every $bp$ and
+every $f$, with no search --- the first finite obligation this branch has offered that covers
+infinitely many members.
+\end{remark}
+
+We record one further observation without explanation. The complementary family $cp=2$ is nearly
+constant in $bp$ at fixed $f$ and grows in $f$ at $1.6164$, tending to $\varphi$; so both families
+are golden-ratio, one in $bp$ and one in $f$. That points to the same march underlying both, with
+only the parameter setting its length differing, but we could not identify which run plays that role
+in the second family: the run before the $c$ has length one, and the run after the $b$ varies with
+$bp$ while the measurements do not.
+
 \section{Four macroscopic routes, closed}\label{sec:macro}
 
 The routes recorded elsewhere in this paper are local. This section closes four \emph{global}
