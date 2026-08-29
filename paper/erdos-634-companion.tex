@@ -2260,9 +2260,14 @@ $J = pf$. This is never an integer: $\gcd(f,N_0)=1$, so $N_0 \mid f^{3}(N_0-pf)$
 $N_0 \mid p$, while $1\le p\le f-1<N_0$ (\texttt{PinRay.exit\_not\_integral}). Tile edges have
 integer lengths, so if the chain of edges along the ray ever reaches the boundary its length would
 have to be an integer, and the configuration dies at once. What is not available is the chain's
-propagation: past an edge's far endpoint the ray may pass through a tile's interior instead of
-along another edge. That single implication --- that the chain, once started at the pin, reaches
-the boundary --- is the whole of what remains.
+propagation, and this is not merely unproved but false in general. One might argue that at each
+endpoint the angle budget forbids a second through-edge, so the wedge beyond it must be bounded by
+the ray and its tile must lay an edge along the ray; but the wedge's tile may instead have a
+\emph{vertex} at that point with the ray passing strictly inside its angle, whereupon the ray runs
+through that tile's interior and the chain simply stops. Walking every edge-ray from the base of
+our certified $44$-tiling, nine of fifteen die in the interior, one of them after a single edge. So
+the non-integrality of $T$ is a genuine obstruction only for configurations in which propagation
+can be forced separately --- and that forcing is the crossing question itself.
 \end{remark}
 
 \begin{remark}[The unbuilt obligations of the pin programme]\label{rem:pingaps}\lab{OPEN}
