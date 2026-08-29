@@ -199,4 +199,48 @@ theorem sides_strict (f : ℕ) (hf : 2 ≤ f) : f < f ^ 2 - 1 ∧ f ^ 2 - 1 < f 
   · have : 1 ≤ f ^ 2 := by nlinarith
     omega
 
+/-! ## The side--angle correspondence: the last fact bridge (c) needed
+
+The `a`-edge is opposite the `α`-corner because the shortest side faces the smallest angle.  That
+is not in Mathlib in this form, but it follows from the law of cosines by one identity:
+
+`2abc·(cos A − cos B) = a(b²+c²−a²) − b(a²+c²−b²) = (b−a)·((a+b)² − c²)`,
+
+whose right side is positive when `a < b` and the triangle inequality `c < a + b` holds.  Cosine
+is strictly decreasing on `[0,π]`, so the angle opposite the shorter side is the smaller. -/
+
+/-- **The cosine comparison.**  With the law-of-cosines relations for the angles opposite `a` and
+`b`, the side inequality `a < b` forces `cos B < cos A`. -/
+theorem cos_gt_of_side_lt (a b c cA cB : ℝ) (ha : 0 < a) (hb : 0 < b) (hc : 0 < c)
+    (htri : c < a + b) (hab : a < b)
+    (hcA : 2 * b * c * cA = b ^ 2 + c ^ 2 - a ^ 2)
+    (hcB : 2 * a * c * cB = a ^ 2 + c ^ 2 - b ^ 2) : cB < cA := by
+  have hkey : 2 * a * b * c * (cA - cB) = (b - a) * ((a + b) ^ 2 - c ^ 2) := by nlinarith
+  have hpos : 0 < (b - a) * ((a + b) ^ 2 - c ^ 2) := by
+    have h1 : 0 < b - a := by linarith
+    have h2 : 0 < (a + b) ^ 2 - c ^ 2 := by nlinarith
+    positivity
+  have habc : (0:ℝ) < 2 * a * b * c := by positivity
+  have hprod : 0 < 2 * a * b * c * (cA - cB) := by rw [hkey]; exact hpos
+  nlinarith [habc, hprod]
+
+/-- **The angle comparison.**  Two angles in `[0,π]` with `cos B < cos A` satisfy `A < B`, cosine
+being strictly decreasing there. -/
+theorem angle_lt_of_cos_gt {A B : ℝ} (hA : A ∈ Set.Icc 0 Real.pi) (hB : B ∈ Set.Icc 0 Real.pi)
+    (h : Real.cos B < Real.cos A) : A < B := by
+  by_contra hcon
+  push_neg at hcon
+  rcases eq_or_lt_of_le hcon with heq | hlt
+  · rw [heq] at h; exact lt_irrefl _ h
+  · exact absurd (Real.strictAntiOn_cos hB hA hlt) (not_lt.mpr (le_of_lt h))
+
+/-- **The shortest side faces the smallest angle**, assembled: this is the input that places the
+`a`-edge opposite `α`, and with it every obligation of bridge (c) is discharged. -/
+theorem smallest_angle_opposite_shortest_side (a b c A B : ℝ)
+    (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (htri : c < a + b) (hab : a < b)
+    (hA : A ∈ Set.Icc 0 Real.pi) (hB : B ∈ Set.Icc 0 Real.pi)
+    (hcA : 2 * b * c * Real.cos A = b ^ 2 + c ^ 2 - a ^ 2)
+    (hcB : 2 * a * c * Real.cos B = a ^ 2 + c ^ 2 - b ^ 2) : A < B :=
+  angle_lt_of_cos_gt hA hB (cos_gt_of_side_lt a b c _ _ ha hb hc htri hab hcA hcB)
+
 end Erdos634.OrientBridge

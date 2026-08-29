@@ -2250,10 +2250,19 @@ $a$-edge's two ends carry $\beta$ and $\gamma$. Its arithmetic is now in place: 
 vertex angles are $\alpha,\beta,\gamma$ as a multiset and the vertex opposite the edge carries
 $\alpha$, then --- the tile being scalene, so that its angles are distinct --- each endpoint
 carries $\beta$ or $\gamma$ (\texttt{endpoints\_avoid\_alpha}, with
-\texttt{sides\_strict} supplying $f<f^2-1<f^2$). The one input still not proved is the
-side--angle correspondence itself, that the shortest side faces the smallest angle, so that the
-$a$-edge is the one opposite $\alpha$. It is standard, and it is the last geometric fact the
-bridge consumes. No further geometric obstacle stands in the way, but until those two are supplied the
+\texttt{sides\_strict} supplying $f<f^2-1<f^2$). The side--angle correspondence, which places the $a$-edge opposite $\alpha$, is proved as well.
+It is not in Mathlib in this form, but follows from the law of cosines by one identity,
+$2abc(\cos A-\cos B)=(b-a)\bigl((a+b)^2-c^2\bigr)$, whose right side is positive when $a<b$ and
+the triangle inequality holds; cosine being strictly decreasing on $[0,\pi]$, the angle opposite
+the shorter side is the smaller (\texttt{cos\_gt\_of\_side\_lt},
+\texttt{smallest\_angle\_opposite\_shortest\_side}).
+
+Every mathematical fact bridge (c) requires is therefore proved. What is not yet done is the
+\emph{instantiation}: defining the position key on an actual line chain, deriving its injectivity
+from the tiles' disjointness, and deriving the coverage hypothesis of the no-gap lemma from the
+wall partition. That is assembly against the geometric objects rather than new mathematics, but it
+is not trivial, and we state it as outstanding rather than as a formality --- an earlier draft of
+this programme described a comparable step as bookkeeping and was wrong. No further geometric obstacle stands in the way, but until those two are supplied the
 combinatorial results still do not apply to tilings.
 \end{remark}
 
