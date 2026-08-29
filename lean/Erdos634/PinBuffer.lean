@@ -95,4 +95,47 @@ theorem pocket_at_apex (α β γ : ℝ) (hγ : γ = 2 * α + β) (hπ : 3 * α +
 theorem pocket_at_apex_figure (x y z : ℕ) (h1 : x + 2 * z = 1) (h2 : y + z = 1) :
     x = 1 ∧ y = 1 ∧ z = 0 := by omega
 
+/-! ## The runway is crystalline, and where that stops short
+
+The overflow `A → Q` on `X`'s `c`-edge has length exactly `c - a = (f-1)a`.  Both longer edges
+exceed it — `b = f² - 1 > f² - f` and `c = f² > f² - f` for `f ≥ 2` — so **any covering confined to
+the runway consists of exactly `f-1` `a`-edges** (`runway_forces_a_edges`).  With the orientation
+propagating from the pocket at `A`, that run carries no branching at all: its edge types are
+forced, and so are its orientations.
+
+What the calculation does **not** give is a contradiction at the far end.  Two escapes survive, and
+both are the crossing question in this configuration:
+
+* a covering edge may **overrun `Q`** — a `b` starting at `A` overruns by `b - (f-1)a = f - 1`, and
+  a `c` by `f` (`overrun_amounts`).  The first of these is strictly below the minimal edge `a = f`,
+  so it is a semigroup gap, and killing it needs the anchoring that this programme has never
+  supplied;
+* if the run is confined, the terminal vertex `Q` carries `X`'s `β` against the last tile's `γ`,
+  leaving `4α + 2β`, whose figures are `(4,2,0)`, `(2,1,1)` and `(0,0,2)` — three options, no
+  contradiction.
+
+So the buffer analysis removes the edge-type branching entirely and localises the residue to a
+single overrun at a single named vertex.  It does not close it. -/
+
+/-- **The runway admits only `a`-edges.**  `(f-1)a` is shorter than both `b` and `c`. -/
+theorem runway_forces_a_edges (f : ℕ) (hf : 2 ≤ f) :
+    (f - 1) * f < f * f - 1 ∧ (f - 1) * f < f * f := by
+  have hF : 2 * f ≤ f * f := by nlinarith
+  have h : (f - 1) * f = f * f - f := by
+    cases f with
+    | zero => simp
+    | succ n => simp only [Nat.succ_sub_one]; ring_nf; omega
+  omega
+
+/-- **The overrun amounts.**  A `b` covering the runway from its start overruns `Q` by `f-1`; a `c`
+overruns by `f`.  The first is below the minimal edge length, hence a gap. -/
+theorem overrun_amounts (f : ℕ) (hf : 2 ≤ f) :
+    (f * f - 1) - (f - 1) * f = f - 1 ∧ (f * f) - (f - 1) * f = f := by
+  have hF : 2 * f ≤ f * f := by nlinarith
+  have h : (f - 1) * f = f * f - f := by
+    cases f with
+    | zero => simp
+    | succ n => simp only [Nat.succ_sub_one]; ring_nf; omega
+  omega
+
 end Erdos634.PinBuffer

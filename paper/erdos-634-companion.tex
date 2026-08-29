@@ -2224,6 +2224,17 @@ further edge passes through $A$. That is exactly the $\alpha+\beta$ pocket of th
 ladder, so the hard configuration reduces to the ladder's termination --- the same residue this
 programme has carried throughout --- rather than to new geometry
 (\texttt{pocket\_at\_apex}, \texttt{pocket\_at\_apex\_figure}).
+
+The runway is moreover crystalline. The overflow has length exactly $c-a=(f-1)a$, and both longer
+edges exceed it, so any covering confined to the runway is exactly $f-1$ $a$-edges: no choice of
+edge type arises, and with the orientation propagating from the pocket the run carries no branching
+at all (\texttt{runway\_forces\_a\_edges}). What this does not yield is a contradiction at the
+far end. If the run is confined, the terminal vertex carries $X$'s $\beta$ against the last tile's
+$\gamma$, leaving $4\alpha+2\beta$ with three admissible figures; and the run need not be
+confined, since a $b$ laid from the runway's start overruns the terminal vertex by $f-1$ and a $c$
+by $f$ (\texttt{overrun\_amounts}). The first of those is strictly below the minimal edge and so
+is a gap, which is the sharpest form the residue has taken --- but closing it requires the same
+anchoring the crossing question has always demanded.
 \end{remark}
 
 \begin{remark}[The unbuilt obligations of the pin programme]\label{rem:pingaps}\lab{OPEN}
