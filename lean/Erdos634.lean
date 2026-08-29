@@ -104,6 +104,7 @@ import Erdos634.RogueFan
 import Erdos634.RogueMirror
 import Erdos634.Route1
 import Erdos634.Route1Filler
+import Erdos634.RunOrientation
 import Erdos634.ScaleBreak
 import Erdos634.ScaleRigidity
 import Erdos634.SecondEdge
@@ -137,6 +138,7 @@ import Erdos634.TransverseChain
 import Erdos634.TrichotomyCut
 import Erdos634.TwoPiThirdCorners
 import Erdos634.UniformFill
+import Erdos634.V1Gaps
 import Erdos634.VertexSector
 import Erdos634.W2Core
 import Erdos634.WalkEquation

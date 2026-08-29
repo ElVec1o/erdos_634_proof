@@ -27,12 +27,12 @@ def instance(e, f, m=1, baseword=None):
     L.append(str(D))
     L.append(f"{a} {b} {c}")
     # corner 0 = alpha (opp a), 1 = beta (opp b), 2 = gamma (opp c); cos then sin
-    ca = F(b * b + c * c - a * a, 2 * b * c); sa = (F(1, 2 * f * f), 1)          # sin a = sqrt(D)/(2f^2)
+    ca = F(b * b + c * c - a * a, 2 * b * c); sa = (F(e, 2 * f * f), 1)          # sin a = e*sqrt(D)/(2f^2)
     cb = F(a * a + c * c - b * b, 2 * a * c); sb = (F(b, 2 * f ** 3), 1)         # sin b = b sqrt(D)/(2f^3)
     cg = F(a * a + b * b - c * c, 2 * a * b); sg = (F(1, 2 * f), 1)              # sin g = sqrt(D)/(2f)
     for cs, (sn, _) in ((ca, sa), (cb, sb), (cg, sg)):
         L.append(qd(cs.numerator, 0, cs.denominator) + "  " + qd(0, sn.numerator, sn.denominator))
-    area2 = F(a * c * b, 2 * f ** 3) * m * m                                     # 2*Area = a c sin(beta)
+    area2 = F(a * c * b, 2 * f ** 3)                                             # 2*Area = a c sin(beta); tile is fixed-size, only the target scales with m
     L.append(qd(0, area2.numerator, area2.denominator))
     L.append(str(N))
     L.append(qd(0, 0, 1) + "  " + qd(0, 0, 1))
@@ -51,7 +51,7 @@ def instance(e, f, m=1, baseword=None):
     wb, ws = walks(base), walks(side)
     L.append("WALKS 0 " + str(len(wb)) + " " + " ".join(f"{p} {q} {r}" for p, q, r in wb)
              + " " + str(len(ws)) + " " + " ".join(f"{p} {q} {r}" for p, q, r in ws))
-    L.append("CORNERS 0 2 2")
+    L.append("CORNERS 0 2 2" if e == 1 else "CORNERS -1 -1 -1")
     if baseword is not None:
         assert sum({0: a, 1: b, 2: c}[t] for t in baseword) == base, "base word length mismatch"
         L.append(f"BASEWORD 0 {len(baseword)} " + " ".join(map(str, baseword)))
