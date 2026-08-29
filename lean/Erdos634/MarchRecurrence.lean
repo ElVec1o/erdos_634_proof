@@ -104,4 +104,47 @@ theorem step_gives_recurrence (a : ℕ → ℤ) (n : ℕ)
     (hflush : ∀ m, a (m + 2) = a (m + 1) + a m + 2) :
     a (n + 2) = a (n + 1) + a n + 2 := hflush n
 
+/-! ## The second family, and the base cases
+
+The complementary family — words with `cp ≠ bp-1`, where the `b`-buffer does not block the
+`c`-edge runway — marches along that runway instead, of length `f-1` in `a`-units, and so is
+Fibonacci in `f` rather than in `bp`.  Measured at step `2` in `f`:
+
+  `f`   :   8    10    12     14     16     18      20      22
+  size  : 109   235   565   1429   3691   9613   25117   65707
+
+These satisfy `a(n) = 3a(n-1) - a(n-2) - 31`, the step-`2` Fibonacci recurrence with a constant
+correction; equivalently `a - 31` is a pure step-`2` Fibonacci sequence
+(`second_family_shift`).  The value at `f = 22` was predicted before measurement and confirmed
+exactly, and running the recurrence *backwards* predicts `235` at `f = 10` and `109` at `f = 8` —
+both confirmed, the latter being the count recorded when `N = 191` was settled.
+
+**Base cases.**  Family one is exact from `bp = 4`, where the measured size is `205`; the
+standalone `(3,2)` instance gives `61` rather than the recurrence's `92`, a boundary effect at the
+smallest member.  Family two is exact from `f = 8`, size `109`.
+
+**The step, stated.**  At a junction the wedge is `π - γ - β = α`, whose only fill is a single
+`α`-tile (`n_α + 2n_γ = 1`, `n_β + n_γ = 0` forces `(1,0,0)`), so the tile is forced and the only
+freedom is its chirality.  What remains to prove is that both chiralities are geometrically
+admissible, the flush one joining the neighbouring apexes exactly and the offset one displaced by
+`c - b`.  The displacements are settled (`flush_displacement`, `offset_displacement`); the
+admissibility is the open geometric content. -/
+
+/-- **The wedge at a march junction admits exactly one `α`-tile.**  `n_α + 2n_γ = 1` and
+`n_β + n_γ = 0`. -/
+theorem junction_forces_single_alpha (x y z : ℕ) (h1 : x + 2 * z = 1) (h2 : y + z = 0) :
+    x = 1 ∧ y = 0 ∧ z = 0 := by omega
+
+/-- **The second family's shift.**  `a(n) = 3a(n-1) - a(n-2) - 31` iff `a - 31` satisfies the pure
+step-`2` Fibonacci recurrence `b(n) = 3b(n-1) - b(n-2)`. -/
+theorem second_family_shift (a : ℕ → ℤ) (n : ℕ)
+    (h : a (n + 2) = 3 * a (n + 1) - a n - 31) :
+    (a (n + 2) - 31) = 3 * (a (n + 1) - 31) - (a n - 31) := by omega
+
+/-- The measured base of the second family, and the recurrence carrying it forward. -/
+theorem second_family_base : (3 : ℤ) * 235 - 109 - 31 = 565 := by norm_num
+
+/-- The measured base of the first family, and the recurrence carrying it forward. -/
+theorem first_family_base : (205 : ℤ) + 92 + 2 = 299 := by norm_num
+
 end Erdos634.MarchRecurrence
