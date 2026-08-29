@@ -2254,8 +2254,13 @@ one $\beta$, the $\gamma$-wedge dichotomy, or the impossibility of two $\gamma$-
 ($2\gamma=\pi+\alpha>\pi$) --- so no junction type the march can meet is missing
 (\texttt{MarchJunctions}). The landing itself is the tile's own law of cosines: the apex lies at
 distance exactly $b$ from the next pin because $a^2+c^2-2ac\cos\beta=b^2$
-(\texttt{ladder\_step\_identity}). The assembly of these rows along the word, with the run
-equations, is the remaining work. Also open: the
+(\texttt{ladder\_step\_identity}). The catalogue's hypothesis form is itself now a theorem of the dissection layer: at any base
+junction of a congruent dissection with two flank tiles of positive angle, the remaining tiles'
+angles are each zero or a model corner angle, and their multiset satisfies
+$x\,\alpha+y\,\beta+z\,\gamma=\pi-\mathrm{flank}_W-\mathrm{flank}_E$
+(\texttt{junction\_equation}, composing the pin equation, the case split, the interior-tile and
+through-tile exclusions, the congruence layer, and a counting lemma). The assembly of the
+catalogue rows along the word, with the run equations, is the remaining work. Also open: the
 mirrored ladder's termination, the per-word content --- its T-vertex step being already forced
 (\texttt{t\_vertex\_fill}).
 

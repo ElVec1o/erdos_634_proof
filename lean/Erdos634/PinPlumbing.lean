@@ -279,4 +279,96 @@ theorem at_most_two_through {N : ℕ} (D : Dissection N) {p : Plane}
   rw [hsum, hi, hj, hk] at hle
   nlinarith [Real.pi_pos]
 
+/-! ## The junction equation: the catalogue's hypothesis is a theorem of the dissection layer
+
+The march catalogue (`MarchJunctions`) consumes hypotheses of the form
+`x·α + y·β + z·γ = wedge`.  This section derives them: at a base junction of a congruent
+dissection, the non-flank tiles' angles sum to exactly `π` minus the two flank angles, each term
+is one of the model's three corner angles, and counting gives the multiplicity form.  With this,
+the march hypothesis reduces to flank bookkeeping and run equations alone. -/
+
+/-- **Real-valued three-or-zero counting.**  A finite sum whose terms each equal `0`, `A`, `B`,
+or `C` is `x•A + y•B + z•C`. -/
+theorem sum_of_values_real {ι : Type*} (S : Finset ι) (g : ι → ℝ) (A B C : ℝ)
+    (h : ∀ e ∈ S, g e = 0 ∨ g e = A ∨ g e = B ∨ g e = C) :
+    ∃ x y z : ℕ, ∑ e ∈ S, g e = x * A + y * B + z * C := by
+  classical
+  induction S using Finset.induction_on with
+  | empty => exact ⟨0, 0, 0, by simp⟩
+  | insert a s ha ih =>
+    obtain ⟨x, y, z, hsum⟩ := ih (fun e he => h e (Finset.mem_insert_of_mem he))
+    rcases h a (Finset.mem_insert_self a s) with h0 | hA | hB | hC
+    · exact ⟨x, y, z, by rw [Finset.sum_insert ha, hsum, h0]; ring⟩
+    · exact ⟨x + 1, y, z, by rw [Finset.sum_insert ha, hsum, hA]; push_cast; ring⟩
+    · exact ⟨x, y + 1, z, by rw [Finset.sum_insert ha, hsum, hB]; push_cast; ring⟩
+    · exact ⟨x, y, z + 1, by rw [Finset.sum_insert ha, hsum, hC]; push_cast; ring⟩
+
+/-- **The junction equation.**  At a base junction (frontier, non-vertex) of a dissection whose
+tiles are congruent to the model, with two distinct flank tiles of positive local angle, the
+remaining tiles' angles are each `0` or a model corner angle, and their multiset sums to exactly
+`π` minus the flanks:  `x·A₀ + y·A₁ + z·A₂ = π - flankW - flankE`. -/
+theorem junction_equation {N : ℕ} (D : Dissection N) (model : Tri)
+    (hcong : ∀ i, model.Congruent (D.tile i))
+    {p : Plane} (hp : p ∈ frontier D.target.carrier) (hv : p ∉ Set.range D.target.pts)
+    (iW iE : Fin N) (hWE : iW ≠ iE)
+    (hAW : 0 < (D.tile iW).localAngle p) (hAE : 0 < (D.tile iE).localAngle p) :
+    ∃ x y z : ℕ,
+      (x : ℝ) * cornerAngle (model.pts 1) (model.pts 0) (model.pts 2)
+        + y * cornerAngle (model.pts 2) (model.pts 1) (model.pts 0)
+        + z * cornerAngle (model.pts 0) (model.pts 2) (model.pts 1)
+      = Real.pi - (D.tile iW).localAngle p - (D.tile iE).localAngle p := by
+  classical
+  have hsum := pin_angle_sum D hp hv
+  set S : Finset (Fin N) := (Finset.univ.erase iW).erase iE with hS
+  have hsplit : ∑ i ∈ S, (D.tile i).localAngle p
+      = Real.pi - (D.tile iW).localAngle p - (D.tile iE).localAngle p := by
+    have h1 : ∑ i ∈ Finset.univ.erase iW, (D.tile i).localAngle p
+        = Real.pi - (D.tile iW).localAngle p := by
+      have := Finset.add_sum_erase Finset.univ (fun i => (D.tile i).localAngle p)
+        (Finset.mem_univ iW)
+      linarith [hsum, this]
+    have h2 : ∑ i ∈ S, (D.tile i).localAngle p
+        = (∑ i ∈ Finset.univ.erase iW, (D.tile i).localAngle p)
+          - (D.tile iE).localAngle p := by
+      have hmem : iE ∈ Finset.univ.erase iW :=
+        Finset.mem_erase.mpr ⟨Ne.symm hWE, Finset.mem_univ iE⟩
+      have := Finset.add_sum_erase (Finset.univ.erase iW)
+        (fun i => (D.tile i).localAngle p) hmem
+      rw [hS]; linarith [this]
+    rw [h2, h1]
+  -- each remaining tile contributes 0 or a model corner angle
+  have hcases : ∀ i ∈ S, (D.tile i).localAngle p = 0 ∨
+      (D.tile i).localAngle p = cornerAngle (model.pts 1) (model.pts 0) (model.pts 2) ∨
+      (D.tile i).localAngle p = cornerAngle (model.pts 2) (model.pts 1) (model.pts 0) ∨
+      (D.tile i).localAngle p = cornerAngle (model.pts 0) (model.pts 2) (model.pts 1) := by
+    intro i hi
+    rcases localAngle_cases (D.tile i) p with ⟨j, hj, hval⟩ | h2pi | hpi | h0
+    · -- a vertex: its corner angle is one of the model's three, and the model's three are the
+      -- three displayed angles up to the vertex indexing
+      obtain ⟨k, hk⟩ := congruent_corner_angles (hcong i) j
+      right
+      rw [hval, hk]
+      fin_cases k
+      · left; rfl
+      · right; left; rfl
+      · right; right; rfl
+    · exact absurd h2pi.symm (by
+        intro hcontra
+        exact no_interior_tile_at_pin D hp hv i hcontra.symm)
+    · -- a through-tile: its π plus the two positive flanks exceeds the budget
+      exfalso
+      have hnneg : ∀ m ∈ S.erase i, 0 ≤ (D.tile m).localAngle p :=
+        fun m _ => (D.tile m).localAngle_nonneg p
+      have hge : (D.tile i).localAngle p ≤ ∑ m ∈ S, (D.tile m).localAngle p := by
+        have := Finset.add_sum_erase S (fun m => (D.tile m).localAngle p) hi
+        have hrest : 0 ≤ ∑ m ∈ S.erase i, (D.tile m).localAngle p :=
+          Finset.sum_nonneg hnneg
+        linarith [this]
+      rw [hpi] at hge
+      rw [hsplit] at hge
+      linarith
+    · exact Or.inl h0
+  obtain ⟨x, y, z, hxyz⟩ := sum_of_values_real S (fun i => (D.tile i).localAngle p) _ _ _ hcases
+  exact ⟨x, y, z, by rw [← hxyz, hsplit]⟩
+
 end Erdos634.PinPlumbing
