@@ -2240,8 +2240,11 @@ positive measure (\texttt{Contiguity.closed\_full\_measure\_eq},
 in hand: the sort key is injective on the chain, since two non-degenerate edges sharing a left
 endpoint would have overlapping interiors (\texttt{distinct\_left\_endpoints}), and consecutive
 keys leave no gap, since a point between them would be covered by neither while full coverage says
-it must be covered (\texttt{gap\_forces\_meet}). What remains is \texttt{Finset.sort}
-bookkeeping --- and the input that an
+it must be covered (\texttt{gap\_forces\_meet}). The sort is now built: the chain's positions form a finite set of reals, and sorting them yields
+a strictly increasing list with one entry per chain edge, every edge represented
+(\texttt{sortedPositions} and its three lemmas). What remains of bridge (c) is therefore the
+single step of reading the tile back from its position --- immediate from the key's injectivity
+--- and the input that an
 $a$-edge's two ends carry $\beta$ and $\gamma$, which is the corner theory applied to a real
 tile. No further geometric obstacle stands in the way, but until those two are supplied the
 combinatorial results still do not apply to tilings.

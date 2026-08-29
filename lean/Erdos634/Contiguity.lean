@@ -106,4 +106,36 @@ theorem gap_forces_meet {a b q r : ℝ} (S : Set ℝ) (hcov : Icc a b ⊆ S)
   have hx : x ∈ Ioo q r := ⟨hx1, hx2⟩
   exact absurd (huncov ▸ Set.mem_inter hx (hcov (hsub hx))) (Set.notMem_empty x)
 
+/-! ## The sort itself: a chain becomes an ordered word
+
+With the key injective, the ordering is concrete.  Sorting the chain's *positions* (a `Finset ℝ`,
+where the ambient linear order is available) and pulling back along the key gives a list whose
+length is the chain's cardinality and whose entries increase.  This is the construction the
+orientation word is read off; it needs no geometry beyond the two facts above. -/
+
+/-- The positions of a chain, in increasing order. -/
+noncomputable def sortedPositions {ι : Type*} (chain : Finset ι) (pos : ι → ℝ) : List ℝ :=
+  open Classical in (chain.image pos).sort
+
+/-- **The word has one letter per chain edge.**  When the key is injective on the chain, sorting
+the positions loses nothing. -/
+theorem sortedPositions_length {ι : Type*} [DecidableEq ι] (chain : Finset ι) (pos : ι → ℝ)
+    (hinj : Set.InjOn pos chain) :
+    (sortedPositions chain pos).length = chain.card := by
+  classical
+  rw [sortedPositions, Finset.length_sort, Finset.card_image_of_injOn hinj]
+
+/-- **The word is ordered** — strictly, since positions are distinct in a `Finset`. -/
+theorem sortedPositions_sorted {ι : Type*} (chain : Finset ι) (pos : ι → ℝ) :
+    (sortedPositions chain pos).SortedLT := by
+  classical
+  exact Finset.sortedLT_sort _
+
+/-- **Every chain edge appears.** -/
+theorem mem_sortedPositions {ι : Type*} [DecidableEq ι] (chain : Finset ι) (pos : ι → ℝ)
+    {i : ι} (hi : i ∈ chain) : pos i ∈ sortedPositions chain pos := by
+  classical
+  rw [sortedPositions, Finset.mem_sort]
+  exact Finset.mem_image_of_mem pos hi
+
 end Erdos634.Contiguity
