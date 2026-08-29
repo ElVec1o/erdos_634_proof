@@ -69,4 +69,32 @@ theorem e3_count_survives :
   · intro i hi; simp [hi]
   · intro i hi; simp [hi]
 
+/-! ## Why the repair is `k = 1` only, and what `V₂` therefore needs
+
+The `V₁` repair works because the chord tip `W₁ = 2a\,u` lies on the target's equal side, so
+nothing continues past it.  The tip at step `k` is `W_k = ((k-1)c, 0) + 2a\,u`, and it lies on the
+equal side's ray exactly when `k = 1`: the offset `((k-1)c, 0)` is horizontal while `u` is not, so
+it can only be absorbed when it vanishes.  Verified numerically at five members — `W₁` at distance
+exactly `0` from the side, `W₂` interior by about a tile diameter — and proved here in the form
+that matters, that the offset must vanish.
+
+**Consequence for `V₂`.**  No refinement of the boundary argument can reach it: the blocker at
+`V₂` would have to be the tiles already forced by the `V₁` analysis, not the target's edge.  That
+is the locating problem again, in its per-configuration form, and it is the honest statement of
+what the `e = 3` step needs. -/
+
+/-- **The chord tip leaves the side ray unless `k = 1`.**  If `((k-1)c, 0) + 2a·u = t·u` with `u`
+not horizontal and `c ≠ 0`, then `k = 1`. -/
+theorem chord_tip_on_ray_iff (k : ℕ) (c a t u₁ u₂ : ℝ) (hc : c ≠ 0) (hu : u₂ ≠ 0)
+    (h1 : ((k : ℝ) - 1) * c + 2 * a * u₁ = t * u₁)
+    (h2 : 2 * a * u₂ = t * u₂) : (k : ℝ) = 1 := by
+  have ht : t = 2 * a := by
+    have := mul_right_cancel₀ hu (by linarith : 2 * a * u₂ = t * u₂)
+    linarith
+  rw [ht] at h1
+  have : ((k : ℝ) - 1) * c = 0 := by linarith
+  rcases mul_eq_zero.mp this with h | h
+  · linarith
+  · exact absurd h hc
+
 end Erdos634.V1Assembly

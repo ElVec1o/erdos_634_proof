@@ -158,7 +158,17 @@ what is gained is that the dichotomy step there no longer cites Hypothesis~\ref{
 and \emph{formalized} describes the number theory alone, every geometric step of the repair
 lying on the far side of the obligations named in \cite{Companion}'s
 Remark~\ref{C-rem:pingaps}. At $e=3$ the same forcing pins the column word to
-$c^3b^3c^3$, and the $V_2$ step, whose anchors are interior, is the named residue. Engine
+$c^3b^3c^3$, and the $V_2$ step is the named residue. That step cannot be reached by refining the
+present argument, and it is worth saying why. The chord tip at step $k$ is
+$W_k=((k-1)c,0)+2a\,u$, which lies on the equal side's ray exactly when $k=1$: the offset
+$((k-1)c,0)$ is horizontal while $u$ is not, so it can be absorbed only when it vanishes
+(\texttt{V1Assembly.chord\_tip\_on\_ray\_iff}; numerically, $W_1$ is at distance $0$ from the
+side at every member checked and $W_2$ is interior by roughly a tile diameter,
+\texttt{code/analysis/chord\_tip\_check.py}). Any blocker at $V_2$ must therefore be a tile
+already forced rather than the target's edge --- which is the locating problem in its
+per-configuration form. A search at $(3,7)$ on the surviving word $c^3b^3c^3$ reached five million
+nodes without exhausting, an order of magnitude beyond the hardest completed word at $e=2$, and is
+recorded as inconclusive. Engine
 verification with a corrected instance generator: all fifteen column words at $(2,5)$ are
 exhausted, including the word this paper records below as surviving every filter.
 \end{remark}
