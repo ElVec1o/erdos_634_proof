@@ -140,9 +140,21 @@ mathematical step, and until it is supplied, the folklore conjecture is not reso
 Unconditionally, this paper proves: no prime $N\equiv7\pmod{12}$ is a tile count (such $N$ are not
 base-$\beta$ candidates at all, by Theorem~\ref{thm:mod12}, so Theorem~\ref{thm:main} applies with no
 exception) --- in particular $N=19$; and the individual exclusions
-$N=11,23,26,47,59,66,71,107$, each by a certified exhaustive search of every surviving instance,
-which depend on no branch theorem whatever. The class $11\pmod{12}$ beyond those values, $N=83$
-first among them, is \emph{not} settled unconditionally.
+$N=11,23,26,47,59,66,71,107$ and $191$, each by a certified exhaustive search of every surviving
+instance, which depend on no branch theorem whatever. The class $11\pmod{12}$ beyond those values,
+$N=83$ first among them, is \emph{not} settled unconditionally.
+
+The value $191$ is new here and deserves its mechanism. At $e=1$, $f=8$ the base walk is one of
+$42$ words; the pincer window at the proved reach~$3$ kills all but $14$, which fall into $7$
+mirror-orbits, and each of those is now excluded by exhaustive search. What made this feasible is a
+prune we introduce below: a convex corner of the uncovered region smaller than the tile's
+second-smallest angle can be met only by tiles presenting the smallest angle --- an edge through it
+would contribute $\pi$ --- so the corner is completable only if it is an exact integer multiple of
+that angle, and when it is not the whole subtree is empty and is cut at its root rather than
+explored through its $2^{k}$ chirality branches. The orbit that had previously resisted, $(3,2)$ at
+$f=8$, ran over three million nodes without terminating and now exhausts in under thirty thousand.
+Since $191$ is prime it forces $m=1$, and its representation $191=3\cdot8^{2}-1^{2}$ is unique, so
+no other instance arises.
 
 That the hypothesis collapses at $e=1$ is recorded in the companion, whose Remark on the side
 parameter ends: complete blocks make the base read $a^fbc$, ending in a $c$-edge, while its
