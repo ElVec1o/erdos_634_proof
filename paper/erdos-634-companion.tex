@@ -2236,8 +2236,12 @@ nothing about gaps on its own. That fact is now available: the chain edges are \
 their union is closed, and a closed subset of an interval carrying the interval's whole measure is
 the interval --- its complement is open and null, while a nonempty open subset of $\mathbb R$ has
 positive measure (\texttt{Contiguity.closed\_full\_measure\_eq},
-\texttt{no\_gap\_between}). What is left of the ordering is therefore the sort itself --- and
-the input that an
+\texttt{no\_gap\_between}). What is left of the ordering is therefore the sort itself, and the two facts it rests on are also
+in hand: the sort key is injective on the chain, since two non-degenerate edges sharing a left
+endpoint would have overlapping interiors (\texttt{distinct\_left\_endpoints}), and consecutive
+keys leave no gap, since a point between them would be covered by neither while full coverage says
+it must be covered (\texttt{gap\_forces\_meet}). What remains is \texttt{Finset.sort}
+bookkeeping --- and the input that an
 $a$-edge's two ends carry $\beta$ and $\gamma$, which is the corner theory applied to a real
 tile. No further geometric obstacle stands in the way, but until those two are supplied the
 combinatorial results still do not apply to tilings.

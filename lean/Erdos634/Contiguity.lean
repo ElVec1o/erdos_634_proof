@@ -70,4 +70,40 @@ theorem finite_union_closed {ι : Type*} (s : Finset ι) (E : ι → Set ℝ)
     (h : ∀ i ∈ s, IsClosed (E i)) : IsClosed (⋃ i ∈ s, E i) :=
   Set.Finite.isClosed_biUnion s.finite_toSet h
 
+/-! ## What the sort needs: a key, and no gaps between consecutive keys
+
+Turning `lineChain` into a list means sorting by a key — the left endpoint's parameter along the
+base — and reading adjacency off the sorted order.  Two facts make that mechanical, and neither is
+free:
+
+* the key is **injective** on the chain.  Two distinct non-degenerate edges cannot share a left
+  endpoint, since their interiors would then overlap, contradicting the tiles' disjointness
+  (`distinct_left_endpoints`).
+* consecutive keys leave **no gap**.  If one edge ends at `q`, the next begins at `r`, and `q < r`,
+  then any point strictly between is covered by neither — and by `no_gap_between` it must be
+  covered, so no such point exists and `q = r` (`gap_forces_meet`).
+
+Together with `closed_full_measure_eq` these reduce the ordering to `Finset.sort` bookkeeping. -/
+
+/-- **The sort key is injective.**  Two non-degenerate intervals with disjoint interiors cannot
+share a left endpoint. -/
+theorem distinct_left_endpoints {p q r s : ℝ} (hpq : p < q) (hrs : r < s)
+    (hdisj : Ioo p q ∩ Ioo r s = ∅) : p ≠ r := by
+  intro hpr
+  subst hpr
+  have hmin : p < min q s := lt_min hpq hrs
+  obtain ⟨x, hx1, hx2⟩ := exists_between hmin
+  have hxq : x ∈ Ioo p q := ⟨hx1, lt_of_lt_of_le hx2 (min_le_left _ _)⟩
+  have hxs : x ∈ Ioo p s := ⟨hx1, lt_of_lt_of_le hx2 (min_le_right _ _)⟩
+  exact absurd (hdisj ▸ Set.mem_inter hxq hxs) (Set.notMem_empty x)
+
+/-- **No gap between consecutive edges.**  If the covered set contains all of `[a,b]`, and a point
+strictly between `q` and `r` lies in `[a,b]` but in no edge, the covering fails.  Contrapositive:
+under full coverage the edges meet. -/
+theorem gap_forces_meet {a b q r : ℝ} (S : Set ℝ) (hcov : Icc a b ⊆ S)
+    (hqr : q < r) (hsub : Ioo q r ⊆ Icc a b) (huncov : Ioo q r ∩ S = ∅) : False := by
+  obtain ⟨x, hx1, hx2⟩ := exists_between hqr
+  have hx : x ∈ Ioo q r := ⟨hx1, hx2⟩
+  exact absurd (huncov ▸ Set.mem_inter hx (hcov (hsub hx))) (Set.notMem_empty x)
+
 end Erdos634.Contiguity
