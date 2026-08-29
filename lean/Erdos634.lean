@@ -1,5 +1,6 @@
 import Erdos634.A2BranchRow3
 import Erdos634.A36Reduction
+import Erdos634.AnchoredChain
 import Erdos634.AngleArithmetic
 import Erdos634.AngleSumAssembled
 import Erdos634.AngleSumDissection
