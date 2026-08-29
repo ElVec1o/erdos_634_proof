@@ -1,6 +1,7 @@
 import Mathlib.Tactic
 import Erdos634.PinPlumbing
 import Erdos634.Inflation
+import Erdos634.Contiguity
 
 /-!
 # Bridge (c), first span: the forbidden transition is a fact about dissections
@@ -242,5 +243,42 @@ theorem smallest_angle_opposite_shortest_side (a b c A B : ℝ)
     (hcA : 2 * b * c * Real.cos A = b ^ 2 + c ^ 2 - a ^ 2)
     (hcB : 2 * a * c * Real.cos B = a ^ 2 + c ^ 2 - b ^ 2) : A < B :=
   angle_lt_of_cos_gt hA hB (cos_gt_of_side_lt a b c _ _ ha hb hc htri hab hcA hcB)
+
+/-! ## The instantiation's first piece: the position key
+
+The ordering lemmas are stated for an abstract key `pos : ι → ℝ`.  On a wall the key is concrete:
+project each chain edge's two endpoints onto the base direction and take the smaller.  This
+section defines it and records the two facts the ordering consumes, so the instantiation's
+remaining obligations are explicit rather than vague.
+
+* `edgePos_le_both` — the key is at most each endpoint's coordinate, so it really is the left end.
+* `edgePos_injOn_of_disjoint` — injectivity, **from** the hypothesis that distinct chain edges have
+  disjoint open spans.  That hypothesis is the one genuine geometric obligation left: it must come
+  from the tiles' interiors being disjoint, which this file does not prove. -/
+
+/-- The position of a chain edge along the base: the smaller endpoint coordinate. -/
+noncomputable def edgePos {N : ℕ} (D : Dissection N) (dir : Plane →ₗ[ℝ] ℝ)
+    (e : Fin N × Fin 3) : ℝ :=
+  min (dir ((D.tile e.1).pts e.2)) (dir ((D.tile e.1).pts (e.2 + 1)))
+
+/-- The key is at most either endpoint's coordinate. -/
+theorem edgePos_le_both {N : ℕ} (D : Dissection N) (dir : Plane →ₗ[ℝ] ℝ) (e : Fin N × Fin 3) :
+    edgePos D dir e ≤ dir ((D.tile e.1).pts e.2) ∧
+    edgePos D dir e ≤ dir ((D.tile e.1).pts (e.2 + 1)) :=
+  ⟨min_le_left _ _, min_le_right _ _⟩
+
+/-- **Injectivity of the key**, from disjointness of the edges' open spans.  Supplying that
+disjointness from the tiles' non-overlap is the instantiation's remaining geometric obligation. -/
+theorem edgePos_injOn_of_disjoint {N : ℕ} (D : Dissection N) (dir : Plane →ₗ[ℝ] ℝ)
+    (chain : Finset (Fin N × Fin 3)) (hi : Fin N × Fin 3 → ℝ)
+    (hdisj : ∀ e ∈ chain, ∀ e' ∈ chain, e ≠ e' →
+      edgePos D dir e < hi e' ∨ edgePos D dir e' < hi e →
+      Set.Ioo (edgePos D dir e) (hi e) ∩ Set.Ioo (edgePos D dir e') (hi e') = ∅)
+    (hnd : ∀ e ∈ chain, edgePos D dir e < hi e)
+    : Set.InjOn (edgePos D dir) chain := by
+  intro e he e' he' heq
+  by_contra hne
+  have h := hdisj e he e' he' hne (Or.inl (heq ▸ hnd e' he'))
+  exact Erdos634.Contiguity.distinct_left_endpoints (hnd e he) (hnd e' he') h heq
 
 end Erdos634.OrientBridge
