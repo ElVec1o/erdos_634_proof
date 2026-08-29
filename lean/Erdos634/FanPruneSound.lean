@@ -84,4 +84,63 @@ theorem residue_trapped {α W : ℝ} (hα : 0 < α) (hW : 0 < W)
     · exact absurd (by linarith : W - (⌊W / α⌋₊ : ℝ) * α = 0) hnotmul
   · nlinarith [h2]
 
+/-! ## The extended criterion: every corner, not only the acute convex ones
+
+The engine's corner test was applied only at **acute convex** corners: the corner routine skipped
+every non-convex vertex, and the fillability test sat behind an acute-only guard.  The same
+equation binds everywhere, and extending it to obtuse and reflex corners is what settles
+`N = 431` and `N = 587`.
+
+The criterion.  A corner of the uncovered region with interior angle `W` is filled by tiles that
+either have a vertex there — contributing `α`, `β` or `γ = 2α + β` — or carry the corner interior
+to an edge, contributing `π = 3α + 2β`, which is possible only when `W > π`, i.e. at a reflex
+corner.  **Every one of those four contributions is of the form `Xα + Yβ` with `X, Y ≥ 0`**, so
+`W` must be too (`corner_fill_form`); a corner whose angle admits no such representation admits no
+fill (`corner_unfillable`).
+
+The reflex case needs one extra remark, which is why the engine matches it against a separate
+table: there the interior angle is `2π − θ` for the angle `θ` between the two boundary rays, and
+`cos(2π − θ) = cos θ`, so the cosine alone does not distinguish the two — the sign of the cross
+product does.
+
+Axiom-clean; no `sorry`.
+-/
+
+/-- **Every admissible contribution has the form `Xα + Yβ` with `X, Y ≥ 0`.**  The four cases are
+a vertex showing `α`, `β` or `γ = 2α+β`, and an edge through the corner contributing
+`π = 3α+2β`. -/
+theorem contribution_form (α β x : ℝ)
+    (h : x = α ∨ x = β ∨ x = 2*α + β ∨ x = 3*α + 2*β) :
+    ∃ X Y : ℕ, x = (X : ℝ) * α + (Y : ℝ) * β := by
+  rcases h with h | h | h | h
+  · exact ⟨1, 0, by rw [h]; push_cast; ring⟩
+  · exact ⟨0, 1, by rw [h]; push_cast; ring⟩
+  · exact ⟨2, 1, by rw [h]; push_cast; ring⟩
+  · exact ⟨3, 2, by rw [h]; push_cast; ring⟩
+
+/-- **A filled corner's angle has the form `Xα + Yβ`.**  Induction over the multiset of
+contributions at the corner. -/
+theorem corner_fill_form (α β : ℝ) :
+    ∀ (angles : Multiset ℝ),
+      (∀ x ∈ angles, x = α ∨ x = β ∨ x = 2*α + β ∨ x = 3*α + 2*β) →
+      ∃ X Y : ℕ, angles.sum = (X : ℝ) * α + (Y : ℝ) * β := by
+  intro angles
+  induction angles using Multiset.induction_on with
+  | empty => exact fun _ => ⟨0, 0, by simp⟩
+  | cons a s ih =>
+    intro hmem
+    obtain ⟨X, Y, hs⟩ := ih (fun x hx => hmem x (Multiset.mem_cons_of_mem hx))
+    obtain ⟨P, Q, ha⟩ := contribution_form α β a (hmem a (Multiset.mem_cons_self a s))
+    exact ⟨P + X, Q + Y, by rw [Multiset.sum_cons, ha, hs]; push_cast; ring⟩
+
+/-- **The extended prune is sound.**  A corner whose angle is not `Xα + Yβ` for any `X, Y ≥ 0`
+admits no fill — whether it is acute, obtuse or reflex. -/
+theorem corner_unfillable (α β W : ℝ)
+    (hno : ∀ X Y : ℕ, W ≠ (X : ℝ) * α + (Y : ℝ) * β)
+    (angles : Multiset ℝ)
+    (hmem : ∀ x ∈ angles, x = α ∨ x = β ∨ x = 2*α + β ∨ x = 3*α + 2*β)
+    (hsum : angles.sum = W) : False := by
+  obtain ⟨X, Y, h⟩ := corner_fill_form α β angles hmem
+  exact hno X Y (hsum ▸ h)
+
 end Erdos634.FanPruneSound

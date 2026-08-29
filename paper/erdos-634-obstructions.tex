@@ -1494,6 +1494,15 @@ prior verdict and node count is reproduced, while the words that had resisted co
 $f=12$ words that never terminated exhaust at $506$ and $807$ nodes, the whole of $f=12$ in under
 $150$ seconds, and $f=14$ likewise. That is what settles $N=431$ and $N=587$.
 
+The criterion behind it is machine-checked. Every contribution at a corner --- a vertex showing
+$\alpha$, $\beta$ or $\gamma=2\alpha+\beta$, or an edge through it contributing
+$\pi=3\alpha+2\beta$, which can occur only at a reflex corner --- is of the form $X\alpha+Y\beta$
+with $X,Y\ge0$, so a filled corner's angle is too, and a corner admitting no such representation
+admits no fill (\texttt{FanPruneSound.corner\_fill\_form},
+\texttt{corner\_unfillable}). The reflex case is matched against a separate table because there the
+interior angle is $2\pi-\theta$ and $\cos(2\pi-\theta)=\cos\theta$, so the cosine alone does not
+distinguish the two; the sign of the cross product does.
+
 The residue is sharply located. Among the $f=12$ orbits, every word whose $c$ and $b$ letters are
 not adjacent in the order $c$ then $b$ finishes within a few thousand nodes, while the single word
 with $c$ immediately followed by $b$ does not finish at all; at $f=8$ the seven orbits contain no
