@@ -2231,8 +2231,13 @@ $\beta$ and $\gamma$ in some order, showing $\beta$ west is equivalent to showin
 (\texttt{tileOrient}, \texttt{orient\_reading}), which delivers both hypotheses of
 \texttt{adjacent\_admissible}. What remains of (c) is therefore two things and no more: the
 \emph{ordering} --- \texttt{lineChain} is a finite set, and turning it into a list requires
-sorting the chain along the base and knowing that consecutive edges share an endpoint, which is a
-contiguity fact not supplied by the measure-theoretic partition --- and the input that an
+sorting the chain along the base together with a contiguity fact, a measure identity saying
+nothing about gaps on its own. That fact is now available: the chain edges are \emph{closed}, so
+their union is closed, and a closed subset of an interval carrying the interval's whole measure is
+the interval --- its complement is open and null, while a nonempty open subset of $\mathbb R$ has
+positive measure (\texttt{Contiguity.closed\_full\_measure\_eq},
+\texttt{no\_gap\_between}). What is left of the ordering is therefore the sort itself --- and
+the input that an
 $a$-edge's two ends carry $\beta$ and $\gamma$, which is the corner theory applied to a real
 tile. No further geometric obstacle stands in the way, but until those two are supplied the
 combinatorial results still do not apply to tilings.
