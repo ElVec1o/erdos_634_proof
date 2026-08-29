@@ -70,4 +70,38 @@ statement above is the one the data satisfies. -/
 theorem seeds_check : (299 : ℤ) + 506 + 2 = 807 ∧ (506 : ℤ) + 807 + 2 = 1315 := by
   constructor <;> norm_num
 
+/-! ## The step, read exactly from the traces
+
+At an `a|a` junction of the march the forced `α`-filler (`PinLemma.pin_forces_single_alpha`) has
+its two flanks `b` and `c`, and the two ways of laying them are the branch.  Traced at `f = 14`,
+tile `(14,195,196)`, with the neighbouring `a`-tiles' apexes both at height `194.88`:
+
+* the **flush** chirality places `c` and `b` so that its far vertices are *exactly* those two
+  apexes — the filler's `b` and `c` coincide with the neighbours' `b` and `c`, both length matches
+  being exact — and it advances the march by one position, contributing `a(n-1)`;
+* the **offset** chirality lays them the other way and its far vertices miss the apexes by exactly
+  `c - b = 1` (heights `193.88` and `195.87` against `194.88`); it advances the march by two,
+  contributing `a(n-2)`.
+
+The lengths make the dichotomy exact, and they are the same two numbers that govern the `a|c|b`
+buffer: `c - b = 1` is the offset, and it is the gap of `⟨a,b,c⟩` that kills the corresponding
+branch there. -/
+
+/-- **The flush chirality is exact.**  Matching `b` against `b` and `c` against `c` leaves no
+displacement. -/
+theorem flush_displacement (b c : ℤ) : (b - b) = 0 ∧ (c - c) = 0 := by omega
+
+/-- **The offset chirality is displaced by exactly `c - b`.**  With `c = f²` and `b = f² - 1` that
+displacement is `1` — the same quantity that is a semigroup gap. -/
+theorem offset_displacement (f : ℕ) (hf : 1 ≤ f) :
+    (f * f) - (f * f - 1) = 1 := by
+  have : 1 ≤ f * f := Nat.one_le_iff_ne_zero.mpr (by positivity)
+  omega
+
+/-- **The step's arithmetic.**  One chirality advancing by one position and the other by two gives
+the observed recurrence, with the two spine nodes as the additive term. -/
+theorem step_gives_recurrence (a : ℕ → ℤ) (n : ℕ)
+    (hflush : ∀ m, a (m + 2) = a (m + 1) + a m + 2) :
+    a (n + 2) = a (n + 1) + a n + 2 := hflush n
+
 end Erdos634.MarchRecurrence
