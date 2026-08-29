@@ -774,6 +774,7 @@ static std::string trace_path(const std::vector<int>& v) {
 // three vertices as (p q d) pairs per coordinate, meaning (p + q*sqrt(D))/d.
 static int TRACE_LVL = 0;
 
+static bool LEARN = false;      // CENGINE_LEARN=1: record and reuse corner conflicts
 static bool GEN_PRUNE = false;  // CENGINE_GEN=1: general X*alpha+Y*beta corner test
 static bool FAN_PRUNE = false;   // CENGINE_FAN=1: collapse alpha-fans
 static bool WORD_PRUNE = false;
@@ -937,6 +938,30 @@ struct Search {
     QD cosmin;        // cos of the smallest tile angle (rational)
     QD cossec2;       // cos^2 of the second-smallest tile angle
     std::vector<QD> angtab;   // cos(X*alpha + Y*beta) for every fillable combination in (0,pi)
+    // ---- conflict learning (CENGINE_LEARN) -------------------------------------------------
+    // When a corner test fails, the tiles meeting that corner are jointly inconsistent.  Record
+    // that set; any later branch that reassembles it can be cut without re-deriving the failure.
+    // Sound: a recorded set provably admits no completion, so no tiling is removed.
+    bool have_fail = false; Pt fail_v;
+    std::vector<std::vector<size_t>> nogoods;              // each: sorted tile hashes
+    std::unordered_map<size_t, std::vector<int>> ngidx;    // tile hash -> nogood ids
+    std::unordered_map<size_t, int> live;                  // currently placed tile hashes
+    long long learned = 0, learn_hits = 0;
+    size_t tile_hash(const Poly& t) const {
+        size_t h = 1469598103934665603ull;
+        mpz_class P, Q, Dn;
+        for (const Pt& v : t) {
+            for (int c = 0; c < 2; c++) {
+                qd_mpz(c == 0 ? v.x : v.y, P, Q, Dn);
+                for (const mpz_class* z : {&P, &Q, &Dn}) {
+                    std::string sv = z->get_str();
+                    for (char ch : sv) { h ^= (size_t)ch; h *= 1099511628211ull; }
+                    h ^= 0x9e37ull; h *= 1099511628211ull;
+                }
+            }
+        }
+        return h;
+    }
     std::vector<Poly> found;
     bool has_found = false;
     time_t t0 = 0, last_log = 0;
@@ -1063,7 +1088,7 @@ struct Search {
             QD uw = dot(u, w);
             if (qsign(uw) <= 0) continue;
             QD uu = dot(u, u), ww = dot(w, w), uw2 = uw * uw;
-            if (qsign(uw2 - cosmin2 * uu * ww) > 0) return false;
+            if (qsign(uw2 - cosmin2 * uu * ww) > 0) { have_fail = true; fail_v = v; return false; }
             // ---- FAN COLLAPSE (opt-in, CENGINE_FAN) -----------------------------------
             // A convex corner smaller than the SECOND-smallest tile angle admits only the
             // minimal angle a: an edge through the corner would contribute pi > W, so every
@@ -1082,7 +1107,7 @@ struct Search {
                 bool hit = false;
                 for (const QD& cv : angtab)
                     if (cmp_cos(uw, uu, ww, cv) == 0) { hit = true; break; }
-                if (!hit) return false;
+                if (!hit) { have_fail = true; fail_v = v; return false; }
             }
             if (FAN_PRUNE && qsign(uw2 - cossec2 * uu * ww) > 0) {
                 QD ck = cosmin, ckm1 = QD(1);
@@ -1094,7 +1119,7 @@ struct Search {
                     if (c < 0) break;
                     QD cn = QD(2) * cosmin * ck - ckm1; ckm1 = ck; ck = cn;
                 }
-                if (!exact) return false;
+                if (!exact) { have_fail = true; fail_v = v; return false; }
             }
         }
         return true;
@@ -1319,8 +1344,29 @@ struct Search {
         if (total != left) { prune_area++; if (TRACE) fprintf(stderr, "L P1t %s\n", trace_path(cur_idx).c_str()); return; }
         for (const Poly& p : polys)
             if (!runs_ok(p, left)) { prune_run++; if (TRACE) fprintf(stderr, "L P2 %s\n", trace_path(cur_idx).c_str()); return; }
-        for (const Poly& p : polys)
-            if (!corner_ok(p)) { prune_dir++; if (TRACE) fprintf(stderr, "L P4c %s\n", trace_path(cur_idx).c_str()); return; }
+        for (const Poly& p : polys) {
+            have_fail = false;
+            if (!corner_ok(p)) {
+                prune_dir++;
+                if (TRACE) fprintf(stderr, "L P4c %s\n", trace_path(cur_idx).c_str());
+                // LEARN: the placed tiles meeting the failing corner are jointly inconsistent.
+                if (LEARN && have_fail && nogoods.size() < 400000) {
+                    std::vector<size_t> cul;
+                    for (const Poly& t : placed)
+                        for (const Pt& v : t)
+                            if (qsign(v.x - fail_v.x) == 0 && qsign(v.y - fail_v.y) == 0) { cul.push_back(tile_hash(t)); break; }
+                    if (cul.size() >= 2 && cul.size() <= 4) {
+                        std::sort(cul.begin(), cul.end());
+                        cul.erase(std::unique(cul.begin(), cul.end()), cul.end());
+                        int id = (int)nogoods.size();
+                        nogoods.push_back(cul);
+                        for (size_t hh : cul) ngidx[hh].push_back(id);
+                        learned++;
+                    }
+                }
+                return;
+            }
+        }
         int pi, vi;
         if (g_mrv) {
             if (!mrv_vertex(polys, pi, vi)) { prune_dir++; if (TRACE) fprintf(stderr, "L P4m %s\n", trace_path(cur_idx).c_str()); return; }
@@ -1380,6 +1426,23 @@ struct Search {
             }
             std::vector<Poly> next = rest;
             for (Poly& pc : pieces) next.push_back(pc);
+            if (LEARN) {
+                size_t th = tile_hash(tri);
+                bool blocked = false;
+                auto it = ngidx.find(th);
+                if (it != ngidx.end()) {
+                    for (int id : it->second) {
+                        bool all = true;
+                        for (size_t hh : nogoods[id])
+                            if (hh != th && live.find(hh) == live.end()) { all = false; break; }
+                        if (all) { blocked = true; break; }
+                    }
+                }
+                if (blocked) { learn_hits++; prune_dir++;
+                    if (WALK_PRUNE) for (size_t k = 0; k < bedges.size(); k++) walk[bedges[k].first][bedges[k].second]--;
+                    continue; }
+                live[th]++;
+            }
             placed.push_back(tri);
             if (TRACE_LVL >= 2) {
                 mpz_class P, Q, Dn;
@@ -1407,6 +1470,7 @@ struct Search {
                 dfs(next, left - 1, placed);
             }
             placed.pop_back();
+            if (LEARN) { size_t th = tile_hash(tri); auto i2 = live.find(th); if (i2 != live.end() && --i2->second <= 0) live.erase(i2); }
             if (WALK_PRUNE)
                 for (size_t k = 0; k < bedges.size(); k++) walk[bedges[k].first][bedges[k].second]--;
             if (has_found || (par_mode && g_stop.load(std::memory_order_relaxed))) return;
@@ -1779,6 +1843,7 @@ static bool make_instance_file(const std::string& path, Tile& tile, Poly& target
     if (getenv("CENGINE_TRACE")) { TRACE = true; TRACE_LVL = atoi(getenv("CENGINE_TRACE")); }
     if (getenv("CENGINE_FAN")) FAN_PRUNE = true;
     if (getenv("CENGINE_GEN")) { GEN_PRUNE = true; FAN_PRUNE = true; }
+    if (getenv("CENGINE_LEARN")) LEARN = true;
     tile.area2 = rd_qd();
     N = rd_long();
     target.clear();
