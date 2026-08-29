@@ -774,6 +774,7 @@ static std::string trace_path(const std::vector<int>& v) {
 // three vertices as (p q d) pairs per coordinate, meaning (p + q*sqrt(D))/d.
 static int TRACE_LVL = 0;
 
+static bool GEN_PRUNE = false;  // CENGINE_GEN=1: general X*alpha+Y*beta corner test
 static bool FAN_PRUNE = false;   // CENGINE_FAN=1: collapse alpha-fans
 static bool WORD_PRUNE = false;
 static int WORD_SIDE = -1;
@@ -935,6 +936,7 @@ struct Search {
     QD cosmin2;
     QD cosmin;        // cos of the smallest tile angle (rational)
     QD cossec2;       // cos^2 of the second-smallest tile angle
+    std::vector<QD> angtab;   // cos(X*alpha + Y*beta) for every fillable combination in (0,pi)
     std::vector<Poly> found;
     bool has_found = false;
     time_t t0 = 0, last_log = 0;
@@ -996,6 +998,60 @@ struct Search {
         }
     }
 
+    // sign of (cos W - c), where cos W = uw / sqrt(uu*ww) with uu,ww > 0.
+    int cmp_cos(const QD& uw, const QD& uu, const QD& ww, const QD& c) {
+        int su = qsign(uw), sc = qsign(c);
+        if (su >= 0 && sc < 0) return 1;
+        if (su < 0 && sc >= 0) return -1;
+        int t = qsign(uw * uw - c * c * uu * ww);
+        return (su >= 0) ? t : -t;
+    }
+    // cos(X a + Y b) for all X,Y >= 0 with the angle in (0, pi).  A convex corner of the uncovered
+    // region has angle in (0, pi) and is fillable IFF it equals such a combination, since the tiles
+    // at it contribute x a + y b + z g = (x+2z) a + (y+z) b.  Exact: cos a, sin a, cos b, sin b all
+    // lie in Q(sqrt D) for this family.
+    void build_angle_table() {
+        angtab.clear();
+        long s3[3] = {tile.a, tile.b, tile.c};
+        std::sort(s3, s3 + 3);
+        mpz_class na = (mpz_class)s3[1]*s3[1] + (mpz_class)s3[2]*s3[2] - (mpz_class)s3[0]*s3[0];
+        mpz_class da = 2 * (mpz_class)s3[1] * s3[2];
+        mpz_class nb = (mpz_class)s3[0]*s3[0] + (mpz_class)s3[2]*s3[2] - (mpz_class)s3[1]*s3[1];
+        mpz_class db = 2 * (mpz_class)s3[0] * s3[2];
+        QD ca = qd_raw(na, 0, da), cb = qd_raw(nb, 0, db);
+        // sin^2 = 1 - cos^2 ; sin = sqrt of that, expressed over sqrt(D) when possible
+        auto sin_of = [&](const mpz_class& n, const mpz_class& d) -> QD {
+            mpz_class s2n = d*d - n*n, s2d = d*d;          // sin^2 = s2n/s2d
+            // want sin = k*sqrt(D)/m  with k^2 D / m^2 = s2n/s2d
+            mpz_class Dz = QD_D;
+            mpz_class num2 = s2n * s2d;                     // (k/m)^2 = s2n/s2d ; scale to integer
+            // search k,m via exact sqrt of s2n*s2d/D
+            mpz_class t = s2n * s2d;
+            if (mpz_divisible_p(t.get_mpz_t(), Dz.get_mpz_t())) {
+                mpz_class q = t / Dz, r;
+                mpz_sqrt(r.get_mpz_t(), q.get_mpz_t());
+                if (r * r == q) return qd_raw(0, r, s2d);
+            }
+            return qd_raw(0, 0, 1);                          // fallback: unusable
+        };
+        QD sa = sin_of(na, da), sb = sin_of(nb, db);
+        if (qsign(sa) <= 0 || qsign(sb) <= 0) return;        // table unavailable -> prune disabled
+        // iterate Y then X, stopping when the angle passes pi (cos increasing past -1 is the cue)
+        QD cY = qd_raw(1,0,1), sY = qd_raw(0,0,1);
+        for (int Y = 0; Y <= 6; Y++) {
+            QD cX = cY, sX = sY;
+            for (int X = 0; X <= 8192; X++) {
+                // angle in (0,pi) iff sin > 0, or (sin == 0 and it is 0 itself)
+                if (qsign(sX) > 0) angtab.push_back(cX);
+                else if (X + Y > 0) break;                   // reached pi or beyond for this Y
+                QD cn = cX * ca - sX * sa, sn = sX * ca + cX * sa;
+                cX = cn; sX = sn;
+            }
+            QD cn = cY * cb - sY * sb, sn = sY * cb + cY * sb;
+            cY = cn; sY = sn;
+            if (qsign(sY) <= 0 && Y > 0) break;
+        }
+    }
     bool corner_ok(const Poly& poly) {
         size_t n = poly.size();
         for (size_t i = 0; i < n; i++) {
@@ -1016,6 +1072,18 @@ struct Search {
             // integer multiple of a.  If it is not, the entire subtree is dead and is cut
             // here rather than explored through its 2^k chirality branches.  Sound: removes
             // no tiling.  cos(k a) by the Chebyshev recurrence, in exact arithmetic.
+            // ---- GENERAL ANGLE PRUNE (CENGINE_GEN) -----------------------------------
+            // A convex corner of the uncovered region is fillable iff its angle equals
+            // X*alpha + Y*beta for integers X,Y >= 0, since the tiles at it contribute
+            // x*alpha + y*beta + z*gamma = (x+2z)alpha + (y+z)beta.  The table holds every such
+            // combination in (0,pi); a corner matching none of them admits no completion.
+            // Sound: removes no tiling.  Subsumes the fan prune (its Y = 0 case).
+            if (GEN_PRUNE && !angtab.empty()) {
+                bool hit = false;
+                for (const QD& cv : angtab)
+                    if (cmp_cos(uw, uu, ww, cv) == 0) { hit = true; break; }
+                if (!hit) return false;
+            }
             if (FAN_PRUNE && qsign(uw2 - cossec2 * uu * ww) > 0) {
                 QD ck = cosmin, ckm1 = QD(1);
                 bool exact = false;
@@ -1367,6 +1435,7 @@ struct Search {
         mpz_class den = 2 * (mpz_class)s[1] * s[2];
         cosmin2 = qd_raw(num * num, 0, den * den);
         cosmin = qd_raw(num, 0, den);
+        build_angle_table();
         { mpz_class n2 = (mpz_class)s[0]*s[0] + (mpz_class)s[2]*s[2] - (mpz_class)s[1]*s[1];
           mpz_class d2 = 2 * (mpz_class)s[0] * s[2];
           cossec2 = (n2 < 0) ? qd_raw(0, 0, 1) : qd_raw(n2 * n2, 0, d2 * d2); }
@@ -1394,6 +1463,7 @@ struct Search {
         mpz_class den = 2 * (mpz_class)s[1] * s[2];
         cosmin2 = qd_raw(num * num, 0, den * den);
         cosmin = qd_raw(num, 0, den);
+        build_angle_table();
         { mpz_class n2 = (mpz_class)s[0]*s[0] + (mpz_class)s[2]*s[2] - (mpz_class)s[1]*s[1];
           mpz_class d2 = 2 * (mpz_class)s[0] * s[2];
           cossec2 = (n2 < 0) ? qd_raw(0, 0, 1) : qd_raw(n2 * n2, 0, d2 * d2); }
@@ -1708,6 +1778,7 @@ static bool make_instance_file(const std::string& path, Tile& tile, Poly& target
     }
     if (getenv("CENGINE_TRACE")) { TRACE = true; TRACE_LVL = atoi(getenv("CENGINE_TRACE")); }
     if (getenv("CENGINE_FAN")) FAN_PRUNE = true;
+    if (getenv("CENGINE_GEN")) { GEN_PRUNE = true; FAN_PRUNE = true; }
     tile.area2 = rd_qd();
     N = rd_long();
     target.clear();
