@@ -1473,9 +1473,15 @@ all of $\cos\alpha,\sin\alpha,\cos\beta,\sin\beta$ lie in $\mathbb Q(\sqrt D)$ f
 the table of admissible corner cosines is computed exactly once per instance. And the vertex
 ordering may be changed to fill the most constrained vertex first, which is sound for an
 exhaustive search because every tiling fills every vertex, so the choice affects only the node
-count. The second is by far the larger: it takes $N=23$'s instance from $19\,677$ nodes to $385$,
-$N=11$'s from $135$ to $40$, and finds the certified $44$-tiling in $145\,506$ nodes rather than
-$831\,344$, with every verdict unchanged. Neither, however, reaches the words identified below.
+count. The second is dramatic in one direction and dangerous in the other, and the asymmetry is worth
+recording. On the free-corner instances it is a large gain: $N=23$'s falls from $19\,677$ nodes to
+$385$, $N=11$'s from $135$ to $40$, and the certified $44$-tiling is found in $145\,506$ rather
+than $831\,344$, every verdict unchanged. On the word-constrained instances it is a severe loss:
+the $(4,2)$ orbit at $f=12$ exhausts in $565$ nodes under the default ordering and fails to
+terminate at all under the most-constrained one. The ordering is sound either way --- completeness
+cannot depend on which vertex is filled first --- but it must be chosen per instance family, and
+for the words identified below the default is the right choice. Neither improvement reaches those
+words.
 
 The residue is sharply located. Among the $f=12$ orbits, every word whose $c$ and $b$ letters are
 not adjacent in the order $c$ then $b$ finishes within a few thousand nodes, while the single word
