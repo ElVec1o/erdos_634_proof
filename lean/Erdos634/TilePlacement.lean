@@ -1,0 +1,85 @@
+import Mathlib
+import Erdos634.VertexFigureReal
+
+/-!
+# The tile-placement layer
+
+Erdős #634.  Thirty-one PROVED statements across the three papers wait on the same missing object:
+a way to say, of a real dissection, that *this tile sits here* — at a corner, laying that edge on
+that wall, presenting that angle at that point.  The papers use the language freely; the corpus has
+no definitions for it, which is why those statements cannot be formalized as written.
+
+This file starts the layer with the three notions the statements actually use, and proves the first
+consumer: at a base corner of a base-`β` target, **exactly one tile has a nonzero angle**, which is
+the first clause of `prop:cornerfig` at a real corner.
+
+Axiom-clean; no `sorry`.
+-/
+
+namespace Erdos634.TilePlacement
+
+open Erdos634.Geometry Finset
+
+/-- Tile `i` has `v` among its vertices. -/
+def HasVertex {N : ℕ} (D : Dissection N) (i : Fin N) (v : Plane) : Prop :=
+  ∃ j : Fin 3, (D.tile i).pts j = v
+
+/-- Tile `i` presents angle `θ` at the point `v`. -/
+def PresentsAt {N : ℕ} (D : Dissection N) (i : Fin N) (v : Plane) (θ : ℝ) : Prop :=
+  (D.tile i).localAngle v = θ
+
+/-- Tile `i` lays its `k`-th edge inside the set `S` — the wall, a side, a chord. -/
+def LaysOn {N : ℕ} (D : Dissection N) (i : Fin N) (k : Fin 3) (S : Set Plane) : Prop :=
+  (D.tile i).edge k ⊆ S
+
+/-- A tile laying an edge on a set has both endpoints there. -/
+theorem laysOn_endpoints {N : ℕ} (D : Dissection N) (i : Fin N) (k : Fin 3) (S : Set Plane)
+    (h : LaysOn D i k S) :
+    (D.tile i).pts k ∈ S ∧ (D.tile i).pts (k + 1) ∈ S := by
+  constructor
+  · exact h (by rw [Tri.edge]; exact left_mem_segment ℝ _ _)
+  · exact h (by rw [Tri.edge]; exact right_mem_segment ℝ _ _)
+
+/-- **The corner figure, with multiplicities.**  At a vertex of the target, the tiles' local angles
+sum to that corner's angle, and counting them by value turns the sum into a linear relation. -/
+theorem corner_multiplicities {N : ℕ} (D : Dissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0) (k : Fin 3)
+    (hvals : ∀ i, (D.tile i).localAngle (D.target.pts k)
+      ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ)) :
+    ∃ p q r s : ℕ, (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi
+      = cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) := by
+  classical
+  have hsum := Erdos634.VertexFigureReal.corner_angle_sum D k
+  rw [Erdos634.VertexFigureReal.sum_by_value ({α, β, γ, Real.pi, 0} : Finset ℝ) _ hvals] at hsum
+  refine ⟨({i | (D.tile i).localAngle (D.target.pts k) = α} : Finset (Fin N)).card,
+    ({i | (D.tile i).localAngle (D.target.pts k) = β} : Finset (Fin N)).card,
+    ({i | (D.tile i).localAngle (D.target.pts k) = γ} : Finset (Fin N)).card,
+    ({i | (D.tile i).localAngle (D.target.pts k) = Real.pi} : Finset (Fin N)).card, ?_⟩
+  rw [Finset.sum_insert (by simp [hαβ, hαγ, hαπ, hα0]),
+      Finset.sum_insert (by simp [hβγ, hβπ, hβ0]),
+      Finset.sum_insert (by simp [hγπ, hγ0]),
+      Finset.sum_insert (by simp [hπ0]), Finset.sum_singleton] at hsum
+  push_cast at hsum ⊢
+  linarith [hsum]
+
+/-- **A base corner is a single `β`-tile.**  With the corner angle `β`, the multiplicities are
+`(0,1,0)` and no tile contributes a straight angle: exactly one tile presents `β` there, and every
+other tile presents `0`.
+
+This is `prop:cornerfig`'s first clause, at a real corner of a real dissection. -/
+theorem base_corner_single_tile {α β γ : ℝ} (hγ : γ = 2 * α + β)
+    (hrel : 3 * α + 2 * β = Real.pi) (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (p q r s : ℕ)
+    (hsum : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi = β) :
+    p = 0 ∧ q = 1 ∧ r = 0 ∧ s = 0 := by
+  rw [hγ, ← hrel] at hsum
+  have h' : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * (2 * α + β)
+      = ((-3 * (s : ℤ) : ℤ) : ℝ) * α + ((1 - 2 * (s : ℤ) : ℤ) : ℝ) * β := by
+    push_cast
+    linarith [hsum]
+  obtain ⟨h1, h2⟩ := Erdos634.Geometry.vertex_multiplicities hrel hirr p q r _ _ h'
+  refine ⟨by omega, by omega, by omega, by omega⟩
+
+end Erdos634.TilePlacement
