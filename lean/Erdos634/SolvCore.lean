@@ -52,4 +52,57 @@ theorem j_gt_d (d e a j : ℤ) (ha : 0 < a) (he : e ≠ 0) (hj0 : 0 < j) (hj2 : 
 empty. -/
 theorem no_j_at_d_one (j : ℤ) (h1 : 1 < j) (h2 : j < 2) : False := by omega
 
+/-! ## The proposition itself
+
+The paper's `prop:solv` characterises `e ∣ (a + b - c)` for a `120°` triple with `b = de²` by the
+existence of an integer `j` with `d < j < 2d` and `ej` even, through the displayed formula for `a`
+and `c = a + e²j/2`.  Both are written here without division: the formula for `a` is
+`4a(j - d) = e²(2d - j)(2d + j)` and the one for `c` is `2c = 2a + e²j`. -/
+
+/-- **`prop:solv`.**  For a positive `120°` triple with `b = de²` and `a` coprime to `e`, the
+divisibility `e ∣ (a + b - c)` holds exactly when the parametrisation by `j` does. -/
+theorem solv_iff (d e a b c : ℤ) (hd : 1 ≤ d) (he : 1 ≤ e) (hb : b = d * e ^ 2)
+    (ha : 0 < a) (hcop : IsCoprime a e) (htriple : c ^ 2 = a ^ 2 + a * b + b ^ 2) (hc : 0 < c) :
+    e ∣ (a + b - c) ↔
+      ∃ j : ℤ, d < j ∧ j < 2 * d ∧ 2 ∣ e * j ∧
+        4 * a * (j - d) = e ^ 2 * (2 * d - j) * (2 * d + j) ∧ 2 * c = 2 * a + e ^ 2 * j := by
+  have he0 : (0:ℤ) < e := by linarith
+  have hbpos : 0 < b := by rw [hb]; positivity
+  constructor
+  · intro hdvd
+    -- `c ≡ a (mod e)` and `0 < c - a < b`
+    have hca : e ∣ (c - a) := by
+      have : c - a = b - (a + b - c) := by ring
+      rw [this]
+      exact dvd_sub (by rw [hb]; exact ⟨d * e, by ring⟩) hdvd
+    obtain ⟨t, ht⟩ := hca
+    have hcgt : a < c := by nlinarith
+    have hclt : c < a + b := by nlinarith
+    have ht0 : 0 < t := by nlinarith
+    have htd : t < d * e := by
+      have : e * t < d * e ^ 2 := by rw [← hb]; linarith [ht]
+      nlinarith
+    -- the substituted equation
+    have hct : c = a + e * t := by linarith [ht]
+    have hcore : a * (2 * t - d * e) = e * (d * e - t) * (d * e + t) := by
+      refine core_identity d e a t (ne_of_gt he0) ?_
+      rw [← hct, ← hb]; exact htriple
+    -- `e ∣ 2t`
+    have hdvd2 : e ∣ a * (2 * t - d * e) := ⟨(d * e - t) * (d * e + t), by linarith [hcore]⟩
+    have hdvd3 : e ∣ (2 * t - d * e) := hcop.symm.dvd_of_dvd_mul_left hdvd2
+    have hdvd4 : e ∣ 2 * t := by
+      have h : 2 * t = (2 * t - d * e) + e * d := by ring
+      rw [h]; exact dvd_add hdvd3 ⟨d, rfl⟩
+    obtain ⟨j, hj⟩ := hdvd4
+    have hj0 : 0 < j := by nlinarith
+    have hj2 : j < 2 * d := by nlinarith
+    have hjid : 4 * a * (j - d) = e ^ 2 * (2 * d - j) * (2 * d + j) :=
+      j_identity d e a t j (ne_of_gt he0) hj hcore
+    exact ⟨j, j_gt_d d e a j ha (ne_of_gt he0) hj0 hj2 hjid, hj2, ⟨t, by linarith [hj]⟩, hjid,
+      by rw [hct]; linear_combination e * hj⟩
+  · rintro ⟨j, hjd, hj2, ⟨k, hk⟩, hform, hcj⟩
+    have h2 : 2 * (a + b - c) = 2 * (e * (d * e - k)) := by
+      rw [hb]; linear_combination -hcj - e * hk
+    exact ⟨d * e - k, mul_left_cancel₀ (two_ne_zero) h2⟩
+
 end Erdos634.SolvCore

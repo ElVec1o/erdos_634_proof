@@ -296,7 +296,7 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | M `prop:eqspec` | Equilateral admissibility |
 | M `prop:otherspectra` | The other branches |
 | M `prop:ratfree` | The rationality input, partly internalised |
-| M `prop:solv` | Solvability of $e\mid(a+b-c)$ |
+| M `prop:solv` | `e ∣ (a+b−c)` iff a parametrisation by `j` with `d < j < 2d` | `SolvCore.solv_iff`, `.core_identity`, `.j_identity`, `.j_gt_d`, `.no_j_at_d_one` | VERIFIED — both directions, with the formulas for `a` and `c` written without division (`4a(j−d) = e²(2d−j)(2d+j)`, `2c = 2a + e²j`). The paper's coprimality clause on `a` is carried as the hypothesis `IsCoprime a e`, which `gcd(a,b) = 1` supplies |
 | M `prop:unsplit` | Unsplittability, and the rigidity of the thick regime |
 | M `thm:44` | theorem |
 | M `thm:admissible` | Isosceles admissible spectrum |
