@@ -327,3 +327,36 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | C `rem:orientmono` | branching linear not exponential; transfers to `conj:advance` gap 2 | `Inflation.junction_three` + the above — VERIFIED |
 | C `prop:inflparity` | edge parity kills the `p=1` boundary when `e ≢ f (mod 2)` | `Inflation.parity_forces_same_parity` (general in `e,f,I,B`), `.parity_kills_25`, `.parity_kills_49`, `.parity_silent_witnesses` — VERIFIED. Conditional on edge-to-edge; the slot identity `3f²=2I+B` is a hypothesis, not proved. |
 | C `rem:inflparity` | scope: silent on both-odd members, incl. (1,3) and (3,7) | `Inflation.parity_silent_witnesses` — VERIFIED |
+
+## Formalization debt, counted (audit of 2026-08-30)
+
+Rule 5 requires every PROVED statement to carry either an active formalization or a recorded
+explanation of what blocks one. The papers carry **129** statements labelled PROVED. The
+following **22** appear in no row of this file at all, so they carry neither. They are listed here
+so the debt is counted rather than invisible; each still needs its blocker written down.
+
+- M `thm:63`
+- M `thm:eq105`
+- C `rem:pinbuffer`
+- C `prop:selfsim`
+- C `lem:rowwords`
+- C `lem:rowp0`
+- C `lem:rowq0`
+- C `lem:rowp1`
+- C `prop:slotdichotomy`
+- C `cor:rowinduction`
+- C `prop:rellattice`
+- C `prop:cevianatom`
+- C `lem:wpgram`
+- C `thm:addlaw`
+- O `prop:nogoauto`
+- O `prop:nogocensus`
+- O `prop:fanprune`
+- O `prop:norm`
+- O `prop:globalsys`
+- O `rem:spectral`
+- O `prop:threecostumes`
+- O `prop:ninetools`
+
+The remaining 107 PROVED statements have rows, but most record only the partial Lean declarations,
+not what blocks the statement itself. Auditing those rows one by one is outstanding.
