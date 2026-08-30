@@ -139,3 +139,4 @@ import Erdos634.StubGap
 import Erdos634.Unsplittable
 import Erdos634.NormForm
 import Erdos634.FibExtremal
+import Erdos634.SolvCore
