@@ -120,4 +120,58 @@ theorem mem_down (i j : ℕ) (u v : ℝ) (hu1 : u ≤ 1) (hv1 : v ≤ 1) (huv : 
   exact combo_mem _ _ _ (u + v - 1) (1 - v) (1 - u) (by linarith) (by linarith) (by linarith)
     (by ring)
 
+/-! ## Placing a point in a cell
+
+The global half of the covering: a point of `kT`, written in the lattice coordinates `s, t ≥ 0`
+with `s + t ≤ k`, sits in a cell `(i, j)` with `i + j ≤ k - 1`.  Taking floors works except when
+both coordinates are integers summing to `k`, where the point is on the far edge and one index must
+be lowered by one. -/
+
+/-- **Every point of `kT` lies in a cell of the subdivision.** -/
+theorem cell_index (k : ℕ) (hk : 1 ≤ k) (s t : ℝ) (hs : 0 ≤ s) (ht : 0 ≤ t)
+    (hst : s + t ≤ (k : ℝ)) :
+    ∃ i j : ℕ, i + j + 1 ≤ k ∧ (i : ℝ) ≤ s ∧ s ≤ (i : ℝ) + 1 ∧ (j : ℝ) ≤ t ∧ t ≤ (j : ℝ) + 1 := by
+  classical
+  set i₀ := ⌊s⌋₊ with hi₀
+  set j₀ := ⌊t⌋₊ with hj₀
+  have hi₀s : (i₀ : ℝ) ≤ s := Nat.floor_le hs
+  have hj₀t : (j₀ : ℝ) ≤ t := Nat.floor_le ht
+  have hsi₀ : s < (i₀ : ℝ) + 1 := Nat.lt_floor_add_one s
+  have htj₀ : t < (j₀ : ℝ) + 1 := Nat.lt_floor_add_one t
+  rcases Nat.lt_or_ge k (i₀ + j₀ + 1) with hgt | hle
+  · -- the floors already sum to `k`, so both coordinates are integers and `s + t = k`
+    have hsum : (i₀ : ℝ) + (j₀ : ℝ) ≤ s + t := by linarith
+    have hk' : (k : ℝ) ≤ (i₀ : ℝ) + (j₀ : ℝ) := by
+      have : k ≤ i₀ + j₀ := by omega
+      exact_mod_cast this
+    have hseq : s = (i₀ : ℝ) := by linarith
+    have hteq : t = (j₀ : ℝ) := by linarith
+    have hij : i₀ + j₀ = k := by
+      have h1 : (i₀ : ℝ) + (j₀ : ℝ) = (k : ℝ) := by linarith
+      exact_mod_cast h1
+    rcases Nat.eq_zero_or_pos i₀ with hi0 | hi0
+    · refine ⟨0, j₀ - 1, ?_, ?_, ?_, ?_, ?_⟩
+      · omega
+      · simpa using hs
+      · rw [hseq, hi0]; norm_num
+      · have : ((j₀ - 1 : ℕ) : ℝ) = (j₀ : ℝ) - 1 := by
+          have : 1 ≤ j₀ := by omega
+          push_cast [Nat.cast_sub this]; ring
+        rw [this, hteq]; linarith
+      · have : ((j₀ - 1 : ℕ) : ℝ) = (j₀ : ℝ) - 1 := by
+          have : 1 ≤ j₀ := by omega
+          push_cast [Nat.cast_sub this]; ring
+        rw [this, hteq]; linarith
+    · refine ⟨i₀ - 1, j₀, ?_, ?_, ?_, ?_, ?_⟩
+      · omega
+      · have : ((i₀ - 1 : ℕ) : ℝ) = (i₀ : ℝ) - 1 := by
+          push_cast [Nat.cast_sub hi0]; ring
+        rw [this, hseq]; linarith
+      · have : ((i₀ - 1 : ℕ) : ℝ) = (i₀ : ℝ) - 1 := by
+          push_cast [Nat.cast_sub hi0]; ring
+        rw [this, hseq]; linarith
+      · rw [hteq]
+      · rw [hteq]; linarith
+
+  · exact ⟨i₀, j₀, hle, hi₀s, le_of_lt hsi₀, hj₀t, le_of_lt htj₀⟩
 end Erdos634.Subdivision
