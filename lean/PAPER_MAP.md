@@ -382,6 +382,8 @@ to the abstract word is exactly bridge (c), which is not finished.
 
 VERIFIED now means: the paper statement, as written, is the Lean theorem.
 
+| M `lem:nonint` | `k ∤ (a+b−c)` for `b = k²`, `gcd(a,k)=1`, `c² = a²+ab+b²` | `NonIntegrality.k_not_dvd` | VERIFIED — the statement itself, following the paper's proof line for line |
+
 ## Blockers named on inspection (2026-08-30, debt pass 1)
 
 Checked against their declarations, statement-first. None is upgradable; each blocker is now
