@@ -531,3 +531,7 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | C `prop:closepaircolumns` | the extra base columns at a close pair | `close_pair_column`, `close_pair_column_unique`, `one_column_per_k` | PROVED — the column arithmetic is VERIFIED; 'a base column of a tiling' has no Lean definition |
 | C `lem:pgram` | the unit parallelogram | `PgramTiling22.pgram22_certificate` | PROVED — one member's certificate is VERIFIED by `decide`; the general parallelogram is a region with no Lean notion of dissection |
 | C `prop:widecol` | wide parallelograms at all `(e,f)` | `PgramTiling52.*` | PROVED — same |
+
+| Paper | Statement | Lean declaration | Blocker |
+|---|---|---|---|
+| C `cor:walls15` | the walls hypothesis holds at `(1,5)` | `Walls13.*`, `WallsClosed.*` | PROVED — the label the paper itself gives it is conditional: the certified route is an engine exhaustion (`w74`), needing the **certified-search format**, and the argument-only route inherits `thm:e1cascade`'s effective label, which is CONJECTURE |
