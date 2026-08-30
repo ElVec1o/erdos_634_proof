@@ -3,6 +3,7 @@ import Erdos634.BaseChain
 import Erdos634.WallInjective
 import Erdos634.Placement
 import Erdos634.OrientWord
+import Erdos634.PinPlumbing
 
 /-!
 # Bridge (c): the base chain's junctions, as a theorem about a dissection
@@ -148,5 +149,67 @@ theorem chain_edge_readings {N : ℕ} (D : Dissection N) (i : Fin N) (west east 
   obtain ⟨hw, he⟩ := Erdos634.OrientBridge.endpoints_avoid_alpha _ _ α β γ hmul hwa hea
   exact ⟨fun h => Erdos634.OrientBridge.orient_BG_east_gamma D i west east β γ hbg hw he hne h,
     fun h => Erdos634.OrientBridge.orient_GB_west_gamma D i west β γ hw h⟩
+
+/-! ## Which chain edges the readings apply to
+
+A first attempt at this said "every chain edge is its tile's shortest side".  That is **false**:
+the `e = 1` base word is a permutation of `a^f, b, c`, so exactly one chain edge is a `b`-edge and
+one is a `c`-edge.  The readings apply along the `a`-run, and the correct hypothesis is local — that
+the angle *opposite* the chain edge is `α`, which is what an `a`-edge means, `α` being the angle
+opposite the shortest side (`OrientBridge.smallest_angle_opposite_shortest_side`).
+
+That hypothesis is the last input to the bridge, and it is configurational: it comes from the base
+word, not from the geometry of dissections. -/
+
+/-- **The endpoints of an `a`-edge avoid `α`.**  If the tile's three angles at the edge's two ends
+and at the opposite vertex are `α, β, γ` in some order, and `α` differs from `β` and `γ`, then the
+two endpoint angles are not `α` — `α` occurs once in the multiset and the opposite vertex has
+already used it.  Counted, rather than assumed. -/
+theorem avoid_alpha_of_multiset (x y α β γ : ℝ)
+    (hmul : ({x, y, α} : Multiset ℝ) = {α, β, γ}) (hαβ : α ≠ β) (hαγ : α ≠ γ) :
+    x ≠ α ∧ y ≠ α := by
+  classical
+  have hmem : ∀ z : ℝ, (z ::ₘ ({α} : Multiset ℝ)) = ({β, γ} : Multiset ℝ) → False := by
+    intro z hz
+    have : α ∈ ({β, γ} : Multiset ℝ) := by
+      rw [← hz]; simp
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at this
+    rcases this with h | h
+    · exact hαβ h
+    · exact hαγ h
+  constructor
+  · intro h
+    subst h
+    have h2 : (y ::ₘ ({x} : Multiset ℝ)) = ({β, γ} : Multiset ℝ) := by
+      have := hmul
+      simp only [Multiset.insert_eq_cons] at this ⊢
+      exact (Multiset.cons_inj_right x).mp this
+    exact hmem y h2
+  · intro h
+    subst h
+    have h2 : (x ::ₘ ({y} : Multiset ℝ)) = ({β, γ} : Multiset ℝ) := by
+      have hswap : ({x, y, y} : Multiset ℝ) = (y ::ₘ (x ::ₘ ({y} : Multiset ℝ))) := by
+        simp only [Multiset.insert_eq_cons]
+        exact Multiset.cons_swap x y _
+      rw [hswap] at hmul
+      simp only [Multiset.insert_eq_cons] at hmul
+      exact (Multiset.cons_inj_right y).mp hmul
+    exact hmem x h2
+
+open Erdos634.Inflation in
+/-- **The readings hold on the `a`-run.**  On a chain edge whose opposite angle is `α`, with the
+tile's three angles distinct, both readings are available — and the avoidance of `α` at the
+endpoints is now derived from the angle multiset rather than assumed. -/
+theorem readings_on_a_edge {N : ℕ} (D : Dissection N) (i : Fin N) (west east : Plane)
+    (α β γ : ℝ) (hαβ : α ≠ β) (hαγ : α ≠ γ) (hbg : β ≠ γ)
+    (hmul : ({(D.tile i).localAngle west, (D.tile i).localAngle east, α} : Multiset ℝ)
+      = {α, β, γ})
+    (hne : (D.tile i).localAngle west ≠ (D.tile i).localAngle east) :
+    (Erdos634.OrientBridge.tileOrient D β i west = Orient.BG →
+        (D.tile i).localAngle east = γ) ∧
+      (Erdos634.OrientBridge.tileOrient D β i west = Orient.GB →
+        (D.tile i).localAngle west = γ) := by
+  obtain ⟨hwa, hea⟩ := avoid_alpha_of_multiset _ _ α β γ hmul hαβ hαγ
+  exact chain_edge_readings D i west east α β γ hbg hmul hwa hea hne
 
 end Erdos634.BridgeC
