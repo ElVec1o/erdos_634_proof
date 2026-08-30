@@ -17,6 +17,10 @@ Labels are the LaTeX `\label` keys. **Status** is the Rule 0 label of the *paper
 | M `prop:vertexfigures` | apex figure is three α-corners | `AngleArithmetic.apex_forced` | VERIFIED |
 | C `lem:anglecalc`(1) | no piece of a dissection has a right angle | `AngleArithmetic.no_right_angle`, `.no_perpendicular_cut` | VERIFIED |
 | C `rem:betapi3` | β < π/3 iff e(3f²−e²) > f³; at e=1 only f=2 | `AngleArithmetic.unique_e1_beta_lt_pi3`, `.beta_ge_pi3_e1` | VERIFIED |
+| M `prop:isoalphaprime` | no prime is an isosceles-α tile count | `IsoAlphaPrime.isoalpha_not_prime`, `.isoalpha_X_forces` | VERIFIED |
+| M `prop:repunique` | a prime has at most one representation 3f²−e² | `ThinHole.rep_unique` | VERIFIED |
+| C `lem:apex` | apex figure and side words (arithmetic cores only) | `CornerRule.apex_figure`, `SideNoB.side_no_b_uncond` | PROVED — the two-configuration conclusion is geometric and is not formalized |
+| O `rem:nilptower` | the nilpotent tower has no layer past class 2 | none | PROVED — no Lean file treats the lower central series |
 | M `prop:product` | invariant product `M_α·M_β = κN` on each shape | `InvariantProduct.F1_product` and the shape table | VERIFIED |
 | M `cor:similar` | tile-similar target forces `N = M_α²`, never prime | `InvariantProduct.tile_similar_not_prime` | VERIFIED |
 | M `prop:b3prime` | Beeson III Thm 8 core: no odd prime | `Beeson3NotPrime.triquadratic_not_prime` | VERIFIED |
