@@ -20,11 +20,13 @@ open List
 /-- **Sorting gives a monotone enumeration.**  For any list and any real key there is an
 enumeration of its entries, of the same length, nondecreasing in the key, and hitting every entry
 of the list. -/
-theorem exists_sorted_enum {ι : Type*} [Inhabited ι] (l : List ι) (pos : ι → ℝ) :
+theorem exists_sorted_enum {ι : Type*} [Inhabited ι] (l : List ι) (pos : ι → ℝ)
+    (hnodup : l.Nodup) :
     ∃ E : ℕ → ι,
       (∀ i j, i ≤ j → j < l.length → pos (E i) ≤ pos (E j)) ∧
       (∀ i < l.length, E i ∈ l) ∧
-      (∀ x ∈ l, ∃ i < l.length, E i = x) := by
+      (∀ x ∈ l, ∃ i < l.length, E i = x) ∧
+      (∀ i j, i < l.length → j < l.length → E i = E j → i = j) := by
   classical
   set L := l.mergeSort (fun a b => decide (pos a ≤ pos b)) with hL
   have hperm : L.Perm l := List.mergeSort_perm l _
@@ -33,7 +35,8 @@ theorem exists_sorted_enum {ι : Type*} [Inhabited ι] (l : List ι) (pos : ι �
     List.sorted_mergeSort (by intro a b c hab hbc; simp_all; linarith)
       (by intro a b; simp; rcases le_total (pos a) (pos b) with h | h <;> simp [h]) l
   have hs : L.Pairwise (fun a b => pos a ≤ pos b) := hp.imp (by intro a b h; simpa using h)
-  refine ⟨fun i => L.getD i default, ?_, ?_, ?_⟩
+  have hLnd : L.Nodup := hperm.nodup_iff.mpr hnodup
+  refine ⟨fun i => L.getD i default, ?_, ?_, ?_, ?_⟩
   · intro i j hij hj
     simp only
     rw [← hlen] at hj
@@ -55,5 +58,10 @@ theorem exists_sorted_enum {ι : Type*} [Inhabited ι] (l : List ι) (pos : ι �
     refine ⟨i, by rwa [hlen] at hi, ?_⟩
     simp only
     rw [List.getD_eq_getElem _ _ hi]; exact hix
+  · intro i j hi hj hij
+    rw [← hlen] at hi hj
+    simp only at hij
+    rw [List.getD_eq_getElem _ _ hi, List.getD_eq_getElem _ _ hj] at hij
+    exact (List.Nodup.getElem_inj_iff hLnd).mp hij
 
 end Erdos634.ChainEnum
