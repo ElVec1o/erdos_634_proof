@@ -250,4 +250,59 @@ theorem angleAt_lt (T : Tri) (j : Fin 3) (h : sideOpp T j < sideOpp T (j + 1)) :
   rw [hsh j, hsh2 j]
   exact this
 
+/-! ## The ordering lemma over three points
+
+Stating it with `Fin 3` indices made each unordered pair of vertices reachable in only one
+direction, and the index arithmetic for the other cost an iteration.  Over three explicit points
+the lemma is symmetric in `p` and `q`, so both directions are one instantiation each. -/
+
+/-- **A larger side faces a larger angle**, for three points with the strict triangle inequality.
+The side opposite `p` is `dist q r`; the side opposite `q` is `dist p r`. -/
+theorem angle_lt_of_side_lt_pts (p q r : Plane) (hpq : p ≠ q) (hqr : q ≠ r) (hpr : p ≠ r)
+    (htri : dist p q < dist q r + dist p r) (h : dist q r < dist p r) :
+    cornerAngle q p r < cornerAngle p q r := by
+  have lawA := EuclideanGeometry.law_cos (V := Plane) q p r
+  have lawB := EuclideanGeometry.law_cos (V := Plane) p q r
+  rw [dist_comm q p, dist_comm r p] at lawA
+  rw [dist_comm r q] at lawB
+  refine Erdos634.OrientBridge.smallest_angle_opposite_shortest_side
+    (dist q r) (dist p r) (dist p q) _ _ (dist_pos.mpr hqr) (dist_pos.mpr hpr)
+    (dist_pos.mpr hpq) htri h
+    ⟨EuclideanGeometry.angle_nonneg _ _ _, EuclideanGeometry.angle_le_pi _ _ _⟩
+    ⟨EuclideanGeometry.angle_nonneg _ _ _, EuclideanGeometry.angle_le_pi _ _ _⟩ ?_ ?_
+  · rw [cornerAngle]; linarith [lawA]
+  · rw [cornerAngle]; linarith [lawB]
+
+/-- The strict triangle inequality at a tile, in point form. -/
+theorem strict_triangle_pts (T : Tri) (j : Fin 3) :
+    dist (T.pts j) (T.pts (j + 1))
+      < dist (T.pts (j + 1)) (T.pts (j + 2)) + dist (T.pts j) (T.pts (j + 2)) := by
+  have hsh1 : ∀ x : Fin 3, x + 2 + 1 = x := by decide
+  have hsh2 : ∀ x : Fin 3, x + 2 + 2 = x + 1 := by decide
+  have h := strict_triangle T (j + 2)
+  rw [hsh1 j, hsh2 j] at h
+  have e1 : dist (T.pts j) (T.pts (j + 2)) = dist (T.pts (j + 2)) (T.pts j) := dist_comm _ _
+  have e2 : dist (T.pts (j + 1)) (T.pts (j + 2)) = dist (T.pts (j + 2)) (T.pts (j + 1)) :=
+    dist_comm _ _
+  rw [e1, e2]
+  have e3 : dist (T.pts (j + 2)) (T.pts (j + 1)) = dist (T.pts (j + 1)) (T.pts (j + 2)) :=
+    dist_comm _ _
+  linarith [h]
+
+/-- Distinct vertices of a tile are distinct points. -/
+theorem pts_ne (T : Tri) {i k : Fin 3} (h : i ≠ k) : T.pts i ≠ T.pts k := by
+  intro hh; exact h (T.indep.injective hh)
+
+/-- **Both directions at once.**  For a tile and any two distinct vertices, the one with the
+smaller opposite side has the smaller angle. -/
+theorem angle_lt_of_sideOpp_lt (T : Tri) (j : Fin 3)
+    (h : dist (T.pts (j + 1)) (T.pts (j + 2)) < dist (T.pts j) (T.pts (j + 2))) :
+    cornerAngle (T.pts (j + 1)) (T.pts j) (T.pts (j + 2))
+      < cornerAngle (T.pts j) (T.pts (j + 1)) (T.pts (j + 2)) := by
+  have h01 : ∀ x : Fin 3, x ≠ x + 1 := by decide
+  have h12 : ∀ x : Fin 3, x + 1 ≠ x + 2 := by decide
+  have h02 : ∀ x : Fin 3, x ≠ x + 2 := by decide
+  exact angle_lt_of_side_lt_pts (T.pts j) (T.pts (j + 1)) (T.pts (j + 2))
+    (pts_ne T (h01 j)) (pts_ne T (h12 j)) (pts_ne T (h02 j)) (strict_triangle_pts T j) h
+
 end Erdos634.TilePlacement
