@@ -221,4 +221,37 @@ theorem up_down_disjoint (i j : ℕ) (s t : ℝ) (hu : openUp i j s t) (hd : ope
   have h2 := hd.2.2
   linarith
 
+/-! ## From the plane to lattice coordinates
+
+The lattice results above are about the pair `(s,t)`.  A point of the plane has such a pair, given
+by the tile's own barycentric coordinates: `s` is the coordinate of `B` and `t` that of `C`. -/
+
+/-- **The barycentric expansion.** -/
+theorem bary_expand (T : Tri) (x : Plane) :
+    x = (T.basis.coord 0 x) • T.pts 0 + (T.basis.coord 1 x) • T.pts 1
+      + (T.basis.coord 2 x) • T.pts 2 := by
+  have h := T.basis.affineCombination_coord_eq_self (k := ℝ) x
+  rw [Finset.affineCombination_eq_linear_combination] at h
+  · rw [Fin.sum_univ_three] at h; simpa [Tri.basis] using h.symm
+  · exact T.basis.sum_coord_apply_eq_one x
+
+/-- **Lattice coordinates of a point.**  Every point is the lattice origin plus `s` steps along
+`B - A` and `t` along `C - A`, with `s`, `t` its barycentric coordinates at `B` and `C`. -/
+theorem lattice_coords (T : Tri) (x : Plane) :
+    x = T.pts 0 + (T.basis.coord 1 x) • (T.pts 1 - T.pts 0)
+      + (T.basis.coord 2 x) • (T.pts 2 - T.pts 0) := by
+  have hb := bary_expand T x
+  have hsum : T.basis.coord 0 x + T.basis.coord 1 x + T.basis.coord 2 x = 1 := by
+    have := T.basis.sum_coord_apply_eq_one (k := ℝ) x
+    rwa [Fin.sum_univ_three] at this
+  have h0 : T.basis.coord 0 x = 1 - T.basis.coord 1 x - T.basis.coord 2 x := by linarith
+  conv_lhs => rw [hb, h0]
+  rw [smul_sub, smul_sub, sub_smul, sub_smul, one_smul]
+  abel
+
+/-- The lattice point `P i j` of the tile's own vertices, in those coordinates. -/
+theorem P_coords (T : Tri) (i j : ℕ) :
+    P (T.pts 0) (T.pts 1) (T.pts 2) i j
+      = T.pts 0 + (i : ℝ) • (T.pts 1 - T.pts 0) + (j : ℝ) • (T.pts 2 - T.pts 0) := rfl
+
 end Erdos634.Subdivision
