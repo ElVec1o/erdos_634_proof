@@ -88,4 +88,40 @@ theorem chain_junctions {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
   exact shared_junction D dir {y : Plane | g y = c} (dir_injOn_wall g dir c hker) (E k) (E (k + 1))
     ((g_ends D g c dir (E k) hwk).2) ((g_ends D g c dir (E (k + 1)) hwk1).1) hcontig
 
+/-! ## The junction is a non-vertex point of the frontier
+
+`OrientWord.word_isChain` asks, at each junction, for a point of the target's frontier that is not
+a vertex of the target.  The junction is on the base, hence on the frontier; and it is strictly
+inside the base's shadow, hence neither endpoint — while the target's third vertex is off the wall
+altogether. -/
+
+/-- **The junction is a non-vertex frontier point.**  `hstrict` says the junction's coordinate is
+strictly between the base's endpoints, which is what the ordering supplies; `hvert` says the
+target's vertices are the base's two endpoints and one point strictly inside the half-plane, which
+is what makes the base a side. -/
+theorem junction_frontier_nonvertex {N : ℕ} (D : Dissection N) (g : Plane →ᵃ[ℝ] ℝ) (c : ℝ)
+    (dir : Plane →ₗ[ℝ] ℝ) (a b : Plane)
+    (hbase : segment ℝ a b ⊆ frontier D.target.carrier)
+    (hface : ∀ y ∈ D.target.carrier, g y = c → y ∈ segment ℝ a b)
+    (hvert : ∀ j : Fin 3, D.target.pts j = a ∨ D.target.pts j = b ∨ g (D.target.pts j) < c)
+    {p : Plane} (hp : p ∈ D.target.carrier) (hgp : g p = c)
+    (hstrict : min (dir a) (dir b) < dir p ∧ dir p < max (dir a) (dir b)) :
+    p ∈ frontier D.target.carrier ∧ p ∉ Set.range D.target.pts := by
+  refine ⟨hbase (hface p hp hgp), ?_⟩
+  rintro ⟨j, hj⟩
+  rcases hvert j with h | h | h
+  · rw [h] at hj
+    rw [← hj] at hstrict
+    rcases hstrict with ⟨h1, h2⟩
+    rcases le_total (dir a) (dir b) with hle | hle
+    · rw [min_eq_left hle] at h1; exact absurd rfl (ne_of_lt h1)
+    · rw [max_eq_left hle] at h2; exact absurd rfl (ne_of_lt h2)
+  · rw [h] at hj
+    rw [← hj] at hstrict
+    rcases hstrict with ⟨h1, h2⟩
+    rcases le_total (dir a) (dir b) with hle | hle
+    · rw [max_eq_right hle] at h2; exact absurd rfl (ne_of_lt h2)
+    · rw [min_eq_right hle] at h1; exact absurd rfl (ne_of_lt h1)
+  · rw [hj] at h; exact absurd hgp (ne_of_lt h)
+
 end Erdos634.BridgeC
