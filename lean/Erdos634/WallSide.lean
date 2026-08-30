@@ -1,6 +1,7 @@
 import Mathlib
 import Erdos634.WallFace
 import Erdos634.EdgeDisjoint
+import Erdos634.Placement
 
 /-!
 # The wall coordinate and the barycentric coordinate agree, up to a positive factor
@@ -76,5 +77,34 @@ theorem no_wall_contact {N : ℕ} (D : Dissection N) (g : Plane →ᵃ[ℝ] ℝ)
     False :=
   Erdos634.EdgeDisjoint.no_same_side_contact D i j hij k l x hxT hxS hTp1 hTp2 hSp1 hSp2
     (same_side (D.tile i) (D.tile j) g c k l hT1 hT2 hT3 hS1 hS2 hS3)
+
+/-- **Two distinct edges of one tile cannot both lie on the wall.**  Their endpoints exhaust the
+tile's three vertices, and a functional equal at all three is constant
+(`Placement.no_double_wall_tile`). -/
+theorem no_two_wall_edges (T : Tri) (g : Plane →ᵃ[ℝ] ℝ) (c : ℝ) (hlin : ∃ y, g y ≠ c)
+    (k l : Fin 3) (hkl : k ≠ l)
+    (hk : g (T.pts k) = c ∧ g (T.pts (k + 1)) = c)
+    (hl : g (T.pts l) = c ∧ g (T.pts (l + 1)) = c) : False := by
+  have hall : ∀ j : Fin 3, g (T.pts j) = c := by
+    intro j
+    have hk3 : k = 0 ∨ k = 1 ∨ k = 2 := by fin_cases k <;> simp
+    have hl3 : l = 0 ∨ l = 1 ∨ l = 2 := by fin_cases l <;> simp
+    have hj3 : j = 0 ∨ j = 1 ∨ j = 2 := by fin_cases j <;> simp
+    rcases hk3 with rfl | rfl | rfl <;> rcases hl3 with rfl | rfl | rfl <;>
+      rcases hj3 with rfl | rfl | rfl <;>
+      simp_all [show ((0:Fin 3)+1) = 1 from rfl, show ((1:Fin 3)+1) = 2 from rfl,
+        show ((2:Fin 3)+1) = 0 from rfl]
+  exact Erdos634.Placement.no_double_wall_tile T g c hlin (hall 0) (hall 1) (hall 2)
+
+/-- **Consecutive chain edges belong to distinct tiles.**  Two wall edges of the same tile are the
+same edge. -/
+theorem wall_edges_same_tile {N : ℕ} (D : Dissection N) (g : Plane →ᵃ[ℝ] ℝ) (c : ℝ)
+    (hlin : ∃ y, g y ≠ c) (e f : Fin N × Fin 3) (hef : e ≠ f) (htile : e.1 = f.1)
+    (he : g ((D.tile e.1).pts e.2) = c ∧ g ((D.tile e.1).pts (e.2 + 1)) = c)
+    (hf : g ((D.tile f.1).pts f.2) = c ∧ g ((D.tile f.1).pts (f.2 + 1)) = c) : False := by
+  have hne : e.2 ≠ f.2 := by
+    intro h; exact hef (Prod.ext htile h)
+  rw [← htile] at hf
+  exact no_two_wall_edges (D.tile e.1) g c hlin e.2 f.2 hne he hf
 
 end Erdos634.WallSide
