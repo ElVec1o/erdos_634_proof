@@ -164,7 +164,7 @@ theorem side_no_b_uncond (hco : Nat.Coprime e f) (hef : e < f)
   have h8 : f * t = t * f := by ring
   omega
 
-/-- **Every `e = 1` member has `b`-free equal sides.** The hypothesis `e² < f` of `side_no_b` is
+/-- **Every `e = 1` member's side walks are `b`-free.**  (A statement about walks; that a real side's edges form a walk is `thm:walkstruct`'s business.) The hypothesis `e² < f` of `side_no_b` is
 automatic here (`1 < f`), so no side of the target carries a `b`-edge, for every `f ≥ 2` at once.
 This replaces the per-member `side_no_b_1_2`, `side_no_b_1_3`, `side_no_b_1_4` of `Interface.lean`
 with a single statement. -/

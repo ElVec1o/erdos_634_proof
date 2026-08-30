@@ -68,7 +68,9 @@ theorem run_length_bound (f p q : ℕ) (hq3 : 3 ≤ q) (hqf : q ≤ f) (hp2 : 2 
 the run has length at most `f - 1`. -/
 theorem block_never_completes (f L : ℕ) (hf : 2 ≤ f) (hL : L ≤ f - 1) : L ≠ f := by omega
 
-/-- Hence every corner breaks: the trichotomy loses its first branch. -/
+/-- The trichotomy loses its first branch, as a propositional step: given the three alternatives
+and the refutation of the first, one of the other two holds.  Reading this as "every corner breaks"
+needs the trichotomy itself, which is geometric. -/
 theorem every_corner_breaks (completes baseBreak sideBreak : Prop)
     (htri : completes ∨ baseBreak ∨ sideBreak) (hno : ¬ completes) :
     baseBreak ∨ sideBreak := htri.resolve_left hno
