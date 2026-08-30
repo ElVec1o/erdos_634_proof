@@ -145,3 +145,4 @@ import Erdos634.SideWall
 import Erdos634.DissectionMap
 import Erdos634.Subdivision
 import Erdos634.ChainWalk
+import Erdos634.EqSpecAlgebra

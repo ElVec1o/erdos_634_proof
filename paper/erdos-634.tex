@@ -1705,14 +1705,19 @@ Corollary~\ref{cor:int} gives the two divisibilities, and the area identity give
 The equilateral divisibilities of Proposition~\ref{prop:otherspectra} reduce to a clean finite
 criterion.
 
-\begin{proposition}[Equilateral admissibility]\label{prop:eqspec}\lab{PROVED}
-Let an equilateral triangle of side $S$ be $N$-tiled by a $2\pi/3$ tile $(a,b,c)$, and put
-$X=c+a-b$, $Y=c+b-a$. Then $XY=3ab$, and $s:=3S/X$, $t:=3S/Y$ are positive integers with
+\begin{proposition}[The equilateral identities]\label{prop:eqspec}\lab{VERIFIED}
+Let $(a,b,c)$ be a $2\pi/3$ tile, $S>0$, and put $X=c+a-b$, $Y=c+b-a$, $s=3S/X$, $t=3S/Y$ and
+$N=S^2/(ab)$. Then
 \[
-st=3N,\qquad s\equiv t\equiv N\pmod 2,\qquad (t-s)^2+16N=q^2\ \text{ for an integer } q;
+XY=3ab,\qquad st=3N,\qquad (t-s)^2+16N=q^2\ \text{ with } q=\frac{2S(a+b)}{ab},
 \]
-conversely $(s,t,q)$ determine the instance:
-$(a,b,c)$ is proportional to $\bigl(q+(t-s),\,q-(t-s),\,2(s+t)\bigr)$, and primitivity pins the
+and conversely a triple proportional to $\bigl(q+(t-s),\,q-(t-s),\,2(s+t)\bigr)$ satisfies the
+$2\pi/3$ relation.
+\end{proposition}
+
+\begin{proposition}[Equilateral admissibility]\label{prop:eqspecint}\lab{PROVED}
+If moreover an equilateral triangle of side $S$ is $N$-tiled by that tile, then $s$ and $t$ are
+positive integers, $s\equiv t\equiv N\pmod 2$, and $q$ is an integer; primitivity then pins the
 scale, hence $S$.
 \end{proposition}
 

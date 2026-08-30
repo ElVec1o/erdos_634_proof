@@ -295,7 +295,8 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | M `lem:value` | Tile value |
 | M `prop:conic` | Conic form |
 | M `prop:cornerpara` | Corner parallelogram |
-| M `prop:eqspec` | Equilateral admissibility |
+| M `prop:eqspec` | `XY = 3ab`, `st = 3N`, `(t−s)² + 16N = q²`, and the converse triple | `EqSpecAlgebra.XY_eq`, `.st_eq`, `.disc_eq`, `.converse_triple` | VERIFIED — the whole numeric chain, with the denominators cleared so the identities are polynomial |
+| M `prop:eqspecint` | in a tiling, `s`, `t`, `q` are integers with `s ≡ t ≡ N (mod 2)` | none | PROVED — the integrality is what the tiling supplies, and it needs the area ratio and edge counts at `Dissection` level |
 | M `prop:otherspectra` | The other branches |
 | M `prop:ratfree` | The rationality input, partly internalised |
 | M `prop:solv` | `e ∣ (a+b−c)` iff a parametrisation by `j` with `d < j < 2d` | `SolvCore.solv_iff`, `.core_identity`, `.j_identity`, `.j_gt_d`, `.no_j_at_d_one` | VERIFIED — both directions, with the formulas for `a` and `c` written without division (`4a(j−d) = e²(2d−j)(2d+j)`, `2c = 2a + e²j`). The paper's coprimality clause on `a` is carried as the hypothesis `IsCoprime a e`, which `gcd(a,b) = 1` supplies |
