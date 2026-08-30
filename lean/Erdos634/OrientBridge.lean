@@ -253,8 +253,12 @@ remaining obligations are explicit rather than vague.
 
 * `edgePos_le_both` — the key is at most each endpoint's coordinate, so it really is the left end.
 * `edgePos_injOn_of_disjoint` — injectivity, **from** the hypothesis that distinct chain edges have
-  disjoint open spans.  That hypothesis is the one genuine geometric obligation left: it must come
-  from the tiles' interiors being disjoint, which this file does not prove. -/
+  disjoint open spans.  That hypothesis was recorded here as the one genuine geometric obligation
+  left, to come from the tiles' interiors being disjoint.  **Discharged 2026-08-30**:
+  `EdgeDisjoint.no_same_side_contact` derives it from `Dissection.interiors_disjoint`,
+  `WallSide.no_wall_contact` removes its same-side hypothesis, and
+  `WallInjective.shadows_disjoint` states it for the shadows.  `BridgeC.chain_junctions` is the
+  consequence. -/
 
 /-- The position of a chain edge along the base: the smaller endpoint coordinate. -/
 noncomputable def edgePos {N : ℕ} (D : Dissection N) (dir : Plane →ₗ[ℝ] ℝ)

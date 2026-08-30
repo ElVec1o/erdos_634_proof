@@ -2,6 +2,7 @@ import Mathlib
 import Erdos634.BaseChain
 import Erdos634.WallInjective
 import Erdos634.Placement
+import Erdos634.OrientWord
 
 /-!
 # Bridge (c): the base chain's junctions, as a theorem about a dissection
@@ -123,5 +124,29 @@ theorem junction_frontier_nonvertex {N : ℕ} (D : Dissection N) (g : Plane →�
     · rw [max_eq_right hle] at h2; exact absurd rfl (ne_of_lt h2)
     · rw [min_eq_right hle] at h1; exact absurd rfl (ne_of_lt h1)
   · rw [hj] at h; exact absurd hgp (ne_of_lt h)
+
+/-! ## The angle readings at a junction
+
+`OrientWord.word_isChain` asks, at each junction, for the two readings: a `BG` tile shows `γ` at its
+east end, a `GB` tile shows `γ` at its west end.  `OrientBridge` proves both from one input — that
+each end of the tile's base edge shows `β` or `γ`, never `α` — and `endpoints_avoid_alpha` supplies
+that from the tile's angle multiset once the base edge is the one opposite the `α`-corner. -/
+
+open Erdos634.Inflation in
+/-- **Both readings, packaged.**  For a tile whose base edge's ends avoid `α`, the orientation
+determines which end shows `γ`, in exactly the two implications `word_isChain` consumes. -/
+theorem chain_edge_readings {N : ℕ} (D : Dissection N) (i : Fin N) (west east : Plane)
+    (α β γ : ℝ) (hbg : β ≠ γ)
+    (hmul : ({(D.tile i).localAngle west, (D.tile i).localAngle east, α} : Multiset ℝ)
+      = {α, β, γ})
+    (hwa : (D.tile i).localAngle west ≠ α) (hea : (D.tile i).localAngle east ≠ α)
+    (hne : (D.tile i).localAngle west ≠ (D.tile i).localAngle east) :
+    (Erdos634.OrientBridge.tileOrient D β i west = Orient.BG →
+        (D.tile i).localAngle east = γ) ∧
+      (Erdos634.OrientBridge.tileOrient D β i west = Orient.GB →
+        (D.tile i).localAngle west = γ) := by
+  obtain ⟨hw, he⟩ := Erdos634.OrientBridge.endpoints_avoid_alpha _ _ α β γ hmul hwa hea
+  exact ⟨fun h => Erdos634.OrientBridge.orient_BG_east_gamma D i west east β γ hbg hw he hne h,
+    fun h => Erdos634.OrientBridge.orient_GB_west_gamma D i west β γ hw h⟩
 
 end Erdos634.BridgeC
