@@ -375,4 +375,33 @@ theorem corner_tile_edges (T : Tri) (j : Fin 3) (a b c : ℝ) (hb : b ≠ 0)
   rw [hopp] at hmul
   exact incident_sides _ _ a b c hb hmul
 
+/-! ## A `c`-corner carries a side `a`-edge
+
+`lem:ccornerside` of the obstructions note: the base corner's two flanks are `a` and `c`, so a
+corner tile laying `c` on the base lays `a` on the side.  With `corner_tile_edges` that is now a
+two-line consequence. -/
+
+/-- **`lem:ccornerside`.**  If the corner tile's base edge is its `c`-edge, its other edge at the
+corner is the `a`-edge. -/
+theorem c_corner_side_a (T : Tri) (j : Fin 3) (a b c : ℝ) (hb : b ≠ 0) (hac : a ≠ c)
+    (hopp : dist (T.pts (j + 1)) (T.pts (j + 2)) = b)
+    (hmul : ({dist (T.pts j) (T.pts (j + 1)), dist (T.pts (j + 2)) (T.pts j),
+      dist (T.pts (j + 1)) (T.pts (j + 2))} : Multiset ℝ) = {a, b, c})
+    (hbase : dist (T.pts j) (T.pts (j + 1)) = c) :
+    dist (T.pts (j + 2)) (T.pts j) = a := by
+  rcases corner_tile_edges T j a b c hb hopp hmul with ⟨h1, _⟩ | ⟨_, h2⟩
+  · exact absurd (h1.symm.trans hbase) hac
+  · exact h2
+
+/-- The mirror: a corner tile laying `a` on the base lays `c` on the side. -/
+theorem a_corner_side_c (T : Tri) (j : Fin 3) (a b c : ℝ) (hb : b ≠ 0) (hac : a ≠ c)
+    (hopp : dist (T.pts (j + 1)) (T.pts (j + 2)) = b)
+    (hmul : ({dist (T.pts j) (T.pts (j + 1)), dist (T.pts (j + 2)) (T.pts j),
+      dist (T.pts (j + 1)) (T.pts (j + 2))} : Multiset ℝ) = {a, b, c})
+    (hbase : dist (T.pts j) (T.pts (j + 1)) = a) :
+    dist (T.pts (j + 2)) (T.pts j) = c := by
+  rcases corner_tile_edges T j a b c hb hopp hmul with ⟨_, h2⟩ | ⟨h1, _⟩
+  · exact h2
+  · exact absurd (hbase.symm.trans h1) hac
+
 end Erdos634.TilePlacement
