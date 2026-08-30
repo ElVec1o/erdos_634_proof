@@ -493,3 +493,41 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | C `lem:columnlines` | corner lines are column lines | `CosetPropagation.*`, `FloorPropagation.*` | PROVED — the lattice arithmetic is available; 'lines through two vertices of the corner lattice' needs the lattice as a Lean object |
 | C `lem:noapexline` | the chain never needs the apex line | `chain_needs_small_lines` | PROVED — same lattice development |
 | C `lem:monochotomy` | the thick-member monochotomy for `c` | `c_chord_unique_thick`, `CChord.*` | PROVED — the decomposition arithmetic is VERIFIED; the lemma also asserts which decomposition a *tiling* realises |
+
+## Blockers named, companion part 2 (2026-08-30, debt pass 5)
+
+| Paper | Statement | Lean declaration | Blocker |
+|---|---|---|---|
+| C `thm:walkstruct` | the walk structure at `m=1` | `equal_side_no_b`, `equal_side_shape`, `base_b_count` | PROVED — the walk arithmetic is VERIFIED; the clauses about what a *tiling*'s sides carry need the side edge chain — bridge (c) beyond the base |
+| C `lem:pentagon` | the middle region of `(0,e,2e)` admits no tiling | `Pentagon.no_partition` | PROVED — 'admits no tiling' quantifies over dissections of a **non-triangular region**, for which there is no Lean notion |
+| C `lem:anglethreshold` | the closed forms for `cos α`, `cos β`, `cos γ`, and (P4) | `Frontier.cos_alpha_closed` | PROVED — one of the three cosines is a verified identity; the other two are unformalized and (P4) is a property of the search's uncovered region, which has no Lean notion |
+| C `lem:basetri` | the thick base trichotomy | `base_trichotomy` | PROVED — the three decompositions are VERIFIED arithmetic; that a tiling realises one of them needs the base edge chain |
+| C `lem:shadow` | the shadow at a `c`-corner | `SideNoB.c_corner_forces_side_a` | PROVED — **tile-placement layer**: 'lays `c` on the base, mirrored, `a`-edge first' |
+| C `lem:basedi` | the thick base dichotomy | `base_dichotomy_thick` | PROVED — the arithmetic is VERIFIED; it consumes `prop:gammatrap`, whose geometric inputs are open |
+| C `cor:basedi2e` | the trichotomy and dichotomy without separation | `base_dichotomy_thick`, `no_extra_column_of_f_gt_two_e` | PROVED — same, plus the column exclusion |
+| C `lem:anchorclear` | blocked-end quantization | `CChord.*`, `Collar.*` | PROVED — needs a tile edge whose extension is blocked — a placement statement about the ambient tiling |
+| C `cor:onebloc` | the one-end-blocked chord dichotomy | `CChord.c_chord_dichotomy` | PROVED — the dichotomy is VERIFIED arithmetic; 'the far side of the chord' is a placement statement |
+| C `cor:wallsf2e` | the base walk is the walls form `(f,1,1)` at `e=1` | `SideNoB.side_no_b_uncond`, `.side_quantized`, `BaseCountsE1.base_counts_corner` | PROVED — `n_b = 1` and the exclusion of `n_c = 2` are now VERIFIED; `n_c ≥ 1` remains, as for `thm:e1reduce` |
+| C `thm:apexconfig` | the first chord is covered exactly | `ApexRigidity.middle_fraction`, `.area_above_chord` | PROVED — the fractions are VERIFIED; the three tiles at the apex are a placement configuration |
+| C `cor:noTP` | the tile below `T₁`'s `a`-edge has no `T`-junction | `PinLemma.no_through_tile` | PROVED — same apex configuration |
+| C `thm:secondc` | the second edge of an equal side is a `c` | `SecondEdge.admissible_ends_alpha` | PROVED — the endpoint arithmetic is VERIFIED; 'the edge immediately after' presupposes the side's ordered chain |
+| C `prop:nogolden` | the golden-ratio hypothesis is removable | `ApexRigidity.b_gt_f`, `eb_gt_a`, `e_ge_two_of_b_lt_a` | PROVED — the inequalities are VERIFIED; the statement is about `thm:secondc`, so it inherits that blocker |
+| C `cor:pbound` | `n_c ≥ 2`, hence `pe + 2 ≤ f` | `ApexRigidity.side_p_bound` | PROVED — the implication is VERIFIED; `n_c ≥ 2` comes from `prop:gammatrap` plus the apex `c`-edge, both geometric |
+| C `lem:onegamma` | a single `γ` never excludes a `T`-junction | `SecondEdge.at_most_one_straight` | PROVED — the count is VERIFIED; 'an interior point at which one tile presents `γ`' now has `VertexFigureReal.interior_figure_cases` behind it, but the `T`-junction itself is a placement notion |
+| C `thm:aforcesT` | an `a`-edge forces a `T`-junction | `SecondEdge.*` | PROVED — same `T`-junction notion |
+| C `prop:inflbdy` | the inflated boundary | `Inflation.*` | PROVED — needs the inflated tile's dissection, i.e. the **scale map on dissections** |
+| C `cor:inflcrux` | the crux, on `f²` tiles | `Inflation.*` | PROVED — same scale map |
+| C `prop:inflparity` | edge parity kills the `p=1` boundary | `Inflation.*` | PROVED — same scale map, plus an edge-to-edge hypothesis with no Lean definition |
+| C `prop:orientmono` | a boundary `a`-run's orientations are monotone | `Inflation.BG_GB_forbidden`, `.orient_monotone`, `.AAB_iff_transition` | PROVED — the alphabet lemmas are VERIFIED; the passage from a real boundary run to the word is bridge (c) — proved for the base (`BridgeC.chain_junctions`, `OrientWord.word_isChain`) and open for the equal sides |
+| C `lem:tight` | the `γ`-injection budget at `p` | `Frontier.*` | PROVED — the budget arithmetic is available; the side of parameter `p` is a placement notion |
+| C `prop:tightside` | the `p=2` side is forced | `Frontier.*` | PROVED — same |
+| C `lem:chord` | the chord at the last junction | `tile_contact_face`, `contact_is_edge` | PROVED — placement layer: the apex `c`-tile and its junction |
+| C `thm:ptwodead` | `p=2` is excluded on the tight subfamily | `Frontier.*` | PROVED — assembles `lem:tight`, `prop:tightside`, `lem:chord`; blocked by the weakest |
+| C `thm:lastjunction` | the last-junction dichotomy | `ApexRigidity.*` | PROVED — placement layer at the last junction of a side |
+| C `thm:nobothmirror` | the side carrying `T₂`'s `c`-edge is not mirrored | `ApexRigidity.overlap_signs` | PROVED — the sign computation is VERIFIED; the mirroring is a placement statement |
+| C `cor:figureP` | the figure at `P` is `γ + π + β + α = 2π` | `ApexRigidity.*`, `VertexFigureReal.interior_figure_cases` | PROVED — the figure is now reachable at a real interior point; locating `P` on the side is placement |
+| C `prop:Uplacements` | the two placements of `U` | `ApexRigidity.drops_agree_37` | PROVED — the drop identity is VERIFIED at one member; 'the two placements' is placement |
+| C `prop:figurePprime` | the figure at `P'` is `{β, 3γ}` either way | `ApexRigidity.figure_at_Pprime` | PROVED — same |
+| C `prop:closepaircolumns` | the extra base columns at a close pair | `close_pair_column`, `close_pair_column_unique`, `one_column_per_k` | PROVED — the column arithmetic is VERIFIED; 'a base column of a tiling' has no Lean definition |
+| C `lem:pgram` | the unit parallelogram | `PgramTiling22.pgram22_certificate` | PROVED — one member's certificate is VERIFIED by `decide`; the general parallelogram is a region with no Lean notion of dissection |
+| C `prop:widecol` | wide parallelograms at all `(e,f)` | `PgramTiling52.*` | PROVED — same |
