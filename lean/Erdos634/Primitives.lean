@@ -295,6 +295,37 @@ theorem w_counts :
     (7:ℤ) * 2 ^ 2 = 28 ∧ (7:ℤ) * 3 ^ 2 = 63 ∧ (7:ℤ) * 4 ^ 2 = 112 ∧ (7:ℤ) * 5 ^ 2 = 175 := by
   norm_num
 
+/-! ## The relation lattice is free of rank two
+
+`prop:rellattice` asserts that `Λ(e,f) = {n : n_a·a + n_b·b + n_c·c = 0}` is free of rank two on
+`v₁ = (f,0,-e)` and `v₂ = (e,f,-f)`.  `rel_v1` and `rel_v2` say the generators are relations;
+what was missing is that they *generate*, and that they are independent. -/
+
+/-- **The generators span.**  Every relation is an integer combination of `v₁` and `v₂`. -/
+theorem rel_span (x y z e f : ℤ) (hf : f ≠ 0) (hc : IsCoprime f e)
+    (h : x * (e * f) + y * (f ^ 2 - e ^ 2) + z * f ^ 2 = 0) :
+    ∃ s t : ℤ, x = f * s + t * e ∧ y = t * f ∧ z = -(e * s) - t * f := by
+  obtain ⟨t, ht⟩ := rel_b_mult x y z e f hc h
+  -- subtract `t · v₂`: the remainder is `b`-free
+  have hrem : (x - t * e) * (e * f) + (z + t * f) * f ^ 2 = 0 := by
+    rw [ht] at h; linear_combination h
+  obtain ⟨s, hs1, hs2⟩ := rel_param (x - t * e) (z + t * f) e f hf hc hrem
+  exact ⟨s, t, by linarith [hs1], by linarith [ht], by linarith [hs2]⟩
+
+/-- **The generators are independent**, so the lattice is free of rank two. -/
+theorem rel_indep (s t e f : ℤ) (hf : f ≠ 0)
+    (h1 : f * s + t * e = 0) (h2 : t * f = 0) : s = 0 ∧ t = 0 := by
+  have ht : t = 0 := by
+    rcases mul_eq_zero.mp h2 with h | h
+    · exact h
+    · exact absurd h hf
+  refine ⟨?_, ht⟩
+  rw [ht] at h1
+  simp only [zero_mul, add_zero] at h1
+  rcases mul_eq_zero.mp h1 with h | h
+  · exact absurd h hf
+  · exact h
+
 end Erdos634.Primitives
 
 #print axioms Erdos634.Primitives.ladder_cells

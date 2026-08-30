@@ -348,7 +348,8 @@ appeared in no row at all now have rows, with their blockers written:
 | C `lem:rowp1` | the row advance at Y0 | none | PROVED — planar placement argument |
 | C `prop:slotdichotomy` | the slot dichotomy | none | PROVED — planar placement argument |
 | C `cor:rowinduction` | the induction step | none | PROVED — assembles the four row lemmas above |
-| C `prop:rellattice` | the relation lattice and interface floor | `SurplusLattice.lattice_12`, `.lattice_13` | PROVED — the lattice arithmetic is VERIFIED; the floor statement is not |
+| C `prop:rellattice` | `Λ(e,f)` is free of rank two on `v₁ = (f,0,−e)`, `v₂ = (e,f,−f)` | `Primitives.rel_v1`, `.rel_v2`, `.rel_b_mult`, `.rel_param`, `.rel_span`, `.rel_indep` | VERIFIED — the generators are relations, they span (subtract the right multiple of `v₂` and apply the `b`-free case), and they are independent. The interface-floor clause was split into `prop:interfacefloor` |
+| C `prop:interfacefloor` | a nonzero relation has one-sided length `≥ f·min(a,b)`, so short interfaces match | `Primitives.rel_span` | PROVED — the length bound is arithmetic and not yet proved; the clause about interfaces of a tiling needs maximal straight interfaces as objects |
 | C `prop:cevianatom` | cevian reduction: two tiles and an atom | `CevianSplit.split_count`, `.cevian_foot` | PROVED — the counting identities are VERIFIED; the reduction is geometric |
 | C `lem:wpgram` | the W-parallelogram at e=1 | `PgramTiling22.pgram22_certificate` | PROVED — the certificate is VERIFIED at one member; the general lemma is not |
 | C `thm:addlaw` | addition law | none | PROVED — needs the composition of dissections, not defined in Lean |
