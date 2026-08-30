@@ -254,4 +254,43 @@ theorem P_coords (T : Tri) (i j : ℕ) :
     P (T.pts 0) (T.pts 1) (T.pts 2) i j
       = T.pts 0 + (i : ℝ) • (T.pts 1 - T.pts 0) + (j : ℝ) • (T.pts 2 - T.pts 0) := rfl
 
+/-! ## The count: `k²` triangles
+
+The upward cells are the pairs `(i,j)` with `i + j + 1 ≤ k` and the downward ones those with
+`i + j + 2 ≤ k`.  Summing over `i` gives `k(k+1)/2` and `k(k-1)/2`, whose sum is `k²` — the number
+`thm:ladder` asserts. -/
+
+/-- The number of upward cells, as a sum over the first index, doubled to stay in `ℕ`. -/
+theorem up_count (k : ℕ) : (∑ i ∈ Finset.range k, (k - i)) * 2 = k * (k + 1) := by
+  induction k with
+  | zero => simp
+  | succ n ih =>
+    rw [Finset.sum_range_succ']
+    simp only [Nat.succ_sub_succ, Nat.sub_zero]
+    ring_nf
+    ring_nf at ih
+    omega
+
+/-- The downward count, from the upward one: each term drops by exactly one, and there are `k`
+terms. -/
+theorem down_shift (k : ℕ) :
+    (∑ i ∈ Finset.range k, (k - i - 1)) + k = ∑ i ∈ Finset.range k, (k - i) := by
+  have h : ∀ i ∈ Finset.range k, (k - i - 1) + 1 = k - i := by
+    intro i hi
+    have : i < k := Finset.mem_range.mp hi
+    omega
+  calc (∑ i ∈ Finset.range k, (k - i - 1)) + k
+      = ∑ i ∈ Finset.range k, ((k - i - 1) + 1) := by
+        rw [Finset.sum_add_distrib]; simp
+    _ = ∑ i ∈ Finset.range k, (k - i) := Finset.sum_congr rfl h
+
+/-- **The two counts add to `k²`.** -/
+theorem total_count (k : ℕ) :
+    ((∑ i ∈ Finset.range k, (k - i)) + (∑ i ∈ Finset.range k, (k - i - 1))) = k * k := by
+  have h1 := up_count k
+  have h2 := down_shift k
+  have hkk : k * (k + 1) = k * k + k := by ring
+  rw [hkk] at h1
+  omega
+
 end Erdos634.Subdivision
