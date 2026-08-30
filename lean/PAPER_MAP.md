@@ -185,7 +185,8 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 | C `lem:anglethreshold` | The angle threshold | `cos_alpha_closed` |
 | C `lem:avgen` | The $\alpha$-vertex gap, general | `alpha_vertex_gap_gen` |
 | C `lem:basedi` | The thick base dichotomy | `base_dichotomy_thick` |
-| C `lem:basetri` | The thick base trichotomy | `base_trichotomy` |
+| C `lem:basetri` | the base's three edge decompositions at a separated member | `CChord.base_trichotomy` | VERIFIED — the declaration is the statement: any `(x,y,z)` solving the base walk at a separated member is one of the three. Enumerated for every separated coprime pair with `f < 24`: exactly those three, no others |
+| C `rem:closepairbase` | close pairs admit further decompositions with `y > e` | none | HEURISTIC — a per-member computation; finiteness follows from the walk equation but the count is not proved uniformly |
 | C `lem:cchord` | c-chord dichotomy | `CChord.c_chord_dichotomy` |
 | C `lem:ccorner` | The $c$-corner is rigid | `partner_unique` |
 | C `lem:census` | The vertex census | `vertex_census` |

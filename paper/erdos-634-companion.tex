@@ -2637,12 +2637,17 @@ of $a$-edges on a side is a multiple of $f$. For $e\ge2$ this quantizes the wall
 bound $p<f$ forces $p=0$, the side condition of Hypothesis~\ref{hyp:walls}.
 \end{lemma}
 
-\begin{lemma}[The thick base trichotomy]\label{lem:basetri}\lab{PROVED}
+\begin{lemma}[The thick base trichotomy]\label{lem:basetri}\lab{VERIFIED}
 For a separated member ($f^2>2ef+e^2$) the base admits exactly three edge decompositions:
 $(x,y,z)\in\{(0,e,2e),\,(f,e,e),\,(2f,e,0)\}$ (\texttt{base\_trichotomy}); the walls form is the
-middle one, $f$ $a$-feet, $e$ $b$-edges, $e$ $c$-feet. Close pairs ($f^2\le2ef+e^2$) admit in
-addition finitely many decompositions with $y>e$, computable per member.
+middle one, $f$ $a$-feet, $e$ $b$-edges, $e$ $c$-feet.
 \end{lemma}
+
+\begin{remark}[Close pairs]\label{rem:closepairbase}\lab{HEURISTIC}
+Close pairs ($f^2\le2ef+e^2$) admit in addition finitely many decompositions with $y>e$, computable
+per member. Finiteness is immediate from the walk equation; the count itself is a computation and is
+not proved uniformly in $(e,f)$.
+\end{remark}
 
 \begin{lemma}[The shadow at a $c$-corner]\label{lem:shadow}\lab{PROVED}
 Suppose a base corner tile lays $c$ on the base (then it is mirrored with its $a$-edge first on
