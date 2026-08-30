@@ -152,4 +152,44 @@ theorem side_chain_junctions {N : ℕ} (hN : 0 < N) (D : Dissection N) (k : Fin 
     rw [Tri.edge] at this
     exact this
 
+/-! ## The side's own vertices
+
+`BridgeC.junction_frontier_nonvertex` needs to know that the target's vertices are the side's two
+endpoints and one point strictly inside the half-plane.  For the wall functional of side `k` that is
+immediate: the opposite vertex has coordinate `1`, so the functional takes the value `-1` there. -/
+
+/-- **The target's vertices, relative to side `k`.** -/
+theorem side_vertices (T : Tri) (k j : Fin 3) :
+    T.pts j = T.pts k ∨ T.pts j = T.pts (k + 1) ∨ wallFun T k (T.pts j) < 0 := by
+  have hfin : ∀ a b : Fin 3, a = b ∨ a = b + 1 ∨ a = b + 2 := by decide
+  have hself : T.basis.coord (k + 2) (T.pts (k + 2)) = 1 := by
+    have h := T.basis.coord_apply (k + 2) (k + 2)
+    simp only [if_pos rfl] at h; exact h
+  rcases hfin j k with rfl | rfl | rfl
+  · exact Or.inl rfl
+  · exact Or.inr (Or.inl rfl)
+  · refine Or.inr (Or.inr ?_)
+    simp only [wallFun, AffineMap.coe_neg, Pi.neg_apply]
+    rw [hself]
+    norm_num
+
+/-- **A junction of side `k` is a non-vertex point of the frontier.**  `SideWall`'s data fed to
+`BridgeC.junction_frontier_nonvertex`. -/
+theorem side_junction_frontier_nonvertex {N : ℕ} (D : Dissection N) (k : Fin 3)
+    (dir : Plane →ₗ[ℝ] ℝ) {p : Plane} (hp : p ∈ D.target.carrier)
+    (hgp : wallFun D.target k p = 0)
+    (hstrict : min (dir (D.target.pts k)) (dir (D.target.pts (k + 1))) < dir p ∧
+      dir p < max (dir (D.target.pts k)) (dir (D.target.pts (k + 1)))) :
+    p ∈ frontier D.target.carrier ∧ p ∉ Set.range D.target.pts := by
+  refine Erdos634.BridgeC.junction_frontier_nonvertex D (wallFun D.target k) 0 dir
+    (D.target.pts k) (D.target.pts (k + 1)) ?_ ?_ ?_ hp hgp hstrict
+  · intro y hy
+    exact edge_subset_frontier D.target k (by rw [Tri.edge]; exact hy)
+  · intro y hy h0
+    have := wallFun_face D.target k hy h0
+    rw [Tri.edge] at this
+    exact this
+  · intro j
+    exact side_vertices D.target k j
+
 end Erdos634.SideWall
