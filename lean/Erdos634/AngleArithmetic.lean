@@ -38,7 +38,9 @@ namespace Erdos634.AngleArithmetic
 `2x = 3` and `2y = 2`. The first is impossible. -/
 theorem no_right_angle (x y : Nat) : ¬ (2 * x = 3 ∧ 2 * y = 2) := by omega
 
-/-- The same statement in the form the geometry uses: no dissection piece has a right angle. -/
+/-- The same statement, existentially quantified.  **Not** the geometric claim that no dissection
+piece has a right angle: that needs the piece's angles to be `α, β, γ`, which is congruence
+(`CongruentAngles.congruent_corner_angles`), and is stated in `lem:anglecalc`'s remark. -/
 theorem no_perpendicular_cut : ¬ ∃ x y : Nat, 2 * x = 3 ∧ 2 * y = 2 := by
   intro h
   obtain ⟨x, y, hx, hy⟩ := h

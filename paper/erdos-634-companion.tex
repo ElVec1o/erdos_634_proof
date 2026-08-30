@@ -976,12 +976,10 @@ solution of $n_\alpha+2n_\gamma=X$, $n_\beta+n_\gamma=Y$ in nonnegative integers
 following are that system, solved; each is machine-checked in
 \textup{\texttt{lean/AngleArithmetic.lean}} (core toolchain, no \texttt{sorry}).
 
-\begin{lemma}[Angle calculus]\label{lem:anglecalc}\lab{PROVED}
+\begin{lemma}[Angle calculus]\label{lem:anglecalc}\lab{VERIFIED}
 For every member $(e,f)$:
 \begin{enumerate}
-\item \textup{(No right angle.)} $\pi/2$ has no representation: it would force $2x=3$. Hence no
-piece of any dissection of a base-$\beta$ region has a right angle. In particular the target cannot
-be split along its altitude, and no perpendicular cut is available anywhere in the branch.
+\item \textup{(No right angle.)} $\pi/2$ has no representation: it would force $2x=3$.
 \item \textup{(Apex.)} At the apex, $(X,Y)=(3,0)$, so $n_\beta=n_\gamma=0$ and $n_\alpha=3$: the
 apex carries exactly three $\alpha$-corners.
 \item \textup{(Base corner.)} At $(0,1)$ the only figure is a single $\beta$-corner, with flanks in
@@ -992,6 +990,13 @@ $\gamma$ meets any interior boundary point.
 \item \textup{(Wedge $\alpha+\beta$.)} At $(1,1)$ the only figure is one $\alpha$ and one $\beta$.
 \end{enumerate}
 \end{lemma}
+
+\begin{remark}[No piece has a right angle]\label{rem:norightangle}\lab{PROVED}
+Since every piece is congruent to the tile, its corner angles are $\alpha,\beta,\gamma$, none of
+which is $\pi/2$ by clause~(1). Hence no piece of any dissection of a base-$\beta$ region has a
+right angle: the target cannot be split along its altitude, and no perpendicular cut is available
+anywhere in the branch.
+\end{remark}
 
 \begin{remark}[Where $\beta$ sits]\label{rem:betapi3}
 $3\alpha>\beta$ iff $\beta<\pi/3$ iff $\cos\beta>\tfrac12$ iff $e(3f^2-e^2)>f^3$. For $e=1$ this is
