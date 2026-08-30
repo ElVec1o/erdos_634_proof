@@ -386,6 +386,8 @@ VERIFIED now means: the paper statement, as written, is the Lean theorem.
 
 | C `lem:stubgap` | `\|a−b\|` is a gap of `⟨a,b,c⟩` for the base-β tile | `StubGap.stub_gap`, `.coprime_a_b` | VERIFIED — the statement itself |
 
+| M `prop:unsplit` | `a`, `b` unsplittable; `c` splits iff `e=1`, then uniquely as `a^f` | `Unsplittable.a_unsplittable`, `.c_split`, `BaseBetaCorners.b_unsplittable` | VERIFIED — all three clauses |
+
 ## Blockers named on inspection (2026-08-30, debt pass 1)
 
 Checked against their declarations, statement-first. None is upgradable; each blocker is now
