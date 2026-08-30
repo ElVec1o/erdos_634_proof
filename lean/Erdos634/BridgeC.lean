@@ -126,41 +126,6 @@ theorem junction_frontier_nonvertex {N : ℕ} (D : Dissection N) (g : Plane →�
     · rw [min_eq_right hle] at h1; exact absurd rfl (ne_of_lt h1)
   · rw [hj] at h; exact absurd hgp (ne_of_lt h)
 
-/-! ## The angle readings at a junction
-
-`OrientWord.word_isChain` asks, at each junction, for the two readings: a `BG` tile shows `γ` at its
-east end, a `GB` tile shows `γ` at its west end.  `OrientBridge` proves both from one input — that
-each end of the tile's base edge shows `β` or `γ`, never `α` — and `endpoints_avoid_alpha` supplies
-that from the tile's angle multiset once the base edge is the one opposite the `α`-corner. -/
-
-open Erdos634.Inflation in
-/-- **Both readings, packaged.**  For a tile whose base edge's ends avoid `α`, the orientation
-determines which end shows `γ`, in exactly the two implications `word_isChain` consumes. -/
-theorem chain_edge_readings {N : ℕ} (D : Dissection N) (i : Fin N) (west east : Plane)
-    (α β γ : ℝ) (hbg : β ≠ γ)
-    (hmul : ({(D.tile i).localAngle west, (D.tile i).localAngle east, α} : Multiset ℝ)
-      = {α, β, γ})
-    (hwa : (D.tile i).localAngle west ≠ α) (hea : (D.tile i).localAngle east ≠ α)
-    (hne : (D.tile i).localAngle west ≠ (D.tile i).localAngle east) :
-    (Erdos634.OrientBridge.tileOrient D β i west = Orient.BG →
-        (D.tile i).localAngle east = γ) ∧
-      (Erdos634.OrientBridge.tileOrient D β i west = Orient.GB →
-        (D.tile i).localAngle west = γ) := by
-  obtain ⟨hw, he⟩ := Erdos634.OrientBridge.endpoints_avoid_alpha _ _ α β γ hmul hwa hea
-  exact ⟨fun h => Erdos634.OrientBridge.orient_BG_east_gamma D i west east β γ hbg hw he hne h,
-    fun h => Erdos634.OrientBridge.orient_GB_west_gamma D i west β γ hw h⟩
-
-/-! ## Which chain edges the readings apply to
-
-A first attempt at this said "every chain edge is its tile's shortest side".  That is **false**:
-the `e = 1` base word is a permutation of `a^f, b, c`, so exactly one chain edge is a `b`-edge and
-one is a `c`-edge.  The readings apply along the `a`-run, and the correct hypothesis is local — that
-the angle *opposite* the chain edge is `α`, which is what an `a`-edge means, `α` being the angle
-opposite the shortest side (`OrientBridge.smallest_angle_opposite_shortest_side`).
-
-That hypothesis is the last input to the bridge, and it is configurational: it comes from the base
-word, not from the geometry of dissections. -/
-
 /-- **The endpoints of an `a`-edge avoid `α`.**  If the tile's three angles at the edge's two ends
 and at the opposite vertex are `α, β, γ` in some order, and `α` differs from `β` and `γ`, then the
 two endpoint angles are not `α` — `α` occurs once in the multiset and the opposite vertex has
@@ -196,11 +161,17 @@ theorem avoid_alpha_of_multiset (x y α β γ : ℝ)
       exact (Multiset.cons_inj_right y).mp hmul
     exact hmem x h2
 
+/-! ## The angle readings at a junction
+
+`OrientWord.word_isChain` asks, at each junction, for the two readings: a `BG` tile shows `γ` at its
+east end, a `GB` tile shows `γ` at its west end.  `OrientBridge` proves both from one input — that
+each end of the tile's base edge shows `β` or `γ`, never `α` — and `endpoints_avoid_alpha` supplies
+that from the tile's angle multiset once the base edge is the one opposite the `α`-corner. -/
+
 open Erdos634.Inflation in
-/-- **The readings hold on the `a`-run.**  On a chain edge whose opposite angle is `α`, with the
-tile's three angles distinct, both readings are available — and the avoidance of `α` at the
-endpoints is now derived from the angle multiset rather than assumed. -/
-theorem readings_on_a_edge {N : ℕ} (D : Dissection N) (i : Fin N) (west east : Plane)
+/-- **Both readings, packaged.**  For a tile whose base edge's ends avoid `α`, the orientation
+determines which end shows `γ`, in exactly the two implications `word_isChain` consumes. -/
+theorem chain_edge_readings {N : ℕ} (D : Dissection N) (i : Fin N) (west east : Plane)
     (α β γ : ℝ) (hαβ : α ≠ β) (hαγ : α ≠ γ) (hbg : β ≠ γ)
     (hmul : ({(D.tile i).localAngle west, (D.tile i).localAngle east, α} : Multiset ℝ)
       = {α, β, γ})
@@ -210,7 +181,20 @@ theorem readings_on_a_edge {N : ℕ} (D : Dissection N) (i : Fin N) (west east :
       (Erdos634.OrientBridge.tileOrient D β i west = Orient.GB →
         (D.tile i).localAngle west = γ) := by
   obtain ⟨hwa, hea⟩ := avoid_alpha_of_multiset _ _ α β γ hmul hαβ hαγ
-  exact chain_edge_readings D i west east α β γ hbg hmul hwa hea hne
+  obtain ⟨hw, he⟩ := Erdos634.OrientBridge.endpoints_avoid_alpha _ _ α β γ hmul hwa hea
+  exact ⟨fun h => Erdos634.OrientBridge.orient_BG_east_gamma D i west east β γ hbg hw he hne h,
+    fun h => Erdos634.OrientBridge.orient_GB_west_gamma D i west β γ hw h⟩
+
+/-! ## Which chain edges the readings apply to
+
+A first attempt at this said "every chain edge is its tile's shortest side".  That is **false**:
+the `e = 1` base word is a permutation of `a^f, b, c`, so exactly one chain edge is a `b`-edge and
+one is a `c`-edge.  The readings apply along the `a`-run, and the correct hypothesis is local — that
+the angle *opposite* the chain edge is `α`, which is what an `a`-edge means, `α` being the angle
+opposite the shortest side (`OrientBridge.smallest_angle_opposite_shortest_side`).
+
+That hypothesis is the last input to the bridge, and it is configurational: it comes from the base
+word, not from the geometry of dissections. -/
 
 /-! ## The word, assembled
 

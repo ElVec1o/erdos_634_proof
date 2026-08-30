@@ -181,6 +181,8 @@ the last geometric fact bridge (c) consumes. -/
 /-- **Neither endpoint carries `α`.**  With the three vertex angles equal to `α, β, γ` as a
 multiset and pairwise distinct, if the opposite vertex carries `α` then each endpoint carries `β`
 or `γ`. -/
+/-- (Its hypotheses `hxa`, `hya` are derivable rather than assumed: see
+`BridgeC.avoid_alpha_of_multiset`, which counts `α` in the multiset.) -/
 theorem endpoints_avoid_alpha (x y α β γ : ℝ)
     (hmul : ({x, y, α} : Multiset ℝ) = {α, β, γ})
     (hxa : x ≠ α) (hya : y ≠ α) :
