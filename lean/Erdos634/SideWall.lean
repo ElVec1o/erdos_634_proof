@@ -4,6 +4,8 @@ import Erdos634.BaseSelection
 import Erdos634.EdgeDisjoint
 import Erdos634.BridgeC
 import Erdos634.TilePlacement
+import Erdos634.ChainWalk
+import Erdos634.Placement
 
 /-!
 # Every side of the target is a wall
@@ -191,5 +193,38 @@ theorem side_junction_frontier_nonvertex {N : ℕ} (D : Dissection N) (k : Fin 3
     exact this
   · intro j
     exact side_vertices D.target k j
+
+/-! ## The side's walk
+
+`side_chain_junctions` gives the chain; `ChainWalk.chain_walk` turns a chain into a walk.  The one
+thing to check in between is that the junction equality of *points* becomes contiguity of
+*shadows*, which is `Placement.dir_edgeEast` and `.dir_edgeWest`. -/
+
+open Erdos634.OrientBridge Erdos634.ChainInstance Erdos634.Placement in
+/-- **A side's chain satisfies its walk equation.**  For a chain whose consecutive edges meet and
+whose shadows have the three tile lengths, the span is `P'a + Q'b + R'c` with `P'`, `Q'`, `R'` the
+counts of edges of each length. -/
+theorem side_walk {N : ℕ} (D : Dissection N) (dir : Plane →ₗ[ℝ] ℝ)
+    (n : ℕ) (hn : 1 ≤ n) (E : ℕ → Fin N × Fin 3) (a b c : ℝ)
+    (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c)
+    (hmeet : ∀ j, j + 1 < n → edgeEast D dir (E j) = edgeWest D dir (E (j + 1)))
+    (hlen : ∀ j ∈ Finset.range n,
+      edgeEnd D dir (E j) - edgePos D dir (E j) ∈ ({a, b, c} : Finset ℝ)) :
+    edgeEnd D dir (E (n - 1)) - edgePos D dir (E 0)
+      = ((Finset.range n).filter
+          (fun j => edgeEnd D dir (E j) - edgePos D dir (E j) = a)).card * a
+        + ((Finset.range n).filter
+          (fun j => edgeEnd D dir (E j) - edgePos D dir (E j) = b)).card * b
+        + ((Finset.range n).filter
+          (fun j => edgeEnd D dir (E j) - edgePos D dir (E j) = c)).card * c := by
+  refine Erdos634.ChainWalk.chain_walk n hn (fun j => edgePos D dir (E j))
+    (fun j => edgeEnd D dir (E j)) a b c hab hac hbc ?_ hlen
+  intro j hj
+  have h := hmeet j hj
+  have h1 : dir (edgeEast D dir (E j)) = edgeEnd D dir (E j) := dir_edgeEast D dir (E j)
+  have h2 : dir (edgeWest D dir (E (j + 1))) = edgePos D dir (E (j + 1)) :=
+    dir_edgeWest D dir (E (j + 1))
+  show edgeEnd D dir (E j) = edgePos D dir (E (j + 1))
+  rw [← h1, ← h2, h]
 
 end Erdos634.SideWall
