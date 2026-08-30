@@ -465,11 +465,11 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | Paper | Statement | Lean declaration | Blocker |
 |---|---|---|---|
 | C `thm:basebeta-e1` | the `(8,8,11)` target admits no `11`-tiling | `Tiling*` certificates, `Frontier.*` | PROVED — an engine verdict on one target; needs the **certified-search format** |
-| C `thm:walks` | the boundary walks of the base-β target | `BaseBetaWalks.*`, `WalkEquation.walk_equation` | PROVED — the walk equation is VERIFIED; enumerating the *boundary* walks of a tiling needs the edge chain on all three sides — bridge (c), proved for the base only |
+| C `thm:walks` | the boundary walks of the base-β target | `BaseBetaWalks.*`, `WalkEquation.walk_equation` | PROVED — the walk equation is VERIFIED; enumerating the *boundary* walks of a tiling needs the edge chain on all three sides — bridge (c); `SideWall` now supplies the wall data for every side, so the remaining input is the instantiation |
 | C `thm:pierce` | apex mismatch: the pierced corner | `ApexRigidity.*` | PROVED — needs tiles laid at the apex and their edges; **tile-placement layer** |
 | C `prop:rung2` | the pre-piercer chain | `ApexRigidity.*`, `CChord.*` | PROVED — same placement layer, on the configuration of `thm:pierce` |
 | C `thm:ray` | the mismatch ray is completely determined | `ApexRay.*`, `PinRay.*` | PROVED — the ray arithmetic is available; 'along the ray' quantifies over the tiles it meets — placement layer |
-| C `thm:chain` | the `b`-run orientation lemma | `Inflation.orient_monotone`, `RunOrientation.*` | PROVED — the alphabet lemmas are VERIFIED; the passage from a real run to the word is bridge (c), proved for the base only |
+| C `thm:chain` | the `b`-run orientation lemma | `Inflation.orient_monotone`, `RunOrientation.*` | PROVED — the alphabet lemmas are VERIFIED; the passage from a real run to the word is bridge (c); `SideWall` now supplies the wall data for every side, so the remaining input is the instantiation |
 | C `thm:farregion` | the far region is a scaled tile | `ApexRigidity.*`, `ConeScaling.*` | PROVED — needs the region cut off by a wall as an object; no Lean notion of a sub-region of a dissection |
 | C `cor:farvacuous` | the far side gives no contradiction | `ApexRigidity.*` | PROVED — conditional on `thm:farregion`; same blocker |
 | C `thm:e1reduce` | the `e=1` base walk is a permutation of `(a^f, b, c)` | `BaseCountsE1.base_counts`, `.base_counts_corner` | PROVED — the counts `n_b = 1` and the exclusion of `n_c = 2` are VERIFIED; `n_c ≥ 1` is `prop:gammatrap`, whose combinatorial core is `GammaCascade.cascade` and whose three inputs are geometric |
@@ -498,7 +498,7 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 
 | Paper | Statement | Lean declaration | Blocker |
 |---|---|---|---|
-| C `thm:walkstruct` | the walk structure at `m=1` | `equal_side_no_b`, `equal_side_shape`, `base_b_count` | PROVED — the walk arithmetic is VERIFIED; the clauses about what a *tiling*'s sides carry need the side edge chain — bridge (c) beyond the base |
+| C `thm:walkstruct` | the walk structure at `m=1` | `equal_side_no_b`, `equal_side_shape`, `base_b_count` | PROVED — the walk arithmetic is VERIFIED; the clauses about what a *tiling*'s sides carry need the side edge chain — bridge (c) instantiated at that side (`SideWall` supplies its wall data) |
 | C `lem:pentagon` | the middle region of `(0,e,2e)` admits no tiling | `Pentagon.no_partition` | PROVED — 'admits no tiling' quantifies over dissections of a **non-triangular region**, for which there is no Lean notion |
 | C `lem:anglethreshold` | the closed forms for `cos α`, `cos β`, `cos γ`, and (P4) | `Frontier.cos_alpha_closed` | PROVED — one of the three cosines is a verified identity; the other two are unformalized and (P4) is a property of the search's uncovered region, which has no Lean notion |
 | C `lem:basetri` | the thick base trichotomy | `base_trichotomy` | PROVED — the three decompositions are VERIFIED arithmetic; that a tiling realises one of them needs the base edge chain |

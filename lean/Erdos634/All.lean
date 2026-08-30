@@ -141,3 +141,4 @@ import Erdos634.NormForm
 import Erdos634.FibExtremal
 import Erdos634.SolvCore
 import Erdos634.TilePlacement
+import Erdos634.SideWall
