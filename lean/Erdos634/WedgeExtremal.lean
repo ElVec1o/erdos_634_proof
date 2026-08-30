@@ -54,7 +54,6 @@ theorem wedge_extremal {α φ ψ : ℝ} (hα : α < Real.pi)
   · left; constructor <;> linarith [hsep ▸ he]
   · right; constructor <;> linarith [hsep ▸ he]
 
-end Erdos634.WedgeExtremal
 
 /-! ## The same statement in the plane of the dissection
 
@@ -127,3 +126,5 @@ theorem corner_on_wedge_sides (o : Orientation ℝ Plane (Fin 2)) {A P Q u : Pla
   exact wedge_extremal_plane o hu hP hQ hα hφ hψ hφm hψm hang
 
 end Dissection
+
+end Erdos634.WedgeExtremal

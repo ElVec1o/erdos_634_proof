@@ -226,4 +226,28 @@ theorem angle_lt_of_side_lt (T : Tri) (j : Fin 3)
     rw [dist_comm (T.pts (j + 2)) (T.pts (j + 1))] at lawB
     linarith [lawB]
 
+/-! ## The middle angle faces the middle side
+
+`prop:cornerfig`'s edge clause needs the side opposite a `β`-corner to be `b`.  With the angle
+ordering in hand that is a trichotomy argument on a scalene tile. -/
+
+/-- The side of the tile opposite vertex `j`. -/
+noncomputable def sideOpp (T : Tri) (j : Fin 3) : ℝ := dist (T.pts (j + 1)) (T.pts (j + 2))
+
+/-- The tile's angle at vertex `j`. -/
+noncomputable def angleAt (T : Tri) (j : Fin 3) : ℝ :=
+  cornerAngle (T.pts (j + 1)) (T.pts j) (T.pts (j + 2))
+
+/-- `angle_lt_of_side_lt`, in the `sideOpp`/`angleAt` notation. -/
+theorem angleAt_lt (T : Tri) (j : Fin 3) (h : sideOpp T j < sideOpp T (j + 1)) :
+    angleAt T j < angleAt T (j + 1) := by
+  have hsh : ∀ x : Fin 3, x + 1 + 1 = x + 2 := by decide
+  have hsh2 : ∀ x : Fin 3, x + 1 + 2 = x := by decide
+  unfold sideOpp at h
+  rw [hsh j, hsh2 j] at h
+  have := angle_lt_of_side_lt T j h
+  unfold angleAt
+  rw [hsh j, hsh2 j]
+  exact this
+
 end Erdos634.TilePlacement
