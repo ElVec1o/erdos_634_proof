@@ -331,32 +331,37 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 ## Formalization debt, counted (audit of 2026-08-30)
 
 Rule 5 requires every PROVED statement to carry either an active formalization or a recorded
-explanation of what blocks one. The papers carry **129** statements labelled PROVED. The
-following **22** appear in no row of this file at all, so they carry neither. They are listed here
-so the debt is counted rather than invisible; each still needs its blocker written down.
+explanation of what blocks one. The papers carry **129** statements labelled PROVED. The 22 that
+appeared in no row at all now have rows, with their blockers written:
 
-- M `thm:63`
-- M `thm:eq105`
-- C `rem:pinbuffer`
-- C `prop:selfsim`
-- C `lem:rowwords`
-- C `lem:rowp0`
-- C `lem:rowq0`
-- C `lem:rowp1`
-- C `prop:slotdichotomy`
-- C `cor:rowinduction`
-- C `prop:rellattice`
-- C `prop:cevianatom`
-- C `lem:wpgram`
-- C `thm:addlaw`
-- O `prop:nogoauto`
-- O `prop:nogocensus`
-- O `prop:fanprune`
-- O `prop:norm`
-- O `prop:globalsys`
-- O `rem:spectral`
-- O `prop:threecostumes`
-- O `prop:ninetools`
+| Paper | Statement | Lean declaration | Status and blocker |
+|---|---|---|---|
+| M `thm:63` | 63 is realizable | `CevianTiling63.ceviantiling63_certificate` | VERIFIED certificate; the paper's statement adds the construction's description, which is prose |
+| M `thm:eq105` | no equilateral 105-tiling | none | PROVED — an exhaustive computation (`code/analysis/eq105_candidates.py`); formalizing it needs the search certified, which no format in this project supports |
+| C `rem:pinbuffer` | cost of the pin configuration | `PinBuffer.buffer_dichotomy`, `.overrun_amounts` | PROVED — the cited cores are VERIFIED; the configuration statement is geometric |
+| C `prop:selfsim` | the descent is self-similar | none | PROVED — needs the scale map on dissections, which is not defined in Lean |
+| C `lem:rowwords` | boundary words at scale k | none | PROVED — depends on the row induction below |
+| C `lem:rowp0` | the corner tile | none | PROVED — planar placement argument; no tile-placement layer in Lean |
+| C `lem:rowq0` | the first partner, and the parallelogram | none | PROVED — planar placement argument |
+| C `lem:rowp1` | the row advance at Y0 | none | PROVED — planar placement argument |
+| C `prop:slotdichotomy` | the slot dichotomy | none | PROVED — planar placement argument |
+| C `cor:rowinduction` | the induction step | none | PROVED — assembles the four row lemmas above |
+| C `prop:rellattice` | the relation lattice and interface floor | `SurplusLattice.lattice_12`, `.lattice_13` | PROVED — the lattice arithmetic is VERIFIED; the floor statement is not |
+| C `prop:cevianatom` | cevian reduction: two tiles and an atom | `CevianSplit.split_count`, `.cevian_foot` | PROVED — the counting identities are VERIFIED; the reduction is geometric |
+| C `lem:wpgram` | the W-parallelogram at e=1 | `PgramTiling22.pgram22_certificate` | PROVED — the certificate is VERIFIED at one member; the general lemma is not |
+| C `thm:addlaw` | addition law | none | PROVED — needs the composition of dissections, not defined in Lean |
+| O `prop:nogoauto` | the junction automaton is consistent | none | PROVED — a finite check over the automaton; not transcribed to Lean |
+| O `prop:nogocensus` | the census contributes one relation | none | PROVED — linear algebra over the census; not transcribed |
+| O `prop:fanprune` | soundness of the fan prune | `FanPruneSound.fan_prune_sound`, `.corner_unfillable` | VERIFIED for the criterion; the paper's statement also asserts the engine implements it, which no Lean theorem can say |
+| O `prop:norm` | the area ratio cannot exclude primes | none | PROVED — an arithmetic argument; formalizable, simply not done |
+| O `prop:globalsys` | the global angle-Euler system admits prime solutions | none | PROVED — an exhibited solution set at N=11; formalizable as a finite check, not done |
+| O `rem:spectral` | spectral invariants of the dual graph | none | PROVED — spectral graph theory over the dual; no Lean development |
+| O `prop:threecostumes` | three reductions | none | PROVED — a survey statement assembling results proved elsewhere |
+| O `prop:ninetools` | nine tool classes cannot answer it | none | PROVED — a survey of negative results, each proved in its own place |
 
 The remaining 107 PROVED statements have rows, but most record only the partial Lean declarations,
 not what blocks the statement itself. Auditing those rows one by one is outstanding.
+
+Four blockers recur, and they are the project's real formalization frontier: there is no
+tile-placement layer (a tile laid at a position, with its neighbours), no scale or composition map
+on dissections, no certified-search format, and no dual-graph development.
