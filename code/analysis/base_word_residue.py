@@ -24,17 +24,18 @@ def killed(f, bp, cp, R):
             (cp == bp + 1 and f + 3 - cp <= R) or
             (bp == cp + 1 and cp <= R))
 
-print(f"{'f':>3} {'N=3f^2-1':>9} {'words':>6} {'killed R=5':>11} {'escape':>7}  escapes")
-for f in range(3, 13):
-    words = admissible(f)
-    esc = [w for w in words if not killed(f, w[0], w[1], 5)]
-    N = 3 * f * f - 1
-    tag = "" if len(esc) else "  <- all dead"
-    print(f"{f:>3} {N:>9} {len(words):>6} {len(words)-len(esc):>11} {len(esc):>7}  {esc[:6]}{tag}")
+if __name__ == '__main__':
+    print(f"{'f':>3} {'N=3f^2-1':>9} {'words':>6} {'killed R=5':>11} {'escape':>7}  escapes")
+    for f in range(3, 13):
+        words = admissible(f)
+        esc = [w for w in words if not killed(f, w[0], w[1], 5)]
+        N = 3 * f * f - 1
+        tag = "" if len(esc) else "  <- all dead"
+        print(f"{f:>3} {N:>9} {len(words):>6} {len(words)-len(esc):>11} {len(esc):>7}  {esc[:6]}{tag}")
 
-print()
-print("reach needed for a clean sweep at each f (smallest R killing every word):")
-for f in range(3, 13):
-    words = admissible(f)
-    R = next(R for R in range(1, 60) if all(killed(f, b, c, R) for b, c in words))
-    print(f"  f={f:<3} N={3*f*f-1:<5} needs R={R} (reach {R-1})")
+    print()
+    print("reach needed for a clean sweep at each f (smallest R killing every word):")
+    for f in range(3, 13):
+        words = admissible(f)
+        R = next(R for R in range(1, 60) if all(killed(f, b, c, R) for b, c in words))
+        print(f"  f={f:<3} N={3*f*f-1:<5} needs R={R} (reach {R-1})")
