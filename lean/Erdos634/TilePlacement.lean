@@ -305,4 +305,45 @@ theorem angle_lt_of_sideOpp_lt (T : Tri) (j : Fin 3)
   exact angle_lt_of_side_lt_pts (T.pts j) (T.pts (j + 1)) (T.pts (j + 2))
     (pts_ne T (h01 j)) (pts_ne T (h12 j)) (pts_ne T (h02 j)) (strict_triangle_pts T j) h
 
+/-! ## The converse, and the middle side
+
+With both directions available the ordering reverses: on a tile whose sides are distinct, a smaller
+angle faces a smaller side.  The middle angle therefore faces the middle side, which is what
+`prop:cornerfig`'s edge clause needs. -/
+
+/-- **A smaller angle faces a smaller side**, given the two sides are distinct. -/
+theorem side_lt_of_angle_lt (p q r : Plane) (hpq : p ≠ q) (hqr : q ≠ r) (hpr : p ≠ r)
+    (htri : dist p q < dist q r + dist p r) (htri' : dist q p < dist p r + dist q r)
+    (hne : dist q r ≠ dist p r) (h : cornerAngle q p r < cornerAngle p q r) :
+    dist q r < dist p r := by
+  rcases lt_or_gt_of_ne hne with hlt | hgt
+  · exact hlt
+  · exfalso
+    have := angle_lt_of_side_lt_pts q p r (Ne.symm hpq) hpr hqr htri' hgt
+    linarith
+
+/-- **The middle angle faces the middle side.**  If the angle at `p` is strictly between the angles
+at `q` and `r`, and the three sides are distinct, the side opposite `p` is strictly between the
+other two. -/
+theorem middle_side_of_middle_angle (p q r : Plane) (hpq : p ≠ q) (hqr : q ≠ r) (hpr : p ≠ r)
+    (t1 : dist p q < dist q r + dist p r) (t2 : dist q p < dist p r + dist q r)
+    (t3 : dist p r < dist q r + dist p q) (t4 : dist r p < dist p q + dist q r)
+    (hne1 : dist q r ≠ dist p r) (hne2 : dist p q ≠ dist q r)
+    (hlo : cornerAngle q r p < cornerAngle q p r)
+    (hhi : cornerAngle q p r < cornerAngle p q r) :
+    dist q r < dist p r ∧ dist p q < dist q r := by
+  refine ⟨side_lt_of_angle_lt p q r hpq hqr hpr t1 t2 hne1 hhi, ?_⟩
+  -- the angle at `r` is below the angle at `p`, so the side opposite `r` is below the one
+  -- opposite `p`
+  have hmain := side_lt_of_angle_lt r p q (Ne.symm hpr) hpq (Ne.symm hqr) ?_ ?_ ?_ ?_
+  · rw [dist_comm r q] at hmain; exact hmain
+  · rw [dist_comm r p, dist_comm r q]; linarith [t4]
+  · rw [dist_comm p r, dist_comm r q]; linarith [t3]
+  · rw [dist_comm r q]; exact hne2
+  · show EuclideanGeometry.angle (V := Plane) p r q < cornerAngle r p q
+    rw [EuclideanGeometry.angle_comm (V := Plane) p r q]
+    show EuclideanGeometry.angle (V := Plane) q r p < EuclideanGeometry.angle (V := Plane) r p q
+    rw [EuclideanGeometry.angle_comm (V := Plane) r p q]
+    exact hlo
+
 end Erdos634.TilePlacement
