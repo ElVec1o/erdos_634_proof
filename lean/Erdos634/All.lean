@@ -129,3 +129,4 @@ import Erdos634.WallFace
 import Erdos634.OrientWord
 import Erdos634.Placement
 import Erdos634.WallSide
+import Erdos634.WallInjective
