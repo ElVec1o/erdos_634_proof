@@ -17,14 +17,32 @@ cap=${3:-50000000}
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 work="${SWEEP_DIR:-$PWD}"
 log="$work/sweep_f$f.log"
-: > "$log"
+
+# Scope: skip instances already exhausted in any log of this directory.  Two stale drivers were
+# found on 2026-08-31 re-deciding f=12 and f=14 words that the current engine settles in under a
+# thousand nodes -- one had burned 27 hours of CPU.  A sweep should never repeat settled work.
+prior="$work/.prior_f$f"
+: > "$prior"
+grep -ho "f=$f ([0-9]*,[0-9]*): RESULT EXHAUSTED" "$work"/*.log 2>/dev/null \
+  | sed -E "s/f=$f \(([0-9]*),([0-9]*)\).*/\1 \2/" | sort -u > "$prior" || true
+nprior=$(wc -l < "$prior" | tr -d " ")
+echo "already exhausted in this directory: $nprior instance(s) -- these are skipped"
+
+# the log is appended to, never truncated: it is the evidence the certificate reads, and
+# truncating it would make the next run repeat everything.
+touch "$log"
 
 python3 "$root/code/analysis/sweep_configs.py" "$f" > "$work/configs_f$f.txt"
+
 
 while read -r line || [ -n "$line" ]; do
   [ -n "$line" ] || continue
   set -- $line
   bp=$2; cp=$3
+  if grep -qx "$bp $cp" "$prior" 2>/dev/null; then
+    echo "f=$f ($bp,$cp): SKIPPED (already exhausted)"
+    continue
+  fi
   inst="$work/uni_f${f}_b${bp}c${cp}.txt"
   [ -f "$inst" ] || python3 "$root/code/engine/gen_basebeta.py" 1 "$f" "$bp" "$cp" > "$inst"
   printf "f=%s (%s,%s): " "$f" "$bp" "$cp" | tee -a "$log"
@@ -33,4 +51,6 @@ while read -r line || [ -n "$line" ]; do
 done < "$work/configs_f$f.txt"
 
 echo "--- coverage certificate ---"
-python3 "$root/code/analysis/verify_sweep.py" "$f" "$log" 2>/dev/null | tail -2
+# certify against every log in the directory, not just this run's: skipped instances were
+# exhausted in an earlier run and their evidence lives there.
+python3 "$root/code/analysis/verify_sweep.py" "$f" "$work"/*.log 2>/dev/null | tail -2
