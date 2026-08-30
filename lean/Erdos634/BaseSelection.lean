@@ -69,4 +69,58 @@ theorem boundary_point_on_edge {N : ℕ} (D : Dissection N) {x : Plane}
   · obtain ⟨k, hk⟩ := h
     exact absurd (hnonneg k) (not_le.mpr hk)
 
+/-- **A vanishing barycentric coordinate puts the point on the opposite edge.**  Written out from
+the affine-basis expansion: the two surviving coordinates are nonnegative and sum to one. -/
+theorem coord_zero_mem_segment (T : Tri) (k : Fin 3) (x : Plane)
+    (h0 : T.basis.coord k x = 0) (hnn : ∀ j, 0 ≤ T.basis.coord j x) :
+    x ∈ segment ℝ (T.pts (k+1)) (T.pts (k+2)) := by
+  have hx : x = (T.basis.coord 0 x) • T.pts 0 + (T.basis.coord 1 x) • T.pts 1
+        + (T.basis.coord 2 x) • T.pts 2 := by
+    have h := T.basis.affineCombination_coord_eq_self (k := ℝ) x
+    rw [Finset.affineCombination_eq_linear_combination] at h
+    · rw [Fin.sum_univ_three] at h; simpa [Tri.basis] using h.symm
+    · exact T.basis.sum_coord_apply_eq_one x
+  have hsum : T.basis.coord 0 x + T.basis.coord 1 x + T.basis.coord 2 x = 1 := by
+    have := T.basis.sum_coord_apply_eq_one (k := ℝ) x
+    rwa [Fin.sum_univ_three] at this
+  have hk : k = 0 ∨ k = 1 ∨ k = 2 := by fin_cases k <;> simp
+  rcases hk with rfl | rfl | rfl
+  · refine ⟨T.basis.coord 1 x, T.basis.coord 2 x, hnn 1, hnn 2, by linarith [h0, hsum], ?_⟩
+    simp only [show ((0:Fin 3)+1) = 1 from rfl, show ((0:Fin 3)+2) = 2 from rfl]
+    conv_rhs => rw [hx]
+    rw [h0]; module
+  · refine ⟨T.basis.coord 2 x, T.basis.coord 0 x, hnn 2, hnn 0, by linarith [h0, hsum], ?_⟩
+    simp only [show ((1:Fin 3)+1) = 2 from rfl, show ((1:Fin 3)+2) = 0 from rfl]
+    conv_rhs => rw [hx]
+    rw [h0]; module
+  · refine ⟨T.basis.coord 0 x, T.basis.coord 1 x, hnn 0, hnn 1, by linarith [h0, hsum], ?_⟩
+    simp only [show ((2:Fin 3)+1) = 0 from rfl, show ((2:Fin 3)+2) = 1 from rfl]
+    conv_rhs => rw [hx]
+    rw [h0]; module
+
+/-- **The target's frontier is covered by tile edges.**  A frontier point that is a tile vertex is
+an endpoint of that tile's edge; any other lies in the relative interior of one, by
+`boundary_point_on_edge`.  No density argument is needed, the vertices being handled directly.
+
+This is the covering the base chain needs.  What it does not give is the *chain*: which edges to
+take, in what order, and that their shadows are intervals meeting end to end — that is
+`ChainInstance.consecutive_edges_meet`, whose hypotheses this feeds but does not discharge. -/
+theorem frontier_subset_edges {N : ℕ} (D : Dissection N) {x : Plane}
+    (hx : x ∈ frontier D.target.carrier) :
+    ∃ i k, x ∈ (D.tile i).edge k := by
+  classical
+  by_cases hv : ∃ i k, x = (D.tile i).pts k
+  · obtain ⟨i, k, rfl⟩ := hv
+    exact ⟨i, k, by rw [Tri.edge]; exact left_mem_segment ℝ _ _⟩
+  · push_neg at hv
+    obtain ⟨i, k, h0, hpos⟩ := boundary_point_on_edge D hx (fun i k => hv i k)
+    have hnn : ∀ j, 0 ≤ (D.tile i).basis.coord j x := by
+      intro j
+      by_cases hjk : j = k
+      · exact hjk ▸ le_of_eq h0.symm
+      · exact le_of_lt (hpos j hjk)
+    refine ⟨i, k + 1, ?_⟩
+    rw [Tri.edge, show k + 1 + 1 = k + 2 from by omega]
+    exact coord_zero_mem_segment (D.tile i) k x h0 hnn
+
 end Erdos634.BaseSelection
