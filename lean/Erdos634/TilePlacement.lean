@@ -346,4 +346,33 @@ theorem middle_side_of_middle_angle (p q r : Plane) (hpq : p ≠ q) (hqr : q ≠
     rw [EuclideanGeometry.angle_comm (V := Plane) r p q]
     exact hlo
 
+/-! ## The corner tile's two edges
+
+Assembling: the side opposite the corner is the middle one, hence `b`; the two edges at the corner
+are then `a` and `c`.  This is `prop:cornerfig`'s edge clause. -/
+
+/-- A value of the multiset `{a,b,c}` lying strictly between the other two is `b`. -/
+theorem middle_is_b (x y z a b c : ℝ) (hmul : ({x, y, z} : Multiset ℝ) = {a, b, c})
+    (hab : a < b) (hbc : b < c) (h1 : x < y) (h2 : y < z) : y = b := by
+  classical
+  have hy : y ∈ ({a, b, c} : Multiset ℝ) := by rw [← hmul]; simp
+  have hx : x ∈ ({a, b, c} : Multiset ℝ) := by rw [← hmul]; simp
+  have hz : z ∈ ({a, b, c} : Multiset ℝ) := by rw [← hmul]; simp
+  simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hx hy hz
+  rcases hy with rfl | rfl | rfl
+  · rcases hx with h | h | h <;> linarith [h ▸ h1]
+  · rfl
+  · rcases hz with h | h | h <;> linarith [h ▸ h2]
+
+/-- **The two edges at the corner.**  With the side opposite the corner equal to `b`, the two
+incident edges are `a` and `c` in one order or the other. -/
+theorem corner_tile_edges (T : Tri) (j : Fin 3) (a b c : ℝ) (hb : b ≠ 0)
+    (hopp : dist (T.pts (j + 1)) (T.pts (j + 2)) = b)
+    (hmul : ({dist (T.pts j) (T.pts (j + 1)), dist (T.pts (j + 2)) (T.pts j),
+      dist (T.pts (j + 1)) (T.pts (j + 2))} : Multiset ℝ) = {a, b, c}) :
+    (dist (T.pts j) (T.pts (j + 1)) = a ∧ dist (T.pts (j + 2)) (T.pts j) = c) ∨
+      (dist (T.pts j) (T.pts (j + 1)) = c ∧ dist (T.pts (j + 2)) (T.pts j) = a) := by
+  rw [hopp] at hmul
+  exact incident_sides _ _ a b c hb hmul
+
 end Erdos634.TilePlacement
