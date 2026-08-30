@@ -293,7 +293,8 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | M `lem:cancel` | Cancellation |
 | M `lem:nonint` | Non-integrality |
 | M `lem:value` | Tile value |
-| M `prop:conic` | Conic form |
+| M `prop:conic` | the conic identities: `(qs)² = (s²+N)(s²+9N)`, the `16N²` factorization, and the `π/3` companion | `EquilateralConic.qs_sq`, `.conic_2pi3`, `.factor_2pi3`, `.conic_pi3` | VERIFIED — all four over `ℤ`, exactly as the paper says they are machine-checked |
+| M `prop:conicform` | the conic form as a criterion, with divisor and parity conditions, equivalent to `prop:eqspecint` | `EquilateralConic.*` | PROVED — the identities are VERIFIED; the divisor and parity conditions come from the integrality of `s`, `t`, `q`, which is `prop:eqspecint`, and the equivalence needs the converse direction |
 | M `prop:cornerpara` | Corner parallelogram |
 | M `prop:eqspec` | `XY = 3ab`, `st = 3N`, `(t−s)² + 16N = q²`, and the converse triple | `EqSpecAlgebra.XY_eq`, `.st_eq`, `.disc_eq`, `.converse_triple` | VERIFIED — the whole numeric chain, with the denominators cleared so the identities are polynomial |
 | M `prop:eqspecint` | in a tiling, `s`, `t`, `q` are integers with `s ≡ t ≡ N (mod 2)` | none | PROVED — the integrality is what the tiling supplies, and it needs the area ratio and edge counts at `Dissection` level |

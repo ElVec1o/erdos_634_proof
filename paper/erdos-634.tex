@@ -1736,12 +1736,22 @@ proportions.
 \subsection*{The equilateral criteria as divisor conditions.}
 Both equilateral square criteria --- ours and Beeson's --- complete the square.
 
-\begin{proposition}[Conic form]\label{prop:conic}\lab{PROVED}
+\begin{proposition}[The conic identities]\label{prop:conic}\lab{VERIFIED}
+Over $\Z$: if $ts=3N$ and $(t-s)^2+16N=q^2$ then $(qs)^2=(s^2+N)(s^2+9N)$, hence
+$(s^2+5N)^2-(qs)^2=16N^2$, so
+\[
+(s^2+5N-qs)(s^2+5N+qs)=16N^2 ,
+\]
+an explicit factorization of $16N^2$. For the $\pi/3$ companion,
+$(5N-M^2)^2-16N^2=(9N-M^2)(N-M^2)$.
+\end{proposition}
+
+\begin{proposition}[Conic form]\label{prop:conicform}\lab{PROVED}
 For an equilateral target: a $2\pi/3$ tile requires a factorization $uv=16N^2$ with
 $u+v\equiv0\pmod2$ and $\tfrac{u+v}2-5N=s^2$ for a divisor $s$ of $3N$ with
 $s\equiv 3N/s\equiv N\pmod2$; a $\pi/3$ tile requires a factorization $uv=16N^2$ with
 $\tfrac{u+v}2 = 5N-M^2$ for some $0<M<\sqrt N$, $M\equiv N\pmod 2$. These are equivalent to
-the criteria of Proposition~\ref{prop:eqspec} and of~\cite[Thm.~3]{BeesonEq} respectively.
+the criteria of Proposition~\ref{prop:eqspecint} and of~\cite[Thm.~3]{BeesonEq} respectively.
 \end{proposition}
 
 \begin{proof}
