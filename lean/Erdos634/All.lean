@@ -135,3 +135,4 @@ import Erdos634.BaseCountsE1
 import Erdos634.GammaCascade
 import Erdos634.VertexFigureReal
 import Erdos634.NonIntegrality
+import Erdos634.StubGap
