@@ -404,3 +404,30 @@ precise rather than absent.
 | C `lem:parity` | straight-figure parity `S ≡ N+1 (mod 2)` | `Frontier.census_parity` | the arithmetic **is** the declaration, but its hypothesis is the census α-identity, which holds of a real tiling only through `lem:census` — itself PROVED, not VERIFIED. Upgrading this without that would repeat the ingredient-for-statement error. |
 | C `lem:anglethreshold` | `cos α`, `cos β`, `cos γ` in closed form, and condition (P4) | `Frontier.cos_alpha_closed` | the declaration covers `cos α` only, as a polynomial identity; `cos β` and `cos γ` are unformalized, and (P4) is a property of the search's uncovered region, for which there is no Lean notion. |
 | C `lem:pentagon` | the middle region of the `(0,e,2e)` walk admits no tiling | `Pentagon.no_partition` | the declaration is the arithmetic non-existence of a partition; "admits no tiling" quantifies over dissections of a region that is not a `Tri`, and the corpus has no notion of a dissection of a general polygon. |
+
+## Blockers named, main paper (2026-08-30, debt pass 2)
+
+Every PROVED statement of `paper/erdos-634.tex` that had no blocker recorded now has one. The
+recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
+
+| Paper | Statement | Lean declaration | Blocker |
+|---|---|---|---|
+| M `cor:mod12` | no prime ≡7 (mod 12) is a tile count | `BaseBetaMod12.*`, `Mod12.*` | PROVED — quantifies over *all* dissections of *all* triangles; it is `thm:main`'s corollary and inherits that theorem's cited inputs, none of which is formalized |
+| M `prop:cornerpara` | the corner tile's `b`-edge is a chord matched by exactly one tile | `CornerRule.*`, `AngleArithmetic.beta_corner_forced` | PROVED — needs a **tile-placement layer**: 'the tile at a corner', 'matched by exactly one tile' have no `Dissection`-level definitions |
+| M `lem:cancel` | the tile values sum to the boundary flux `Φ_f(∂ABC)` | none | PROVED — needs the **flux functional Φ** on a dissection boundary, and the grid-direction cancellation argument; no Lean development exists |
+| M `lem:value` | `C_{f_α}(t) = ±(c+a−b)` for every placement | none | PROVED — same flux development, plus a notion of oriented tile placement |
+| M `cor:int` | `M_α`, `M_β` integral and `≡ N (mod 2)` | none | PROVED — depends on `lem:cancel` and `lem:value`; blocked by the same flux development |
+| M `prop:F1free` | no `F₁` target is `N`-tiled for prime `N` | `InvariantProduct.*` | PROVED — quantifies over tilings of a shape family; needs the invariant-product development at `Dissection` level |
+| M `thm:ladder` | `kT` is cut into `k²N` copies | none | PROVED — needs the **scale map on dissections**: subdividing `kT` into `k²` copies of `T` and transporting a dissection along it |
+| M `cor:ladder` | the realizable set `S(e,f)` is closed upward under the ladder | none | PROVED — depends on `thm:ladder`; same blocker |
+| M `cor:elevenm` | `1 ∉ S`, `2, 3 ∈ S` for `(e,f) = (1,2)` | `Tiling44.*`, `Tiling99.*` | PROVED — the positive half is VERIFIED by the two certificates; `1 ∉ S` is an engine verdict and needs a **certified-search format** |
+| M `thm:primefull` | the prime case for `p ≢ 11 (mod 12)` | `BaseBetaMod12.*`, `IsoAlphaPrime.isoalpha_not_prime`, `InvariantProduct.tile_similar_not_prime` | PROVED — an iff over all dissections; the forward half rests on the branch theorems, the backward on explicit constructions, and neither is at `Dissection` level |
+| M `thm:admissible` | every `N`-tiling of the base-α isosceles target has scale `k = dew` | `ThinFamily.*`, `SolvCore.*` | PROVED — quantifies over tilings; the arithmetic is available, the passage from a tiling to its scale is not |
+| M `thm:lattice` | the spectrum lattice, with the parity switch `T` | `SurplusLattice.lattice_12`, `.lattice_13` | PROVED — the lattice arithmetic is verified in two instances; the general statement needs the `d`, `e₁`, `r` normalisation formalized and the parity case split, which is arithmetic and simply not done |
+| M `thm:spectrum` | the tile counts satisfying all invariant conditions | `InvariantProduct.*`, `SurplusLattice.*` | PROVED — assembles `cor:int`, `thm:lattice` and `prop:otherspectra`; blocked by the weakest of those |
+| M `prop:ratfree` | rationality internalised on six shapes | `RationalityFree.*` | PROVED — needs the invariant-product constant at `Dissection` level, i.e. the flux development again |
+| M `prop:otherspectra` | `F₁` forces `N = dw²(a+b)`; `F₂…F₄` force `N = N₀k²` | `InvariantProduct.*` | PROVED — the arithmetic is stated per shape and is formalizable; what is missing is the shape table as a Lean definition, so each clause has nothing to attach to |
+| M `prop:eqspec` | `XY = 3ab` and `s`, `t` positive integers | `EquilateralSpectrum.*` | PROVED — `XY = 3ab` is a polynomial identity and could be verified; the integrality of `s`, `t` comes from a tiling, so the clause quantifies over dissections |
+| M `prop:conic` | the conic form of the equilateral condition | none | PROVED — a reformulation of `prop:eqspec`'s conditions; blocked by the same tiling quantifier, and no declaration exists |
+| M `thm:63` | `63` is realizable, by an explicit `(21,24,18)` cutting | `CevianTiling63.ceviantiling63_certificate` | PROVED — the certificate is VERIFIED by `decide`; what is missing is the bridge from a checked certificate to a `Dissection`, i.e. the **certified-search format** |
+| M `thm:decidable` | decidability of the tile-count question | none | PROVED — depends on `thm:main`'s cited inputs; a decision procedure has no Lean statement here |
