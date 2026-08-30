@@ -16,6 +16,12 @@ functional is determined there.
 So both tiles' edge coordinates are positive exactly where `g < c`, and the same-side hypothesis
 holds globally rather than being assumed.
 
+**Non-vacuity.**  The three `False`-concluding theorems here are kills, and each is checked the
+same way: no proper subset of the hypotheses is already inconsistent.  For `no_wall_contact`,
+dropping `hxS` leaves a tile with a wall edge and a point in its edge's relative interior, which is
+satisfiable; for `no_two_wall_edges` and `wall_edges_same_tile`, dropping the second edge's wall
+condition leaves a tile with one wall edge, likewise satisfiable.
+
 Axiom-clean; no `sorry`.
 -/
 

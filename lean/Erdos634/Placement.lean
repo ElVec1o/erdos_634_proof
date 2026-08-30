@@ -16,6 +16,11 @@ non-overlapping intervals with no gap is *contiguous*, consecutive members shari
 `ChainOrder.reach_next` supplies the no-gap side and `EdgeDisjoint.no_same_side_contact` the
 non-overlap side.
 
+**Non-vacuity.**  `no_double_wall_tile` concludes `False`, so its hypotheses are inconsistent by
+design.  What must be checked is that no *proper subset* of them already is: `hlin` together with
+`h0` and `h1` — a triangle with two vertices on the wall, the third off it, and `g` nonconstant —
+is satisfiable, and it is the third vertex's landing on the wall that breaks it.
+
 Axiom-clean; no `sorry`.
 -/
 
