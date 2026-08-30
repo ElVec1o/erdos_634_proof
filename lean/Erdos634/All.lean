@@ -29,7 +29,6 @@ import Erdos634.Dissection
 import Erdos634.E2Join
 import Erdos634.EdgeChain
 import Erdos634.EquilateralConic
-import Erdos634.Erdos634
 import Erdos634.FanKill
 import Erdos634.FanPruneSound
 import Erdos634.FanStep
