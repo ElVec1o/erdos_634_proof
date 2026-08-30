@@ -128,3 +128,4 @@ import Erdos634.BaseChain
 import Erdos634.WallFace
 import Erdos634.OrientWord
 import Erdos634.Placement
+import Erdos634.WallSide
