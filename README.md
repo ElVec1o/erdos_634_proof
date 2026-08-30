@@ -158,6 +158,13 @@ target this forces `(c−a−b)/√b ∈ ℤ`, which never holds for a primitive
 - `code/engine/` — the exact corner-anchored search engine (C++ with GMP, the Python reference
   implementation, instance builders) and `code/engine/tilings/` with the verified 28-, 44-, 77- and 99-tiling
   certificates.
+  An `e = 1` exclusion sweep is run with `code/engine/run_sweep.sh <f> <engine> [cap]`, which takes
+  its instance list from `code/analysis/sweep_configs.py` (one representative per mirror orbit at
+  the proved reach) and ends by calling `code/analysis/verify_sweep.py` on its own log, so a sweep
+  that misses an orbit fails loudly instead of reporting completion. Sweeps must be run this way:
+  the ad hoc drivers it replaces piped their lists into a bare `while read`, which drops a final
+  line carrying no newline, and that silently cost one orbit in each of the `f = 14` and `f = 18`
+  sweeps.
 - `archived/` — superseded material kept for provenance only, and **not part of the work**: the
   earlier Zenodo/referee package (which contains a **false claim** that the folklore conjecture was
   resolved; see `archived/zenodo-v1/SUPERSEDED.md`) and the previous handoff document, two of whose
