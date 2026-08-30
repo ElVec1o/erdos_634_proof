@@ -48,15 +48,15 @@ theorem corner_multiplicities {N : ℕ} (D : Dissection N) (α β γ : ℝ)
     (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0) (k : Fin 3)
     (hvals : ∀ i, (D.tile i).localAngle (D.target.pts k)
       ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ)) :
-    ∃ p q r s : ℕ, (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi
+    (({i | (D.tile i).localAngle (D.target.pts k) = α} : Finset (Fin N)).card : ℝ) * α
+      + (({i | (D.tile i).localAngle (D.target.pts k) = β} : Finset (Fin N)).card : ℝ) * β
+      + (({i | (D.tile i).localAngle (D.target.pts k) = γ} : Finset (Fin N)).card : ℝ) * γ
+      + (({i | (D.tile i).localAngle (D.target.pts k) = Real.pi} : Finset (Fin N)).card : ℝ)
+        * Real.pi
       = cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) := by
   classical
   have hsum := Erdos634.VertexFigureReal.corner_angle_sum D k
   rw [Erdos634.VertexFigureReal.sum_by_value ({α, β, γ, Real.pi, 0} : Finset ℝ) _ hvals] at hsum
-  refine ⟨({i | (D.tile i).localAngle (D.target.pts k) = α} : Finset (Fin N)).card,
-    ({i | (D.tile i).localAngle (D.target.pts k) = β} : Finset (Fin N)).card,
-    ({i | (D.tile i).localAngle (D.target.pts k) = γ} : Finset (Fin N)).card,
-    ({i | (D.tile i).localAngle (D.target.pts k) = Real.pi} : Finset (Fin N)).card, ?_⟩
   rw [Finset.sum_insert (by simp [hαβ, hαγ, hαπ, hα0]),
       Finset.sum_insert (by simp [hβγ, hβπ, hβ0]),
       Finset.sum_insert (by simp [hγπ, hγ0]),
@@ -79,6 +79,39 @@ theorem base_corner_single_tile {α β γ : ℝ} (hγ : γ = 2 * α + β)
       = ((-3 * (s : ℤ) : ℤ) : ℝ) * α + ((1 - 2 * (s : ℤ) : ℤ) : ℝ) * β := by
     push_cast
     linarith [hsum]
+  obtain ⟨h1, h2⟩ := Erdos634.Geometry.vertex_multiplicities hrel hirr p q r _ _ h'
+  refine ⟨by omega, by omega, by omega, by omega⟩
+
+/-- **Exactly one tile at a base corner.**  Combining the count with the multiplicity solution:
+the number of tiles presenting `β` there is `1`, and no tile presents `α`, `γ` or a straight
+angle. -/
+theorem base_corner_counts {N : ℕ} (D : Dissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (k : Fin 3)
+    (hvals : ∀ i, (D.tile i).localAngle (D.target.pts k)
+      ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ))
+    (hcorner : cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β) :
+    ({i | (D.tile i).localAngle (D.target.pts k) = α} : Finset (Fin N)).card = 0 ∧
+    ({i | (D.tile i).localAngle (D.target.pts k) = β} : Finset (Fin N)).card = 1 ∧
+    ({i | (D.tile i).localAngle (D.target.pts k) = γ} : Finset (Fin N)).card = 0 ∧
+    ({i | (D.tile i).localAngle (D.target.pts k) = Real.pi} : Finset (Fin N)).card = 0 := by
+  classical
+  have h := corner_multiplicities D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 k hvals
+  rw [hcorner] at h
+  exact base_corner_single_tile hγdef hrel hirr _ _ _ _ h
+
+/-- **Exactly three `α`-tiles at the apex.**  The same count with the corner angle `3α`. -/
+theorem apex_counts {α β γ : ℝ} (hγ : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (p q r s : ℕ)
+    (hsum : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi = 3 * α) :
+    p = 3 ∧ q = 0 ∧ r = 0 ∧ s = 0 := by
+  rw [hγ, ← hrel] at hsum
+  have h' : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * (2 * α + β)
+      = ((3 - 3 * (s : ℤ) : ℤ) : ℝ) * α + ((-2 * (s : ℤ) : ℤ) : ℝ) * β := by
+    push_cast; linarith [hsum]
   obtain ⟨h1, h2⟩ := Erdos634.Geometry.vertex_multiplicities hrel hirr p q r _ _ h'
   refine ⟨by omega, by omega, by omega, by omega⟩
 
