@@ -1519,7 +1519,7 @@ its analysis is what separates the present exclusions from $N=431$.
 Completing the corner criterion did more than settle two values: it made the refutation trees small
 enough to read, and reading them exposes a structure.
 
-\begin{proposition}[The adjacent family is independent of the member]\label{prop:findep}\lab{VERIFIED}
+\begin{proposition}[The adjacent family is independent of the member]\label{prop:findep}\lab{HEURISTIC: measured, not proved}
 For a base word in which $c$ is immediately followed by $b$ --- that is, $cp=bp-1$ --- the
 refutation is the same at every $f$: identical node count, identical depth, and identical values of
 every prune counter. At $f=12,14,16,18,20$ the word $(6,5)$ gives $506$ nodes with depth $13$ in
@@ -1527,7 +1527,7 @@ every case, and $(5,4)$, $(7,6)$, $(8,7)$, $(9,8)$, $(10,9)$ give $299$, $807$, 
 $3441$ likewise. Every other shape grows exponentially in $f$.
 \end{proposition}
 
-\begin{proposition}[Its size is Fibonacci in $bp$]\label{prop:fib}\lab{VERIFIED}
+\begin{proposition}[Its size is Fibonacci in $bp$]\label{prop:fib}\lab{HEURISTIC: measured; the recurrence's arithmetic VERIFIED}
 Those sizes satisfy $a(n)=a(n-1)+a(n-2)+2$, equivalently $a(n)+2$ is a pure Fibonacci sequence
 (\texttt{MarchRecurrence.shift\_to\_fibonacci}), with growth $\varphi$ --- the measured ratio being
 $1.6181$ per unit $bp$. The recurrence holds at $bp=7,\dots,15$ against measured values, three of
