@@ -541,3 +541,6 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | Paper | Statement | Lean declaration | Blocker |
 |---|---|---|---|
 | C `cor:walls15` | the walls hypothesis holds at `(1,5)` | `Walls13.*`, `WallsClosed.*` | PROVED — the label the paper itself gives it is conditional: the certified route is an engine exhaustion (`w74`), needing the **certified-search format**, and the argument-only route inherits `thm:e1cascade`'s effective label, which is CONJECTURE |
+
+| O `prop:testsuniform` | every test the search performs answers the same at every member | `MemberUniform.fill_iff_counts`, `.fillable_iff_member`, `.unfillable_iff_member`, `.gap_one_uniform`, `.tests_uniform` | VERIFIED — corner fillability factors through `(X,Y)` and names no `f`; the residue-`1` and `|a−b|` tests answer no at every member |
+| O `prop:findep` | the `cp = bp−1` refutation is identical at every `f` | `MemberUniform.tests_uniform` | HEURISTIC — the node counts are measured. The *mechanism* is VERIFIED: no test the search performs distinguishes members. What is not proved is that the search performs only those tests, which is a property of the engine |

@@ -1519,12 +1519,24 @@ its analysis is what separates the present exclusions from $N=431$.
 Completing the corner criterion did more than settle two values: it made the refutation trees small
 enough to read, and reading them exposes a structure.
 
-\begin{proposition}[The adjacent family is independent of the member]\label{prop:findep}\lab{HEURISTIC: measured, not proved}
+\begin{proposition}[The member-uniformity of the tests]\label{prop:testsuniform}\lab{VERIFIED}
+Every test the search performs gives the same answer at every member. A corner of angle
+$X\alpha+Y\beta$ is fillable exactly when $x+2z=X$, $y+z=Y$ has a nonnegative solution, a condition
+naming no $f$ (\texttt{MemberUniform.fill\_iff\_counts}), so fillability transfers between members
+in both directions (\texttt{fillable\_iff\_member}, \texttt{unfillable\_iff\_member}); and the
+residue-$1$ test answers no at every member (\texttt{gap\_one\_uniform}), as does the
+$|a-b|$ test (Lemma~\ref{lem:stubgap}). Hence no test the search performs can distinguish two
+members (\texttt{tests\_uniform}).
+\end{proposition}
+
+\begin{proposition}[The adjacent family is independent of the member]\label{prop:findep}\lab{HEURISTIC: measured; the mechanism VERIFIED}
 For a base word in which $c$ is immediately followed by $b$ --- that is, $cp=bp-1$ --- the
 refutation is the same at every $f$: identical node count, identical depth, and identical values of
-every prune counter. At $f=12,14,16,18,20$ the word $(6,5)$ gives $506$ nodes with depth $13$ in
+every prune counter. At $f=12,14,16,18,20,22$ the word $(6,5)$ gives $506$ nodes with depth $13$ in
 every case, and $(5,4)$, $(7,6)$, $(8,7)$, $(9,8)$, $(10,9)$ give $299$, $807$, $1315$, $2124$,
-$3441$ likewise. Every other shape grows exponentially in $f$.
+$3441$ likewise. By Proposition~\ref{prop:testsuniform} no test the search performs can tell the
+members apart, which is why; what remains measured rather than proved is that the search performs
+only those tests.
 \end{proposition}
 
 \begin{proposition}[Its size is Fibonacci in $bp$]\label{prop:fib}\lab{HEURISTIC: measured; the recurrence's arithmetic VERIFIED}
