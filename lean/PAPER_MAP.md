@@ -12,7 +12,7 @@ Labels are the LaTeX `\label` keys. **Status** is the Rule 0 label of the *paper
 | Paper | Statement | Lean declaration | Status |
 |---|---|---|---|
 | M `thm:mod12` | base-β prime candidates are exactly the primes ≡ 11 (mod 12) | `BaseBetaMod12.basebeta_prime_mod_twelve`, `.not_basebeta_of_mod_twelve_ne` | VERIFIED |
-| M `prop:gammatrap` | γ-trap: a straight angle carries at most one γ | `AngleArithmetic.pi_vertex`, `.gamma_trap` | VERIFIED |
+| M `prop:gammatrap` | every side of a base-β target carries at least one c-edge | `AngleArithmetic.pi_vertex`, `.gamma_trap` | PROVED — the Lean declarations are the arithmetic ingredient (`ng ≤ 1` at a π-vertex), not the statement, which is geometric |
 | M `prop:cornerfig` | base corner is a single β-corner | `AngleArithmetic.beta_corner_forced` | VERIFIED |
 | M `prop:vertexfigures` | apex figure is three α-corners | `AngleArithmetic.apex_forced` | VERIFIED |
 | C `lem:anglecalc`(1) | no piece of a dissection has a right angle | `AngleArithmetic.no_right_angle`, `.no_perpendicular_cut` | VERIFIED |

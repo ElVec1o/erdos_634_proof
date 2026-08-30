@@ -59,4 +59,39 @@ theorem base_counts (f na nb nc : ℤ) (hf : 3 ≤ f)
   · right; left; constructor <;> linarith
   · left; constructor <;> linarith
 
+/-! ## Excluding `n_c = 2`
+
+With `n_c = 2` the base has `n_a = 0`, so it is three edges — a permutation of `(b, c, c)`.  The
+corner condition (`prop:cornerpara`: the first two and the last two edges lie in `{a, c}`) then
+forbids the `b` from every position, since with three edges those two pairs cover the word.  So
+`n_c ≠ 2`, and only `(2f, 0)` and `(f, 1)` survive.
+
+The remaining exclusion, `n_c ≠ 0`, is the paper's `prop:gammatrap` — every side carries at least
+one `c`-edge — whose Lean counterpart `AngleArithmetic.gamma_trap` is the arithmetic ingredient
+`ng ≤ 1`, not the statement itself.  It is therefore not available here, and `n_c = 0` stays open. -/
+
+/-- **A three-letter base cannot hold the `b`.**  If the first two and the last two of three
+positions avoid `b`, no position holds it. -/
+theorem no_b_in_three (isB : Fin 3 → Prop) [DecidablePred isB]
+    (hb : ∃ i, isB i) (h0 : ¬ isB 0) (h1 : ¬ isB 1) (h2 : ¬ isB 2) : False := by
+  obtain ⟨i, hi⟩ := hb
+  fin_cases i
+  · exact h0 hi
+  · exact h1 hi
+  · exact h2 hi
+
+/-- **The base counts, with `n_c = 2` excluded.**  Under the corner condition the base is either
+all `a`s with no `c` — still open — or the intended `(a^f, b, c)`. -/
+theorem base_counts_corner (f na nb nc : ℤ) (hf : 3 ≤ f)
+    (hna : 0 ≤ na) (hnb : 0 ≤ nb) (hnc : 0 ≤ nc)
+    (heq : na * f + nb * (f ^ 2 - 1) + nc * f ^ 2 = 3 * f ^ 2 - 1)
+    (hcorner : nc = 2 → False) :
+    nb = 1 ∧ ((na = f ∧ nc = 1) ∨ (na = 2 * f ∧ nc = 0)) := by
+  obtain ⟨hb, hcases⟩ := base_counts f na nb nc hf hna hnb hnc heq
+  refine ⟨hb, ?_⟩
+  rcases hcases with ⟨_, h2⟩ | h | h
+  · exact absurd h2 (fun h => hcorner h)
+  · exact Or.inl h
+  · exact Or.inr h
+
 end Erdos634.BaseCountsE1
