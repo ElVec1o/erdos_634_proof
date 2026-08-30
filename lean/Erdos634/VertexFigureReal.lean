@@ -84,4 +84,40 @@ theorem localAngle_mem {N : ℕ} (D : Dissection N) (α β γ : ℝ)
   · simp [hpi]
   · simp [h0]
 
+/-! ## The classification, at a real boundary point
+
+With the multiplicities in hand, `Dissection.vertex_multiplicities` converts the angle relation into
+the linear equations, and those have two solutions.  So the boundary vertex figure of a real tiling
+is classified: either a single tile covering the point with a straight angle, or `{3α, 2β}`, or
+`{α, β, γ}`. -/
+
+/-- **The boundary figure, classified.**  From `p·α + q·β + r·γ + s·π = π` with `γ = 2α + β`,
+`3α + 2β = π` and `α/π` irrational. -/
+theorem boundary_figure {α β γ : ℝ} (hγ : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (p q r s : ℕ)
+    (hsum : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi = Real.pi) :
+    ((p : ℤ) + 2 * r = 3 * (1 - s) ∧ (q : ℤ) + r = 2 * (1 - s)) := by
+  have hπ : Real.pi = 3 * α + 2 * β := hrel.symm
+  have h : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * (2 * α + β)
+      = ((3 * (1 - (s : ℤ)) : ℤ) : ℝ) * α + ((2 * (1 - (s : ℤ)) : ℤ) : ℝ) * β := by
+    rw [← hγ]
+    push_cast
+    nlinarith [hsum, hπ]
+  exact Erdos634.Geometry.vertex_multiplicities hrel hirr p q r _ _ h
+
+/-- **The two boundary figures.**  With no straight-angle contributor the multiplicities are
+`(3,2,0)` or `(1,1,1)`; with one, everything else vanishes. -/
+theorem boundary_figure_cases {α β γ : ℝ} (hγ : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (p q r s : ℕ)
+    (hsum : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi = Real.pi) :
+    (s = 1 ∧ p = 0 ∧ q = 0 ∧ r = 0) ∨
+      (s = 0 ∧ ((p = 3 ∧ q = 2 ∧ r = 0) ∨ (p = 1 ∧ q = 1 ∧ r = 1))) := by
+  obtain ⟨h1, h2⟩ := boundary_figure hγ hrel hirr p q r s hsum
+  rcases Nat.eq_zero_or_pos s with rfl | hs
+  · right; refine ⟨rfl, ?_⟩; omega
+  · left
+    have hs1 : s = 1 := by omega
+    subst hs1
+    omega
+
 end Erdos634.VertexFigureReal
