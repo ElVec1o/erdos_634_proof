@@ -404,4 +404,22 @@ theorem a_corner_side_c (T : Tri) (j : Fin 3) (a b c : ℝ) (hb : b ≠ 0) (hac 
   · exact h2
   · exact absurd (hbase.symm.trans h1) hac
 
+/-! ## The `c`-corner's side parameter
+
+`lem:ccornerside` runs: a `c`-corner forces an `a`-edge on the side, so that side's `a`-count is
+positive; quantization makes it `fp`, and with `pe + R' = f` and the `γ`-trap `R' ≥ 1` the parameter
+is pinned between `1` and `(f-1)/e`.  The last step is arithmetic and is proved here; the step
+before it needs the side's chain edges related to its walk counts, which is what the lemma still
+waits on. -/
+
+/-- **The `c`-corner's parameter bounds.**  From `pe + R' = f` with `R' ≥ 1` and `p ≥ 1`. -/
+theorem p_bounds (p e f R : ℕ) (h : p * e + R = f) (hR : 1 ≤ R) (hp : 1 ≤ p) :
+    1 ≤ p ∧ p * e + 1 ≤ f := by
+  exact ⟨hp, by omega⟩
+
+/-- With `e ≥ 1` this is the bound `p ≤ (f-1)/e` the lemma states. -/
+theorem p_le_of_bounds (p e f : ℕ) (he : 1 ≤ e) (h : p * e + 1 ≤ f) : p ≤ (f - 1) / e := by
+  have h1 : p * e ≤ f - 1 := by omega
+  exact Nat.le_div_iff_mul_le (by omega) |>.mpr h1
+
 end Erdos634.TilePlacement
