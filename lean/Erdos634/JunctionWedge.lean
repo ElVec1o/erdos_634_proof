@@ -1,4 +1,5 @@
 import Erdos634.WedgeExtremal
+import Erdos634.BaseBetaE1
 
 /-!
 # The junction wedge has opening `α`
@@ -52,6 +53,34 @@ theorem junction_step (o : Orientation ℝ Plane (Fin 2)) {A P Q u : Plane} {α 
   rw [hopen] at hφm hψm hcorner ⊢
   exact Erdos634.WedgeExtremal.Dissection.corner_on_wedge_sides o hu hP hQ
     (alpha_lt_pi α β hβ hα hsum) hφ hψ hφm hψm hcorner
+
+/-! ## The configuration, reduced
+
+The hypothesis that the placed tiles at a junction present `γ` and `β` is not free-standing.  A
+vertex on a straight edge of the dissection has an angle figure `xα + yβ + zγ = π`, which
+`BaseBetaE1.vertex_pi` classifies: with `3α + 2β = π` and `γ = 2α + β` the only solutions are
+`(x,y,z) = (3,2,0)` and `(1,1,1)`.  So the presence of a single `γ` at a straight-edge vertex
+already forces the whole figure, and with it the `β` and the single `α`.
+
+What remains of the configuration is one fact: that a `γ` is present at a march junction — the
+apex angle of the `a`-tile whose apex the march is joining.  Everything else follows. -/
+
+/-- **A `γ` at a straight-edge vertex forces the figure `α + β + γ`.**  Consumes
+`BaseBetaE1.vertex_pi`; the second solution is the only one with a `γ`. -/
+theorem junction_figure (x y z : ℕ) (h1 : y + z = 2) (h2 : 2 * x + z = 3 * y) (hγ : 1 ≤ z) :
+    x = 1 ∧ y = 1 ∧ z = 1 := by
+  rcases Erdos634.BaseBetaE1.vertex_pi x y z h1 h2 with ⟨_, _, hz⟩ | h
+  · omega
+  · exact h
+
+/-- **The junction's uncovered opening, from the figure.**  At a straight-edge vertex carrying a
+`γ`, the figure is `α + β + γ`; with the `γ` and the `β` placed, what is left uncovered is one `α`,
+which is the opening `π - (γ + β)`. -/
+theorem junction_uncovered (α β γ : ℝ) (x y z : ℕ)
+    (h1 : y + z = 2) (h2 : 2 * x + z = 3 * y) (hγz : 1 ≤ z)
+    (hγ : γ = 2 * α + β) (hsum : 3 * α + 2 * β = Real.pi) :
+    x = 1 ∧ Real.pi - (γ + β) = α :=
+  ⟨(junction_figure x y z h1 h2 hγz).1, wedge_opening α β γ hγ hsum⟩
 
 /-- **Non-vacuity.**  The angle hypotheses of `junction_step` are satisfiable: the base-`β` tile at
 `e = 1` has `0 < α`, `0 < β`, `3α + 2β = π` and `γ = 2α + β`, and then the uncovered opening really
