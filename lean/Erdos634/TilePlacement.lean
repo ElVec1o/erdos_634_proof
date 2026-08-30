@@ -1,5 +1,6 @@
 import Mathlib
 import Erdos634.VertexFigureReal
+import Erdos634.OrientBridge
 
 /-!
 # The tile-placement layer
@@ -142,5 +143,87 @@ theorem incident_sides (x y a b c : ℝ) (hb : b ≠ 0)
   rcases mul_eq_zero.mp hroot with h | h
   · exact Or.inl ⟨by linarith, by linarith⟩
   · exact Or.inr ⟨by linarith, by linarith⟩
+
+/-! ## Non-degeneracy: the strict triangle inequality
+
+The angle-ordering lemma needs `c < a + b` strictly, and `dist_triangle` gives only `≤`.  Strictness
+is exactly non-degeneracy: equality would put a vertex between the other two, making the tile's
+three points collinear, which `Tri.indep` forbids. -/
+
+/-- The tile's three vertices, listed from any starting index. -/
+theorem range_pts_eq (T : Tri) (j : Fin 3) :
+    Set.range T.pts = {T.pts (j + 1), T.pts j, T.pts (j + 2)} := by
+  have hfin : ∀ a b : Fin 3, a = b ∨ a = b + 1 ∨ a = b + 2 := by decide
+  have hfin' : ∀ i : Fin 3, i = j ∨ i = j + 1 ∨ i = j + 2 := fun i => hfin i j
+  ext x
+  constructor
+  · rintro ⟨i, rfl⟩
+    rcases hfin' i with rfl | rfl | rfl
+    · exact Or.inr (Or.inl rfl)
+    · exact Or.inl rfl
+    · exact Or.inr (Or.inr rfl)
+  · rintro (rfl | rfl | rfl)
+    · exact ⟨j + 1, rfl⟩
+    · exact ⟨j, rfl⟩
+    · exact ⟨j + 2, rfl⟩
+
+/-- **The strict triangle inequality in a tile.** -/
+theorem strict_triangle (T : Tri) (j : Fin 3) :
+    dist (T.pts (j + 1)) (T.pts (j + 2))
+      < dist (T.pts (j + 1)) (T.pts j) + dist (T.pts j) (T.pts (j + 2)) := by
+  rcases lt_or_eq_of_le (dist_triangle (T.pts (j + 1)) (T.pts j) (T.pts (j + 2))) with h | h
+  · exact h
+  · exfalso
+    have hw : Wbtw ℝ (T.pts (j + 1)) (T.pts j) (T.pts (j + 2)) :=
+      dist_add_dist_eq_iff.mp h.symm
+    have hcol : Collinear ℝ (Set.range T.pts) := by
+      rw [range_pts_eq T j]; exact hw.collinear
+    exact (affineIndependent_iff_not_collinear.mp T.indep) hcol
+
+/-- **A larger side faces a larger angle, inside a tile.**  With `a` the side opposite vertex `j`,
+`b` the side opposite `j+1` and `c` the side they share, `a < b` gives `A < B`.  The strict triangle
+inequality comes from `strict_triangle`, i.e. from the tile's non-degeneracy. -/
+theorem angle_lt_of_side_lt (T : Tri) (j : Fin 3)
+    (hlt : dist (T.pts (j + 1)) (T.pts (j + 2)) < dist (T.pts (j + 2)) (T.pts j)) :
+    cornerAngle (T.pts (j + 1)) (T.pts j) (T.pts (j + 2))
+      < cornerAngle (T.pts (j + 2)) (T.pts (j + 1)) (T.pts j) := by
+  have hne : ∀ i k : Fin 3, i ≠ k → T.pts i ≠ T.pts k := by
+    intro i k hik h
+    exact hik (T.indep.injective h)
+  have h01 : (j : Fin 3) ≠ j + 1 := by
+    have : ∀ x : Fin 3, x ≠ x + 1 := by decide
+    exact this j
+  have h12 : (j + 1 : Fin 3) ≠ j + 2 := by
+    have : ∀ x : Fin 3, x + 1 ≠ x + 2 := by decide
+    exact this j
+  have h02 : (j : Fin 3) ≠ j + 2 := by
+    have : ∀ x : Fin 3, x ≠ x + 2 := by decide
+    exact this j
+  have hA : cornerAngle (T.pts (j + 1)) (T.pts j) (T.pts (j + 2)) ∈ Set.Icc 0 Real.pi :=
+    ⟨EuclideanGeometry.angle_nonneg _ _ _, EuclideanGeometry.angle_le_pi _ _ _⟩
+  have hB : cornerAngle (T.pts (j + 2)) (T.pts (j + 1)) (T.pts j) ∈ Set.Icc 0 Real.pi :=
+    ⟨EuclideanGeometry.angle_nonneg _ _ _, EuclideanGeometry.angle_le_pi _ _ _⟩
+  have hsh1 : ∀ x : Fin 3, x + 2 + 1 = x := by decide
+  have hsh2 : ∀ x : Fin 3, x + 2 + 2 = x + 1 := by decide
+  have htri := strict_triangle T (j + 2)
+  rw [hsh1 j, hsh2 j] at htri
+  have lawA := EuclideanGeometry.law_cos (V := Plane) (T.pts (j + 1)) (T.pts j) (T.pts (j + 2))
+  have lawB := EuclideanGeometry.law_cos (V := Plane) (T.pts (j + 2)) (T.pts (j + 1)) (T.pts j)
+  refine Erdos634.OrientBridge.smallest_angle_opposite_shortest_side
+    (dist (T.pts (j + 1)) (T.pts (j + 2))) (dist (T.pts (j + 2)) (T.pts j))
+    (dist (T.pts j) (T.pts (j + 1))) _ _
+    (dist_pos.mpr (hne _ _ h12)) (dist_pos.mpr (hne _ _ (Ne.symm h02)))
+    (dist_pos.mpr (hne _ _ h01)) ?_ hlt hA hB ?_ ?_
+  · have e1 : dist (T.pts (j + 1)) (T.pts (j + 2)) = dist (T.pts (j + 2)) (T.pts (j + 1)) :=
+      dist_comm _ _
+    have e2 : dist (T.pts (j + 2)) (T.pts j) = dist (T.pts j) (T.pts (j + 2)) := dist_comm _ _
+    rw [e1, e2]
+    linarith [htri]
+  · rw [cornerAngle]
+    rw [dist_comm (T.pts (j + 1)) (T.pts j)] at lawA
+    linarith [lawA]
+  · rw [cornerAngle]
+    rw [dist_comm (T.pts (j + 2)) (T.pts (j + 1))] at lawB
+    linarith [lawB]
 
 end Erdos634.TilePlacement
