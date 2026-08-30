@@ -381,3 +381,14 @@ is the sharpest case — its combinatorial half is verified, and the passage fro
 to the abstract word is exactly bridge (c), which is not finished.
 
 VERIFIED now means: the paper statement, as written, is the Lean theorem.
+
+## Blockers named on inspection (2026-08-30, debt pass 1)
+
+Checked against their declarations, statement-first. None is upgradable; each blocker is now
+precise rather than absent.
+
+| Paper | Statement | Lean declaration | Blocker |
+|---|---|---|---|
+| C `lem:parity` | straight-figure parity `S ≡ N+1 (mod 2)` | `Frontier.census_parity` | the arithmetic **is** the declaration, but its hypothesis is the census α-identity, which holds of a real tiling only through `lem:census` — itself PROVED, not VERIFIED. Upgrading this without that would repeat the ingredient-for-statement error. |
+| C `lem:anglethreshold` | `cos α`, `cos β`, `cos γ` in closed form, and condition (P4) | `Frontier.cos_alpha_closed` | the declaration covers `cos α` only, as a polynomial identity; `cos β` and `cos γ` are unformalized, and (P4) is a property of the search's uncovered region, for which there is no Lean notion. |
+| C `lem:pentagon` | the middle region of the `(0,e,2e)` walk admits no tiling | `Pentagon.no_partition` | the declaration is the arithmetic non-existence of a partition; "admits no tiling" quantifies over dissections of a region that is not a `Tri`, and the corpus has no notion of a dissection of a general polygon. |
