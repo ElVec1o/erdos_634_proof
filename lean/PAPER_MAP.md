@@ -301,7 +301,7 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | M `thm:44` | theorem |
 | M `thm:admissible` | Isosceles admissible spectrum |
 | M `thm:decidable` | Decidability |
-| M `thm:fib` | Fibonacci families are the extremal ones |
+| M `thm:fib` | `M² − N₀ = −2(f²−ef−e²)`, `|M²−N₀| ≥ 2`, equality iff consecutive Fibonacci, and `N₀ = M² ± 2` | `FibExtremal.sq_sub`, `.two_le_gap`, `.gap_eq_two_iff`, `.fib_form`, `.fib_of_gap`, `.gap_two_iff_fib`, `.fib_count` | VERIFIED — both directions, including the descent |
 | M `thm:frontier` | theorem |
 | M `thm:frontier2` | theorem |
 | M `thm:frontier3` | theorem |
