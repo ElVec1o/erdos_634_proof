@@ -2612,14 +2612,18 @@ survives past depth $Cf$. That statement is open and the figures quoted are meas
 evidence for the constant.
 \end{remark}
 
-\begin{lemma}[The thick-member monochotomy]\label{lem:monochotomy}\lab{PROVED}
+\begin{lemma}[The thick-member monochotomy]\label{lem:monochotomy}\lab{VERIFIED}
 Let $e\ge2$, $e<f$, $\gcd(e,f)=1$, tile $(a,b,c)=(ef,\,f^2-e^2,\,f^2)$. The only decomposition of
 $c$ as $xa+yb+zc$ is the single $c$: writing $xef+y(f^2-e^2)=f^2$, coprimality forces
 $e\mid y-1$, and both $y=1$ (then $xf=e<f$) and $y\ge e+1$ (then the sum exceeds $f^2$ since
-$f^2>e^2+e$) are impossible (\texttt{c\_chord\_unique\_thick}). Consequently the $f$-$a$ branch
-of Lemma~\ref{lem:cchord} is an $e=1$ phenomenon: at thick members every $c$-chord fork of the
-corner chain is forced, and the chain machinery, where it applies, is stiffer than at $e=1$.
+$f^2>e^2+e$) are impossible (\texttt{c\_chord\_unique\_thick}).
 \end{lemma}
+
+\begin{remark}[What the monochotomy costs the chain]\label{rem:monochain}\lab{PROVED}
+The $f$-$a$ branch of Lemma~\ref{lem:cchord} is therefore an $e=1$ phenomenon: at thick members
+every $c$-chord fork of the corner chain is forced, and the chain machinery, where it applies, is
+stiffer than at $e=1$.
+\end{remark}
 
 \begin{lemma}[Thick-side quantization]\label{lem:sidequant}\lab{CONJECTURE}
 At any member $(e,f)$, $e\ge1$, a side's edge counts satisfy $xe+zf=f^2$ with no $b$

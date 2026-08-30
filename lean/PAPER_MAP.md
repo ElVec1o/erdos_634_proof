@@ -196,7 +196,8 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 | C `lem:firstrun` | First-run orientation | `PentagonLemma.partner_unique`, `OrderForcing.first_run_kill`, `gamma_far_absorbing` |
 | C `lem:jbline` | The $jb$-line partition | `partition_jb` |
 | C `lem:ladder` | Descent identities and the ladder | `descent_ident`, `sinb_ident`, `ladder_no_base` |
-| C `lem:monochotomy` | The thick-member monochotomy | `c_chord_unique_thick` |
+| C `lem:monochotomy` | the only decomposition of `c` at a thick member is the single `c` | `CChord.c_chord_unique_thick` | VERIFIED — the lemma now states only the arithmetic, which is the declaration; its geometric consequence was split into `rem:monochain` |
+| C `rem:monochain` | the `f`-`a` branch is an `e=1` phenomenon; thick-member forks are forced | `CChord.c_chord_unique_thick`, `.c_chord_dichotomy` | PROVED — a statement about the corner chain's forks, which needs the chain as an object; the arithmetic under it is VERIFIED |
 | C `lem:noapexline` | The chain never needs the apex line | `chain_needs_small_lines` |
 | C `lem:parity` | Straight-figure parity | `census_parity` |
 | C `lem:shadow` | The shadow at a $c$-corner | `strips_tall`, `shadow_footage_e1` |
