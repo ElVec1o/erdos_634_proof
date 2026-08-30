@@ -174,4 +174,51 @@ theorem cell_index (k : ℕ) (hk : 1 ≤ k) (s t : ℝ) (hs : 0 ≤ s) (ht : 0 �
       · rw [hteq]; linarith
 
   · exact ⟨i₀, j₀, hle, hi₀s, le_of_lt hsi₀, hj₀t, le_of_lt htj₀⟩
+/-! ## Disjointness, in lattice coordinates
+
+The `k²` triangles meet only along their boundaries, and in lattice coordinates that is two
+observations: a point strictly inside a cell determines the cell, since `i < s < i+1` pins
+`i = ⌊s⌋`; and within one cell the two triangles are separated by the diagonal, `u + v < 1` against
+`u + v > 1`. -/
+
+/-- The open upward triangle of cell `(i,j)`, in lattice coordinates. -/
+def openUp (i j : ℕ) (s t : ℝ) : Prop :=
+  (i : ℝ) < s ∧ (j : ℝ) < t ∧ (s - i) + (t - j) < 1
+
+/-- The open downward triangle of cell `(i,j)`. -/
+def openDown (i j : ℕ) (s t : ℝ) : Prop :=
+  s < (i : ℝ) + 1 ∧ t < (j : ℝ) + 1 ∧ 1 < (s - i) + (t - j)
+
+/-- A point of an open cell triangle pins the cell's first index. -/
+theorem up_pins_i (i j : ℕ) (s t : ℝ) (h : openUp i j s t) : (i : ℝ) < s ∧ s < (i : ℝ) + 1 :=
+  ⟨h.1, by have := h.2.1; have := h.2.2; have hj : (0:ℝ) ≤ t - j := by linarith
+           linarith⟩
+
+theorem down_pins_i (i j : ℕ) (s t : ℝ) (h : openDown i j s t) :
+    (i : ℝ) < s ∧ s < (i : ℝ) + 1 := by
+  refine ⟨?_, h.1⟩
+  have h2 := h.2.1
+  have h3 := h.2.2
+  have : t - (j : ℝ) < 1 := by linarith
+  linarith
+
+/-- **Two triangles of different cells have disjoint interiors.**  The first index is pinned by
+`s`, the second by `t`. -/
+theorem cells_disjoint_i (i i' j j' : ℕ) (s t : ℝ)
+    (h : ((i : ℝ) < s ∧ s < (i : ℝ) + 1)) (h' : ((i' : ℝ) < s ∧ s < (i' : ℝ) + 1)) : i = i' := by
+  by_contra hne
+  rcases Nat.lt_or_ge i i' with hlt | hge
+  · have : (i : ℝ) + 1 ≤ (i' : ℝ) := by exact_mod_cast hlt
+    linarith [h.2, h'.1]
+  · have hlt' : i' < i := by omega
+    have : (i' : ℝ) + 1 ≤ (i : ℝ) := by exact_mod_cast hlt'
+    linarith [h'.2, h.1]
+
+/-- **The two triangles of one cell have disjoint interiors**, separated by the diagonal. -/
+theorem up_down_disjoint (i j : ℕ) (s t : ℝ) (hu : openUp i j s t) (hd : openDown i j s t) :
+    False := by
+  have h1 := hu.2.2
+  have h2 := hd.2.2
+  linarith
+
 end Erdos634.Subdivision
