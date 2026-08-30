@@ -140,7 +140,7 @@ mathematical step, and until it is supplied, the folklore conjecture is not reso
 Unconditionally, this paper proves: no prime $N\equiv7\pmod{12}$ is a tile count (such $N$ are not
 base-$\beta$ candidates at all, by Theorem~\ref{thm:mod12}, so Theorem~\ref{thm:main} applies with no
 exception) --- in particular $N=19$; and the individual exclusions
-$N=11,23,26,47,59,66,71,107$, $191$, $431$ and $587$, each by a certified exhaustive search of
+$N=11,23,26,47,59,66,71,107$, $191$, $431$, $587$ and $971$, each by a certified exhaustive search of
 every surviving instance, which depend on no branch theorem whatever. The class $11\pmod{12}$ beyond those values,
 $N=83$ first among them, is \emph{not} settled unconditionally.
 
@@ -163,6 +163,12 @@ $X,Y\ge0$, and the search had been testing that criterion only at \emph{acute co
 Extending it to obtuse and to reflex corners --- where the interior angle is $2\pi-\theta$ and the
 cosine is unchanged --- collapses the two words that had previously resisted every configuration we
 tried, from searches that never terminated to $506$ and $807$ nodes.
+
+The value $971$ is settled the same way at $f=18$.  Its $174$ surviving words fall into $87$
+mirror-orbits; a transversal of $102$ instances --- the $87$ orbits, together with $15$ words the
+pincer window already kills, run again as a control --- exhausts with no tiling found, the largest
+subtree being under $10^{5}$ nodes.  Since $971$ is prime and $971=3\cdot18^{2}-1^{2}$ is its only
+representation, no other instance arises.
 
 That the hypothesis collapses at $e=1$ is recorded in the companion, whose Remark on the side
 parameter ends: complete blocks make the base read $a^fbc$, ending in a $c$-edge, while its

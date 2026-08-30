@@ -75,4 +75,15 @@ theorem tree_size_bound (T : ℕ → ℤ) (n : ℕ)
     (hb : T (n + 2) ≤ T (n + 1) + T n + 2) :
     T (n + 2) - T (n + 1) - T n ≤ 2 := by omega
 
+/-! ## The base of the induction is terminal, not measured
+
+`MarchRecurrence` listed the base cases of the two families as the measured node counts `205`
+(family one, `bp = 4`) and `109` (family two, `f = 8`).  Those are *counts*, and a count is not a
+proof obligation.  The induction `march_dies` bottoms out at runways of length `0` and `1`, which
+are the march's terminal stubs, and the stub is killed by arithmetic already verified:
+`FanStep.stub_is_gap`, the overrun `f² - (f² - 1) = 1` being a gap of `⟨f, f²-1, f²⟩`.
+
+So the base cases are `stub_is_gap`, not a finite search.  What remains unverified there is the
+bookkeeping that a runway of length at most one leaves exactly that stub. -/
+
 end Erdos634.MarchStep
