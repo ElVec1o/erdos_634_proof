@@ -212,4 +212,40 @@ theorem readings_on_a_edge {N : ℕ} (D : Dissection N) (i : Fin N) (west east :
   obtain ⟨hwa, hea⟩ := avoid_alpha_of_multiset _ _ α β γ hmul hαβ hαγ
   exact chain_edge_readings D i west east α β γ hbg hmul hwa hea hne
 
+/-! ## The word, assembled
+
+Every hypothesis of `OrientWord.word_isChain` now has a theorem behind it: the junction incidence
+from `chain_junctions`, the frontier and non-vertex conditions from `junction_frontier_nonvertex`,
+the tile distinctness from `WallSide.wall_edges_same_tile`, and the readings from
+`readings_on_a_edge`.  The statement below takes them in that form and concludes that the word is
+admissible, so `RunOrientation.corner_anchored_run_all_BG` applies to a dissection's base chain.
+
+The remaining inputs are configurational — the angle multiset at each chain edge, which says the
+edge is an `a`-edge — and they are exactly what the base word supplies. -/
+
+open Erdos634.Inflation in
+/-- **The base chain's word is admissible.**  Stated for the chain data the previous theorems
+produce.  `junction j` is the shared endpoint of edges `j` and `j+1`, which `chain_junctions`
+supplies; it enters only through the readings, so the theorem does not need to repeat that
+identification as a hypothesis. -/
+theorem base_word_isChain {N : ℕ} (D : Dissection N) (n : ℕ) (E : ℕ → Fin N × Fin 3)
+    (dir : Plane →ₗ[ℝ] ℝ) (α β γ : ℝ) (hα : 0 < α) (hγ : γ = 2 * α + β)
+    (hπ : 3 * α + 2 * β = Real.pi)
+    (junction : ℕ → Plane)
+    (hfront : ∀ j, j + 1 < n → junction j ∈ frontier D.target.carrier)
+    (hvert : ∀ j, j + 1 < n → junction j ∉ Set.range D.target.pts)
+    (hne : ∀ j, j + 1 < n → (E j).1 ≠ (E (j + 1)).1)
+    (hread : ∀ j, j + 1 < n →
+      (Erdos634.OrientBridge.tileOrient D β (E j).1 (edgeWest D dir (E j)) = Orient.BG →
+        (D.tile (E j).1).localAngle (junction j) = γ) ∧
+      (Erdos634.OrientBridge.tileOrient D β (E (j+1)).1 (edgeWest D dir (E (j+1))) = Orient.GB →
+        (D.tile (E (j+1)).1).localAngle (junction j) = γ)) :
+    (Erdos634.OrientWord.word n
+        (fun j => Erdos634.OrientBridge.tileOrient D β (E j).1 (edgeWest D dir (E j)))).IsChain
+      (fun l r => admissiblePair l r = true) :=
+  Erdos634.OrientWord.word_isChain D n
+    (fun j => Erdos634.OrientBridge.tileOrient D β (E j).1 (edgeWest D dir (E j)))
+    (fun j => (E j).1) junction α β γ hα hγ hπ hfront hvert hne
+    (fun j hj => (hread j hj).1) (fun j hj => (hread j hj).2)
+
 end Erdos634.BridgeC
