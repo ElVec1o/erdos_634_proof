@@ -431,3 +431,14 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | M `prop:conic` | the conic form of the equilateral condition | none | PROVED — a reformulation of `prop:eqspec`'s conditions; blocked by the same tiling quantifier, and no declaration exists |
 | M `thm:63` | `63` is realizable, by an explicit `(21,24,18)` cutting | `CevianTiling63.ceviantiling63_certificate` | PROVED — the certificate is VERIFIED by `decide`; what is missing is the bridge from a checked certificate to a `Dissection`, i.e. the **certified-search format** |
 | M `thm:decidable` | decidability of the tile-count question | none | PROVED — depends on `thm:main`'s cited inputs; a decision procedure has no Lean statement here |
+
+| Paper | Statement | Lean declaration | Blocker |
+|---|---|---|---|
+| M `prop:reduction` | prime `N` forces `ABC` isosceles or `F₁`–`F₄` | `InvariantProduct.*` | PROVED — quantifies over tilings; the shape classification has no `Dissection`-level definition |
+| M `thm:iso` | no prime number of copies tiles an isosceles non-equilateral target | `IsoAlphaPrime.isoalpha_not_prime` | PROVED — the arithmetic core is VERIFIED; the passage from a tiling to its parameters is not |
+| M `thm:frontier` | `14` and `15` are not tile counts | `Frontier.*` | PROVED — a branch sweep: engine verdicts over finitely many shapes, needing the **certified-search format** |
+| M `thm:frontier2` | `21, 22, 30, 33, 35, 38, 39, 42, 46` are not tile counts | `Frontier.*` | PROVED — same sweep, same blocker |
+| M `thm:frontier3` | `51, 55, 56, 57, 60, 62, 69, 78` are not tile counts | `Frontier.*` | PROVED — same sweep, same blocker |
+| M `thm:frontier4` | `76` is not a tile count, completing `N ≤ 80` | `Frontier.*` | PROVED — same sweep, same blocker |
+| M `thm:44` | `44` is realizable, by an explicit `(16,16,22)` tiling | `Tiling44.tiling44_certificate` | PROVED — the certificate is VERIFIED by `decide`; the bridge from certificate to `Dissection` is the **certified-search format** again |
+| M `thm:main` | prime `N ≡ 3 (mod 4)` that is not a base-β candidate is excluded | `BaseBetaMod12.*` and the branch theorems | PROVED — the top-level classification; it inherits every blocker below it and is the paper's own statement of what rests on cited inputs |
