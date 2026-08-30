@@ -82,6 +82,31 @@ theorem junction_uncovered (α β γ : ℝ) (x y z : ℕ)
     x = 1 ∧ Real.pi - (γ + β) = α :=
   ⟨(junction_figure x y z h1 h2 hγz).1, wedge_opening α β γ hγ hsum⟩
 
+/-- **The march step with the configuration folded in.**  At a straight-edge vertex `A` carrying a
+`γ` — which is what an `a`-tile presents at its apex, and a march junction is the meeting of two
+such apexes — the uncovered opening is `α`, and a tile filling it with its `α`-corner at `A` has
+its two edges along the wedge's sides.  Two placements, no third.
+
+The angle figure `(h1, h2, hγz)` replaces the earlier hypothesis that the placed tiles present `γ`
+and `β`: that is now derived.  What this theorem does not establish is that the march's steps land
+on vertices of this kind; that is a statement about the run, not about a vertex. -/
+theorem march_junction_two_placements (o : Orientation ℝ Plane (Fin 2))
+    {A P Q u : Plane} {α β γ φ ψ : ℝ} (x y z : ℕ)
+    (h1 : y + z = 2) (h2 : 2 * x + z = 3 * y) (hγz : 1 ≤ z)
+    (hγ : γ = 2 * α + β) (hsum : 3 * α + 2 * β = Real.pi) (hβ : 0 < β) (hα : 0 < α)
+    (hu : u ≠ 0) (hP : P - A ≠ 0) (hQ : Q - A ≠ 0)
+    (hφ : (o.oangle u (P - A)).toReal = φ) (hψ : (o.oangle u (Q - A)).toReal = ψ)
+    (hφm : φ ∈ Set.Icc (0:ℝ) α) (hψm : ψ ∈ Set.Icc (0:ℝ) α)
+    (hcorner : cornerAngle P A Q = α) :
+    (x = 1 ∧ y = 1 ∧ z = 1) ∧ ((φ = 0 ∧ ψ = α) ∨ (φ = α ∧ ψ = 0)) := by
+  refine ⟨junction_figure x y z h1 h2 hγz, ?_⟩
+  have := junction_step o hγ hsum hβ hα hu hP hQ hφ hψ
+    (by rw [wedge_opening α β γ hγ hsum]; exact hφm)
+    (by rw [wedge_opening α β γ hγ hsum]; exact hψm)
+    (by rw [wedge_opening α β γ hγ hsum]; exact hcorner)
+  rw [wedge_opening α β γ hγ hsum] at this
+  exact this
+
 /-- **Non-vacuity.**  The angle hypotheses of `junction_step` are satisfiable: the base-`β` tile at
 `e = 1` has `0 < α`, `0 < β`, `3α + 2β = π` and `γ = 2α + β`, and then the uncovered opening really
 is `α`.  Exhibited here with `α = π/9`, `β = π/3`, which satisfies every angle hypothesis. -/
