@@ -142,3 +142,4 @@ import Erdos634.FibExtremal
 import Erdos634.SolvCore
 import Erdos634.TilePlacement
 import Erdos634.SideWall
+import Erdos634.DissectionMap
