@@ -442,3 +442,20 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | M `thm:frontier4` | `76` is not a tile count, completing `N ≤ 80` | `Frontier.*` | PROVED — same sweep, same blocker |
 | M `thm:44` | `44` is realizable, by an explicit `(16,16,22)` tiling | `Tiling44.tiling44_certificate` | PROVED — the certificate is VERIFIED by `decide`; the bridge from certificate to `Dissection` is the **certified-search format** again |
 | M `thm:main` | prime `N ≡ 3 (mod 4)` that is not a base-β candidate is excluded | `BaseBetaMod12.*` and the branch theorems | PROVED — the top-level classification; it inherits every blocker below it and is the paper's own statement of what rests on cited inputs |
+
+## Blockers named, obstructions note (2026-08-30, debt pass 3)
+
+| Paper | Statement | Lean declaration | Blocker |
+|---|---|---|---|
+| O `lem:endpoints` | the last edge's top angle is `α`, the first edge's bottom angle is `β` | `OrientBridge.endpoints_avoid_alpha`, `BridgeC.avoid_alpha_of_multiset` | PROVED — the angle arithmetic is VERIFIED; 'the top of the last edge' presupposes the ordered boundary chain, which is bridge (c) — now proved for the base (`BridgeC.chain_junctions`) but not for the equal sides |
+| O `prop:straddle` | every junction chord is straddled | `StraddleBound.*`, `ChordDecomp.*` | PROVED — needs chords of a target and the tiles meeting them: a **tile-placement layer** plus a notion of a chord's cover |
+| O `prop:straddlegen` | the area above any interior junction chord is never integral | `ChordDecomp.area_never_integral`, `.coprime_tight` | PROVED — the area arithmetic is VERIFIED; the geometric clause — that this is the area above a chord *of a tiling* — needs the placement layer |
+| O `prop:chorddecomp` | the chord decomposition at the last junction of `(3,7)` | `ChordDecomp.flush_classification` | PROVED — the classification is VERIFIED at the arithmetic level; identifying `𝒰` as the set of tiles meeting a chord needs the placement layer |
+| O `lem:ccornerside` | a `c`-corner carries a side `a`-edge | `SideNoB.c_corner_forces_side_a` | PROVED — the flank arithmetic is VERIFIED; 'lays `c` on the base' is a placement statement |
+| O `prop:unify` | every ingredient of the corner chain holds at all members | `SideNoB.*`, `CChord.*`, `Inflation.*` | PROVED — a survey over the chain's ingredients; its label is the minimum of theirs, and several are blocked by the placement layer |
+| O `lem:avgen` | the `α`-vertex gap, general form | `alpha_vertex_gap_gen` | PROVED — the gap arithmetic is VERIFIED; 'a cover piece with its foot at' is a placement statement about a row structure that has no Lean definition |
+| O `lem:cornerstep` | the corner step, unconditional at every member | `CornerRule.*`, `SideNoB.*` | PROVED — same placement layer; the angle bookkeeping is available, the corner tile's edges are not |
+| O `lem:solitary` | the crossing kill and solitude of branches | `crossing_tangency` | PROVED — needs the ladder's line and transversal edges as objects; no Lean development of the ladder geometry |
+| O `lem:charge` | the mirrored piece is charged | `mirrored_left_junction`, `escape_charge` | PROVED — the junction arithmetic is VERIFIED; the brick/mate row structure it quantifies over has no Lean definition |
+| O `lem:climberdetect` | climbers detect deviation | `OrderForcing.*` | PROVED — the six-tile vertex figure is now reachable through `VertexFigureReal.interior_figure_cases`; what is missing is the brick/mate lattice as a Lean structure |
+| O `prop:fanprune` | soundness of the fan prune | `FanPruneSound.fan_prune_sound`, `.corner_unfillable` | PROVED — the criterion is VERIFIED; the proposition also asserts the *engine implements it*, which no Lean theorem can say — this blocker will not clear |
