@@ -459,3 +459,37 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | O `lem:charge` | the mirrored piece is charged | `mirrored_left_junction`, `escape_charge` | PROVED — the junction arithmetic is VERIFIED; the brick/mate row structure it quantifies over has no Lean definition |
 | O `lem:climberdetect` | climbers detect deviation | `OrderForcing.*` | PROVED — the six-tile vertex figure is now reachable through `VertexFigureReal.interior_figure_cases`; what is missing is the brick/mate lattice as a Lean structure |
 | O `prop:fanprune` | soundness of the fan prune | `FanPruneSound.fan_prune_sound`, `.corner_unfillable` | PROVED — the criterion is VERIFIED; the proposition also asserts the *engine implements it*, which no Lean theorem can say — this blocker will not clear |
+
+## Blockers named, companion part 1 (2026-08-30, debt pass 4)
+
+| Paper | Statement | Lean declaration | Blocker |
+|---|---|---|---|
+| C `thm:basebeta-e1` | the `(8,8,11)` target admits no `11`-tiling | `Tiling*` certificates, `Frontier.*` | PROVED — an engine verdict on one target; needs the **certified-search format** |
+| C `thm:walks` | the boundary walks of the base-β target | `BaseBetaWalks.*`, `WalkEquation.walk_equation` | PROVED — the walk equation is VERIFIED; enumerating the *boundary* walks of a tiling needs the edge chain on all three sides — bridge (c), proved for the base only |
+| C `thm:pierce` | apex mismatch: the pierced corner | `ApexRigidity.*` | PROVED — needs tiles laid at the apex and their edges; **tile-placement layer** |
+| C `prop:rung2` | the pre-piercer chain | `ApexRigidity.*`, `CChord.*` | PROVED — same placement layer, on the configuration of `thm:pierce` |
+| C `thm:ray` | the mismatch ray is completely determined | `ApexRay.*`, `PinRay.*` | PROVED — the ray arithmetic is available; 'along the ray' quantifies over the tiles it meets — placement layer |
+| C `thm:chain` | the `b`-run orientation lemma | `Inflation.orient_monotone`, `RunOrientation.*` | PROVED — the alphabet lemmas are VERIFIED; the passage from a real run to the word is bridge (c), proved for the base only |
+| C `thm:farregion` | the far region is a scaled tile | `ApexRigidity.*`, `ConeScaling.*` | PROVED — needs the region cut off by a wall as an object; no Lean notion of a sub-region of a dissection |
+| C `cor:farvacuous` | the far side gives no contradiction | `ApexRigidity.*` | PROVED — conditional on `thm:farregion`; same blocker |
+| C `thm:e1reduce` | the `e=1` base walk is a permutation of `(a^f, b, c)` | `BaseCountsE1.base_counts`, `.base_counts_corner` | PROVED — the counts `n_b = 1` and the exclusion of `n_c = 2` are VERIFIED; `n_c ≥ 1` is `prop:gammatrap`, whose combinatorial core is `GammaCascade.cascade` and whose three inputs are geometric |
+| C `lem:filler` | the filler identity and the strip tiling | `W2Core.*` | PROVED — the two identities are VERIFIED and axiom-free; 'the column and its fillers tile the strip' needs the placement layer |
+| C `lem:offsets` | the offset congruence `Σεᵢ − j = −2q` | none | PROVED — the congruence is elementary and formalizable; what it is *about* — the terminal column's base apex — has no Lean definition |
+| C `lem:anglecalc` | the angle calculus: no right angle, and the rest | `AngleArithmetic.no_right_angle`, `.no_perpendicular_cut` | PROVED — the listed clauses are VERIFIED individually; the lemma bundles several, and at least one quantifies over cuts of a tiling |
+| C `prop:gammagrading` | every edge direction is an integer multiple of `γ` mod `π` | `DirectionGroup.*`, `Dissection.Dir` | PROVED — needs edge directions of a dissection as a group; `Dissection.dirSet` exists but the grading is not developed |
+| C `prop:dirgroup` | the direction group of a branch | `DirectionGroup.*` | PROVED — same development |
+| C `lem:termwedge` | the terminal wedge decomposes as `γ + α + β` | `AngleArithmetic.*`, `VertexFigureReal.boundary_figure_cases` | PROVED — the figure is now reachable at a real boundary point; the column terminating at a base vertex is a placement statement |
+| C `lem:sidenob` | the equal sides carry no `b`-edge | `SideNoB.side_no_b_uncond`, `.side_no_b_e_one` | PROVED — the walk arithmetic is VERIFIED; 'every side walk' presupposes the side's edge chain — bridge (c) on the equal sides |
+| C `prop:doublec` | the double-`c` kill at any initial block | `DoubleC.*` | PROVED — placement layer: initial blocks of a side walk |
+| C `lem:eastfan` | the east fan at the fork is forced | `straight_junction_gamma_bound`, `straight_junction_cases` | PROVED — the junction arithmetic is VERIFIED; bricks and mates have no Lean structure |
+| C `thm:forkkill` | the row fork kill | `ForcedRow.*`, `ForkKill` lemmas | PROVED — same brick/mate structure |
+| C `prop:a2branch` | the `A₂` branch dies | `A2BranchRow3.*`, `east_cover_gap` | PROVED — same structure, plus the row-3 configuration |
+| C `lem:wallclimb` | the wall climb: `Cⱼ` direct and `Mⱼ` forced | `WallChain.*`, `WallClimb` lemmas | PROVED — same structure |
+| C `thm:l2slot` | L2 at every reached slot | `W2Core.*`, `LayerLink.*` | PROVED — the slot chain is a placement structure with no Lean definition |
+| C `thm:elltwo` | the block-two chain runs to arbitrary depth | `W2Core.*` | PROVED — same |
+| C `thm:depthwindow` | reach three behind a thick block | `PincerLadder.pincer_ladder`, `OrderForcing.pincer_window` | PROVED — the window arithmetic is VERIFIED and is what the sweeps consume; the geometric reach step is the open half |
+| C `lem:ladder` | descent identities and the ladder | `descent_ident`, `sinb_ident`, `ladder_no_base` | PROVED — the identities are VERIFIED; the ladder as a geometric object is not defined |
+| C `lem:termination` | a ladder terminates only where both covers end | `consecutive_gap` | PROVED — same ladder development |
+| C `lem:columnlines` | corner lines are column lines | `CosetPropagation.*`, `FloorPropagation.*` | PROVED — the lattice arithmetic is available; 'lines through two vertices of the corner lattice' needs the lattice as a Lean object |
+| C `lem:noapexline` | the chain never needs the apex line | `chain_needs_small_lines` | PROVED — same lattice development |
+| C `lem:monochotomy` | the thick-member monochotomy for `c` | `c_chord_unique_thick`, `CChord.*` | PROVED — the decomposition arithmetic is VERIFIED; the lemma also asserts which decomposition a *tiling* realises |
