@@ -120,4 +120,104 @@ theorem boundary_figure_cases {α β γ : ℝ} (hγ : γ = 2 * α + β) (hrel : 
     subst hs1
     omega
 
+/-! ## The interior figure
+
+At an interior point the budget is `2π` and a tile may cover the point outright, contributing `2π`.
+Otherwise the argument is the same, and `Dissection.vertex_multiplicities` at `t = 2` gives the
+four interior figures the paper lists. -/
+
+/-- The values a tile can contribute at an interior point. -/
+theorem interior_localAngle_mem {N : ℕ} (D : Dissection N) (α β γ : ℝ)
+    (hcorners : ∀ (i : Fin N) (j : Fin 3),
+      cornerAngle ((D.tile i).pts (j + 1)) ((D.tile i).pts j) ((D.tile i).pts (j + 2))
+        ∈ ({α, β, γ} : Finset ℝ))
+    (v : Plane) (i : Fin N) :
+    (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 2 * Real.pi, 0} : Finset ℝ) := by
+  classical
+  rcases Erdos634.PinPlumbing.localAngle_cases (D.tile i) v with ⟨j, _, hval⟩ | h2 | hpi | h0
+  · have := hcorners i j
+    rw [hval]
+    simp only [Finset.mem_insert, Finset.mem_singleton] at this ⊢
+    tauto
+  · simp [h2]
+  · simp [hpi]
+  · simp [h0]
+
+/-- **The interior figure, with multiplicities.** -/
+theorem interior_multiplicities_real {N : ℕ} (D : Dissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    {v : Plane} (hv : v ∈ interior D.target.carrier)
+    (hvals : ∀ i, (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 2 * Real.pi, 0} : Finset ℝ)) :
+    ∃ p q r s u : ℕ,
+      (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi + (u : ℝ) * (2 * Real.pi)
+        = 2 * Real.pi := by
+  classical
+  have hsum := Erdos634.PinPlumbing.pin_angle_sum_interior D hv
+  rw [sum_by_value ({α, β, γ, Real.pi, 2 * Real.pi, 0} : Finset ℝ) _ hvals] at hsum
+  refine ⟨({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+    ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+    ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card,
+    ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card,
+    ({i | (D.tile i).localAngle v = 2 * Real.pi} : Finset (Fin N)).card, ?_⟩
+  rw [Finset.sum_insert (by simp [hαβ, hαγ, hαπ, hα2π, hα0]),
+      Finset.sum_insert (by simp [hβγ, hβπ, hβ2π, hβ0]),
+      Finset.sum_insert (by simp [hγπ, hγ2π, hγ0]),
+      Finset.sum_insert (by simp [hπ2π, hπ0]),
+      Finset.sum_insert (by simp [h2π0]), Finset.sum_singleton] at hsum
+  push_cast at hsum ⊢
+  linarith [hsum]
+
+/-- **The four interior figures.**  With no straight-angle and no covering tile, the multiplicities
+solve `p + 2r = 6`, `q + r = 4` — the four figures `{6α,4β}`, `{4α,3β,γ}`, `{2α,2β,2γ}`,
+`{β,3γ}`. -/
+theorem interior_figure_cases {α β γ : ℝ} (hγ : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (p q r : ℕ)
+    (hsum : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ = 2 * Real.pi) :
+    (p = 6 ∧ q = 4 ∧ r = 0) ∨ (p = 4 ∧ q = 3 ∧ r = 1) ∨ (p = 2 ∧ q = 2 ∧ r = 2) ∨
+      (p = 0 ∧ q = 1 ∧ r = 3) := by
+  have h : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * (2 * α + β)
+      = ((6 : ℤ) : ℝ) * α + ((4 : ℤ) : ℝ) * β := by
+    rw [← hγ]; push_cast; nlinarith [hsum, hrel]
+  obtain ⟨h1, h2⟩ := Erdos634.Geometry.vertex_multiplicities hrel hirr p q r 6 4 h
+  omega
+
+/-! ## The corner figures
+
+At a vertex of the target the tiles' local angles sum to that corner's angle
+(`Dissection.sum_localAngle_eq` with `Tri.localAngle_vertex`).  On a base-`β` target the base
+corners have angle `β` and the apex `3α`, and the arithmetic lemmas then force the figures. -/
+
+/-- **The corner sum.**  At a target vertex the tiles' local angles sum to the target's angle
+there. -/
+theorem corner_angle_sum {N : ℕ} (D : Dissection N) (k : Fin 3) :
+    ∑ i, (D.tile i).localAngle (D.target.pts k)
+      = cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) := by
+  rw [D.sum_localAngle_eq (D.target.pts k), D.target.localAngle_vertex k]
+
+/-- **The base corner is a single `β`-tile.**  From `p·α + q·β + r·γ = β` with the tile relation
+and irrationality: `(p,q,r) = (0,1,0)`. -/
+theorem base_corner_figure {α β γ : ℝ} (hγ : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (p q r : ℕ)
+    (hsum : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ = β) :
+    p = 0 ∧ q = 1 ∧ r = 0 := by
+  have h : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * (2 * α + β)
+      = ((0 : ℤ) : ℝ) * α + ((1 : ℤ) : ℝ) * β := by
+    rw [← hγ]; push_cast; linarith [hsum]
+  obtain ⟨h1, h2⟩ := Erdos634.Geometry.vertex_multiplicities hrel hirr p q r 0 1 h
+  omega
+
+/-- **The apex is exactly three `α`-tiles.**  From `p·α + q·β + r·γ = 3α`. -/
+theorem apex_figure_real {α β γ : ℝ} (hγ : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (p q r : ℕ)
+    (hsum : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ = 3 * α) :
+    p = 3 ∧ q = 0 ∧ r = 0 := by
+  have h : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * (2 * α + β)
+      = ((3 : ℤ) : ℝ) * α + ((0 : ℤ) : ℝ) * β := by
+    rw [← hγ]; push_cast; linarith [hsum]
+  obtain ⟨h1, h2⟩ := Erdos634.Geometry.vertex_multiplicities hrel hirr p q r 3 0 h
+  omega
+
 end Erdos634.VertexFigureReal
