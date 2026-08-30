@@ -265,7 +265,7 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | C `lem:interior` | Interior multiples |
 | C `lem:offsets` | Offset congruence |
 | C `lem:ple` | Two $c$-edges are forced; $p\le f-2$ |
-| C `lem:sidenob` | The equal sides carry no $b$-edge |
+| C `lem:sidenob` | every side walk `P'a + Q'b + R'c = f³` with `R' ≥ 1` has `Q' = 0` | `SideNoB.side_no_b_uncond`, `.side_no_b_e_one` | VERIFIED — the statement quantifies over walks, not over tilings, and the declaration is exactly that implication. Identifying a real side's edges with a walk is `thm:walkstruct`'s business, not this lemma's |
 | C `lem:stubgap` | The second stub is a gap |
 | C `lem:termwedge` | Terminal wedge |
 | C `lem:wallclimb` | The wall climb |
