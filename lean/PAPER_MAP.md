@@ -13,8 +13,8 @@ Labels are the LaTeX `\label` keys. **Status** is the Rule 0 label of the *paper
 |---|---|---|---|
 | M `thm:mod12` | base-β prime candidates are exactly the primes ≡ 11 (mod 12) | `BaseBetaMod12.basebeta_prime_mod_twelve`, `.not_basebeta_of_mod_twelve_ne` | VERIFIED |
 | M `prop:gammatrap` | every side of a base-β target carries at least one c-edge | `AngleArithmetic.pi_vertex`, `.gamma_trap` | PROVED — the Lean declarations are the arithmetic ingredient (`ng ≤ 1` at a π-vertex), not the statement, which is geometric |
-| M `prop:cornerfig` | base corner is a single β-corner | `AngleArithmetic.beta_corner_forced` | VERIFIED |
-| M `prop:vertexfigures` | apex figure is three α-corners | `AngleArithmetic.apex_forced` | VERIFIED |
+| M `prop:cornerfig` | base corner is a single β-tile, apex exactly three α-tiles, with the edge pattern | `AngleArithmetic.beta_corner_forced` | PROVED — the declaration is the multiplicity arithmetic only |
+| M `prop:vertexfigures` | vertex-figure classification at a point of a tiling | `AngleArithmetic.apex_forced` | PROVED — the declaration is the multiplicity arithmetic; the classification of real vertex figures is geometric |
 | C `lem:anglecalc`(1) | no piece of a dissection has a right angle | `AngleArithmetic.no_right_angle`, `.no_perpendicular_cut` | VERIFIED |
 | C `rem:betapi3` | β < π/3 iff e(3f²−e²) > f³; at e=1 only f=2 | `AngleArithmetic.unique_e1_beta_lt_pi3`, `.beta_ge_pi3_e1` | VERIFIED |
 | M `prop:isoalphaprime` | no prime is an isosceles-α tile count | `IsoAlphaPrime.isoalpha_not_prime`, `.isoalpha_X_forces` | VERIFIED |
@@ -365,3 +365,19 @@ not what blocks the statement itself. Auditing those rows one by one is outstand
 Four blockers recur, and they are the project's real formalization frontier: there is no
 tile-placement layer (a tile laid at a position, with its neighbours), no scale or composition map
 on dissections, no certified-search format, and no dual-graph development.
+
+## VERIFIED audit (2026-08-30)
+
+Every statement carrying VERIFIED was compared with the declarations its row names, asking whether
+the *statement* is the Lean theorem rather than whether its ingredients are. Seven were not, and
+are now PROVED with the verified core named: `prop:vertexfigures`, `prop:cornerfig`, `prop:conic`
+(no declaration at all), `thm:walkstruct`, `lem:census`, `prop:orientmono`, `lem:charge`. With
+`rem:nilptower`, `lem:apex` and `prop:gammatrap`, corrected earlier in the week, that is **ten**
+labels moved down.
+
+The recurring defect: a paper statement about a real tiling, whose *arithmetic* is an `omega` or
+`nlinarith` lemma about multiplicities, wearing the label its arithmetic earned. `prop:orientmono`
+is the sharpest case — its combinatorial half is verified, and the passage from a real boundary run
+to the abstract word is exactly bridge (c), which is not finished.
+
+VERIFIED now means: the paper statement, as written, is the Lean theorem.
