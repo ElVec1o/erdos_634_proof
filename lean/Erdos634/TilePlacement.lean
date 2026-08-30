@@ -115,4 +115,32 @@ theorem apex_counts {α β γ : ℝ} (hγ : γ = 2 * α + β) (hrel : 3 * α + 2
   obtain ⟨h1, h2⟩ := Erdos634.Geometry.vertex_multiplicities hrel hirr p q r _ _ h'
   refine ⟨by omega, by omega, by omega, by omega⟩
 
+/-! ## The two edges at a corner
+
+`prop:cornerfig`'s last clause names the *edges* at the base corner.  Given that the side opposite
+the corner is `b`, the two incident sides are `a` and `c` in one order or the other — by sum and
+product of the side multiset, which pins them as the roots of one quadratic. -/
+
+/-- **The two incident sides.**  If the three sides are `{a, b, c}` and the one opposite the vertex
+is `b`, the two at the vertex are `a` and `c`. -/
+theorem incident_sides (x y a b c : ℝ) (hb : b ≠ 0)
+    (hmul : ({x, y, b} : Multiset ℝ) = {a, b, c}) :
+    (x = a ∧ y = c) ∨ (x = c ∧ y = a) := by
+  classical
+  have hsum : x + y + b = a + b + c := by
+    have := congrArg Multiset.sum hmul
+    simpa [Multiset.insert_eq_cons, add_assoc] using this
+  have hprod : x * y * b = a * b * c := by
+    have := congrArg Multiset.prod hmul
+    simpa [Multiset.insert_eq_cons, mul_assoc] using this
+  have hs : x + y = a + c := by linarith
+  have hp : x * y = a * c := by
+    have h : (x * y) * b = (a * c) * b := by
+      rw [hprod]; ring
+    exact mul_right_cancel₀ hb h
+  have hroot : (x - a) * (x - c) = 0 := by linear_combination x * hs - hp
+  rcases mul_eq_zero.mp hroot with h | h
+  · exact Or.inl ⟨by linarith, by linarith⟩
+  · exact Or.inr ⟨by linarith, by linarith⟩
+
 end Erdos634.TilePlacement
