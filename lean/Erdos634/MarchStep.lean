@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 import Erdos634.MarchRecurrence
+import Erdos634.FanKill
 
 /-!
 # The march step: the wedge admits at most two placements, and the induction that consumes it
@@ -84,6 +85,35 @@ are the march's terminal stubs, and the stub is killed by arithmetic already ver
 `FanStep.stub_is_gap`, the overrun `f² - (f² - 1) = 1` being a gap of `⟨f, f²-1, f²⟩`.
 
 So the base cases are `stub_is_gap`, not a finite search.  What remains unverified there is the
-bookkeeping that a runway of length at most one leaves exactly that stub. -/
+bookkeeping that a runway of length at most one leaves exactly that stub, which is what the rest
+of this section supplies. -/
+
+/-- **The march overshoots by at most one.**  Steps advance the march by one position or by two, so
+the first position at or beyond the end of the runway is the end itself or one past it.  The
+terminal residue is therefore `0` or `1` — no measurement enters. -/
+theorem overshoot_le_one (L p s : ℕ) (hp : p < L) (hs : s = 1 ∨ s = 2) (hover : L ≤ p + s) :
+    p + s ≤ L + 1 := by rcases hs with rfl | rfl <;> omega
+
+/-- The two terminal residues, named. -/
+theorem terminal_residue_cases (L p s : ℕ) (hp : p < L) (hs : s = 1 ∨ s = 2) (hover : L ≤ p + s) :
+    p + s - L = 0 ∨ p + s - L = 1 := by
+  have := overshoot_le_one L p s hp hs hover; omega
+
+/-- **The offset terminal dies.**  A march that ends one position past the runway leaves a run of
+length `1` to be covered by tile edges, and `1` is a gap of `⟨f, f²-1, f²⟩`.  So of the two
+chiralities only the flush one survives at the end of the march; the branch that overshoots is cut
+there, with no appeal to a measured base case. -/
+theorem offset_terminal_dies (f x y z : ℕ) (hf : 2 ≤ f) (L p s : ℕ)
+    (hp : p < L) (hs : s = 1 ∨ s = 2) (hover : L ≤ p + s) (hres : p + s - L = 1)
+    (hcover : x * f + y * (f ^ 2 - 1) + z * f ^ 2 = p + s - L) : False := by
+  rw [hres] at hcover
+  exact Erdos634.FanKill.one_is_gap f x y z hf hcover
+
+/-- **Non-vacuity witness** for `offset_terminal_dies`: every hypothesis except the covering
+equation is satisfiable, so the theorem refutes the covering rather than reading `False → False`.
+(`f = 2`, runway `L = 5`, march at `p = 4`, an offset step `s = 2`.) -/
+theorem offset_terminal_witness :
+    (4 : ℕ) < 5 ∧ ((2 : ℕ) = 1 ∨ (2 : ℕ) = 2) ∧ (5 : ℕ) ≤ 4 + 2 ∧ (4 + 2 - 5 : ℕ) = 1 := by
+  refine ⟨by omega, Or.inr rfl, by omega, by omega⟩
 
 end Erdos634.MarchStep
