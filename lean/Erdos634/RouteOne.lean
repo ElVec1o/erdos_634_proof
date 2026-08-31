@@ -707,4 +707,44 @@ theorem terminus_of_run_length {L : ℕ} (S : ℕ → Prop)
   have := advance_count_le_run (L + 1) edge hinj
   omega
 
+/-! ## The non-degeneracy input is free — `fig` is not needed
+
+`flank_along_line`'s third hypothesis is that the two edge directions at `V` are not *both*
+horizontal.  That is not a fact about the figure at `V`: it is non-degeneracy of the tile.  If both
+edges at a vertex were horizontal their cross product would vanish, and `Tri.det_cyclic` says that
+cross product **is** `T.det`, which `Tri.det_ne_zero` forbids.
+
+So the trichotomy at `V` needs only two inputs — tangential points (pigeonhole) and weakly-upward
+edges (the tile below) — and **not** the figure.  The predicate `fig` drops out of `descent_step`
+entirely, and with it the outstanding straight-angle-at-`E` question. -/
+
+/-- **Both edges at a vertex cannot be horizontal.**  Their cross product is `T.det ≠ 0`. -/
+theorem not_both_horizontal (T : Tri) (k : Fin 3) :
+    ¬ ((T.pts (k + 1) - T.pts k) 1 = 0 ∧ (T.pts (k + 2) - T.pts k) 1 = 0) := by
+  rintro ⟨h1, h2⟩
+  have hcross : Erdos634.Geometry.cross (T.pts (k + 1) - T.pts k) (T.pts (k + 2) - T.pts k) = 0 := by
+    unfold Erdos634.Geometry.cross
+    rw [h1, h2]; ring
+  rw [T.det_cyclic k] at hcross
+  exact T.det_ne_zero hcross
+
+/-- **The trichotomy's flank step, with non-degeneracy discharged.**  A tile with vertex `V`, both
+edges weakly upward, containing points approaching `V` tangentially from the right, has a horizontal
+rightward edge — no hypothesis about the figure at `V`. -/
+theorem flank_along_line' (T : Tri) (k : Fin 3)
+    (h1y : 0 ≤ (T.pts (k + 1) - T.pts k) 1) (h2y : 0 ≤ (T.pts (k + 2) - T.pts k) 1)
+    (htan : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ T.carrier ∧
+      0 < (q - T.pts k) 0 ∧ (q - T.pts k) 1 ≤ δ * ((q - T.pts k) 0)) :
+    ((T.pts (k + 1) - T.pts k) 1 = 0 ∧ 0 < (T.pts (k + 1) - T.pts k) 0) ∨
+    ((T.pts (k + 2) - T.pts k) 1 = 0 ∧ 0 < (T.pts (k + 2) - T.pts k) 0) :=
+  flank_along_line T k h1y h2y (not_both_horizontal T k) htan
+
+/-- **Route 1 closes on `inWall` alone.**  `descent_step` with `fig` discharged: the step needs only
+that the advance stays on the wall, which `advance_count_le_run` supplies. -/
+theorem route_one_closes' (S : ℕ → Prop) (inWall : ℕ → Prop)
+    (hin : ∀ n, S (n + 1) → inWall n)
+    (htri : ∀ n, inWall n → S (n + 1) → S n) (hterm : ¬ S 0) :
+    ∀ n, ¬ S n :=
+  wall_descent S (fun n h => htri n (hin n h) h) hterm
+
 end Erdos634.RouteOne
