@@ -188,6 +188,30 @@ theorem interior_figure_cases {α β γ : ℝ} (hγ : γ = 2 * α + β) (hrel : 
   obtain ⟨h1, h2⟩ := Erdos634.Geometry.vertex_multiplicities hrel hirr p q r 6 4 h
   omega
 
+/-- **The interior figure with straight angles and covering tiles.**  `interior_figure_cases`
+covers only `s = 0` and `u = 0`.  In general a straight angle costs `π` of the `2π` budget and a
+tile covering the point costs all of it, so the multiplicities solve
+`p + 2r + 3s + 6u = 6`, `q + r + 2s + 4u = 4` — which is the paper's `t = 2 - s - 2u`, and every
+solution is one of the four interior figures (`s = u = 0`), one of the two boundary figures
+(`s = 1`), or empty (`s = 2`, or `u = 1`). -/
+theorem interior_figure_cases_gen {α β γ : ℝ} (hγ : γ = 2 * α + β)
+    (hrel : 3 * α + 2 * β = Real.pi) (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (p q r s u : ℕ)
+    (hsum : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi
+      + (u : ℝ) * (2 * Real.pi) = 2 * Real.pi) :
+    (u = 1 ∧ p = 0 ∧ q = 0 ∧ r = 0 ∧ s = 0) ∨
+    (u = 0 ∧ s = 2 ∧ p = 0 ∧ q = 0 ∧ r = 0) ∨
+    (u = 0 ∧ s = 1 ∧ ((p = 3 ∧ q = 2 ∧ r = 0) ∨ (p = 1 ∧ q = 1 ∧ r = 1))) ∨
+    (u = 0 ∧ s = 0 ∧ ((p = 6 ∧ q = 4 ∧ r = 0) ∨ (p = 4 ∧ q = 3 ∧ r = 1) ∨
+      (p = 2 ∧ q = 2 ∧ r = 2) ∨ (p = 0 ∧ q = 1 ∧ r = 3))) := by
+  have h : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * (2 * α + β)
+      = ((6 - 3 * (s : ℤ) - 6 * (u : ℤ) : ℤ) : ℝ) * α
+        + ((4 - 2 * (s : ℤ) - 4 * (u : ℤ) : ℤ) : ℝ) * β := by
+    rw [← hγ]; push_cast; nlinarith [hsum, hrel]
+  obtain ⟨h1, h2⟩ := Erdos634.Geometry.vertex_multiplicities hrel hirr p q r _ _ h
+  have hu : u ≤ 1 := by omega
+  have hs : s ≤ 2 := by omega
+  interval_cases u <;> interval_cases s <;> omega
+
 /-! ## The corner figures
 
 At a vertex of the target the tiles' local angles sum to that corner's angle

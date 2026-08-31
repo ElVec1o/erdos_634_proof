@@ -544,3 +544,17 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 
 | O `prop:testsuniform` | every test the search performs answers the same at every member | `MemberUniform.fill_iff_counts`, `.fillable_iff_member`, `.unfillable_iff_member`, `.gap_one_uniform`, `.tests_uniform` | VERIFIED — corner fillability factors through `(X,Y)` and names no `f`; the residue-`1` and `|a−b|` tests answer no at every member |
 | O `prop:findep` | the `cp = bp−1` refutation is identical at every `f` | `MemberUniform.tests_uniform` | HEURISTIC — the node counts are measured. The *mechanism* is VERIFIED: no test the search performs distinguishes members. What is not proved is that the search performs only those tests, which is a property of the engine |
+
+### Fast-vein audit of the six `PROVED: … VERIFIED` labels (2026-08-31)
+
+Of the six statements whose label admitted a verified core, exactly one was reachable; the other
+five have blockers that are layers, not lemmas. Recorded so they are not re-attempted:
+
+| Paper | Why it is not fast-vein |
+|---|---|
+| M `prop:vertexfigures` | **upgraded to VERIFIED** — the gap was one missing case (`s ≥ 1` interior), now `interior_figure_cases_gen` |
+| C `lem:census` | `OrderForcing.vertex_census` takes the three corner-balance equations as *hypotheses*. Deriving them from a real dissection is a global double count — every tile corner sits at a vertex, every vertex classified — which is the **tile-placement/incidence layer**. Not one lemma |
+| C `lem:parity` | inherits the above: its hypothesis is the census α-identity |
+| C `lem:charge` | direct-vs-mirrored cover pieces and feet displaced by `1/f`: **placement layer** |
+| C `prop:orientmono` | passage from a real boundary run to its word: **bridge (c) beyond the base** |
+| M `thm:walkstruct` | side words of a real tiling: **bridge (c) beyond the base** |
