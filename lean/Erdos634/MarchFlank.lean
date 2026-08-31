@@ -1,4 +1,5 @@
 import Erdos634.TilePlacement
+import Erdos634.AngleSumDissection
 
 /-!
 # The two corners flanking an `a`-edge are the `β`- and `γ`-corners
@@ -56,5 +57,29 @@ theorem flank_is_beta_or_gamma (T : Tri) (j : Fin 3) {α β γ : ℝ}
   refine ⟨beta_or_gamma hmem1 ?_, beta_or_gamma hmem2 ?_⟩
   · rw [← hapex]; exact ne_of_gt o1
   · rw [← hapex]; exact ne_of_gt (lt_trans o1 o2)
+
+/-! ## The dichotomy as a statement about a *placed* tile
+
+`flank_is_beta_or_gamma` speaks of `angleAt`, the tile's own corner angle.  What
+`MarchRun.junction_cases` consumes is `localAngle` — what a tile of a dissection *presents* at a
+point.  `Tri.localAngle_vertex` closes that seam: at its own vertex a tile's local angle is its
+corner angle.  So the dichotomy transfers verbatim to a placed tile sitting at a junction. -/
+
+/-- **What a placed tile presents at an endpoint of its `a`-edge.**  If the tile's `j`-th side is
+strictly its shortest and the angles are `α, β, γ` with `angleAt T j = α`, then at either endpoint
+of that side the tile presents `β` or `γ`. -/
+theorem presents_beta_or_gamma (T : Tri) (j : Fin 3) {α β γ : ℝ}
+    (h1 : sideOpp T j < sideOpp T (j + 1)) (h2 : sideOpp T (j + 1) < sideOpp T (j + 2))
+    (hapex : angleAt T j = α)
+    (hmem1 : angleAt T (j + 1) = α ∨ angleAt T (j + 1) = β ∨ angleAt T (j + 1) = γ)
+    (hmem2 : angleAt T (j + 2) = α ∨ angleAt T (j + 2) = β ∨ angleAt T (j + 2) = γ) :
+    (T.localAngle (T.pts (j + 1)) = β ∨ T.localAngle (T.pts (j + 1)) = γ)
+      ∧ (T.localAngle (T.pts (j + 2)) = β ∨ T.localAngle (T.pts (j + 2)) = γ) := by
+  obtain ⟨g1, g2⟩ := flank_is_beta_or_gamma T j h1 h2 hapex hmem1 hmem2
+  constructor
+  · rw [Erdos634.Geometry.Tri.localAngle_vertex]
+    simpa [angleAt] using g1
+  · rw [Erdos634.Geometry.Tri.localAngle_vertex]
+    simpa [angleAt] using g2
 
 end Erdos634.MarchFlank
