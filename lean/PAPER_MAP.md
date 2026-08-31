@@ -762,6 +762,14 @@ and classifies every tile laying an `a`-edge on the run line by its apex offset 
 36 placements, every one BG. Because the trace prints recursed placements, the search never *enters*
 a GB placement on the run, not merely fails to complete one.
 
+**FALSIFIED 2026-09-01.** A fourth trace — `(6,11)` at `f=12` under `CENGINE_TRACE=2` — places a
+`GB` tile, at base position `395` (three `a`-edges from the right end of the base, length 431),
+where *both* orientations are explored. So the search **does** enter `GB` placements on the run; the
+all-BG census below was trace-limited, which is exactly the absence-from-search inference this entry
+hedged against, and the hedge was right. The speculative shortcut — "if `GB` is excluded, obligation
+(i) needs no `prop:orientmono`" — is dead. `prop:orientmono`'s actual statement, *at most one*
+transition, is the correct route, and `all_but_one_is_march_junction` is the correct reduction.
+
 **Update, same day:** the mechanism is now identified and its arithmetic verified — see `M-asym`.
 `BG` cannot be followed by `GB` because the two tiles' wedges at the shared junction both contain
 the vertical, so their interiors meet. That is why the traces show no `GB` after the first `BG`, and
@@ -878,3 +886,5 @@ full population.
 | M-count | **`no_two_gammas`: two tiles cannot both present `γ` at a straight-edge point** | `MarchRun.no_two_gammas` | VERIFIED — a *second, independent* kill of `BG → GB`. Reading the orientation convention off the distances, a `BG` tile has `γ` at the right end of its `a`-edge and a `GB` tile has `γ` at the left, so at a `BG → GB` junction both present `γ`; the straight-figure system `x+2z=3, y+z=2` gives `z = 2 ⟹ x = -1`. On the **boundary** this is far cheaper than the wedge route. It does **not** supersede it: the wedge route uses only `interiors_disjoint`, so it also kills *interior* junctions, where the budget is `2π` and the figure `{β,3γ}` makes `r = 3` possible and counting cannot decide |
 
 | M-frontier | the search's divergence frontier is the no-two-consecutive-`0`s chirality language; its counting law is the march recurrence, and the split by last letter gives the observed multiplicities | `MarchFrontier.noTwoZeros`, `.frontier_values`, `.split_by_last`, `.frontier_induction`, `.frontier_grows` | VERIFIED — `frontier_values` reproduces the measured `3, 5, 8, 13`; `split_by_last` is the `F(k−1), F(k−2)` split that explains why the hanging subtrees fall into exactly **two** size classes (the size depends on the last chirality alone). `frontier_induction` restates `MarchStep.march_dies` over this language, so the induction and the measured object are one thing |
+
+| M-cases | at a straight-edge junction the two `a`-tiles present `(β,β)`, `(β,γ)` or `(γ,β)` — never `(γ,γ)` | `MarchRun.junction_cases` | VERIFIED — obligation (i)'s `BG → GB` half on a boundary run: `α` is opposite `a` so cannot sit on the line, leaving `β` (flanks `{a,c}`) or `γ` (flanks `{a,b}`) at each end, and `no_two_gammas` removes `(γ,γ)`. The three survivors are `GB→GB`, `GB→BG`, `BG→BG`: exactly the words with no `BG → GB` factor |

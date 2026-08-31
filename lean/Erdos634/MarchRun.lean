@@ -143,4 +143,38 @@ theorem no_two_gammas {N : ℕ} (D : Dissection N) {α β γ : ℝ}
   have := Finset.card_le_card hsub
   omega
 
+/-! ## Obligation (i)'s `BG → GB` half, assembled
+
+At a straight-edge junction each of the two `a`-tiles presents `β` or `γ` (those are the corners
+flanking an `a`-edge: `β` flanks `{a,c}`, `γ` flanks `{a,b}`, and `α` is opposite `a` so cannot sit
+on the line).  `no_two_gammas` removes the `(γ, γ)` case, which is `BG → GB`.  So on a boundary run
+the orientation word never has a `BG` immediately followed by a `GB`. -/
+
+/-- **No `BG → GB` on a boundary run.**  Stated as: the two tiles at a straight-edge junction cannot
+both present `γ`, given that each presents `β` or `γ` there.  The three surviving cases are
+`(β,β)`, `(β,γ)`, `(γ,β)` — `GB → GB`, `GB → BG`, `BG → BG` — exactly the orientation words with no
+`BG → GB` factor. -/
+theorem junction_cases {N : ℕ} (D : Dissection N) {α β γ : ℝ}
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (hvals : ∀ i, (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ))
+    (i j : Fin N) (hij : i ≠ j)
+    (hi : (D.tile i).localAngle v = β ∨ (D.tile i).localAngle v = γ)
+    (hj : (D.tile j).localAngle v = β ∨ (D.tile j).localAngle v = γ) :
+    ((D.tile i).localAngle v = β ∧ (D.tile j).localAngle v = β) ∨
+    ((D.tile i).localAngle v = β ∧ (D.tile j).localAngle v = γ) ∨
+    ((D.tile i).localAngle v = γ ∧ (D.tile j).localAngle v = β) := by
+  rcases hi with hi | hi
+  · rcases hj with hj | hj
+    · exact Or.inl ⟨hi, hj⟩
+    · exact Or.inr (Or.inl ⟨hi, hj⟩)
+  · rcases hj with hj | hj
+    · exact Or.inr (Or.inr ⟨hi, hj⟩)
+    · exact absurd (no_two_gammas D hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0
+        hγdef hrel hirr hv hnv hvals i j hij hi hj) not_false
+
 end Erdos634.MarchRun
