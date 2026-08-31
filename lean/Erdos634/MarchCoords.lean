@@ -225,4 +225,26 @@ theorem bg_gb_not_a_side (f : ℤ) (hf : 2 ≤ f) :
     have hd : f ∣ 1 := ⟨f + 1 - f ^ 2, by linarith [h]⟩
     have := Int.le_of_dvd one_pos hd; omega
 
+/-! ## Regression against the engine's exact arithmetic
+
+The engine's trace (`CENGINE_TRACE=2`) prints each placement's vertices as exact
+`(p + q√D)/d` pairs.  At `f = 12` it places the march's first `a`-tile as
+`(0,0) → (12,0) → (431/24, 143√575/24)`, the second as
+`(12,0) → (24,0) → (719/24, 143√575/24)`, and then the filler as
+`(12,0) → (719/24, ·) → (431/24, ·)` — the junction and the two apexes.
+
+Every number there is this model: `dBG 12 = 431/24`, the apex height squared is `h2 12`, and the
+engine's radicand `D = 575` is `4f² - 1`.  So the model is not a reconstruction, it is what the
+search actually does. -/
+
+/-- **The model reproduces the engine's placement at `f = 12`.** -/
+theorem model_matches_trace_f12 :
+    dBG 12 = 431 / 24 ∧ h2 12 = (143 : ℝ) ^ 2 * 575 / 576 ∧ (4 : ℝ) * 12 ^ 2 - 1 = 575 := by
+  refine ⟨?_, ?_, by norm_num⟩
+  · unfold dBG; norm_num
+  · unfold h2; norm_num
+
+/-- **The second apex is one `a`-step along**, as the trace's `719/24 = 12 + 431/24` shows. -/
+theorem second_apex_f12 : (12 : ℝ) + dBG 12 = 719 / 24 := by unfold dBG; norm_num
+
 end Erdos634.MarchCoords
