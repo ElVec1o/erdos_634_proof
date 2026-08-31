@@ -613,3 +613,38 @@ CONJECTURE — the map overclaiming against the papers.
 
 | M `prop:latticeparam` | the two admissibility conditions reduce to `uT ≡ 0 (mod 2)` | `SpectrumLattice.dvd_iff_e1_dvd`, `.parity_iff`, `.admissible_iff`, `.case_split`, `.sq_self` | VERIFIED — the blocker on `thm:lattice` read "the general statement needs the `d`, `e₁`, `r` normalisation formalized and the parity case split, which is arithmetic and simply not done". Both are done. The normalisation is taken as hypotheses (`e = g·e₁`, `r = g·r₁`, `e₁` and `r₁` coprime), which is what `g = gcd(e,r)` provides and avoids truncated `ℕ` division; the quotient `wr/e` likewise comes from `e·q = w·r` rather than from `/`. The parity step is done in `ZMod 2`, where `u² = u` collapses `N` to `u·d·e₁²·(a+2b)` |
 | M `thm:lattice` | the admissible counts are exactly `N = d(Eu)²(a+2b)` | `SpectrumLattice.*` | PROVED — **scope**: `prop:latticeparam` proves the reduction to `uT ≡ 0` and the parity case split, which is the arithmetic the blocker named. What is *not* done is (i) assembling those into the set equality `{N admissible} = {d(Eu)²(a+2b) : u ≥ 1}` with `E` defined by `T`'s parity, and (ii) the word "admissible", which routes through `thm:admissible` and quantifies over tilings |
+
+## The fast vein is exhausted (2026-08-31)
+
+Every one of the 123 PROVED statements was classified against its blocker. None is now "one lemma
+short". The distribution:
+
+| Count | Blocker |
+|---|---|
+| 33 | tile-placement layer |
+| 16 | another missing object (lattice, chain, region, ladder, grading, shape table, strip, interfaces) |
+| 13 | assembles or inherits from others; blocked by the weakest |
+| 10 | certified-search format |
+| 10 | quantifies over tilings / needs a `Dissection`-level statement |
+| 8 | bridge (c): words from a real boundary |
+| 6 | scale map or composition on dissections |
+| 3 | a finite check, formalizable but not transcribed |
+| 1 | never formalizable |
+
+The four recurring blockers named in `CLAUDE.md` account for 57 of them directly, and most of the
+rest reduce to one of the four through an assembly chain.
+
+**What was taken out of the vein**, over the passes of 2026-08-31 — each because the paper statement,
+as written, became the Lean theorem: `prop:vertexfigures` (the interior figure with straight angles,
+`s ≥ 1`, was never proved — only its `s = 0` instance); `lem:anglethreshold` → `lem:fillerid` split
+plus `cos β`, `cos γ` via `law_cos`; `lem:onegamma` (needed the counts named, not existential);
+`lem:fillerid` (the identities were per-member, the paper claimed general); `prop:relfloor` (the
+length bound, genuinely unproved); `prop:conicequiv` (the converse direction did not exist);
+`rem:norightangle` (a congruence composition the corpus's own docstring flagged as unwritten);
+`prop:latticeparam` (the normalisation and parity case split).
+
+**The one remaining non-layer vein** is transcription of finite checks, which is a different kind of
+work and larger than it looks: `prop:globalsys` (an exhibited solution set at `N=11`),
+`prop:nogoauto` (a finite check over the automaton), `prop:nogocensus` (linear algebra over the
+census). None is "one lemma short"; each is a computation to be certified, and the project has no
+certified-search format — the same blocker as the other 10.
