@@ -173,4 +173,56 @@ theorem horizontal_flank (ux uy vx vy s t : ℝ)
     · rw [← ht0, zero_mul] at hx; norm_num at hx
     · nlinarith
 
+/-! ## The tangential-approach step, reduced to arithmetic
+
+The remaining content of R1-tang is: points `V + (t, u·t)` with `u` arbitrarily small lie in a
+fixed tile `T` above the line, so the direction `(1, u)` satisfies `T`'s corner-cone inequalities
+for arbitrarily small `u > 0`.  The two lemmas here finish from that:
+
+* `affine_nonneg_at_zero` passes the cone inequality to `u = 0` with no topology — an affine
+  function of `u`, nonnegative at arbitrarily small positive `u`, is nonnegative at `0`;
+* `lower_flank_horizontal` reads off the conclusion: `cross(e₁, (1,0)) = -e₁.y`, so cone-membership
+  of `(1,0)` plus both flanks weakly upward forces `e₁.y = 0` outright, and positive orientation
+  then gives `e₁.x > 0`.  The lower flank *is* the line.
+
+What then remains of R1-tang is only the pigeonhole (finitely many closed tiles over a sequence)
+and the passage from `carrier` to the corner cone in barycentric form — bookkeeping on existing
+machinery, with no further geometric content. -/
+
+/-- **Affine positivity passes to the endpoint.**  If `A + B·ε ≥ 0` for arbitrarily small positive
+`ε`, then `A ≥ 0`. -/
+theorem affine_nonneg_at_zero (A B : ℝ)
+    (h : ∀ ε₀ : ℝ, 0 < ε₀ → ∃ ε : ℝ, 0 < ε ∧ ε < ε₀ ∧ 0 ≤ A + B * ε) :
+    0 ≤ A := by
+  by_contra hA
+  push_neg at hA
+  rcases le_or_gt B 0 with hB | hB
+  · obtain ⟨ε, hε, -, hval⟩ := h 1 one_pos
+    nlinarith
+  · have hpos : 0 < -A / (2 * B) := div_pos (by linarith) (by linarith)
+    obtain ⟨ε, hε, hlt, hval⟩ := h (-A / (2 * B)) hpos
+    have hkey : B * ε < -A := by
+      have h2B : (0:ℝ) < 2 * B := by linarith
+      have := (lt_div_iff₀ h2B).mp hlt
+      nlinarith
+    linarith
+
+/-- **The lower flank is horizontal.**  `e₁, e₂` the corner's edge directions in positive
+orientation (`cross e₁ e₂ > 0`), both weakly upward, and `(1,0)` inside the cone
+(`cross(e₁,(1,0)) ≥ 0`).  Then `e₁ = (e₁.x, 0)` with `e₁.x > 0`: the flank lies along the line,
+pointing right. -/
+theorem lower_flank_horizontal (ax ay bx by' : ℝ)
+    (hor : 0 < ax * by' - ay * bx)
+    (hay : 0 ≤ ay) (hby : 0 ≤ by')
+    (hcone : 0 ≤ ax * 0 - ay * 1) :
+    ay = 0 ∧ 0 < ax := by
+  have hay0 : ay = 0 := le_antisymm (by linarith [hcone]) hay
+  refine ⟨hay0, ?_⟩
+  rw [hay0] at hor
+  simp only [zero_mul, sub_zero] at hor
+  rcases lt_trichotomy by' 0 with h | h | h
+  · linarith
+  · rw [h, mul_zero] at hor; linarith
+  · nlinarith
+
 end Erdos634.RouteOne
