@@ -762,6 +762,12 @@ and classifies every tile laying an `a`-edge on the run line by its apex offset 
 36 placements, every one BG. Because the trace prints recursed placements, the search never *enters*
 a GB placement on the run, not merely fails to complete one.
 
+**Update, same day:** the mechanism is now identified and its arithmetic verified — see `M-asym`.
+`BG` cannot be followed by `GB` because the two tiles' wedges at the shared junction both contain
+the vertical, so their interiors meet. That is why the traces show no `GB` after the first `BG`, and
+it is asymmetric in the right direction. The measurement below stands as the observation that
+prompted it.
+
 **HEURISTIC, and explicitly not a claim that GB is impossible.** Absence in a search is absence under
 that search's prunes; inferring impossibility from a failed search is the error behind both
 retractions of this week. What it says is conditional: *if* GB is genuinely excluded on the run then
@@ -772,3 +778,5 @@ One case is provable: at the run's first position the GB apex sits at `-(f²-1)/
 target, so the boundary excludes it there. Interior positions have interior apexes and are not
 excluded that way; overlap with the already-placed tiles and their fillers is the plausible
 mechanism, and it is untested.
+
+| M-asym | `BG → GB` straddles the junction (the two tiles' wedges both contain the vertical, so their interiors meet); `GB → BG` separates | `MarchCoords.bg_then_gb_straddles`, `.gb_then_bg_separates`, `.transition_asymmetric` | VERIFIED (the arithmetic). This is the mechanism behind `prop:orientmono`, in coordinates, and it is **asymmetric** — unlike the apex-*joining* criterion of `transition_not_a_side`, which is symmetric in the two directions and therefore was never a route to monotonicity. Turning "each wedge contains the vertical" into "two `Dissection` tiles' interiors meet" is the placement layer and is not done |

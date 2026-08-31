@@ -304,4 +304,61 @@ theorem next_next_junction : (C.next.next).junctionX = C.junctionX + 2 * C.f := 
 
 end Config
 
+/-! ## Why `BG` cannot be followed by `GB`
+
+At a junction shared by two consecutive `a`-tiles, each tile occupies a wedge bounded by the run
+line and the ray to its own apex.  Both apexes sit at the same height `h > 0`, so which side of the
+junction each apex falls on decides whether the two wedges meet.
+
+* `BG` then `GB`: the left tile's apex is at `dBG - f = (f²-1)/2f > 0`, strictly **right** of the
+  junction, and the right tile's is at `dGB < 0`, strictly **left**.  Each wedge therefore contains
+  the vertical direction at the junction, so the two tiles share interior points.  In a dissection
+  that is forbidden.
+* `GB` then `BG`: the signs reverse — `dGB - f < 0` and `dBG > 0` — so the left tile's apex is left
+  of the junction and the right tile's is right of it, and the wedges lie on opposite sides of the
+  vertical.  They meet only along the run line.
+
+The criterion is **asymmetric in the two directions**, which is what `prop:orientmono` asserts and
+what the apex-*joining* criterion of `transition_not_a_side` could not see: that one is symmetric,
+and is not a route to monotonicity.  This one is.
+
+What is proved here is the arithmetic that drives it — the four sign facts.  Turning "each wedge
+contains the vertical" into "the interiors of two `Dissection` tiles meet" is the placement layer's
+job and is not done here. -/
+
+/-- **`BG` then `GB`: the apexes straddle the junction.**  The left tile's apex is strictly right of
+it and the right tile's strictly left, both at height `h > 0`, so the vertical at the junction is
+interior to both wedges. -/
+theorem bg_then_gb_straddles (f : ℝ) (hf : 1 < f) :
+    0 < dBG f - f ∧ dGB f < 0 ∧ 0 < h2 f := by
+  have hf0 : 0 < f := lt_trans zero_lt_one hf
+  have hsq : (0:ℝ) < f ^ 2 - 1 := by nlinarith
+  have h4 : (0:ℝ) < 4 * f ^ 2 - 1 := by nlinarith
+  refine ⟨?_, ?_, ?_⟩
+  · have hrw : dBG f - f = (f ^ 2 - 1) / (2 * f) := by unfold dBG; field_simp; ring
+    rw [hrw]; positivity
+  · unfold dGB; apply div_neg_of_neg_of_pos <;> nlinarith
+  · unfold h2
+    have : (0:ℝ) < (f ^ 2 - 1) ^ 2 * (4 * f ^ 2 - 1) := by positivity
+    apply div_pos this; positivity
+
+/-- **`GB` then `BG`: the apexes fall on the same side as their own tiles.**  The left tile's apex
+is strictly left of the junction and the right tile's strictly right, so the wedges lie on opposite
+sides of the vertical and meet only along the run line. -/
+theorem gb_then_bg_separates (f : ℝ) (hf : 1 < f) :
+    dGB f - f < 0 ∧ 0 < dBG f := by
+  have hf0 : 0 < f := lt_trans zero_lt_one hf
+  constructor
+  · unfold dGB; have : (1 - f ^ 2) / (2 * f) < 0 := by
+      apply div_neg_of_neg_of_pos <;> nlinarith
+    linarith
+  · unfold dBG; apply div_pos <;> nlinarith
+
+/-- **The asymmetry, in one statement.**  `BG → GB` straddles the junction; `GB → BG` does not. -/
+theorem transition_asymmetric (f : ℝ) (hf : 1 < f) :
+    (0 < dBG f - f ∧ dGB f < 0) ∧ ¬ (0 < dGB f - f ∧ dBG f < 0) := by
+  refine ⟨⟨(bg_then_gb_straddles f hf).1, (bg_then_gb_straddles f hf).2.1⟩, ?_⟩
+  rintro ⟨h1, -⟩
+  exact absurd h1 (not_lt.mpr (le_of_lt (gb_then_bg_separates f hf).1))
+
 end Erdos634.MarchCoords
