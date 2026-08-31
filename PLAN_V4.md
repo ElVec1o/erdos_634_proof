@@ -99,3 +99,22 @@ the project's own standing directive of 2026-08-29.
 honest headline is: *half the folklore class is unconditional, thirteen members of the other half
 are certified, Beeson III is corrected, and the residue is one named hypothesis with a
 machine-checked attack scheme awaiting its instance.*
+
+## 6. The Paper A gate (built 2026-09-01)
+
+`code/analysis/dep_closure.py` computes a statement's transitive reference closure across the three
+papers — reading proof blocks, not only statement bodies — and reports the weakest Rule 0 label in
+it and whether `hyp:walls` is reachable. A conditional dependency expressed as
+`\cite[Hyp.~5.1]{Companion}` or the phrase "complete-corner-wall hypothesis" counts, since that is
+how the papers actually express it; without that clause the checker called `thm:fullprime`
+unconditional, which is false.
+
+First run: `thm:fullprime` **reaches `hyp:walls`** (correct — it is the conditional theorem);
+`cor:mod12` does not. That is the gate Paper A must pass for every statement it contains.
+
+**Known limitation, recorded rather than papered over.** A statement appearing twice — an
+introduction summary and a body copy — carries its proof on only one occurrence, so a closure of
+size 0 means "no proof block cites anything here", not "no dependencies". `thm:main` and `thm:iso`
+report 0 for exactly that reason. Before Paper A ships, each of its statements must be checked
+against the occurrence that carries the proof, and the script now says so instead of returning a
+clean bill.
