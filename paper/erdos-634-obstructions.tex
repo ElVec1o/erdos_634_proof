@@ -1598,15 +1598,46 @@ $c$ on the $c$-ray, and the \emph{crossed} one, leaving a discrepancy $c-b=1$ on
 is why the two children differ by one unit in apex height. What does not follow is the displacement
 \emph{along the run}: advance by one position versus two.
 
-Attempting to state (ii) and (iii) without naming the geometric objects produces refutable
-statements, not merely unproved ones. Writing (ii) as ``for every advance function $\mathrm{adv}$,
-$\mathrm{adv}(\text{flush})=1$ and $\mathrm{adv}(\text{crossed})=2$'' is false, witnessed by
-$\mathrm{adv}\equiv0$; writing (iii) as ``$R(bp-1)\Rightarrow R(bp)$ for every $R$'' is false,
-witnessed by $R(n)=[n\le1]$ at $bp=2$. Both refutations are machine-checked. The advance function is
-exactly what the geometry is supposed to \emph{define}, so quantifying over it universally inverts
-the statement. Hence (ii) and (iii) require the tile-placement layer before they can be written
-down, let alone proved: they are not one lemma short, and no reformulation avoiding the coordinates
-will help.
+A coordinate model of the run now exists and settles part of (ii). Put the $a$-edge on the
+$x$-axis from $(t,0)$ to $(t+f,0)$; the apex is the corner opposite $a$. At a $\gamma$-corner the
+flanking sides are $a,b$ and at a $\beta$-corner $a,c$, so the apex lies at distance $b$ from the
+$\gamma$-end and $c$ from the $\beta$-end, giving two orientations with horizontal offsets
+\[
+d_{\mathrm{GB}}=\frac{1-f^2}{2f},\qquad d_{\mathrm{BG}}=\frac{3f^2-1}{2f}=c\cos\beta .
+\]
+The second is \texttt{Rigidity}'s $x_w$ and matches the closed form $\cos\beta=(3f^2-1)/(2f^3)$ of
+Lemma~\ref{C-lem:anglethreshold}. Three facts follow, all machine-checked
+(\texttt{MarchCoords}):
+\begin{enumerate}
+\item[\textup{(a)}] Both orientations give the \emph{same} apex height
+(\texttt{apex\_height\_common}); this is \texttt{FillerGeneral.filler\_b\_general} in disguise, and
+it is why the branch is a chirality rather than a change of level.
+\item[\textup{(b)}] $d_{\mathrm{GB}}+d_{\mathrm{BG}}=f$ (\texttt{offsets\_complementary}), so the
+filler's $\alpha$-corner lands exactly on the junction and its two sides from there reach the two
+apexes at distances $b$ and $c$ (\texttt{junction\_to\_apex\_bg}, \texttt{\_gb}). The chirality is
+the $a$-tiles' orientation, which swaps which apex is at $b$ and which at $c$
+(\texttt{chirality\_swaps\_sides}): the two placements of \texttt{MarchStep.two\_placements},
+realised in coordinates as one triangle and its reflection.
+\item[\textup{(c)}] Consecutive same-orientation apexes are exactly $a=f$ apart, so the segment
+joining them is a tile edge; at an orientation change the spacing is $(3f^2-1)/f$, which is never a
+tile side, since $3f^2-1=f\cdot s$ for $s\in\{f,f^2-1,f^2\}$ forces $2f^2=1$ or $f\mid 1$
+(\texttt{spacing\_same}, \texttt{spacing\_gb\_bg}, \texttt{transition\_not\_a\_side}). So the
+march's horizontal filler exists only where the orientation is constant. This is the local,
+coordinate-side counterpart of Proposition~\ref{C-prop:orientmono}'s conclusion.
+\end{enumerate}
+
+What remains unproved in (ii) is the \emph{displacement along the run}: that the two chiralities
+advance the march by exactly one and by exactly two positions. The configuration is now pinned in
+coordinates, but the advance is a statement about which $a$-tile the next spine step begins from,
+and that requires the forcing of the configuration along the whole run, not one junction. (iii) is
+untouched.
+
+One caution, recorded because it cost a session. Stating (ii) or (iii) by quantifying over an
+abstract advance function is not merely unproved but false: ``$\mathrm{adv}(\text{flush})=1$ and
+$\mathrm{adv}(\text{crossed})=2$ for every $\mathrm{adv}$'' is refuted by $\mathrm{adv}\equiv 0$, and
+``$R(bp-1)\Rightarrow R(bp)$ for every $R$'' by $R(n)=[n\le 1]$ at $bp=2$; both refutations are
+machine-checked. The advance is what the coordinates \emph{define}, so it must be read off the model
+above, never quantified over.
 \end{remark}
 
 We record one further observation without explanation. The complementary family $cp=2$ is nearly
