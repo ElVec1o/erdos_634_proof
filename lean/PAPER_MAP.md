@@ -727,3 +727,21 @@ Two were spot-checked and both survive, but not for the recorded reason:
 | `thm:elltwo` | still blocked: needs the slot chain of `thm:l2slot`, a placement structure with no Lean definition. The recorded blocker "same" pointed at `W2Core`, which is not the obstruction |
 
 Re-checking the remaining 26 elliptical blockers is outstanding work, not a discharged obligation.
+
+### Re-check of the elliptical blockers, batch 1 of 3 (2026-08-31)
+
+Eight of the 28 read against their statements. All eight survive as blocked; none is fast-vein. Two
+carried rows that pointed at the wrong thing.
+
+| Paper | Verdict | Real blocker |
+|---|---|---|
+| `cor:basedi2e` | blocked | the base decompositions are of a *real* tiling's base, and the narrowing is the `γ`-trap (`prop:gammatrap`), whose inputs are geometric |
+| `lem:cornerstep` | blocked | placement: "a base corner tile lays `a`", and its `b`-edge joining a base vertex to a side vertex. **Note**: its arithmetic clause — a straight junction presenting `γ` leaves `α+β` with the unique fill `{α,β}` — is now covered by `VertexFigureReal.one_gamma`, but is not independently assertible |
+| `lem:noapexline` | blocked | the brick/mate structure decides which lines the collision figure consumes. **Note**: the conclusion `k < f` from `bp ≤ f` is trivial arithmetic; the row's "same lattice development" pointed at the wrong obstruction |
+| `lem:termination` | blocked | ladder development |
+| `lem:wallclimb` | blocked | block tiles and mates: placement |
+| `prop:dirgroup` | blocked | needs `Dissection.dirSet` developed as a group with its grading |
+| `thm:aforcesT` | blocked | `W(J)` interior to a tile edge: the `T`-junction notion, placement |
+| `prop:widecol` | blocked | the general parallelogram; `PgramTiling52` is one member |
+
+**18 of the 28 remain unchecked.** The exhaustion claim still carries that qualification.
