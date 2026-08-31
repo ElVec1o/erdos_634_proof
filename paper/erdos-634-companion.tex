@@ -1644,6 +1644,55 @@ target: every length in the display is exact and independent of $f$.
 Recorded in \cite{Obstructions}. Full discussion in \cite{Obstructions}.
 \end{remark}
 
+\section{Route 1's chain, formalised}\label{sec:routeone}
+
+Conjecture~\ref{conj:advance}'s remaining gap is route 1, reduced by
+Remark~\ref{rem:route1uniform} to the question of what covers the segment $[V,E]$ of length exactly
+$a$. This section records the chain that answers it, together with the two inputs that remain
+unproved. Every statement below is machine-checked in \texttt{lean/Erdos634/RouteOne.lean} unless
+marked otherwise.
+
+\begin{proposition}[The flank at $V$ lies along the line]\label{prop:flankline}\lab{VERIFIED}
+Let $T$ be a tile with vertex $V$ whose two edge directions at $V$ point weakly upward, and suppose
+$T$ contains points approaching $V$ tangentially from the right --- for every $\delta>0$ a point $q$
+of $T$ with $q-V=(t,u)$, $t>0$ and $u\le\delta t$. Then one of the two edges at $V$ is horizontal
+and points rightward (\texttt{flank\_along\_line}, \texttt{flank\_along\_line'}).
+
+The proof decomposes $q-V$ barycentrically at $V$, where the coefficient of $V$ itself drops out
+(\texttt{sub\_vertex\_eq\_combo}) and the other two are nonnegative on the carrier; the cone
+statement \texttt{cone\_forces\_horizontal} then forces a horizontal flank. The hypothesis that the
+two directions are not \emph{both} horizontal is not needed as an assumption: their cross product is
+$\det T\neq0$ (\texttt{not\_both\_horizontal}).
+\end{proposition}
+
+\begin{proposition}[The overshoot trichotomy]\label{prop:overshoot}\lab{VERIFIED}
+The covering of $[V,E]$ therefore begins with a tile edge from $V$ along the line, of length $a$, $b$
+or $c$. Since $a<b<c$, a $b$- or $c$-edge contains $E$ strictly in its interior
+(\texttt{overshoot\_dichotomy}, \texttt{E\_interior\_of\_long}); that is precisely the
+tile-interior blocking whose failure defined the escape, so those branches die. Only the $a$-edge
+survives, and it makes $E$ a junction one $a$-length along.
+\end{proposition}
+
+\begin{proposition}[The advance is a descent]\label{prop:descent}\lab{VERIFIED}
+Each advance consumes a distinct $a$-edge of the wall, since successive positions differ by $n\,a$
+(\texttt{advance\_injective}); hence the number of advances is bounded by the number of the wall's
+$a$-edges (\texttt{advance\_count\_le\_run}), and the escape at step $L+1$ is unreachable when the
+wall carries $L$ such edges (\texttt{terminus\_of\_run\_length}). This is a combinatorial terminus,
+independent of the wall's metric length. The descent itself is \texttt{wall\_descent}, and
+\texttt{route\_one\_closes'} chains it: with the trichotomy regenerating and the terminus blocked, no
+escape exists at any distance from the exit.
+\end{proposition}
+
+\begin{remark}[What route 1 still assumes]\label{rem:routeoneopen}\lab{OPEN}
+Two inputs of Proposition~\ref{prop:flankline} are supplied by the dissection in general
+(\texttt{covered\_of\_mem\_target}, \texttt{approach\_covered},
+\texttt{above\_line\_of\_below\_tile}) but have not been instantiated at the escape configuration
+itself: that the approach points to $V$ exist and lie above the line, and that the tile below the
+wall occupies the lower side near $V$. Until they are, the chain above is a proof \emph{given} the
+configuration, not a proof about it. No further geometric mechanism is missing; what is missing is
+the identification of the configuration's tiles with the hypotheses' $T$ and its neighbour.
+\end{remark}
+
 \begin{conjecture}[Advance-and-collide]\label{conj:advance}\lab{CONJECTURE, proved at $f=2,3,4$}
 Let $e=1$, $m=1$, $f\ge3$, and suppose an equal side carries an $a$-edge. Then the corner cascade
 --- the $b$-partner of the corner tile, the $c$-chord dichotomy on successive both-ends-blocked
