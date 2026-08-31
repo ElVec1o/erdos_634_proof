@@ -21,3 +21,7 @@ engine/cengine2
 
 # Lean build artefacts and fetched packages (mathlib checkout, ~200MB)
 lean/.lake/
+*.fls
+*.fdb_latexmk
+*.out
+*.toc
