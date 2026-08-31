@@ -118,4 +118,38 @@ theorem run_step_bg_gb_dies {N : ℕ} (D : Dissection N) {i₁ i₂ : Fin N} (hn
   · rw [hp₂X, hp₂, hsub, hv0eq]
   · rw [hp₂X, hp₂, hsub]; linarith [hh]
 
+/-! ## The same kill, from metric distances
+
+`run_step_bg_gb_dies` takes squared component sums; congruence to the tile speaks in `dist`.  The
+bridge is one identity, and the wrapper below is the natural final form of the junction kill: two
+distinct tiles, consecutive `a`-edges on a line, apex distances `c, b` then `b, c` — the two
+chirality assignments — apexes above.  Impossible. -/
+
+/-- Squared distance in the plane, componentwise. -/
+theorem dist_sq_plane (x y : Plane) :
+    dist x y ^ 2 = (x 0 - y 0) ^ 2 + (x 1 - y 1) ^ 2 := by
+  rw [EuclideanSpace.dist_eq, Real.sq_sqrt (by positivity)]
+  simp [Fin.sum_univ_two, Real.dist_eq, sq_abs]
+
+/-- **The junction kill, metric form.** -/
+theorem run_step_bg_gb_dies_of_dist {N : ℕ} (D : Dissection N) {i₁ i₂ : Fin N} (hne : i₁ ≠ i₂)
+    {k₁ k₂ : Fin 3} (f : ℝ) (hf : 1 < f)
+    (A B Dd X₁ X₂ : Plane)
+    (hp₁ : (D.tile i₁).pts k₁ = B) (hp₁A : (D.tile i₁).pts (k₁ + 1) = A)
+    (hp₁X : (D.tile i₁).pts (k₁ + 2) = X₁)
+    (hp₂ : (D.tile i₂).pts k₂ = B) (hp₂D : (D.tile i₂).pts (k₂ + 1) = Dd)
+    (hp₂X : (D.tile i₂).pts (k₂ + 2) = X₂)
+    (hAB0 : B 0 - A 0 = f) (hAB1 : B 1 - A 1 = 0)
+    (hBD0 : Dd 0 - B 0 = f) (hBD1 : Dd 1 - B 1 = 0)
+    (hd1A : dist X₁ A = f ^ 2) (hd1B : dist X₁ B = f ^ 2 - 1)
+    (hd2B : dist X₂ B = f ^ 2 - 1) (hd2D : dist X₂ Dd = f ^ 2)
+    (hup1 : 0 < X₁ 1 - B 1) (hup2 : 0 < X₂ 1 - B 1) :
+    False := by
+  refine run_step_bg_gb_dies D hne f hf A B Dd X₁ X₂ hp₁ hp₁A hp₁X hp₂ hp₂D hp₂X
+    hAB0 hAB1 hBD0 hBD1 ?_ ?_ ?_ ?_ hup1 hup2
+  · rw [← dist_sq_plane, hd1A]
+  · rw [← dist_sq_plane, hd1B]
+  · rw [← dist_sq_plane, hd2B]
+  · rw [← dist_sq_plane, hd2D]
+
 end Erdos634.MarchRunStep
