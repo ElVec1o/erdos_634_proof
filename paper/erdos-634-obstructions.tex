@@ -1561,12 +1561,34 @@ and $296$ is that of $(5,4)$ less its three shared spine nodes; $(5,4)$'s $299$ 
 $202$ in the same way.
 
 \begin{remark}[What would close the family]\label{rem:marchobl}\lab{OPEN}
-An inductive proof needs the base cases $bp=3,4$ together with one step: that at an $a\mid a$
-junction of the run the $\alpha$-filler admits exactly two chiralities, advancing the configuration
-by one and by two positions, and that both reduce to the same problem at smaller $bp$. That step is
-geometry and is not proved here. With it, the entire $cp=bp-1$ family is excluded for every $bp$ and
-every $f$, with no search --- the first finite obligation this branch has offered that covers
-infinitely many members.
+An inductive proof needs the base cases together with one step at each $a\mid a$ junction of the
+run. Three parts of that have now been discharged, and naming what is left is the point of this
+remark.
+
+\emph{Discharged.} The base cases are not the measured counts $205$ and $109$: the induction
+bottoms out at runways of length $0$ and $1$, whose terminal stub is killed by residue $1$ being a
+gap of $\langle f,f^2-1,f^2\rangle$ (\texttt{MarchStep.offset\_terminal\_dies}, with a non-vacuity
+witness). The overshoot is at most one position (\texttt{.overshoot\_le\_one}). And the step's
+\emph{vertex} half is now a theorem about a real dissection rather than a reading from the traces:
+at a point of the frontier that is not a target vertex and at which some tile presents $\gamma$, the
+figure is forced to $\{\alpha,\beta,\gamma\}$ --- one tile each, none straight
+(\texttt{VertexFigureReal.gamma\_boundary\_figure\_real}) --- so the uncovered opening is $\alpha$,
+and a tile filling it with its $\alpha$-corner there has its two edges on the wedge's two boundary
+rays, in exactly two ways (\texttt{JunctionWedge.march\_junction\_real}). Earlier this consumed the
+multiplicity equations as hypotheses; they are now derived from the boundary figure classification.
+
+\emph{What is left.} Three statements, all about the \emph{run} rather than about a vertex:
+\begin{enumerate}
+\item[\textup{(i)}] that the march's steps land on vertices of the above kind --- frontier, not a
+target vertex, carrying a $\gamma$;
+\item[\textup{(ii)}] that the two placements advance the configuration by exactly one and by
+exactly two positions;
+\item[\textup{(iii)}] that both advances reduce to the same problem at smaller $bp$.
+\end{enumerate}
+With these, the entire $cp=bp-1$ family is excluded for every $bp$ and every $f$, with no search ---
+the first finite obligation this branch has offered that covers infinitely many members. Note that
+(i)--(iii) are all statements about \emph{where} tiles lie, so none is excluded by
+Proposition~\ref{prop:ninetools}: that no-go closes exactly the relocation-invariant tools.
 \end{remark}
 
 We record one further observation without explanation. The complementary family $cp=2$ is nearly

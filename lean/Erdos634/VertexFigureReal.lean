@@ -289,6 +289,67 @@ theorem one_gamma_real {N : ℕ} (D : Dissection N) {α β γ : ℝ}
     Finset.card_pos.mpr ⟨iπ, by simp [hiπ]⟩
   exact one_gamma hγdef hrel hirr _ _ _ _ _ hsum hrpos hspos
 
+/-! ## The boundary figure with the counts named
+
+`vertex_multiplicities_real` hides its four counts behind an existential, which loses the link to a
+particular tile.  The march step needs exactly that link: its hypothesis is that *some* tile
+presents `γ` at the junction.  So the boundary needs the same treatment the interior got in
+`interior_multiplicities_cards`. -/
+
+/-- **The boundary multiplicities, with the counts named.** -/
+theorem boundary_multiplicities_cards {N : ℕ} (D : Dissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (hvals : ∀ i, (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ)) :
+    ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card : ℝ)) * α
+      + ((({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card : ℝ)) * β
+      + ((({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card : ℝ)) * γ
+      + ((({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card : ℝ)) * Real.pi
+      = Real.pi := by
+  classical
+  have hsum := Erdos634.PinPlumbing.pin_angle_sum D hv hnv
+  rw [sum_by_value ({α, β, γ, Real.pi, 0} : Finset ℝ) _ hvals] at hsum
+  rw [show ({α, β, γ, Real.pi, 0} : Finset ℝ)
+      = insert α (insert β (insert γ (insert Real.pi {0}))) from rfl] at hsum
+  rw [Finset.sum_insert (by simp [hαβ, hαγ, hαπ, hα0]),
+      Finset.sum_insert (by simp [hβγ, hβπ, hβ0]),
+      Finset.sum_insert (by simp [hγπ, hγ0]),
+      Finset.sum_insert (by simp [hπ0]), Finset.sum_singleton] at hsum
+  push_cast at hsum ⊢
+  linarith [hsum]
+
+/-- **A `γ` at a real straight-edge point forces the figure `{α, β, γ}`.**  This is the march
+step's configuration hypothesis, which `JunctionWedge` had to assume — "read from the traces and
+is *not* proved".  It is a theorem: at a point of the frontier that is not a target vertex, the
+figure is `(3,2,0)` or `(1,1,1)` (or a single straight angle), and a `γ` present rules out all but
+`(1,1,1)`.  So exactly one tile presents each of `α`, `β`, `γ`, and none is straight. -/
+theorem gamma_boundary_figure_real {N : ℕ} (D : Dissection N) {α β γ : ℝ}
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (hvals : ∀ i, (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ))
+    (iγ : Fin N) (hiγ : (D.tile iγ).localAngle v = γ) :
+    ({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 1 ∧
+    ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+    ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1 ∧
+    ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 0 := by
+  classical
+  have hsum := boundary_multiplicities_cards D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0
+    hv hnv hvals
+  have hrpos : 1 ≤ ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card :=
+    Finset.card_pos.mpr ⟨iγ, by simp [hiγ]⟩
+  rcases boundary_figure_cases hγdef hrel hirr _ _ _ _ hsum with
+    ⟨hs, hp, hq, hr⟩ | ⟨hs, hcase⟩
+  · omega
+  · rcases hcase with ⟨hp, hq, hr⟩ | ⟨hp, hq, hr⟩
+    · omega
+    · exact ⟨hp, hq, hr, hs⟩
+
 /-! ## The corner figures
 
 At a vertex of the target the tiles' local angles sum to that corner's angle

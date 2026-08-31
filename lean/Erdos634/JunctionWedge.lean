@@ -1,4 +1,5 @@
 import Erdos634.WedgeExtremal
+import Erdos634.VertexFigureReal
 import Erdos634.BaseBetaE1
 
 /-!
@@ -116,5 +117,52 @@ theorem junction_angles_witness :
     Real.pi - ((2 * (Real.pi / 9) + Real.pi / 3) + Real.pi / 3) = Real.pi / 9 := by
   have hπ := Real.pi_pos
   refine ⟨by linarith, by linarith, by ring, by ring⟩
+
+/-! ## The configuration, no longer assumed
+
+The header above says of the configuration half — that the placed tiles present `γ` and `β`, and
+that the junction lies on a straight edge — that it "is read from the traces and is *not* proved".
+It is proved now.  `VertexFigureReal.gamma_boundary_figure_real` derives the figure at a real
+frontier point of a `Dissection` carrying a `γ`: exactly one tile presents each of `α`, `β`, `γ`,
+and none is straight.  That is the configuration, and it comes from the boundary figure
+classification rather than from a trace. -/
+
+/-- **The march step at a real junction.**  Let `v` be a point of the target's frontier that is not
+a target vertex, and let some tile present `γ` there.  Then the figure at `v` is exactly
+`{α, β, γ}` — one tile each, none straight — so with the `γ` and the `β` placed the uncovered
+opening is `α`; and a tile filling it with its `α`-corner at `v` has its two edges on the wedge's
+two boundary rays, in one of exactly two ways.
+
+This is `march_junction_two_placements` with its angle-figure hypotheses discharged from the
+dissection.  What remains open for `rem:marchobl` is *not* this: it is that the march's steps land
+on vertices of this kind, which is a statement about the run, not about a vertex. -/
+theorem march_junction_real {N : ℕ} (D : Dissection N) (o : Orientation ℝ Plane (Fin 2))
+    {α β γ : ℝ}
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (hβpos : 0 < β) (hαpos : 0 < α)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (hvals : ∀ i, (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ))
+    (iγ : Fin N) (hiγ : (D.tile iγ).localAngle v = γ)
+    {P Q u : Plane} {φ ψ : ℝ}
+    (hu : u ≠ 0) (hP : P - v ≠ 0) (hQ : Q - v ≠ 0)
+    (hφ : (o.oangle u (P - v)).toReal = φ) (hψ : (o.oangle u (Q - v)).toReal = ψ)
+    (hφm : φ ∈ Set.Icc (0:ℝ) α) (hψm : ψ ∈ Set.Icc (0:ℝ) α)
+    (hcorner : cornerAngle P v Q = α) :
+    (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 1 ∧
+     ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+     ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1 ∧
+     ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 0)
+    ∧ ((φ = 0 ∧ ψ = α) ∨ (φ = α ∧ ψ = 0)) := by
+  refine ⟨Erdos634.VertexFigureReal.gamma_boundary_figure_real D hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0
+    hγdef hrel hirr hv hnv hvals iγ hiγ, ?_⟩
+  have hstep := junction_step o hγdef hrel hβpos hαpos hu hP hQ hφ hψ
+    (by rw [wedge_opening α β γ hγdef hrel]; exact hφm)
+    (by rw [wedge_opening α β γ hγdef hrel]; exact hψm)
+    (by rw [wedge_opening α β γ hγdef hrel]; exact hcorner)
+  rw [wedge_opening α β γ hγdef hrel] at hstep
+  exact hstep
 
 end Erdos634.JunctionWedge
