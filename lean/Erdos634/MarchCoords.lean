@@ -132,4 +132,42 @@ theorem chirality_swaps_sides (f : ℝ) (hf : f ≠ 0) :
     ∧ ((f - dGB f) ^ 2 + h2 f = (f ^ 2) ^ 2 ∧ dGB f ^ 2 + h2 f = (f ^ 2 - 1) ^ 2) :=
   ⟨⟨junction_to_apex_bg f hf, bg_left f hf⟩, ⟨junction_to_apex_gb f hf, gb_left f hf⟩⟩
 
+/-! ## The filler is forced
+
+Once the two `a`-tiles are placed, the filler's three vertices are determined — the junction and the
+two apexes — so there is no choice of filler at all.  What has to be checked is that the triangle on
+those three points is congruent to the tile; otherwise the configuration would be inadmissible
+rather than forced.  Its three squared side lengths are computed above: `(f - d)² + h²` and
+`d² + h²` from the junction to the two apexes, and `f²` between the apexes. -/
+
+/-- **The filler is congruent to the tile, `BG` orientation.**  Squared sides `b², c², a²`. -/
+theorem filler_congruent_bg (f : ℝ) (hf : f ≠ 0) :
+    ({(f - dBG f) ^ 2 + h2 f, dBG f ^ 2 + h2 f, f ^ 2} : Multiset ℝ)
+      = {(f ^ 2 - 1) ^ 2, (f ^ 2) ^ 2, f ^ 2} := by
+  rw [junction_to_apex_bg f hf, bg_left f hf]
+
+/-- **The filler is congruent to the tile, `GB` orientation.**  The same three lengths, with `b`
+and `c` exchanged — which is the chirality. -/
+theorem filler_congruent_gb (f : ℝ) (hf : f ≠ 0) :
+    ({(f - dGB f) ^ 2 + h2 f, dGB f ^ 2 + h2 f, f ^ 2} : Multiset ℝ)
+      = {(f ^ 2) ^ 2, (f ^ 2 - 1) ^ 2, f ^ 2} := by
+  rw [junction_to_apex_gb f hf, gb_left f hf]
+
+/-- **The filler is forced.**  In either orientation the triangle on the junction and the two apexes
+has squared sides `{a², b², c²}` as a multiset, so it is congruent to the tile.  Its vertices are
+determined by the two `a`-tiles, so the filler is not a branch: the branch is the `a`-tiles' common
+orientation, and nothing else.
+
+This is the "consecutive spine steps abut" half of the run-wide forcing.  What it does **not** fix
+is which `a`-tile the *next* step begins from — that is the displacement along the run, still open
+as obligation (ii). -/
+theorem filler_forced (f : ℝ) (hf : f ≠ 0) :
+    ({(f - dBG f) ^ 2 + h2 f, dBG f ^ 2 + h2 f, f ^ 2} : Multiset ℝ)
+      = ({(f ^ 2 - 1) ^ 2, (f ^ 2) ^ 2, f ^ 2} : Multiset ℝ)
+    ∧ ({(f - dGB f) ^ 2 + h2 f, dGB f ^ 2 + h2 f, f ^ 2} : Multiset ℝ)
+      = ({(f ^ 2 - 1) ^ 2, (f ^ 2) ^ 2, f ^ 2} : Multiset ℝ) := by
+  refine ⟨filler_congruent_bg f hf, ?_⟩
+  rw [filler_congruent_gb f hf]
+  exact Multiset.cons_swap _ _ _
+
 end Erdos634.MarchCoords

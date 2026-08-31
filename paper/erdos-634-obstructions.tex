@@ -1624,6 +1624,11 @@ tile side, since $3f^2-1=f\cdot s$ for $s\in\{f,f^2-1,f^2\}$ forces $2f^2=1$ or 
 (\texttt{spacing\_same}, \texttt{spacing\_gb\_bg}, \texttt{transition\_not\_a\_side}). So the
 march's horizontal filler exists only where the orientation is constant. This is the local,
 coordinate-side counterpart of Proposition~\ref{C-prop:orientmono}'s conclusion.
+\item[\textup{(d)}] The filler is \emph{forced}, not chosen. Its three vertices are the junction and
+the two apexes, so the two $a$-tiles determine it; and the triangle on those points has squared
+sides $\{a^2,b^2,c^2\}$ as a multiset in either orientation, so it is congruent to the tile and the
+configuration is admissible (\texttt{filler\_forced}). The branch is therefore the $a$-tiles' common
+orientation and nothing else.
 \end{enumerate}
 
 What remains unproved in (ii) is the \emph{displacement along the run}: that the two chiralities
