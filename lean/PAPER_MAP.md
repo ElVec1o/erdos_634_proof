@@ -745,3 +745,30 @@ carried rows that pointed at the wrong thing.
 | `prop:widecol` | blocked | the general parallelogram; `PgramTiling52` is one member |
 
 **18 of the 28 remain unchecked.** The exhaustion claim still carries that qualification.
+
+### Measured: the run's orientation is constant in the traced refutations (2026-08-31)
+
+`code/analysis/run_orientation.py <f> <bp> <cp>` regenerates this from scratch: it runs the engine
+under `CENGINE_TRACE=2`, which prints one line per *recursed* placement as exact `(p+q√D)/d` pairs,
+and classifies every tile laying an `a`-edge on the run line by its apex offset against
+`dBG=(3f²-1)/2f` and `dGB=(1-f²)/2f`.
+
+| trace | `a`-tiles on the run | orientations |
+|---|---|---|
+| `(6,5)`, `f=12` | 10 | BG 10, GB 0 |
+| `(6,5)`, `f=14` | 10 | BG 10, GB 0 |
+| `(7,6)`, `f=12` | 16 | BG 16, GB 0 |
+
+36 placements, every one BG. Because the trace prints recursed placements, the search never *enters*
+a GB placement on the run, not merely fails to complete one.
+
+**HEURISTIC, and explicitly not a claim that GB is impossible.** Absence in a search is absence under
+that search's prunes; inferring impossibility from a failed search is the error behind both
+retractions of this week. What it says is conditional: *if* GB is genuinely excluded on the run then
+obligation (i) is discharged **without** `prop:orientmono`, since a constant orientation makes every
+junction a march junction — stronger than "all but at most one".
+
+One case is provable: at the run's first position the GB apex sits at `-(f²-1)/2f < 0`, outside the
+target, so the boundary excludes it there. Interior positions have interior apexes and are not
+excluded that way; overlap with the already-placed tiles and their fillers is the plausible
+mechanism, and it is untested.
