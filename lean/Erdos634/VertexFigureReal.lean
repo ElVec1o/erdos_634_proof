@@ -212,6 +212,83 @@ theorem interior_figure_cases_gen {α β γ : ℝ} (hγ : γ = 2 * α + β)
   have hs : s ≤ 2 := by omega
   interval_cases u <;> interval_cases s <;> omega
 
+/-- **The interior multiplicities, with the counts named.**  `interior_multiplicities_real` hides
+the five counts behind an existential, which loses the link to a particular tile.  This is the same
+statement with the counts written out, so a tile known to present a given angle at `v` can be used
+to bound its count below. -/
+theorem interior_multiplicities_cards {N : ℕ} (D : Dissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    {v : Plane} (hv : v ∈ interior D.target.carrier)
+    (hvals : ∀ i, (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 2 * Real.pi, 0} : Finset ℝ)) :
+    ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card : ℝ)) * α
+      + ((({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card : ℝ)) * β
+      + ((({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card : ℝ)) * γ
+      + ((({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card : ℝ)) * Real.pi
+      + ((({i | (D.tile i).localAngle v = 2 * Real.pi} : Finset (Fin N)).card : ℝ))
+          * (2 * Real.pi) = 2 * Real.pi := by
+  classical
+  have hsum := Erdos634.PinPlumbing.pin_angle_sum_interior D hv
+  rw [sum_by_value ({α, β, γ, Real.pi, 2 * Real.pi, 0} : Finset ℝ) _ hvals] at hsum
+  rw [Finset.sum_insert (by simp [hαβ, hαγ, hαπ, hα2π, hα0]),
+      Finset.sum_insert (by simp [hβγ, hβπ, hβ2π, hβ0]),
+      Finset.sum_insert (by simp [hγπ, hγ2π, hγ0]),
+      Finset.sum_insert (by simp [hπ2π, hπ0]),
+      Finset.sum_insert (by simp [h2π0]), Finset.sum_singleton] at hsum
+  push_cast at hsum ⊢
+  linarith [hsum]
+
+/-- **`lem:onegamma`, arithmetic half.**  At an interior point carrying at least one `γ` and at
+least one straight angle, the figure is forced to `{α, β, γ, π}` — one of each. -/
+theorem one_gamma {α β γ : ℝ} (hγ : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (p q r s u : ℕ)
+    (hsum : (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi
+      + (u : ℝ) * (2 * Real.pi) = 2 * Real.pi)
+    (hr : 1 ≤ r) (hs : 1 ≤ s) :
+    p = 1 ∧ q = 1 ∧ r = 1 ∧ s = 1 ∧ u = 0 := by
+  rcases interior_figure_cases_gen hγ hrel hirr p q r s u hsum with
+    ⟨_, _, _, hr0, _⟩ | ⟨_, _, _, _, hr0⟩ | ⟨_, hs1, hcase⟩ | ⟨_, hs0, _⟩
+  · omega
+  · omega
+  · rcases hcase with ⟨_, _, hr0⟩ | ⟨hp, hq, hrr⟩
+    · omega
+    · exact ⟨hp, hq, hrr, hs1, by omega⟩
+  · omega
+
+/-- **`lem:onegamma`, at a real interior point.**  Let `v` be interior to the target, let some tile
+present `γ` there, and let some tile have `v` interior to one of its edges (a straight angle).  Then
+the remaining tiles contribute exactly `α + β`, realised by one `α` and one `β`: the counts at `v`
+are one each of `α, β, γ, π` and no covering tile.
+
+This is the paper's statement, not its arithmetic core: the counts are counts of tiles of a real
+`Dissection`, and the two hypotheses are witnessed by named tiles. -/
+theorem one_gamma_real {N : ℕ} (D : Dissection N) {α β γ : ℝ}
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    {v : Plane} (hv : v ∈ interior D.target.carrier)
+    (hvals : ∀ i, (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 2 * Real.pi, 0} : Finset ℝ))
+    (iγ : Fin N) (hiγ : (D.tile iγ).localAngle v = γ)
+    (iπ : Fin N) (hiπ : (D.tile iπ).localAngle v = Real.pi) :
+    ({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 1 ∧
+    ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+    ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1 ∧
+    ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 1 ∧
+    ({i | (D.tile i).localAngle v = 2 * Real.pi} : Finset (Fin N)).card = 0 := by
+  classical
+  have hsum := interior_multiplicities_cards D α β γ hαβ hαγ hαπ hα2π hα0 hβγ hβπ hβ2π hβ0
+    hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hv hvals
+  have hrpos : 1 ≤ ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card :=
+    Finset.card_pos.mpr ⟨iγ, by simp [hiγ]⟩
+  have hspos : 1 ≤ ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card :=
+    Finset.card_pos.mpr ⟨iπ, by simp [hiπ]⟩
+  exact one_gamma hγdef hrel hirr _ _ _ _ _ hsum hrpos hspos
+
 /-! ## The corner figures
 
 At a vertex of the target the tiles' local angles sum to that corner's angle
