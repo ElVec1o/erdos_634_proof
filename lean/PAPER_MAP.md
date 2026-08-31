@@ -697,3 +697,33 @@ one first; doing so would have saved roughly 30 CPU-hours on `f=22` alone. This 
 search's direction, not of the orbit.
 
 | M-derived | the fillers form a new `a`-run one level up; the chirality translates it by `2f - 1/f`, short of two positions by `1/f`, which scales to the residue `1` | `MarchCoords.derived_run_shift`, `.derived_shift_defect`, `.defect_scales_to_one` | VERIFIED |
+
+### Self-audit of my own negative claims (2026-08-31)
+
+Two negative claims made this week were wrong, and both failed the same way: a claim of **absence**
+inferred from a search that did not find something, where the thing existed under another name.
+
+* "(ii) and (iii) cannot be stated without the placement layer" — false. The positional coordinate
+  is `OrientBridge.edgePos`. The specs I wrote were refutable because they quantified over the
+  advance function instead of defining it; the diagnosis, not the refutation, was wrong.
+* "`cengine_rx2` has no source" — false. It is built from `cengine_iso.cpp`, committed at
+  `3890d81`; the search looked for `*rx2*.cpp`. The rebuild is byte-identical and reproduces the
+  logged verdict and node count.
+
+**Consequence for "the fast vein is exhausted".** That claim was computed from *blocker text*, and
+28 of the PROVED statements carry blockers that are elliptical ("same structure", "same", "same
+sweep") or empty (`lem:census`). Blocker text has already been caught stale once, on
+`prop:interfacefloor`. So the claim is weaker than it was stated:
+
+> The fast vein is exhausted **among the statements whose blockers were read against their
+> declarations**. Twenty-eight carry elliptical blockers that have not been individually re-checked,
+> and any of those could hide a reachable statement.
+
+Two were spot-checked and both survive, but not for the recorded reason:
+
+| Paper | Spot-check result |
+|---|---|
+| `prop:tightside` | still blocked, but its clause "every one of the `2f` junctions carries exactly one `γ` and is the figure `{γ,α,β}`" is now covered by `VertexFigureReal.gamma_boundary_figure_real`. What blocks it is the *other* clauses: the side word `a^{2f}c` and the per-tile orientation, both bridge (c). Not splittable — the figure clause is stated *of that side word*, so it is not independently assertible |
+| `thm:elltwo` | still blocked: needs the slot chain of `thm:l2slot`, a placement structure with no Lean definition. The recorded blocker "same" pointed at `W2Core`, which is not the obstruction |
+
+Re-checking the remaining 26 elliptical blockers is outstanding work, not a discharged obligation.
