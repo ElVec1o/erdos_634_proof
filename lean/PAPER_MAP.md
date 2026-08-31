@@ -189,7 +189,7 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 | C `rem:closepairbase` | close pairs admit further decompositions with `y > e` | none | HEURISTIC — a per-member computation; finiteness follows from the walk equation but the count is not proved uniformly |
 | C `lem:cchord` | c-chord dichotomy | `CChord.c_chord_dichotomy` |
 | C `lem:ccorner` | The $c$-corner is rigid | `partner_unique` |
-| C `lem:census` | The vertex census | `vertex_census` |
+| C `lem:census` | The vertex census | `vertex_census` | PROVED — the three corner-balance equations are hypotheses of the declaration; deriving them from a real dissection is the global corner-incidence double count (placement layer) |
 | C `lem:charge` | The mirrored piece is charged | `mirrored_left_junction`, `escape_charge` |
 | C `lem:chord` | The chord at the last junction | `tile_contact_face`, `contact_is_edge` |
 | C `lem:collar` | Collar decomposition | `collar_cells` |
@@ -807,3 +807,14 @@ not available. P1–P3 for `f = 24` (geometric-law predictions) remain frozen an
 | M-kill | **`bg_gb_dies`: a `BG` tile followed by a `GB` tile at a shared junction is impossible in a dissection** | `MarchKill.bg_gb_dies` | VERIFIED — the full assembly: straddle signs → both coefficient systems solved by the vertical → `wedge_disjoint_combo` → contradiction with `interiors_disjoint`. Consumes the placed configuration through component hypotheses (tile 1's edges at the junction `(-f,0)` and `(dBG-f, h)`, tile 2's `(f,0)` and `(dGB, h)`). This is `prop:orientmono`'s hard direction **at one junction of a real dissection**, from coordinates. What it does not supply: that the run's consecutive tiles present these components — the passage from "a run of `a`-edges on a line" to the component facts, which is the run-as-object step |
 
 | M-runstep | **`run_step_bg_gb_dies`: the `BG → GB` step dies from distances alone** | `MarchRunStep.circle_x`, `.bg_abscissa`, `.gb_abscissa`, `.heights_agree`, `.run_step_bg_gb_dies` | VERIFIED — the apex components are no longer hypotheses: they are **forced** by the four side-length distances (two-circle intersection, one point above the line). The final statement consumes only what tile congruence provides — consecutive base edges of components `(f,0)`, the four apex distances, apexes above the line — and concludes `False`. Obligation (i)'s remaining gap shrinks to: a run's consecutive tiles satisfy these distance hypotheses, which is the corner figure (`gamma_boundary_figure_real`, VERIFIED) plus congruence naming which corner sits at which end |
+
+### Re-check of the elliptical blockers, batch 2 (2026-09-01)
+
+| Paper | Verdict | Real blocker |
+|---|---|---|
+| `prop:a2branch` | blocked | "the mirrored `L=-2` tile laying a horizontal `c`-edge along the floor line east of the fork" — a placed configuration; placement layer. The row's "same structure" under-specified this |
+| `thm:forkkill` | blocked | the row-2 fork of a residual configuration: brick/mate placement |
+| `cor:inflcrux` | blocked | inherits `prop:inflbdy` (scale map on dissections) |
+| `lem:census` | blocked | its strongest row had an **empty** blocker cell; the real one, recorded in the audit of the six `PROVED: … VERIFIED` labels, is the global corner-incidence double count. Row completed |
+
+12 of 28 now re-checked; 16 remain.
