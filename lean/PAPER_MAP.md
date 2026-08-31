@@ -796,3 +796,10 @@ identify. Predictions for `f = 24` are frozen in `private/PREREG_ceiling_band.md
 mean in `[1.60M, 1.74M]`, `(6,23)` in `[1.63M, 1.70M]`); the running sweep will decide them without
 further action. If confirmed and the mechanism proved, one run per band plus a reduction collapses
 the dominant part of every future sweep.
+
+**Verdict on the recurrence (same day):** the odd members were measured and the exact unit-step
+Fibonacci reading is **falsified** — `a(13) = 8359` misses the frozen window `[8377, 8407]` by 18,
+and `a(15) = 21895` falls *below* `a(14) + a(13) = 21956`, so the additive constant changes sign.
+The geometric law `16.1·φ^f` survives to 0.35% at both new points. The band is asymptotically
+golden but not exactly self-reducing like the march; a "one run per band" exact skip is therefore
+not available. P1–P3 for `f = 24` (geometric-law predictions) remain frozen and open.
