@@ -100,4 +100,47 @@ theorem all_but_one_is_march_junction {J : Type*} [Fintype J] [DecidableEq J]
   by_contra hne
   exact hj (hdich j hne)
 
+/-! ## The boundary run: `BG → GB` dies by counting alone
+
+`MarchCoords`' orientation convention, read off the distances: a `BG` tile has `β` at the left end
+of its `a`-edge and `γ` at the right (`bg_left` puts the left end at distance `c` from the apex, so
+its flanking sides are `a, c`, the `β`-corner); a `GB` tile has `γ` at the left.  So at a `BG → GB`
+junction **both tiles present `γ`**.
+
+At a straight-edge point that is one `γ` too many: the figure system is `x + 2z = 3`, `y + z = 2`,
+so `z = 2` forces `x = -1`.  `gamma_boundary_figure_real` already says the `γ`-count is exactly one,
+so two distinct tiles presenting `γ` there is immediate.
+
+This is a **second, independent kill** of `BG → GB`, and on the boundary it is far cheaper than the
+wedge route of `MarchKill`/`MarchRunStep`.  The wedge route is not redundant: it uses only
+`interiors_disjoint` and so applies at *interior* junctions too, where the budget is `2π` and the
+figure `{β, 3γ}` makes `r = 3` possible — counting cannot kill it there. -/
+
+/-- **Two tiles cannot both present `γ` at a straight-edge point.** -/
+theorem no_two_gammas {N : ℕ} (D : Dissection N) {α β γ : ℝ}
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (hvals : ∀ i, (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ))
+    (i j : Fin N) (hij : i ≠ j)
+    (hi : (D.tile i).localAngle v = γ) (hj : (D.tile j).localAngle v = γ) :
+    False := by
+  classical
+  obtain ⟨-, -, hcard, -⟩ := Erdos634.VertexFigureReal.gamma_boundary_figure_real D
+    hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hv hnv hvals i hi
+  have hsub : ({i, j} : Finset (Fin N))
+      ⊆ ({k | (D.tile k).localAngle v = γ} : Finset (Fin N)) := by
+    intro k hk
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hk
+    rcases hk with rfl | rfl
+    · simpa using hi
+    · simpa using hj
+  have h2 : ({i, j} : Finset (Fin N)).card = 2 := by
+    rw [Finset.card_insert_of_notMem (by simpa using hij), Finset.card_singleton]
+  have := Finset.card_le_card hsub
+  omega
+
 end Erdos634.MarchRun

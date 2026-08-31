@@ -866,3 +866,5 @@ its value rises accordingly.
 along the way (`lem:noapexline`, `lem:cornerstep` note, `lem:census` empty cell, `thm:elltwo`
 citation). The fast-vein exhaustion claim now rests on statements read against declarations for the
 full population.
+
+| M-count | **`no_two_gammas`: two tiles cannot both present `γ` at a straight-edge point** | `MarchRun.no_two_gammas` | VERIFIED — a *second, independent* kill of `BG → GB`. Reading the orientation convention off the distances, a `BG` tile has `γ` at the right end of its `a`-edge and a `GB` tile has `γ` at the left, so at a `BG → GB` junction both present `γ`; the straight-figure system `x+2z=3, y+z=2` gives `z = 2 ⟹ x = -1`. On the **boundary** this is far cheaper than the wedge route. It does **not** supersede it: the wedge route uses only `interiors_disjoint`, so it also kills *interior* junctions, where the budget is `2π` and the figure `{β,3γ}` makes `r = 3` possible and counting cannot decide |
