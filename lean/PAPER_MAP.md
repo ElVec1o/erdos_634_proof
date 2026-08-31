@@ -933,3 +933,11 @@ measured at two members and two `bp` each. Not proved.
 an assumed bound. For a run on a side of the target that bound is now VERIFIED, so obligation (i)
 reduces on the boundary to the single remaining clause above — the `β`/`γ` dichotomy at an `a`-edge's
 two ends — rather than to bridge (c).
+
+| C M-flank | the two corners flanking the `a`-edge carry `β` and `γ`, never `α` | `MarchFlank.apex_angle_smallest`, `.endpoints_ne_apex`, `.beta_or_gamma`, `.flank_is_beta_or_gamma` | VERIFIED — the clause `prop:orientmono`'s residue named. The angles chain as their opposite sides (`TilePlacement.angleAt_lt`), so with `a < b < c` the angle opposite `a` is strictly smallest; a corner at an endpoint of the `a`-side carries one of the two larger angles, hence `β` or `γ`. This discharges the hypothesis `prop:orientmonobdy` retained, so **on a side of the target the monotonicity statement now stands with no hypothesis beyond the tile's side ordering** |
+
+**Obligation (i), boundary case: the chain is complete.** `flank_is_beta_or_gamma` → the `β`/`γ`
+dichotomy at each junction → `junction_cases` (no `(γ,γ)`) → `MarchMonotone` (block form, at most one
+transition) → `all_but_one_is_march_junction`. Every link is VERIFIED. What is *not* proved is that
+the `a`-run of a real dissection is the run the march walks — the identification of the object, not
+any step of the argument.
