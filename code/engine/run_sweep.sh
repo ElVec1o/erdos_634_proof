@@ -35,19 +35,57 @@ touch "$log"
 python3 "$root/code/analysis/sweep_configs.py" "$f" > "$work/configs_f$f.txt"
 
 
+# Race both representatives of each mirror orbit.  `sweep_configs.transversal` returns "the member
+# with the smaller bp", one fixed representative per orbit -- and search cost turns out to be
+# strongly direction-dependent.  On f=22 the two orbits {(12,20),(13,5)} and {(12,23),(13,2)} cost
+# 869 and 928 CPU-minutes through their bp=12 representatives without finishing, while their mirrors
+# exhausted in about seven minutes each: four orders of magnitude.  verify_sweep has always credited
+# an orbit when the word OR its mirror is exhausted, so racing both costs at most 2x the cheaper one
+# instead of paying the dearer one in full.
+#
+# Each word writes to its own file and its label is printed by the same code that reads its result,
+# so a label can never detach from its verdict -- the failure that made four f=22 results
+# unattributable and forced a re-run.
+run_word() {
+  local wf=$1 wbp=$2 wcp=$3 wout=$4
+  local winst="$work/uni_f${wf}_b${wbp}c${wcp}.txt"
+  [ -f "$winst" ] || python3 "$root/code/engine/gen_basebeta.py" 1 "$wf" "$wbp" "$wcp" > "$winst"
+  local r
+  r=$(CENGINE_GEN=1 CENGINE_THREADS=1 "$engine" "FILE:$winst" "$cap" 2>&1 \
+        | grep -oE "RESULT [A-Z_]+ nodes=[0-9]+")
+  [ -n "$r" ] && printf "f=%s (%s,%s): %s\n" "$wf" "$wbp" "$wcp" "$r" > "$wout"
+}
+
 while read -r line || [ -n "$line" ]; do
   [ -n "$line" ] || continue
   set -- $line
   bp=$2; cp=$3
-  if grep -qx "$bp $cp" "$prior" 2>/dev/null; then
-    echo "f=$f ($bp,$cp): SKIPPED (already exhausted)"
+  mbp=$((f + 3 - bp)); mcp=$((f + 3 - cp))
+  if grep -qx "$bp $cp" "$prior" 2>/dev/null || grep -qx "$mbp $mcp" "$prior" 2>/dev/null; then
+    echo "f=$f ($bp,$cp): SKIPPED (orbit already exhausted)"
     continue
   fi
-  inst="$work/uni_f${f}_b${bp}c${cp}.txt"
-  [ -f "$inst" ] || python3 "$root/code/engine/gen_basebeta.py" 1 "$f" "$bp" "$cp" > "$inst"
-  printf "f=%s (%s,%s): " "$f" "$bp" "$cp" | tee -a "$log"
-  CENGINE_GEN=1 CENGINE_THREADS=1 "$engine" "FILE:$inst" "$cap" 2>&1 \
-    | grep -oE "RESULT [A-Z_]+ nodes=[0-9]+" | tee -a "$log" || echo "NO RESULT" | tee -a "$log"
+  oA="$work/.race_A.$$"; oB="$work/.race_B.$$"; rm -f "$oA" "$oB"
+  run_word "$f" "$bp" "$cp" "$oA" & pA=$!
+  pB=""
+  if [ "$mbp" != "$bp" ] || [ "$mcp" != "$cp" ]; then
+    run_word "$f" "$mbp" "$mcp" "$oB" & pB=$!
+  fi
+  # wait for the first verdict; stop when neither child is still alive
+  while :; do
+    [ -s "$oA" ] && break
+    [ -s "$oB" ] && break
+    kill -0 "$pA" 2>/dev/null || { [ -z "$pB" ] && break; kill -0 "$pB" 2>/dev/null || break; }
+    sleep 2
+  done
+  kill "$pA" 2>/dev/null; [ -n "$pB" ] && kill "$pB" 2>/dev/null
+  pkill -P "$pA" 2>/dev/null; [ -n "$pB" ] && pkill -P "$pB" 2>/dev/null
+  wait "$pA" 2>/dev/null; [ -n "$pB" ] && wait "$pB" 2>/dev/null
+  if [ -s "$oA" ]; then cat "$oA" | tee -a "$log"
+  elif [ -s "$oB" ]; then cat "$oB" | tee -a "$log"
+  else printf "f=%s (%s,%s): NO RESULT\n" "$f" "$bp" "$cp" | tee -a "$log"
+  fi
+  rm -f "$oA" "$oB"
 done < "$work/configs_f$f.txt"
 
 echo "--- coverage certificate ---"
