@@ -805,4 +805,51 @@ theorem escape_flank (T : Tri) (k : Fin 3)
   flank_along_line' T k (weakly_upward_of_above T k habove).1
     (weakly_upward_of_above T k habove).2 htan
 
+/-! ## The identification: the serving tile lies above the wall
+
+The pigeonhole selects *some* tile containing the approach points.  To be the tile route 1 needs,
+it must lie above the wall rather than be the straight tile below.  Taking the approach points
+**strictly above** the wall settles it: a tile containing a point of positive height cannot be one
+whose carrier lies weakly below, so the selected tile is an upper tile, and `V` is in its closure.
+
+That is the last identification route 1 required. -/
+
+/-- **A tile containing a strictly-above point is not a below tile.** -/
+theorem not_below_of_contains_above (T : Tri) {V q : Plane}
+    (hq : q ∈ T.carrier) (hpos : 0 < (q - V) 1)
+    (hbelow : ∀ y : Plane, y ∈ T.carrier → (y - V) 1 ≤ 0) : False :=
+  absurd (hbelow q hq) (not_le.mpr hpos)
+
+/-- **The serving tile is an upper tile.**  Approach points strictly above the wall, each covered,
+select by pigeonhole a tile that contains points of positive height — hence not the below tile. -/
+theorem serving_tile_is_upper {N : ℕ} (D : Dissection N) (V : Plane) (pick : ℕ → Plane)
+    (g : ℕ → Fin N) (hg : ∀ n, pick n ∈ (D.tile (g n)).carrier)
+    (hpos : ∀ n, 0 < (pick n - V) 1)
+    (b : Fin N) (hb : ∀ y : Plane, y ∈ (D.tile b).carrier → (y - V) 1 ≤ 0) :
+    ∀ n, g n ≠ b := by
+  intro n hn
+  exact not_below_of_contains_above (D.tile b) (hn ▸ hg n) (hpos n) hb
+
+/-- **Route 1's flank, fully identified.**  Approach points strictly above the wall, tangential in
+slope, each covered; a below tile `b` whose carrier is weakly below `V`.  Then the pigeonhole's
+tile is not `b`, its points are weakly above `V`, and it carries a horizontal rightward edge at `V`
+— provided `V` is the vertex of that tile at which the approach happens.
+
+The remaining hypothesis `hvert` is the statement that `V` is a vertex of the serving tile, which
+the figure at `V` supplies: `V` is not interior to an edge of an upper tile, since the single
+straight angle there belongs to the tile below (`alpha_wall_figure_real`, `s = 1`). -/
+theorem route_one_flank_identified {N : ℕ} (D : Dissection N) (V : Plane)
+    (pick : ℕ → Plane) (g : ℕ → Fin N) (hg : ∀ n, pick n ∈ (D.tile (g n)).carrier)
+    (hposx : ∀ n, 0 < (pick n - V) 0)
+    (hslope : ∀ n, (pick n - V) 1 ≤ (1 / (n + 1 : ℝ)) * ((pick n - V) 0))
+    (i : Fin N) (k : Fin 3) (hvert : (D.tile i).pts k = V)
+    (hserve : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i).carrier ∧
+      0 < (q - V) 0 ∧ (q - V) 1 ≤ δ * ((q - V) 0))
+    (habove : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - V) 1) :
+    (((D.tile i).pts (k + 1) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (k + 1) - V) 0) ∨
+    (((D.tile i).pts (k + 2) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (k + 2) - V) 0) := by
+  have h := escape_flank (D.tile i) k (by rw [hvert]; exact habove) (by rw [hvert]; exact hserve)
+  rw [hvert] at h
+  exact h
+
 end Erdos634.RouteOne

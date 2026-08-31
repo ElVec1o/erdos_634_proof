@@ -1683,23 +1683,28 @@ independent of the wall's metric length. The descent itself is \texttt{wall\_des
 escape exists at any distance from the exit.
 \end{proposition}
 
-\begin{remark}[What route 1 still assumes]\label{rem:routeoneopen}\lab{OPEN}
-Both inputs of Proposition~\ref{prop:flankline} are now discharged from the configuration rather
-than assumed. The approach points exist: $V$ is interior to the target, so all sufficiently small
-positive multiples of any direction from $V$ stay in the target and are covered
-(\texttt{approach\_points\_covered}, on \texttt{covered\_of\_mem\_target}). The edge directions are
-weakly upward as soon as the tile keeps its points above the wall at $V$, since the two other
-vertices lie in the carrier (\texttt{weakly\_upward\_of\_above}); and a point of the tile strictly
-below the wall would be interior to the tile below, which \texttt{above\_line\_of\_below\_tile}
-forbids. \texttt{escape\_flank} is the composite: a tile at $V$ whose points stay weakly above it
-and which carries tangential approach points has a horizontal rightward edge at $V$.
+\begin{proposition}[The serving tile is an upper tile]\label{prop:serving}\lab{VERIFIED}
+Take the approach points to $V$ \emph{strictly above} the wall. Each is covered, and a tile
+containing a point of positive height cannot be one whose carrier lies weakly below $V$; so the
+tile the pigeonhole selects is not the straight tile beneath the wall
+(\texttt{not\_below\_of\_contains\_above}, \texttt{serving\_tile\_is\_upper}). With that,
+\texttt{route\_one\_flank\_identified} states the flank conclusion for a named tile of the
+dissection at a named vertex: the serving tile has a horizontal rightward edge at $V$.
+\end{proposition}
 
-What remains is not a geometric mechanism but an identification. The theorems quantify over ``the
-tile $T$ that serves at $V$'' and ``the tile below the wall''; the escape configuration must be
-matched to them --- which tile of the hypothetical tiling plays each role, and that the pigeonhole's
-chosen $T$ is one lying above the wall rather than the straight tile below. That matching is the
-sole remaining content of route 1, and it is bookkeeping over the configuration's tile list, not a
-new argument.
+\begin{remark}[What route 1 still assumes]\label{rem:routeoneopen}\lab{OPEN}
+One hypothesis remains, and it is the only one: that $V$ is a \emph{vertex} of the serving tile
+rather than a point interior to one of its edges. The figure at $V$ supplies it in principle --- the
+single straight angle there belongs to the tile below (Proposition~\ref{prop:flankline}'s companion
+\texttt{alpha\_wall\_figure\_real}, with $s=1$), so no upper tile has $V$ interior to an edge --- but
+that step is not composed with the pigeonhole in the formal development: the tile the pigeonhole
+returns is not yet known to be one of the tiles the figure counts.
+
+Everything else in route 1 is discharged. The approach points exist and are covered; the serving
+tile is an upper tile; its edge directions are weakly upward; the flank at $V$ lies along the line;
+a $b$- or $c$-edge from $V$ contains $E$ strictly and dies by the very blocking whose failure
+defined the escape; the surviving $a$-advance is a descent that terminates after finitely many wall
+edges. The residue is one composition step, not a mechanism.
 \end{remark}
 
 \begin{conjecture}[Advance-and-collide]\label{conj:advance}\lab{CONJECTURE, proved at $f=2,3,4$}
