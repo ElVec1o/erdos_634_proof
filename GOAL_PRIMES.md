@@ -105,13 +105,20 @@ family decomposition exists here. Nothing in the march work touches `e ≥ 2`.
 - The nine-tool no-go means no invariant-style argument will work; the admission test for anything
   new is location-sensitivity.
 
-## Ordered target list
+## Ordered target list (revised 2026-09-01, after reading the paper more carefully)
 
-1. `conj:advance` gap 2: generalize the double-`c` walk enumeration from `f = 4` to all `f ≥ 5`.
-   Closes the second of the two named gaps. **Highest value per unit effort in B1.**
-2. `conj:advance` gap 1: the deviating `a`-run whose `c`-chord escapes the forced region.
-   With 1, closes `e = 1` entirely.
-3. `rem:marchobl` (ii)/(iii): the advance and the reduction, currently HEURISTIC.
-4. Classify the 116 + 45 unclassified escape families — needed if Route 1 is ever to work.
-5. B2: the crossing question at `V_k`.
-6. `thm:mod12`'s converse: formalization debt, not blocking.
+**Correction to the first version of this map:** gap 2 was *already closed* by `prop:doublec`
+(PROVED — every initial block length, every `f ≥ 3`); `conj:advance`'s trailing text was stale and
+is now fixed. The map's original target 1 did not exist.
+
+1. **`conj:advance` gap 1 = the `[V,E]` question** (`rem:route1uniform`). Now a trichotomy with two
+   cases closed (`RouteOne.overshoot_dichotomy`: a `b`- or `c`-edge from `V` strictly contains `E`,
+   which *is* tile-interior blocking, so those branches die; `alpha_wall_figure_real` pins the
+   figure at `V`). Remaining: (a) through-edge-vs-junction below the line at `V`; (b) the
+   exactly-filled wedge's last flank lies along the line; (c) the `a`-edge case — the march on an
+   interior wall, where the march machinery (two placements, terminal kill) applies. **Closing this
+   closes `conj:advance`, hence `hyp:walls` for every `(1,f)`, hence all of `e = 1`.**
+2. `rem:marchobl` (ii)/(iii) — now doubly motivated: the march is also target 1's case (c).
+3. B2: the crossing question at `V_k`.
+4. `thm:mod12`'s converse: formalization debt, not blocking.
+5. (Only if target 1 fails) classify the 161 unclassified escape families for Route 1-style work.
