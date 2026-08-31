@@ -1531,12 +1531,19 @@ members (\texttt{tests\_uniform}).
 
 \begin{proposition}[The adjacent family is independent of the member]\label{prop:findep}\lab{HEURISTIC: measured; the mechanism VERIFIED}
 For a base word in which $c$ is immediately followed by $b$ --- that is, $cp=bp-1$ --- the
-refutation is the same at every $f$: identical node count, identical depth, and identical values of
-every prune counter. At $f=12,14,16,18,20,22$ the word $(6,5)$ gives $506$ nodes with depth $13$ in
-every case, and $(5,4)$, $(7,6)$, $(8,7)$, $(9,8)$, $(10,9)$ give $299$, $807$, $1315$, $2124$,
-$3441$ likewise. By Proposition~\ref{prop:testsuniform} no test the search performs can tell the
-members apart, which is why; what remains measured rather than proved is that the search performs
-only those tests.
+refutation is the same at every $f$. At $f=12,14,16,18,20,22$ the word $(6,5)$ gives $506$ nodes with
+depth $13$ in every case, and $(5,4)$, $(7,6)$, $(8,7)$, $(9,8)$, $(10,9)$ give $299$, $807$, $1315$,
+$2124$, $3441$ likewise.
+
+The agreement is stronger than the counts. Reading the engine's node trace at $f=12$ and $f=14$ for
+$(6,5)$, the two refutations are the \emph{same tree}: the $506$ nodes carry identical paths in
+identical depth-first order, not merely identical totals. The placements differ only by the
+$f$-instantiation of the coordinates --- the first apex sits at $d_{\mathrm{BG}}=431/24$ at $f=12$
+and $587/28$ at $f=14$, both $(3f^2-1)/2f$, at heights with numerator $f^2-1$ over $2f$ and radicand
+$4f^2-1$.
+
+By Proposition~\ref{prop:testsuniform} no test the search performs can tell the members apart, which
+is why. What remains measured rather than proved is that the search performs only those tests.
 \end{proposition}
 
 \begin{proposition}[Its size is Fibonacci in $bp$]\label{prop:fib}\lab{HEURISTIC: measured; the recurrence's arithmetic VERIFIED}
