@@ -35,6 +35,25 @@ pigeonhole, whose returned tile is not known to be among the tiles the figure co
 one composition step, not a missing mechanism.
 
 
+## Claim labels, as of v3.0
+
+Every mathematical statement in the papers carries exactly one label. The counts, computed from the
+sources (`grep '\\lab{'`), are:
+
+| label | count | meaning |
+|---|---|---|
+| VERIFIED | 45 | formalized in Lean 4; `lake build` clean, zero `sorry`, axioms declared |
+| PROVED | 125 | complete written proof, not yet formalized |
+| CONJECTURE | 32 | believed, no proof |
+| HEURISTIC | 4 | computational or plausibility support only |
+| OPEN | 3 | stated obligations with no proof and no claim of one |
+
+The Lean development is 216 files with no `sorry`; `#print axioms` reports nothing beyond `propext`,
+`Classical.choice` and `Quot.sound`. The effective strength of any result is the weakest label in
+its dependency chain: in particular the base-`β` forcing chain is conditional on a walls hypothesis
+proved only at small members, which is why the primes `≡ 11 (mod 12)` remain open.
+
+
 ## Main results
 
 - A translation-invariant, signed-direction tiling functional proves that **no prime number of `2π/3`
