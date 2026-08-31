@@ -12,6 +12,24 @@ By the classification of Laczkovich and the branch theorems of Beeson, the prime
 single active branch: a tile with a `2π/3` angle on a non-equilateral triangle, where a prime count
 forces the large triangle to be isosceles.
 
+## Where the open case stands
+
+The residue is the primes `≡ 11 (mod 12)`, and `GOAL_PRIMES.md` maps it: since a prime `N` forces
+`m = 1`, the open case **is** the `m = 1` base-`β` family, splitting `e = 1` / `e ≥ 2`, both reducing
+to one crossing question that nine tool classes provably cannot answer (each is invariant under
+*relocating* an edge, while the question asks *where* an edge lies).
+
+For `e = 1` the shorter route is `conj:advance`, which if proved closes the branch entirely. Its two
+gaps are now one: the double-`c` gap is closed at every block length (`prop:doublec`), and the
+remaining gap reduces to a single question — what covers a segment `[V, E]` of length exactly `a`.
+That question's chain is machine-checked (`lean/Erdos634/RouteOne.lean`, companion §"Route 1's chain,
+formalised"): the flank at `V` lies along the line, a `b`- or `c`-edge would contain `E` strictly and
+so dies by the very blocking whose failure defined the escape, and the surviving `a`-advance is a
+descent that terminates after finitely many wall edges. What remains unproved is the instantiation of
+two hypotheses at the escape configuration itself (`rem:routeoneopen`). The chain is a proof *given*
+the configuration, not yet a proof about it.
+
+
 ## Main results
 
 - A translation-invariant, signed-direction tiling functional proves that **no prime number of `2π/3`
@@ -39,9 +57,12 @@ forces the large triangle to be isosceles.
   candidates satisfy every *sound* necessary condition; the only
   published exclusion, Beeson's Theorem 14, rests on a divisibility `g | M` that is **false** — refuted
   by an explicit `99`-tiling of the `(24,24,33)` triangle by `(2,3,4)` tiles. These candidates are
-  settled individually by exact search. Six are settled — `11, 23, 47, 59, 71, 107` — **all by
-  search, none by theorem**; `83` was under search. There are `42` candidates below `1000`. See the paper's `rem:isobeta`, `rem:thm14false`, and
-  `rem:mainscope`.
+  settled individually by exact search. **Thirteen are settled** — `11, 23, 26, 47, 59, 66, 71, 107,
+  191, 431, 587, 971, 1451` — **all by certified exhaustive search, none by theorem**. Each carries a
+  coverage certificate (`code/analysis/verify_sweep.py`) proving every escaping base word is
+  exhausted or has an exhausted mirror; `N = 1451` (`f = 22`) is 168 of 168 orbits at both proved
+  reaches. There are `42` candidates below `1000`. See the paper's `rem:isobeta`, `rem:thm14false`,
+  and `rem:mainscope`.
 
 - **Realizations, machine-verified with zero axioms.** A triangle can be cut into **28**, into
   **44**, into **77** and into **99** congruent triangles (`lean/Tiling28.lean`,
