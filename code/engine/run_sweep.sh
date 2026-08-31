@@ -78,8 +78,12 @@ while read -r line || [ -n "$line" ]; do
     kill -0 "$pA" 2>/dev/null || { [ -z "$pB" ] && break; kill -0 "$pB" 2>/dev/null || break; }
     sleep 2
   done
+  # Kill the loser by its instance file, not by job PID: run_word invokes the engine inside a
+  # command substitution, so the engine is a grandchild and `kill $pA` leaves it running.  A leaked
+  # loser per orbit would be worse than the cost the race saves.
+  pkill -f "FILE:$work/uni_f${f}_b${bp}c${cp}.txt" 2>/dev/null
+  pkill -f "FILE:$work/uni_f${f}_b${mbp}c${mcp}.txt" 2>/dev/null
   kill "$pA" 2>/dev/null; [ -n "$pB" ] && kill "$pB" 2>/dev/null
-  pkill -P "$pA" 2>/dev/null; [ -n "$pB" ] && pkill -P "$pB" 2>/dev/null
   wait "$pA" 2>/dev/null; [ -n "$pB" ] && wait "$pB" 2>/dev/null
   if [ -s "$oA" ]; then cat "$oA" | tee -a "$log"
   elif [ -s "$oB" ]; then cat "$oB" | tee -a "$log"
