@@ -844,6 +844,14 @@ only **two** sizes, set by the **last** chirality before the `b` (at `(8,11)`: 7
 consistent with `MarchCoords.derived_run_shift`: the chirality sets the phase at which the march
 meets the `b`.
 
+Confirmed at a fourth `bp` by a second pre-registration ((9,11): depth 14, 13 points, two sizes
+with multiplicities {8,5} — all three hit). The law across `bp = 6,7,8,9` is: depth `2(bp−1)`,
+frontier `3, 5, 8, 13` (Fibonacci), multiplicities `F(k−1), F(k−2)`, exactly two subtree sizes per
+level. A fourth prediction — that `(9,11)`'s total lies in the band — **missed**, and the cause was
+a framing error of mine: the band was measured over the *escape transversal*, which at `f=12`
+contains only `(6,11)` and `(7,11)`, so `(8,11)` and `(9,11)` are outside the reference class. The
+escape-set statistic and the `f=24` predictions P1–P3 are unaffected.
+
 So the entire `cp`-large family's cost is march combinatorics: shared spine, Fibonacci frontier,
 phase-set collision subtrees. The `bp`-independence is a Fibonacci-weighted sum of shrinking phase
 subtrees, conserved only approximately — which is exactly why the additive recurrence was falsified
