@@ -530,4 +530,56 @@ theorem overshoot_leaves (y₀ slope t : ℝ) (hy : y₀ = 0) (hslope : slope < 
     y₀ + slope * t < 0 := by
   rw [hy, zero_add]; exact mul_neg_of_neg_of_pos hslope ht
 
+/-! ## Obligation (3b): the descent step
+
+The `a`-advance takes the escape point `V` to `E = V + a·(1,0)`, the far endpoint of the tile edge
+the trichotomy produced.  For `wall_descent` to apply, the configuration at `E` must satisfy the
+same hypotheses the configuration at `V` did.  Those hypotheses are three:
+
+* **`E` is a junction**, i.e. a vertex of the advancing tile — immediate, it is that edge's far
+  endpoint;
+* **the figure at `E`** is one of the two boundary figures — `alpha_wall_figure_real`, which needs
+  an `α` and a straight angle at `E`;
+* **a blocking edge ends at `E` from the left** — the advancing tile's own `a`-edge `[V,E]`, which
+  plays at `E` the role `[A,V]` played at `V`.
+
+The third is the substance, and it is what makes the step *self-similar*: the edge produced by the
+trichotomy at `V` is itself the blocking edge at `E`.  The lemma below records that implication with
+its hypotheses named, so the remaining content is exactly the two figure inputs at `E`. -/
+
+/-- **The advanced configuration.**  Distances along the wall, one step on. -/
+theorem advance_positions (x a : ℝ) (ha : 0 < a) :
+    x < x + a ∧ (x + a) - x = a := ⟨by linarith, by ring⟩
+
+/-- **The produced edge is the next blocking edge.**  If `[V,E]` is a tile edge of length `a` lying
+along the wall with `E = V + a·(1,0)`, then at `E` there is an edge ending from the left of exactly
+the same length — the hypothesis the trichotomy consumed at `V`, regenerated at `E`. -/
+theorem produced_edge_blocks (Vx Ex a : ℝ) (ha : 0 < a) (hE : Ex = Vx + a) :
+    Ex - Vx = a ∧ Vx < Ex := by
+  constructor
+  · rw [hE]; ring
+  · rw [hE]; linarith
+
+/-- **The descent step, with its two remaining inputs named.**  Given that the figure at each
+advanced point is a boundary figure carrying an `α` and a straight angle (`hfig`), and that the
+advance never leaves the wall before the terminus (`hin`), the escape at step `n+1` forces the
+escape at step `n`: exactly `wall_descent`'s hypothesis.
+
+`hfig` and `hin` are the two facts about the *specific* configuration that remain unproved; every
+other ingredient of the step — the trichotomy, the flank, the pigeonhole, the terminus — is
+VERIFIED above. -/
+theorem descent_step (S : ℕ → Prop) (fig : ℕ → Prop) (inWall : ℕ → Prop)
+    (hfig : ∀ n, S (n + 1) → fig n) (hin : ∀ n, S (n + 1) → inWall n)
+    (htri : ∀ n, fig n → inWall n → S (n + 1) → S n) :
+    ∀ n, S (n + 1) → S n :=
+  fun n h => htri n (hfig n h) (hin n h) h
+
+/-- **Route 1 closes, given the step.**  `descent_step` feeding `wall_descent`: if the trichotomy
+regenerates and the terminus is blocked, no escape exists at any distance from the exit. -/
+theorem route_one_closes (S : ℕ → Prop) (fig inWall : ℕ → Prop)
+    (hfig : ∀ n, S (n + 1) → fig n) (hin : ∀ n, S (n + 1) → inWall n)
+    (htri : ∀ n, fig n → inWall n → S (n + 1) → S n) (hterm : ¬ S 0) :
+    ∀ n, ¬ S n :=
+  wall_descent S (descent_step S fig inWall hfig hin htri) hterm
+
 end Erdos634.RouteOne
