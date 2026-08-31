@@ -648,3 +648,30 @@ work and larger than it looks: `prop:globalsys` (an exhibited solution set at `N
 `prop:nogoauto` (a finite check over the automaton), `prop:nogocensus` (linear algebra over the
 census). None is "one lemma short"; each is a computation to be certified, and the project has no
 certified-search format — the same blocker as the other 10.
+
+### `rem:marchobl`'s obligations (2026-08-31)
+
+`rem:marchobl` is OPEN. Its three obligations are tracked here as sub-atoms so the debt is visible.
+
+| Atom | Statement | Lean declaration | Label |
+|---|---|---|---|
+| M-vertex | a `γ` at a straight-edge point forces the figure `{α,β,γ}` | `VertexFigureReal.gamma_boundary_figure_real`, `.boundary_multiplicities_cards` | VERIFIED |
+| M-wedge | the march step at a real junction: opening `α`, two placements | `JunctionWedge.march_junction_real` | VERIFIED |
+| M-i | the march's steps land on such vertices | `MarchRun.junction_dichotomy`, `.gamma_of_not_exceptional`, `.all_but_one_is_march_junction` | PROVED ⭐ — reduced to `prop:orientmono`; residual blocker bridge (c) |
+| M-coord | apex offsets `dGB`, `dBG`; common apex height | `MarchCoords.gb_left`, `.gb_right`, `.bg_left`, `.bg_right`, `.apex_height_common` | VERIFIED |
+| M-chir | chirality = the `a`-tiles' orientation, swapping `b` and `c` | `MarchCoords.offsets_complementary`, `.junction_to_apex_bg`, `.junction_to_apex_gb`, `.chirality_swaps_sides` | VERIFIED |
+| M-trans | transition spacing `(3f²-1)/f` is never a tile side | `MarchCoords.spacing_same`, `.spacing_gb_bg`, `.transition_not_a_side` | VERIFIED |
+| M-forced | the filler is forced; its sides are `{a,b,c}` | `MarchCoords.filler_forced`, `.filler_congruent_bg`, `.filler_congruent_gb` | VERIFIED |
+| M-ii | the two chiralities advance by exactly one and two positions | none | CONJECTURE — needs run-wide configuration forcing |
+| M-iii | both advances reduce to the same problem at smaller `bp` | none | CONJECTURE — same |
+
+`MarchCoords` is the project's first coordinate model of a run. `dBG = (3f²-1)/(2f)` is
+`Rigidity`'s `x_w` and equals `c·cos β` for the closed form of `lem:anglethreshold`, which is two
+independent checks that the model is the right one.
+
+### Reproducibility defect (Rule 9), OPEN
+
+`cengine_rx2`, `cengine_gen`, `cengine_fan`, `cengine_learn`, `cengine_p7` are binaries with no
+source in the repo, no Makefile and no recorded build command. `cengine_rx2` produced the base-beta
+member certifications (`runrx*.log`, including the N=1451 sweep). Those verdicts can be re-run but
+not rebuilt, so they are not reproducible by a third party. See `private/RESEARCH_LOG.md`.
