@@ -818,3 +818,16 @@ not available. P1–P3 for `f = 24` (geometric-law predictions) remain frozen an
 | `lem:census` | blocked | its strongest row had an **empty** blocker cell; the real one, recorded in the audit of the six `PROVED: … VERIFIED` labels, is the global corner-incidence double count. Row completed |
 
 12 of 28 now re-checked; 16 remain.
+
+### The band's leak, localized (2026-09-01)
+
+Diffing the node traces of `(6,11)` and `(7,11)` at `f=12` (5175 vs 5173 nodes): the trees are
+**identical except at exactly five divergence points, all at depth 10** — the same five parent
+paths in both, with a different child index chosen (`.0` vs `.2`). Below them `(6,11)` hangs
+subtrees `{646, 1287, 1287, 646, 1287}` (sum 5153) and `(7,11)` hangs `{792, 1189, 1189, 792,
+1189}` (sum 5151): two sizes per tree, multiplicities `(2,3)`, individually `bp`-dependent, totals
+differing by 2. So the band's `bp`-independence is a **sum invariance without termwise invariance**
+— the five subtrees reshuffle as the `b` moves, total almost conserved — which is exactly where the
+~1% spread and the sign-flipping additive constant of the falsified Fibonacci reading live. A
+mechanism proof for this family would have to explain the near-conservation of the five-subtree
+total, not a tree identity; that is a different and harder shape than `prop:findep`'s.
