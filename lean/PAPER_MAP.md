@@ -960,15 +960,16 @@ any step of the argument.
 | R1-desc | the wall descent: the `a`-advance recursion terminates at the wall's exit | `RouteOne.wall_descent` | VERIFIED (the induction shape) — consumes the trichotomy as its step; the exit's blockedness is the terminal fact, geometric, open |
 | R1-march | the `a`-advance case: the march on the interior wall, with terminal kill at the wall's far end | `MarchStep.*`, `MarchRunObject.*` (shape) | OPEN — the induction is `march_dies`; its step consumes the same trichotomy one position along |
 
-**Route 1's remaining obligations, after 2026-09-01.** Everything between the escape configuration
-and the trichotomy is now VERIFIED. What is left is three geometric inputs, each a hypothesis of
-`flank_along_line` or `wall_descent` that must be supplied at the actual configuration:
+**Route 1's remaining obligations, after 2026-09-01 (revised).** Obligations (1), (2) and the
+terminus half of (3) are now VERIFIED:
 
-1. **the tangential hypothesis** — that some tile above the line contains points approaching `V`
-   from the right (pigeonhole over the finitely many tiles covering a sequence, then closedness);
-2. **weakly-upward** — that the chosen tile's two edges at `V` point into the upper half-plane
-   (`not_mem_interior_of_mem` against the tile below the line);
-3. **the descent's step and terminus** — that an `a`-advance recreates the trichotomy's hypotheses
-   one position along, and that the wall's exit admits no advance.
+| Obligation | Declaration | Label |
+|---|---|---|
+| (1) the tangential hypothesis — one tile serves at arbitrarily small slope | `RouteOne.pigeonhole_tangential` | VERIFIED — finitely many tiles, infinitely many approach points, the fibre unbounded |
+| (2) weakly upward — both edges at `V` point into the upper half-plane | `RouteOne.no_downward_edge`, `.edge_dir_nonneg_of_local` | VERIFIED — from local containment above the line along each edge |
+| (3a) the terminus — the wall admits finitely many advances, and overshooting its end leaves the target | `RouteOne.exists_terminal_step`, `.advance_count_bounded`, `.overshoot_leaves` | VERIFIED — `prop:doublec`(iv)'s base-overshoot test in the form the descent needs |
+| (3b) **the descent's step** — an `a`-advance recreates the trichotomy's hypotheses one position along | none | **OPEN — the sole remaining mathematics of route 1** |
 
-(1) and (2) are applications of existing VERIFIED tools. (3) is the genuine remaining mathematics.
+The inputs each of (1), (2) now *consumes* (that the approach points exist and are covered; that the
+tile stays above the line near `V`) are facts about the specific escape configuration, supplied when
+the theorems are instantiated. What has no proof at all is (3b).

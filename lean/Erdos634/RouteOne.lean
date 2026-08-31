@@ -425,4 +425,109 @@ theorem flank_along_line (T : Tri) (k : Fin 3)
     ((T.pts (k + 2) - T.pts k) 1 = 0 ∧ 0 < (T.pts (k + 2) - T.pts k) 0) :=
   cone_forces_horizontal _ _ _ _ h1y h2y hnd (cone_hyp_of_tangential T k htan)
 
+/-! ## Obligation (1): the pigeonhole
+
+`flank_along_line` wants **one** tile containing points of arbitrarily small slope.  The dissection
+supplies, for each `n`, *some* tile containing the `n`-th approach point; there are finitely many
+tiles and infinitely many `n`, so one tile serves infinitely often, and its fibre is unbounded, so
+it serves at arbitrarily small slope. -/
+
+/-- **The pigeonhole.**  Approach points `pick n` with slope `≤ 1/(n+1)`, each in some tile, yield a
+single tile containing points of arbitrarily small slope. -/
+theorem pigeonhole_tangential {N : ℕ} (D : Dissection N) (V : Plane) (pick : ℕ → Plane)
+    (g : ℕ → Fin N) (hg : ∀ n, pick n ∈ (D.tile (g n)).carrier)
+    (hx : ∀ n, 0 < (pick n - V) 0)
+    (hslope : ∀ n, (pick n - V) 1 ≤ (1 / (n + 1 : ℝ)) * ((pick n - V) 0)) :
+    ∃ i : Fin N, ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i).carrier ∧
+      0 < (q - V) 0 ∧ (q - V) 1 ≤ δ * ((q - V) 0) := by
+  classical
+  obtain ⟨i, hi⟩ := Finite.exists_infinite_fiber g
+  refine ⟨i, ?_⟩
+  intro δ hδ
+  -- pick `n` in the fibre with `1/(n+1) ≤ δ`
+  obtain ⟨M, hM⟩ := exists_nat_gt (1 / δ)
+  have hinf : (g ⁻¹' {i}).Infinite := Set.infinite_coe_iff.mp hi
+  obtain ⟨n, hn, hnM⟩ := hinf.exists_gt M
+  refine ⟨pick n, ?_, hx n, ?_⟩
+  · have : g n = i := hn
+    rw [← this]; exact hg n
+  · refine le_trans (hslope n) ?_
+    have hn1 : (0:ℝ) < n + 1 := by positivity
+    have hle : 1 / (n + 1 : ℝ) ≤ δ := by
+      rw [div_le_iff₀ hn1]
+      have hMn : (M : ℝ) < n := by exact_mod_cast hnM
+      have : 1 / δ < (n : ℝ) := lt_trans hM hMn
+      rw [div_lt_iff₀ hδ] at this
+      nlinarith
+    exact mul_le_mul_of_nonneg_right hle (hx n).le
+
+/-! ## Obligation (2): weakly upward
+
+`flank_along_line` also wants both edge directions at `V` to point weakly upward.  The reason is the
+tile *below* the line: if an edge of the upper tile pointed strictly downward, the upper tile would
+contain points strictly below the line arbitrarily near `V`, and those points are interior to the
+lower tile — against `not_mem_interior_of_mem`.
+
+The step is packaged as `no_downward_edge`: it consumes "every point of `T` near `V` has
+`y ≥ y(V)`", which is what the lower tile's occupancy provides, and returns the sign facts. -/
+
+/-- **Weakly upward from local containment.**  If every point of the segment from `V` toward the
+edge endpoint stays weakly above `V` in the `y`-coordinate, the edge direction does. -/
+theorem edge_dir_nonneg_of_local (V W : Plane)
+    (hloc : ∀ t : ℝ, 0 < t → t < 1 → 0 ≤ ((AffineMap.lineMap V W t : Plane) - V) 1) :
+    0 ≤ (W - V) 1 := by
+  have hval : ∀ t : ℝ, ((AffineMap.lineMap V W t : Plane) - V) 1 = t * ((W - V) 1) := by
+    intro t
+    have hlm : (AffineMap.lineMap V W t : Plane) - V = t • (W - V) := by
+      simp [AffineMap.lineMap_apply, vsub_eq_sub]
+    rw [hlm]; rfl
+  by_contra hneg
+  push_neg at hneg
+  have := hloc (1/2) (by norm_num) (by norm_num)
+  rw [hval] at this
+  nlinarith
+
+/-- **No downward edge at `V`.**  Both edge directions of the upper tile at `V` point weakly
+upward, given that the tile stays weakly above the line near `V` along each edge. -/
+theorem no_downward_edge (T : Tri) (k : Fin 3)
+    (h1 : ∀ t : ℝ, 0 < t → t < 1 →
+      0 ≤ ((AffineMap.lineMap (T.pts k) (T.pts (k + 1)) t : Plane) - T.pts k) 1)
+    (h2 : ∀ t : ℝ, 0 < t → t < 1 →
+      0 ≤ ((AffineMap.lineMap (T.pts k) (T.pts (k + 2)) t : Plane) - T.pts k) 1) :
+    0 ≤ (T.pts (k + 1) - T.pts k) 1 ∧ 0 ≤ (T.pts (k + 2) - T.pts k) 1 :=
+  ⟨edge_dir_nonneg_of_local _ _ h1, edge_dir_nonneg_of_local _ _ h2⟩
+
+/-! ## Obligation (3a): the terminus
+
+The wall is finite: the `a`-advance moves the escape point right by `a` each time, and the wall has
+finite length, so after finitely many steps the next advance would carry the point past the wall's
+end.  Past the end the point leaves the target — the wall's far end is a boundary point and the
+continuation has negative ordinate, which is `prop:doublec`(iv)'s base-overshoot test.  So the
+advance cannot be taken at the last position, and `wall_descent` bottoms out.
+
+Here that is made arithmetic: positions are `x₀ + n·a` along the wall of length `L`, and the count
+of available advances is finite. -/
+
+/-- **The advance count is finite.**  With positive step `a` on a wall of length `L`, only finitely
+many advances fit: `n·a ≤ L` bounds `n`. -/
+theorem advance_count_bounded (a L : ℝ) (ha : 0 < a) (n : ℕ) (hfit : (n : ℝ) * a ≤ L) :
+    (n : ℝ) ≤ L / a := by
+  rw [le_div_iff₀ ha]; exact hfit
+
+/-- **The terminus is reached.**  For any wall length `L` and step `a > 0` there is a step count
+beyond which no further advance fits — the descent's base case exists. -/
+theorem exists_terminal_step (a L : ℝ) (ha : 0 < a) :
+    ∃ n : ℕ, L < (n : ℝ) * a := by
+  obtain ⟨n, hn⟩ := exists_nat_gt (L / a)
+  refine ⟨n, ?_⟩
+  rw [div_lt_iff₀ ha] at hn
+  exact hn
+
+/-- **The escape point leaves the target past the wall's end.**  Overshooting a boundary point of
+the base along a descending chord gives a negative ordinate — the directional test of
+`prop:doublec`(iv), in the form the terminus needs. -/
+theorem overshoot_leaves (y₀ slope t : ℝ) (hy : y₀ = 0) (hslope : slope < 0) (ht : 0 < t) :
+    y₀ + slope * t < 0 := by
+  rw [hy, zero_add]; exact mul_neg_of_neg_of_pos hslope ht
+
 end Erdos634.RouteOne
