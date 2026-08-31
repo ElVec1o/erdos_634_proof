@@ -785,3 +785,14 @@ mechanism, and it is untested.
 
 | M-combo | positive combinations of the edge directions satisfy the wedge conditions; the dissection kill in that form | `MarchOverlap.coord_pos_of_combo`, `.Dissection.wedge_disjoint_combo` | VERIFIED — orientation-free: `coord (k+1)` has linear part `1` along the edge to `pts (k+1)` and `0` along the edge to `pts (k+2)`, so no `det` enters |
 | M-vert | the vertical solves both coefficient systems at a `BG → GB` junction, and provably **not** at `GB → BG` | `MarchCoords.vertical_in_bg_gb_wedges`, `.vertical_not_in_gb_wedge` | VERIFIED — the negative control: the kill refuses to fire on the transition `prop:orientmono` permits. What now remains between these pieces and "no `BG → GB` on a real run" is only the bookkeeping that the two placed tiles' edge vectors at the junction have the stated components — a hypothesis-matching step, no new mathematics |
+
+### Lead (2026-09-01): the ceiling band is golden and bp-independent — pre-registered
+
+At every measured member the band `cp = f-1` is bp-independent (spread ≤ 1.13%) and its mean fits
+`16.1·φ^f` (growth `φ²` per `f`-step of 2: measured 2.62, 6.85, 6.85). The mirror sends the band to
+words with `c` fixed at position 4, `b` anywhere later. Same golden signature as the march, with `f`
+in the role of `bp` — the obstructions paper's "second family", whose driving run it could not
+identify. Predictions for `f = 24` are frozen in `private/PREREG_ceiling_band.md` (band within 2%,
+mean in `[1.60M, 1.74M]`, `(6,23)` in `[1.63M, 1.70M]`); the running sweep will decide them without
+further action. If confirmed and the mechanism proved, one run per band plus a reduction collapses
+the dominant part of every future sweep.
