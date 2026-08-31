@@ -161,3 +161,4 @@ import Erdos634.MarchRunStep
 import Erdos634.MarchFrontier
 import Erdos634.MarchMonotone
 import Erdos634.MarchFlank
+import Erdos634.MarchRunObject
