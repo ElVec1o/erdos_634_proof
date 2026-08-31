@@ -956,6 +956,19 @@ any step of the argument.
 | R1-over | a `b`- or `c`-edge from `V` strictly contains `E` — tile-interior blocking, branch dies | `RouteOne.overshoot_dichotomy`, `.E_interior_of_long` | VERIFIED |
 | R1-clos | a tile is the closure of its interior; **no point of one tile lies in another's interior** | `RouteOne.Tri.carrier_eq_closure_interior`, `.Dissection.not_mem_interior_of_mem` | VERIFIED — the placement primitive that kills any slanted edge poking into covered territory; reusable well beyond route 1 |
 | R1-flank | the horizontal-flank core: `(1,0)` a nonneg combination of two weakly-upward non-degenerate directions ⟹ one of them is horizontal rightward | `RouteOne.horizontal_flank` | VERIFIED |
-| R1-tang | the tangential-approach step: points on the line just right of `V` drag a tile whose corner cone contains directions of arbitrarily small slope | `RouteOne.cone_forces_horizontal` (**the complete arithmetic**), `.affine_nonneg_at_zero`, `.lower_flank_horizontal` | REDUCED to plumbing — `cone_forces_horizontal` is the whole cone argument: from "for every `δ > 0` some admissible combination has positive `x`-part and slope `≤ δ`", with both flanks weakly upward and not both horizontal, one flank is horizontal rightward. Its hypothesis is exactly what the barycentric decomposition `q − V = c₁e₁ + c₂e₂` of the tangential points provides. Remaining: the pigeonhole over finitely many closed tiles, the `V ∈ T` closure step, the vertex-not-edge step (from `alpha_wall_figure_real`'s `s = 1`), and the weakly-upward step (from `not_mem_interior_of_mem` against the below tile) — each a named application of an existing VERIFIED tool |
+| R1-tang | **the flank at `V` lies along the line** | `RouteOne.flank_along_line`, `.cone_forces_horizontal`, `.cone_hyp_of_tangential`, `.sub_vertex_eq_combo`, `.affine_nonneg_at_zero`, `.lower_flank_horizontal` | **VERIFIED** — a tile with vertex `V`, both edge directions weakly upward and not both horizontal, containing points that approach `V` tangentially from the right, has one edge horizontal and rightward. `sub_vertex_eq_combo` decomposes a carrier point at the vertex (the `i = k` term drops), `carrier_eq_nonneg_coord` makes the coefficients nonnegative, and `cone_forces_horizontal` finishes. **The hypotheses are now geometric facts about one tile, not a covering argument** |
 | R1-desc | the wall descent: the `a`-advance recursion terminates at the wall's exit | `RouteOne.wall_descent` | VERIFIED (the induction shape) — consumes the trichotomy as its step; the exit's blockedness is the terminal fact, geometric, open |
 | R1-march | the `a`-advance case: the march on the interior wall, with terminal kill at the wall's far end | `MarchStep.*`, `MarchRunObject.*` (shape) | OPEN — the induction is `march_dies`; its step consumes the same trichotomy one position along |
+
+**Route 1's remaining obligations, after 2026-09-01.** Everything between the escape configuration
+and the trichotomy is now VERIFIED. What is left is three geometric inputs, each a hypothesis of
+`flank_along_line` or `wall_descent` that must be supplied at the actual configuration:
+
+1. **the tangential hypothesis** — that some tile above the line contains points approaching `V`
+   from the right (pigeonhole over the finitely many tiles covering a sequence, then closedness);
+2. **weakly-upward** — that the chosen tile's two edges at `V` point into the upper half-plane
+   (`not_mem_interior_of_mem` against the tile below the line);
+3. **the descent's step and terminus** — that an `a`-advance recreates the trichotomy's hypotheses
+   one position along, and that the wall's exit admits no advance.
+
+(1) and (2) are applications of existing VERIFIED tools. (3) is the genuine remaining mathematics.

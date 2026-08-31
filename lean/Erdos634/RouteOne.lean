@@ -357,4 +357,72 @@ theorem wall_descent (S : ℕ → Prop) (hstep : ∀ n, S (n + 1) → S n) (hter
   | zero => exact hterm
   | succ k ih => exact fun h => ih (hstep k h)
 
+/-! ## The plumbing: from tangential points to the cone hypothesis
+
+`cone_forces_horizontal` wants: for every `δ > 0`, an admissible combination with positive `x`-part
+and slope `≤ δ`.  A point `q` of a tile `T`, decomposed barycentrically at the vertex `V = pts k`,
+supplies exactly that — the coefficients are the coordinates, nonnegative on the carrier
+(`Tri.carrier_eq_nonneg_coord`), and the combination is `q - V`. -/
+
+/-- **Barycentric decomposition at a vertex.**  `q - pts k` is the combination of the two edge
+vectors at `k` with the barycentric coordinates as coefficients — the `i = k` term drops out. -/
+theorem sub_vertex_eq_combo (T : Tri) (k : Fin 3) (q : Plane) :
+    q - T.pts k
+      = T.basis.coord (k + 1) q • (T.pts (k + 1) - T.pts k)
+        + T.basis.coord (k + 2) q • (T.pts (k + 2) - T.pts k) := by
+  have hsum : ∑ i, T.basis.coord i q = 1 := T.basis.sum_coord_apply_eq_one q
+  have hq : ∑ i, T.basis.coord i q • T.pts i = q := T.basis.linear_combination_coord_eq_self q
+  have hdec : q - T.pts k = ∑ i, T.basis.coord i q • (T.pts i - T.pts k) := by
+    simp only [smul_sub, Finset.sum_sub_distrib, hq, ← Finset.sum_smul, hsum, one_smul]
+  have hfin : ∀ j : Fin 3, j = k ∨ j = k + 1 ∨ j = k + 2 := by
+    have h : ∀ u v : Fin 3, v = u ∨ v = u + 1 ∨ v = u + 2 := by decide
+    exact fun j => h k j
+  have hne : ∀ x : Fin 3, (x + 1 ≠ x) ∧ (x + 2 ≠ x) ∧ (x + 1 ≠ x + 2) := by decide
+  obtain ⟨hne1, hne2, hne12⟩ := hne k
+  rw [hdec, Finset.sum_eq_add_of_mem (k + 1) (k + 2) (Finset.mem_univ _) (Finset.mem_univ _)
+    hne12 ?_]
+  intro j _ hj
+  rcases hfin j with rfl | rfl | rfl
+  · simp
+  · exact absurd rfl (hj.1)
+  · exact absurd rfl (hj.2)
+
+/-- **The cone hypothesis, from tangential points of a tile.**  If for every `δ > 0` the tile `T`
+contains a point `q` with `q - pts k = (t, u)`, `t > 0` and `u ≤ δ t`, then the corner cone at `k`
+contains directions of arbitrarily small slope — `cone_forces_horizontal`'s hypothesis. -/
+theorem cone_hyp_of_tangential (T : Tri) (k : Fin 3)
+    (h : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ T.carrier ∧
+      0 < (q - T.pts k) 0 ∧ (q - T.pts k) 1 ≤ δ * ((q - T.pts k) 0)) :
+    ∀ δ : ℝ, 0 < δ → ∃ c₁ c₂ : ℝ, 0 ≤ c₁ ∧ 0 ≤ c₂ ∧
+      0 < c₁ * ((T.pts (k + 1) - T.pts k) 0) + c₂ * ((T.pts (k + 2) - T.pts k) 0) ∧
+      c₁ * ((T.pts (k + 1) - T.pts k) 1) + c₂ * ((T.pts (k + 2) - T.pts k) 1)
+        ≤ δ * (c₁ * ((T.pts (k + 1) - T.pts k) 0)
+             + c₂ * ((T.pts (k + 2) - T.pts k) 0)) := by
+  intro δ hδ
+  obtain ⟨q, hq, hx, hy⟩ := h δ hδ
+  have hnn : ∀ i, 0 ≤ T.basis.coord i q := by
+    rw [T.carrier_eq_nonneg_coord] at hq; exact hq
+  have h0 := congrArg (fun v : Plane => v 0) (sub_vertex_eq_combo T k q)
+  have h1 := congrArg (fun v : Plane => v 1) (sub_vertex_eq_combo T k q)
+  simp only at h0 h1
+  rw [h0] at hx
+  rw [h0, h1] at hy
+  exact ⟨T.basis.coord (k + 1) q, T.basis.coord (k + 2) q, hnn _, hnn _, hx, hy⟩
+
+/-- **R1-tang, assembled.**  A tile `T` with vertex `V = pts k`, whose two edge directions at `k`
+point weakly upward and are not both horizontal, and which contains points approaching `V`
+tangentially from the right, has one of those edges horizontal and pointing right.
+
+This is the theorem the overshoot trichotomy consumes: it says the flank at `V` lies **along the
+line**, so the covering of `[V,E]` begins with a genuine tile edge from `V` of length `a`, `b` or
+`c`, and `overshoot_dichotomy` then splits the cases. -/
+theorem flank_along_line (T : Tri) (k : Fin 3)
+    (h1y : 0 ≤ (T.pts (k + 1) - T.pts k) 1) (h2y : 0 ≤ (T.pts (k + 2) - T.pts k) 1)
+    (hnd : ¬ ((T.pts (k + 1) - T.pts k) 1 = 0 ∧ (T.pts (k + 2) - T.pts k) 1 = 0))
+    (htan : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ T.carrier ∧
+      0 < (q - T.pts k) 0 ∧ (q - T.pts k) 1 ≤ δ * ((q - T.pts k) 0)) :
+    ((T.pts (k + 1) - T.pts k) 1 = 0 ∧ 0 < (T.pts (k + 1) - T.pts k) 0) ∨
+    ((T.pts (k + 2) - T.pts k) 1 = 0 ∧ 0 < (T.pts (k + 2) - T.pts k) 0) :=
+  cone_forces_horizontal _ _ _ _ h1y h2y hnd (cone_hyp_of_tangential T k htan)
+
 end Erdos634.RouteOne
