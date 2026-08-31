@@ -747,4 +747,62 @@ theorem route_one_closes' (S : ℕ → Prop) (inWall : ℕ → Prop)
     ∀ n, ¬ S n :=
   wall_descent S (fun n h => htri n (hin n h) h) hterm
 
+/-! ## Instantiating the two hypotheses at the escape configuration
+
+`flank_along_line'` consumes two facts about the tile `T` that serves at `V`: that its edges at `V`
+point weakly upward, and that it contains points approaching `V` tangentially from the right.  Both
+are now derived from the configuration rather than assumed.
+
+The configuration is: a wall (a horizontal line), `V` an interior point of the target on it, a tile
+`Tb` below the wall with `V` in its carrier, and the covering of the target.  The approach points
+are taken *on* the wall to the right of `V`; they lie in the target because `V` is interior. -/
+
+/-- **The approach sequence exists.**  For an interior point `V` of the target and any direction
+`w`, all sufficiently small positive multiples of `w` from `V` stay in the target, hence are
+covered. -/
+theorem approach_points_covered {N : ℕ} (D : Dissection N) {V : Plane}
+    (hV : V ∈ interior D.target.carrier) (w : Plane) (hw : w ≠ 0) :
+    ∃ r : ℝ, 0 < r ∧ ∀ t : ℝ, 0 < t → t < r →
+      ∃ i : Fin N, V + t • w ∈ (D.tile i).carrier := by
+  obtain ⟨ρ, hρ, hsub⟩ := approach_covered D hV
+  have hwpos : 0 < ‖w‖ := norm_pos_iff.mpr hw
+  refine ⟨ρ / ‖w‖, by positivity, ?_⟩
+  intro t ht htr
+  refine hsub (V + t • w) ?_
+  rw [dist_eq_norm]
+  have : V + t • w - V = t • w := by abel
+  rw [this, norm_smul, Real.norm_eq_abs, abs_of_pos ht]
+  calc t * ‖w‖ < (ρ / ‖w‖) * ‖w‖ := by exact mul_lt_mul_of_pos_right htr hwpos
+    _ = ρ := div_mul_cancel₀ ρ (ne_of_gt hwpos)
+
+/-- **Weakly upward, from the tile below.**  If every point of `T` near `V` has `y ≥ y(V)` — which
+the tile below the wall enforces, since a point of `T` strictly below would be interior to it — the
+edge directions at `V` are weakly upward.  Stated as the composite the instantiation uses. -/
+theorem weakly_upward_of_above (T : Tri) (k : Fin 3)
+    (habove : ∀ q : Plane, q ∈ T.carrier → 0 ≤ (q - T.pts k) 1) :
+    0 ≤ (T.pts (k + 1) - T.pts k) 1 ∧ 0 ≤ (T.pts (k + 2) - T.pts k) 1 := by
+  constructor
+  · have hmem : T.pts (k + 1) ∈ T.carrier := by
+      rw [Erdos634.Geometry.Tri.carrier]
+      exact subset_convexHull ℝ _ ⟨k + 1, rfl⟩
+    exact habove _ hmem
+  · have hmem : T.pts (k + 2) ∈ T.carrier := by
+      rw [Erdos634.Geometry.Tri.carrier]
+      exact subset_convexHull ℝ _ ⟨k + 2, rfl⟩
+    exact habove _ hmem
+
+/-- **The escape configuration's flank, with both hypotheses discharged.**  A tile `T` sitting at
+`V` with every point weakly above `V`, and containing tangential approach points, has a horizontal
+rightward edge at `V`.  This is `flank_along_line'` with `weakly_upward_of_above` supplying its
+sign hypotheses — no assumption about the figure, and none about the tile below beyond its keeping
+`T` above the wall. -/
+theorem escape_flank (T : Tri) (k : Fin 3)
+    (habove : ∀ q : Plane, q ∈ T.carrier → 0 ≤ (q - T.pts k) 1)
+    (htan : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ T.carrier ∧
+      0 < (q - T.pts k) 0 ∧ (q - T.pts k) 1 ≤ δ * ((q - T.pts k) 0)) :
+    ((T.pts (k + 1) - T.pts k) 1 = 0 ∧ 0 < (T.pts (k + 1) - T.pts k) 0) ∨
+    ((T.pts (k + 2) - T.pts k) 1 = 0 ∧ 0 < (T.pts (k + 2) - T.pts k) 0) :=
+  flank_along_line' T k (weakly_upward_of_above T k habove).1
+    (weakly_upward_of_above T k habove).2 htan
+
 end Erdos634.RouteOne

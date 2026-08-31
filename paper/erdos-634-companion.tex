@@ -1684,13 +1684,22 @@ escape exists at any distance from the exit.
 \end{proposition}
 
 \begin{remark}[What route 1 still assumes]\label{rem:routeoneopen}\lab{OPEN}
-Two inputs of Proposition~\ref{prop:flankline} are supplied by the dissection in general
-(\texttt{covered\_of\_mem\_target}, \texttt{approach\_covered},
-\texttt{above\_line\_of\_below\_tile}) but have not been instantiated at the escape configuration
-itself: that the approach points to $V$ exist and lie above the line, and that the tile below the
-wall occupies the lower side near $V$. Until they are, the chain above is a proof \emph{given} the
-configuration, not a proof about it. No further geometric mechanism is missing; what is missing is
-the identification of the configuration's tiles with the hypotheses' $T$ and its neighbour.
+Both inputs of Proposition~\ref{prop:flankline} are now discharged from the configuration rather
+than assumed. The approach points exist: $V$ is interior to the target, so all sufficiently small
+positive multiples of any direction from $V$ stay in the target and are covered
+(\texttt{approach\_points\_covered}, on \texttt{covered\_of\_mem\_target}). The edge directions are
+weakly upward as soon as the tile keeps its points above the wall at $V$, since the two other
+vertices lie in the carrier (\texttt{weakly\_upward\_of\_above}); and a point of the tile strictly
+below the wall would be interior to the tile below, which \texttt{above\_line\_of\_below\_tile}
+forbids. \texttt{escape\_flank} is the composite: a tile at $V$ whose points stay weakly above it
+and which carries tangential approach points has a horizontal rightward edge at $V$.
+
+What remains is not a geometric mechanism but an identification. The theorems quantify over ``the
+tile $T$ that serves at $V$'' and ``the tile below the wall''; the escape configuration must be
+matched to them --- which tile of the hypothetical tiling plays each role, and that the pigeonhole's
+chosen $T$ is one lying above the wall rather than the straight tile below. That matching is the
+sole remaining content of route 1, and it is bookkeeping over the configuration's tile list, not a
+new argument.
 \end{remark}
 
 \begin{conjecture}[Advance-and-collide]\label{conj:advance}\lab{CONJECTURE, proved at $f=2,3,4$}

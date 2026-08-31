@@ -987,3 +987,5 @@ advanced point `E`, some tile has `E` interior to an edge* — one straight angl
 below the wall is a through-edge this is immediate; if it is a junction, `E` is a vertex on both
 sides and the figure is the `s = 0` interior one, which the classification also handles but which
 has not been carried through. That case split is the residue.
+
+| C R1-inst | route 1's two configuration hypotheses, discharged | `RouteOne.approach_points_covered`, `.weakly_upward_of_above`, `.escape_flank` | VERIFIED — the approach points exist because `V` is interior (small multiples of any direction stay in the target and are covered); the edge directions are weakly upward as soon as the tile keeps its points above the wall, since its other two vertices lie in the carrier, and a point strictly below would be interior to the tile below (`above_line_of_below_tile`). `escape_flank` composes them. **What remains for route 1 is the identification** — matching the escape configuration's tiles to the theorems' `T` and its below-neighbour, including that the pigeonhole's chosen tile lies above the wall. Bookkeeping over the tile list, not a new argument |
