@@ -247,4 +247,61 @@ theorem model_matches_trace_f12 :
 /-- **The second apex is one `a`-step along**, as the trace's `719/24 = 12 + 431/24` shows. -/
 theorem second_apex_f12 : (12 : ℝ) + dBG 12 = 719 / 24 := by unfold dBG; norm_num
 
+/-! ## Chaining the step along the run
+
+The trace shows the march as a sequence of configurations, each two `a`-tiles and the filler on
+their junction, the next beginning where the previous left off.  Here that is made a definition and
+the chaining is proved: consecutive configurations **share an apex**, which is exactly what makes
+the fillers' top edges join into the derived run.
+
+This is the induction step's shape.  What it does not supply is that the run's tiles must be
+`a`-tiles in constant orientation — that is `prop:orientmono` and obligation (i). -/
+
+/-- A march configuration on the run: two `a`-tiles on `[t, t+f]` and `[t+f, t+2f]`, in the `BG`
+orientation, with their junction at `t+f`. -/
+structure Config where
+  /-- left end of the first `a`-tile -/
+  t : ℝ
+  /-- the member -/
+  f : ℝ
+
+namespace Config
+variable (C : Config)
+
+/-- The junction's `x`-coordinate. -/
+def junctionX : ℝ := C.t + C.f
+/-- The first apex's `x`-coordinate. -/
+noncomputable def apex1X : ℝ := C.t + dBG C.f
+/-- The second apex's `x`-coordinate. -/
+noncomputable def apex2X : ℝ := C.t + C.f + dBG C.f
+/-- The configuration one step along the run. -/
+def next : Config := ⟨C.t + C.f, C.f⟩
+
+/-- **The march advances by one `a`-position.** -/
+theorem next_junction : (C.next).junctionX = C.junctionX + C.f := by
+  unfold next junctionX; ring
+
+/-- **Consecutive configurations share an apex**: the next configuration's first apex is this
+one's second.  This is why the fillers' top edges join end to end into the derived run rather than
+merely lying at the same height. -/
+theorem shared_apex : (C.next).apex1X = C.apex2X := by
+  unfold next apex1X apex2X; ring
+
+/-- **The configuration is translation-invariant along the run.**  Everything about `next` is this
+configuration moved by one `a`-edge, so the problem it presents is the same one. That is the
+reduction obligation (iii) asserts, at the level of the configuration. -/
+theorem next_is_translate :
+    (C.next).junctionX = C.junctionX + C.f ∧
+    (C.next).apex1X = C.apex1X + C.f ∧
+    (C.next).apex2X = C.apex2X + C.f := by
+  refine ⟨C.next_junction, ?_, ?_⟩
+  · simp only [next, apex1X]; ring
+  · simp only [next, apex2X]; ring
+
+/-- **Two steps along.**  The crossed chirality's advance, for comparison with `next_junction`. -/
+theorem next_next_junction : (C.next.next).junctionX = C.junctionX + 2 * C.f := by
+  unfold next junctionX; ring
+
+end Config
+
 end Erdos634.MarchCoords
