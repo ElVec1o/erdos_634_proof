@@ -202,4 +202,27 @@ theorem defect_scales_to_one (f : ℝ) (hf : f ≠ 0) :
     f * (2 * f - (dBG f - dGB f)) = 1 := by
   rw [derived_shift_defect f hf]; field_simp
 
+/-- **The other transition, `BG → GB`, has spacing `(1-f²)/f`.**  Together with `spacing_gb_bg`
+this completes the spacing analysis: at an orientation change in *either* direction the apexes are
+`(3f²-1)/f` or `(f²-1)/f` apart in absolute value, and neither is a tile side. -/
+theorem spacing_bg_gb (f t : ℝ) (hf : f ≠ 0) :
+    ((t + f) + dGB f) - (t + dBG f) = (1 - f ^ 2) / f := by
+  unfold dGB dBG; field_simp; ring
+
+/-- **Neither transition direction admits a joining edge.**  `(f²-1)/f = s` for
+`s ∈ {f, f²-1, f²}` forces `f² - 1 = f²`, `f = 1`, or `f² - 1 = f³`, all impossible for `f ≥ 2`.
+
+**Scope, stated because it is easy to overread.**  This says a transition in *either* direction
+lacks a joining tile edge.  It therefore does **not** prove `prop:orientmono`'s asymmetry — that
+`BG` is never followed by `GB` while `GB → BG` is permitted once.  The apex-joining criterion is
+symmetric in the two directions, so the asymmetry comes from elsewhere and this is not a route to
+it. -/
+theorem bg_gb_not_a_side (f : ℤ) (hf : 2 ≤ f) :
+    f ^ 2 - 1 ≠ f * f ∧ f ^ 2 - 1 ≠ f * (f ^ 2 - 1) ∧ f ^ 2 - 1 ≠ f * f ^ 2 := by
+  refine ⟨?_, ?_, by intro h; nlinarith⟩
+  · intro h; rw [show f * f = f ^ 2 by ring] at h; omega
+  · intro h
+    have hd : f ∣ 1 := ⟨f + 1 - f ^ 2, by linarith [h]⟩
+    have := Int.le_of_dvd one_pos hd; omega
+
 end Erdos634.MarchCoords
