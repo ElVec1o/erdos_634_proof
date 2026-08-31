@@ -22,12 +22,17 @@ to one crossing question that nine tool classes provably cannot answer (each is 
 For `e = 1` the shorter route is `conj:advance`, which if proved closes the branch entirely. Its two
 gaps are now one: the double-`c` gap is closed at every block length (`prop:doublec`), and the
 remaining gap reduces to a single question — what covers a segment `[V, E]` of length exactly `a`.
-That question's chain is machine-checked (`lean/Erdos634/RouteOne.lean`, companion §"Route 1's chain,
-formalised"): the flank at `V` lies along the line, a `b`- or `c`-edge would contain `E` strictly and
-so dies by the very blocking whose failure defined the escape, and the surviving `a`-advance is a
-descent that terminates after finitely many wall edges. What remains unproved is the instantiation of
-two hypotheses at the escape configuration itself (`rem:routeoneopen`). The chain is a proof *given*
-the configuration, not yet a proof about it.
+That question's chain is machine-checked (`lean/Erdos634/RouteOne.lean`, 41 theorems, companion
+§"Route 1's chain, formalised"): the approach points to `V` exist and are covered; taking them
+strictly above the wall, the tile the pigeonhole selects is an upper tile, not the straight tile
+below; its edge directions are weakly upward; the flank at `V` therefore lies along the line; a `b`-
+or `c`-edge from `V` would contain `E` strictly and so dies by the very blocking whose failure
+defined the escape; and the surviving `a`-advance is a descent that terminates after finitely many
+wall edges. **One hypothesis remains** (`rem:routeoneopen`): that `V` is a vertex of the serving tile
+rather than interior to one of its edges. The figure at `V` gives this in principle — the single
+straight angle there belongs to the tile below — but that step is not yet composed with the
+pigeonhole, whose returned tile is not known to be among the tiles the figure counts. The residue is
+one composition step, not a missing mechanism.
 
 
 ## Main results
