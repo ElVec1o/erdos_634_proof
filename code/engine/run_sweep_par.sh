@@ -30,6 +30,12 @@ run_word() {  # f bp cp outfile
   [ -n "$r" ] && printf "f=%s (%s,%s): %s\n" "$wf" "$wbp" "$wcp" "$r" > "$wout"
 }
 
+# RACE=1 races both mirror representatives (2 engines per orbit, insurance against asymmetric
+# orbits at 2x CPU on every orbit).  RACE=0 runs the listed representative alone and tries the
+# mirror only if it returns no result (cap hit): at f=22 only 2 of 168 orbits were asymmetric,
+# so the insurance premium is the wrong trade at scale.
+RACE="${RACE:-1}"
+
 run_orbit() {  # bp cp
   local bp=$1 cp=$2
   trap 'rm -f "$work/.slot_f${f}_${bp}_${cp}"' EXIT
@@ -37,6 +43,15 @@ run_orbit() {  # bp cp
   local olog="$work/f${f}_o${bp}_${cp}.log"
   local oA="$work/.rA_${bp}_${cp}" oB="$work/.rB_${bp}_${cp}"
   rm -f "$oA" "$oB"
+  if [ "$RACE" = "0" ]; then
+    run_word "$f" "$bp" "$cp" "$oA"
+    if [ ! -s "$oA" ]; then run_word "$f" "$mbp" "$mcp" "$oB"; fi
+    if   [ -s "$oA" ]; then cat "$oA" > "$olog"
+    elif [ -s "$oB" ]; then cat "$oB" > "$olog"
+    else printf "f=%s (%s,%s): NO RESULT\n" "$f" "$bp" "$cp" > "$olog"
+    fi
+    rm -f "$oA" "$oB"; cat "$olog"; return
+  fi
   run_word "$f" "$bp" "$cp" "$oA" & local pA=$!
   local pB=""
   if [ "$mbp" != "$bp" ] || [ "$mcp" != "$cp" ]; then
