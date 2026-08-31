@@ -42,6 +42,37 @@ theorem conic_pi3 (N M : ℤ) :
     (5 * N - M ^ 2) ^ 2 - 16 * N ^ 2 = (9 * N - M ^ 2) * (N - M ^ 2) := by
   ring
 
+/-! ## The converse direction
+
+`qs_sq`, `conic_2pi3` and `factor_2pi3` all run one way: from the invariant counts to the
+factorization.  `prop:conicform` asserts an *equivalence*, and the return trip was missing.  It is
+an identity: multiplying the target by `s²` and using `ts = 3N`,
+`s²((t-s)² + 16N) = s⁴ + 10Ns² + 9N² = (s²+N)(s²+9N) = (qs)²`, and `s ≠ 0` cancels. -/
+
+/-- **The `2π/3` criterion is sufficient, not merely necessary.**  Given `s ≠ 0` with `ts = 3N` and
+the factorization `(s² + 5N - qs)(s² + 5N + qs) = 16N²`, the original conic condition
+`(t - s)² + 16N = q²` follows.  With `factor_2pi3` this makes the two criteria equivalent. -/
+theorem factor_2pi3_conv (s t N q : ℤ) (hs : s ≠ 0) (hst : t * s = 3 * N)
+    (hfac : (s ^ 2 + 5 * N - q * s) * (s ^ 2 + 5 * N + q * s) = 16 * N ^ 2) :
+    (t - s) ^ 2 + 16 * N = q ^ 2 := by
+  have hs2 : (s : ℤ) ^ 2 ≠ 0 := pow_ne_zero 2 hs
+  have key : s ^ 2 * ((t - s) ^ 2 + 16 * N) = s ^ 2 * q ^ 2 := by
+    linear_combination hfac + (t * s + 3 * N - 2 * s ^ 2) * hst
+  exact mul_left_cancel₀ hs2 key
+
+/-- **The `2π/3` equivalence**, both directions together. -/
+theorem factor_2pi3_iff (s t N q : ℤ) (hs : s ≠ 0) (hst : t * s = 3 * N) :
+    ((t - s) ^ 2 + 16 * N = q ^ 2)
+      ↔ ((s ^ 2 + 5 * N - q * s) * (s ^ 2 + 5 * N + q * s) = 16 * N ^ 2) :=
+  ⟨fun h => factor_2pi3 s t N q hst h, fun h => factor_2pi3_conv s t N q hs hst h⟩
+
+/-- **The `π/3` equivalence.**  `conic_pi3` is a ring identity, so it already runs both ways:
+`(9N - M²)(N - M²)` is a square exactly when `16N²` factors with `(u+v)/2 = 5N - M²`. -/
+theorem conic_pi3_iff (N M k : ℤ) :
+    ((9 * N - M ^ 2) * (N - M ^ 2) = k ^ 2)
+      ↔ ((5 * N - M ^ 2 - k) * (5 * N - M ^ 2 + k) = 16 * N ^ 2) := by
+  constructor <;> intro h <;> linear_combination h
+
 end Erdos634.EquilateralConic
 
 #print axioms Erdos634.EquilateralConic.qs_sq

@@ -1746,12 +1746,24 @@ an explicit factorization of $16N^2$. For the $\pi/3$ companion,
 $(5N-M^2)^2-16N^2=(9N-M^2)(N-M^2)$.
 \end{proposition}
 
+\begin{proposition}[Conic form: the criteria are equivalent]\label{prop:conicequiv}\lab{VERIFIED}
+Fix $N$ and let $s\neq0$ with $ts=3N$. Then
+\[
+(t-s)^2+16N=q^2 \iff (s^2+5N-qs)(s^2+5N+qs)=16N^2 ,
+\]
+so the conic condition and the factorization of $16N^2$ with $\tfrac{u+v}2-5N=s^2$ are the same
+condition (\texttt{EquilateralConic.factor\_2pi3\_iff}; the return direction is
+\texttt{.factor\_2pi3\_conv}, an identity after multiplying by $s^2$ and using $ts=3N$).
+For the $\pi/3$ companion, $(9N-M^2)(N-M^2)=k^2$ iff $(5N-M^2-k)(5N-M^2+k)=16N^2$
+(\texttt{.conic\_pi3\_iff}).
+\end{proposition}
+
 \begin{proposition}[Conic form]\label{prop:conicform}\lab{PROVED}
-For an equilateral target: a $2\pi/3$ tile requires a factorization $uv=16N^2$ with
-$u+v\equiv0\pmod2$ and $\tfrac{u+v}2-5N=s^2$ for a divisor $s$ of $3N$ with
-$s\equiv 3N/s\equiv N\pmod2$; a $\pi/3$ tile requires a factorization $uv=16N^2$ with
-$\tfrac{u+v}2 = 5N-M^2$ for some $0<M<\sqrt N$, $M\equiv N\pmod 2$. These are equivalent to
-the criteria of Proposition~\ref{prop:eqspecint} and of~\cite[Thm.~3]{BeesonEq} respectively.
+Hence a $2\pi/3$ tile requires a factorization $uv=16N^2$ with $u+v\equiv0\pmod2$ and
+$\tfrac{u+v}2-5N=s^2$ for a divisor $s$ of $3N$ with $s\equiv 3N/s\equiv N\pmod2$; a $\pi/3$ tile
+requires $uv=16N^2$ with $\tfrac{u+v}2 = 5N-M^2$ for some $0<M<\sqrt N$, $M\equiv N\pmod 2$. The
+word \emph{requires} is what is not formalized: that a tiling yields integers $s,t,q$ of those
+parities is Proposition~\ref{prop:eqspecint}, which quantifies over tilings.
 \end{proposition}
 
 \begin{proof}
