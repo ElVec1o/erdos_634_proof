@@ -693,3 +693,5 @@ minutes each, at 73672 and 62253 nodes: four orders of magnitude cheaper. `/tmp/
 this was available from the start. The sweep runner should try both representatives, or the cheaper
 one first; doing so would have saved roughly 30 CPU-hours on `f=22` alone. This is a property of the
 search's direction, not of the orbit.
+
+| M-derived | the fillers form a new `a`-run one level up; the chirality translates it by `2f - 1/f`, short of two positions by `1/f`, which scales to the residue `1` | `MarchCoords.derived_run_shift`, `.derived_shift_defect`, `.defect_scales_to_one` | VERIFIED |

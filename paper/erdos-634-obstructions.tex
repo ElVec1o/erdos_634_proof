@@ -1631,6 +1631,23 @@ configuration is admissible (\texttt{filler\_forced}). The branch is therefore t
 orientation and nothing else.
 \end{enumerate}
 
+\medskip
+The coordinates also expose the recursion. The fillers' top edges $[A_1,A_2],[A_2,A_3],\dots$ each
+have length $a=f$ and lie at the common height, so \emph{the fillers form a new $a$-run one level
+up}: the configuration is self-similar, which is the mechanism behind the recurrence. The derived
+run starts at the first apex, at $x$-coordinate $d_{\mathrm{GB}}$ or $d_{\mathrm{BG}}$ according to
+the chirality, so the chirality does not change the derived run's shape --- it translates it, by
+\[
+d_{\mathrm{BG}}-d_{\mathrm{GB}}=2f-\tfrac1f
+\]
+(\texttt{derived\_run\_shift}). Two positions of the original run measure $2f$, so the shift falls
+short of exactly two positions by $1/f$ (\texttt{derived\_shift\_defect}); and in units where the
+run's $a$-edges are integers, that shortfall is exactly $1$
+(\texttt{defect\_scales\_to\_one}). That is the residue killed by
+Lemma~\ref{C-lem:stubgap}, and it is what \texttt{MarchStep.offset\_terminal\_dies} consumes at the
+end of the march. So the two chiralities are the one that advances flush and the one that advances
+by two positions less $1/f$, the defect being precisely what the terminal argument kills.
+
 What remains unproved in (ii) is the \emph{displacement along the run}: that the two chiralities
 advance the march by exactly one and by exactly two positions. The configuration is now pinned in
 coordinates, but the advance is a statement about which $a$-tile the next spine step begins from,
