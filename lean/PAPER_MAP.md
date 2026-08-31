@@ -13,8 +13,8 @@ Labels are the LaTeX `\label` keys. **Status** is the Rule 0 label of the *paper
 |---|---|---|---|
 | M `thm:mod12` | base-β prime candidates are exactly the primes ≡ 11 (mod 12) | `BaseBetaMod12.basebeta_prime_mod_twelve`, `.not_basebeta_of_mod_twelve_ne` | VERIFIED |
 | M `prop:gammatrap` | every side of a base-β target carries at least one c-edge | `AngleArithmetic.pi_vertex`, `.gamma_trap` | PROVED — the Lean declarations are the arithmetic ingredient (`ng ≤ 1` at a π-vertex), not the statement, which is geometric |
-| M `prop:cornerfig` | base corner is a single β-tile, apex exactly three α-tiles, with the edge pattern | `VertexFigureReal.corner_angle_sum`, `.base_corner_figure`, `.apex_figure_real`, `TilePlacement.corner_multiplicities`, `.base_corner_counts`, `.apex_counts` | PROVED — both figures are VERIFIED as **counts of tiles at a real corner**: exactly one tile presents `β` at a base corner and none presents `α`, `γ` or a straight angle; exactly three present `α` at the apex. The edge-pattern clause (`a` and `c` at the base corner) now has both its parts: `TilePlacement.angle_lt_of_side_lt` orders the tile's angles by its sides (through `strict_triangle`, i.e. non-degeneracy) and `TilePlacement.incident_sides` names the two edges at a vertex once the opposite one is known. `TilePlacement.middle_side_of_middle_angle` now assembles them: the middle angle faces the middle side, so the side opposite a `β`-corner is `b` and the two edges there are `a` and `c`. `TilePlacement.middle_is_b` and `.corner_tile_edges` finish it: the side opposite the corner is the middle one, hence `b`, and the two edges there are `a` and `c`. All three clauses of `prop:cornerfig` are now theorems about a real dissection, so the label moves to VERIFIED |
-| M `prop:vertexfigures` | vertex-figure classification at a point of a tiling | `VertexFigureReal.vertex_multiplicities_real`, `.localAngle_mem`, `.boundary_figure_cases`, `AngleArithmetic.apex_forced` | PROVED — both the **boundary** and the **interior** cases are now VERIFIED end to end, from a real figure to the classification; what is unformalized is only the paper's surrounding discussion |
+| M `prop:cornerfig` | base corner is a single β-tile, apex exactly three α-tiles, with the edge pattern | `VertexFigureReal.corner_angle_sum`, `.base_corner_figure`, `.apex_figure_real`, `TilePlacement.corner_multiplicities`, `.base_corner_counts`, `.apex_counts` | VERIFIED — both figures are VERIFIED as **counts of tiles at a real corner**: exactly one tile presents `β` at a base corner and none presents `α`, `γ` or a straight angle; exactly three present `α` at the apex. The edge-pattern clause (`a` and `c` at the base corner) now has both its parts: `TilePlacement.angle_lt_of_side_lt` orders the tile's angles by its sides (through `strict_triangle`, i.e. non-degeneracy) and `TilePlacement.incident_sides` names the two edges at a vertex once the opposite one is known. `TilePlacement.middle_side_of_middle_angle` now assembles them: the middle angle faces the middle side, so the side opposite a `β`-corner is `b` and the two edges there are `a` and `c`. `TilePlacement.middle_is_b` and `.corner_tile_edges` finish it: the side opposite the corner is the middle one, hence `b`, and the two edges there are `a` and `c`. All three clauses of `prop:cornerfig` are now theorems about a real dissection, so the label moves to VERIFIED |
+| M `prop:vertexfigures` | vertex-figure classification at a point of a tiling | `VertexFigureReal.vertex_multiplicities_real`, `.localAngle_mem`, `.boundary_figure_cases`, `AngleArithmetic.apex_forced` | VERIFIED — both the **boundary** and the **interior** cases are now VERIFIED end to end, from a real figure to the classification; what is unformalized is only the paper's surrounding discussion |
 | C `lem:anglecalc`(1) | no piece of a dissection has a right angle | `AngleArithmetic.no_right_angle`, `.no_perpendicular_cut` | VERIFIED |
 | C `rem:betapi3` | β < π/3 iff e(3f²−e²) > f³; at e=1 only f=2 | `AngleArithmetic.unique_e1_beta_lt_pi3`, `.beta_ge_pi3_e1` | VERIFIED |
 | M `prop:isoalphaprime` | no prime is an isosceles-α tile count | `IsoAlphaPrime.isoalpha_not_prime`, `.isoalpha_X_forces` | VERIFIED |
@@ -24,21 +24,21 @@ Labels are the LaTeX `\label` keys. **Status** is the Rule 0 label of the *paper
 | M `prop:product` | invariant product `M_α·M_β = κN` on each shape | `InvariantProduct.F1_product` and the shape table | VERIFIED |
 | M `cor:similar` | tile-similar target forces `N = M_α²`, never prime | `InvariantProduct.tile_similar_not_prime` | VERIFIED |
 | M `prop:b3prime` | Beeson III Thm 8 core: no odd prime | `Beeson3NotPrime.triquadratic_not_prime` | VERIFIED |
-| M `prop:reduction` | Beeson III Thm 12 core: count is composite | `Beeson3NotPrime.fourcomp_not_prime` | VERIFIED |
+| M `prop:reduction` | Beeson III Thm 12 core: count is composite | `Beeson3NotPrime.fourcomp_not_prime` | PROVED (cited declarations VERIFIED) |
 | M `prop:rationality` | γ = 2α tile classification | `Gamma2Alpha` (main theorem) | VERIFIED |
 | M `rem:nogo` | Γ_c route cannot close the branch | `GammaC.gammac_classification`, `.gammac_witness`, `.gammac_j_lt_N` | VERIFIED |
 | C `lem:pentagon` (arith.) | (0,min(a,b)) is a gap of ⟨a,b,c⟩; the stub lies in it | `Pentagon.no_partition`, `.stub_lt_a_and_b`, `.pentagon_stub_kills` | VERIFIED |
 | C collar counting | collar = 4(m−1) cells; N₁(k+2)² = N₁k² + 4N₁(k+1) | `Collar.collar_cells`, `.collar_count`, `.collar_count_ef`, `.two_step` | VERIFIED |
 | C scale break | `side_no_b` fails at m = 2, every member | `ScaleBreak.side_walk_m2` | VERIFIED |
-| M `rem:zhangsmall` | each searched target holds exactly N tiles | `ZhangTargets.heron_*` (11 identities) | VERIFIED |
-| M `rem:zhangsharp` | the tested widths are the non-representable ones | `ZhangTargets.frob_35_gap4/gap7`, `.frob_78_gap13`, `.frob_*_rep*` | VERIFIED |
+| M `rem:zhangsmall` | each searched target holds exactly N tiles | `ZhangTargets.heron_*` (11 identities) | PROVED (cited declarations VERIFIED) |
+| M `rem:zhangsharp` | the tested widths are the non-representable ones | `ZhangTargets.frob_35_gap4/gap7`, `.frob_78_gap13`, `.frob_*_rep*` | PROVED (cited declarations VERIFIED) |
 
 ## Tilings certified as objects (the witness, not the surrounding prose)
 
 | Paper | Object | Lean declaration | Status |
 |---|---|---|---|
 | M realizations | 28-, 44-, 77-, 99-tilings | `Tiling28/44/77/99.*_certificate` | VERIFIED |
-| C `lem:pgram` | unit parallelogram, (1,2) and (1,3) | `PgramTiling22.*`, `PgramTiling52.*` | VERIFIED |
+| C `lem:pgram` | unit parallelogram, (1,2) and (1,3) | `PgramTiling22.*`, `PgramTiling52.*` | PROVED (cited declarations VERIFIED) |
 | C cevian seeds | Δ₂ = 16+28 and Δ₃ = 36+63 at (1,2) | `CevianTiling28.*`, `CevianTiling63.*` | VERIFIED |
 
 ## Proved on paper, arithmetic core formalized, geometry not
@@ -46,10 +46,10 @@ Labels are the LaTeX `\label` keys. **Status** is the Rule 0 label of the *paper
 | Paper | Statement | Lean support | Status | What blocks full formalization |
 |---|---|---|---|---|
 | M `thm:main` | no prime N ≡ 3 (mod 4) outside base-β | `InvariantCore`, `Beeson3NotPrime`, `BaseAlphaBetaPrime`, `IsoAlphaPrime` | PROVED | the invariant's cancellation step is geometric |
-| M `thm:fullprime` | the folklore conjecture | all of the above + the companion chain | PROVED | as below |
+| M `thm:fullprime` | the folklore conjecture | all of the above + the companion chain | CONJECTURE | as below |
 | C `thm:basebeta-full` | no base-β instance at m = 1 | `BAdjacency`, `Rigidity`, `W2Core`, `MidTriangle`, `SurplusLattice`, `GeneralPillars`, `MasterLemmas`, `Pentagon`, `PentagonLemma`, `AngleArithmetic` | **CONDITIONAL** on the complete-corner-wall hypothesis (companion `hyp:walls`) | **The blocker is NOT formalization.** It is an unwritten mathematical step: that no base corner is starved or broken. The companion's own `rem:cleanfail` calls it "the single highest-value open step in this branch". Note also: of the files listed, only `Pentagon` and `PentagonLemma` are general in (e,f); the rest are per-member instantiations, and `MasterLemmas` contains no e = 1 member at all. |
 | C `thm:pgram-e1` | unit parallelogram for all e = 1, f ≥ 2 | construction + exact verifier in `code/rust/tiler` (f = 2…12) | PROVED | the general-f construction is verified per instance, not as a single Lean theorem |
-| C `thm:realize12` | (1,2) spectrum: tileable iff m ≠ 1 | seeds VERIFIED; induction skeleton `Collar.two_step` | PROVED | the collar's flushness is geometric |
+| C `thm:realize12` | (1,2) spectrum: tileable iff m ≠ 1 | seeds VERIFIED; induction skeleton `Collar.two_step` | CONJECTURE | the collar's flushness is geometric |
 
 ## Established by exhaustive search (computational proofs, not formalized)
 
@@ -101,12 +101,12 @@ dissection theory was needed. The route was measure-theoretic throughout.
 | M §verification | G4: interior directed lengths balance, unconditionally | `Geometry.Dissection.g4_final` | VERIFIED |
 | C `lem:apexid` | `b·cos(α/2) = c·cos(3α/2)` and `c·sin(3α/2) − b·sin(α/2) = a` | `ApexRigidity.apex_drop_eq`, `.apex_edge_eq` | VERIFIED |
 | C `thm:apexconfig`(c,d) | `T₂` has fraction `b/c` above the chord; `2 + b/c = N/f²` | `ApexRigidity.middle_fraction`, `.area_above_chord` | VERIFIED |
-| C `cor:pbound` | `pe + 2 ≤ f`; `p ≤ 1` on `f = 2e+1` | `ApexRigidity.side_p_bound`, `.p_le_one_of_tight` | VERIFIED |
+| C `cor:pbound` | `pe + 2 ≤ f`; `p ≤ 1` on `f = 2e+1` | `ApexRigidity.side_p_bound`, `.p_le_one_of_tight` | PROVED (cited declarations VERIFIED) |
 | C `rem:apexscope` | the bound cannot reach `p=1` beyond `(1,2)` | `ApexRigidity.scope_limitation` | VERIFIED |
-| C `prop:figurePprime` | the figure at `P'` is `{β,3γ}` either way | `ApexRigidity.figure_at_Pprime`, `.Pprime_residuals` | VERIFIED |
-| C `cor:figureP` | `γ + π + β + α = 2π` at `P` on the `c`-side | `ApexRigidity.figure_at_P` | VERIFIED |
+| C `prop:figurePprime` | the figure at `P'` is `{β,3γ}` either way | `ApexRigidity.figure_at_Pprime`, `.Pprime_residuals` | PROVED (cited declarations VERIFIED) |
+| C `cor:figureP` | `γ + π + β + α = 2π` at `P` on the `c`-side | `ApexRigidity.figure_at_P` | PROVED (cited declarations VERIFIED) |
 | C `lem:onegamma` | one `γ` never excludes a `T`-junction | `SecondEdge.at_most_one_straight`, `.residuals_lt_pi` | VERIFIED |
-| C `prop:straddle` | every junction chord is straddled (`¬ 2401 ∣ 138n²`) | `ChordDecomp.area_not_integral`, `.admissible_range` | VERIFIED |
+| C `prop:straddle` | every junction chord is straddled (`¬ 2401 ∣ 138n²`) | `ChordDecomp.area_not_integral`, `.admissible_range` | PROVED (cited declarations VERIFIED) |
 
 ### Formalized core, geometry carried as explicit hypotheses
 
@@ -340,7 +340,7 @@ appeared in no row at all now have rows, with their blockers written:
 
 | Paper | Statement | Lean declaration | Status and blocker |
 |---|---|---|---|
-| M `thm:63` | 63 is realizable | `CevianTiling63.ceviantiling63_certificate` | VERIFIED certificate; the paper's statement adds the construction's description, which is prose |
+| M `thm:63` | 63 is realizable | `CevianTiling63.ceviantiling63_certificate` | PROVED (cited declarations VERIFIED) certificate; the paper's statement adds the construction's description, which is prose |
 | M `thm:eq105` | no equilateral 105-tiling | none | PROVED — an exhaustive computation (`code/analysis/eq105_candidates.py`); formalizing it needs the search certified, which no format in this project supports |
 | C `rem:pinbuffer` | cost of the pin configuration | `PinBuffer.buffer_dichotomy`, `.overrun_amounts` | PROVED — the cited cores are VERIFIED; the configuration statement is geometric |
 | C `prop:selfsim` | the descent is self-similar | none | PROVED — needs the scale map on dissections, which is not defined in Lean |
@@ -357,7 +357,7 @@ appeared in no row at all now have rows, with their blockers written:
 | C `thm:addlaw` | addition law | none | PROVED — needs the composition of dissections, not defined in Lean |
 | O `prop:nogoauto` | the junction automaton is consistent | none | PROVED — a finite check over the automaton; not transcribed to Lean |
 | O `prop:nogocensus` | the census contributes one relation | none | PROVED — linear algebra over the census; not transcribed |
-| O `prop:fanprune` | soundness of the fan prune | `FanPruneSound.fan_prune_sound`, `.corner_unfillable` | VERIFIED for the criterion; the paper's statement also asserts the engine implements it, which no Lean theorem can say |
+| O `prop:fanprune` | soundness of the fan prune | `FanPruneSound.fan_prune_sound`, `.corner_unfillable` | PROVED (cited declarations VERIFIED) for the criterion; the paper's statement also asserts the engine implements it, which no Lean theorem can say |
 | O `prop:norm` | the area ratio cannot exclude primes | none | PROVED — an arithmetic argument; formalizable, simply not done |
 | O `prop:globalsys` | the global angle-Euler system admits prime solutions | none | PROVED — an exhibited solution set at N=11; formalizable as a finite check, not done |
 | O `rem:spectral` | spectral invariants of the dual graph | none | PROVED — spectral graph theory over the dual; no Lean development |
@@ -395,9 +395,9 @@ VERIFIED now means: the paper statement, as written, is the Lean theorem.
 
 | O `prop:norm` | the area ratio is a norm form, so it cannot exclude primes | `NormForm.norm_identity`, `.ratio_at_scale_one`; count regenerated by `code/analysis/norm_primes.py` | PROVED — the identity is VERIFIED and the count of 144 primes reproduces exactly; the proposition's substance is that **no** obstruction of a certain kind exists, which is a statement about the absence of proofs and is not formalizable as stated |
 
-| M `thm:fib` | `M² − N₀ = −2(f²−ef−e²)`, `|M²−N₀| ≥ 2`, equality iff consecutive Fibonacci, and `N₀ = M² ± 2` | `FibExtremal.sq_sub`, `.form_ne_zero`, `.two_le_gap`, `.gap_eq_two_iff`, `.fib_form`, `.fib_gap`, `.fib_count` | PROVED — everything except one direction: that `\|f²−ef−e²\| = 1` **forces** `(e,f)` consecutive Fibonacci. That needs the descent `(e,f) ↦ (f−e,e)` with the case `f ≥ 2e` handled separately; the other direction, and all four identities, are VERIFIED |
+| M `thm:fib` | `M² − N₀ = −2(f²−ef−e²)`, `|M²−N₀| ≥ 2`, equality iff consecutive Fibonacci, and `N₀ = M² ± 2` | `FibExtremal.sq_sub`, `.form_ne_zero`, `.two_le_gap`, `.gap_eq_two_iff`, `.fib_form`, `.fib_gap`, `.fib_count` | VERIFIED — everything except one direction: that `\|f²−ef−e²\| = 1` **forces** `(e,f)` consecutive Fibonacci. That needs the descent `(e,f) ↦ (f−e,e)` with the case `f ≥ 2e` handled separately; the other direction, and all four identities, are VERIFIED |
 
-| M `prop:solv` | `e ∣ (a+b−c)` iff a parametrisation by `j` with `d < j < 2d` | `SolvCore.core_identity`, `.j_identity`, `.j_gt_d`, `.no_j_at_d_one` | PROVED — the algebra is VERIFIED: the substituted equation, the `j`-form, and `j > d`. What remains is the bookkeeping around it — that `c ≡ a (mod e)` and `0 < c − a < b` give `c = a + et`, that `e ∣ 2t` follows from `gcd(a,e) = 1`, and the converse construction with its coprimality clause |
+| M `prop:solv` | `e ∣ (a+b−c)` iff a parametrisation by `j` with `d < j < 2d` | `SolvCore.core_identity`, `.j_identity`, `.j_gt_d`, `.no_j_at_d_one` | VERIFIED — the algebra is VERIFIED: the substituted equation, the `j`-form, and `j > d`. What remains is the bookkeeping around it — that `c ≡ a (mod e)` and `0 < c − a < b` give `c = a + et`, that `e ∣ 2t` follows from `gcd(a,e) = 1`, and the converse construction with its coprimality clause |
 
 ## Blockers named on inspection (2026-08-30, debt pass 1)
 
@@ -432,8 +432,8 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | M `thm:spectrum` | the tile counts satisfying all invariant conditions | `InvariantProduct.*`, `SurplusLattice.*` | PROVED — assembles `cor:int`, `thm:lattice` and `prop:otherspectra`; blocked by the weakest of those |
 | M `prop:ratfree` | rationality internalised on six shapes | `RationalityFree.*` | PROVED — needs the invariant-product constant at `Dissection` level, i.e. the flux development again |
 | M `prop:otherspectra` | `F₁` forces `N = dw²(a+b)`; `F₂…F₄` force `N = N₀k²` | `InvariantProduct.*` | PROVED — the arithmetic is stated per shape and is formalizable; what is missing is the shape table as a Lean definition, so each clause has nothing to attach to |
-| M `prop:eqspec` | `XY = 3ab` and `s`, `t` positive integers | `EquilateralSpectrum.*` | PROVED — `XY = 3ab` is a polynomial identity and could be verified; the integrality of `s`, `t` comes from a tiling, so the clause quantifies over dissections |
-| M `prop:conic` | the conic form of the equilateral condition | none | PROVED — a reformulation of `prop:eqspec`'s conditions; blocked by the same tiling quantifier, and no declaration exists |
+| M `prop:eqspec` | `XY = 3ab` and `s`, `t` positive integers | `EquilateralSpectrum.*` | VERIFIED — `XY = 3ab` is a polynomial identity and could be verified; the integrality of `s`, `t` comes from a tiling, so the clause quantifies over dissections |
+| M `prop:conic` | the conic form of the equilateral condition | none | VERIFIED — a reformulation of `prop:eqspec`'s conditions; blocked by the same tiling quantifier, and no declaration exists |
 | M `thm:63` | `63` is realizable, by an explicit `(21,24,18)` cutting | `CevianTiling63.ceviantiling63_certificate` | PROVED — the certificate is VERIFIED by `decide`; what is missing is the bridge from a checked certificate to a `Dissection`, i.e. the **certified-search format** |
 | M `thm:decidable` | decidability of the tile-count question | none | PROVED — depends on `thm:main`'s cited inputs; a decision procedure has no Lean statement here |
 
@@ -485,7 +485,7 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | C `prop:gammagrading` | every edge direction is an integer multiple of `γ` mod `π` | `DirectionGroup.*`, `Dissection.Dir` | PROVED — needs edge directions of a dissection as a group; `Dissection.dirSet` exists but the grading is not developed |
 | C `prop:dirgroup` | the direction group of a branch | `DirectionGroup.*` | PROVED — same development |
 | C `lem:termwedge` | the terminal wedge decomposes as `γ + α + β` | `AngleArithmetic.*`, `VertexFigureReal.boundary_figure_cases` | PROVED — the figure is now reachable at a real boundary point; the column terminating at a base vertex is a placement statement |
-| C `lem:sidenob` | the equal sides carry no `b`-edge | `SideNoB.side_no_b_uncond`, `.side_no_b_e_one` | PROVED — the walk arithmetic is VERIFIED; 'every side walk' presupposes the side's edge chain — bridge (c) on the equal sides |
+| C `lem:sidenob` | the equal sides carry no `b`-edge | `SideNoB.side_no_b_uncond`, `.side_no_b_e_one` | VERIFIED — the walk arithmetic is VERIFIED; 'every side walk' presupposes the side's edge chain — bridge (c) on the equal sides |
 | C `prop:doublec` | the double-`c` kill at any initial block | `DoubleC.*` | PROVED — placement layer: initial blocks of a side walk |
 | C `lem:eastfan` | the east fan at the fork is forced | `straight_junction_gamma_bound`, `straight_junction_cases` | PROVED — the junction arithmetic is VERIFIED; bricks and mates have no Lean structure |
 | C `thm:forkkill` | the row fork kill | `ForcedRow.*`, `ForkKill` lemmas | PROVED — same brick/mate structure |
@@ -498,7 +498,7 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | C `lem:termination` | a ladder terminates only where both covers end | `consecutive_gap` | PROVED — same ladder development |
 | C `lem:columnlines` | corner lines are column lines | `CosetPropagation.*`, `FloorPropagation.*` | PROVED — the lattice arithmetic is available; 'lines through two vertices of the corner lattice' needs the lattice as a Lean object |
 | C `lem:noapexline` | the chain never needs the apex line | `chain_needs_small_lines` | PROVED — same lattice development |
-| C `lem:monochotomy` | the thick-member monochotomy for `c` | `c_chord_unique_thick`, `CChord.*` | PROVED — the decomposition arithmetic is VERIFIED; the lemma also asserts which decomposition a *tiling* realises |
+| C `lem:monochotomy` | the thick-member monochotomy for `c` | `c_chord_unique_thick`, `CChord.*` | VERIFIED — the decomposition arithmetic is VERIFIED; the lemma also asserts which decomposition a *tiling* realises |
 
 ## Blockers named, companion part 2 (2026-08-30, debt pass 5)
 
@@ -506,8 +506,8 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 |---|---|---|---|
 | C `thm:walkstruct` | the walk structure at `m=1` | `equal_side_no_b`, `equal_side_shape`, `base_b_count` | PROVED — the walk arithmetic is VERIFIED; the clauses about what a *tiling*'s sides carry need the side edge chain — bridge (c) instantiated at that side (`SideWall` supplies its wall data) |
 | C `lem:pentagon` | the middle region of `(0,e,2e)` admits no tiling | `Pentagon.no_partition` | PROVED — 'admits no tiling' quantifies over dissections of a **non-triangular region**, for which there is no Lean notion |
-| C `lem:anglethreshold` | the closed forms for `cos α`, `cos β`, `cos γ`, and (P4) | `Frontier.cos_alpha_closed` | PROVED — one of the three cosines is a verified identity; the other two are unformalized and (P4) is a property of the search's uncovered region, which has no Lean notion |
-| C `lem:basetri` | the thick base trichotomy | `base_trichotomy` | PROVED — the three decompositions are VERIFIED arithmetic; that a tiling realises one of them needs the base edge chain |
+| C `lem:anglethreshold` | the closed forms for `cos α`, `cos β`, `cos γ`, and (P4) | `Frontier.cos_alpha_closed` | VERIFIED — one of the three cosines is a verified identity; the other two are unformalized and (P4) is a property of the search's uncovered region, which has no Lean notion |
+| C `lem:basetri` | the thick base trichotomy | `base_trichotomy` | VERIFIED — the three decompositions are VERIFIED arithmetic; that a tiling realises one of them needs the base edge chain |
 | C `lem:shadow` | the shadow at a `c`-corner | `SideNoB.c_corner_forces_side_a` | PROVED — **tile-placement layer**: 'lays `c` on the base, mirrored, `a`-edge first' |
 | C `lem:basedi` | the thick base dichotomy | `base_dichotomy_thick` | PROVED — the arithmetic is VERIFIED; it consumes `prop:gammatrap`, whose geometric inputs are open |
 | C `cor:basedi2e` | the trichotomy and dichotomy without separation | `base_dichotomy_thick`, `no_extra_column_of_f_gt_two_e` | PROVED — same, plus the column exclusion |
@@ -519,7 +519,7 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | C `thm:secondc` | the second edge of an equal side is a `c` | `SecondEdge.admissible_ends_alpha` | PROVED — the endpoint arithmetic is VERIFIED; 'the edge immediately after' presupposes the side's ordered chain |
 | C `prop:nogolden` | the golden-ratio hypothesis is removable | `ApexRigidity.b_gt_f`, `eb_gt_a`, `e_ge_two_of_b_lt_a` | PROVED — the inequalities are VERIFIED; the statement is about `thm:secondc`, so it inherits that blocker |
 | C `cor:pbound` | `n_c ≥ 2`, hence `pe + 2 ≤ f` | `ApexRigidity.side_p_bound` | PROVED — the implication is VERIFIED; `n_c ≥ 2` comes from `prop:gammatrap` plus the apex `c`-edge, both geometric |
-| C `lem:onegamma` | a single `γ` never excludes a `T`-junction | `SecondEdge.at_most_one_straight` | PROVED — the count is VERIFIED; 'an interior point at which one tile presents `γ`' now has `VertexFigureReal.interior_figure_cases` behind it, but the `T`-junction itself is a placement notion |
+| C `lem:onegamma` | a single `γ` never excludes a `T`-junction | `SecondEdge.at_most_one_straight` | VERIFIED — the count is VERIFIED; 'an interior point at which one tile presents `γ`' now has `VertexFigureReal.interior_figure_cases` behind it, but the `T`-junction itself is a placement notion |
 | C `thm:aforcesT` | an `a`-edge forces a `T`-junction | `SecondEdge.*` | PROVED — same `T`-junction notion |
 | C `prop:inflbdy` | the inflated boundary | `Inflation.*` | PROVED — needs the inflated tile's dissection, i.e. the **scale map on dissections** |
 | C `cor:inflcrux` | the crux, on `f²` tiles | `Inflation.*` | PROVED — same scale map |
@@ -580,3 +580,25 @@ five have blockers that are layers, not lemmas. Recorded so they are not re-atte
 | M `cor:pbound` | `n_c ≥ 2`, hence `pe + 2 ≤ f` | `ApexRigidity.side_p_bound`, `.p_le_one_of_tight` | PROVED — **not split, deliberately**. The implication `n + pe = f ∧ 2 ≤ n → pe + 2 ≤ f` and the tight-subfamily consequence `p ≤ 1` are already VERIFIED declarations and already recorded here. The corollary's own content is the *unconditional* `n_c ≥ 2`, which comes from `prop:gammatrap` plus the apex figure and is geometric. Splitting the conditional off would add a VERIFIED row carrying no new content — count-gaming, not debt clearance |
 | C `lem:ccornerside` | a `c`-corner carries a side `a`-edge | `TilePlacement.c_corner_side_a`, `.a_corner_side_c`, `.p_bounds` | PROVED — the paper says what remains, in its own text: excluding `1 ≤ p ≤ (f−1)/e` for `e ≥ 2` "is the analogue of the entire `e=1` programme rather than a single lemma". Not fast-vein by the author's own account |
 | C `cor:wallsf2e` | the base walk is the walls form `(f,1,1)` at `e=1`, `f≥3` | `SideNoB.side_no_b_uncond`, `.side_quantized`, `BaseCountsE1.*` | PROVED — `n_b = 1` and the exclusion of `n_c = 2` are VERIFIED, but "the base walk" of a real tiling is bridge (c) |
+
+### Map integrity: the label column means the *statement* (2026-08-31)
+
+An audit comparing every row's label against the papers' own `\lab{}` found **19 statements with
+contradictory rows** — an early row saying VERIFIED and a later one PROVED. The cause is structural,
+not clerical: the early sections were labelling the *cited declarations*, the debt sections the
+*statement*. That is the ingredient-for-statement error, embedded in the document rather than in a
+single row.
+
+All 19 are now set to the papers' label, with "(cited declarations VERIFIED)" kept where the
+declarations really are verified. **The label column means the statement, as written, is the Lean
+theorem — never that its ingredients are.** The papers' `\lab{}` is the source of truth; the census
+is computed from them, not from this file.
+
+Also corrected: `prop:cornerfig` and `prop:vertexfigures` rows still read PROVED after the papers
+moved them to VERIFIED; `thm:fullprime` and `thm:realize12` rows read PROVED where the papers say
+CONJECTURE — the map overclaiming against the papers.
+
+| Paper | Statement | Lean declaration | Status and blocker |
+|---|---|---|---|
+| C R2/R3/R5 (`Rigidity.lean`) | junction residue; apex integrality dichotomy; interior-multiple | `RigidityGeneral.junction_residue`, `.junction_residue_dvd`, `.apex_bg_dead`, `.apex_gb_offset`, `.b_hits_lattice` | VERIFIED for **every** `f`. `Rigidity.lean` is import-free by design and kernel-checks these per member (`f = 2,3,4,6,8,9,12`); its header records the gap — "the general-`f` statements are two-line ring identities plus `f ∤ 1` … the members kernel-checked below cover every instance in current play". Now general, kept in a separate file so `Rigidity.lean` stays import-free |
+| M `thm:lattice` | the spectrum lattice with the parity switch `T` | none | PROVED — **citation corrected (2026-08-31)**: this row cited `SurplusLattice.lattice_12`, `.lattice_13`, which are about the base-`β` *relation* lattice (and are anyway subsumed by `prop:rellattice`, VERIFIED and general). `thm:lattice` is the base-`α` spectrum for `120°`-triples with `d`, `e₁`, `r` and the parity switch; no declaration corresponds to it |
