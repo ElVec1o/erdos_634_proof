@@ -908,3 +908,20 @@ constant comes from.
 
 Not proved: that the shape identity and the `3:2` proportionality hold at every `bp` and `f`. Two
 words at one member is a measurement.
+
+### The `2B = 3A + 2` law, and monotonicity from the local fact (2026-09-01)
+
+**The phase-class law, pre-registered and hit at a second member.** `(7,13)` vs `(8,13)` at `f=14`:
+depth 12, 8 divergence points, exactly two subtree sizes `1290` and `1936`, ratio `1.5008`,
+multiplicities `{3,5}`, shape-identical within class — all four predictions frozen beforehand. The
+two members give an exact relation:
+
+| member | small `A` | large `B` | relation |
+|---|---|---|---|
+| `f=12` | 294 | 442 | `2B = 3A + 2` |
+| `f=14` | 1290 | 1936 | `2B = 3A + 2` |
+
+So the frontier total is `F(k−1)·B + F(k−2)·A` with `B = (3A+2)/2` — a closed form in `A` alone,
+measured at two members and two `bp` each. Not proved.
+
+| M-mono | no `BG → GB` anywhere **is** `prop:orientmono`'s block form, with at most one transition | `MarchMonotone.mono_of_no_step`, `.block_form`, `.at_most_one_transition` | VERIFIED — the combinatorial step from local to global, and it is short: writing `true` for `BG`, "never `BG` then `GB`" says `w i = true → w (i+1) = true`, so `w` is monotone, hence `GB^j BG^(L−j)`, hence at most one transition. Combined with `MarchRun.junction_cases` (VERIFIED) this is `prop:orientmono`'s conclusion **on a boundary run**, from the corner figure alone — no bridge (c). What remains for `prop:orientmono` as the paper states it is the inflated-tile side, and for obligation (i) the identification of the run's tiles as the `a`-tiles the march walks |
