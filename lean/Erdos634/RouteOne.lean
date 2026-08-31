@@ -582,4 +582,37 @@ theorem route_one_closes (S : ℕ → Prop) (fig inWall : ℕ → Prop)
     ∀ n, ¬ S n :=
   wall_descent S (descent_step S fig inWall hfig hin htri) hterm
 
+/-! ## Instantiating (1) and (2) at the escape configuration
+
+`pigeonhole_tangential` needs approach points that are *covered*; `no_downward_edge` needs the tile
+to stay above the line near `V`.  Both follow from the dissection's own structure at an interior
+point, and are recorded here in the form the instantiation uses. -/
+
+/-- **Approach points are covered.**  Every point of the target lies in some tile — the covering
+half of `Dissection`, in the shape the pigeonhole consumes. -/
+theorem covered_of_mem_target {N : ℕ} (D : Dissection N) {q : Plane}
+    (hq : q ∈ D.target.carrier) : ∃ i : Fin N, q ∈ (D.tile i).carrier := by
+  have := D.covers
+  rw [Set.ext_iff] at this
+  obtain ⟨i, hi⟩ := Set.mem_iUnion.mp ((this q).mpr hq)
+  exact ⟨i, hi⟩
+
+/-- **Interior points have a ball of approach points.**  If `V` is interior to the target, points
+near `V` are in the target, hence covered — supplying the pigeonhole's input for every approach
+sequence that converges to `V`. -/
+theorem approach_covered {N : ℕ} (D : Dissection N) {V : Plane}
+    (hV : V ∈ interior D.target.carrier) :
+    ∃ r : ℝ, 0 < r ∧ ∀ q : Plane, dist q V < r → ∃ i : Fin N, q ∈ (D.tile i).carrier := by
+  obtain ⟨r, hr, hsub⟩ := Metric.isOpen_iff.mp isOpen_interior V hV
+  refine ⟨r, hr, fun q hq => ?_⟩
+  exact covered_of_mem_target D (interior_subset (hsub (Metric.mem_ball.mpr hq)))
+
+/-- **Staying above the line, from the tile below.**  If every point strictly below the line near
+`V` is interior to a tile `S`, and `T ≠ S`, then no point of `T` lies strictly below the line
+there — which is `no_downward_edge`'s local containment. -/
+theorem above_line_of_below_tile {N : ℕ} (D : Dissection N) {i j : Fin N} (hij : i ≠ j)
+    {q : Plane} (hq : q ∈ (D.tile i).carrier)
+    (hbelow : q ∈ interior (D.tile j).carrier) : False :=
+  Dissection.not_mem_interior_of_mem D hij hq hbelow
+
 end Erdos634.RouteOne
