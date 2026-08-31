@@ -361,4 +361,43 @@ theorem transition_asymmetric (f : ℝ) (hf : 1 < f) :
   rintro ⟨h1, -⟩
   exact absurd h1 (not_lt.mpr (le_of_lt (gb_then_bg_separates f hf).1))
 
+/-! ## The vertical is a positive combination of the wedge edges — and only for `BG → GB`
+
+`MarchOverlap.Dissection.wedge_disjoint_combo` kills two tiles sharing a vertex when a common `v`
+is a positive combination of each tile's edge directions there.  For the `BG → GB` junction the
+vertical is exactly such a `v`, and the coefficient systems are solved here componentwise: the
+left tile's edges at the junction are `(-f, 0)` and `(dBG - f, h)`, the right tile's are `(f, 0)`
+and `(dGB, h)`.
+
+The negative control: for a `GB` left tile the system has **no** positive solution — both first
+components are negative — so the kill correctly refuses to fire on the permitted transition. -/
+
+/-- **`BG → GB`: both coefficient systems have positive solutions.** -/
+theorem vertical_in_bg_gb_wedges (f h : ℝ) (hf : 1 < f) (hh : 0 < h) :
+    (∃ α β : ℝ, 0 < α ∧ 0 < β ∧ α * (-f) + β * (dBG f - f) = 0 ∧ β * h = 1)
+    ∧ (∃ α β : ℝ, 0 < α ∧ 0 < β ∧ α * f + β * (dGB f) = 0 ∧ β * h = 1) := by
+  have hf0 : 0 < f := lt_trans zero_lt_one hf
+  have hb := (bg_then_gb_straddles f hf).1      -- 0 < dBG f - f
+  have hg := (bg_then_gb_straddles f hf).2.1    -- dGB f < 0
+  constructor
+  · refine ⟨(dBG f - f) / (f * h), 1 / h,
+      div_pos hb (by positivity), by positivity, ?_, by field_simp⟩
+    field_simp
+    ring
+  · refine ⟨-(dGB f) / (f * h), 1 / h,
+      div_pos (neg_pos.mpr hg) (by positivity), by positivity, ?_, by field_simp⟩
+    field_simp
+    ring
+
+/-- **Negative control (`GB → BG`): the left system has no positive solution.**  Both first
+components are negative — `-f < 0` and `dGB - f < 0` — so a positive combination cannot vanish.
+The kill refuses to fire on the transition that `prop:orientmono` permits, as it must. -/
+theorem vertical_not_in_gb_wedge (f h : ℝ) (hf : 1 < f) (hh : 0 < h) :
+    ¬ ∃ α β : ℝ, 0 < α ∧ 0 < β ∧ α * (-f) + β * (dGB f - f) = 0 ∧ β * h = 1 := by
+  rintro ⟨α, β, hα, hβ, hzero, -⟩
+  have hf0 : 0 < f := lt_trans zero_lt_one hf
+  have hg : dGB f - f < 0 := by
+    have := (gb_then_bg_separates f hf).1; linarith
+  nlinarith [mul_pos hα hf0, mul_pos hβ (neg_pos.mpr hg)]
+
 end Erdos634.MarchCoords
