@@ -662,8 +662,8 @@ certified-search format — the same blocker as the other 10.
 | M-chir | chirality = the `a`-tiles' orientation, swapping `b` and `c` | `MarchCoords.offsets_complementary`, `.junction_to_apex_bg`, `.junction_to_apex_gb`, `.chirality_swaps_sides` | VERIFIED |
 | M-trans | transition spacing `(3f²-1)/f` is never a tile side | `MarchCoords.spacing_same`, `.spacing_gb_bg`, `.transition_not_a_side` | VERIFIED |
 | M-forced | the filler is forced; its sides are `{a,b,c}` | `MarchCoords.filler_forced`, `.filler_congruent_bg`, `.filler_congruent_gb` | VERIFIED |
-| M-ii | the two chiralities advance by exactly one and two positions | none | CONJECTURE — needs run-wide configuration forcing |
-| M-iii | both advances reduce to the same problem at smaller `bp` | none | CONJECTURE — same |
+| M-ii | the two chiralities advance by exactly one and two positions | none | HEURISTIC — measured from the engine trace (`CENGINE_TRACE=1`) at `bp=6,7`, `f=12`: exactly two children at the first branch, one carrying `a(bp-2)` verbatim and the other `a(bp-1)-3`. The `(7,6)` decomposition was **pre-registered** in `private/PREREG_march_decomp.md` and confirmed exactly. Proof still needs the run-wide configuration forcing |
+| M-iii | both advances reduce to the same problem at smaller `bp` | none | HEURISTIC — same trace: child `0`'s subtree **is** the smaller refutation node-for-node, child `1`'s is it less three shared spine nodes |
 
 `MarchCoords` is the project's first coordinate model of a run. `dBG = (3f²-1)/(2f)` is
 `Rigidity`'s `x_w` and equals `c·cos β` for the closed form of `lem:anglethreshold`, which is two
