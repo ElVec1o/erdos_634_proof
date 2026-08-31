@@ -669,12 +669,14 @@ certified-search format — the same blocker as the other 10.
 `Rigidity`'s `x_w` and equals `c·cos β` for the closed form of `lem:anglethreshold`, which is two
 independent checks that the model is the right one.
 
-### Reproducibility defect (Rule 9), OPEN
+### Reproducibility defect (Rule 9) -- RETRACTED 2026-08-31
 
-`cengine_rx2`, `cengine_gen`, `cengine_fan`, `cengine_learn`, `cengine_p7` are binaries with no
-source in the repo, no Makefile and no recorded build command. `cengine_rx2` produced the base-beta
-member certifications (`runrx*.log`, including the N=1451 sweep). Those verdicts can be re-run but
-not rebuilt, so they are not reproducible by a third party. See `private/RESEARCH_LOG.md`.
+**This entry was wrong and is retracted.** All five binaries are built from `cengine_iso.cpp`,
+which is committed; the binary name differs from the source name, and the search behind the original
+entry looked for `*rx2*.cpp`. Rebuilding `cengine_rx2` from committed source reproduces the shipped
+binary byte-for-byte (293800) and returns the logged verdict and node count on a settled instance.
+The member certifications are reproducible. The build recipe, which genuinely was missing, is now
+`code/engine/BUILD.md`.
 
 ### N = 1451 certified (2026-08-31), and a methodological finding
 
