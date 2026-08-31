@@ -1577,18 +1577,36 @@ and a tile filling it with its $\alpha$-corner there has its two edges on the we
 rays, in exactly two ways (\texttt{JunctionWedge.march\_junction\_real}). Earlier this consumed the
 multiplicity equations as hypotheses; they are now derived from the boundary figure classification.
 
-\emph{What is left.} Three statements, all about the \emph{run} rather than about a vertex:
-\begin{enumerate}
-\item[\textup{(i)}] that the march's steps land on vertices of the above kind --- frontier, not a
-target vertex, carrying a $\gamma$;
-\item[\textup{(ii)}] that the two placements advance the configuration by exactly one and by
-exactly two positions;
-\item[\textup{(iii)}] that both advances reduce to the same problem at smaller $bp$.
-\end{enumerate}
-With these, the entire $cp=bp-1$ family is excluded for every $bp$ and every $f$, with no search ---
-the first finite obligation this branch has offered that covers infinitely many members. Note that
-(i)--(iii) are all statements about \emph{where} tiles lie, so none is excluded by
-Proposition~\ref{prop:ninetools}: that no-go closes exactly the relocation-invariant tools.
+\emph{What is left, sharpened.} The three remaining statements are about the \emph{run} rather
+than about a vertex, and they do not stand on the same footing.
+
+\emph{(i) The march's steps land on vertices of the above kind.} This is now reduced to
+Proposition~\ref{C-prop:orientmono} and needs nothing further. At a straight-edge point the figure
+is $\{3\alpha,2\beta\}$ or $\{\alpha,\beta,\gamma\}$ and there is no third case
+(\texttt{MarchRun.junction\_dichotomy}), so a junction either carries no $\gamma$ at all or carries
+one and is a march junction (\texttt{.gamma\_of\_not\_exceptional}). Orientation monotonicity says at
+most one junction of an $a$-run is of the first kind --- it is the $\mathrm{BG}\to\mathrm{GB}$
+transition --- so all but at most one junction of the run is a march junction
+(\texttt{.all\_but\_one\_is\_march\_junction}). The residual dependence is on
+Proposition~\ref{C-prop:orientmono}, whose own blocker is bridge~(c).
+
+\emph{(ii) and (iii) are blocked at the level of statement, not of proof.} The wedge's two rays
+carry $b$ and $c$: at the $\gamma$-corner the flanking sides are $a$ and $b$, at the $\beta$-corner
+$a$ and $c$ (\texttt{TilePlacement.incident\_sides}), and the filler's $\alpha$-adjacent sides are
+$b$ and $c$. So the two chiralities are forced to be the \emph{flush} one, $b$ on the $b$-ray and
+$c$ on the $c$-ray, and the \emph{crossed} one, leaving a discrepancy $c-b=1$ on each ray --- which
+is why the two children differ by one unit in apex height. What does not follow is the displacement
+\emph{along the run}: advance by one position versus two.
+
+Attempting to state (ii) and (iii) without naming the geometric objects produces refutable
+statements, not merely unproved ones. Writing (ii) as ``for every advance function $\mathrm{adv}$,
+$\mathrm{adv}(\text{flush})=1$ and $\mathrm{adv}(\text{crossed})=2$'' is false, witnessed by
+$\mathrm{adv}\equiv0$; writing (iii) as ``$R(bp-1)\Rightarrow R(bp)$ for every $R$'' is false,
+witnessed by $R(n)=[n\le1]$ at $bp=2$. Both refutations are machine-checked. The advance function is
+exactly what the geometry is supposed to \emph{define}, so quantifying over it universally inverts
+the statement. Hence (ii) and (iii) require the tile-placement layer before they can be written
+down, let alone proved: they are not one lemma short, and no reformulation avoiding the coordinates
+will help.
 \end{remark}
 
 We record one further observation without explanation. The complementary family $cp=2$ is nearly
