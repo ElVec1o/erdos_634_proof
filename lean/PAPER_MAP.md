@@ -675,3 +675,21 @@ independent checks that the model is the right one.
 source in the repo, no Makefile and no recorded build command. `cengine_rx2` produced the base-beta
 member certifications (`runrx*.log`, including the N=1451 sweep). Those verdicts can be re-run but
 not rebuilt, so they are not reproducible by a third party. See `private/RESEARCH_LOG.md`.
+
+### N = 1451 certified (2026-08-31), and a methodological finding
+
+`verify_sweep.py 22` returns **PASS at both reach 3 and reach 4**: 168 of 168 orbits exhausted.
+`N = 1451` (`e=1`, `f=22`) joins the certified members. Logs: `runrx22.log`, `f22_fix.log`,
+`f22_m13c5.log`, `f22_m13c2.log`.
+
+**Search cost is direction-dependent, and the sweep ran only one representative per orbit.** The
+two orbits that held the sweep up, `{(12,20),(13,5)}` and `{(12,23),(13,2)}`, were being attacked
+through their `bp = 12` representatives, which consumed 869 and 928 CPU-minutes without finishing —
+against a typical orbit's 15 minutes. Their mirrors `(13,5)` and `(13,2)` exhausted in about seven
+minutes each, at 73672 and 62253 nodes: four orders of magnitude cheaper. `/tmp/f22.txt` listed only
+`bp ≤ 12`, so the cheap representative was never tried.
+
+`verify_sweep.py` has always credited an orbit when "the word **or its mirror**" is exhausted, so
+this was available from the start. The sweep runner should try both representatives, or the cheaper
+one first; doing so would have saved roughly 30 CPU-hours on `f=22` alone. This is a property of the
+search's direction, not of the orbit.

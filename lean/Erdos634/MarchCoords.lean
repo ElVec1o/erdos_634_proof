@@ -170,4 +170,36 @@ theorem filler_forced (f : ℝ) (hf : f ≠ 0) :
   rw [filler_congruent_gb f hf]
   exact Multiset.cons_swap _ _ _
 
+/-! ## The derived run, and where the advance comes from
+
+The fillers' top edges are `[A₁,A₂]`, `[A₂,A₃], …`, each of length `a = f` (`spacing_same`), lying
+at the common height `h` (`apex_height_common`).  So the fillers form a **new `a`-run one level up**:
+the configuration is self-similar, which is the mechanism behind the recursion.
+
+The derived run starts at the first apex, whose `x`-coordinate is `dGB` or `dBG` according to the
+chirality.  So the chirality does not change the derived run's shape — it translates it.  The shift
+is `2f - 1/f`: within `1/f` of exactly two positions of the original run, whose spacing is `f`. -/
+
+/-- **The chirality shifts the derived run by `2f - 1/f`.** -/
+theorem derived_run_shift (f : ℝ) (hf : f ≠ 0) : dBG f - dGB f = 2 * f - 1 / f := by
+  unfold dGB dBG; field_simp; ring
+
+/-- **The shift falls short of two positions by exactly `1/f`.**  Two positions of the original run
+measure `2f`. -/
+theorem derived_shift_defect (f : ℝ) (hf : f ≠ 0) :
+    2 * f - (dBG f - dGB f) = 1 / f := by
+  rw [derived_run_shift f hf]; ring
+
+/-- **The defect scales to the residue `1`.**  Measured in units where the run's `a`-edges are
+integers — multiply by `f` — the shortfall is exactly `1`.  That is the residue killed by
+`FanKill.one_is_gap`, and it is what `MarchStep.offset_terminal_dies` consumes at the end of the
+march: of the two chiralities only the flush one survives there, because the other has accumulated a
+stub of length `1`, and `1` is a gap of `⟨f, f²-1, f²⟩`.
+
+So the two chiralities are: the one that advances flush, and the one that advances by two positions
+less `1/f`.  The `1/f` is not lost — it is the defect that the terminal argument kills. -/
+theorem defect_scales_to_one (f : ℝ) (hf : f ≠ 0) :
+    f * (2 * f - (dBG f - dGB f)) = 1 := by
+  rw [derived_shift_defect f hf]; field_simp
+
 end Erdos634.MarchCoords
