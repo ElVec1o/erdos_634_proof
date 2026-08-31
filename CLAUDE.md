@@ -24,6 +24,30 @@ Not audits. Not bridges. Not "one step away."
   look," proved, not "we tried and it was hard."
 * **Report the distance honestly**, including when the distance grew.
 
+## The prime-case map (user, 2026-09-01): work the target list, not 4-step batches
+
+`GOAL_PRIMES.md` at the repo root is the dependency map for outcome (2), the prime case, with every
+node's Rule 0 label. It was built from the papers, not from memory. Work proceeds against its
+**ordered target list** until a target falls or is proved unreachable; report progress by *target*,
+not by count of small steps.
+
+The structure it records, so it is not re-derived each session:
+
+* Primes `N ≢ 11 (mod 12)` are **done** (`thm:mod12` forward VERIFIED, `thm:main`, `thm:primefull`).
+* Primes `N ≡ 11 (mod 12)` are exactly the base-β candidates, and since `N` prime forces `m = 1`,
+  **the prime case is the `m = 1` base-β family**. It splits `e = 1` / `e ≥ 2`, and both reduce to
+  the crossing question (`prop:threecostumes`).
+* `e = 1` has two routes. Route 1 (exclude every escape word family) needs families, not
+  enumeration — orbits grow 24, 41, 87, 149, 186 at `f = 12…24` — and the march family the recent
+  work advances is **7 of 186 orbits at `f = 24`**. Route 2 is `conj:advance`, which if proved
+  closes `e = 1` outright and names exactly two gaps, the second general except for its walk
+  enumeration. **Route 2 is shorter and better scoped; prefer it.**
+* `e ≥ 2` has no route that is not the crossing question itself.
+
+Standing honesty requirement for this goal: the march work is real and small relative to it. Do not
+report march progress as prime-case progress without saying which of the 186 orbit-families it
+touches.
+
 ## Second standing goal (user, 2026-08-30): clear the formalization debt
 
 **Every PROVED statement in the three papers is debt** (Rule 5): it must reach VERIFIED, or carry a
