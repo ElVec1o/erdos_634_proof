@@ -1692,19 +1692,29 @@ tile the pigeonhole selects is not the straight tile beneath the wall
 dissection at a named vertex: the serving tile has a horizontal rightward edge at $V$.
 \end{proposition}
 
-\begin{remark}[What route 1 still assumes]\label{rem:routeoneopen}\lab{OPEN}
-One hypothesis remains, and it is the only one: that $V$ is a \emph{vertex} of the serving tile
-rather than a point interior to one of its edges. The figure at $V$ supplies it in principle --- the
-single straight angle there belongs to the tile below (Proposition~\ref{prop:flankline}'s companion
-\texttt{alpha\_wall\_figure\_real}, with $s=1$), so no upper tile has $V$ interior to an edge --- but
-that step is not composed with the pigeonhole in the formal development: the tile the pigeonhole
-returns is not yet known to be one of the tiles the figure counts.
+\begin{proposition}[The serving tile has $V$ as a vertex]\label{prop:servingvertex}\lab{VERIFIED}
+A tile's local angle at $V$ is a corner angle, $2\pi$, $\pi$ or $0$
+(\texttt{PinPlumbing.localAngle\_cases}). For the serving tile the last three are excluded: $0$
+because it contains $V$, $2\pi$ by the figure's $u=0$, and $\pi$ because the $\pi$-count at $V$ is
+exactly one and the tile below carries it, so no other tile can
+(\texttt{not\_straight\_of\_unique}). Hence $V$ is one of its vertices
+(\texttt{serving\_has\_vertex}), and \texttt{route\_one\_flank\_composed} states the flank
+conclusion with that hypothesis discharged.
+\end{proposition}
 
-Everything else in route 1 is discharged. The approach points exist and are covered; the serving
-tile is an upper tile; its edge directions are weakly upward; the flank at $V$ lies along the line;
-a $b$- or $c$-edge from $V$ contains $E$ strictly and dies by the very blocking whose failure
-defined the escape; the surviving $a$-advance is a descent that terminates after finitely many wall
-edges. The residue is one composition step, not a mechanism.
+\begin{remark}[What route 1 still assumes]\label{rem:routeoneopen}\lab{OPEN}
+The chain of Propositions~\ref{prop:flankline}--\ref{prop:servingvertex} is complete as a chain: from
+a wall, an interior point $V$ on it, a tile below carrying the straight angle, and approach points
+strictly above, it derives that the covering of $[V,E]$ begins with a tile edge from $V$, that a $b$-
+or $c$-edge dies by tile-interior blocking, and that the surviving $a$-advance descends to a
+terminus.
+
+What it does not do is \emph{exhibit} that data in a hypothetical tiling of the base-$\beta$ target.
+Each theorem takes the configuration as hypotheses --- the wall, the below tile, the interiority of
+$V$, the figure's counts at $V$ --- and the escape of Remark~\ref{rem:route1uniform} must be shown
+to present them. That is the remaining obligation: not a step of the argument, but the argument's
+attachment to the object it is about. Route 1 is therefore a proof scheme, machine-checked, awaiting
+its instance.
 \end{remark}
 
 \begin{conjecture}[Advance-and-collide]\label{conj:advance}\lab{CONJECTURE, proved at $f=2,3,4$}

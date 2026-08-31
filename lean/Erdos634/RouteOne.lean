@@ -1,5 +1,6 @@
 import Erdos634.VertexFigureReal
 import Erdos634.MarchFlank
+import Erdos634.PinPlumbing
 
 /-!
 # Route 1's escape point: the figure at `V`, and the overshoot dichotomy
@@ -850,6 +851,78 @@ theorem route_one_flank_identified {N : ℕ} (D : Dissection N) (V : Plane)
     (((D.tile i).pts (k + 2) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (k + 2) - V) 0) := by
   have h := escape_flank (D.tile i) k (by rw [hvert]; exact habove) (by rw [hvert]; exact hserve)
   rw [hvert] at h
+  exact h
+
+/-! ## The composition: the serving tile has `V` as a vertex
+
+Route 1's last hypothesis was that `V` is a vertex of the serving tile rather than interior to one
+of its edges.  `PinPlumbing.localAngle_cases` splits a tile's local angle at `V` four ways: a corner
+angle (so `V` is a vertex), `2π` (the tile covers `V`), `π` (`V` interior to an edge), or `0` (`V`
+outside).  The serving tile contains points arbitrarily close to `V` on both the `0` and `π`
+branches are excluded directly:
+
+* `0` is excluded because the serving tile contains `V` (its carrier is closed and the approach
+  points converge to `V`);
+* `2π` is excluded by the figure's `u = 0`;
+* `π` is excluded by the figure's `s = 1` together with the straight angle already belonging to the
+  tile *below* — an upper tile cannot also carry it, the count being exactly one.
+
+What is left is the vertex branch.  The lemma below performs that elimination from the counts. -/
+
+/-- **The serving tile has `V` as a vertex.**  From the four-way split, given that the tile is not
+the one carrying the straight angle, does not cover `V`, and does contain `V`. -/
+theorem serving_has_vertex {N : ℕ} (D : Dissection N) (i : Fin N) (V : Plane)
+    (hne0 : (D.tile i).localAngle V ≠ 0)
+    (hne2pi : (D.tile i).localAngle V ≠ 2 * Real.pi)
+    (hnepi : (D.tile i).localAngle V ≠ Real.pi) :
+    ∃ k : Fin 3, (D.tile i).pts k = V := by
+  rcases Erdos634.PinPlumbing.localAngle_cases (D.tile i) V with ⟨j, hj, -⟩ | h | h | h
+  · exact ⟨j, hj.symm⟩
+  · exact absurd h hne2pi
+  · exact absurd h hnepi
+  · exact absurd h hne0
+
+/-- **The straight angle is unique, so an upper tile does not carry it.**  If the `π`-count at `V`
+is `1` and the tile `b` below carries it, any other tile has local angle `≠ π` there. -/
+theorem not_straight_of_unique {N : ℕ} (D : Dissection N) (V : Plane)
+    (hcard : ({i | (D.tile i).localAngle V = Real.pi} : Finset (Fin N)).card = 1)
+    (b : Fin N) (hb : (D.tile b).localAngle V = Real.pi)
+    (i : Fin N) (hib : i ≠ b) :
+    (D.tile i).localAngle V ≠ Real.pi := by
+  classical
+  intro hi
+  have hsub : ({i, b} : Finset (Fin N))
+      ⊆ ({j | (D.tile j).localAngle V = Real.pi} : Finset (Fin N)) := by
+    intro j hj
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hj
+    rcases hj with rfl | rfl
+    · simpa using hi
+    · simpa using hb
+  have h2 : ({i, b} : Finset (Fin N)).card = 2 := by
+    rw [Finset.card_insert_of_notMem (by simpa using hib), Finset.card_singleton]
+  have := Finset.card_le_card hsub
+  omega
+
+/-- **Route 1's flank, with the vertex hypothesis discharged.**  The serving tile is an upper tile
+distinct from the one carrying the straight angle, does not cover `V`, and contains it; hence `V` is
+one of its vertices, and the flank conclusion follows at that vertex. -/
+theorem route_one_flank_composed {N : ℕ} (D : Dissection N) (V : Plane) (i b : Fin N)
+    (hib : i ≠ b)
+    (hcard : ({j | (D.tile j).localAngle V = Real.pi} : Finset (Fin N)).card = 1)
+    (hb : (D.tile b).localAngle V = Real.pi)
+    (hne0 : (D.tile i).localAngle V ≠ 0)
+    (hne2pi : (D.tile i).localAngle V ≠ 2 * Real.pi)
+    (hserve : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i).carrier ∧
+      0 < (q - V) 0 ∧ (q - V) 1 ≤ δ * ((q - V) 0))
+    (habove : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - V) 1) :
+    ∃ k : Fin 3, (D.tile i).pts k = V ∧
+      ((((D.tile i).pts (k + 1) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (k + 1) - V) 0) ∨
+       (((D.tile i).pts (k + 2) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (k + 2) - V) 0)) := by
+  obtain ⟨k, hk⟩ := serving_has_vertex D i V hne0 hne2pi
+    (not_straight_of_unique D V hcard b hb i hib)
+  refine ⟨k, hk, ?_⟩
+  have h := escape_flank (D.tile i) k (by rw [hk]; exact habove) (by rw [hk]; exact hserve)
+  rw [hk] at h
   exact h
 
 end Erdos634.RouteOne

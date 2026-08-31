@@ -28,11 +28,13 @@ strictly above the wall, the tile the pigeonhole selects is an upper tile, not t
 below; its edge directions are weakly upward; the flank at `V` therefore lies along the line; a `b`-
 or `c`-edge from `V` would contain `E` strictly and so dies by the very blocking whose failure
 defined the escape; and the surviving `a`-advance is a descent that terminates after finitely many
-wall edges. **One hypothesis remains** (`rem:routeoneopen`): that `V` is a vertex of the serving tile
-rather than interior to one of its edges. The figure at `V` gives this in principle — the single
-straight angle there belongs to the tile below — but that step is not yet composed with the
-pigeonhole, whose returned tile is not known to be among the tiles the figure counts. The residue is
-one composition step, not a missing mechanism.
+wall edges. The vertex hypothesis is now discharged too: a tile's local angle at `V` is a corner angle, `2π`, `π`
+or `0`, and the last three are excluded — `0` because the tile contains `V`, `2π` by the figure, and
+`π` because the straight angle at `V` is unique and belongs to the tile below. **What remains
+(`rem:routeoneopen`) is not a step of the argument but its attachment to the object**: each theorem
+takes the configuration as hypotheses — the wall, the below tile, `V` interior, the figure's counts —
+and a hypothetical tiling must be shown to present them. Route 1 is a machine-checked proof scheme
+awaiting its instance.
 
 
 ## Claim labels, as of v3.0
