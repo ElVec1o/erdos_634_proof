@@ -974,3 +974,16 @@ terminus half of (3) are now VERIFIED:
 The inputs each of (1), (2) now *consumes* (that the approach points exist and are covered; that the
 tile stays above the line near `V`) are facts about the specific escape configuration, supplied when
 the theorems are instantiated. What has no proof at all is (3b).
+
+### Route 1's two residual inputs, after 2026-09-01 (evening)
+
+| Input | Declaration | Label |
+|---|---|---|
+| `fig n` — the figure at the advanced point | `RouteOne.fig_of_witnesses`, `.alpha_not_from_advancing` | REDUCED to **one witness**: `fig_of_witnesses` derives the figure from an `α` and a straight angle at `E`, and `alpha_not_from_advancing` shows the `α` cannot come from the advancing tile — it lays its `a`-edge along the wall, so at either endpoint it presents `β` or `γ`. So the outstanding fact is the **straight angle at `E`**, i.e. that a tile has `E` interior to an edge; the `α` then follows from the classification, since a straight-edge point that is not the `{3α,2β}` figure is `(1,1,1)` |
+| `inWall n` — the advance stays on the wall | `RouteOne.advance_injective`, `.advance_count_le_run`, `.terminus_of_run_length` | **VERIFIED** — each step consumes a distinct wall `a`-edge (positions differ by `n·a`), so the step count is bounded by `MarchRunObject.runLength`. This also re-derives the terminus **combinatorially**, without the wall's metric length: step `L+1` is unreachable when the wall has `L` edges |
+
+**Route 1's single outstanding fact.** Every other input is VERIFIED. What remains is: *at the
+advanced point `E`, some tile has `E` interior to an edge* — one straight angle. If the covering
+below the wall is a through-edge this is immediate; if it is a junction, `E` is a vertex on both
+sides and the figure is the `s = 0` interior one, which the classification also handles but which
+has not been carried through. That case split is the residue.

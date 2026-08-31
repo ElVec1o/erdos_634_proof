@@ -1,4 +1,5 @@
 import Erdos634.VertexFigureReal
+import Erdos634.MarchFlank
 
 /-!
 # Route 1's escape point: the figure at `V`, and the overshoot dichotomy
@@ -614,5 +615,96 @@ theorem above_line_of_below_tile {N : ℕ} (D : Dissection N) {i j : Fin N} (hij
     {q : Plane} (hq : q ∈ (D.tile i).carrier)
     (hbelow : q ∈ interior (D.tile j).carrier) : False :=
   Dissection.not_mem_interior_of_mem D hij hq hbelow
+
+/-! ## `fig n`: the figure at the advanced point
+
+`alpha_wall_figure_real` needs two witnesses at `E`: a tile presenting `α`, and a tile with `E`
+interior to an edge.
+
+The `α` is free.  The advancing tile lays `[V,E]` of length `a` along the wall; `a` is its shortest
+side, so the corner *opposite* `[V,E]` carries `α` — but that corner is the apex, not `E`.  At `E`
+the tile carries one of the two larger angles, `β` or `γ` (`MarchFlank.presents_beta_or_gamma`).
+The `α` at `E` therefore comes from a *different* tile, and the figure classification supplies it:
+having a straight angle and not being the `{3α,2β}` figure forces `(1,1,1)`, which contains an `α`.
+
+So the real content is the straight angle, and the two cases are exactly the trichotomy again one
+level down.  What is recorded here is the implication in the form `descent_step` consumes: given a
+straight angle at `E` and *any* tile presenting `α` there, `fig` holds. -/
+
+/-- **`fig` from the two witnesses.**  Packaging `alpha_wall_figure_real`'s conclusion as the
+predicate `descent_step` consumes: at an interior point with an `α` and a straight angle, the
+figure is a boundary figure with no covering tile and exactly one straight angle. -/
+theorem fig_of_witnesses {N : ℕ} (D : Dissection N) {α β γ : ℝ}
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    {E : Plane} (hE : E ∈ interior D.target.carrier)
+    (hvals : ∀ i, (D.tile i).localAngle E ∈ ({α, β, γ, Real.pi, 2 * Real.pi, 0} : Finset ℝ))
+    (iα iπ : Fin N) (hiα : (D.tile iα).localAngle E = α)
+    (hiπ : (D.tile iπ).localAngle E = Real.pi) :
+    ({i | (D.tile i).localAngle E = 2 * Real.pi} : Finset (Fin N)).card = 0 ∧
+    ({i | (D.tile i).localAngle E = Real.pi} : Finset (Fin N)).card = 1 :=
+  let h := alpha_wall_figure_real D hαβ hαγ hαπ hα2π hα0 hβγ hβπ hβ2π hβ0 hγπ hγ2π hγ0
+    hπ2π hπ0 h2π0 hγdef hrel hirr hE hvals iα hiα iπ hiπ
+  ⟨h.1, h.2.1⟩
+
+/-- **The `α` witness is not the advancing tile.**  The advancing tile lays its `a`-edge along the
+wall, so at either endpoint it presents `β` or `γ`, never `α`
+(`MarchFlank.presents_beta_or_gamma`).  Hence the `α` at `E` belongs to some other tile — which is
+what makes the figure at `E` genuinely new information rather than a restatement. -/
+theorem alpha_not_from_advancing (T : Tri) (j : Fin 3) {α β γ : ℝ}
+    (h1 : Erdos634.TilePlacement.sideOpp T j < Erdos634.TilePlacement.sideOpp T (j + 1))
+    (h2 : Erdos634.TilePlacement.sideOpp T (j + 1) < Erdos634.TilePlacement.sideOpp T (j + 2))
+    (hapex : Erdos634.TilePlacement.angleAt T j = α)
+    (hmem1 : Erdos634.TilePlacement.angleAt T (j + 1) = α ∨
+      Erdos634.TilePlacement.angleAt T (j + 1) = β ∨
+      Erdos634.TilePlacement.angleAt T (j + 1) = γ)
+    (hmem2 : Erdos634.TilePlacement.angleAt T (j + 2) = α ∨
+      Erdos634.TilePlacement.angleAt T (j + 2) = β ∨
+      Erdos634.TilePlacement.angleAt T (j + 2) = γ)
+    (hne : α ≠ β) (hne2 : α ≠ γ) :
+    T.localAngle (T.pts (j + 1)) ≠ α ∧ T.localAngle (T.pts (j + 2)) ≠ α := by
+  obtain ⟨g1, g2⟩ := Erdos634.MarchFlank.presents_beta_or_gamma T j h1 h2 hapex hmem1 hmem2
+  constructor
+  · rcases g1 with h | h <;> rw [h] <;> [exact fun hc => hne hc.symm; exact fun hc => hne2 hc.symm]
+  · rcases g2 with h | h <;> rw [h] <;> [exact fun hc => hne hc.symm; exact fun hc => hne2 hc.symm]
+
+/-! ## `inWall n`: the advance stays on the wall, and only finitely often
+
+The advance moves the escape point by one `a`-edge each step, and each step consumes a distinct
+edge of the wall — the produced edge `[V,E]`, which is a wall edge of length `a`, i.e. an entry of
+`MarchRunObject.aRun`.  Distinct steps consume distinct entries (their left endpoints differ by
+`n·a`), so the number of advances is at most the run's length.  That is `inWall`, and it also
+re-derives the terminus without appeal to the wall's metric length. -/
+
+/-- **Advance positions are distinct.**  Steps `m ≠ n` sit at different points of the wall. -/
+theorem advance_injective (x a : ℝ) (ha : 0 < a) {m n : ℕ} (hmn : m ≠ n) :
+    x + (m : ℝ) * a ≠ x + (n : ℝ) * a := by
+  intro h
+  have : (m : ℝ) = n := by
+    have h' : (m : ℝ) * a = (n : ℝ) * a := by linarith
+    exact mul_right_cancel₀ (ne_of_gt ha) h'
+  exact hmn (Nat.cast_injective this)
+
+/-- **The advance count is bounded by the run's length.**  An injection from the steps taken into
+the wall's `a`-edges bounds the number of steps by the number of edges: the descent cannot run
+forever, whatever the wall's metric length. -/
+theorem advance_count_le_run {L : ℕ} (steps : ℕ) (edge : Fin steps → Fin L)
+    (hinj : Function.Injective edge) : steps ≤ L :=
+  Fintype.card_fin steps ▸ Fintype.card_fin L ▸ Fintype.card_le_of_injective edge hinj
+
+/-- **`inWall` and the terminus together.**  If every step consumes a distinct wall edge and the
+wall has `L` edges, then step `L` is unreachable — the descent's base case, in combinatorial rather
+than metric form. -/
+theorem terminus_of_run_length {L : ℕ} (S : ℕ → Prop)
+    (hcount : ∀ n, S n → ∃ edge : Fin n → Fin L, Function.Injective edge) :
+    ¬ S (L + 1) := by
+  intro h
+  obtain ⟨edge, hinj⟩ := hcount (L + 1) h
+  have := advance_count_le_run (L + 1) edge hinj
+  omega
 
 end Erdos634.RouteOne
