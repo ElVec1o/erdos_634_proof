@@ -941,3 +941,5 @@ dichotomy at each junction → `junction_cases` (no `(γ,γ)`) → `MarchMonoton
 transition) → `all_but_one_is_march_junction`. Every link is VERIFIED. What is *not* proved is that
 the `a`-run of a real dissection is the run the march walks — the identification of the object, not
 any step of the argument.
+
+| C M-exc | the exceptional `{3α,2β}` junction **is** the transition, and there is at most one | `MarchMonotone.transitions_card_le_one`, `.exceptional_is_transition` | VERIFIED — the junction table is forced: `BG` has `γ` at its right end and `GB` at its left, so the presented pairs are `(γ,β)`, `(γ,γ)`, `(β,β)`, `(β,γ)`; `no_two_gammas` kills `(γ,γ)`, and `(β,β)` — the only pair without a `γ`, hence the only `{3α,2β}` figure — occurs exactly at `GB → BG`, the single change of a monotone word. `transitions_card_le_one` gives the bound in the `Finset` form `all_but_one_is_march_junction` consumes, so the two ends of obligation (i)'s boundary chain now meet in the right shape. The paper asserted "and it is the transition"; both halves are now proved |

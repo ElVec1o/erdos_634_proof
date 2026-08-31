@@ -77,4 +77,42 @@ theorem at_most_one_transition
     · omega
   · exact hne ((hhigh i hge (by omega)).trans (hhigh (i+1) (by omega) (by omega)).symm)
 
+/-! ## The exceptional junction is the transition
+
+Which junction carries the figure `{3α, 2β}`?  A `BG` tile has `γ` at the right end of its `a`-edge
+and `β` at the left; a `GB` tile the reverse.  So at the junction between tile `i` and tile `i+1`
+the presented pair is
+
+| `w i` | `w (i+1)` | pair | figure |
+|---|---|---|---|
+| `BG` | `BG` | `(γ, β)` | march junction |
+| `BG` | `GB` | `(γ, γ)` | impossible (`no_two_gammas`) |
+| `GB` | `BG` | `(β, β)` | **the `{3α,2β}` junction** |
+| `GB` | `GB` | `(β, γ)` | march junction |
+
+So the exceptional junction is exactly `GB → BG`, which in a monotone word is its single change.
+That is the paper's "at most one junction of the run carries the figure `{3α,2β}`, and it is the
+transition", now with both halves proved rather than one asserted. -/
+
+/-- **The transitions of a monotone word number at most one**, as a `Finset` bound — the form
+`MarchRun.all_but_one_is_march_junction` consumes. -/
+theorem transitions_card_le_one
+    (h : ∀ i, i + 1 < L → w i = true → w (i + 1) = true) :
+    ((Finset.range L).filter (fun i => i + 1 < L ∧ w i ≠ w (i + 1))).card ≤ 1 := by
+  classical
+  obtain ⟨j, hj⟩ := at_most_one_transition w h
+  refine le_trans (Finset.card_le_card ?_) (Finset.card_singleton (j - 1)).le
+  intro i hi
+  simp only [Finset.mem_filter, Finset.mem_range] at hi
+  obtain ⟨-, hlt, hne⟩ := hi
+  have := hj i hlt hne
+  simp only [Finset.mem_singleton]
+  omega
+
+/-- **The exceptional junction is the transition.**  `(β, β)` at a junction — no `γ` — happens
+exactly when tile `i` is `GB` and tile `i+1` is `BG`, which is a change in the word. -/
+theorem exceptional_is_transition (i : ℕ)
+    (hi : w i = false) (hi1 : w (i + 1) = true) : w i ≠ w (i + 1) := by
+  rw [hi, hi1]; exact Bool.false_ne_true
+
 end Erdos634.MarchMonotone
