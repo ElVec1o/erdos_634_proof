@@ -831,3 +831,22 @@ differing by 2. So the band's `bp`-independence is a **sum invariance without te
 ~1% spread and the sign-flipping additive constant of the falsified Fibonacci reading live. A
 mechanism proof for this family would have to explain the near-conservation of the five-subtree
 total, not a tree identity; that is a different and harder shape than `prop:findep`'s.
+
+### The band mechanism, read off the traces — three pre-registered hits (2026-09-01)
+
+Tracing `(5,11)`, `(6,11)`, `(7,11)`, `(8,11)` at `f=12`: consecutive band words share an exact
+skeleton to depth `~2(bp−1)` — **the march spine, two nodes per base position** — and diverge at a
+frontier of exactly 3, 5, 8 points (pre-registered as Fibonacci before the `(8,11)` run: hit, along
+with the predicted depth 12 and total). The frontier paths are `2.2.1.2.{0,1}.2.{0,1}.2…`: the
+choice bits are the chirality choices, and the frontier is exactly the binary strings **with no two
+consecutive 0s** — the monomer–dimer condition, in the raw search paths. The hanging subtrees take
+only **two** sizes, set by the **last** chirality before the `b` (at `(8,11)`: 742×5, 494×3),
+consistent with `MarchCoords.derived_run_shift`: the chirality sets the phase at which the march
+meets the `b`.
+
+So the entire `cp`-large family's cost is march combinatorics: shared spine, Fibonacci frontier,
+phase-set collision subtrees. The `bp`-independence is a Fibonacci-weighted sum of shrinking phase
+subtrees, conserved only approximately — which is exactly why the additive recurrence was falsified
+while the `φ`-law survives. Consequence for the programme: the march induction (`rem:marchobl`)
+governs not just `cp = bp−1` but the traversal structure of **every** `a`-run the search walks;
+its value rises accordingly.
