@@ -558,3 +558,6 @@ five have blockers that are layers, not lemmas. Recorded so they are not re-atte
 | C `lem:charge` | direct-vs-mirrored cover pieces and feet displaced by `1/f`: **placement layer** |
 | C `prop:orientmono` | passage from a real boundary run to its word: **bridge (c) beyond the base** |
 | M `thm:walkstruct` | side words of a real tiling: **bridge (c) beyond the base** |
+
+| C `lem:anglethreshold` | the tile's three cosines | `AngleThreshold.cos_of_sides`, `.cos_alpha_closed`, `.cos_beta_closed`, `.cos_gamma_closed` | VERIFIED — `cos_of_sides` solves Mathlib's `EuclideanGeometry.law_cos`, so these are statements about `cornerAngle`, not about the law-of-cosines quotient. `Frontier.cos_alpha_closed` was the cross-multiplied polynomial identity only, and `cos β`, `cos γ` were absent |
+| C `rem:anglethreshold` | what condition (P4) compares against | none | PROVED — split off `lem:anglethreshold` on 2026-08-31: the uncovered region is not an object of the Lean development |

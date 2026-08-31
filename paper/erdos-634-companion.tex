@@ -2593,12 +2593,23 @@ Admissibility is decidable, and it is preserved by no tiling step: a tiling of t
 exactly a sequence of placements through admissible frontiers ending at the empty frontier.
 \end{definition}
 
-\begin{lemma}[The angle threshold]\label{lem:anglethreshold}\lab{PROVED}
-For the tile $(a,b,c)=(f,f^2-1,f^2)$ one has $\cos\alpha=(2f^2-1)/(2f^2)$
-(\texttt{cos\_alpha\_closed}), alongside $\cos\gamma=-1/(2f)$ and
-$\cos\beta=(3f^2-1)/(2f^3)$. Condition (P4) is therefore the statement that the uncovered region
-never acquires a corner sharper than the tile's own sharpest angle.
+\begin{lemma}[The tile's three cosines]\label{lem:anglethreshold}\lab{VERIFIED}
+For the tile $(a,b,c)=(f,f^2-1,f^2)$ with $f>1$ one has
+\[
+\cos\alpha=\frac{2f^2-1}{2f^2},\qquad
+\cos\beta=\frac{3f^2-1}{2f^3},\qquad
+\cos\gamma=-\frac{1}{2f},
+\]
+at the corners facing $a$, $b$ and $c$ respectively
+(\texttt{AngleThreshold.cos\_alpha\_closed}, \texttt{.cos\_beta\_closed},
+\texttt{.cos\_gamma\_closed}, via \texttt{.cos\_of\_sides}).
 \end{lemma}
+
+\begin{remark}[What the threshold is for]\label{rem:anglethreshold}\lab{PROVED}
+Condition (P4) is the statement that the uncovered region never acquires a corner sharper than the
+tile's own sharpest angle. The comparison is with $\cos\alpha$ above; the uncovered region is not an
+object of the Lean development, which is what keeps this clause unformalized.
+\end{remark}
 
 \begin{remark}[The exhaustion invariant, and the shape of a uniform proof]\label{rem:enginelaw}
 Definition~\ref{def:frontier} is the invariant maintained by the exhaustive search whose verdicts
