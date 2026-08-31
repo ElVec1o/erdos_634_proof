@@ -50,7 +50,7 @@ run_orbit() {  # bp cp
     elif [ -s "$oB" ]; then cat "$oB" > "$olog"
     else printf "f=%s (%s,%s): NO RESULT\n" "$f" "$bp" "$cp" > "$olog"
     fi
-    rm -f "$oA" "$oB"; cat "$olog"; return
+    rm -f "$oA" "$oB" "$work/.slot_f${f}_${bp}_${cp}"; cat "$olog"; return
   fi
   run_word "$f" "$bp" "$cp" "$oA" & local pA=$!
   local pB=""
@@ -69,7 +69,7 @@ run_orbit() {  # bp cp
   elif [ -s "$oB" ]; then cat "$oB" > "$olog"
   else printf "f=%s (%s,%s): NO RESULT\n" "$f" "$bp" "$cp" > "$olog"
   fi
-  rm -f "$oA" "$oB"
+  rm -f "$oA" "$oB" "$work/.slot_f${f}_${bp}_${cp}"
   cat "$olog"
 }
 
@@ -86,7 +86,18 @@ while read -r line || [ -n "$line" ]; do
   # missed the job table (39 engines); `pgrep -c || echo 0` printed two zeros on no-match so the
   # test errored and nothing throttled (1252 engines, load 279); counting engine processes raced
   # against their startup latency (40 engines).  Tokens have no startup latency.
-  while [ "$(ls "$work"/.slot_f${f}_* 2>/dev/null | wc -l | tr -d ' ')" -ge "$slots" ]; do
+  # Reap stale slots before counting.  `trap ... EXIT` inside a backgrounded function did NOT
+  # reliably fire here: 8 of 10 slots survived their finished orbits and the throttle starved to
+  # 2 engines.  A slot whose orbit log exists is dead by definition, so the count is self-healing
+  # even if a release is missed.  (Third throttle bug in this script; the first two are above.)
+  while :; do
+    for sf in "$work"/.slot_f${f}_*; do
+      [ -e "$sf" ] || continue
+      key=${sf##*/.slot_f${f}_}
+      [ -s "$work/f${f}_o${key}.log" ] && rm -f "$sf"
+    done
+    n=$(ls "$work"/.slot_f${f}_* 2>/dev/null | wc -l | tr -d ' ')
+    [ "$n" -lt "$slots" ] && break
     sleep 3
   done
   : > "$work/.slot_f${f}_${bp}_${cp}"
