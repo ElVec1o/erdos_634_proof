@@ -803,3 +803,5 @@ and `a(15) = 21895` falls *below* `a(14) + a(13) = 21956`, so the additive const
 The geometric law `16.1·φ^f` survives to 0.35% at both new points. The band is asymptotically
 golden but not exactly self-reducing like the march; a "one run per band" exact skip is therefore
 not available. P1–P3 for `f = 24` (geometric-law predictions) remain frozen and open.
+
+| M-kill | **`bg_gb_dies`: a `BG` tile followed by a `GB` tile at a shared junction is impossible in a dissection** | `MarchKill.bg_gb_dies` | VERIFIED — the full assembly: straddle signs → both coefficient systems solved by the vertical → `wedge_disjoint_combo` → contradiction with `interiors_disjoint`. Consumes the placed configuration through component hypotheses (tile 1's edges at the junction `(-f,0)` and `(dBG-f, h)`, tile 2's `(f,0)` and `(dGB, h)`). This is `prop:orientmono`'s hard direction **at one junction of a real dissection**, from coordinates. What it does not supply: that the run's consecutive tiles present these components — the passage from "a run of `a`-edges on a line" to the component facts, which is the run-as-object step |
