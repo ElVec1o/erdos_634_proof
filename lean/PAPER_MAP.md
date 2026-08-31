@@ -925,3 +925,11 @@ So the frontier total is `F(k−1)·B + F(k−2)·A` with `B = (3A+2)/2` — a c
 measured at two members and two `bp` each. Not proved.
 
 | M-mono | no `BG → GB` anywhere **is** `prop:orientmono`'s block form, with at most one transition | `MarchMonotone.mono_of_no_step`, `.block_form`, `.at_most_one_transition` | VERIFIED — the combinatorial step from local to global, and it is short: writing `true` for `BG`, "never `BG` then `GB`" says `w i = true → w (i+1) = true`, so `w` is monotone, hence `GB^j BG^(L−j)`, hence at most one transition. Combined with `MarchRun.junction_cases` (VERIFIED) this is `prop:orientmono`'s conclusion **on a boundary run**, from the corner figure alone — no bridge (c). What remains for `prop:orientmono` as the paper states it is the inflated-tile side, and for obligation (i) the identification of the run's tiles as the `a`-tiles the march walks |
+
+| C `prop:orientmonobdy` | monotonicity of the orientation word on a side of the target | `MarchRun.no_two_gammas`, `.junction_cases`, `MarchMonotone.mono_of_no_step`, `.block_form`, `.at_most_one_transition` | VERIFIED — split off `prop:orientmono` on 2026-09-01. **The bridge-(c) blocker is gone for this half**: the argument runs at the junctions themselves and never passes from a real boundary to an orientation word. Hypothesis retained: each tile presents `β` or `γ` at each end of its `a`-edge |
+| C `prop:orientmono` | the same on a side of the **inflated tile**, plus the `β`-one-end-`γ`-the-other clause | `TilePlacement.incident_sides` | PROVED — the residue after the split. The inflated-tile side needs the scale map; the `β`/`γ` clause is the tile-corner fact (`α` is opposite `a`, so the two flanking corners are `β` and `γ`), available in `incident_sides` but not composed with `cornerAngle` into a statement about what a *placed* tile presents |
+
+**Effect on obligation (i).** `MarchRun.all_but_one_is_march_junction` consumed `prop:orientmono` as
+an assumed bound. For a run on a side of the target that bound is now VERIFIED, so obligation (i)
+reduces on the boundary to the single remaining clause above — the `β`/`γ` dichotomy at an `a`-edge's
+two ends — rather than to bridge (c).

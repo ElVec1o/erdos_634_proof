@@ -3657,13 +3657,32 @@ $\binom{12}{3}=220$ tasks. The table below shows the count beside the measured n
 $k=2$ members are cheap for a structural reason rather than an accidental one.
 \end{remark}
 
-\begin{proposition}[The orientation of a boundary $a$-run is monotone]\label{prop:orientmono}\lab{PROVED: the alphabet lemmas VERIFIED}
-Let a maximal run of consecutive $a$-edges lie on a straight side of the target, or on a side of the
-inflated tile, and let $T_1,\dots,T_L$ be the tiles laying them. Each $T_i$ presents $\beta$ at one end
-of its $a$-edge and $\gamma$ at the other; write its orientation as $\mathrm{BG}$ or $\mathrm{GB}$
-according to which end carries $\beta$. Then no $\mathrm{BG}$ is followed by a $\mathrm{GB}$: the
-sequence is $\mathrm{GB}^{j}\mathrm{BG}^{L-j}$ for a single $j$. Consequently at most one junction of
-the run carries the figure $\{3\alpha,2\beta\}$, and it is the transition.
+\begin{proposition}[Monotonicity on a side of the target]\label{prop:orientmonobdy}\lab{VERIFIED}
+Let a maximal run of consecutive $a$-edges lie on a straight side of the target, let
+$T_1,\dots,T_L$ be the tiles laying them, and suppose each $T_i$ presents $\beta$ or $\gamma$ at
+each end of its $a$-edge. Then no $\mathrm{BG}$ is followed by a $\mathrm{GB}$, the sequence is
+$\mathrm{GB}^{j}\mathrm{BG}^{L-j}$ for a single $j$, and at most one junction of the run is the
+transition.
+
+The local step is the corner figure: at a junction each tile presents $\beta$ or $\gamma$, and two
+$\gamma$'s are impossible there, since the straight system $x+2z=3$, $y+z=2$ forces $x=-1$ at $z=2$
+(\texttt{MarchRun.no\_two\_gammas}, \texttt{.junction\_cases}). The global form is then immediate:
+writing $\mathrm{BG}$ as $\mathsf{true}$, ``never $\mathrm{BG}$ then $\mathrm{GB}$'' says the word
+is monotone, hence a block of $\mathrm{GB}$ followed by a block of $\mathrm{BG}$, hence carries at
+most one transition (\texttt{MarchMonotone.mono\_of\_no\_step}, \texttt{.block\_form},
+\texttt{.at\_most\_one\_transition}). No passage from a real boundary to an orientation word is
+used: the argument runs at the junctions themselves.
+\end{proposition}
+
+\begin{proposition}[The orientation of a boundary $a$-run is monotone]\label{prop:orientmono}\lab{PROVED}
+The same conclusion for a run on a side of the \emph{inflated tile}, together with the clause that
+each $T_i$ presents $\beta$ at one end of its $a$-edge and $\gamma$ at the other.
+
+Neither is covered by Proposition~\ref{prop:orientmonobdy}. The first needs the inflated tile's side
+to carry the straight-vertex figure, which is the scale map; the second is the tile-corner fact that
+the two corners flanking the $a$-side are the $\beta$- and $\gamma$-corners, $\alpha$ being opposite
+$a$ --- available in \texttt{TilePlacement.incident\_sides} but not composed with
+\texttt{cornerAngle} to a statement about what a placed tile presents.
 \end{proposition}
 
 \begin{proof}
