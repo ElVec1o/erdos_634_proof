@@ -152,3 +152,4 @@ import Erdos634.FillerGeneral
 import Erdos634.RigidityGeneral
 import Erdos634.InterfaceFloor
 import Erdos634.NoRightAngle
+import Erdos634.SpectrumLattice

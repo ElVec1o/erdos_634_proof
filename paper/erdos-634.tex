@@ -1475,6 +1475,16 @@ $t=ej/2$, $a$ as displayed and $c=a+et$ reverses the computation: $c^2=a^2+ab+b^
 $a+b-c=e(de-t)$ is divisible by $e$.
 \end{proof}
 
+\begin{proposition}[The scale parameter is a lattice]\label{prop:latticeparam}\lab{VERIFIED}
+Normalise $e=g e_1$, $r=g r_1$ with $\gcd(e_1,r_1)=1$ (as $g=\gcd(e,r)$ provides), and set
+$T=r_1+d e_1^2(a+2b)$. For $w=e_1u$ the two admissibility conditions of
+Theorem~\ref{thm:admissible} --- $e\mid w r$ and $wr/e\equiv N\pmod 2$ with $N=dw^2(a+2b)$ ---
+hold if and only if $uT\equiv0\pmod2$ (\texttt{SpectrumLattice.admissible\_iff}); the divisibility
+alone is equivalent to $e_1\mid w$ (\texttt{.dvd\_iff\_e1\_dvd}). Since $u T\equiv0$ iff $T$ is even
+or $u$ is even (\texttt{.case\_split}), every $u$ is admissible when $T$ is even and only even $u$
+when $T$ is odd.
+\end{proposition}
+
 \begin{theorem}[Spectrum lattice]\label{thm:lattice}\lab{PROVED}
 Let $(a,b,c)$ be a primitive $120^\circ$-triple, $b=de^2$ with $d$ squarefree, $r=c-a-b$,
 $g=\gcd(e,r)$, $e_1=e/g$, and
