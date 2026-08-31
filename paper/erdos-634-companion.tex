@@ -713,14 +713,22 @@ when no tiling exists, so no exclusion of an $e=1$ member may cite it. Formalise
 \texttt{both\_corners\_break}, \texttt{some\_side\_break}), axiom-clean.
 \end{remark}
 
-\begin{lemma}[Filler identity]\label{lem:filler}\lab{PROVED}
-With $J_i$ the $i$-th column junction and $\mathrm{ap}_i$ the $i$-th apex, the triangle
-$(J_i,\mathrm{ap}_i,\mathrm{ap}_{i+1})$ has sides exactly $c,b,a$:
+\begin{lemma}[Filler identity]\label{lem:fillerid}\lab{VERIFIED}
+With $J_i$ the $i$-th column junction and $\mathrm{ap}_i$ the $i$-th apex, the two identities
 $\bigl(\tfrac{3f^2-1}{2f}\bigr)^2+c^2\sin^2\beta=f^4$ and
-$\bigl(\tfrac{f^2-1}{2f}\bigr)^2+c^2\sin^2\beta=(f^2-1)^2$, both identities in $f$
-(clear denominators and expand; machine-checked in \texttt{lean/W2Core.lean}, axiom-free).
-Hence the column and its fillers tile the full inter-level strip and lay a run of $a$-edges one
-level down, whose far sides decompose only as single $a$-edges.
+$\bigl(\tfrac{f^2-1}{2f}\bigr)^2+c^2\sin^2\beta=(f^2-1)^2$
+are consistent --- the same $c^2\sin^2\beta$ serves both --- and eliminating it leaves an identity
+in $f$ alone, valid for every $f\neq0$ (\texttt{FillerGeneral.filler\_consistent}). In the
+denominator-cleared form these read
+$(f^2-1)^2+4f^6-(3f^2-1)^2=4f^2(f^2-1)^2$ and $(3f^2-1)^2+(4f^6-(3f^2-1)^2)=4f^2(f^2)^2$,
+identities over any commutative ring (\texttt{.filler\_b\_general}, \texttt{.filler\_c\_general}).
+\end{lemma}
+
+\begin{lemma}[What the filler identity buys]\label{lem:filler}\lab{PROVED}
+Hence the triangle $(J_i,\mathrm{ap}_i,\mathrm{ap}_{i+1})$ has sides exactly $c,b,a$, so the column
+and its fillers tile the full inter-level strip and lay a run of $a$-edges one level down, whose far
+sides decompose only as single $a$-edges. The strip, the column and its fillers are not objects of
+the Lean development.
 \end{lemma}
 
 \begin{lemma}[Offset congruence]\label{lem:offsets}\lab{PROVED}
