@@ -225,4 +225,136 @@ theorem lower_flank_horizontal (ax ay bx by' : ℝ)
   · rw [h, mul_zero] at hor; linarith
   · nlinarith
 
+/-- **The cone forces a horizontal flank — the complete arithmetic of R1-tang.**  Suppose the
+corner cone at `V` (spanned by the two edge directions, coefficients `≥ 0`) contains directions of
+arbitrarily small positive slope: for every `δ > 0` some admissible combination has positive
+`x`-part and `y`-part at most `δ` times it.  If both edge directions point weakly upward and not
+both are horizontal, then one of them is horizontal and points strictly rightward.
+
+This consumes exactly what the tangential points `V + (tₙ, uₙ)`, `uₙ/tₙ → 0`, provide through the
+barycentric decomposition `q − V = c₁e₁ + c₂e₂`, and its conclusion is the flank `[V, V + L·(1,0)]`
+that the overshoot trichotomy then examines. -/
+theorem cone_forces_horizontal (e1x e1y e2x e2y : ℝ)
+    (h1y : 0 ≤ e1y) (h2y : 0 ≤ e2y) (hnd : ¬ (e1y = 0 ∧ e2y = 0))
+    (hslim : ∀ δ : ℝ, 0 < δ → ∃ c₁ c₂ : ℝ, 0 ≤ c₁ ∧ 0 ≤ c₂ ∧
+      0 < c₁ * e1x + c₂ * e2x ∧ c₁ * e1y + c₂ * e2y ≤ δ * (c₁ * e1x + c₂ * e2x)) :
+    (e1y = 0 ∧ 0 < e1x) ∨ (e2y = 0 ∧ 0 < e2x) := by
+  rcases eq_or_lt_of_le h1y with h1 | h1
+  · -- `e₁` horizontal; show it points right
+    left
+    refine ⟨h1.symm, ?_⟩
+    by_contra hx
+    push_neg at hx
+    have h2pos : 0 < e2y := by
+      rcases eq_or_lt_of_le h2y with h2 | h2
+      · exact absurd ⟨h1.symm, h2.symm⟩ hnd
+      · exact h2
+    -- with `e₁` leftward-horizontal, every admissible direction has slope ≥ e2y/e2x
+    -- squeeze with δ = e2y / (2 e2x) once e2x is known positive
+    obtain ⟨c₁, c₂, hc₁, hc₂, hX, hY⟩ := hslim 1 one_pos
+    have hc2e2x : 0 < c₂ * e2x := by nlinarith
+    have he2x : 0 < e2x := by
+      rcases lt_trichotomy e2x 0 with h | h | h
+      · nlinarith
+      · rw [h] at hc2e2x; nlinarith
+      · exact h
+    set δ := e2y / (2 * e2x) with hδ
+    have hδpos : 0 < δ := div_pos h2pos (by linarith)
+    obtain ⟨d₁, d₂, hd₁, hd₂, hX', hY'⟩ := hslim δ hδpos
+    have hd2pos : 0 < d₂ := by
+      by_contra hd
+      push_neg at hd
+      have : d₂ = 0 := le_antisymm hd hd₂
+      rw [this] at hX'
+      nlinarith
+    have hXle : d₁ * e1x + d₂ * e2x ≤ d₂ * e2x := by nlinarith
+    have hYval : d₁ * e1y + d₂ * e2y = d₂ * e2y := by rw [← h1]; ring
+    rw [hYval] at hY'
+    have : d₂ * e2y ≤ δ * (d₂ * e2x) := by nlinarith
+    rw [hδ] at this
+    have hrw : e2y / (2 * e2x) * (d₂ * e2x) = d₂ * e2y / 2 := by
+      field_simp
+    rw [hrw] at this
+    nlinarith
+  · -- `e₁` strictly upward; the mirror argument on `e₂`
+    rcases eq_or_lt_of_le h2y with h2 | h2
+    · right
+      refine ⟨h2.symm, ?_⟩
+      by_contra hx
+      push_neg at hx
+      obtain ⟨c₁, c₂, hc₁, hc₂, hX, hY⟩ := hslim 1 one_pos
+      have hc1e1x : 0 < c₁ * e1x := by nlinarith
+      have he1x : 0 < e1x := by
+        rcases lt_trichotomy e1x 0 with h | h | h
+        · nlinarith
+        · rw [h] at hc1e1x; nlinarith
+        · exact h
+      set δ := e1y / (2 * e1x) with hδ
+      have hδpos : 0 < δ := div_pos h1 (by linarith)
+      obtain ⟨d₁, d₂, hd₁, hd₂, hX', hY'⟩ := hslim δ hδpos
+      have hd1pos : 0 < d₁ := by
+        by_contra hd
+        push_neg at hd
+        have : d₁ = 0 := le_antisymm hd hd₁
+        rw [this] at hX'
+        nlinarith
+      have hYval : d₁ * e1y + d₂ * e2y = d₁ * e1y := by rw [← h2]; ring
+      rw [hYval] at hY'
+      have hXle : d₁ * e1x + d₂ * e2x ≤ d₁ * e1x := by nlinarith
+      have : d₁ * e1y ≤ δ * (d₁ * e1x) := by
+        nlinarith [mul_le_mul_of_nonneg_left hXle hδpos.le]
+      rw [hδ] at this
+      have hrw : e1y / (2 * e1x) * (d₁ * e1x) = d₁ * e1y / 2 := by
+        field_simp
+      rw [hrw] at this
+      nlinarith
+    · -- both strictly upward: slopes bounded below, contradiction
+      exfalso
+      set M := |e1x| + |e2x| + 1 with hM
+      have hMpos : 0 < M := by rw [hM]; positivity
+      set m := min e1y e2y with hm
+      have hmpos : 0 < m := by rw [hm]; exact lt_min h1 h2
+      obtain ⟨c₁, c₂, hc₁, hc₂, hX, hY⟩ := hslim (m / (2 * M)) (by positivity)
+      have hsum : 0 < c₁ + c₂ := by
+        by_contra hcs
+        push_neg at hcs
+        have : c₁ = 0 ∧ c₂ = 0 := by constructor <;> linarith
+        rw [this.1, this.2] at hX; norm_num at hX
+      have hXbound : c₁ * e1x + c₂ * e2x ≤ (c₁ + c₂) * M := by
+        have h1' : c₁ * e1x ≤ c₁ * |e1x| := by
+          apply mul_le_mul_of_nonneg_left (le_abs_self _) hc₁
+        have h2' : c₂ * e2x ≤ c₂ * |e2x| := by
+          apply mul_le_mul_of_nonneg_left (le_abs_self _) hc₂
+        rw [hM]; nlinarith [abs_nonneg e1x, abs_nonneg e2x]
+      have hYbound : (c₁ + c₂) * m ≤ c₁ * e1y + c₂ * e2y := by
+        have := min_le_left e1y e2y
+        have := min_le_right e1y e2y
+        rw [hm]; nlinarith
+      have hstep : m / (2 * M) * (c₁ * e1x + c₂ * e2x)
+          ≤ m / (2 * M) * ((c₁ + c₂) * M) := by
+        apply mul_le_mul_of_nonneg_left hXbound
+        positivity
+      have hrw2 : m / (2 * M) * ((c₁ + c₂) * M) = (c₁ + c₂) * m / 2 := by
+        field_simp
+      rw [hrw2] at hstep
+      nlinarith [mul_pos hsum hmpos]
+
+/-! ## The wall descent: how the march case terminates
+
+The `a`-advance case of the trichotomy moves the question one position along the wall toward its
+far end.  The wall is finite, so the recursion is a descent on the distance to the exit; the
+terminal position is blocked because the wall's end is a boundary point where the advance has no
+room.  This is the induction that consumes the trichotomy, in the same relation to it as
+`MarchStep.march_dies` stands to the chirality split. -/
+
+/-- **Finite descent along the wall.**  If the escape at distance `n + 1` from the exit forces the
+escape at distance `n` (the `a`-advance, the only surviving branch of the trichotomy), and the
+escape at distance `0` is impossible (the exit), then no escape exists at any distance. -/
+theorem wall_descent (S : ℕ → Prop) (hstep : ∀ n, S (n + 1) → S n) (hterm : ¬ S 0) :
+    ∀ n, ¬ S n := by
+  intro n
+  induction n with
+  | zero => exact hterm
+  | succ k ih => exact fun h => ih (hstep k h)
+
 end Erdos634.RouteOne
