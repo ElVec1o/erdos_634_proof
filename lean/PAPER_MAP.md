@@ -850,3 +850,19 @@ subtrees, conserved only approximately — which is exactly why the additive rec
 while the `φ`-law survives. Consequence for the programme: the march induction (`rem:marchobl`)
 governs not just `cp = bp−1` but the traversal structure of **every** `a`-run the search walks;
 its value rises accordingly.
+
+### Re-check of the elliptical blockers, batch 3 (2026-09-01)
+
+| Paper | Verdict | Real blocker |
+|---|---|---|
+| `thm:frontier2` (and by the same shape `frontier3`, `frontier4`) | blocked | each is a finite list of engine exhaustions; certified-search format |
+| `thm:dichotomy` | blocked | one engine exhaustion (4,334,789 nodes); certified-search format |
+| `lem:value` | blocked | the flux functionals `C_{f_α}`, `C_{f_β}` on a placement: flux development, absent |
+| `prop:inflparity` | blocked | edge-to-edge hypothesis has no Lean form; scale map for the inflated tile |
+| `cor:rowinduction`, `lem:rowwords`, `lem:rowp1`, `lem:rowq0`, `prop:slotdichotomy` | blocked | no declarations; planar placement arguments (rows/slots), as their debt rows already state |
+| `cor:noTP`, `prop:rung2`, `prop:figurePprime`, `lem:parity` | blocked | chord trace / pierce configuration / placement figure / census hypothesis — as recorded in earlier audits |
+
+**All 28 elliptical blockers are now re-checked.** None was fast-vein; four rows were corrected
+along the way (`lem:noapexline`, `lem:cornerstep` note, `lem:census` empty cell, `thm:elltwo`
+citation). The fast-vein exhaustion claim now rests on statements read against declarations for the
+full population.
