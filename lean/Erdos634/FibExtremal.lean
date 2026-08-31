@@ -1,4 +1,16 @@
-import Mathlib
+import Mathlib.Algebra.CharP.Defs
+import Mathlib.Algebra.Order.Ring.Abs
+import Mathlib.Algebra.Order.Ring.Star
+import Mathlib.Analysis.Normed.Ring.Lemmas
+import Mathlib.Data.Int.ConditionallyCompleteOrder
+import Mathlib.Data.Int.Star
+import Mathlib.Data.Nat.Fib.Basic
+import Mathlib.Order.ConditionallyCompleteLattice.Basic
+import Mathlib.RingTheory.Coprime.Lemmas
+import Mathlib.Tactic.Linarith.Frontend
+import Mathlib.Tactic.NormNum.Ineq
+import Mathlib.Tactic.Ring.Basic
+import Mathlib.Tactic.Ring.RingNF
 
 /-!
 # Fibonacci families are the extremal ones

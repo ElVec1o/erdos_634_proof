@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+import Mathlib.Data.Set.Defs
 import Erdos634.ChainEnum
 
 /-!

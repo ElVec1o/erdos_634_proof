@@ -1,4 +1,7 @@
-import Mathlib
+import Mathlib.Data.List.GetD
+import Mathlib.Data.List.Nodup
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Linarith.Frontend
 import Erdos634.ShadowCover
 
 /-!

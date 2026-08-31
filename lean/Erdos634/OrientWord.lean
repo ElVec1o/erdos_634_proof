@@ -1,4 +1,3 @@
-import Mathlib
 import Erdos634.OrientBridge
 import Erdos634.RunOrientation
 

@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.Data.Nat.Basic
+import Mathlib.Data.Nat.Notation
 
 /-!
 # The γ-cascade: a side with no `c`-edge is impossible

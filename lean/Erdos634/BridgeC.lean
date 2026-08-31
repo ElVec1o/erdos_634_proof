@@ -1,4 +1,7 @@
-import Mathlib
+import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+import Mathlib.Data.Multiset.ZeroCons
+import Mathlib.Data.Real.Basic
+import Mathlib.Data.Set.Defs
 import Erdos634.BaseChain
 import Erdos634.WallInjective
 import Erdos634.Placement

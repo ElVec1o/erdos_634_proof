@@ -1,4 +1,9 @@
-import Mathlib
+import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+import Mathlib.Analysis.Convex.StrictConvexBetween
+import Mathlib.Analysis.InnerProductSpace.OfNorm
+import Mathlib.Analysis.Normed.Field.Basic
+import Mathlib.Data.Finset.Defs
+import Mathlib.Tactic.LinearCombination
 import Erdos634.VertexFigureReal
 import Erdos634.OrientBridge
 

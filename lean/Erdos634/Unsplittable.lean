@@ -1,4 +1,9 @@
-import Mathlib
+import Mathlib.Algebra.Order.Ring.Star
+import Mathlib.Analysis.Normed.Ring.Lemmas
+import Mathlib.Data.Int.Notation
+import Mathlib.Data.Int.Star
+import Mathlib.RingTheory.Coprime.Basic
+import Mathlib.RingTheory.Coprime.Lemmas
 
 /-!
 # Unsplittability of the tile's edges

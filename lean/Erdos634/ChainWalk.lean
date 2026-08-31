@@ -1,4 +1,9 @@
-import Mathlib
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Defs
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Ring.Basic
+import Mathlib.Tactic.Ring.RingNF
 import Erdos634.ChainInstance
 import Erdos634.VertexFigureReal
 

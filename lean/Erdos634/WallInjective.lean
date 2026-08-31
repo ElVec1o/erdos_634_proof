@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.AlgebraicTopology.SimplexCategory.Basic
 import Erdos634.WallSide
 import Erdos634.WallEdges
 

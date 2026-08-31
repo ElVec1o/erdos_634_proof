@@ -1,4 +1,7 @@
-import Mathlib
+import Mathlib.Algebra.Order.Group.Nat
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Defs
+import Mathlib.Tactic.SetNotationForOrder
 
 /-!
 # The base word cannot carry a long `a`-run

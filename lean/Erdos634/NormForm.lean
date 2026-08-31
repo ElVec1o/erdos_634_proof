@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic.Ring.RingNF
 
 /-!
 # The area ratio is a norm form

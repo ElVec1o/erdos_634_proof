@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+import Mathlib.Analysis.RCLike.Basic
 import Erdos634.Dissection
 
 /-!

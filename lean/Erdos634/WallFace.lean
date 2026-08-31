@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+import Mathlib.Data.Real.StarOrdered
 import Erdos634.BaseSelection
 
 /-!

@@ -1,4 +1,3 @@
-import Mathlib
 import Erdos634.Dissection
 import Erdos634.FanKill
 import Erdos634.StubGap

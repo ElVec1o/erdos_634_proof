@@ -1,4 +1,3 @@
-import Mathlib
 import Erdos634.WallFace
 import Erdos634.EdgeDisjoint
 import Erdos634.Placement

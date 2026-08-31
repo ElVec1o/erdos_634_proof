@@ -1,4 +1,8 @@
-import Mathlib
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+import Mathlib.Data.Finset.Defs
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Real.Basic
 import Erdos634.PinPlumbing
 
 /-!

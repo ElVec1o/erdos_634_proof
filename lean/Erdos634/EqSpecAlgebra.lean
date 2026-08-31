@@ -1,4 +1,8 @@
-import Mathlib
+import Mathlib.Analysis.Normed.Ring.Basic
+import Mathlib.Analysis.RCLike.Basic
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Linarith.Frontend
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # The equilateral admissibility identities

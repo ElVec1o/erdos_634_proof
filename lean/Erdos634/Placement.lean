@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+import Mathlib.Data.Real.Basic
 import Erdos634.ChainInstance
 import Erdos634.EdgeDisjoint
 import Erdos634.WallFace
