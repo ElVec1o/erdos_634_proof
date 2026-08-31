@@ -888,3 +888,23 @@ full population.
 | M-frontier | the search's divergence frontier is the no-two-consecutive-`0`s chirality language; its counting law is the march recurrence, and the split by last letter gives the observed multiplicities | `MarchFrontier.noTwoZeros`, `.frontier_values`, `.split_by_last`, `.frontier_induction`, `.frontier_grows` | VERIFIED — `frontier_values` reproduces the measured `3, 5, 8, 13`; `split_by_last` is the `F(k−1), F(k−2)` split that explains why the hanging subtrees fall into exactly **two** size classes (the size depends on the last chirality alone). `frontier_induction` restates `MarchStep.march_dies` over this language, so the induction and the measured object are one thing |
 
 | M-cases | at a straight-edge junction the two `a`-tiles present `(β,β)`, `(β,γ)` or `(γ,β)` — never `(γ,γ)` | `MarchRun.junction_cases` | VERIFIED — obligation (i)'s `BG → GB` half on a boundary run: `α` is opposite `a` so cannot sit on the line, leaving `β` (flanks `{a,c}`) or `γ` (flanks `{a,b}`) at each end, and `no_two_gammas` removes `(γ,γ)`. The three survivors are `GB→GB`, `GB→BG`, `BG→BG`: exactly the words with no `BG → GB` factor |
+
+### The two phase classes are one tree up to a rational factor (2026-09-01)
+
+Dissecting the 13 frontier subtrees of `(9,11)` at `f=12`:
+
+* the **5** subtrees of size 294 are **identical in shape**, and so are the **8** of size 442 —
+  the size classes are shape classes, not coincidences of count;
+* their depth profiles are `1,2,1,4,2,4,8,24,24,70,66,88` and `1,2,2,8,3,6,12,36,36,105,99,132`,
+  which agree in a short head and are then **exactly proportional at ratio 3:2** from relative
+  depth 4 onward (`2→3, 4→6, 8→12, 24→36, 24→36, 70→105, 66→99, 88→132`), with `442 = 441 + 1`.
+
+So the band total is a Fibonacci-weighted sum of **two proportional copies of one tree**:
+`F(k−1)·A + F(k−2)·B` with `B/A → 3/2` past the head. That is a closed form in principle, and it
+explains the near-conservation directly — as `bp` grows the weights move along the Fibonacci
+recurrence while the two tree sizes shrink, and the product is conserved only to the head
+discrepancy. The `+1` head defect is where the falsified additive recurrence's sign-flipping
+constant comes from.
+
+Not proved: that the shape identity and the `3:2` proportionality hold at every `bp` and `f`. Two
+words at one member is a measurement.
