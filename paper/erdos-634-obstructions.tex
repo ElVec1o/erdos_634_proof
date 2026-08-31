@@ -1587,15 +1587,26 @@ multiplicity equations as hypotheses; they are now derived from the boundary fig
 \emph{What is left, sharpened.} The three remaining statements are about the \emph{run} rather
 than about a vertex, and they do not stand on the same footing.
 
-\emph{(i) The march's steps land on vertices of the above kind.} This is now reduced to
-Proposition~\ref{C-prop:orientmono} and needs nothing further. At a straight-edge point the figure
-is $\{3\alpha,2\beta\}$ or $\{\alpha,\beta,\gamma\}$ and there is no third case
-(\texttt{MarchRun.junction\_dichotomy}), so a junction either carries no $\gamma$ at all or carries
-one and is a march junction (\texttt{.gamma\_of\_not\_exceptional}). Orientation monotonicity says at
-most one junction of an $a$-run is of the first kind --- it is the $\mathrm{BG}\to\mathrm{GB}$
-transition --- so all but at most one junction of the run is a march junction
-(\texttt{.all\_but\_one\_is\_march\_junction}). The residual dependence is on
-Proposition~\ref{C-prop:orientmono}, whose own blocker is bridge~(c).
+\emph{(i) The march's steps land on vertices of the above kind.} On a side of the target this is
+now proved, and without bridge~(c). The chain is: a placed tile presents $\beta$ or $\gamma$ at
+either endpoint of its $a$-edge, since $\alpha$ is opposite $a$ and the angles order as their
+opposite sides (\texttt{MarchFlank.presents\_beta\_or\_gamma}); two $\gamma$'s cannot meet at a
+straight-edge point, the system $x+2z=3$, $y+z=2$ giving $x=-1$ at $z=2$
+(\texttt{MarchRun.no\_two\_gammas}), so the junction pair is never $(\gamma,\gamma)$
+(\texttt{.junction\_cases}); a word in which $\mathrm{BG}$ is never followed by $\mathrm{GB}$ is
+monotone, hence $\mathrm{GB}^{j}\mathrm{BG}^{L-j}$, hence carries at most one change
+(\texttt{MarchMonotone}); and the $\{3\alpha,2\beta\}$ junction is exactly that change, being the
+only pair without a $\gamma$ (\texttt{.transitions\_card\_le\_one},
+\texttt{.exceptional\_is\_transition}). Hence all but at most one junction of the run is a march
+junction (\texttt{MarchRun.all\_but\_one\_is\_march\_junction}), and
+Proposition~\ref{C-prop:orientmonobdy} records the monotonicity half as VERIFIED.
+
+The run itself is an object: \texttt{MarchRunObject.aRun} selects the wall edges of length $a$ on a
+line and indexes them, and \texttt{.run\_exceptional\_le\_one} supplies the junction bound for that
+object. Two hypotheses remain unproved there --- that the selected run is contiguous along the line,
+which is \texttt{BaseChain.base\_chain\_consecutive\_meet}'s business, and that the orientation word
+is the one read off the tiles rather than an abstract $\mathrm{Bool}$ sequence. Until those close,
+(i) is proved for the junctions of a run but not yet for \emph{the} run of a hypothetical tiling.
 
 \emph{(ii) and (iii) are blocked at the level of statement, not of proof.} The wedge's two rays
 carry $b$ and $c$: at the $\gamma$-corner the flanking sides are $a$ and $b$, at the $\beta$-corner
