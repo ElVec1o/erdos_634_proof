@@ -4423,11 +4423,17 @@ $\Z v_1$ (\texttt{rel\_param}); subtracting the right multiple of $v_2$ reduces 
 that one (\texttt{rel\_span}), and $v_1,v_2$ are independent (\texttt{rel\_indep}).
 \end{proposition}
 
+\begin{proposition}[The relation floor]\label{prop:relfloor}\lab{VERIFIED}
+For the tile $(a,b,c)=(ef,f^2-e^2,f^2)$ with $0<e<f$ and $\gcd(e,f)=1$, every nonzero relation has
+one-sided length at least $f\min(a,b)$ (\texttt{InterfaceFloor.interface\_floor}). The bound is
+sharp: $v_1=(f,0,-e)$ attains it, its positive side being $f$ $a$-edges of total length $f a$
+(\texttt{.floor\_attained}, \texttt{.v1\_relation}).
+\end{proposition}
+
 \begin{proposition}[The interface floor]\label{prop:interfacefloor}\lab{PROVED}
-A nonzero relation has one-sided length at least $f\min(a,b)$, and \emph{every maximal straight
-interface of any tiling that is shorter than $f\min(a,b)$ carries the same edge multiset on both
-sides}. (\texttt{rel\_v1}, \texttt{rel\_v2}, \texttt{rel\_b\_mult}, \texttt{rel\_param} in
-\textup{\texttt{lean/Primitives.lean}}.)
+Hence every maximal straight interface of any tiling that is shorter than $f\min(a,b)$ carries the
+same edge multiset on both sides. Maximal straight interfaces of a dissection are not objects of the
+Lean development, which is what blocks this clause.
 \end{proposition}
 
 \begin{proof}
