@@ -894,4 +894,71 @@ theorem partition_jb_gen {e f j x y z B : ℕ} (he : 1 ≤ e) (hef : e < f) (hjf
     have : 0 < e * f := Nat.mul_pos (by omega) (by omega)
     omega
 
+/-! ## The through-edge dichotomy at route 1's escape point: the arithmetic
+
+`rem:route1uniform` reduces `conj:advance`'s remaining gap to what covers `[V,E]`, and
+`RouteOne.EscapeData.ofWall` consumes that a *through-edge* — not a junction — runs below the wall
+at `V`.  The wall is the second side tile's `c`-edge `[A,V]`, anchored at the target boundary at
+`A`; its far side is partitioned from `A` by whole tile edges (`WallChain.wall_cover`), the first
+of which is the corner partner's horizontal `a`-edge (`lem:firstrun`: the figure at `A` is
+`{α,β,γ}` with the partner's `γ` there, so its free flank is an `a` along the line).  A junction at
+`V` from below therefore means the remaining length `c − a = f(f − e)` is an exact sum of tile
+sides.  This section shows that forces every remaining edge to be an `a` (and needs `e ∣ f`, so
+`e = 1`): the junction case is precisely `f` `a`-edges below `[A,V]` — the march on an interior
+wall — and every other far-side run straddles `V`. -/
+
+/-- **`f(f−e)` partitions only as `a`'s.**  `x·a + y·b + z·c = f(f−e)` with `a = ef`, `b = f²−e²`,
+`c = f²`, `1 ≤ e < f` forces `y = 0`, `z = 0`, `x·e = f − e`.  No coprimality is needed here; it
+enters only in the `e ≥ 2` corollary. -/
+theorem partition_c_sub_a {e f x y z B : ℕ} (he : 1 ≤ e) (hef : e < f)
+    (hB : f * f = B + e * e)
+    (h : x * (e * f) + y * B + z * (f * f) = f * (f - e)) :
+    y = 0 ∧ z = 0 ∧ x * e = f - e := by
+  have hf0 : 0 < f := by omega
+  have hee : e * e < e * f := Nat.mul_lt_mul_of_pos_left hef (by omega)
+  have hff : e * f < f * f := Nat.mul_lt_mul_of_pos_right hef hf0
+  have hfe : f * (f - e) = f * f - e * f := by
+    rw [Nat.mul_sub, Nat.mul_comm f e]
+  have hlt : f * (f - e) < B := by omega
+  have hy : y = 0 := by
+    rcases Nat.eq_zero_or_pos y with h0 | h0
+    · exact h0
+    · exfalso
+      have := Nat.le_mul_of_pos_left B h0
+      omega
+  subst hy
+  have h' : f * (x * e + z * f) = f * (f - e) := by
+    rw [← h]; ring
+  have hdiv : x * e + z * f = f - e := Nat.eq_of_mul_eq_mul_left hf0 h'
+  have hz : z = 0 := by
+    rcases Nat.eq_zero_or_pos z with h0 | h0
+    · exact h0
+    · exfalso
+      have := Nat.le_mul_of_pos_left f h0
+      omega
+  subst hz
+  exact ⟨rfl, rfl, by omega⟩
+
+/-- **At `e = 1`, a junction at `V` means exactly `f − 1` further `a`-edges.** -/
+theorem partition_c_sub_a_one {f x y z B : ℕ} (hf : 2 ≤ f) (hB : f * f = B + 1)
+    (h : x * (1 * f) + y * B + z * (f * f) = f * (f - 1)) :
+    x = f - 1 ∧ y = 0 ∧ z = 0 := by
+  obtain ⟨hy, hz, hx⟩ := partition_c_sub_a (e := 1) le_rfl (by omega) (by simpa using hB) h
+  exact ⟨by simpa using hx, hy, hz⟩
+
+/-- **At `e ≥ 2`, `c − a` is a gap**: no partition into tile sides exists at all, since
+`x·e = f − e` forces `e ∣ f`, against coprimality.  So on the `e ≥ 2` analogue of the wall the
+junction case cannot occur: a through-edge is forced outright. -/
+theorem partition_c_sub_a_gap {e f x y z B : ℕ} (he : 2 ≤ e) (hef : e < f)
+    (hco : Nat.Coprime e f) (hB : f * f = B + e * e)
+    (h : x * (e * f) + y * B + z * (f * f) = f * (f - e)) : False := by
+  obtain ⟨-, -, hx⟩ := partition_c_sub_a (by omega) hef hB h
+  have hdvd : e ∣ f := by
+    have h1 : e ∣ f - e := ⟨x, by rw [← hx]; ring⟩
+    have h2 : f = (f - e) + e := by omega
+    rw [h2]
+    exact Nat.dvd_add h1 (dvd_refl e)
+  have := Nat.Coprime.eq_one_of_dvd hco hdvd
+  omega
+
 end Erdos634.OrderForcing

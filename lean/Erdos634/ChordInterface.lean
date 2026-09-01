@@ -77,4 +77,46 @@ theorem prefix_sum_is_semigroup {a b c : ℕ} (F : FarSide a b c)
     · exact ⟨x, y + 1, z, by rw [hxyz]; ring⟩
     · exact ⟨x, y, z + 1, by rw [hxyz]; ring⟩
 
+/-! ## The through-edge dichotomy on a run
+
+A far-side run laid end to end from its anchored end places its meeting points at prefix sums.
+Fix a position `L` on the chord at or before the run's total.  Either a prefix sums to `L` exactly
+— a junction sits there — or one entry strictly straddles it — a through-edge runs past `L`, and
+the tile carrying it presents a straight angle there (`Tri.localAngle_frontier`).  This is the case
+split `RouteOne.EscapeData.ofWall` needs at the escape point `V`, with `L = c` the length of the
+wall `[A,V]`; `OrderForcing.partition_c_sub_a` then says the junction case is all `a`'s. -/
+
+/-- **Hit or straddle.**  For `L ≤ run.sum`, some prefix sums to `L` exactly, or some entry `l`
+has `pre.sum < L < pre.sum + l`. -/
+theorem prefix_hit_or_straddle (run : List ℕ) (L : ℕ) (hL : L ≤ run.sum) :
+    (∃ pre suf : List ℕ, run = pre ++ suf ∧ pre.sum = L) ∨
+    (∃ (pre : List ℕ) (l : ℕ) (suf : List ℕ),
+      run = pre ++ l :: suf ∧ pre.sum < L ∧ L < pre.sum + l) := by
+  induction run generalizing L with
+  | nil =>
+    left
+    refine ⟨[], [], rfl, ?_⟩
+    simp only [List.sum_nil] at hL ⊢
+    omega
+  | cons h t ih =>
+    rcases lt_trichotomy L h with hlt | heq | hgt
+    · rcases Nat.eq_zero_or_pos L with h0 | h0
+      · left
+        exact ⟨[], h :: t, rfl, by simp [h0]⟩
+      · right
+        exact ⟨[], h, t, rfl, by simpa using h0, by simpa using hlt⟩
+    · left
+      exact ⟨[h], t, rfl, by simp [heq]⟩
+    · have hL' : L - h ≤ t.sum := by
+        simp only [List.sum_cons] at hL
+        omega
+      rcases ih (L - h) hL' with ⟨pre, suf, hrun, hsum⟩ | ⟨pre, l, suf, hrun, h1, h2⟩
+      · left
+        refine ⟨h :: pre, suf, by rw [hrun]; rfl, ?_⟩
+        simp only [List.sum_cons]
+        omega
+      · right
+        refine ⟨h :: pre, l, suf, by rw [hrun]; rfl, ?_, ?_⟩ <;>
+          simp only [List.sum_cons] <;> omega
+
 end Erdos634.ChordInterface
