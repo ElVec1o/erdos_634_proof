@@ -1069,3 +1069,12 @@ angle census. 'The tile matched to an edge' (the harder half `prop:cornerpara` s
 untouched. Recorded against `prop:cornerpara`'s row below because a real (partial) blocker cleared
 there; not recorded as clearing any other row, per the standing instruction not to claim
 placement-layer progress against a statement until its blocker actually moves.
+
+## Reusable tools built 2026-09-02 (check before any new geometric construction)
+`IsoTri.isoTri` (isosceles) and `SssTri.sssTri` (general scalene, SSS) construct an actual `Tri`
+from side lengths alone (`L≠0`/`r≠0`, `h≠0` with `h` the Pythagorean/law-of-cosines height) — the
+first concrete real-coordinate `Tri` constructors anywhere in this project, confirmed absent by
+search before being built. Any row whose blocker is "no real triangle realizing these numbers"
+should reach for these first, not rebuild from scratch. They do NOT by themselves supply a full
+`Dissection`/`CongruentDissection` (covering N tiles, wall/chain data) — that remains the deeper
+placement-layer gap (structural blocker 1) for rows like `thm:walkstruct`, `thm:44`, `cor:elevenm`.
