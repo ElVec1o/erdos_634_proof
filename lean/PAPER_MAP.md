@@ -1091,3 +1091,35 @@ search before being built. Any row whose blocker is "no real triangle realizing 
 should reach for these first, not rebuild from scratch. They do NOT by themselves supply a full
 `Dissection`/`CongruentDissection` (covering N tiles, wall/chain data) — that remains the deeper
 placement-layer gap (structural blocker 1) for rows like `thm:walkstruct`, `thm:44`, `cor:elevenm`.
+
+## The certified-search bridge and the area equation (2026-09-02, late)
+
+| Atom | Statement | Lean | Label |
+|---|---|---|---|
+| CSB-topology | containment + disjoint interiors + area identity ⟹ the pointwise covering | `ConvexCover.covers_of_volume`, `.ofCertificate` | **VERIFIED** |
+| CSB-translate | a `decide`-checked `ℤ[√d]` certificate satisfies those three in `Tri`/`volume` terms | none | **OPEN** — needs a triangle-area formula (`volume (Tri.carrier) = |det|/2`), absent from the corpus and from Mathlib |
+| AREA-cong | congruent triangles have equal area | `CongruentArea.volume_congruent` | **VERIFIED** |
+| AREA-eqn | `\|ABC\| = N·\|T\|` for a real `CongruentDissection`, no hypothesis | `CongruentArea.congruentDissection_volume_target` | **VERIFIED** |
+
+**`ConvexCover` closes the half of the certified-search bridge previously recorded (RESEARCH_LOG,
+2026-09-02) as "needing a real topology theorem that exists nowhere in this project or obviously in
+Mathlib".** The argument: the union of the pieces is a finite union of compacts, hence closed, so
+its complement in the target is relatively open; a triangle is the closure of its interior, so a
+nonempty relatively open subset of the target contains a nonempty *open* set and therefore has
+positive volume; disjoint interiors make the pieces a.e. disjoint (`Tri.volume_frontier`), so the
+union's volume equals the sum equals the target's — and a positive-volume uncovered piece would put
+the target's volume strictly above itself.
+
+This is the blocker cited by `thm:44`, `thm:63`, `cor:elevenm`, `thm:frontier`, `thm:frontier2`,
+`thm:frontier3`, `thm:frontier4`, `thm:eq105`. **None of those flips yet**: the certificates live in
+exact `ℤ[√d]` integer arithmetic, disconnected from `Tri`/`Plane`/`volume`, and translating their
+(C1)–(C4) into `ConvexCover.ofCertificate`'s hypotheses is untouched. What is closed is the
+geometry; what remains is a translation whose gate is the missing triangle-area formula.
+
+**Correction to `prop:dissection` (labelled VERIFIED).** Its second clause — "if the `T_i` are
+pairwise congruent to a tile `T` then `|ABC| = N|T|`" — was cited to
+`Dissection.volume_target_of_congruent`, which *takes* `∀ i, volume (tile i).carrier = v` as a
+hypothesis. Nothing in the corpus had ever discharged it, so the label was resting on an
+undischarged premise (the same defect class as the ten labels corrected in the 2026-08-30 audit).
+`CongruentArea.congruentDissection_volume_target` now proves the clause outright, with no
+hypothesis. The label was not wrong in substance, but it is only now actually backed.
