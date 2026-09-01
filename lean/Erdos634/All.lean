@@ -34,6 +34,7 @@ import Erdos634.SideWalk
 import Erdos634.IsoTri
 import Erdos634.SssTri
 import Erdos634.BEdgeReading
+import Erdos634.SubDissection
 import Erdos634.E2Join
 import Erdos634.EdgeChain
 import Erdos634.EquilateralConic
