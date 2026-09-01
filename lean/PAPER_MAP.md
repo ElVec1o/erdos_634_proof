@@ -1024,3 +1024,25 @@ them prose (`` `sorry` `` inside docstrings such as "Axiom-clean; no `sorry`"). 
 check is Lean's own: `lake build Erdos634.All` emits `declaration uses 'sorry'` for any real one, and
 emits **none**. The corpus is sorry-free; the grep noise is not evidence either way and should not be
 quoted as the check.
+
+### Tile-placement layer, started (2026-09-02)
+
+The single highest-leverage blocker — ~31 statements name it directly, more depend on it through
+an assembly chain — had no Lean development at all. `TileAt.lean` is the first primitive:
+
+* `Dissection.exists_tile_mem`: every point of the target lies in some tile (from `covers`).
+* `Dissection.badSet`: the union of all tile frontiers, measure zero (`volume_badSet`).
+* `Dissection.tile_unique_of_not_mem_badSet`: off the bad set, the covering tile is unique (two
+  tiles' interiors both containing `p` forces them equal, by `interiors_disjoint`).
+* `Dissection.tileAt`: the covering tile as a function of a target point (noncomputable choice),
+  with its defining membership fact (`tileAt_mem`), agreement with any other witness off the bad
+  set (`tileAt_eq_of_mem`), and independence of the membership proof off the bad set
+  (`tileAt_congr`).
+
+This is deliberately minimal and does not itself discharge any blocked row: a *point*'s covering
+tile is not yet 'the tile at a corner' (a dissection's own vertices sit *on* the bad set by
+construction, so `tileAt` does not directly apply there — corner-tile identification needs a
+further argument, tying to the already-proved `localAngle` machinery, that this file does not
+attempt), nor 'the tile matched to an edge'. Recorded here, not against any row, because it is
+real infrastructure and the standing instruction is not to claim placement-layer progress against
+a specific statement until a named row's blocker actually clears.
