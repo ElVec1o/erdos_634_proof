@@ -195,7 +195,7 @@ theorem side_word_monotone (D : CongruentDissection N) (g : Plane →ᵃ[ℝ] �
         (edgeWest D.toDissection dir (E m)))) =
         List.replicate j Orient.GB ++ List.replicate k' Orient.BG := by
   classical
-  obtain ⟨E, n, hneq, hn0, hwest0, heastlast, hjunc, hmem, hinj, hlba, hlbend, hnondeg⟩ :=
+  obtain ⟨E, n, hneq, hn0, hwest0, heastlast, hjunc, hmem, hinj, hlba, hlbend, hnondeg, _hsurj⟩ :=
     chain_endpoints hN D.toDissection g c dir hker hwall a b hab hdirab hbase hline hface hthird
   refine ⟨E, n, ?_⟩
   set o : ℕ → Orient := fun m =>

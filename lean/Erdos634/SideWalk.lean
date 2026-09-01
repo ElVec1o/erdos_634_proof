@@ -51,7 +51,7 @@ theorem side_walk_of_dissection (D : CongruentDissection N) (g : Plane →ᵃ[�
     ∃ Pc Qc Rc : ℕ,
       dist a b = Pc * sideOpp D.model 0 + Qc * sideOpp D.model 1 + Rc * sideOpp D.model 2 := by
   classical
-  obtain ⟨E, n, hneq, hn0, hwest0, heastlast, hjunc, hmem, hinj, hlba, hlbend, hnondeg⟩ :=
+  obtain ⟨E, n, hneq, hn0, hwest0, heastlast, hjunc, hmem, hinj, hlba, hlbend, hnondeg, _hsurj⟩ :=
     chain_endpoints hN D.toDissection g c dir hker hwall a b hab hdirab hbase hline hface hthird
   set L : ℕ → ℝ := fun m => Erdos634.OrientBridge.edgePos D.toDissection dir (E m) with hLdef
   set R : ℕ → ℝ := fun m => Erdos634.ChainInstance.edgeEnd D.toDissection dir (E m) with hRdef

@@ -66,7 +66,7 @@ theorem congruentDissection_gammatrap (hN : 0 < N) (D : CongruentDissection N) (
     have := wallFun_face D.target k hy h0
     rw [Tri.edge] at this
     exact this
-  obtain ⟨E, n2, hneq, hn0, hwest, heast, hinternal, hmem, hEinj, hstrictlo, hstricthi, hnondeg⟩ :=
+  obtain ⟨E, n2, hneq, hn0, hwest, heast, hinternal, hmem, hEinj, hstrictlo, hstricthi, hnondeg, _hsurj⟩ :=
     chain_endpoints hN D.toDissection g 0 dir hker hwall (D.target.pts k) (D.target.pts (k+1))
       hab hdirab hbase hline hface hthird
   rw [← hndef] at hneq
