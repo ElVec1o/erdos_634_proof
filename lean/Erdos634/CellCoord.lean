@@ -201,4 +201,98 @@ theorem cellUp_cellDown_disjoint (hindep : AffineIndependent ℝ ![A, B, C]) (i 
   subst hii; subst hjj
   exact up_down_disjoint i j _ _ hx hx'
 
+/-! ## (C2): every cell lies in the big triangle
+
+The big triangle at scale `k` is the homothety image of `(A,B,C)` centred at `A` with ratio `k`;
+its vertices are the lattice points `(0,0)`, `(k,0)`, `(0,k)`. A lattice point `(i,j)` with
+`i + j ≤ k` has big-triangle barycentric coordinates `(1 - i/k - j/k, i/k, j/k)`, all nonnegative,
+so it lies in the big triangle; convexity then carries the whole cell. -/
+
+/-- The homothety carrying `(A,B,C)` to the scale-`k` triangle. -/
+noncomputable def bigMap (k : ℝ) : Plane →ᵃ[ℝ] Plane := AffineMap.homothety A k
+
+theorem bigMap_injective {k : ℝ} (hk : k ≠ 0) : Function.Injective (bigMap A k) := by
+  intro x y hxy
+  simp only [bigMap, AffineMap.homothety_apply, vsub_eq_sub, vadd_eq_add] at hxy
+  have h : k • (x - A) = k • (y - A) := by
+    have := congrArg (fun z => z - A) hxy
+    simpa using this
+  have hx : x - A = y - A := smul_right_injective Plane hk h
+  exact sub_left_inj.mp hx
+
+/-- **The scale-`k` triangle.** -/
+noncomputable def bigTri (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k) : Tri where
+  pts := ![A, P A B C k 0, P A B C 0 k]
+  indep := by
+    have hmap : (![A, P A B C k 0, P A B C 0 k] : Fin 3 → Plane)
+        = (bigMap A (k : ℝ)) ∘ ![A, B, C] := by
+      funext x
+      have htri : ∀ y : Fin 3, y = 0 ∨ y = 1 ∨ y = 2 := by decide
+      rcases htri x with rfl | rfl | rfl <;>
+        simp only [Function.comp_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+          Matrix.head_cons, Matrix.cons_val_two, Matrix.tail_cons, bigMap,
+          AffineMap.homothety_apply, vsub_eq_sub, vadd_eq_add, P] <;>
+        push_cast <;> module
+    rw [hmap]
+    exact hindep.map' _ (bigMap_injective A (by exact_mod_cast hk.ne'))
+
+theorem bigTri_pts0 (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k) :
+    (bigTri A B C hindep k hk).pts 0 = A := rfl
+
+theorem bigTri_pts1 (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k) :
+    (bigTri A B C hindep k hk).pts 1 = P A B C k 0 := rfl
+
+theorem bigTri_pts2 (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k) :
+    (bigTri A B C hindep k hk).pts 2 = P A B C 0 k := rfl
+
+/-- **A lattice point with `i + j ≤ k` lies in the scale-`k` triangle.** -/
+theorem P_mem_bigTri (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k)
+    (i j : ℕ) (hij : i + j ≤ k) :
+    P A B C i j ∈ (bigTri A B C hindep k hk).carrier := by
+  set G : Tri := bigTri A B C hindep k hk with hG
+  have hkR : (0:ℝ) < (k : ℝ) := by exact_mod_cast hk
+  set w : Fin 3 → ℝ := ![1 - i / k - j / k, i / k, j / k] with hw
+  have hsum : w 0 + w 1 + w 2 = 1 := by simp [hw]; ring
+  have hcomb : P A B C i j = w 0 • G.pts 0 + w 1 • G.pts 1 + w 2 • G.pts 2 := by
+    rw [bigTri_pts0, bigTri_pts1, bigTri_pts2]
+    simp only [hw, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
+      Matrix.cons_val_two, Matrix.tail_cons, P]
+    match_scalars <;> (field_simp; try ring)
+  rw [G.carrier_eq_nonneg_coord]
+  intro m
+  rw [Tri.coord_eq_of_combo G _ w hsum hcomb m]
+  have hijR : (i : ℝ) + (j : ℝ) ≤ (k : ℝ) := by exact_mod_cast hij
+  have htri : ∀ y : Fin 3, y = 0 ∨ y = 1 ∨ y = 2 := by decide
+  rcases htri m with rfl | rfl | rfl <;> simp only [hw, Matrix.cons_val_zero,
+    Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.tail_cons]
+  · have h1 : ((i:ℝ) + (j:ℝ)) / (k:ℝ) ≤ 1 := (div_le_one hkR).mpr hijR
+    have h2 : (i:ℝ)/(k:ℝ) + (j:ℝ)/(k:ℝ) = ((i:ℝ) + (j:ℝ))/(k:ℝ) := by ring
+    linarith
+  · positivity
+  · positivity
+
+/-- **(C2), upward cells.** -/
+theorem cellUp_subset_bigTri (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k)
+    (i j : ℕ) (hij : i + j + 1 ≤ k) :
+    (cellUp A B C hindep i j).carrier ⊆ (bigTri A B C hindep k hk).carrier := by
+  refine convexHull_min ?_ (bigTri A B C hindep k hk).convex
+  rintro y ⟨m, rfl⟩
+  have htri : ∀ z : Fin 3, z = 0 ∨ z = 1 ∨ z = 2 := by decide
+  rcases htri m with rfl | rfl | rfl
+  · rw [cellUp_pts0]; exact P_mem_bigTri A B C hindep k hk i j (by omega)
+  · rw [cellUp_pts1]; exact P_mem_bigTri A B C hindep k hk (i+1) j (by omega)
+  · rw [cellUp_pts2]; exact P_mem_bigTri A B C hindep k hk i (j+1) (by omega)
+
+/-- **(C2), downward cells.** -/
+theorem cellDown_subset_bigTri (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k)
+    (i j : ℕ) (hij : i + j + 2 ≤ k) :
+    (cellDown A B C hindep i j).carrier ⊆ (bigTri A B C hindep k hk).carrier := by
+  refine convexHull_min ?_ (bigTri A B C hindep k hk).convex
+  rintro y ⟨m, rfl⟩
+  have htri : ∀ z : Fin 3, z = 0 ∨ z = 1 ∨ z = 2 := by decide
+  rcases htri m with rfl | rfl | rfl
+  · rw [cellDown_pts0]; exact P_mem_bigTri A B C hindep k hk (i+1) j (by omega)
+  · rw [cellDown_pts1]; exact P_mem_bigTri A B C hindep k hk i (j+1) (by omega)
+  · rw [cellDown_pts2]; exact P_mem_bigTri A B C hindep k hk (i+1) (j+1) (by omega)
+
 end Erdos634.Subdivision
