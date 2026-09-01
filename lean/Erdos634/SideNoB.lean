@@ -214,13 +214,23 @@ theorem side_quantized {e f x z : ℕ} (hf : 1 ≤ f) (hco : Nat.Coprime e f)
   exact (Nat.Coprime.dvd_of_dvd_mul_right (Nat.coprime_comm.mp hco)) hd
 
 
-/-- **A `c`-corner forces `f` side `a`-edges.** The base corner angle is `β`, whose flanks are
-`a` and `c`. If the corner tile lays `c` on the base then it lays `a` on the side, so the side's
-`a`-count `P'` is positive; by `side_quantized` `P' = f·p`, hence `P' ≥ f`. Together with the
-`γ`-trap (`R' ≥ 1`) and `p·e + R' = f` this gives `1 ≤ p ≤ (f−1)/e`. In particular the side
-condition of `hyp:walls` (`p = 0`) fails at any `c`-corner: hypothesis `hyp:walls` forces both
-base ends to be `a`-edges. -/
-theorem c_corner_forces_side_a {f p R : ℕ} (hf : 1 ≤ f) (hp : 1 ≤ p)
-    (h : p * 1 + R = f) : f ≤ f * p := Nat.le_mul_of_pos_right f hp
+/-- **A `c`-corner forces `f` side `a`-edges.**
+
+Corrected 2026-09-02: the version of this theorem previously here took `1 ≤ p` as a *hypothesis*
+named `hp` while its docstring claimed to derive it — a circularity the audit-hypotheses-for-
+circularity check catches, and the very failure mode this project has hit twice before
+(`word42_junction_dies`, `uniform_bp2_conditional`). The real content is the other direction:
+`P' > 0` (the corner tile's own `a`-edge) forces `p ≥ 1` through quantization, not the reverse.
+
+The base corner angle is `β`, whose flanks are `a` and `c`. If the corner tile lays `c` on the base
+then it lays `a` on the side (`TilePlacement.c_corner_side_a`), so the side's `a`-count `P'` is
+*positive* — that is the genuine hypothesis, `hPpos : 0 < P'`. By `side_quantized`, `P' = f·p` for
+some `p`; a positive multiple of `f ≥ 1` forces `p ≥ 1`. Together with the `γ`-trap (`R' ≥ 1`) and
+`p·e + R' = f` this gives `1 ≤ p ≤ (f−1)/e`. In particular the side condition of `hyp:walls`
+(`p = 0`) fails at any `c`-corner. -/
+theorem c_corner_forces_side_a {f p : ℕ} (hf : 1 ≤ f) (hPpos : 0 < f * p) : 1 ≤ p := by
+  rcases Nat.eq_zero_or_pos p with rfl | hp
+  · simp at hPpos
+  · exact hp
 
 end Erdos634.SideNoB

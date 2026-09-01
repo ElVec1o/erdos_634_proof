@@ -181,7 +181,7 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 | C `cor:basedi2e` | The base trichotomy and dichotomy without separation | `base_dichotomy_thick`, `no_extra_column_of_f_gt_two_e` |
 | C `cor:ptwo` | A uniform two-case side problem | `side_p_le_two` |
 | C `cor:walls16` | corollary | `pincer_window_four` |
-| C `cor:wallsf2e` | The walls form at $e=1$, $f\ge3$ | `SideNoB.side_no_b_uncond`, `SideNoB.side_quantized`, `SideNoB.c_corner_forces_side_a` |
+| C `cor:wallsf2e` | The walls form at $e=1$, $f\ge3$ | `SideNoB.side_no_b_uncond`, `SideNoB.side_quantized`, `SideNoB.c_corner_forces_side_a` | *(signature of `c_corner_forces_side_a` corrected 2026-09-02, see `lem:shadow` row)*
 | C `lem:anglethreshold` | The angle threshold | `cos_alpha_closed` |
 | C `lem:avgen` | The $\alpha$-vertex gap, general | `alpha_vertex_gap_gen` |
 | C `lem:basedi` | The thick base dichotomy | `base_dichotomy_thick` |
@@ -508,7 +508,7 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | C `lem:pentagon` | the middle region of `(0,e,2e)` admits no tiling | `Pentagon.no_partition` | PROVED — 'admits no tiling' quantifies over dissections of a **non-triangular region**, for which there is no Lean notion |
 | C `lem:anglethreshold` | the closed forms for `cos α`, `cos β`, `cos γ`, and (P4) | `Frontier.cos_alpha_closed` | VERIFIED — one of the three cosines is a verified identity; the other two are unformalized and (P4) is a property of the search's uncovered region, which has no Lean notion |
 | C `lem:basetri` | the thick base trichotomy | `base_trichotomy` | VERIFIED — the three decompositions are VERIFIED arithmetic; that a tiling realises one of them needs the base edge chain |
-| C `lem:shadow` | the shadow at a `c`-corner | `SideNoB.c_corner_forces_side_a` | PROVED — **tile-placement layer**: 'lays `c` on the base, mirrored, `a`-edge first' |
+| C `lem:shadow` | the shadow at a `c`-corner | `SideNoB.c_corner_forces_side_a` | PROVED — **tile-placement layer**: 'lays `c` on the base, mirrored, `a`-edge first'. **Circularity fixed 2026-09-02**: the theorem previously assumed `1 ≤ p` as a hypothesis while claiming to derive it; it now derives `p ≥ 1` from `0 < f·p`, which is still not connected to a real tiling — the placement-layer blocker stands
 | C `lem:basedi` | the thick base dichotomy | `base_dichotomy_thick` | PROVED — the arithmetic is VERIFIED; it consumes `prop:gammatrap`, whose geometric inputs are open |
 | C `cor:basedi2e` | the trichotomy and dichotomy without separation | `base_dichotomy_thick`, `no_extra_column_of_f_gt_two_e` | PROVED — same, plus the column exclusion |
 | C `lem:anchorclear` | blocked-end quantization | `CChord.*`, `Collar.*` | PROVED — needs a tile edge whose extension is blocked — a placement statement about the ambient tiling |
