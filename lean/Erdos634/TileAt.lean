@@ -418,7 +418,7 @@ theorem congruentDissection_endpoints (hN : 0 < N) (D : CongruentDissection N) (
     ∃ E : ℕ → Fin N × Fin 3, ∃ n : ℕ, n = (wallList D.toDissection g c).length ∧ 0 < n ∧
       (D.tile (E 0).1).localAngle (D.target.pts kbase) = β ∧
       (D.tile (E (n - 1)).1).localAngle (D.target.pts kapex) = α := by
-  obtain ⟨E, n, hneq, hn0, hwest, heast⟩ :=
+  obtain ⟨E, n, hneq, hn0, hwest, heast, hinternal⟩ :=
     chain_endpoints hN D.toDissection g c dir hker hwall (D.target.pts kbase)
       (D.target.pts kapex) hab hdirab hbase hline hface hthird
   refine ⟨E, n, hneq, hn0, ?_, ?_⟩

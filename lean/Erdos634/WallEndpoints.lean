@@ -1,6 +1,7 @@
 import Erdos634.BaseChain
 import Erdos634.WallInjective
 import Erdos634.Placement
+import Erdos634.BridgeC
 
 /-!
 # The wall chain's first edge starts exactly at the named corner
@@ -239,7 +240,8 @@ theorem chain_endpoints {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
     (hface : ∀ y ∈ D.target.carrier, g y = c → y ∈ segment ℝ a b)
     (hthird : ∀ p ∈ wallList D g c, g ((D.tile p.1).pts (p.2 + 2)) < c) :
     ∃ E : ℕ → Fin N × Fin 3, ∃ n : ℕ, n = (wallList D g c).length ∧ 0 < n ∧
-      edgeWest D dir (E 0) = a ∧ edgeEast D dir (E (n - 1)) = b := by
+      edgeWest D dir (E 0) = a ∧ edgeEast D dir (E (n - 1)) = b ∧
+      (∀ m, m + 1 < n → edgeEast D dir (E m) = edgeWest D dir (E (m + 1))) := by
   classical
   haveI : Inhabited (Fin N × Fin 3) := ⟨(⟨0, hN⟩, 0)⟩
   obtain ⟨E, hmono, hmem, hsurj, hinj⟩ :=
@@ -352,8 +354,45 @@ theorem chain_endpoints {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
       linarith [hndj, h, hle]
     · rw [heqend] at hndib
       linarith [hmonoib, hndj]
-  refine ⟨E, n, rfl, hn0, ?_, ?_⟩
+  have hlin : ∃ y, g y ≠ c := by
+    refine ⟨(D.tile (E ia).1).pts ((E ia).2 + 2), ?_⟩
+    have h3 := hthird (E ia) (hmem ia hialt)
+    linarith
+  have hnondeg : ∀ jj, jj < n → edgePos D dir (E jj) < edgeEnd D dir (E jj) := by
+    intro jj hj
+    have hw := (mem_wallList D g c (E jj)).mp (hmem jj hj)
+    exact shadow_nondegenerate D g dir c hker (E jj).1 (E jj).2 hw.1 hw.2
+  have hnoov : ∀ ii jj, ii < jj → jj < n → edgeEnd D dir (E ii) ≤ edgePos D dir (E jj) := by
+    intro ii jj hiijj hj
+    have hii : ii < n := lt_trans hiijj hj
+    have hwii := (mem_wallList D g c (E ii)).mp (hmem ii hii)
+    have hwjj := (mem_wallList D g c (E jj)).mp (hmem jj hj)
+    have hne : E ii ≠ E jj := fun h => absurd (hinj ii jj hii hj h) (Nat.ne_of_lt hiijj)
+    have htile : (E ii).1 ≠ (E jj).1 := by
+      intro h
+      exact Erdos634.WallSide.wall_edges_same_tile D g c hlin (E ii) (E jj) hne h hwii hwjj
+    have hdisj := shadows_disjoint D g dir c hker (E ii).1 (E jj).1 htile (E ii).2 (E jj).2
+      hwii.1 hwii.2 (hthird (E ii) (hmem ii hii)) hwjj.1 hwjj.2 (hthird (E jj) (hmem jj hj))
+    rcases hdisj with h | h
+    · exact h
+    · exact absurd h
+        (not_le.mpr (lt_of_le_of_lt (hmono ii jj (le_of_lt hiijj) hj) (hnondeg jj hj)))
+  refine ⟨E, n, rfl, hn0, ?_, ?_, ?_⟩
   · rwa [hia0] at hweqa
   · rwa [hib1] at hbeqb
+  · intro m hm1
+    have hreach := base_chain_reach D g c dir hwall a b hab hbase hline hface E hmono hmem hsurj
+      m hm1
+    have hcontig : edgeEnd D dir (E m) = edgePos D dir (E (m + 1)) :=
+      Erdos634.Placement.contiguous_of_no_gap (fun jj => edgePos D dir (E jj))
+        (fun jj => edgeEnd D dir (E jj)) n m hm1
+        (fun jj _ => edgePos_le_edgeEnd D dir (E jj)) (fun ii jj hij hj => hmono ii jj hij hj)
+        hnoov hreach
+    have hwm := (mem_wallList D g c (E m)).mp (hmem m (by omega))
+    have hwm1 := (mem_wallList D g c (E (m + 1))).mp (hmem (m + 1) hm1)
+    exact Erdos634.Placement.shared_junction D dir {y : Plane | g y = c}
+      (dir_injOn_wall g dir c hker) (E m) (E (m + 1))
+      ((Erdos634.BridgeC.g_ends D g c dir (E m) hwm).2)
+      ((Erdos634.BridgeC.g_ends D g c dir (E (m + 1)) hwm1).1) hcontig
 
 end Erdos634.WallEndpoints
