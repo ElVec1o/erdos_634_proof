@@ -1070,6 +1070,19 @@ untouched. Recorded against `prop:cornerpara`'s row below because a real (partia
 there; not recorded as clearing any other row, per the standing instruction not to claim
 placement-layer progress against a statement until its blocker actually moves.
 
+## Certified-search bridge — topological half CLOSED 2026-09-02 (`ConvexCover.lean`)
+The blocker shared by **8 rows** (`thm:44`, `thm:63`, `cor:elevenm`, `thm:frontier`, `thm:frontier2`,
+`thm:frontier3`, `thm:frontier4`, `thm:eq105`) had two halves. The **geometric/measure half is now
+done, once, reusably**: `Geometry.dissectionOfCover` builds a `Dissection` from `N` tiles inside a
+target with pairwise-disjoint interiors and total area equal to the target's — the `covers` field
+(pointwise `⋃ = target`) coming from `iUnion_carrier_eq_of_area`, itself from the genuinely new
+`closed_full_measure_subset` (a closed full-measure subset of a convex body is the body; the fact
+with no Mathlib counterpart). The **remaining half is per-certificate arithmetic transport**:
+translating a specific certificate's `ℤ[√d]` coordinate triangles (e.g. `Tiling44`'s `Pt`) into
+`Tri` over `Plane` and re-deriving containment/separation/area there. That transport is what still
+blocks each of the 8 rows individually; the shared hard part no longer does. Any one of them now
+flips as soon as its certificate is transported and fed to `dissectionOfCover`.
+
 ## Reusable tools built 2026-09-02 (check before any new geometric construction)
 `IsoTri.isoTri` (isosceles) and `SssTri.sssTri` (general scalene, SSS) construct an actual `Tri`
 from side lengths alone (`L≠0`/`r≠0`, `h≠0` with `h` the Pythagorean/law-of-cosines height) — the
