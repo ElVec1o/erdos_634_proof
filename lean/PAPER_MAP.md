@@ -1038,11 +1038,12 @@ an assembly chain — had no Lean development at all. `TileAt.lean` is the first
   with its defining membership fact (`tileAt_mem`), agreement with any other witness off the bad
   set (`tileAt_eq_of_mem`), and independence of the membership proof off the bad set
   (`tileAt_congr`).
+* `Dissection.target_vertex_mem_badSet`: proved (2026-09-02) the claim the first draft of this file only asserted — a target vertex always sits on the bad set, so `tileAt` cannot reach it directly. Reuses `BaseSelection.tile_interior_subset` rather than reproving tile-inside-target.
 
 This is deliberately minimal and does not itself discharge any blocked row: a *point*'s covering
 tile is not yet 'the tile at a corner' (a dissection's own vertices sit *on* the bad set by
-construction, so `tileAt` does not directly apply there — corner-tile identification needs a
-further argument, tying to the already-proved `localAngle` machinery, that this file does not
-attempt), nor 'the tile matched to an edge'. Recorded here, not against any row, because it is
+construction — now proved, `target_vertex_mem_badSet` — so `tileAt` does not directly apply there;
+corner-tile identification needs a further argument, tying to the already-proved `localAngle`
+machinery, that this file does not attempt), nor 'the tile matched to an edge'. Recorded here, not against any row, because it is
 real infrastructure and the standing instruction is not to claim placement-layer progress against
 a specific statement until a named row's blocker actually clears.
