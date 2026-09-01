@@ -178,3 +178,5 @@ import Erdos634.ConvexCover
 import Erdos634.CongruentArea
 import Erdos634.InteriorCoord
 import Erdos634.CellCoord
+import Erdos634.Compose
+import Erdos634.Ladder
