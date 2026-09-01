@@ -233,7 +233,8 @@ theorem equal_side_no_b_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ
     (hB : sideOpp D.model 1 = (b0 : ℝ))
     (hC : sideOpp D.model 2 = ((f0 ^ 2 : ℤ) : ℝ))
     (hLen : dist (D.target.pts k) (D.target.pts (k + 1)) = ((f0 ^ 3 : ℤ) : ℝ)) :
-    ∃ Pc Qc : ℕ, Qc = 0 := by
+    ∃ Pc Qc Rc : ℕ, Qc = 0 ∧
+      (Pc : ℤ) * (e0 * f0) + (Rc : ℤ) * f0 ^ 2 = f0 ^ 3 := by
   classical
   set g := wallFun D.target k with hgdef
   set a := D.target.pts k with hadef
@@ -299,29 +300,28 @@ theorem equal_side_no_b_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ
       rw [Finset.mem_range] at hm
       simp only [Finset.mem_insert, Finset.mem_singleton]
       exact hRL m hm)
-  set Pc := ((Finset.range n).filter (fun j => R j - L j = sideOpp D.model 0)).card with hPcdef
-  set Qc := ((Finset.range n).filter (fun j => R j - L j = sideOpp D.model 1)).card with hQcdef
-  set Rc := ((Finset.range n).filter (fun j => R j - L j = sideOpp D.model 2)).card with hRcdef
+  set PcL := ((Finset.range n).filter (fun j => R j - L j = sideOpp D.model 0)).card with hPcdef
+  set QcL := ((Finset.range n).filter (fun j => R j - L j = sideOpp D.model 1)).card with hQcdef
+  set RcL := ((Finset.range n).filter (fun j => R j - L j = sideOpp D.model 2)).card with hRcdef
   have hRb : R (n - 1) = dir b := by
     show Erdos634.ChainInstance.edgeEnd D.toDissection dir (E (n - 1)) = dir b
     rw [← dir_edgeEast, heastlast]
   have hL0 : L 0 = dir a := by
     show Erdos634.OrientBridge.edgePos D.toDissection dir (E 0) = dir a
     rw [← dir_edgeWest, hwest0]
-  have heq : dist a b = Pc * sideOpp D.model 0 + Qc * sideOpp D.model 1 + Rc * sideOpp D.model 2 := by
+  have heq : dist a b = PcL * sideOpp D.model 0 + QcL * sideOpp D.model 1 + RcL * sideOpp D.model 2 := by
     rw [hiso a b (hline a (left_mem_segment ℝ a b)) (hline b (right_mem_segment ℝ a b))]
     rw [abs_of_nonpos (by linarith)]
     rw [← hchain, hRb, hL0]
     ring
-  refine ⟨Pc, Qc, ?_⟩
-  have hcast : (Pc : ℤ) * (e0 * f0) + (Qc : ℤ) * b0 + (Rc : ℤ) * f0 ^ 2 = f0 ^ 3 := by
-    have hr : ((Pc : ℤ) * (e0 * f0) + (Qc : ℤ) * b0 + (Rc : ℤ) * f0 ^ 2 : ℝ)
+  have hcast : (PcL : ℤ) * (e0 * f0) + (QcL : ℤ) * b0 + (RcL : ℤ) * f0 ^ 2 = f0 ^ 3 := by
+    have hr : ((PcL : ℤ) * (e0 * f0) + (QcL : ℤ) * b0 + (RcL : ℤ) * f0 ^ 2 : ℝ)
         = ((f0 ^ 3 : ℤ) : ℝ) := by
       rw [hA, hB, hC, hLen] at heq
       push_cast at heq ⊢
       linarith
     exact_mod_cast hr
-  have hnc1 : 1 ≤ Rc := by
+  have hnc1 : 1 ≤ RcL := by
     obtain ⟨ic, hiclt, hiceq⟩ := hsurj pc hpcmem
     subst hiceq
     apply ChainWalk.count_pos n (fun j => R j - L j) (sideOpp D.model 2) ic
@@ -346,9 +346,68 @@ theorem equal_side_no_b_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ
       · rw [min_eq_left h, max_eq_right h, abs_of_nonpos (by linarith)]; ring
       · rw [min_eq_right h, max_eq_left h, abs_of_nonneg (by linarith)]
     rw [← hdist, hpceq]
-  have hnb0 : (Qc : ℤ) = 0 := equal_side_no_b e0 f0 b0 (Pc : ℤ) (Qc : ℤ) (Rc : ℤ) he0 hef0 hcop
-    hb0 hthin (Int.natCast_nonneg Pc) (Int.natCast_nonneg Qc) (by exact_mod_cast hnc1) hcast
-  exact_mod_cast hnb0
+  have hnb0 : (QcL : ℤ) = 0 := equal_side_no_b e0 f0 b0 (PcL : ℤ) (QcL : ℤ) (RcL : ℤ) he0 hef0 hcop
+    hb0 hthin (Int.natCast_nonneg PcL) (Int.natCast_nonneg QcL) (by exact_mod_cast hnc1) hcast
+  have hQc0 : QcL = 0 := by exact_mod_cast hnb0
+  have hcast2 : (PcL : ℤ) * (e0 * f0) + (RcL : ℤ) * f0 ^ 2 = f0 ^ 3 := by
+    rw [hnb0] at hcast; linarith [hcast]
+  exact ⟨PcL, QcL, RcL, hQc0, hcast2⟩
+
+/-- **`thm:walkstruct` clause (i)'s shape, for a real dissection's side**: `n_c = f - k·e` where
+`n_a = f·k`. Composes `equal_side_no_b_of_gammatrap`'s output with `f₀ ∣ Pc` (derived from the walk
+equation itself: `Pc·e₀·f₀ = f₀²·(f₀ - Rc)`, so `f₀ ∣ Pc·e₀`, and coprimality gives `f₀ ∣ Pc`) and
+`BaseBetaWalkArith.equal_side_shape`. Same remaining gap as `equal_side_no_b_of_gammatrap`: the
+concrete numeric realization. -/
+theorem equal_side_shape_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hscalenef : ∀ m m' : Fin 3, m ≠ m' → sideOpp D.model m ≠ sideOpp D.model m')
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (k : Fin 3) (dir : Plane →ₗ[ℝ] ℝ)
+    (hker : ∀ v : Plane, (Erdos634.SideWall.wallFun D.target k).linear v = 0 → dir v = 0 → v = 0)
+    (hdirab : dir (D.target.pts k) ≤ dir (D.target.pts (k + 1)))
+    (hthird : ∀ p ∈ Erdos634.BaseChain.wallList D.toDissection
+      (Erdos634.SideWall.wallFun D.target k) 0,
+      Erdos634.SideWall.wallFun D.target k ((D.tile p.1).pts (p.2 + 2)) < 0)
+    (hcornerbase : cornerAngle (D.target.pts (k + 1)) (D.target.pts k)
+      (D.target.pts (k + 2)) = β)
+    (hcornerapex : cornerAngle (D.target.pts (k + 1 + 1)) (D.target.pts (k + 1))
+      (D.target.pts (k + 1 + 2)) = 3 * α)
+    (hiso : ∀ p q : Plane, (Erdos634.SideWall.wallFun D.target k) p = 0 →
+      (Erdos634.SideWall.wallFun D.target k) q = 0 → dist p q = |dir p - dir q|)
+    (hN : 0 < N) (e0 f0 b0 : ℤ) (he0 : 1 ≤ e0) (hef0 : e0 < f0) (hcop : IsCoprime e0 f0)
+    (hb0 : b0 + e0 ^ 2 = f0 ^ 2) (hthin : 2 * e0 ^ 2 < f0 ^ 2)
+    (hA : sideOpp D.model 0 = ((e0 * f0 : ℤ) : ℝ))
+    (hB : sideOpp D.model 1 = (b0 : ℝ))
+    (hC : sideOpp D.model 2 = ((f0 ^ 2 : ℤ) : ℝ))
+    (hLen : dist (D.target.pts k) (D.target.pts (k + 1)) = ((f0 ^ 3 : ℤ) : ℝ)) :
+    ∃ Pc Rc kk : ℕ, (Pc : ℤ) = f0 * kk ∧ (Rc : ℤ) = f0 - kk * e0 := by
+  obtain ⟨Pc, Qc, Rc, hQc0, hcast2⟩ := equal_side_no_b_of_gammatrap D α β γ hαβ hαγ hαπ hα0 hβγ
+    hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hscalenef hα' hβ' hγ' k dir hker hdirab hthird
+    hcornerbase hcornerapex hiso hN e0 f0 b0 he0 hef0 hcop hb0 hthin hA hB hC hLen
+  have hf0 : (0 : ℤ) < f0 := by linarith
+  have hdvd : f0 ∣ (Pc : ℤ) * e0 := by
+    refine ⟨f0 - (Rc : ℤ), ?_⟩
+    have : (Pc : ℤ) * e0 * f0 = f0 ^ 2 * (f0 - (Rc : ℤ)) := by ring_nf; ring_nf at hcast2; linarith
+    exact mul_right_cancel₀ (ne_of_gt hf0) (by ring_nf; ring_nf at this; linarith)
+  have hf0dvd : f0 ∣ (Pc : ℤ) := (hcop.symm).dvd_of_dvd_mul_right hdvd
+  obtain ⟨kk, hkk⟩ := hf0dvd
+  have hkknn : 0 ≤ kk := by
+    by_contra h
+    push_neg at h
+    have hneg : (Pc : ℤ) < 0 := by
+      rw [hkk]
+      exact mul_neg_of_pos_of_neg hf0 h
+    exact absurd hneg (not_lt.mpr (Int.natCast_nonneg Pc))
+  have hnc : (Rc : ℤ) = f0 - kk * e0 :=
+    equal_side_shape e0 f0 kk (Pc : ℤ) (Rc : ℤ) he0 hef0 hkk hcast2
+  have hktoNat : (kk.toNat : ℤ) = kk := Int.toNat_of_nonneg hkknn
+  exact ⟨Pc, Rc, kk.toNat, by rw [hkk, hktoNat], by rw [hnc, hktoNat]⟩
 
 open Erdos634.SideWall Erdos634.Geometry.Dissection Erdos634.TilePlacement in
 theorem base_b_count_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ)
