@@ -288,7 +288,7 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | C `thm:walks` | Boundary walks of the base-$\beta$ target at $m=1$ |
 | M `cor:elevenm` | An infinite family of tilings in an incommensurable branch |
 | M `cor:int` | Integrality and parity |
-| M `cor:ladder` | The realizable set of a base-$\beta$ family is a union of mu |
+| M `cor:ladder` | the realizable set `S(e,f)` is closed upward under the ladder | `Erdos634.Realizable.mem_realizableSet_mul`, `realizableSet_eq_multiples` | PROVED — **two of the corollary's three clauses are now VERIFIED**, and the blocker is exactly the third. `Realizable.scaleTri` is the scale operation (homothety about the triangle's own first vertex); because a homothety fixes its centre, `scaleTri_scaleTri` composes **on the nose**, which is what converts 'apply `thm:ladder` at `k` to the scale-`m` target' into a statement about the scale-`km` target. `Cut T t N` is the realizability predicate and `cut_scale` is `thm:ladder` in those terms. Clause 1, `m ∈ S ⇒ km ∈ S`, is `mem_realizableSet_mul`. Clause 2, '`S` is the union of the multiples of its minimal elements', is `realizableSet_eq_multiples` (via `exists_minimal_divisor`, strong induction on the divisibility order). **Remaining blocker, named: clause 3**, '`1 ∈ S` is *not* implied by `S ≠ ∅`'. That is a non-implication and needs a witness family, which is `cor:elevenm` — `(e,f)=(1,2)`, where `1 ∉ S` is the 135-node exhaustion and `2,3 ∈ S` are the 44- and 99-tilings. So `cor:ladder` cannot pass Rule 5 before `cor:elevenm` does, and `cor:elevenm`'s own blocker is the certified-search bridge on the tile side (`ConvexCover` supplies the topological half; the arithmetic-certificate → `Tri` translation is still open, gated on `volume (Tri) = |det|/2`, which is absent from this corpus **and** from Mathlib). |
 | M `cor:mod12` | Theorem~\ref{thm:main}, congruence form |
 | M `lem:cancel` | Cancellation |
 | M `lem:nonint` | Non-integrality |
@@ -1138,3 +1138,23 @@ hypothesis. The label was not wrong in substance, but it is only now actually ba
 (C2). The row stays **PROVED**: `Dissection` wants `tile : Fin N → Tri`, and (C5) — the bijection
 from `Fin (k²)` onto `{(i,j) : i+j+1 ≤ k} ⊕ {(i,j) : i+j+2 ≤ k}` — is not built. That is index
 bookkeeping rather than geometry, but it is not yet done, and the label does not move until it is.
+
+
+## `thm:ladder` closed, 2026-09-02
+
+`thm:ladder` is VERIFIED. The two structural pieces built for it are general and are recorded here
+because other rows cite them:
+
+* **`Erdos634.Compose.compose`** — the *composition map on dissections*, one of the four recurring
+  blockers. Given a `Dissection M` and a `Dissection N` of each of its tiles, the `M·N` pieces form
+  a `Dissection (M*N)` of the original target. Its hypothesis is carrier equality of the inner
+  target with the coarse tile, not equality of `Tri` objects, so a differently-labelled congruent
+  copy qualifies. **This blocker is now discharged**; rows that cited "no composition map on
+  dissections" should cite the specific missing piece instead.
+* **`Erdos634.Realizable.scaleTri` / `scaleTri_scaleTri`** — the *scale map on dissections*, in the
+  form the ladder rows need: scaling about the triangle's own first vertex composes strictly,
+  `scaleTri r (scaleTri s T) = scaleTri (r*s) T`, because a homothety fixes its centre.
+
+Still open of the original four: the tile-placement layer, the certified-search **arithmetic** half
+(a certificate's exact coordinates → a `Tri`, gated on `volume (Tri) = |det|/2`), and the dual-graph
+development.
