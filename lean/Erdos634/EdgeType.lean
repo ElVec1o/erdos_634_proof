@@ -1,5 +1,6 @@
 import Erdos634.Congruence
 import Erdos634.TilePlacement
+import Erdos634.Placement
 
 /-!
 # Every tile edge has one of the model's three lengths
@@ -168,5 +169,23 @@ theorem gamma_at_one_endpoint (D : CongruentDissection N) (α β γ : ℝ)
       · rw [if_neg (by decide : ¬ ((2:Fin 3) = 0)), if_neg (by decide : ¬ ((2:Fin 3) = 1))]
       · rw [if_neg (by decide : ¬ ((1:Fin 3) = 0)), if_pos (rfl : (1:Fin 3) = 1)]; exact hβγ
     · exact absurd (hk0.trans hk10.symm) hne01
+
+/-- **The `angleAt`/`edgeWest`-`edgeEast` bridge.**  Whichever of a tile's edge endpoints is
+geometrically west, its vertex-indexed `angleAt` matches `localAngle` there — and symmetrically
+for east. -/
+theorem localAngle_edgeWest_edgeEast {N : ℕ} (D : Dissection N) (dir : Plane →ₗ[ℝ] ℝ)
+    (i : Fin N) (k : Fin 3) :
+    ((D.tile i).localAngle (Erdos634.Placement.edgeWest D dir (i, k)) = TilePlacement.angleAt
+      (D.tile i) k ∧
+      (D.tile i).localAngle (Erdos634.Placement.edgeEast D dir (i, k))
+        = TilePlacement.angleAt (D.tile i) (k + 1)) ∨
+    ((D.tile i).localAngle (Erdos634.Placement.edgeWest D dir (i, k)) = TilePlacement.angleAt
+      (D.tile i) (k + 1) ∧
+      (D.tile i).localAngle (Erdos634.Placement.edgeEast D dir (i, k))
+        = TilePlacement.angleAt (D.tile i) k) := by
+  unfold Erdos634.Placement.edgeWest Erdos634.Placement.edgeEast TilePlacement.angleAt
+  split
+  · left; exact ⟨Tri.localAngle_vertex (D.tile i) k, Tri.localAngle_vertex (D.tile i) (k + 1)⟩
+  · right; exact ⟨Tri.localAngle_vertex (D.tile i) (k + 1), Tri.localAngle_vertex (D.tile i) k⟩
 
 end Erdos634.Geometry
