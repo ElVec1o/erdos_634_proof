@@ -1,5 +1,6 @@
 import Erdos634.Subdivision
 import Erdos634.InteriorCoord
+import Erdos634.CongruentArea
 
 /-!
 # The cells' barycentric coordinates, and their interiors as `openUp` / `openDown`
@@ -294,5 +295,70 @@ theorem cellDown_subset_bigTri (hindep : AffineIndependent ℝ ![A, B, C]) (k : 
   · rw [cellDown_pts0]; exact P_mem_bigTri A B C hindep k hk (i+1) j (by omega)
   · rw [cellDown_pts1]; exact P_mem_bigTri A B C hindep k hk i (j+1) (by omega)
   · rw [cellDown_pts2]; exact P_mem_bigTri A B C hindep k hk (i+1) (j+1) (by omega)
+
+/-! ## (C4): each cell has the tile's area
+
+The upward cell is a translate of `(A,B,C)`; the downward cell is the point reflection
+`x ↦ v - x` of the reversed triple, `v = P(i+1,j+1) + A`. Both are isometries, so
+`CongruentArea.volume_congruent` gives each cell the tile's area. -/
+
+/-- Translation as an isometry equivalence. -/
+noncomputable def transIso (c : Plane) : Plane ≃ᵢ Plane where
+  toEquiv := Equiv.addRight c
+  isometry_toFun := Isometry.of_dist_eq (by intro x y; simp [Equiv.addRight, dist_eq_norm])
+
+/-- The point reflection `x ↦ v - x` as an isometry equivalence. -/
+noncomputable def reflIso (v : Plane) : Plane ≃ᵢ Plane where
+  toEquiv := (Equiv.neg Plane).trans (Equiv.addRight v)
+  isometry_toFun := Isometry.of_dist_eq (by
+    intro x y
+    show dist (-x + v) (-y + v) = dist x y
+    rw [dist_eq_norm, dist_eq_norm, show -x + v - (-y + v) = -(x - y) by abel, norm_neg])
+
+/-- **The upward cell is congruent to the tile.** -/
+theorem cellUp_congruent (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
+    Tri.Congruent (⟨![A,B,C], hindep⟩ : Tri) (cellUp A B C hindep i j) :=
+  ⟨transIso (P A B C i j - A), Equiv.refl _, by
+    intro m
+    have htri : ∀ y : Fin 3, y = 0 ∨ y = 1 ∨ y = 2 := by decide
+    rcases htri m with rfl | rfl | rfl
+    · show A + (P A B C i j - A) = P A B C i j
+      abel
+    · show B + (P A B C i j - A) = P A B C (i+1) j
+      simp only [P]; push_cast; module
+    · show C + (P A B C i j - A) = P A B C i (j+1)
+      simp only [P]; push_cast; module⟩
+
+/-- **The downward cell is congruent to the tile.** -/
+theorem cellDown_congruent (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
+    Tri.Congruent (⟨![A,B,C], hindep⟩ : Tri) (cellDown A B C hindep i j) :=
+  ⟨reflIso (P A B C (i+1) (j+1) + A), Equiv.swap 0 2, by
+    intro m
+    have htri : ∀ y : Fin 3, y = 0 ∨ y = 1 ∨ y = 2 := by decide
+    have s0 : (Equiv.swap (0:Fin 3) 2) 0 = 2 := by decide
+    have s1 : (Equiv.swap (0:Fin 3) 2) 1 = 1 := by decide
+    have s2 : (Equiv.swap (0:Fin 3) 2) 2 = 0 := by decide
+    rcases htri m with rfl | rfl | rfl
+    · rw [s0]
+      show -A + (P A B C (i+1) (j+1) + A) = P A B C (i+1) (j+1)
+      abel
+    · rw [s1]
+      show -B + (P A B C (i+1) (j+1) + A) = P A B C i (j+1)
+      simp only [P]; push_cast; module
+    · rw [s2]
+      show -C + (P A B C (i+1) (j+1) + A) = P A B C (i+1) j
+      simp only [P]; push_cast; module⟩
+
+/-- **(C4), per cell: an upward cell has the tile's area.** -/
+theorem volume_cellUp (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
+    MeasureTheory.volume (cellUp A B C hindep i j).carrier
+      = MeasureTheory.volume (⟨![A,B,C], hindep⟩ : Tri).carrier :=
+  (Erdos634.CongruentArea.volume_congruent (cellUp_congruent A B C hindep i j)).symm
+
+/-- **(C4), per cell: a downward cell has the tile's area.** -/
+theorem volume_cellDown (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
+    MeasureTheory.volume (cellDown A B C hindep i j).carrier
+      = MeasureTheory.volume (⟨![A,B,C], hindep⟩ : Tri).carrier :=
+  (Erdos634.CongruentArea.volume_congruent (cellDown_congruent A B C hindep i j)).symm
 
 end Erdos634.Subdivision
