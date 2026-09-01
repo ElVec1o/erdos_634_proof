@@ -361,4 +361,190 @@ theorem volume_cellDown (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) 
       = MeasureTheory.volume (⟨![A,B,C], hindep⟩ : Tri).carrier :=
   (Erdos634.CongruentArea.volume_congruent (cellDown_congruent A B C hindep i j)).symm
 
+/-! ## (C5): enumerating the `k²` cells
+
+The cells are named by a tag (upward / downward) and a lattice index. The upward names are the
+`(i,j)` with `i + j + 1 ≤ k` and the downward ones those with `i + j + 2 ≤ k`; `Subdivision`'s
+`up_count`, `down_shift` and `total_count` say these number `k(k+1)/2` and `k(k−1)/2`, summing to
+`k²`. Here that is turned into an actual `Finset` of names with `card = k * k`, which
+`Finset.equivFin` then indexes by `Fin (k*k)` — the shape `Dissection` requires. -/
+
+open Finset in
+/-- Names of the upward cells. -/
+def upSet (k : ℕ) : Finset (ℕ × ℕ) :=
+  (range k).biUnion (fun i => (range (k - i)).image (fun j => (i, j)))
+
+open Finset in
+/-- Names of the downward cells. -/
+def downSet (k : ℕ) : Finset (ℕ × ℕ) :=
+  (range k).biUnion (fun i => (range (k - i - 1)).image (fun j => (i, j)))
+
+open Finset in
+theorem mem_upSet {k i j : ℕ} : (i, j) ∈ upSet k ↔ i + j + 1 ≤ k := by
+  simp only [upSet, mem_biUnion, mem_range, mem_image, Prod.mk.injEq]
+  constructor
+  · rintro ⟨a, ha, b, hb, rfl, rfl⟩; omega
+  · intro h; exact ⟨i, by omega, j, by omega, rfl, rfl⟩
+
+open Finset in
+theorem mem_downSet {k i j : ℕ} : (i, j) ∈ downSet k ↔ i + j + 2 ≤ k := by
+  simp only [downSet, mem_biUnion, mem_range, mem_image, Prod.mk.injEq]
+  constructor
+  · rintro ⟨a, ha, b, hb, rfl, rfl⟩; omega
+  · intro h; exact ⟨i, by omega, j, by omega, rfl, rfl⟩
+
+open Finset in
+theorem card_upSet (k : ℕ) : (upSet k).card = ∑ i ∈ range k, (k - i) := by
+  rw [upSet, card_biUnion]
+  · exact sum_congr rfl fun i _ => by
+      rw [card_image_of_injective _ (fun a b h => by simpa using h), card_range]
+  · intro a _ b _ hab
+    simp only [disjoint_left, mem_image]
+    rintro x ⟨p, _, rfl⟩ ⟨q, _, hq⟩
+    exact hab (congrArg Prod.fst hq).symm
+
+open Finset in
+theorem card_downSet (k : ℕ) : (downSet k).card = ∑ i ∈ range k, (k - i - 1) := by
+  rw [downSet, card_biUnion]
+  · exact sum_congr rfl fun i _ => by
+      rw [card_image_of_injective _ (fun a b h => by simpa using h), card_range]
+  · intro a _ b _ hab
+    simp only [disjoint_left, mem_image]
+    rintro x ⟨p, _, rfl⟩ ⟨q, _, hq⟩
+    exact hab (congrArg Prod.fst hq).symm
+
+open Finset in
+/-- The full set of cell names: a tag and a lattice index. -/
+def cellSet (k : ℕ) : Finset (Bool × ℕ × ℕ) :=
+  (upSet k).image (fun p => (true, p)) ∪ (downSet k).image (fun p => (false, p))
+
+open Finset in
+/-- **There are exactly `k²` cells.** -/
+theorem card_cellSet (k : ℕ) : (cellSet k).card = k * k := by
+  have hdisj : Disjoint ((upSet k).image (fun p => (true, p)))
+      ((downSet k).image (fun p => (false, p))) := by
+    simp only [disjoint_left, mem_image]
+    rintro x ⟨p, _, rfl⟩ ⟨q, _, hq⟩
+    exact absurd (congrArg Prod.fst hq) (by simp)
+  rw [cellSet, card_union_of_disjoint hdisj,
+    card_image_of_injective _ (fun a b h => by simpa using h),
+    card_image_of_injective _ (fun a b h => by simpa using h),
+    card_upSet, card_downSet]
+  exact total_count k
+
+/-! ## The scale-`k` triangle's area -/
+
+/-- **The scale-`k` triangle is the homothety image of the tile.** -/
+theorem bigTri_carrier (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k) :
+    (bigTri A B C hindep k hk).carrier
+      = (bigMap A (k:ℝ)) '' (⟨![A,B,C], hindep⟩ : Tri).carrier := by
+  have hmap : (![A, P A B C k 0, P A B C 0 k] : Fin 3 → Plane)
+      = (bigMap A (k : ℝ)) ∘ ![A, B, C] := by
+    funext x
+    have htri : ∀ y : Fin 3, y = 0 ∨ y = 1 ∨ y = 2 := by decide
+    rcases htri x with rfl | rfl | rfl <;>
+      simp only [Function.comp_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+        Matrix.head_cons, Matrix.cons_val_two, Matrix.tail_cons, bigMap,
+        AffineMap.homothety_apply, vsub_eq_sub, vadd_eq_add, P] <;>
+      push_cast <;> module
+  show convexHull ℝ (Set.range (![A, P A B C k 0, P A B C 0 k] : Fin 3 → Plane)) = _
+  rw [hmap, Set.range_comp, ← AffineMap.image_convexHull]
+  rfl
+
+/-- **The scale-`k` triangle has `k²` times the tile's area.** -/
+theorem volume_bigTri (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k) :
+    MeasureTheory.volume (bigTri A B C hindep k hk).carrier
+      = (k * k : ℕ) * MeasureTheory.volume (⟨![A,B,C], hindep⟩ : Tri).carrier := by
+  rw [bigTri_carrier]
+  show MeasureTheory.volume (AffineMap.homothety A (k:ℝ) '' _) = _
+  rw [MeasureTheory.Measure.addHaar_image_homothety]
+  congr 1
+  have hfr : Module.finrank ℝ Plane = 2 := by simp
+  rw [hfr]
+  rw [show |((k:ℝ) ^ 2)| = ((k * k : ℕ) : ℝ) by
+    push_cast; rw [abs_of_nonneg (by positivity)]; ring]
+  simp
+
+/-! ## The subdivision as a `Dissection`
+
+Everything is in place: `(C2)` containment, `(C3)` disjoint interiors, `(C4)` the per-cell areas,
+`(C5)` the `k²`-element index. `ConvexCover.ofCertificate` assembles them. -/
+
+/-- The triangle named by a tagged lattice index. -/
+noncomputable def cellOf (hindep : AffineIndependent ℝ ![A, B, C]) (p : Bool × ℕ × ℕ) : Tri :=
+  if p.1 then cellUp A B C hindep p.2.1 p.2.2 else cellDown A B C hindep p.2.1 p.2.2
+
+/-- **(C2) for a named cell.** -/
+theorem cellOf_subset (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k)
+    (p : Bool × ℕ × ℕ) (hp : p ∈ cellSet k) :
+    (cellOf A B C hindep p).carrier ⊆ (bigTri A B C hindep k hk).carrier := by
+  obtain ⟨tag, i, j⟩ := p
+  simp only [cellSet, Finset.mem_union, Finset.mem_image] at hp
+  rcases tag
+  · have hd : (i, j) ∈ downSet k := by
+      rcases hp with ⟨q, _, hq⟩ | ⟨q, hq, hq'⟩
+      · exact absurd (congrArg Prod.fst hq) (by simp)
+      · have : q = (i, j) := by simpa using congrArg Prod.snd hq'
+        exact this ▸ hq
+    simpa [cellOf] using cellDown_subset_bigTri A B C hindep k hk i j (mem_downSet.mp hd)
+  · have hu : (i, j) ∈ upSet k := by
+      rcases hp with ⟨q, hq, hq'⟩ | ⟨q, _, hq⟩
+      · have : q = (i, j) := by simpa using congrArg Prod.snd hq'
+        exact this ▸ hq
+      · exact absurd (congrArg Prod.fst hq) (by simp)
+    simpa [cellOf] using cellUp_subset_bigTri A B C hindep k hk i j (mem_upSet.mp hu)
+
+/-- **(C3) for two distinct named cells.** -/
+theorem cellOf_disjoint (hindep : AffineIndependent ℝ ![A, B, C])
+    (p q : Bool × ℕ × ℕ) (hpq : p ≠ q) :
+    Disjoint (interior (cellOf A B C hindep p).carrier)
+      (interior (cellOf A B C hindep q).carrier) := by
+  obtain ⟨t1, i1, j1⟩ := p
+  obtain ⟨t2, i2, j2⟩ := q
+  rcases t1 <;> rcases t2 <;> simp only [cellOf, Bool.false_eq_true, if_false, if_true]
+  · refine cellDown_interiors_disjoint A B C hindep i1 j1 i2 j2 ?_
+    intro h; exact hpq (by simp only [Prod.mk.injEq] at h ⊢; exact ⟨trivial, h.1, h.2⟩)
+  · exact (cellUp_cellDown_disjoint A B C hindep i2 j2 i1 j1).symm
+  · exact cellUp_cellDown_disjoint A B C hindep i1 j1 i2 j2
+  · refine cellUp_interiors_disjoint A B C hindep i1 j1 i2 j2 ?_
+    intro h; exact hpq (by simp only [Prod.mk.injEq] at h ⊢; exact ⟨trivial, h.1, h.2⟩)
+
+/-- **(C4) for a named cell.** -/
+theorem volume_cellOf (hindep : AffineIndependent ℝ ![A, B, C]) (p : Bool × ℕ × ℕ) :
+    MeasureTheory.volume (cellOf A B C hindep p).carrier
+      = MeasureTheory.volume (⟨![A,B,C], hindep⟩ : Tri).carrier := by
+  obtain ⟨tag, i, j⟩ := p
+  rcases tag <;> simp only [cellOf, Bool.false_eq_true, if_false, if_true]
+  · exact volume_cellDown A B C hindep i j
+  · exact volume_cellUp A B C hindep i j
+
+/-- The `k²` cell names, indexed by `Fin (k*k)`. -/
+noncomputable def cellIdx (k : ℕ) : Fin (k * k) ≃ (cellSet k) :=
+  (finCongr (card_cellSet k).symm).trans (cellSet k).equivFin.symm
+
+/-- **`kT` is dissected into `k²` triangles, each congruent to `T`.** This is the input
+`thm:ladder` needs: the scale-`k` triangle cut into `k²` copies of the tile. -/
+noncomputable def ladderDissection (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k) :
+    Dissection (k * k) :=
+  Erdos634.ConvexCover.ofCertificate (bigTri A B C hindep k hk)
+    (fun n => cellOf A B C hindep ((cellIdx k n : Bool × ℕ × ℕ)))
+    (fun n => cellOf_subset A B C hindep k hk _ (cellIdx k n).2)
+    (fun n m hnm => cellOf_disjoint A B C hindep _ _
+      (fun h => hnm ((cellIdx k).injective (Subtype.ext h))))
+    (by
+      rw [Finset.sum_congr rfl (fun n _ => volume_cellOf A B C hindep
+        ((cellIdx k n : Bool × ℕ × ℕ))), Finset.sum_const, Finset.card_univ,
+        Fintype.card_fin, volume_bigTri]
+      simp [nsmul_eq_mul])
+
+/-- **Every cell of the subdivision is congruent to the tile.** -/
+theorem ladderDissection_congruent (hindep : AffineIndependent ℝ ![A, B, C]) (k : ℕ) (hk : 0 < k)
+    (n : Fin (k * k)) :
+    Tri.Congruent (⟨![A,B,C], hindep⟩ : Tri) ((ladderDissection A B C hindep k hk).tile n) := by
+  show Tri.Congruent _ (cellOf A B C hindep ((cellIdx k n : Bool × ℕ × ℕ)))
+  obtain ⟨tag, i, j⟩ := ((cellIdx k n : Bool × ℕ × ℕ))
+  rcases tag <;> simp only [cellOf, Bool.false_eq_true, if_false, if_true]
+  · exact cellDown_congruent A B C hindep i j
+  · exact cellUp_congruent A B C hindep i j
+
 end Erdos634.Subdivision
