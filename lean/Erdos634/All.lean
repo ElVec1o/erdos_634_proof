@@ -177,3 +177,4 @@ import Erdos634.N1Gap
 import Erdos634.ConvexCover
 import Erdos634.CongruentArea
 import Erdos634.InteriorCoord
+import Erdos634.CellCoord
