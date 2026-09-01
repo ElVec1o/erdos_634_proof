@@ -995,3 +995,31 @@ has not been carried through. That case split is the residue.
 | C R1-vertex | the serving tile has `V` as a vertex | `RouteOne.serving_has_vertex`, `.not_straight_of_unique`, `.route_one_flank_composed` | VERIFIED — `localAngle_cases` splits four ways and three are excluded: `0` (the tile contains `V`), `2π` (the figure's `u = 0`), and `π` (the `π`-count is exactly one and the below tile carries it). Route 1's chain is now complete as a **scheme**; what remains is exhibiting its hypotheses in a hypothetical tiling — the attachment to the object, not a step of the argument |
 
 | C R1-wall | building `EscapeData` from the wall: two of its fields derived | `RouteOne.mem_of_approach`, `.serving_ne_two_pi` | VERIFIED — `mem_of_approach` puts `V` in the serving tile's carrier (closed, with points arbitrarily near); `serving_ne_two_pi` excludes `localAngle = 2π`, since that would put `V` interior to the serving tile while `V` lies in the below tile's carrier, against `not_mem_interior_of_mem`. **Dead end recorded:** `localAngle_ne_zero_of_mem` (a carrier point has nonzero local angle) was attempted and abandoned — its vertex branch needs corner-angle positivity, i.e. non-collinearity from `Tri.indep`, with no clean path in this corpus; the attempt timed out at `whnf`. It enters as the named hypothesis `hne0` instead |
+
+### Orphan census, corrected (2026-09-01)
+
+The census had been reported as **1 orphan file**. That was an undercount: by the letter of Rule 18
+the excluded set at the root is `README`, `LICENSE`, `.gitignore`, `CLAUDE.md`, `RULES.md`, and the
+repo also carried `.zenodo.json`, `CITATION.cff`, `GOAL_PRIMES.md` and `PLAN_V4.md` — **4**.
+
+Resolution:
+
+* `PLAN_V4.md` and `GOAL_PRIMES.md` are strategy documents (publication ordering, target lists,
+  commentary on an external read). Rule 10 puts strategy in `private/`, which never ships. They had
+  been committed **and pushed**; they are now removed from the index, kept in `private/`, and
+  gitignored. Their mathematical content — how the open case reduces — is in the README's
+  "Where the open case stands", which is the part that belongs in public.
+* `.zenodo.json` and `CITATION.cff` are release infrastructure of the same class as the files
+  Rule 18 names: GitHub renders the citation file and Zenodo reads the metadata on release. They are
+  classified as infrastructure and counted as **0 orphans**, and this sentence is the record of that
+  classification rather than a silent exemption.
+
+**Census after this correction: orphan files 0, orphan atoms 0, orphan statements 0.**
+
+### The `sorry` question, settled properly
+
+Repeated grep checks had been reporting between 0 and 7 `sorry` hits depending on the filter, all of
+them prose (`` `sorry` `` inside docstrings such as "Axiom-clean; no `sorry`"). The authoritative
+check is Lean's own: `lake build Erdos634.All` emits `declaration uses 'sorry'` for any real one, and
+emits **none**. The corpus is sorry-free; the grep noise is not evidence either way and should not be
+quoted as the check.

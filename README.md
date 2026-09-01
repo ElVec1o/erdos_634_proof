@@ -14,7 +14,7 @@ forces the large triangle to be isosceles.
 
 ## Where the open case stands
 
-The residue is the primes `≡ 11 (mod 12)`, and `GOAL_PRIMES.md` maps it: since a prime `N` forces
+The residue is the primes `≡ 11 (mod 12)`. Since a prime `N` forces
 `m = 1`, the open case **is** the `m = 1` base-`β` family, splitting `e = 1` / `e ≥ 2`, both reducing
 to one crossing question that nine tool classes provably cannot answer (each is invariant under
 *relocating* an edge, while the question asks *where* an edge lies).

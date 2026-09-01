@@ -26,7 +26,7 @@ Not audits. Not bridges. Not "one step away."
 
 ## The prime-case map (user, 2026-09-01): work the target list, not 4-step batches
 
-`GOAL_PRIMES.md` at the repo root is the dependency map for outcome (2), the prime case, with every
+`private/GOAL_PRIMES.md` is the dependency map for outcome (2), the prime case, with every
 node's Rule 0 label. It was built from the papers, not from memory. Work proceeds against its
 **ordered target list** until a target falls or is proved unreachable; report progress by *target*,
 not by count of small steps.

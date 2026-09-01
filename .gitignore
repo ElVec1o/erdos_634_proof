@@ -25,3 +25,5 @@ lean/.lake/
 *.fdb_latexmk
 *.out
 *.toc
+PLAN_V4.md
+GOAL_PRIMES.md
