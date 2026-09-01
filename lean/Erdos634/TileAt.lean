@@ -169,4 +169,28 @@ theorem exists_corner_tile (D : Dissection N) (k : Fin 3) :
   exact ⟨i, hi, Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ hi,
     localAngle_ne_two_pi_of_not_mem_interior (D.target_vertex_not_interior_tile k i)⟩
 
+/-! ## Every tile at a target vertex: corner-angle or straight, nothing else
+
+`exists_corner_tile` showed one tile with well-behaved local angle. In fact *every* tile touching a
+target vertex is well-behaved — the `0` and `2π` exclusions above did not use any particular
+witness — which collapses `PinPlumbing.localAngle_cases`'s four-way split to two at a target
+vertex. This is the qualitative shape `lem:census`'s corner counting runs on; it is not the
+counting itself (that needs the tile shapes' shared angle *values*, which this file does not
+touch), but every contributing tile is now known to be one of exactly two kinds. -/
+
+/-- **At a target vertex, every covering tile presents a corner angle there, or a straight
+angle — never `0` or `2π`.** -/
+theorem tile_angle_dichotomy_at_vertex (D : Dissection N) (k : Fin 3) {i : Fin N}
+    (hi : D.target.pts k ∈ (D.tile i).carrier) :
+    (∃ j : Fin 3, D.target.pts k = (D.tile i).pts j ∧
+        (D.tile i).localAngle (D.target.pts k)
+          = cornerAngle ((D.tile i).pts (j + 1)) ((D.tile i).pts j) ((D.tile i).pts (j + 2))) ∨
+    (D.tile i).localAngle (D.target.pts k) = Real.pi := by
+  rcases Erdos634.PinPlumbing.localAngle_cases (D.tile i) (D.target.pts k) with
+    hvertex | h2pi | hpi | h0
+  · exact Or.inl hvertex
+  · exact absurd h2pi (localAngle_ne_two_pi_of_not_mem_interior (D.target_vertex_not_interior_tile k i))
+  · exact Or.inr hpi
+  · exact absurd h0 (Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ hi)
+
 end Erdos634.Geometry.Dissection
