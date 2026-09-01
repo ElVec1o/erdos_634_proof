@@ -476,4 +476,56 @@ theorem congruentDissection_endpoints (hN : 0 < N) (D : CongruentDissection N) (
     · exact absurd (show cornerAngle (D.model.pts (2 + 1)) (D.model.pts 2)
         (D.model.pts (2 + 2)) = γ from hγ') (fun heq => hcard (heq ▸ h.2.2.1))
 
+/-! ## `prop:gammatrap`'s `hinj`: no two distinct tiles present `γ` at the same boundary point
+
+`GammaCascade.cascade`'s `hinj` reduces (its `place` values are always adjacent to their own
+index) to: two *distinct* tiles meeting at the same interior boundary junction cannot both present
+`γ` there. This is now a real theorem, not an assumption. -/
+
+open Erdos634.TilePlacement Erdos634.VertexFigureReal in
+/-- **Every tile's own corner angles are among the model's three, for a `CongruentDissection`.** -/
+theorem congruentDissection_hcorners (D : CongruentDissection N) (α β γ : ℝ)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ) :
+    ∀ (i : Fin N) (j : Fin 3),
+      cornerAngle ((D.tile i).pts (j + 1)) ((D.tile i).pts j) ((D.tile i).pts (j + 2))
+        ∈ ({α, β, γ} : Finset ℝ) := by
+  intro i j
+  obtain ⟨m, hm⟩ := congruent_corner_angles (D.tiles_congruent i).symm j
+  rw [hm]
+  fin_cases m
+  · simp [hα']
+  · simp [hβ']
+  · simp [hγ']
+
+open Erdos634.TilePlacement Erdos634.VertexFigureReal in
+/-- **No two distinct tiles present `γ` at the same interior boundary point.** -/
+theorem congruentDissection_no_double_gamma (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (i1 i2 : Fin N) (hi12 : i1 ≠ i2)
+    (h1 : (D.tile i1).localAngle v = γ) (h2 : (D.tile i2).localAngle v = γ) : False := by
+  classical
+  have hcorners := congruentDissection_hcorners D α β γ hα' hβ' hγ'
+  have hvals : ∀ i, (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ) :=
+    fun i => localAngle_mem D.toDissection α β γ hv hnv hcorners i
+  obtain ⟨-, -, hcardγ, -⟩ :=
+    gamma_boundary_figure_real D.toDissection hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0
+      hγdef hrel hirr hv hnv hvals i1 h1
+  have hmem1 : i1 ∈ ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)) := by
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq]; exact h1
+  have hmem2 : i2 ∈ ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)) := by
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq]; exact h2
+  have hcard2 : 2 ≤ ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card :=
+    Finset.one_lt_card.mpr ⟨i1, hmem1, i2, hmem2, hi12⟩
+  omega
+
 end Erdos634.Geometry.Dissection
