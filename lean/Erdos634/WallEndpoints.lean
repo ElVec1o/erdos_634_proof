@@ -243,7 +243,9 @@ theorem chain_endpoints {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
       edgeWest D dir (E 0) = a ∧ edgeEast D dir (E (n - 1)) = b ∧
       (∀ m, m + 1 < n → edgeEast D dir (E m) = edgeWest D dir (E (m + 1))) ∧
       (∀ m, m < n → E m ∈ wallList D g c) ∧
-      (∀ m1 m2, m1 < n → m2 < n → E m1 = E m2 → m1 = m2) := by
+      (∀ m1 m2, m1 < n → m2 < n → E m1 = E m2 → m1 = m2) ∧
+      (∀ m, 0 < m → m < n → dir a < edgePos D dir (E m)) ∧
+      (∀ m, m + 1 < n → edgeEnd D dir (E m) < dir b) := by
   classical
   haveI : Inhabited (Fin N × Fin 3) := ⟨(⟨0, hN⟩, 0)⟩
   obtain ⟨E, hmono, hmem, hsurj, hinj⟩ :=
@@ -379,7 +381,7 @@ theorem chain_endpoints {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
     · exact h
     · exact absurd h
         (not_le.mpr (lt_of_le_of_lt (hmono ii jj (le_of_lt hiijj) hj) (hnondeg jj hj)))
-  refine ⟨E, n, rfl, hn0, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨E, n, rfl, hn0, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · rwa [hia0] at hweqa
   · rwa [hib1] at hbeqb
   · intro m hm1
@@ -399,5 +401,24 @@ theorem chain_endpoints {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
 
   · exact fun m hm => hmem m hm
   · exact fun m1 m2 hm1 hm2 heq => hinj m1 m2 hm1 hm2 heq
+  · -- strict lower bound away from the west end: `edgePos (E m) ≥ edgeEnd (E 0) > edgePos (E 0) = dir a`
+    intro m hm0 hmn
+    have h1 : edgeEnd D dir (E 0) ≤ edgePos D dir (E m) := hnoov 0 m hm0 hmn
+    have hw0 := (mem_wallList D g c (E 0)).mp (hmem 0 hn0)
+    have h2 : edgePos D dir (E 0) < edgeEnd D dir (E 0) :=
+      shadow_nondegenerate D g dir c hker (E 0).1 (E 0).2 hw0.1 hw0.2
+    have h3 : edgePos D dir (E 0) = dir a := by
+      have := hweqa; rw [← this]; exact (dir_edgeWest D dir (E ia)).symm ▸ (by
+        rw [hia0] at hweqa ⊢)
+    linarith [h1, h2, h3.symm ▸ h2]
+  · -- strict upper bound away from the east end
+    intro m hm1
+    have h1 : edgeEnd D dir (E m) ≤ edgePos D dir (E (n - 1)) := hnoov m (n - 1) (by omega) (by omega)
+    have hwn1 := (mem_wallList D g c (E (n - 1))).mp (hmem (n - 1) (by omega))
+    have h2 : edgePos D dir (E (n - 1)) < edgeEnd D dir (E (n - 1)) :=
+      shadow_nondegenerate D g dir c hker (E (n - 1)).1 (E (n - 1)).2 hwn1.1 hwn1.2
+    have h3 : edgeEnd D dir (E (n - 1)) = dir b := by
+      rw [hib1] at hbeqb; rw [← dir_edgeEast D dir (E (n-1))]; rw [hbeqb]
+    linarith [h1, h2, h3]
 
 end Erdos634.WallEndpoints
