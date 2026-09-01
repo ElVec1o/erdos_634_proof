@@ -288,7 +288,7 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | C `thm:walks` | Boundary walks of the base-$\beta$ target at $m=1$ |
 | M `cor:elevenm` | An infinite family of tilings in an incommensurable branch |
 | M `cor:int` | Integrality and parity |
-| M `cor:ladder` | the realizable set `S(e,f)` is closed upward under the ladder | `Erdos634.Realizable.mem_realizableSet_mul`, `realizableSet_eq_multiples` | PROVED — **two of the corollary's three clauses are now VERIFIED**, and the blocker is exactly the third. `Realizable.scaleTri` is the scale operation (homothety about the triangle's own first vertex); because a homothety fixes its centre, `scaleTri_scaleTri` composes **on the nose**, which is what converts 'apply `thm:ladder` at `k` to the scale-`m` target' into a statement about the scale-`km` target. `Cut T t N` is the realizability predicate and `cut_scale` is `thm:ladder` in those terms. Clause 1, `m ∈ S ⇒ km ∈ S`, is `mem_realizableSet_mul`. Clause 2, '`S` is the union of the multiples of its minimal elements', is `realizableSet_eq_multiples` (via `exists_minimal_divisor`, strong induction on the divisibility order). **Remaining blocker, named: clause 3**, '`1 ∈ S` is *not* implied by `S ≠ ∅`'. That is a non-implication and needs a witness family, which is `cor:elevenm` — `(e,f)=(1,2)`, where `1 ∉ S` is the 135-node exhaustion and `2,3 ∈ S` are the 44- and 99-tilings. So `cor:ladder` cannot pass Rule 5 before `cor:elevenm` does, and `cor:elevenm`'s own blocker is the certified-search bridge on the tile side (`ConvexCover` supplies the topological half; the arithmetic-certificate → `Tri` translation is still open, gated on `volume (Tri) = |det|/2`, which is absent from this corpus **and** from Mathlib). |
+| M `cor:ladder` | the realizable set `S(e,f)` is closed upward under the ladder | `Erdos634.Realizable.mem_realizableSet_mul`, `realizableSet_eq_multiples` | PROVED — **two of the corollary's three clauses are now VERIFIED**, and the blocker is exactly the third. `Realizable.scaleTri` is the scale operation (homothety about the triangle's own first vertex); because a homothety fixes its centre, `scaleTri_scaleTri` composes **on the nose**, which is what converts 'apply `thm:ladder` at `k` to the scale-`m` target' into a statement about the scale-`km` target. `Cut T t N` is the realizability predicate and `cut_scale` is `thm:ladder` in those terms. Clause 1, `m ∈ S ⇒ km ∈ S`, is `mem_realizableSet_mul`. Clause 2, '`S` is the union of the multiples of its minimal elements', is `realizableSet_eq_multiples` (via `exists_minimal_divisor`, strong induction on the divisibility order). **Remaining blocker, named: clause 3**, '`1 ∈ S` is *not* implied by `S ≠ ∅`'. That is a non-implication and needs a witness family, which is `cor:elevenm` — `(e,f)=(1,2)`, where `1 ∉ S` is the 135-node exhaustion and `2,3 ∈ S` are the 44- and 99-tilings. So `cor:ladder` cannot pass Rule 5 before `cor:elevenm` does, and `cor:elevenm`'s own blocker is the certified-search bridge on the tile side (`ConvexCover` supplies the topological half; the arithmetic-certificate → `Tri` translation is still open, gated on `volume (Tri) = |det|/2 [SUPERSEDED 2026-09-02, see AreaDet]`, which is absent from this corpus **and** from Mathlib). |
 | M `cor:mod12` | Theorem~\ref{thm:main}, congruence form |
 | M `lem:cancel` | Cancellation |
 | M `lem:nonint` | Non-integrality |
@@ -1156,5 +1156,38 @@ because other rows cite them:
   `scaleTri r (scaleTri s T) = scaleTri (r*s) T`, because a homothety fixes its centre.
 
 Still open of the original four: the tile-placement layer, the certified-search **arithmetic** half
-(a certificate's exact coordinates → a `Tri`, gated on `volume (Tri) = |det|/2`), and the dual-graph
+(a certificate's exact coordinates → a `Tri`, gated on `volume (Tri) = |det|/2 [SUPERSEDED 2026-09-02, see AreaDet]`), and the dual-graph
 development.
+
+
+## The certified-search bridge: both halves now exist (2026-09-02)
+
+The rows for `thm:44`, `thm:63`, `cor:elevenm`, `thm:frontier`–`thm:frontier4` and `thm:eq105` all
+recorded the same two-part blocker. Both parts are now discharged as *theory*; what is left is
+per-tiling data entry, which is a different kind of debt and should be recorded as such.
+
+* **Topological half** — `Erdos634.ConvexCover.ofCertificate`: (C2) containment + (C3) disjoint
+  interiors + (C4) the area identity give the pointwise covering `Dissection` demands, by a measure
+  argument. Landed earlier today.
+* **Arithmetic half** — `Erdos634.AreaDet`. The old blocker was recorded as
+  "`volume (Tri) = |det| / 2`, absent from this corpus **and** from Mathlib". **That statement of
+  the blocker was wrong, and the error cost the eight rows above.** The constant `1/2` never enters:
+  only the *ratio* of areas appears in (C4), so the reference triangle's area cancels
+  symbolically and never has to be evaluated. What is actually needed is
+  `volume T.carrier = ENNReal.ofReal |detTri T| * volume stdCarrier` for *some* fixed reference set,
+  and that is `Measure.addHaar_image_linearMap` (`T` is the image of the standard simplex under
+  `x ↦ edgeMap T x + T.pts 0`) plus translation invariance (`measure_preimage_add`) — about twenty
+  lines. `detTri_eq` gives the determinant in the coordinate form a certificate computes, and
+  `area_identity_of_det` turns the **exact identity `∑ᵢ |det tᵢ| = |det T|`** into (C4) with no
+  measure theory left on the certificate side. `ofDetCertificate` packages the whole bridge.
+
+**What actually remains for those eight rows**, stated without a hidden theory gap: for each named
+tiling, (a) write its pieces as `Tri` objects with their exact coordinates, (b) discharge (C2) and
+(C3) — decidable arithmetic, one separating line per pair — and (c) discharge (C1), congruence to
+the tile, for which the corpus has `SssTri` but no side-multiset-to-`Tri.Congruent` wrapper yet.
+That wrapper is the one genuinely missing lemma; everything else is data.
+
+**Methodological note, third occurrence.** "No Mathlib lemma states X" is not "X is hard", and a
+blocker recorded in terms of the *strongest* statement one can imagine wanting is worth much less
+than one recorded in terms of the *weakest* statement that suffices. Both `ConvexCover` and
+`AreaDet` were skipped for weeks behind blockers phrased the first way.
