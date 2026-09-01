@@ -18,7 +18,11 @@ The layer needs, at minimum: given a point of the target, *the* tile covering it
 is well-defined off a measure-zero set (the union of all tile frontiers). That is `tileAt` below —
 existence unconditionally, uniqueness off the bad set. Everything downstream ('the tile at a
 corner', 'matched by exactly one tile', 'the corner tile's base edge') is a further layer on top of
-this one; this file does not attempt them.
+this one; this file does not attempt them. **Correction, 2026-09-01**: 'the tile at a corner' *is*
+now attempted, and closed, for a base corner specifically —
+`congruentDissection_base_corner_tile_unique` below — by an argument that does not go through
+`tileAt` at all (a target vertex is always on the bad set, so `tileAt` itself never reaches one);
+the remaining two items are still untouched.
 
 Axiom-clean; no `sorry`.
 -/
@@ -307,6 +311,71 @@ theorem congruentDissection_apex_counts (D : CongruentDissection N) (α β γ : 
     hvals
   rw [hcorner] at h
   exact apex_counts hγdef hrel hirr _ _ _ _ h
+
+/-! ## The corner tile is unique, at a base corner
+
+`congruentDissection_base_corner_counts` classifies the *angles* tiles present at a base corner:
+one tile presents `β`, none presents `α`, `γ`, or a straight angle. That is a census of values,
+not yet "the tile at the corner" in `tileAt`'s sense — a claim about which tile's *carrier*
+contains the point (`tileAt` itself cannot reach a target vertex at all: `target_vertex_mem_badSet`
+above puts every target vertex on the bad set). Bridging census to carrier needs one fact each way:
+a covering tile's local angle is nonzero (`MarchFlank.localAngle_ne_zero_of_mem`), so among the
+five census values only `β` is open to a covering tile; and conversely some tile does cover the
+point at all (`exists_tile_mem`), so the unique `β`-presenting tile is forced to be that covering
+tile. This is the reading of `prop:cornerfig`'s "single β-tile" that `prop:cornerpara`'s own proof
+invokes verbatim ("`T_A` is the unique tile at `A`") — a carrier-membership fact, not only a census
+one. -/
+
+open Erdos634.TilePlacement in
+/-- **The corner tile, uniquely.**  At a base corner of a real congruent dissection (corner angle
+`β`), exactly one tile's carrier contains the vertex. -/
+theorem congruentDissection_base_corner_tile_unique (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (k : Fin 3)
+    (hcorner : cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β) :
+    ∃! i : Fin N, D.target.pts k ∈ (D.tile i).carrier := by
+  classical
+  have hvals : ∀ i, (D.tile i).localAngle (D.target.pts k) ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ) :=
+    fun i => congruentDissection_localAngle_mem D α β γ hα' hβ' hγ' k i
+  obtain ⟨hαc, hβc, hγc, hπc⟩ :=
+    congruentDissection_base_corner_counts D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0
+      hγdef hrel hirr hα' hβ' hγ' k hcorner
+  obtain ⟨i0, hi0⟩ := Finset.card_eq_one.mp hβc
+  have hnotv : ∀ (v : ℝ) (i : Fin N),
+      ({j : Fin N | (D.tile j).localAngle (D.target.pts k) = v} : Finset (Fin N)).card = 0 →
+      (D.tile i).localAngle (D.target.pts k) ≠ v := by
+    intro v i hv heq
+    have hmem : i ∈ ({j : Fin N | (D.tile j).localAngle (D.target.pts k) = v} : Finset (Fin N)) := by
+      simpa using heq
+    rw [Finset.card_eq_zero.mp hv] at hmem
+    exact absurd hmem (Finset.notMem_empty i)
+  have heq_of_ne : ∀ i : Fin N, (D.tile i).localAngle (D.target.pts k) ≠ 0 → i = i0 := by
+    intro i hine
+    have hv := hvals i
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hv
+    have hbeta : (D.tile i).localAngle (D.target.pts k) = β := by
+      rcases hv with h | h | h | h | h
+      · exact absurd h (hnotv α i hαc)
+      · exact h
+      · exact absurd h (hnotv γ i hγc)
+      · exact absurd h (hnotv Real.pi i hπc)
+      · exact absurd h hine
+    have hmem : i ∈ ({j : Fin N | (D.tile j).localAngle (D.target.pts k) = β} : Finset (Fin N)) := by
+      simpa using hbeta
+    rw [hi0] at hmem
+    simpa using hmem
+  refine ⟨i0, ?_, fun j hj => heq_of_ne j (Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ hj)⟩
+  obtain ⟨w, hw⟩ := D.toDissection.exists_tile_mem
+    (subset_convexHull ℝ _ (Set.mem_range_self k) : D.target.pts k ∈ D.target.carrier)
+  rw [← heq_of_ne w (Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ hw)]
+  exact hw
 
 /-! ## `lem:endpoints`, fully assembled
 

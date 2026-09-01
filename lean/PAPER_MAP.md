@@ -418,7 +418,7 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | Paper | Statement | Lean declaration | Blocker |
 |---|---|---|---|
 | M `cor:mod12` | no prime ≡7 (mod 12) is a tile count | `BaseBetaMod12.*`, `Mod12.*` | PROVED — quantifies over *all* dissections of *all* triangles; it is `thm:main`'s corollary and inherits that theorem's cited inputs, none of which is formalized |
-| M `prop:cornerpara` | the corner tile's `b`-edge is a chord matched by exactly one tile | `CornerRule.*`, `AngleArithmetic.beta_corner_forced` | PROVED — needs a **tile-placement layer**: 'the tile at a corner', 'matched by exactly one tile' have no `Dissection`-level definitions |
+| M `prop:cornerpara` | the corner tile's `b`-edge is a chord matched by exactly one tile | `CornerRule.*`, `AngleArithmetic.beta_corner_forced` | PROVED — needs a **tile-placement layer**. **Partially discharged 2026-09-01**: 'the tile at a corner' — the proof's opening step, "`T_A` is the unique tile at `A`" — is now `Dissection.congruentDissection_base_corner_tile_unique` (`TileAt.lean`), a genuine carrier-membership uniqueness theorem for a real `CongruentDissection`, not just an angle census. What remains is the harder half: 'matched by exactly one tile', the `b`-edge chord `[P,Q]` and its partner tile `T_3` — still no `Dissection`-level definition of a chord or its far-side cover |
 | M `lem:cancel` | the tile values sum to the boundary flux `Φ_f(∂ABC)` | none | PROVED — needs the **flux functional Φ** on a dissection boundary, and the grid-direction cancellation argument; no Lean development exists |
 | M `lem:value` | `C_{f_α}(t) = ±(c+a−b)` for every placement | none | PROVED — same flux development, plus a notion of oriented tile placement |
 | M `cor:int` | `M_α`, `M_β` integral and `≡ N (mod 2)` | none | PROVED — depends on `lem:cancel` and `lem:value`; blocked by the same flux development |
@@ -1041,11 +1041,31 @@ an assembly chain — had no Lean development at all. `TileAt.lean` is the first
 * `Dissection.target_vertex_mem_badSet`: proved (2026-09-02) the claim the first draft of this file only asserted — a target vertex always sits on the bad set, so `tileAt` cannot reach it directly. Reuses `BaseSelection.tile_interior_subset` rather than reproving tile-inside-target.
 * `Dissection.exists_corner_tile`: at a target vertex, *some* tile covers it with local angle neither `0` nor `2π` — existence, from `MarchFlank.localAngle_ne_zero_of_mem` and `localAngle_ne_two_pi_of_not_mem_interior` (the `2π` branch of `Tri.localAngle` is definitionally the interior case, so `target_vertex_not_interior_tile` rules it out directly). This is *not* `lem:census`'s uniqueness content — recorded as existence only.
 * `Dissection.tile_angle_dichotomy_at_vertex`: *every* tile touching a target vertex — not just one witness — presents either a corner angle of its own there, or a straight angle; `0` and `2π` are excluded universally, collapsing `PinPlumbing.localAngle_cases`'s four-way split to two. This is the qualitative shape `lem:census`'s corner counting runs on, not the counting itself (which needs the shared angle values across congruent tiles) — recorded as such.
+* `Dissection.congruentDissection_localAngle_mem` (2026-09-01): for a real `CongruentDissection`,
+  every tile's local angle at a target vertex lies in `{α, β, γ, π, 0}` — a theorem, not the
+  `hvals` hypothesis `TilePlacement.base_corner_counts`/`corner_multiplicities` had taken as given.
+  Assembled from `tile_angle_dichotomy_at_vertex` (above) and the pre-existing but previously
+  unused `CongruentAngles.congruent_corner_angles`. `.congruentDissection_base_corner_counts` and
+  `.congruentDissection_apex_counts` compose this with `base_corner_counts`/`apex_counts` to get
+  the base-corner and apex fills unconditionally for a real congruent dissection — this closed a
+  citation gap under `prop:cornerfig`'s own (already-VERIFIED) row, recorded there.
+* `Dissection.congruentDissection_base_corner_tile_unique` (2026-09-01): **corner-tile
+  identification, closed for a base corner.** `congruentDissection_base_corner_counts` classifies
+  angles (one tile presents `β`, none presents `α`, `γ`, or a straight angle) but that is a census
+  of values, not a carrier-membership fact. Bridging the two: a covering tile's local angle is
+  nonzero (`MarchFlank.localAngle_ne_zero_of_mem`), so among the census values only `β` is open to
+  it, and some tile does cover the point at all (`exists_tile_mem`), so the unique `β`-presenting
+  tile is forced to be that covering tile. The result is `∃! i, D.target.pts k ∈ (D.tile i).carrier`
+  at a base corner — exactly the fact `prop:cornerpara`'s own proof invokes from `prop:cornerfig`
+  ("`T_A` is the unique tile at `A`"), now a real theorem rather than a phrase. It does **not**
+  discharge `prop:cornerpara`: the harder half ("matched by exactly one tile", the far tile `T_3`
+  on the `b`-edge chord) is untouched and still needs the wall/chord-partition argument.
+  `prop:cornerpara`'s row below notes this precisely.
 
-This is deliberately minimal and does not itself discharge any blocked row: a *point*'s covering
-tile is not yet 'the tile at a corner' (a dissection's own vertices sit *on* the bad set by
-construction — now proved, `target_vertex_mem_badSet` — so `tileAt` does not directly apply there;
-corner-tile identification needs a further argument, tying to the already-proved `localAngle`
-machinery, that this file does not attempt), nor 'the tile matched to an edge'. Recorded here, not against any row, because it is
-real infrastructure and the standing instruction is not to claim placement-layer progress against
-a specific statement until a named row's blocker actually clears.
+The first two bullets are deliberately minimal and do not themselves discharge any blocked row.
+The last two close 'the tile at a corner' for a base corner specifically — not through `tileAt`
+(a target vertex is always on the bad set, so `tileAt` never reaches one directly) but through the
+angle census. 'The tile matched to an edge' (the harder half `prop:cornerpara` still needs) is
+untouched. Recorded against `prop:cornerpara`'s row below because a real (partial) blocker cleared
+there; not recorded as clearing any other row, per the standing instruction not to claim
+placement-layer progress against a statement until its blocker actually moves.
