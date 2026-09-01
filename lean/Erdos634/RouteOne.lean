@@ -998,12 +998,11 @@ and `localAngle = 2π` would put `V` in its interior against `not_mem_interior_o
 This is the reduction of the attachment obligation: **from eight facts to four**, and the four are
 the wall itself. -/
 
--- `localAngle_ne_zero_of_mem` (a carrier point has nonzero local angle) is NOT proved here.
--- Attempted 2026-09-01 and abandoned: the vertex branch needs corner-angle positivity, i.e.
--- non-collinearity of the three vertices from `Tri.indep`, and no clean path to it exists in this
--- corpus -- the attempt timed out at `whnf`. The fact is used only to exclude the `localAngle = 0`
--- branch for the serving tile, so it enters `EscapeData.ofWall` below as the named hypothesis
--- `hne0` rather than being derived. Discharging it is a stated obligation, not a hidden gap.
+-- `localAngle_ne_zero_of_mem` (a carrier point has nonzero local angle) was attempted here on
+-- 2026-09-01, abandoned for want of corner-angle positivity, and **proved on 2026-09-02** as
+-- `MarchFlank.localAngle_ne_zero_of_mem`, once `MarchFlank.cornerAngle_pos` supplied that
+-- positivity next to the non-degeneracy machinery.  `hne0` is therefore no longer an obligation:
+-- `serving_ne_zero` below derives it from the approach points alone.
 
 /-- **`V` lies in the serving tile.**  Its carrier is closed and contains points arbitrarily near
 `V`. -/
@@ -1040,5 +1039,13 @@ theorem serving_ne_two_pi {N : ℕ} (D : Dissection N) {i b : Fin N} (hib : i �
     · split at h2
       · have := Real.pi_pos; linarith
       · have := Real.pi_pos; linarith
+
+/-- **The serving tile does not vanish at `V`.**  The approach points put `V` in its (closed)
+carrier, and a carrier point has nonzero local angle.  This discharges the `hne0` field of
+`EscapeData` outright: it is a consequence of `hserve`, not an extra hypothesis. -/
+theorem serving_ne_zero {N : ℕ} (D : Dissection N) (i : Fin N) {V : Plane}
+    (h : ∀ r : ℝ, 0 < r → ∃ q : Plane, q ∈ (D.tile i).carrier ∧ dist q V < r) :
+    (D.tile i).localAngle V ≠ 0 :=
+  Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ (mem_of_approach _ h)
 
 end Erdos634.RouteOne

@@ -82,4 +82,101 @@ theorem presents_beta_or_gamma (T : Tri) (j : Fin 3) {α β γ : ℝ}
   · rw [Erdos634.Geometry.Tri.localAngle_vertex]
     simpa [angleAt] using g2
 
+/-! ## Corner angles are positive
+
+Recorded in the research log as the revival route for `RouteOne`'s `hne0`: prove this standalone,
+next to the non-degeneracy machinery, rather than inline inside a four-way `split` on `localAngle`
+(where two attempts timed out).
+
+An angle of `0` forces the degenerate distance identity `dist p₁ p₃ = |dist p₁ p₂ - dist p₃ p₂|`
+(Mathlib's `dist_eq_abs_sub_dist_of_angle_eq_zero`), which the strict triangle inequality
+`TilePlacement.strict_triangle_pts` forbids. -/
+
+/-- **A tile's corner angle is strictly positive.** -/
+theorem cornerAngle_pos (T : Tri) (j : Fin 3) :
+    0 < cornerAngle (T.pts (j + 1)) (T.pts j) (T.pts (j + 2)) := by
+  rcases eq_or_lt_of_le (EuclideanGeometry.angle_nonneg
+    (T.pts (j + 1)) (T.pts j) (T.pts (j + 2))) with h | h
+  · exfalso
+    have hz : cornerAngle (T.pts (j + 1)) (T.pts j) (T.pts (j + 2)) = 0 := h.symm
+    rw [Erdos634.Geometry.cornerAngle] at hz
+    have hdeg := EuclideanGeometry.dist_eq_abs_sub_dist_of_angle_eq_zero hz
+    have hstrict := strict_triangle_pts T j
+    rcases abs_cases (dist (T.pts (j + 1)) (T.pts j) - dist (T.pts (j + 2)) (T.pts j)) with
+      ⟨he, _⟩ | ⟨he, _⟩
+    · rw [he, dist_comm (T.pts (j + 1)) (T.pts j),
+        dist_comm (T.pts (j + 2)) (T.pts j)] at hdeg
+      linarith
+    · -- the other degeneracy: `j+1` between `j` and `j+2`; use the inequality at index `j+2`
+      have h2 := strict_triangle_pts T (j + 2)
+      have e1 : ∀ x : Fin 3, x + 2 + 1 = x := by decide
+      have e2 : ∀ x : Fin 3, x + 2 + 2 = x + 1 := by decide
+      rw [e1, e2] at h2
+      rw [he, dist_comm (T.pts (j + 1)) (T.pts j),
+        dist_comm (T.pts (j + 2)) (T.pts j)] at hdeg
+      rw [dist_comm (T.pts (j + 2)) (T.pts j),
+        dist_comm (T.pts (j + 2)) (T.pts (j + 1))] at h2
+      linarith
+  · exact h
+
+private theorem third_index : ∀ j k : Fin 3, j ≠ k → ∃ m, m ≠ j ∧ m ≠ k := by decide
+
+private theorem index_trichotomy :
+    ∀ i j k m : Fin 3, j ≠ k → m ≠ j → m ≠ k → i ≠ m → i = j ∨ i = k := by decide
+
+/-- **A carrier point has nonzero local angle.**
+
+The `localAngle` of a triangle vanishes only off the closed triangle.  The four cases:
+at a vertex the value is a corner angle, positive by `cornerAngle_pos`; at an interior point it
+is `2π`; at an edge-interior point it is `π`; and the fourth branch is impossible for a carrier
+point, because a non-vertex point of the carrier has all coordinates `≥ 0` summing to `1`, so at
+most one of them vanishes — two vanishing coordinates force the third to be `1` and the point to
+*be* the opposite vertex, by `AffineBasis.ext_elem`.
+
+This discharges the `hne0` field of `RouteOne.EscapeData`, which was carried as a hypothesis. -/
+theorem localAngle_ne_zero_of_mem (T : Tri) {p : Plane} (hp : p ∈ T.carrier) :
+    T.localAngle p ≠ 0 := by
+  classical
+  have hnn : ∀ i, 0 ≤ T.basis.coord i p := by
+    rw [T.carrier_eq_nonneg_coord] at hp; exact hp
+  rw [Tri.localAngle]
+  split
+  · exact ne_of_gt (cornerAngle_pos T _)
+  · rename_i hv
+    split
+    · positivity
+    · rename_i hpos
+      -- not all coordinates positive: some `k` vanishes (it cannot be negative)
+      push_neg at hpos
+      obtain ⟨k, hk⟩ := hpos
+      have hk0 : T.basis.coord k p = 0 := le_antisymm hk (hnn k)
+      -- and it is the *only* one, else `p` would be a vertex
+      have huniq : ∀ j, j ≠ k → 0 < T.basis.coord j p := by
+        intro j hj
+        rcases lt_or_eq_of_le (hnn j) with h | h
+        · exact h
+        · exfalso
+          have hsum := T.basis.sum_coord_apply_eq_one (k := ℝ) p
+          obtain ⟨m, hmj, hmk⟩ := third_index j k hj
+          have hm1 : T.basis.coord m p = 1 := by
+            rw [Fin.sum_univ_three] at hsum
+            fin_cases j <;> fin_cases k <;> fin_cases m <;> simp_all <;> linarith
+          have hpm : p = T.pts m := by
+            refine T.basis.ext_elem fun i => ?_
+            have hci : T.basis.coord i (T.pts m) = if i = m then 1 else 0 :=
+              AffineBasis.coord_apply T.basis i m
+            rw [hci]
+            by_cases him : i = m
+            · subst him; simp [hm1]
+            · have hz : T.basis.coord i p = 0 := by
+                rcases index_trichotomy i j k m hj hmj hmk him with h' | h'
+                · rw [h', ← h]
+                · rw [h', hk0]
+              simp [him, hz]
+          exact hv ⟨m, hpm⟩
+      split
+      · exact Real.pi_ne_zero
+      · rename_i hedge
+        exact absurd ⟨k, hk0, huniq⟩ hedge
+
 end Erdos634.MarchFlank
