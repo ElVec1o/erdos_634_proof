@@ -364,4 +364,102 @@ theorem a_edge_endpoints (D : CongruentDissection N) (α β γ : ℝ)
   rw [hangk', hangk1']
   exact hval_inj (σ k) (σ (k + 1)) hne01
 
+theorem b_edge_endpoints (D : CongruentDissection N) (α β γ : ℝ)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hscalene : ∀ m m' : Fin 3, m ≠ m' → sideOpp D.model m ≠ sideOpp D.model m')
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hβγ : β ≠ γ)
+    (i : Fin N) (k : Fin 3)
+    (hlen : dist ((D.tile i).pts k) ((D.tile i).pts (k + 1)) = sideOpp D.model 1) :
+    (TilePlacement.angleAt (D.tile i) k = α ∨ TilePlacement.angleAt (D.tile i) k = γ) ∧
+    (TilePlacement.angleAt (D.tile i) (k + 1) = α ∨
+      TilePlacement.angleAt (D.tile i) (k + 1) = γ) ∧
+    TilePlacement.angleAt (D.tile i) k ≠ TilePlacement.angleAt (D.tile i) (k + 1) := by
+  obtain ⟨σ, hd⟩ := (D.tiles_congruent i).dist_eq
+  have hpq : ∀ x y : Fin 3, x ≠ y → (D.tile i).pts x ≠ (D.tile i).pts y := by
+    intro x y hxy heq; exact hxy ((D.tile i).indep.injective heq)
+  have hnek1 : (k + 1 : Fin 3) ≠ k := (by decide : ∀ x : Fin 3, x + 1 ≠ x) k
+  have hnek2 : (k + 2 : Fin 3) ≠ k := (by decide : ∀ x : Fin 3, x + 2 ≠ x) k
+  have hnek1' : (k + 1 + 1 : Fin 3) ≠ k + 1 := (by decide : ∀ x : Fin 3, x + 1 + 1 ≠ x + 1) k
+  have hangk : TilePlacement.angleAt (D.tile i) k
+      = cornerAngle (D.model.pts (σ (k + 1))) (D.model.pts (σ k)) (D.model.pts (σ (k + 2))) := by
+    unfold TilePlacement.angleAt
+    exact angle_of_sss (hd (k + 1) k) (hd k (k + 2)) (hd (k + 1) (k + 2))
+      (hpq (k + 1) k hnek1) (hpq (k + 2) k hnek2)
+  have hangk1raw : TilePlacement.angleAt (D.tile i) (k + 1)
+      = cornerAngle (D.model.pts (σ (k + 1 + 1))) (D.model.pts (σ (k + 1)))
+          (D.model.pts (σ (k + 1 + 2))) := by
+    unfold TilePlacement.angleAt
+    exact angle_of_sss (hd (k + 1 + 1) (k + 1)) (hd (k + 1) (k + 1 + 2))
+      (hd (k + 1 + 1) (k + 1 + 2)) (hpq (k + 1 + 1) (k + 1) hnek1') (by
+        have h2 : (k + 1 + 2 : Fin 3) ≠ k + 1 := (by decide : ∀ x : Fin 3, x + 1 + 2 ≠ x + 1) k
+        exact hpq (k + 1 + 2) (k + 1) h2)
+  have hshift1 : (k + 1 + 1 : Fin 3) = k + 2 := (by decide : ∀ x : Fin 3, x + 1 + 1 = x + 2) k
+  have hshift2 : (k + 1 + 2 : Fin 3) = k := (by decide : ∀ x : Fin 3, x + 1 + 2 = x) k
+  have hangk1 : TilePlacement.angleAt (D.tile i) (k + 1)
+      = cornerAngle (D.model.pts (σ (k + 2))) (D.model.pts (σ (k + 1))) (D.model.pts (σ k)) := by
+    rw [hangk1raw, hshift1, hshift2]
+  have hne01 : σ k ≠ σ (k + 1) := fun h => hnek1 (σ.injective h.symm)
+  have hne02 : σ k ≠ σ (k + 2) := fun h => hnek2 (σ.injective h.symm)
+  have hne12 : σ (k + 1) ≠ σ (k + 2) := by
+    intro h; exact (by decide : ∀ x : Fin 3, x + 1 ≠ x + 2) k (σ.injective h)
+  have hangval : ∀ m : Fin 3, cornerAngle (D.model.pts (m + 1)) (D.model.pts m)
+      (D.model.pts (m + 2)) = (if m = 0 then α else if m = 1 then β else γ) := by
+    intro m; fin_cases m
+    · simpa using hα'
+    · simpa using hβ'
+    · simpa using hγ'
+  have hangk' : TilePlacement.angleAt (D.tile i) k
+      = (if σ k = 0 then α else if σ k = 1 then β else γ) := by
+    rw [hangk, cornerAngle_swap_any D.model (σ k) (σ (k + 1)) (σ (k + 2))
+      hne01.symm hne02.symm hne12, hangval]
+  have hangk1' : TilePlacement.angleAt (D.tile i) (k + 1)
+      = (if σ (k + 1) = 0 then α else if σ (k + 1) = 1 then β else γ) := by
+    rw [hangk1, cornerAngle_swap_any D.model (σ (k + 1)) (σ (k + 2)) (σ k)
+      hne12.symm hne01 hne02.symm, hangval]
+  obtain ⟨j0, hj0k, hj0k1⟩ := third_index (σ k) (σ (k + 1)) hne01
+  have hlen' : dist ((D.tile i).pts k) ((D.tile i).pts (k + 1))
+      = dist (D.model.pts (σ k)) (D.model.pts (σ (k + 1))) := hd k (k + 1)
+  have hj0eq' : sideOpp D.model j0 = dist (D.model.pts (σ k)) (D.model.pts (σ (k + 1))) := by
+    unfold sideOpp
+    rcases opp_eq_of_ne (σ k) (σ (k + 1)) j0 hj0k hj0k1 hne01 with ⟨h1, h2⟩ | ⟨h1, h2⟩
+    · rw [h1, h2]
+    · rw [h1, h2, dist_comm]
+  have hjeq : (1 : Fin 3) = j0 := by
+    by_contra hne
+    exact hscalene 1 j0 hne ((hlen.symm.trans hlen').trans hj0eq'.symm)
+  rw [← hjeq] at hj0k hj0k1
+  have htri3 : ∀ x : Fin 3, x = 0 ∨ x = 1 ∨ x = 2 := by decide
+  have hval_inj : ∀ x y : Fin 3, x ≠ y →
+      (if x = 0 then α else if x = 1 then β else γ) ≠
+        (if y = 0 then α else if y = 1 then β else γ) := by
+    intro x y hxy
+    rcases htri3 x with hx | hx | hx <;> rcases htri3 y with hy | hy | hy <;>
+      subst hx <;> subst hy <;> simp at hxy ⊢ <;>
+      first | (exact absurd rfl hxy) | exact hαβ | exact hαγ | exact hβγ | exact hαβ.symm | exact hαγ.symm | exact hβγ.symm
+  have hkne : TilePlacement.angleAt (D.tile i) k ≠ β := by
+    rw [hangk']; exact hval_inj (σ k) 1 (Ne.symm hj0k)
+  have hk1ne : TilePlacement.angleAt (D.tile i) (k + 1) ≠ β := by
+    rw [hangk1']; exact hval_inj (σ (k + 1)) 1 (Ne.symm hj0k1)
+  have hktri : TilePlacement.angleAt (D.tile i) k = α ∨ TilePlacement.angleAt (D.tile i) k = β ∨
+      TilePlacement.angleAt (D.tile i) k = γ := by
+    rw [hangk']; rcases htri3 (σ k) with h | h | h <;> rw [h] <;> simp
+  have hk1tri : TilePlacement.angleAt (D.tile i) (k + 1) = α ∨
+      TilePlacement.angleAt (D.tile i) (k + 1) = β ∨
+      TilePlacement.angleAt (D.tile i) (k + 1) = γ := by
+    rw [hangk1']; rcases htri3 (σ (k + 1)) with h | h | h <;> rw [h] <;> simp
+  refine ⟨?_, ?_, ?_⟩
+  · rcases hktri with h | h | h
+    · exact Or.inl h
+    · exact absurd h hkne
+    · exact Or.inr h
+  · rcases hk1tri with h | h | h
+    · exact Or.inl h
+    · exact absurd h hk1ne
+    · exact Or.inr h
+  · rw [hangk', hangk1']
+    exact hval_inj (σ k) (σ (k + 1)) hne01
+
+
 end Erdos634.Geometry
