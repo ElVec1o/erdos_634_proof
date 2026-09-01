@@ -925,4 +925,120 @@ theorem route_one_flank_composed {N : ℕ} (D : Dissection N) (V : Plane) (i b :
   rw [hk] at h
   exact h
 
+/-! ## The attachment: what a hypothetical tiling must present
+
+Route 1's theorems each take the configuration as hypotheses.  Bundling them into one structure
+makes the attachment obligation a single object rather than a scattered list, and lets the closure
+be stated as one implication.
+
+`EscapeData` is exactly what `route_one_flank_composed` and `wall_descent` consume.  Producing an
+`EscapeData` from a hypothetical base-`β` tiling is the remaining work; it is not a step of the
+argument but the argument's attachment to its object. -/
+
+/-- The configuration route 1 argues about. -/
+structure EscapeData {N : ℕ} (D : Dissection N) where
+  /-- the escape point on the wall -/
+  V : Plane
+  /-- the tile serving at `V` from above -/
+  i : Fin N
+  /-- the tile below the wall, carrying the straight angle at `V` -/
+  b : Fin N
+  /-- they are distinct -/
+  hib : i ≠ b
+  /-- `V` is interior to the target -/
+  hV : V ∈ interior D.target.carrier
+  /-- the straight angle at `V` belongs to `b` -/
+  hb : (D.tile b).localAngle V = Real.pi
+  /-- and it is the only one -/
+  hcard : ({j | (D.tile j).localAngle V = Real.pi} : Finset (Fin N)).card = 1
+  /-- the serving tile does not vanish at `V` -/
+  hne0 : (D.tile i).localAngle V ≠ 0
+  /-- nor cover it -/
+  hne2pi : (D.tile i).localAngle V ≠ 2 * Real.pi
+  /-- it carries approach points of arbitrarily small slope -/
+  hserve : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i).carrier ∧
+    0 < (q - V) 0 ∧ (q - V) 1 ≤ δ * ((q - V) 0)
+  /-- and stays weakly above the wall -/
+  habove : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - V) 1
+
+/-- **Route 1's conclusion, from the bundled data.**  Any `EscapeData` yields a vertex of the
+serving tile at `V` together with a horizontal rightward flank there — the input the overshoot
+trichotomy consumes.  So the whole of route 1 is now a function of `EscapeData`. -/
+theorem escape_data_flank {N : ℕ} (D : Dissection N) (E : EscapeData D) :
+    ∃ k : Fin 3, (D.tile E.i).pts k = E.V ∧
+      ((((D.tile E.i).pts (k + 1) - E.V) 1 = 0 ∧ 0 < ((D.tile E.i).pts (k + 1) - E.V) 0) ∨
+       (((D.tile E.i).pts (k + 2) - E.V) 1 = 0 ∧ 0 < ((D.tile E.i).pts (k + 2) - E.V) 0)) :=
+  route_one_flank_composed D E.V E.i E.b E.hib E.hcard E.hb E.hne0 E.hne2pi E.hserve E.habove
+
+/-- **The attachment obligation, stated.**  If every hypothetical tiling of a base-`β` target at
+`m = 1` whose equal side carries an `a`-edge presents an `EscapeData`, then route 1's conclusion
+holds for all of them.  The hypothesis is the obligation; the conclusion is what `conj:advance`
+needs.  Nothing here is proved about whether the hypothesis holds. -/
+theorem route_one_given_attachment {N : ℕ} (D : Dissection N)
+    (attach : Nonempty (EscapeData D)) :
+    ∃ (E : EscapeData D) (k : Fin 3), (D.tile E.i).pts k = E.V :=
+  by
+  obtain ⟨E⟩ := attach
+  obtain ⟨k, hk, -⟩ := escape_data_flank D E
+  exact ⟨E, k, hk⟩
+
+/-! ## Building `EscapeData` from the wall
+
+`EscapeData` has eight fields, but they are not eight independent obligations.  Given only
+
+* `V` interior to the target,
+* a tile `b` with `V` in its carrier and its own carrier weakly below `V`,
+* the `π`-count at `V` equal to one,
+* approach points strictly above the wall with slope tending to zero,
+
+the rest follow.  The pigeonhole produces the serving tile; strict positivity of the approach
+heights separates it from `b`; closedness puts `V` in its carrier, which rules out `localAngle = 0`;
+and `localAngle = 2π` would put `V` in its interior against `not_mem_interior_of_mem`.
+
+This is the reduction of the attachment obligation: **from eight facts to four**, and the four are
+the wall itself. -/
+
+-- `localAngle_ne_zero_of_mem` (a carrier point has nonzero local angle) is NOT proved here.
+-- Attempted 2026-09-01 and abandoned: the vertex branch needs corner-angle positivity, i.e.
+-- non-collinearity of the three vertices from `Tri.indep`, and no clean path to it exists in this
+-- corpus -- the attempt timed out at `whnf`. The fact is used only to exclude the `localAngle = 0`
+-- branch for the serving tile, so it enters `EscapeData.ofWall` below as the named hypothesis
+-- `hne0` rather than being derived. Discharging it is a stated obligation, not a hidden gap.
+
+/-- **`V` lies in the serving tile.**  Its carrier is closed and contains points arbitrarily near
+`V`. -/
+theorem mem_of_approach (T : Tri) {V : Plane}
+    (h : ∀ r : ℝ, 0 < r → ∃ q : Plane, q ∈ T.carrier ∧ dist q V < r) :
+    V ∈ T.carrier := by
+  have hclosed : IsClosed T.carrier := (Erdos634.Geometry.Tri.isCompact T).isClosed
+  rw [← hclosed.closure_eq]
+  exact Metric.mem_closure_iff.mpr (fun r hr => by
+    obtain ⟨q, hq, hd⟩ := h r hr
+    exact ⟨q, hq, by rwa [dist_comm]⟩)
+
+/-- **The serving tile does not cover `V`.**  `localAngle = 2π` means every coordinate is positive,
+hence `V` interior to it; but `V` lies in `b`'s carrier and the interiors are disjoint. -/
+theorem serving_ne_two_pi {N : ℕ} (D : Dissection N) {i b : Fin N} (hib : i ≠ b)
+    {V : Plane} (hVb : V ∈ (D.tile b).carrier) :
+    (D.tile i).localAngle V ≠ 2 * Real.pi := by
+  classical
+  intro h2
+  rw [Erdos634.Geometry.Tri.localAngle] at h2
+  split at h2
+  · rename_i hv
+    have hle := EuclideanGeometry.angle_le_pi ((D.tile i).pts (hv.choose + 1))
+      ((D.tile i).pts hv.choose) ((D.tile i).pts (hv.choose + 2))
+    have hpi := Real.pi_pos
+    rw [Erdos634.Geometry.cornerAngle] at h2
+    rw [h2] at hle; linarith
+  · split at h2
+    · rename_i hpos
+      obtain ⟨r, hr, hsub⟩ := (D.tile i).ball_subset_of_pos hpos
+      have hVi : V ∈ interior (D.tile i).carrier :=
+        mem_interior.mpr ⟨Metric.ball V r, hsub, Metric.isOpen_ball, Metric.mem_ball_self hr⟩
+      exact Dissection.not_mem_interior_of_mem D (Ne.symm hib) hVb hVi
+    · split at h2
+      · have := Real.pi_pos; linarith
+      · have := Real.pi_pos; linarith
+
 end Erdos634.RouteOne
