@@ -127,6 +127,7 @@ import Erdos634.WallEdges
 import Erdos634.ShadowCover
 import Erdos634.ChainEnum
 import Erdos634.BaseChain
+import Erdos634.WallEndpoints
 import Erdos634.WallFace
 import Erdos634.OrientWord
 import Erdos634.Placement

@@ -2,6 +2,7 @@ import Erdos634.Dissection
 import Erdos634.MarchFlank
 import Erdos634.CongruentAngles
 import Erdos634.TilePlacement
+import Erdos634.WallEndpoints
 import Erdos634.AngleSumDissection
 import Erdos634.BaseSelection
 
@@ -306,5 +307,104 @@ theorem congruentDissection_apex_counts (D : CongruentDissection N) (α β γ : 
     hvals
   rw [hcorner] at h
   exact apex_counts hγdef hrel hirr _ _ _ _ h
+
+/-! ## `lem:endpoints`, fully assembled
+
+The chain's first tile has `a` as one of its own vertices (`WallEndpoints.chain_endpoints`), so its
+local angle there is a definite corner angle (`Tri.localAngle_vertex`), one of `{α,β,γ}`
+(`CongruentAngles.congruent_corner_angles`). The base-corner count
+(`congruentDissection_base_corner_counts`) says exactly one tile presents `β` at `a` and none
+presents `α` or `γ`; since this tile is one of the (at most `{α,β,γ,π}`-valued, `0`/`2π` excluded)
+contributors, elimination pins its angle to `β`. The mirror argument at the apex, with
+`.congruentDissection_apex_counts`, pins the last tile's angle to `α`. -/
+
+open Erdos634.TilePlacement Erdos634.WallEndpoints Erdos634.BaseChain Erdos634.Placement in
+/-- **`lem:endpoints`, for a real `CongruentDissection`.**  The chain's first tile presents `β` at
+the base corner `D.target.pts kbase`, and its last tile presents `α` at the apex
+`D.target.pts kapex` — the paper's "the bottom angle of the first edge is `β`" and "the top angle
+of the last edge is `α`". -/
+theorem congruentDissection_endpoints (hN : 0 < N) (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (kbase kapex : Fin 3) (g : Plane →ᵃ[ℝ] ℝ) (c : ℝ) (dir : Plane →ₗ[ℝ] ℝ)
+    (hker : ∀ v : Plane, g.linear v = 0 → dir v = 0 → v = 0)
+    (hwall : ∀ y ∈ D.target.carrier, g y ≤ c)
+    (hab : D.target.pts kbase ≠ D.target.pts kapex)
+    (hdirab : dir (D.target.pts kbase) ≤ dir (D.target.pts kapex))
+    (hbase : segment ℝ (D.target.pts kbase) (D.target.pts kapex) ⊆ frontier D.target.carrier)
+    (hline : ∀ y ∈ segment ℝ (D.target.pts kbase) (D.target.pts kapex), g y = c)
+    (hface : ∀ y ∈ D.target.carrier, g y = c →
+      y ∈ segment ℝ (D.target.pts kbase) (D.target.pts kapex))
+    (hthird : ∀ p ∈ wallList D.toDissection g c, g ((D.tile p.1).pts (p.2 + 2)) < c)
+    (hcornerbase : cornerAngle (D.target.pts (kbase + 1)) (D.target.pts kbase)
+      (D.target.pts (kbase + 2)) = β)
+    (hcornerapex : cornerAngle (D.target.pts (kapex + 1)) (D.target.pts kapex)
+      (D.target.pts (kapex + 2)) = 3 * α) :
+    ∃ E : ℕ → Fin N × Fin 3, ∃ n : ℕ, n = (wallList D.toDissection g c).length ∧ 0 < n ∧
+      (D.tile (E 0).1).localAngle (D.target.pts kbase) = β ∧
+      (D.tile (E (n - 1)).1).localAngle (D.target.pts kapex) = α := by
+  obtain ⟨E, n, hneq, hn0, hwest, heast⟩ :=
+    chain_endpoints hN D.toDissection g c dir hker hwall (D.target.pts kbase)
+      (D.target.pts kapex) hab hdirab hbase hline hface hthird
+  refine ⟨E, n, hneq, hn0, ?_, ?_⟩
+  · -- the first tile presents `a` as one of its own vertices
+    obtain ⟨j, hj⟩ : ∃ j : Fin 3, D.target.pts kbase = (D.tile (E 0).1).pts j := by
+      unfold edgeWest at hwest
+      split at hwest
+      · exact ⟨(E 0).2, hwest.symm⟩
+      · exact ⟨(E 0).2 + 1, hwest.symm⟩
+    have hval : (D.tile (E 0).1).localAngle (D.target.pts kbase)
+        = cornerAngle ((D.tile (E 0).1).pts (j + 1)) ((D.tile (E 0).1).pts j)
+          ((D.tile (E 0).1).pts (j + 2)) := by
+      rw [hj, Tri.localAngle_vertex]
+    obtain ⟨m, hm⟩ := congruent_corner_angles (D.tiles_congruent (E 0).1).symm j
+    rw [hval, hm]
+    -- `m` is `0`, `1`, or `2`; the counts eliminate all but `β`
+    have h := congruentDissection_base_corner_counts D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0
+      hγπ hγ0 hπ0 hγdef hrel hirr hα' hβ' hγ' kbase hcornerbase
+    have hcard : ({i | (D.tile i).localAngle (D.target.pts kbase)
+        = cornerAngle (D.model.pts (m + 1)) (D.model.pts m) (D.model.pts (m + 2))} :
+        Finset (Fin N)).card ≠ 0 := by
+      refine Finset.card_ne_zero_of_mem (a := (E 0).1) ?_
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq]
+      rw [hval, hm]
+    fin_cases m
+    · exact absurd (show cornerAngle (D.model.pts (0 + 1)) (D.model.pts 0)
+        (D.model.pts (0 + 2)) = α from hα') (fun heq => hcard (heq ▸ h.1))
+    · exact hβ'
+    · exact absurd (show cornerAngle (D.model.pts (2 + 1)) (D.model.pts 2)
+        (D.model.pts (2 + 2)) = γ from hγ') (fun heq => hcard (heq ▸ h.2.2.1))
+  · -- the last tile presents `b` as one of its own vertices, mirror argument
+    obtain ⟨j, hj⟩ : ∃ j : Fin 3, D.target.pts kapex = (D.tile (E (n - 1)).1).pts j := by
+      unfold edgeEast at heast
+      split at heast
+      · exact ⟨(E (n - 1)).2 + 1, heast.symm⟩
+      · exact ⟨(E (n - 1)).2, heast.symm⟩
+    have hval : (D.tile (E (n - 1)).1).localAngle (D.target.pts kapex)
+        = cornerAngle ((D.tile (E (n - 1)).1).pts (j + 1)) ((D.tile (E (n - 1)).1).pts j)
+          ((D.tile (E (n - 1)).1).pts (j + 2)) := by
+      rw [hj, Tri.localAngle_vertex]
+    obtain ⟨m, hm⟩ := congruent_corner_angles (D.tiles_congruent (E (n - 1)).1).symm j
+    rw [hval, hm]
+    have h := congruentDissection_apex_counts D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0
+      hγπ hγ0 hπ0 hγdef hrel hirr hα' hβ' hγ' kapex hcornerapex
+    have hcard : ({i | (D.tile i).localAngle (D.target.pts kapex)
+        = cornerAngle (D.model.pts (m + 1)) (D.model.pts m) (D.model.pts (m + 2))} :
+        Finset (Fin N)).card ≠ 0 := by
+      refine Finset.card_ne_zero_of_mem (a := (E (n - 1)).1) ?_
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq]
+      rw [hval, hm]
+    fin_cases m
+    · exact hα'
+    · exact absurd (show cornerAngle (D.model.pts (1 + 1)) (D.model.pts 1)
+        (D.model.pts (1 + 2)) = β from hβ') (fun heq => hcard (heq ▸ h.2.1))
+    · exact absurd (show cornerAngle (D.model.pts (2 + 1)) (D.model.pts 2)
+        (D.model.pts (2 + 2)) = γ from hγ') (fun heq => hcard (heq ▸ h.2.2.1))
 
 end Erdos634.Geometry.Dissection
