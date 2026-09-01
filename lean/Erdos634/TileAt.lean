@@ -1,5 +1,7 @@
 import Erdos634.Dissection
 import Erdos634.MarchFlank
+import Erdos634.CongruentAngles
+import Erdos634.TilePlacement
 import Erdos634.AngleSumDissection
 import Erdos634.BaseSelection
 
@@ -192,5 +194,117 @@ theorem tile_angle_dichotomy_at_vertex (D : Dissection N) (k : Fin 3) {i : Fin N
   · exact absurd h2pi (localAngle_ne_two_pi_of_not_mem_interior (D.target_vertex_not_interior_tile k i))
   · exact Or.inr hpi
   · exact absurd h0 (Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ hi)
+
+/-! ## For a `CongruentDissection`, every angle at a vertex is `α`, `β`, `γ` or `π` — real, not
+hypothesised
+
+`TilePlacement.base_corner_counts`/`corner_multiplicities` take `hvals : ∀ i, localAngle ∈
+{α,β,γ,π,0}` as a *hypothesis*. For a `CongruentDissection` it is a theorem: `tiles_congruent`
+gives every tile congruent to the model, `CongruentAngles.congruent_corner_angles` turns "its own
+corner angle at `j`" into "one of the model's three corner angles", and
+`tile_angle_dichotomy_at_vertex` above rules out everything else. This is the real assembly the
+census-adjacent rows (`lem:census`, `lem:rowp0`) were missing — not their full uniqueness content,
+but the discrete hypothesis their arithmetic runs on, now derived rather than assumed. -/
+
+open Erdos634.TilePlacement in
+/-- **At a target vertex of a congruent dissection, every tile's local angle there is one of the
+model's three corner angles, or `π`.** -/
+theorem congruentDissection_localAngle_mem (D : CongruentDissection N) (α β γ : ℝ)
+    (hα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (k : Fin 3) (i : Fin N) :
+    (D.tile i).localAngle (D.target.pts k) ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ) := by
+  classical
+  by_cases hi : D.target.pts k ∈ (D.tile i).carrier
+  · rcases D.toDissection.tile_angle_dichotomy_at_vertex k hi with ⟨j, hjp, hjeq⟩ | hpi
+    · obtain ⟨m, hm⟩ := congruent_corner_angles (D.tiles_congruent i).symm j
+      rw [hjeq, hm]
+      have hcases : m = 0 ∨ m = 1 ∨ m = 2 := by fin_cases m <;> simp
+      simp only [Finset.mem_insert, Finset.mem_singleton]
+      rcases hcases with rfl | rfl | rfl
+      · left; rw [← hα]; congr 1
+      · right; left; rw [← hβ]; congr 1
+      · right; right; left; rw [← hγ]; congr 1
+    · simp [hpi]
+  · -- if `p` is not in the tile's carrier at all, `localAngle` is `0` by definition
+    have h0 : (D.tile i).localAngle (D.target.pts k) = 0 := by
+      classical
+      rw [Erdos634.Geometry.Tri.localAngle]
+      split
+      · rename_i hv
+        have hvmem : (D.target.pts k) ∈ Set.range (D.tile i).pts := ⟨hv.choose, hv.choose_spec.symm⟩
+        exact absurd (subset_convexHull ℝ _ hvmem) hi
+      · split
+        · rename_i hall
+          have hint : D.target.pts k ∈ interior (D.tile i).carrier :=
+            (D.tile i).mem_interior_iff_coord_pos _ |>.mpr hall
+          exact absurd (interior_subset hint) hi
+        · split
+          · rename_i hedge
+            obtain ⟨kk, hkk1, hkk2⟩ := hedge
+            have hmem : D.target.pts k ∈ (D.tile i).carrier := by
+              rw [(D.tile i).carrier_eq_nonneg_coord]
+              intro j
+              rcases eq_or_ne j kk with rfl | hne
+              · exact hkk1.ge
+              · exact (hkk2 j hne).le
+            exact absurd hmem hi
+          · rfl
+    simp [h0]
+
+/-! ## The base corner fills uniquely, for a real `CongruentDissection`
+
+`lem:census`'s own text asserts "the base corners fill uniquely as `{β}` and the apex as `{3α}`" —
+this is exactly `TilePlacement.base_corner_counts`/`.apex_counts`, but those took the discrete
+`hvals` hypothesis as given. `congruentDissection_localAngle_mem` derives it. Composing: the base
+corner's fill is now a theorem about a real `CongruentDissection`, not a hypothesis about one. -/
+
+open Erdos634.TilePlacement in
+/-- **A base corner of a real congruent dissection fills uniquely as `{β}`.** -/
+theorem congruentDissection_base_corner_counts (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (k : Fin 3)
+    (hcorner : cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β) :
+    ({i | (D.tile i).localAngle (D.target.pts k) = α} : Finset (Fin N)).card = 0 ∧
+    ({i | (D.tile i).localAngle (D.target.pts k) = β} : Finset (Fin N)).card = 1 ∧
+    ({i | (D.tile i).localAngle (D.target.pts k) = γ} : Finset (Fin N)).card = 0 ∧
+    ({i | (D.tile i).localAngle (D.target.pts k) = Real.pi} : Finset (Fin N)).card = 0 :=
+  base_corner_counts D.toDissection α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr k
+    (fun i => congruentDissection_localAngle_mem D α β γ hα' hβ' hγ' k i) hcorner
+
+open Erdos634.TilePlacement in
+/-- **The apex of a real congruent dissection fills uniquely as `{3α}`.**  The other half of
+`lem:census`'s quoted parenthetical, matching `congruentDissection_base_corner_counts` above. -/
+theorem congruentDissection_apex_counts (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (k : Fin 3)
+    (hcorner : cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2))
+      = 3 * α) :
+    ({i | (D.tile i).localAngle (D.target.pts k) = α} : Finset (Fin N)).card = 3 ∧
+    ({i | (D.tile i).localAngle (D.target.pts k) = β} : Finset (Fin N)).card = 0 ∧
+    ({i | (D.tile i).localAngle (D.target.pts k) = γ} : Finset (Fin N)).card = 0 ∧
+    ({i | (D.tile i).localAngle (D.target.pts k) = Real.pi} : Finset (Fin N)).card = 0 := by
+  classical
+  have hvals : ∀ i, (D.tile i).localAngle (D.target.pts k) ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ) :=
+    fun i => congruentDissection_localAngle_mem D α β γ hα' hβ' hγ' k i
+  have h := corner_multiplicities D.toDissection α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 k
+    hvals
+  rw [hcorner] at h
+  exact apex_counts hγdef hrel hirr _ _ _ _ h
 
 end Erdos634.Geometry.Dissection
