@@ -1048,4 +1048,93 @@ theorem serving_ne_zero {N : ℕ} (D : Dissection N) (i : Fin N) {V : Plane}
     (D.tile i).localAngle V ≠ 0 :=
   Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ (mem_of_approach _ h)
 
+/-- **The wall pigeonhole, in the form the constructor needs.**  An approach sequence — points of
+the dissection strictly to the right of `V`, strictly above the wall, with slope `1/(n+1)` and
+within `1/(n+1)` of `V` — has an infinite fibre over some tile `i`, and that one tile then carries
+*all three* of the facts the escape data wants: tangential approach at every slope, points of
+arbitrarily small distance to `V`, and at least one point strictly above `V`. -/
+theorem pigeonhole_wall {N : ℕ} (D : Dissection N) (V : Plane) (pick : ℕ → Plane)
+    (g : ℕ → Fin N) (hg : ∀ n, pick n ∈ (D.tile (g n)).carrier)
+    (hx : ∀ n, 0 < (pick n - V) 0)
+    (hslope : ∀ n, (pick n - V) 1 ≤ (1 / (n + 1 : ℝ)) * ((pick n - V) 0))
+    (hnear : ∀ n, dist (pick n) V < 1 / (n + 1 : ℝ))
+    (hpos : ∀ n, 0 < (pick n - V) 1) :
+    ∃ i : Fin N,
+      (∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i).carrier ∧
+        0 < (q - V) 0 ∧ (q - V) 1 ≤ δ * ((q - V) 0)) ∧
+      (∀ r : ℝ, 0 < r → ∃ q : Plane, q ∈ (D.tile i).carrier ∧ dist q V < r) ∧
+      (∃ q : Plane, q ∈ (D.tile i).carrier ∧ 0 < (q - V) 1) ∧ (∃ n, g n = i) := by
+  classical
+  obtain ⟨i, hi⟩ := Finite.exists_infinite_fiber g
+  have hinf : (g ⁻¹' {i}).Infinite := Set.infinite_coe_iff.mp hi
+  -- a fibre element beyond any bound, with `1/(n+1)` below any positive `ε`
+  have key : ∀ ε : ℝ, 0 < ε → ∃ n, g n = i ∧ 1 / (n + 1 : ℝ) ≤ ε := by
+    intro ε hε
+    obtain ⟨M, hM⟩ := exists_nat_gt (1 / ε)
+    obtain ⟨n, hn, hnM⟩ := hinf.exists_gt M
+    refine ⟨n, hn, ?_⟩
+    have hn1 : (0:ℝ) < n + 1 := by positivity
+    rw [div_le_iff₀ hn1]
+    have hMn : (M : ℝ) < n := by exact_mod_cast hnM
+    have h1 : 1 / ε < (n : ℝ) := lt_trans hM hMn
+    rw [div_lt_iff₀ hε] at h1
+    nlinarith
+  have hmem : ∀ n, g n = i → pick n ∈ (D.tile i).carrier := by
+    intro n hn; rw [← hn]; exact hg n
+  refine ⟨i, ?_, ?_, ?_, ?_⟩
+  · intro δ hδ
+    obtain ⟨n, hn, hle⟩ := key δ hδ
+    exact ⟨pick n, hmem n hn, hx n, le_trans (hslope n)
+      (mul_le_mul_of_nonneg_right hle (hx n).le)⟩
+  · intro r hr
+    obtain ⟨n, hn, hle⟩ := key r hr
+    exact ⟨pick n, hmem n hn, lt_of_lt_of_le (hnear n) hle⟩
+  · obtain ⟨n, hn, -⟩ := key 1 one_pos
+    exact ⟨pick n, hmem n hn, hpos n⟩
+  · obtain ⟨n, hn, -⟩ := key 1 one_pos
+    exact ⟨n, hn⟩
+
+/-- **`EscapeData` from the wall.**  The eight fields are not eight obligations.  Given
+
+* `V` interior to the target,
+* a tile `b` containing `V`, carrying the straight angle there, with its carrier weakly below `V`,
+* the `π`-count at `V` equal to one,
+* an approach sequence (right of `V`, above the wall, slope and distance both `O(1/n)`),
+* and: each tile the approach sequence lands in is either `b` or weakly above the wall,
+
+the serving tile `i` and the four facts about it — `hib`, `hne0`, `hne2pi`, `hserve` — are all
+*derived*.  This is the constructor the surrounding prose promised. -/
+theorem EscapeData.ofWall {N : ℕ} (D : Dissection N) (V : Plane) (b : Fin N)
+    (hV : V ∈ interior D.target.carrier)
+    (hVb : V ∈ (D.tile b).carrier)
+    (hb : (D.tile b).localAngle V = Real.pi)
+    (hcard : ({j | (D.tile j).localAngle V = Real.pi} : Finset (Fin N)).card = 1)
+    (hbelow : ∀ q : Plane, q ∈ (D.tile b).carrier → (q - V) 1 ≤ 0)
+    (pick : ℕ → Plane) (g : ℕ → Fin N) (hg : ∀ n, pick n ∈ (D.tile (g n)).carrier)
+    (hx : ∀ n, 0 < (pick n - V) 0)
+    (hslope : ∀ n, (pick n - V) 1 ≤ (1 / (n + 1 : ℝ)) * ((pick n - V) 0))
+    (hnear : ∀ n, dist (pick n) V < 1 / (n + 1 : ℝ))
+    (hpos : ∀ n, 0 < (pick n - V) 1)
+    (habove : ∀ n : ℕ, ∀ q : Plane, q ∈ (D.tile (g n)).carrier → 0 ≤ (q - V) 1 ∨ g n = b) :
+    Nonempty (EscapeData D) := by
+  classical
+  obtain ⟨i, hserve, hclose, ⟨q, hq, hqpos⟩, n0, hn0⟩ :=
+    pigeonhole_wall D V pick g hg hx hslope hnear hpos
+  have hib : i ≠ b := by
+    intro h; rw [h] at hq; exact absurd (hbelow q hq) (not_le.mpr hqpos)
+  refine ⟨?_⟩
+  exact
+    { V := V
+      i := i
+      b := b
+      hib := hib
+      hV := hV
+      hb := hb
+      hcard := hcard
+      hne0 := serving_ne_zero D i hclose
+      hne2pi := serving_ne_two_pi D hib hVb
+      hserve := hserve
+      habove := fun q hq =>
+        (habove n0 q (by rw [hn0]; exact hq)).resolve_right (by rw [hn0]; exact hib) }
+
 end Erdos634.RouteOne

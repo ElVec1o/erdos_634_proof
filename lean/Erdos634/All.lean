@@ -1,3 +1,4 @@
+import Erdos634.VacCheck
 import Erdos634.AnchoredChain
 import Erdos634.AngleArithmetic
 import Erdos634.AngleSumAssembled
