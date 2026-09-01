@@ -345,7 +345,7 @@ appeared in no row at all now have rows, with their blockers written:
 | C `rem:pinbuffer` | cost of the pin configuration | `PinBuffer.buffer_dichotomy`, `.overrun_amounts` | PROVED — the cited cores are VERIFIED; the configuration statement is geometric |
 | C `prop:selfsim` | the descent is self-similar | none | PROVED — needs the scale map on dissections, which is not defined in Lean |
 | C `lem:rowwords` | boundary words at scale k | none | PROVED — depends on the row induction below |
-| C `lem:rowp0` | the corner tile | none | PROVED — planar placement argument; no tile-placement layer in Lean |
+| C `lem:rowp0` | the corner tile | none | PROVED — planar placement argument. **Note corrected 2026-09-02**: a tile-placement layer now exists (`TileAt.lean`), but it does not reach this row — `Dissection.target_vertex_mem_badSet` proves a target vertex always sits on the bad set, so `tileAt` cannot identify 'the corner tile' at all; that needs a different argument (see `TileAt.lean`'s note in this file's foot). Still blocked, for a now-precise reason |
 | C `lem:rowq0` | the first partner, and the parallelogram | none | PROVED — planar placement argument |
 | C `lem:rowp1` | the row advance at Y0 | none | PROVED — planar placement argument |
 | C `prop:slotdichotomy` | the slot dichotomy | none | PROVED — planar placement argument |
