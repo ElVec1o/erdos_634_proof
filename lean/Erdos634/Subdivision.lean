@@ -354,4 +354,56 @@ theorem cellUp_pts1 (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
 theorem cellUp_pts2 (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
     (cellUp A B C hindep i j).pts 2 = P A B C i (j + 1) := rfl
 
+/-- The point-reflection affine map `x ↦ v - x`. -/
+noncomputable def reflMap (v : Plane) : Plane →ᵃ[ℝ] Plane :=
+  AffineMap.mk' (fun x => v - x) (-LinearMap.id) 0 (by intro p'; simp; abel)
+
+theorem reflMap_apply (v x : Plane) : reflMap v x = v - x := by
+  rw [reflMap, AffineMap.coe_mk']
+
+theorem reflMap_injective (v : Plane) : Function.Injective (reflMap v) := by
+  intro a b hab
+  rw [reflMap, AffineMap.coe_mk'] at hab
+  have h3 : v - (v - a) = v - (v - b) := congrArg (fun t => v - t) hab
+  rwa [sub_sub_cancel, sub_sub_cancel] at h3
+
+/-- **A point-reflected triple stays affine-independent.** Avoids
+`affineIndependent_iff_not_collinear_of_ne`'s `.mp` direction, which is pathologically slow to
+elaborate on `Plane` for an abstract (non-concrete) hypothesis — confirmed by isolated testing;
+`AffineIndependent.map'` with the reflection as an injective `AffineMap` is fast. -/
+theorem affineIndependent_reflect {X Y Z : Plane} (hindep : AffineIndependent ℝ ![X, Y, Z])
+    (v : Plane) : AffineIndependent ℝ ![v - X, v - Y, v - Z] := by
+  have hh := hindep.map' (reflMap v) (reflMap_injective v)
+  have heq : ((reflMap v) ∘ ![X, Y, Z] : Fin 3 → Plane) = ![v - X, v - Y, v - Z] := by
+    funext x
+    fin_cases x <;> simp [reflMap_apply]
+  rwa [heq] at hh
+
+set_option maxHeartbeats 800000 in
+/-- **The downward cell `(i,j)` as a `Tri`.** Its three points
+`(P(i+1,j), P(i,j+1), P(i+1,j+1))` equal `(v-C, v-B, v-A)` for `v = P(i+1,j+1) + A` — the
+negation-translate of the reversed triple `(C,B,A)`. Uses `AffineIndependent.reverse_of_three`
+(existing Mathlib lemma, fast) for the reversal and `affineIndependent_reflect` above for the
+point-reflection. -/
+noncomputable def cellDown (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) : Tri where
+  pts := ![P A B C (i + 1) j, P A B C i (j + 1), P A B C (i + 1) (j + 1)]
+  indep := by
+    set v : Plane := P A B C (i + 1) (j + 1) + A with hv
+    have heq : (![P A B C (i + 1) j, P A B C i (j + 1), P A B C (i + 1) (j + 1)] : Fin 3 → Plane)
+        = ![v - C, v - B, v - A] := by
+      funext x
+      fin_cases x <;> simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
+        Matrix.cons_val_two, Matrix.tail_cons] <;> simp only [P, hv] <;> push_cast <;> module
+    rw [heq]
+    exact affineIndependent_reflect hindep.reverse_of_three v
+
+theorem cellDown_pts0 (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
+    (cellDown A B C hindep i j).pts 0 = P A B C (i + 1) j := rfl
+
+theorem cellDown_pts1 (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
+    (cellDown A B C hindep i j).pts 1 = P A B C i (j + 1) := rfl
+
+theorem cellDown_pts2 (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
+    (cellDown A B C hindep i j).pts 2 = P A B C (i + 1) (j + 1) := rfl
+
 end Erdos634.Subdivision
