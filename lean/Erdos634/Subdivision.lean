@@ -327,4 +327,31 @@ theorem total_count (k : ℕ) :
   rw [hkk] at h1
   omega
 
+/-! ## The cell triangles as actual `Tri` objects
+
+`up_sides`/`down_sides` give the three side lengths; this section packages each cell as a genuine
+`Tri`. The upward cell is a literal translate of `T = (A,B,C)` — `AffineIndependent.vadd` transports
+`T`'s own nondegeneracy directly, no new geometric argument needed. -/
+
+/-- **The upward cell `(i,j)` as a `Tri`**, given `T`'s own nondegeneracy. A literal translate of
+`T` by `P i j - A`. -/
+noncomputable def cellUp (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) : Tri where
+  pts := ![P A B C i j, P A B C (i + 1) j, P A B C i (j + 1)]
+  indep := by
+    have heq : (![P A B C i j, P A B C (i + 1) j, P A B C i (j + 1)] : Fin 3 → Plane)
+        = (P A B C i j - A) +ᵥ (![A, B, C] : Fin 3 → Plane) := by
+      funext x
+      fin_cases x <;> simp [P_succ_left, P_succ_right] <;> abel
+    rw [heq]
+    exact hindep.vadd
+
+theorem cellUp_pts0 (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
+    (cellUp A B C hindep i j).pts 0 = P A B C i j := rfl
+
+theorem cellUp_pts1 (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
+    (cellUp A B C hindep i j).pts 1 = P A B C (i + 1) j := rfl
+
+theorem cellUp_pts2 (hindep : AffineIndependent ℝ ![A, B, C]) (i j : ℕ) :
+    (cellUp A B C hindep i j).pts 2 = P A B C i (j + 1) := rfl
+
 end Erdos634.Subdivision
