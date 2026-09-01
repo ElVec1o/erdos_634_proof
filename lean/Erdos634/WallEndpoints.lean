@@ -245,7 +245,8 @@ theorem chain_endpoints {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
       (∀ m, m < n → E m ∈ wallList D g c) ∧
       (∀ m1 m2, m1 < n → m2 < n → E m1 = E m2 → m1 = m2) ∧
       (∀ m, 0 < m → m < n → dir a < edgePos D dir (E m)) ∧
-      (∀ m, m + 1 < n → edgeEnd D dir (E m) < dir b) := by
+      (∀ m, m + 1 < n → edgeEnd D dir (E m) < dir b) ∧
+      (∀ m, m < n → edgePos D dir (E m) < edgeEnd D dir (E m)) := by
   classical
   haveI : Inhabited (Fin N × Fin 3) := ⟨(⟨0, hN⟩, 0)⟩
   obtain ⟨E, hmono, hmem, hsurj, hinj⟩ :=
@@ -381,7 +382,7 @@ theorem chain_endpoints {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
     · exact h
     · exact absurd h
         (not_le.mpr (lt_of_le_of_lt (hmono ii jj (le_of_lt hiijj) hj) (hnondeg jj hj)))
-  refine ⟨E, n, rfl, hn0, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨E, n, rfl, hn0, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · rwa [hia0] at hweqa
   · rwa [hib1] at hbeqb
   · intro m hm1
@@ -420,5 +421,8 @@ theorem chain_endpoints {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
     have h3 : edgeEnd D dir (E (n - 1)) = dir b := by
       rw [hib1] at hbeqb; rw [← dir_edgeEast D dir (E (n-1))]; rw [hbeqb]
     linarith [h1, h2, h3]
+  · intro m hm
+    have hw := (mem_wallList D g c (E m)).mp (hmem m hm)
+    exact shadow_nondegenerate D g dir c hker (E m).1 (E m).2 hw.1 hw.2
 
 end Erdos634.WallEndpoints
