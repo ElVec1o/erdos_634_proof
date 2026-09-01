@@ -2,6 +2,7 @@ import Erdos634.ChainWalk
 import Erdos634.EdgeType
 import Erdos634.WallEndpoints
 import Erdos634.BridgeC
+import Erdos634.BaseBetaWalkArith
 
 /-!
 # A real side's walk equation
@@ -25,7 +26,7 @@ Axiom-clean; no `sorry`.
 namespace Erdos634.SideWalk
 
 open Erdos634.Geometry Erdos634.Placement Erdos634.TilePlacement Erdos634.WallEndpoints
-  Erdos634.BridgeC
+  Erdos634.BridgeC Erdos634.BaseBetaWalkArith
 
 variable {N : ℕ}
 
@@ -104,5 +105,90 @@ theorem side_walk_of_dissection (D : CongruentDissection N) (g : Plane →ᵃ[�
   rw [abs_of_nonpos (by linarith)]
   rw [← hchain, hRb, hL0]
   ring
+
+/-! ## Bridging the real walk equation to the `ℤ`-typed arithmetic
+
+`BaseBetaWalkArith.lean`'s `equal_side_no_b`/`equal_side_shape`/`base_b_count` are `ℤ`-typed and
+expect the walk equation as an integer identity. `side_walk_of_dissection` gives it as a real one.
+This section bridges the two: given that the model's three side lengths and the wall's span are
+each equal to a specific integer's cast (the numeric instantiation of the base-β target — not
+proved here, since no concrete real-coordinate realization of that target exists yet in this
+project, confirmed by search — see `PAPER_MAP`'s `thm:walkstruct` row), the real counts
+`side_walk_of_dissection` produces satisfy the integer walk equation those theorems need. -/
+
+/-- **The real walk equation casts to the integer one**, given the numeric instantiation. This is
+the only remaining step to apply `BaseBetaWalkArith.equal_side_no_b` (or `.base_b_count`) to a real
+dissection: supply `hA`,`hB`,`hC`,`hLen` (the concrete geometric realization) and `hnc1` (an edge of
+type `c` exists on the chain — `prop:gammatrap`'s content, not yet connected to this specific
+side), and the integer walk equation `na·(e·f) + nb·b + nc·f² = L₀` follows with `na`,`nb`,`nc` the
+real edge-type counts, cast. -/
+theorem int_walk_of_dissection (D : CongruentDissection N) (g : Plane →ᵃ[ℝ] ℝ) (c : ℝ)
+    (dir : Plane →ₗ[ℝ] ℝ) (hker : ∀ v : Plane, g.linear v = 0 → dir v = 0 → v = 0)
+    (hwall : ∀ y ∈ D.target.carrier, g y ≤ c) (a b : Plane) (hab : a ≠ b) (hdirab : dir a ≤ dir b)
+    (hbase : segment ℝ a b ⊆ frontier D.target.carrier)
+    (hline : ∀ y ∈ segment ℝ a b, g y = c)
+    (hface : ∀ y ∈ D.target.carrier, g y = c → y ∈ segment ℝ a b)
+    (hthird : ∀ p ∈ Erdos634.BaseChain.wallList D.toDissection g c,
+      g ((D.tile p.1).pts (p.2 + 2)) < c)
+    (hiso : ∀ p q : Plane, g p = c → g q = c → dist p q = |dir p - dir q|)
+    (hscalene : sideOpp D.model 0 ≠ sideOpp D.model 1 ∧ sideOpp D.model 0 ≠ sideOpp D.model 2 ∧
+      sideOpp D.model 1 ≠ sideOpp D.model 2)
+    (hN : 0 < N) (e0 f0 b0 L0 : ℤ)
+    (hA : sideOpp D.model 0 = ((e0 * f0 : ℤ) : ℝ))
+    (hB : sideOpp D.model 1 = (b0 : ℝ))
+    (hC : sideOpp D.model 2 = ((f0 ^ 2 : ℤ) : ℝ))
+    (hLen : dist a b = (L0 : ℝ)) :
+    ∃ na nb nc : ℤ, 0 ≤ na ∧ 0 ≤ nb ∧ 0 ≤ nc ∧ na * (e0 * f0) + nb * b0 + nc * f0 ^ 2 = L0 := by
+  obtain ⟨Pc, Qc, Rc, heq⟩ := side_walk_of_dissection D g c dir hker hwall a b hab hdirab hbase
+    hline hface hthird hiso hscalene hN
+  rw [hA, hB, hC, hLen] at heq
+  refine ⟨(Pc : ℤ), (Qc : ℤ), (Rc : ℤ), Int.natCast_nonneg Pc, Int.natCast_nonneg Qc,
+    Int.natCast_nonneg Rc, ?_⟩
+  have : ((Pc : ℤ) * (e0 * f0) + (Qc : ℤ) * b0 + (Rc : ℤ) * f0 ^ 2 : ℝ) = (L0 : ℝ) := by
+    push_cast
+    push_cast at heq
+    linarith
+  exact_mod_cast this
+
+/-- **`thm:walkstruct` clause (i), for a real dissection, given the numeric instantiation.** An
+equal side (`f² > 2e²`, the thin regime) carries no `b`-edge. This is `equal_side_no_b` applied to
+`int_walk_of_dissection`'s output — the last remaining inputs are the concrete geometric
+realization (`hA`,`hB`,`hC`,`hLen`: the model and the side literally have the stated lengths, which
+needs a real-coordinate `Tri` for the base-β target — not built, see `PAPER_MAP`) and `hnc1` (an
+edge of type `c` occurs — `prop:gammatrap`'s content at this side, also not yet connected here). -/
+theorem equal_side_no_b_of_dissection (D : CongruentDissection N) (g : Plane →ᵃ[ℝ] ℝ) (c : ℝ)
+    (dir : Plane →ₗ[ℝ] ℝ) (hker : ∀ v : Plane, g.linear v = 0 → dir v = 0 → v = 0)
+    (hwall : ∀ y ∈ D.target.carrier, g y ≤ c) (a b : Plane) (hab : a ≠ b) (hdirab : dir a ≤ dir b)
+    (hbase : segment ℝ a b ⊆ frontier D.target.carrier)
+    (hline : ∀ y ∈ segment ℝ a b, g y = c)
+    (hface : ∀ y ∈ D.target.carrier, g y = c → y ∈ segment ℝ a b)
+    (hthird : ∀ p ∈ Erdos634.BaseChain.wallList D.toDissection g c,
+      g ((D.tile p.1).pts (p.2 + 2)) < c)
+    (hiso : ∀ p q : Plane, g p = c → g q = c → dist p q = |dir p - dir q|)
+    (hscalene : sideOpp D.model 0 ≠ sideOpp D.model 1 ∧ sideOpp D.model 0 ≠ sideOpp D.model 2 ∧
+      sideOpp D.model 1 ≠ sideOpp D.model 2)
+    (hN : 0 < N) (e0 f0 b0 : ℤ) (he0 : 1 ≤ e0) (hef0 : e0 < f0) (hcop : IsCoprime e0 f0)
+    (hb0 : b0 + e0 ^ 2 = f0 ^ 2) (hthin : 2 * e0 ^ 2 < f0 ^ 2)
+    (hA : sideOpp D.model 0 = ((e0 * f0 : ℤ) : ℝ))
+    (hB : sideOpp D.model 1 = (b0 : ℝ))
+    (hC : sideOpp D.model 2 = ((f0 ^ 2 : ℤ) : ℝ))
+    (hLen : dist a b = ((f0 ^ 3 : ℤ) : ℝ))
+    (hnc1 : ∀ Pc Qc Rc : ℕ,
+      dist a b = Pc * sideOpp D.model 0 + Qc * sideOpp D.model 1 + Rc * sideOpp D.model 2 →
+      1 ≤ Rc) :
+    ∃ Pc Qc : ℕ, Qc = 0 := by
+  obtain ⟨Pc, Qc, Rc, heq⟩ := side_walk_of_dissection D g c dir hker hwall a b hab hdirab hbase
+    hline hface hthird hiso hscalene hN
+  refine ⟨Pc, Qc, ?_⟩
+  have hcast : (Pc : ℤ) * (e0 * f0) + (Qc : ℤ) * b0 + (Rc : ℤ) * f0 ^ 2 = f0 ^ 3 := by
+    have hr : ((Pc : ℤ) * (e0 * f0) + (Qc : ℤ) * b0 + (Rc : ℤ) * f0 ^ 2 : ℝ) = ((f0 ^ 3 : ℤ) : ℝ) := by
+      rw [hA, hB, hC, hLen] at heq
+      push_cast at heq ⊢
+      linarith
+    exact_mod_cast hr
+  have hnb0 : (Qc : ℤ) = 0 := equal_side_no_b e0 f0 b0 (Pc : ℤ) (Qc : ℤ) (Rc : ℤ) he0 hef0 hcop
+    hb0 hthin (Int.natCast_nonneg Pc) (Int.natCast_nonneg Qc)
+    (by exact_mod_cast hnc1 Pc Qc Rc heq) hcast
+  exact_mod_cast hnb0
 
 end Erdos634.SideWalk
