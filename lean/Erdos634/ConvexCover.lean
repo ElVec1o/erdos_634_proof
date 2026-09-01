@@ -1,122 +1,142 @@
 import Erdos634.Dissection
 
 /-!
-# From an area-exhausting family of tiles to a `Dissection` (the certified-search bridge, topological half)
+# Covering from area: building a `Dissection` without proving the union pointwise
 
-Erdős #634. Eight `PROVED` rows — `thm:44`, `thm:63`, `cor:elevenm`, `thm:frontier`(×4),
-`thm:eq105` — rest on a certified search whose output is a finite family of concrete triangles
-inside a target, with (C1) side lengths, (C2) containment, (C3) pairwise separating lines
-(⟹ disjoint interiors), (C4) total signed area equal to the target's. The recorded blocker in
-`PAPER_MAP` was always the same: turning that data into an actual `Dissection`, whose `covers`
-field demands the *pointwise* set equality `⋃ tileᵢ.carrier = target.carrier`, not merely
-measure-theoretic exhaustion.
+Erdős #634 — the **certified-search bridge**'s missing step.
 
-This file supplies exactly that missing step, once and for all, in the `Tri`/`Dissection`
-framework:
+Every certificate this project produces (`Tiling44`, `Tiling99`, `CevianTiling63`,
+`PgramTiling22`, …) checks four things by `decide`, in exact arithmetic:
 
-* `closed_full_measure_subset` — a closed full-measure subset of a convex set with nonempty
-  interior is the whole set. (Its complement is relatively open and null; a nonempty relatively-open
-  subset of such a convex set meets the interior, so has positive measure.)
-* `iUnion_carrier_eq_of_area` — `N` tiles inside a target, with pairwise-disjoint interiors and
-  total area equal to the target's, cover the target exactly. (`measure_biUnion_finset₀` turns
-  disjoint interiors + null frontiers into `volume (⋃) = ∑ volume`, hence full measure; the union
-  of finitely many compacts is closed; then the lemma above.)
-* `dissectionOfCover` — packages the two `Dissection` fields, giving the `Dissection` object the
-  bridge needs.
+* **(C1)** each piece is congruent to the tile (squared side multiset);
+* **(C2)** each piece lies in the closed target;
+* **(C3)** the pieces have pairwise disjoint interiors (an explicit separating line per pair);
+* **(C4)** the signed areas sum to the target's.
 
-What this does **not** do is the *other* half of the bridge: translating a specific certificate's
-`ℤ[√d]`-coordinate data (e.g. `Tiling44`'s `Pt = ℤ×ℤ×ℤ×ℤ` triangles) into `Tri` objects over
-`Plane = EuclideanSpace ℝ (Fin 2)`, and re-deriving (C2)/(C3)/(C4) there. That is per-certificate
-arithmetic transport, still to be done; but the geometric/measure content — the part that had no
-counterpart in Mathlib — is now closed and reusable.
+What `Dissection` asks for instead is the *pointwise* covering `⋃ᵢ (tile i).carrier = target.carrier`,
+which no certificate checks and which the `PAPER_MAP` rows for `thm:44`, `thm:63`, `cor:elevenm`,
+`thm:frontier`–`thm:frontier4` and `thm:eq105` all cite as the reason they stay `PROVED`: "the
+bridge from a checked certificate to a `Dissection`".
+
+This file supplies exactly that bridge. **(C2) + (C3) + (C4) imply the covering**, with no further
+geometric input, by a measure argument:
+
+* the union is closed (a finite union of compacts), so its complement in the target is *relatively
+  open*;
+* a triangle is the closure of its interior (`Convex.closure_interior_eq_closure_of_nonempty_interior`),
+  so a nonempty relatively open subset of the target meets the target's interior, hence contains a
+  nonempty *open* set, hence has **positive** volume;
+* but disjoint interiors make the pieces a.e. disjoint (`Tri.volume_frontier`), so the union's
+  volume is the sum, which is the target's; a positive-volume subset of the target disjoint from
+  the union would push the target's volume strictly above itself.
+
+The conclusion is `covers_of_volume`, and `ofCertificate` packages it as a genuine `Dissection`.
+Note the hypotheses are exactly (C2), (C3), (C4) — nothing here needs (C1), which is the separate
+congruence datum a `CongruentDissection` carries.
 
 Axiom-clean; no `sorry`.
 -/
 
-namespace Erdos634.Geometry
+namespace Erdos634.ConvexCover
 
-open MeasureTheory Set Filter Topology
-
-/-- **A closed full-measure subset of a convex set with nonempty interior is the whole set.** -/
-theorem closed_full_measure_subset {K S : Set Plane} (hK : Convex ℝ K)
-    (hne : (interior K).Nonempty) (hSK : S ⊆ K) (hS : IsClosed S)
-    (hnull : volume (K \ S) = 0) : S = K := by
-  refine Set.Subset.antisymm hSK (fun x hx => ?_)
-  by_contra hxS
-  obtain ⟨p, hp⟩ := hne
-  have hc : Continuous (fun t : ℝ => x + t • (p - x)) := by fun_prop
-  have htend : Tendsto (fun t : ℝ => x + t • (p - x)) (𝓝[>] (0:ℝ)) (𝓝 x) := by
-    have h := (hc.continuousAt (x := (0:ℝ))).continuousWithinAt (s := Ioi (0:ℝ))
-    simpa only [ContinuousWithinAt, zero_smul, add_zero] using h
-  have hScnhd : Sᶜ ∈ 𝓝 x := hS.isOpen_compl.mem_nhds hxS
-  have hev1 : ∀ᶠ t in 𝓝[>] (0:ℝ), (x + t • (p - x)) ∈ Sᶜ := htend.eventually hScnhd
-  have hIoc : Ioc (0:ℝ) 1 ∈ 𝓝[>] (0:ℝ) := by
-    rw [← Ioi_inter_Iic]
-    exact inter_mem self_mem_nhdsWithin (nhdsWithin_le_nhds (Iic_mem_nhds (by norm_num)))
-  have hev2 : ∀ᶠ t in 𝓝[>] (0:ℝ), t ∈ Ioc (0:ℝ) 1 := eventually_mem_set.mpr hIoc
-  obtain ⟨t, htSc, htIoc⟩ := (hev1.and hev2).exists
-  set z := x + t • (p - x) with hz
-  have hzint : z ∈ interior K := hK.add_smul_sub_mem_interior hx hp htIoc
-  have hopen : IsOpen (interior K ∩ Sᶜ) := isOpen_interior.inter hS.isOpen_compl
-  have hsub : interior K ∩ Sᶜ ⊆ K \ S := fun w ⟨hw1, hw2⟩ => ⟨interior_subset hw1, hw2⟩
-  have hpos : 0 < volume (interior K ∩ Sᶜ) := hopen.measure_pos volume ⟨z, hzint, htSc⟩
-  have hlt : 0 < volume (K \ S) := lt_of_lt_of_le hpos (measure_mono hsub)
-  rw [hnull] at hlt
-  exact lt_irrefl _ hlt
+open Erdos634.Geometry MeasureTheory
 
 variable {N : ℕ}
 
-/-- **The union of an area-exhausting disjoint-interior family covers the target exactly.** -/
-theorem iUnion_carrier_eq_of_area (target : Tri) (tile : Fin N → Tri)
+/-- **Disjoint interiors give a.e. disjointness**, for a bare family of triangles. This is
+`Dissection.aedisjoint`'s argument, stated before a `Dissection` exists: a common point of two
+pieces is interior to at most one of them, so it lies on a frontier, and frontiers are null. -/
+theorem aedisjoint_of_interiors {t₁ t₂ : Tri}
+    (h : Disjoint (interior t₁.carrier) (interior t₂.carrier)) :
+    AEDisjoint volume t₁.carrier t₂.carrier := by
+  have hsub : t₁.carrier ∩ t₂.carrier ⊆ frontier t₁.carrier ∪ frontier t₂.carrier := by
+    rintro x ⟨hx₁, hx₂⟩
+    by_cases h1 : x ∈ interior t₁.carrier
+    · by_cases h2 : x ∈ interior t₂.carrier
+      · exact absurd h2 (Set.disjoint_left.mp h h1)
+      · exact Or.inr ⟨subset_closure hx₂, h2⟩
+    · exact Or.inl ⟨subset_closure hx₁, h1⟩
+  exact measure_mono_null hsub (measure_union_null t₁.volume_frontier t₂.volume_frontier)
+
+/-- **A nonempty subset of a triangle that is open in the ambient plane has positive volume.** -/
+theorem volume_pos_of_isOpen {U : Set Plane} (hU : IsOpen U) (hne : U.Nonempty) :
+    0 < volume U :=
+  hU.measure_pos volume hne
+
+/-- **The union of the pieces has the sum of their volumes**, given pairwise disjoint interiors. -/
+theorem volume_iUnion_eq_sum (tile : Fin N → Tri)
+    (hdisj : Pairwise fun i j => Disjoint (interior (tile i).carrier) (interior (tile j).carrier)) :
+    volume (⋃ i, (tile i).carrier) = ∑ i, volume (tile i).carrier := by
+  rw [measure_iUnion₀ (fun i j hij => aedisjoint_of_interiors (hdisj hij))
+    (fun i => (tile i).nullMeasurableSet), tsum_fintype]
+
+/-- **The covering follows from containment, disjoint interiors and the area identity.**
+
+This is the certified-search bridge: a certificate checks (C2) `hsub`, (C3) `hdisj` and (C4)
+`hvol`, and this theorem produces the pointwise covering that `Dissection` requires. -/
+theorem covers_of_volume (target : Tri) (tile : Fin N → Tri)
     (hsub : ∀ i, (tile i).carrier ⊆ target.carrier)
     (hdisj : Pairwise fun i j => Disjoint (interior (tile i).carrier) (interior (tile j).carrier))
-    (harea : ∑ i, volume (tile i).carrier = volume target.carrier) :
+    (hvol : ∑ i, volume (tile i).carrier = volume target.carrier) :
     (⋃ i, (tile i).carrier) = target.carrier := by
   classical
-  -- the union is a.e.-disjoint (interiors disjoint, frontiers null), so its volume is the sum
-  have hae : ∀ i ∈ (Finset.univ : Finset (Fin N)), ∀ j ∈ (Finset.univ : Finset (Fin N)),
-      i ≠ j → AEDisjoint volume (tile i).carrier (tile j).carrier := by
-    intro i _ j _ hij
-    have hsub' : (tile i).carrier ∩ (tile j).carrier ⊆
-        frontier (tile i).carrier ∪ frontier (tile j).carrier := by
-      rintro x ⟨hxi, hxj⟩
-      by_cases h1 : x ∈ interior (tile i).carrier
-      · by_cases h2 : x ∈ interior (tile j).carrier
-        · exact absurd h2 (Set.disjoint_left.mp (hdisj hij) h1)
-        · exact Or.inr ⟨subset_closure hxj, h2⟩
-      · exact Or.inl ⟨subset_closure hxi, h1⟩
-    exact measure_mono_null hsub'
-      (measure_union_null (tile i).volume_frontier (tile j).volume_frontier)
-  have hvolU : volume (⋃ i ∈ (Finset.univ : Finset (Fin N)), (tile i).carrier)
-      = ∑ i, volume (tile i).carrier :=
-    measure_biUnion_finset₀ hae (fun i _ => (tile i).nullMeasurableSet)
-  have hU : (⋃ i, (tile i).carrier) = ⋃ i ∈ (Finset.univ : Finset (Fin N)), (tile i).carrier := by
-    simp
-  -- the union is closed (finite union of compacts) and full-measure inside the target
-  have hclosed : IsClosed (⋃ i, (tile i).carrier) :=
-    isClosed_iUnion_of_finite (fun i => (tile i).isCompact.isClosed)
-  have hsubU : (⋃ i, (tile i).carrier) ⊆ target.carrier := Set.iUnion_subset hsub
-  have hfull : volume (⋃ i, (tile i).carrier) = volume target.carrier := by
-    rw [hU, hvolU, harea]
-  have hnull : volume (target.carrier \ (⋃ i, (tile i).carrier)) = 0 := by
-    have hle : volume (⋃ i, (tile i).carrier) ≤ volume target.carrier :=
-      measure_mono hsubU
-    have hdiff := measure_diff hsubU hclosed.nullMeasurableSet
-      (ne_top_of_le_ne_top target.volume_ne_top hle)
-    rw [hdiff, hfull, tsub_self]
-  exact closed_full_measure_subset target.convex target.interior_nonempty hsubU hclosed hnull
+  set U : Set Plane := ⋃ i, (tile i).carrier with hUdef
+  have hUsub : U ⊆ target.carrier := Set.iUnion_subset hsub
+  have hUvol : volume U = volume target.carrier := by
+    rw [hUdef, volume_iUnion_eq_sum tile hdisj, hvol]
+  -- the union is closed, being a finite union of compacts
+  have hUclosed : IsClosed U := by
+    rw [hUdef]
+    exact isClosed_iUnion_of_finite fun i => (tile i).isCompact.isClosed
+  refine Set.Subset.antisymm hUsub ?_
+  -- suppose some target point is uncovered
+  by_contra hcon
+  obtain ⟨x, hxT, hxU⟩ : ∃ x, x ∈ target.carrier ∧ x ∉ U := by
+    by_contra hall
+    push_neg at hall
+    exact hcon fun x hx => hall x hx
+  -- `Uᶜ` is an open neighbourhood of `x`, and `x` is in the closure of the target's interior
+  have hVopen : IsOpen (Uᶜ) := hUclosed.isOpen_compl
+  have hxcl : x ∈ closure (interior target.carrier) := by
+    have hconv : Convex ℝ target.carrier := by
+      rw [Erdos634.Geometry.Tri.carrier]; exact convex_convexHull ℝ _
+    have hclosed : IsClosed target.carrier := target.isCompact.isClosed
+    have := hconv.closure_interior_eq_closure_of_nonempty_interior target.interior_nonempty
+    rw [this, hclosed.closure_eq]
+    exact hxT
+  -- so the open set `Uᶜ` meets the target's interior
+  obtain ⟨y, hyV, hyI⟩ : ∃ y, y ∈ Uᶜ ∧ y ∈ interior target.carrier :=
+    mem_closure_iff.mp hxcl (Uᶜ) hVopen hxU
+  -- `W` is a nonempty open subset of the target, disjoint from the union
+  set W : Set Plane := Uᶜ ∩ interior target.carrier with hWdef
+  have hWopen : IsOpen W := hVopen.inter isOpen_interior
+  have hWne : W.Nonempty := ⟨y, hyV, hyI⟩
+  have hWpos : 0 < volume W := volume_pos_of_isOpen hWopen hWne
+  have hWsub : W ⊆ target.carrier := fun z hz => interior_subset hz.2
+  have hWdisj : Disjoint U W := Set.disjoint_right.mpr fun z hz => hz.1
+  -- the target then has volume strictly above its own
+  have hsum : volume U + volume W ≤ volume target.carrier := by
+    have hunion : volume (U ∪ W) = volume U + volume W :=
+      measure_union₀ hWopen.measurableSet.nullMeasurableSet hWdisj.aedisjoint
+    rw [← hunion]
+    exact measure_mono (Set.union_subset hUsub hWsub)
+  rw [hUvol] at hsum
+  have hfin : volume target.carrier ≠ ⊤ := target.volume_ne_top
+  have : volume target.carrier + 0 < volume target.carrier + volume W :=
+    ENNReal.add_lt_add_left hfin hWpos
+  simp only [add_zero] at this
+  exact absurd hsum (not_le.mpr this)
 
-/-- **The certified-search bridge, topological half: a `Dissection` from area + disjoint
-interiors.** Given `N` tiles inside a target with pairwise-disjoint interiors and total area equal
-to the target's, the `Dissection N` whose covering is `iUnion_carrier_eq_of_area` and whose
-disjointness is the hypothesis. -/
-def dissectionOfCover (target : Tri) (tile : Fin N → Tri)
+/-- **A `Dissection` from a certificate.** Containment, disjoint interiors and the area identity —
+exactly the certificates' (C2), (C3), (C4) — build the structure. -/
+noncomputable def ofCertificate (target : Tri) (tile : Fin N → Tri)
     (hsub : ∀ i, (tile i).carrier ⊆ target.carrier)
     (hdisj : Pairwise fun i j => Disjoint (interior (tile i).carrier) (interior (tile j).carrier))
-    (harea : ∑ i, volume (tile i).carrier = volume target.carrier) : Dissection N where
+    (hvol : ∑ i, volume (tile i).carrier = volume target.carrier) :
+    Dissection N where
   target := target
   tile := tile
-  covers := iUnion_carrier_eq_of_area target tile hsub hdisj harea
+  covers := covers_of_volume target tile hsub hdisj hvol
   interiors_disjoint := hdisj
 
-end Erdos634.Geometry
+end Erdos634.ConvexCover
