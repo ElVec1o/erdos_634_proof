@@ -215,6 +215,39 @@ theorem cells_disjoint_i (i i' j j' : ℕ) (s t : ℝ)
     have : (i' : ℝ) + 1 ≤ (i : ℝ) := by exact_mod_cast hlt'
     linarith [h'.2, h.1]
 
+/-- A point of an open cell triangle pins the cell's second index. -/
+theorem up_pins_j (i j : ℕ) (s t : ℝ) (h : openUp i j s t) : (j : ℝ) < t ∧ t < (j : ℝ) + 1 :=
+  ⟨h.2.1, by have := h.1; have := h.2.2; have hi : (0:ℝ) ≤ s - i := by linarith
+             linarith⟩
+
+theorem down_pins_j (i j : ℕ) (s t : ℝ) (h : openDown i j s t) :
+    (j : ℝ) < t ∧ t < (j : ℝ) + 1 := by
+  refine ⟨?_, h.2.1⟩
+  have h2 := h.1
+  have h3 := h.2.2
+  have : s - (i : ℝ) < 1 := by linarith
+  linarith
+
+/-- **Two triangles of different cells have disjoint interiors, second-index form.** -/
+theorem cells_disjoint_j (i i' j j' : ℕ) (s t : ℝ)
+    (h : ((j : ℝ) < t ∧ t < (j : ℝ) + 1)) (h' : ((j' : ℝ) < t ∧ t < (j' : ℝ) + 1)) : j = j' := by
+  by_contra hne
+  rcases Nat.lt_or_ge j j' with hlt | hge
+  · have : (j : ℝ) + 1 ≤ (j' : ℝ) := by exact_mod_cast hlt
+    linarith [h.2, h'.1]
+  · have hlt' : j' < j := by omega
+    have : (j' : ℝ) + 1 ≤ (j : ℝ) := by exact_mod_cast hlt'
+    linarith [h'.2, h.1]
+
+/-- **The cell pair `(i,j)` of an open triangle (up or down) is pinned outright.** Combines
+`cells_disjoint_i`/`cells_disjoint_j` with the up/down pin lemmas: two open cell triangles
+(each up or down, independently) meeting at a common point must share both indices. -/
+theorem cell_pinned (i i' j j' : ℕ) (s t : ℝ)
+    (hi : ((i : ℝ) < s ∧ s < (i : ℝ) + 1)) (hi' : ((i' : ℝ) < s ∧ s < (i' : ℝ) + 1))
+    (hj : ((j : ℝ) < t ∧ t < (j : ℝ) + 1)) (hj' : ((j' : ℝ) < t ∧ t < (j' : ℝ) + 1)) :
+    i = i' ∧ j = j' :=
+  ⟨cells_disjoint_i i i' j j' s t hi hi', cells_disjoint_j i i' j j' s t hj hj'⟩
+
 /-- **The two triangles of one cell have disjoint interiors**, separated by the diagonal. -/
 theorem up_down_disjoint (i j : ℕ) (s t : ℝ) (hu : openUp i j s t) (hd : openDown i j s t) :
     False := by
