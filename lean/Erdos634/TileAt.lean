@@ -388,11 +388,12 @@ contributors, elimination pins its angle to `β`. The mirror argument at the ape
 `.congruentDissection_apex_counts`, pins the last tile's angle to `α`. -/
 
 open Erdos634.TilePlacement Erdos634.WallEndpoints Erdos634.BaseChain Erdos634.Placement in
-/-- **`lem:endpoints`, for a real `CongruentDissection`.**  The chain's first tile presents `β` at
-the base corner `D.target.pts kbase`, and its last tile presents `α` at the apex
-`D.target.pts kapex` — the paper's "the bottom angle of the first edge is `β`" and "the top angle
-of the last edge is `α`". -/
-theorem congruentDissection_endpoints (hN : 0 < N) (D : CongruentDissection N) (α β γ : ℝ)
+/-- **`lem:endpoints`'s core, given an already-built chain.**  Takes `E`/`n`/`hwest`/`heast` as
+parameters rather than building its own chain, so a caller who needs the *same* `E` for further
+reasoning (as `congruentDissection_gammatrap`'s assembly does) can build it once and feed it to
+both. `congruentDissection_endpoints` below is the thin wrapper that builds its own chain, for a
+caller who does not need to share it. -/
+theorem congruentDissection_endpoints_of_chain (D : CongruentDissection N) (α β γ : ℝ)
     (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
     (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
     (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
@@ -401,27 +402,17 @@ theorem congruentDissection_endpoints (hN : 0 < N) (D : CongruentDissection N) (
     (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
     (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
     (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
-    (kbase kapex : Fin 3) (g : Plane →ᵃ[ℝ] ℝ) (c : ℝ) (dir : Plane →ₗ[ℝ] ℝ)
-    (hker : ∀ v : Plane, g.linear v = 0 → dir v = 0 → v = 0)
-    (hwall : ∀ y ∈ D.target.carrier, g y ≤ c)
-    (hab : D.target.pts kbase ≠ D.target.pts kapex)
-    (hdirab : dir (D.target.pts kbase) ≤ dir (D.target.pts kapex))
-    (hbase : segment ℝ (D.target.pts kbase) (D.target.pts kapex) ⊆ frontier D.target.carrier)
-    (hline : ∀ y ∈ segment ℝ (D.target.pts kbase) (D.target.pts kapex), g y = c)
-    (hface : ∀ y ∈ D.target.carrier, g y = c →
-      y ∈ segment ℝ (D.target.pts kbase) (D.target.pts kapex))
-    (hthird : ∀ p ∈ wallList D.toDissection g c, g ((D.tile p.1).pts (p.2 + 2)) < c)
+    (kbase kapex : Fin 3) (dir : Plane →ₗ[ℝ] ℝ)
     (hcornerbase : cornerAngle (D.target.pts (kbase + 1)) (D.target.pts kbase)
       (D.target.pts (kbase + 2)) = β)
     (hcornerapex : cornerAngle (D.target.pts (kapex + 1)) (D.target.pts kapex)
-      (D.target.pts (kapex + 2)) = 3 * α) :
-    ∃ E : ℕ → Fin N × Fin 3, ∃ n : ℕ, n = (wallList D.toDissection g c).length ∧ 0 < n ∧
-      (D.tile (E 0).1).localAngle (D.target.pts kbase) = β ∧
+      (D.target.pts (kapex + 2)) = 3 * α)
+    (E : ℕ → Fin N × Fin 3) (n : ℕ)
+    (hwest : edgeWest D.toDissection dir (E 0) = D.target.pts kbase)
+    (heast : edgeEast D.toDissection dir (E (n - 1)) = D.target.pts kapex) :
+    (D.tile (E 0).1).localAngle (D.target.pts kbase) = β ∧
       (D.tile (E (n - 1)).1).localAngle (D.target.pts kapex) = α := by
-  obtain ⟨E, n, hneq, hn0, hwest, heast, hinternal⟩ :=
-    chain_endpoints hN D.toDissection g c dir hker hwall (D.target.pts kbase)
-      (D.target.pts kapex) hab hdirab hbase hline hface hthird
-  refine ⟨E, n, hneq, hn0, ?_, ?_⟩
+  refine ⟨?_, ?_⟩
   · -- the first tile presents `a` as one of its own vertices
     obtain ⟨j, hj⟩ : ∃ j : Fin 3, D.target.pts kbase = (D.tile (E 0).1).pts j := by
       unfold edgeWest at hwest
@@ -475,6 +466,42 @@ theorem congruentDissection_endpoints (hN : 0 < N) (D : CongruentDissection N) (
         (D.model.pts (1 + 2)) = β from hβ') (fun heq => hcard (heq ▸ h.2.1))
     · exact absurd (show cornerAngle (D.model.pts (2 + 1)) (D.model.pts 2)
         (D.model.pts (2 + 2)) = γ from hγ') (fun heq => hcard (heq ▸ h.2.2.1))
+
+open Erdos634.TilePlacement Erdos634.WallEndpoints Erdos634.BaseChain Erdos634.Placement in
+/-- **`lem:endpoints`, for a real `CongruentDissection`.**  Thin wrapper: builds its own chain via
+`chain_endpoints` and hands it to `congruentDissection_endpoints_of_chain`. -/
+theorem congruentDissection_endpoints (hN : 0 < N) (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (kbase kapex : Fin 3) (g : Plane →ᵃ[ℝ] ℝ) (c : ℝ) (dir : Plane →ₗ[ℝ] ℝ)
+    (hker : ∀ v : Plane, g.linear v = 0 → dir v = 0 → v = 0)
+    (hwall : ∀ y ∈ D.target.carrier, g y ≤ c)
+    (hab : D.target.pts kbase ≠ D.target.pts kapex)
+    (hdirab : dir (D.target.pts kbase) ≤ dir (D.target.pts kapex))
+    (hbase : segment ℝ (D.target.pts kbase) (D.target.pts kapex) ⊆ frontier D.target.carrier)
+    (hline : ∀ y ∈ segment ℝ (D.target.pts kbase) (D.target.pts kapex), g y = c)
+    (hface : ∀ y ∈ D.target.carrier, g y = c →
+      y ∈ segment ℝ (D.target.pts kbase) (D.target.pts kapex))
+    (hthird : ∀ p ∈ wallList D.toDissection g c, g ((D.tile p.1).pts (p.2 + 2)) < c)
+    (hcornerbase : cornerAngle (D.target.pts (kbase + 1)) (D.target.pts kbase)
+      (D.target.pts (kbase + 2)) = β)
+    (hcornerapex : cornerAngle (D.target.pts (kapex + 1)) (D.target.pts kapex)
+      (D.target.pts (kapex + 2)) = 3 * α) :
+    ∃ E : ℕ → Fin N × Fin 3, ∃ n : ℕ, n = (wallList D.toDissection g c).length ∧ 0 < n ∧
+      (D.tile (E 0).1).localAngle (D.target.pts kbase) = β ∧
+      (D.tile (E (n - 1)).1).localAngle (D.target.pts kapex) = α := by
+  obtain ⟨E, n, hneq, hn0, hwest, heast, hinternal, hmem, hEinj⟩ :=
+    chain_endpoints hN D.toDissection g c dir hker hwall (D.target.pts kbase)
+      (D.target.pts kapex) hab hdirab hbase hline hface hthird
+  exact ⟨E, n, hneq, hn0, congruentDissection_endpoints_of_chain D α β γ hαβ hαγ hαπ hα0 hβγ hβπ
+    hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hα' hβ' hγ' kbase kapex dir hcornerbase hcornerapex E n
+    hwest heast⟩
 
 /-! ## `prop:gammatrap`'s `hinj`: no two distinct tiles present `γ` at the same boundary point
 
