@@ -1,4 +1,5 @@
 import Erdos634.Dissection
+import Erdos634.MarchFlank
 import Erdos634.AngleSumDissection
 import Erdos634.BaseSelection
 
@@ -125,5 +126,47 @@ theorem target_vertex_mem_badSet (D : Dissection N) (k : Fin 3) :
     subset_convexHull ℝ _ (Set.mem_range_self k)
   obtain ⟨i, hi⟩ := D.exists_tile_mem hk
   exact Set.mem_iUnion.mpr ⟨i, subset_closure hi, D.target_vertex_not_interior_tile k i⟩
+
+/-! ## Existence at a corner: a tile with nonzero, non-`2π` local angle
+
+`tileAt` cannot reach a target vertex (the section above). But existence of *a* covering tile with
+a well-behaved local angle there does not need uniqueness — and both nonvanishing and `≠ 2π` are
+now available cheaply: nonvanishing from `MarchFlank.localAngle_ne_zero_of_mem`, and `≠ 2π`
+directly from `target_vertex_not_interior_tile`, since the `2π` branch of `Tri.localAngle` is
+definitionally the all-coordinates-positive (interior) case. This is existence, not the corner
+census's uniqueness content (`lem:census`) — recorded honestly as such. -/
+
+/-- **A tile's local angle at an interior-only point is never `2π`.**  The `2π` branch of
+`Tri.localAngle` is exactly membership in the interior. -/
+theorem localAngle_ne_two_pi_of_not_mem_interior {T : Erdos634.Geometry.Tri} {p : Plane}
+    (hp : p ∉ interior T.carrier) : T.localAngle p ≠ 2 * Real.pi := by
+  classical
+  intro h2
+  rw [Erdos634.Geometry.Tri.localAngle] at h2
+  split at h2
+  · rename_i hv
+    have hle := EuclideanGeometry.angle_le_pi ((T.pts (hv.choose + 1)))
+      (T.pts hv.choose) (T.pts (hv.choose + 2))
+    have hpi := Real.pi_pos
+    rw [Erdos634.Geometry.cornerAngle] at h2
+    rw [h2] at hle; linarith
+  · split at h2
+    · rename_i hall
+      exact hp (T.mem_interior_iff_coord_pos p |>.mpr hall)
+    · split at h2 <;> [skip; skip] <;>
+        first
+          | (exfalso; have := Real.pi_pos; linarith)
+          | (exfalso; have := Real.pi_pos; linarith)
+
+/-- **At a target vertex, some tile covers it with local angle neither `0` nor `2π`.** -/
+theorem exists_corner_tile (D : Dissection N) (k : Fin 3) :
+    ∃ i : Fin N, D.target.pts k ∈ (D.tile i).carrier ∧
+      (D.tile i).localAngle (D.target.pts k) ≠ 0 ∧
+      (D.tile i).localAngle (D.target.pts k) ≠ 2 * Real.pi := by
+  have hk : D.target.pts k ∈ D.target.carrier :=
+    subset_convexHull ℝ _ (Set.mem_range_self k)
+  obtain ⟨i, hi⟩ := D.exists_tile_mem hk
+  exact ⟨i, hi, Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ hi,
+    localAngle_ne_two_pi_of_not_mem_interior (D.target_vertex_not_interior_tile k i)⟩
 
 end Erdos634.Geometry.Dissection

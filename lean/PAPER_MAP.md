@@ -1039,6 +1039,7 @@ an assembly chain — had no Lean development at all. `TileAt.lean` is the first
   set (`tileAt_eq_of_mem`), and independence of the membership proof off the bad set
   (`tileAt_congr`).
 * `Dissection.target_vertex_mem_badSet`: proved (2026-09-02) the claim the first draft of this file only asserted — a target vertex always sits on the bad set, so `tileAt` cannot reach it directly. Reuses `BaseSelection.tile_interior_subset` rather than reproving tile-inside-target.
+* `Dissection.exists_corner_tile`: at a target vertex, *some* tile covers it with local angle neither `0` nor `2π` — existence, from `MarchFlank.localAngle_ne_zero_of_mem` and `localAngle_ne_two_pi_of_not_mem_interior` (the `2π` branch of `Tri.localAngle` is definitionally the interior case, so `target_vertex_not_interior_tile` rules it out directly). This is *not* `lem:census`'s uniqueness content — recorded as existence only.
 
 This is deliberately minimal and does not itself discharge any blocked row: a *point*'s covering
 tile is not yet 'the tile at a corner' (a dissection's own vertices sit *on* the bad set by
