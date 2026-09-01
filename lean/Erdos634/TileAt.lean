@@ -555,4 +555,67 @@ theorem congruentDissection_no_double_gamma (D : CongruentDissection N) (α β �
     Finset.one_lt_card.mpr ⟨i1, hmem1, i2, hmem2, hi12⟩
   omega
 
+/-! ## The same derivation at any boundary point, extracted for reuse
+
+`congruentDissection_no_double_gamma` just above already builds `hvals` at a general boundary
+point inline, by pairing `congruentDissection_hcorners` with `VertexFigureReal.localAngle_mem`.
+Extracted as its own theorem, then composed with the pre-existing `boundary_multiplicities_cards`/
+`boundary_figure_cases`, it gives the full real classification at such a point — closing
+`lem:anglecalc`'s clause (4) (γ-trap) for a real `CongruentDissection`, not only the arithmetic
+core. It is also exactly the `hvals` hypothesis `MarchRun.junction_dichotomy` and
+`VertexFigureReal.gamma_boundary_figure_real` (`rem:marchobl`'s M-i/M-vertex rows) still carry —
+suppliable here, not yet threaded through those call sites. -/
+
+open Erdos634.VertexFigureReal in
+/-- **At a real boundary point of a congruent dissection that is not a target vertex, every tile's
+local angle is one of the model's three corner angles, `π`, or `0` — unconditionally, not as a
+hypothesis.** The boundary-point counterpart of `congruentDissection_localAngle_mem`. -/
+theorem congruentDissection_localAngle_mem_boundary (D : CongruentDissection N) (α β γ : ℝ)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (i : Fin N) : (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ) :=
+  localAngle_mem D.toDissection α β γ hv hnv (congruentDissection_hcorners D α β γ hα' hβ' hγ') i
+
+open Erdos634.VertexFigureReal in
+/-- **The boundary figure at a real point of a real congruent dissection, classified —
+unconditionally.** Composes the derivation above with `boundary_multiplicities_cards` and
+`boundary_figure_cases`: at any point of the target's frontier that is not a target vertex, the
+tiles covering it are either a single tile presenting a straight angle, or exactly `{3α, 2β}`, or
+exactly `{α, β, γ}`. This is `lem:anglecalc`'s clause (4) (γ-trap, the straight-angle case) as a
+real fact rather than an arithmetic one, and it is exactly the `hvals` hypothesis that
+`MarchRun.junction_dichotomy` and `VertexFigureReal.gamma_boundary_figure_real` still carry —
+supplied here, not yet threaded through those call sites. -/
+theorem congruentDissection_boundary_figure_cases (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts) :
+    (({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 1 ∧
+      ({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 0 ∧
+      ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 0 ∧
+      ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0) ∨
+    (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 3 ∧
+      ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 2 ∧
+      ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0) ∨
+    (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 1 ∧
+      ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+      ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1) := by
+  classical
+  have hvals := congruentDissection_localAngle_mem_boundary D α β γ hα' hβ' hγ' hv hnv
+  have hsum := boundary_multiplicities_cards D.toDissection α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0
+    hγπ hγ0 hπ0 hv hnv hvals
+  rcases boundary_figure_cases hγdef hrel hirr _ _ _ _ hsum with
+    ⟨hs, hp, hq, hr⟩ | ⟨hs, hcase⟩
+  · exact Or.inl ⟨hs, hp, hq, hr⟩
+  · rcases hcase with ⟨hp, hq, hr⟩ | ⟨hp, hq, hr⟩
+    · exact Or.inr (Or.inl ⟨hp, hq, hr⟩)
+    · exact Or.inr (Or.inr ⟨hp, hq, hr⟩)
+
 end Erdos634.Geometry.Dissection
