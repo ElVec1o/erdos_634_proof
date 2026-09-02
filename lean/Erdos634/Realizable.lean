@@ -139,6 +139,20 @@ def IsMinimal (T t : Tri) (N₀ d : ℕ) : Prop :=
 
 theorem pos_of_mem {T t : Tri} {N₀ m : ℕ} (h : m ∈ realizableSet T t N₀) : 0 < m := h.1
 
+/-- **A prime realizable scale is automatically minimal, given `1` is not realizable.** A prime
+`p`'s only divisors are `1` and `p`; if `1 ∉ S` then no divisor other than `p` itself can witness
+`p`'s non-minimality. This is exactly `cor:elevenm`'s primitivity claim in general form: "neither
+the `44`- nor `99`-tiling arises from `thm:ladder` applied to a smaller member" reduces to this,
+since the scales `2` and `3` are both prime. -/
+theorem isMinimal_of_prime_of_one_not_mem (T t : Tri) (N₀ p : ℕ) (hp : Nat.Prime p)
+    (h1 : (1:ℕ) ∉ realizableSet T t N₀) (hpmem : p ∈ realizableSet T t N₀) :
+    IsMinimal T t N₀ p := by
+  refine ⟨hpmem, ?_⟩
+  intro e he hdvd
+  rcases hp.eq_one_or_self_of_dvd e hdvd with h1' | h2'
+  · exact absurd (h1' ▸ he) h1
+  · exact h2'
+
 /-- **Every realizable scale is a multiple of a minimal one.** -/
 theorem exists_minimal_divisor (T t : Tri) (N₀ : ℕ) :
     ∀ m ∈ realizableSet T t N₀, ∃ d, IsMinimal T t N₀ d ∧ d ∣ m := by
