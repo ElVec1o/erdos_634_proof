@@ -1206,6 +1206,14 @@ than one recorded in terms of the *weakest* statement that suffices. Both `Conve
 `AreaDet` were skipped for weeks behind blockers phrased the first way.
 
 
+**Correction (2026-09-02, later, in `private/VERIFY_PLAN.md`).** The "8 rows" sharing this blocker
+are not homogeneous. `thm:44`, `thm:63`, `cor:elevenm` are *positive* realizability claims backed
+by a witness certificate — `CertBridge.ofCert` applies to exactly these. `thm:frontier`–
+`thm:frontier4` and `thm:eq105` are *negative* nonexistence claims backed by an exhaustive search
+over candidate shapes, not a single witness — `CertBridge.ofCert` has nothing to offer them; they
+need a different certified-search mechanism for negative exhaustion, not this bridge. Only the
+first three should be attempted via the per-tiling data-entry path below.
+
 ## Certificate transfer: the general layer is complete (2026-09-02, later)
 
 Everything a tiling certificate checks now has a Lean counterpart, and none of it is per-tiling:
