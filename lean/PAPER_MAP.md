@@ -180,7 +180,7 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 | C `cor:basedi2e` | The base trichotomy and dichotomy without separation | `base_dichotomy_thick`, `no_extra_column_of_f_gt_two_e` |
 | C `cor:ptwo` | A uniform two-case side problem | `side_p_le_two` |
 | C `cor:walls16` | corollary | `pincer_window_four` |
-| C `cor:wallsf2e` | The walls form at $e=1$, $f\ge3$ | `SideNoB.side_no_b_uncond`, `SideNoB.side_quantized`, `SideNoB.c_corner_forces_side_a` | *(signature of `c_corner_forces_side_a` corrected 2026-09-02, see `lem:shadow` row)*
+| C `cor:wallsf2e` | The walls form at $e=1$, $f\ge3$ | `SideNoB.side_no_b_uncond`, `SideNoB.side_quantized`, `SideNoB.c_corner_forces_side_a` | *(`c_corner_forces_side_a` is `SideNoB.lean`'s own side-parameter fact — `0 < f·p → 1 ≤ p`, i.e. a `c`-corner fails `hyp:walls`'s `p=0` side condition — genuinely relevant here, not a mis-citation. **Note 2026-09-04**: the stale cross-reference to `lem:shadow`'s row was removed; `lem:shadow`'s own citation was corrected to `OrderForcing.strips_tall`/`.shadow_footage_e1` and no longer mentions this theorem at all, so the old pointer was dangling.)*
 | C `lem:anglethreshold` | The angle threshold | `cos_alpha_closed` |
 | C `lem:avgen` | The $\alpha$-vertex gap, general | `alpha_vertex_gap_gen` |
 | C `lem:basedi` | The thick base dichotomy | `base_dichotomy_thick` |
