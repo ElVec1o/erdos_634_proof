@@ -46,6 +46,67 @@ noncomputable def v4 : Plane := Erdos634.CertCoord.mkPt (toR (zx (toZPt PgramTil
 /-- The parallelogram, as the convex hull of its four vertices. -/
 noncomputable def carrier : Set Plane := convexHull ℝ {v1, v2, v3, v4}
 
+/-- **The parallelogram property**: `v3 = v2 + v4 - v1` (opposite vertices, so the diagonals
+bisect each other) — checked componentwise in `ℤ[√15]` by `decide`, transferred by `toR`'s
+additivity. This is what makes the affine-parametrization route to (C2) containment work: a
+general quadrilateral has no clean closed-form membership test, but a parallelogram is exactly the
+affine image of the unit square. -/
+theorem v3_eq : v3 = v2 + v4 - v1 := by
+  simp only [v1, v2, v3, v4, Erdos634.CertCoord.mkPt]
+  have hx : zx (toZPt PgramTiling22.q3)
+      = zsub (zadd (zx (toZPt PgramTiling22.q2)) (zx (toZPt PgramTiling22.q4)))
+          (zx (toZPt PgramTiling22.q1)) := by decide
+  have hy : zy (toZPt PgramTiling22.q3)
+      = zsub (zadd (zy (toZPt PgramTiling22.q2)) (zy (toZPt PgramTiling22.q4)))
+          (zy (toZPt PgramTiling22.q1)) := by decide
+  ext i
+  fin_cases i <;> simp <;>
+    first
+    | (rw [show toR (zx (toZPt PgramTiling22.q3)) = _ from congrArg toR hx, toR_sub, toR_add])
+    | (rw [show toR (zy (toZPt PgramTiling22.q3)) = _ from congrArg toR hy, toR_sub, toR_add])
+
+/-- **The affine parametrization of the parallelogram**: `(u,v) ↦ v1 + u•(v2-v1) + v•(v4-v1)`. -/
+noncomputable def paramMap : (ℝ × ℝ) →ᵃ[ℝ] Plane where
+  toFun p := v1 + p.1 • (v2 - v1) + p.2 • (v4 - v1)
+  linear :=
+    { toFun := fun p => p.1 • (v2 - v1) + p.2 • (v4 - v1)
+      map_add' := by intro x y; simp; module
+      map_smul' := by intro c x; simp; module }
+  map_vadd' := by intro p q; simp [vadd_eq_add]; module
+
+theorem paramMap_00 : paramMap (0, 0) = v1 := by simp [paramMap]
+theorem paramMap_10 : paramMap (1, 0) = v2 := by simp [paramMap]
+theorem paramMap_01 : paramMap (0, 1) = v4 := by simp [paramMap]
+theorem paramMap_11 : paramMap (1, 1) = v3 := by simp [paramMap, v3_eq]; module
+
+/-- `paramMap` sends the unit square's four corners to the parallelogram's four vertices. -/
+theorem corners_eq : paramMap '' (({(0:ℝ), 1} : Set ℝ) ×ˢ ({(0:ℝ), 1} : Set ℝ)) = {v1, v2, v3, v4} := by
+  ext p
+  simp only [Set.mem_image, Set.mem_prod, Set.mem_insert_iff, Set.mem_singleton_iff]
+  constructor
+  · rintro ⟨⟨a, b⟩, ⟨(rfl | rfl), (rfl | rfl)⟩, rfl⟩
+    · left; exact paramMap_00
+    · right; right; right; exact paramMap_01
+    · right; left; exact paramMap_10
+    · right; right; left; exact paramMap_11
+  · rintro (rfl | rfl | rfl | rfl)
+    · exact ⟨(0, 0), ⟨Or.inl rfl, Or.inl rfl⟩, paramMap_00⟩
+    · exact ⟨(1, 0), ⟨Or.inr rfl, Or.inl rfl⟩, paramMap_10⟩
+    · exact ⟨(1, 1), ⟨Or.inr rfl, Or.inr rfl⟩, paramMap_11⟩
+    · exact ⟨(0, 1), ⟨Or.inl rfl, Or.inr rfl⟩, paramMap_01⟩
+
+/-- **The parallelogram is exactly the affine image of the unit square.** This is what solves
+(C2) containment: a point lies in `carrier` iff its `paramMap`-preimage has both coordinates in
+`[0,1]`, which the certificate's four half-plane checks should transfer to directly (not yet
+done, but this is the geometric fact those checks encode). -/
+theorem carrier_eq_image :
+    carrier = paramMap '' ((Set.Icc (0:ℝ) 1) ×ˢ (Set.Icc (0:ℝ) 1)) := by
+  rw [show (Set.Icc (0:ℝ) 1) ×ˢ (Set.Icc (0:ℝ) 1) =
+      convexHull ℝ (({(0:ℝ), 1} : Set ℝ) ×ˢ ({(0:ℝ), 1} : Set ℝ)) from by
+    rw [convexHull_prod, convexHull_pair, segment_eq_Icc (by norm_num : (0:ℝ) ≤ 1)],
+    AffineMap.image_convexHull, corners_eq]
+  rfl
+
 theorem convex : Convex ℝ carrier := convex_convexHull ℝ _
 
 theorem isCompact : IsCompact carrier :=
