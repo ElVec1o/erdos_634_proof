@@ -187,7 +187,7 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 | C `lem:basetri` | the base's three edge decompositions at a separated member | `CChord.base_trichotomy` | VERIFIED — the declaration is the statement: any `(x,y,z)` solving the base walk at a separated member is one of the three. Enumerated for every separated coprime pair with `f < 24`: exactly those three, no others |
 | C `rem:closepairbase` | close pairs admit further decompositions with `y > e` | none | HEURISTIC — a per-member computation; finiteness follows from the walk equation but the count is not proved uniformly |
 | C `lem:cchord` | c-chord dichotomy | `CChord.c_chord_dichotomy` |
-| C `lem:ccorner` | The $c$-corner is rigid | `partner_unique` |
+| C `lem:ccorner` | The $c$-corner is rigid | `partner_unique` | **Checked 2026-09-08**: needs chord endpoints, junction figures, reflected-partner exclusion via `2γ>π` — deep tile-placement-layer territory, no route found. `partner_unique` (`PentagonLemma.lean`) covers only one arithmetic sub-fact cited mid-proof. |
 | C `lem:census` | The vertex census | `vertex_census` | PROVED — the three corner-balance equations (v1..v4, n1, n2) are still hypotheses of `vertex_census`, and that global corner-incidence double count is still not done. **Partial closure 2026-09-02**: the lemma's own quoted premise — "the base corners fill uniquely as `{β}` and the apex as `{3α}`" — is no longer an assumption at either corner. `TileAt.congruentDissection_base_corner_counts` and `.congruentDissection_apex_counts` prove both, for a real `CongruentDissection`, by composing three pieces that existed separately and had not been assembled: `tile_angle_dichotomy_at_vertex` (every tile touching a vertex is corner-type or straight, never `0`/`2π` — new this session), `CongruentAngles.congruent_corner_angles` (a congruent tile's own corner angle is one of the model's three — pre-existing, unused for this), and `TilePlacement.base_corner_counts`/`.apex_counts`/`.corner_multiplicities` (the arithmetic, pre-existing, previously fed a hypothesis instead of a derivation). This is a real premise of `lem:census`, not the lemma's conclusion — the label stays PROVED |
 | C `lem:charge` | The mirrored piece is charged | `mirrored_left_junction`, `escape_charge` |
 | C `lem:chord` | The chord at the last junction | `tile_contact_face`, `contact_is_edge` |
@@ -272,7 +272,7 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | C `lem:wallclimb` | The wall climb |
 | C `prop:dirgroup` | The direction group of a branch |
 | C `prop:gammagrading` | $\gamma$-grading |
-| C `prop:n1fromwalls` | proposition |
+| C `prop:n1fromwalls` | proposition | | **Checked 2026-09-08**: its entire two-line proof depends on `lem:ccorner` ("the column `(0,e,2e)` forces `p≥1` on each equal side") — blocked transitively, same reason. |
 | C `prop:rung2` | Rung two: the pre-piercer chain |
 | C `prop:widecol` | Wide columns, all $(e,f)$ |
 | C `thm:chain` | The $b$-run orientation lemma |
