@@ -340,7 +340,7 @@ appeared in no row at all now have rows, with their blockers written:
 
 | Paper | Statement | Lean declaration | Status and blocker |
 |---|---|---|---|
-| M `thm:63` | 63 is realizable | `CevianTiling63.ceviantiling63_certificate` | PROVED (cited declarations VERIFIED) certificate; the paper's statement adds the construction's description, which is prose |
+| M `thm:63` | 63 is realizable | `CevianTiling63Bridge.dissection`, `.targetTri_sides`, `.model_sides` | **VERIFIED (2026-09-02)** — see the row below for the full account; both PAPER_MAP entries for thm:63 point at the same theorem. |
 | M `thm:eq105` | no equilateral 105-tiling | none | PROVED — an exhaustive computation (`code/analysis/eq105_candidates.py`); formalizing it needs the search certified, which no format in this project supports |
 | C `rem:pinbuffer` | cost of the pin configuration | `PinBuffer.buffer_dichotomy`, `.overrun_amounts` | PROVED — the cited cores are VERIFIED; the configuration statement is geometric |
 | C `prop:selfsim` | the descent is self-similar | none | PROVED — needs the scale map on dissections, which is not defined in Lean |
@@ -434,7 +434,7 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | M `prop:otherspectra` | `F₁` forces `N = dw²(a+b)`; `F₂…F₄` force `N = N₀k²` | `InvariantProduct.*` | PROVED — the arithmetic is stated per shape and is formalizable; what is missing is the shape table as a Lean definition, so each clause has nothing to attach to |
 | M `prop:eqspec` | `XY = 3ab` and `s`, `t` positive integers | `EquilateralSpectrum.*` | VERIFIED — `XY = 3ab` is a polynomial identity and could be verified; the integrality of `s`, `t` comes from a tiling, so the clause quantifies over dissections |
 | M `prop:conic` | the conic form of the equilateral condition | none | VERIFIED — a reformulation of `prop:eqspec`'s conditions; blocked by the same tiling quantifier, and no declaration exists |
-| M `thm:63` | `63` is realizable, by an explicit `(21,24,18)` cutting | `CevianTiling63.ceviantiling63_certificate` | PROVED — the certificate is VERIFIED by `decide`; what is missing is the bridge from a checked certificate to a `Dissection`, i.e. the **certified-search format** |
+| M `thm:63` | `63` is realizable, by an explicit `(21,24,18)` cutting | `CevianTiling63Bridge.dissection`, `.targetTri_sides`, `.model_sides` | **VERIFIED (2026-09-02)** — same certificate-transfer pattern that closed `thm:44` (see `Erdos634.Tiling44Bridge`), ported to `CevianTiling63Bridge.lean`. `dissection : CongruentDissection CevianTiling63.tiles.length` discharges all of (C1)–(C4); `targetTri_sides` confirms the target's three squared sides are `28224, 36864, 20736` (ratio `168:192:144` = `7:8:6`, matching the paper's `(21,24,18)` = `3·(7,8,6)`), and `model_sides` confirms the model tile's squared sides are `{256,576,1024}` (ratio `2:3:4`). Unlike `thm:44`, this theorem has only one clause (no `m²` consequence), so nothing further is needed. Checked against erdos-634.tex:2077-2082 word for word before flipping (Rule 5). |
 | M `thm:decidable` | decidability of the tile-count question | none | PROVED — depends on `thm:main`'s cited inputs; a decision procedure has no Lean statement here |
 
 | Paper | Statement | Lean declaration | Blocker |
