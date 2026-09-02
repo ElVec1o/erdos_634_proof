@@ -7,8 +7,7 @@ import Erdos634.Tiling99Bridge
 Erdős #634. "`N = 11m²` is a number of congruent triangles for every `m` divisible by 2 or 3" —
 the paper's stated consequence, given `2, 3 ∈ S`. If `2 ∣ m`, write `m = 2j`, so `11m² = 44j²`, a
 tile count by `Tiling44Bridge.exists_dissection_44_mul_sq`. If `3 ∣ m`, write `m = 3j`, so
-`11m² = 99j²`, by `Tiling99Bridge.exists_dissection_44_mul_sq` (that theorem's name carries over
-from the Tiling44 port unchanged; its statement is about `99 * m ^ 2`).
+`11m² = 99j²`, by `Tiling99Bridge.exists_dissection_99_mul_sq`.
 
 Not a paper-row flip: `cor:elevenm` needs `1 ∉ S` and primitivity too, neither built.
 
@@ -29,7 +28,7 @@ theorem exists_dissection_11_mul_sq {m : ℕ} (hm : 0 < m) (h : 2 ∣ m ∨ 3 �
     refine ⟨44 * j ^ 2, ?_, ⟨E⟩⟩
     subst hj; ring
   · have hjpos : 0 < j := by omega
-    obtain ⟨E, _⟩ := Erdos634.Tiling99Bridge.exists_dissection_44_mul_sq j hjpos
+    obtain ⟨E, _⟩ := Erdos634.Tiling99Bridge.exists_dissection_99_mul_sq j hjpos
     refine ⟨99 * j ^ 2, ?_, ⟨E⟩⟩
     subst hj; ring
 

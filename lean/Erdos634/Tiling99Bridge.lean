@@ -546,7 +546,7 @@ theorem tiles_length_eq_99 : Tiling99.tiles.length = 99 := by decide
 
 /-- **Clause 2, restated in the paper's own numeral form**: `99 * m ^ 2` is a tile count for every
 `m ≥ 1`. -/
-theorem exists_dissection_44_mul_sq (m : ℕ) (hm : 0 < m) :
+theorem exists_dissection_99_mul_sq (m : ℕ) (hm : 0 < m) :
     ∃ E : CongruentDissection (99 * m ^ 2), E.model = pieceTri headI_mem_tiles := by
   obtain ⟨E, hE⟩ := exists_dissection_mul_sq m hm
   have hnum : m * m * Tiling99.tiles.length = 99 * m ^ 2 := by
