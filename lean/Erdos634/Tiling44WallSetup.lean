@@ -253,3 +253,30 @@ theorem hiso_wall :
   have hdp : 0 ≤ dist p q := dist_nonneg
   have h1 : dist p q = Real.sqrt (dist p q ^ 2) := (Real.sqrt_sq hdp).symm
   rw [h1, hdsq', show (-16/11 * a) = -(16/11*a) by ring, abs_neg, ← Real.sqrt_sq_eq_abs]
+
+/-! ## Toward `hthird`: `gWall` computed exactly in `ℤ[√15]`
+
+The remaining hypothesis, `hthird`, needs — for every wall-edge tile of `Tiling44Bridge.dissection`
+— that its third vertex is strictly off the wall line. Since `gWall` involves `√15` (irrational),
+a per-tile check needs `gWall`'s value transferred to `ℤ[√15]` exact arithmetic (matching how every
+other check in this project — `Tiling44.dist2`, `Tiling44.area2` — works), so that
+`Z15Real.toR_ne_zero_of_sq_ne` (pre-existing: a *named* nonzero `ℤ[√15]` pair has nonzero real
+image, checkable by `decide` without proving `√15` irrational in general) applies per concrete
+tile, then combines with `hwall_wall`'s `≤ c` to conclude the strict `<c`. -/
+
+open Erdos634.Z15Real in
+/-- **`gWall`, computed exactly on a `ℤ[√15]` pair of coordinates.** `gWall (toR zx, toR zy)`
+equals `toR (gWallZ zx zy)`, where `gWallZ` collects the rational and `√15`-rational parts of
+`24√15·(zx.1+zx.2√15) + 88·(zy.1+zy.2√15)`. -/
+def gWallZ (zxp zyp : Erdos634.Z15Real.Z15) : Erdos634.Z15Real.Z15 :=
+  (360 * zxp.2 + 88 * zyp.1, 24 * zxp.1 + 88 * zyp.2)
+
+open Erdos634.Z15Real in
+theorem gWallZ_correct (zxp zyp : Erdos634.Z15Real.Z15) :
+    gWall (mkPt (toR zxp) (toR zyp)) = toR (gWallZ zxp zyp) := by
+  rw [gWall_mkPt]
+  show 24 * Real.sqrt 15 * (toR zxp) + 88 * (toR zyp) = toR (gWallZ zxp zyp)
+  simp only [toR, gWallZ]
+  push_cast
+  have hs : Real.sqrt 15 ^ 2 = 15 := Real.sq_sqrt (by norm_num)
+  linear_combination (24 * (zxp.2:ℝ)) * hs
