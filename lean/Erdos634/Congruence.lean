@@ -77,6 +77,42 @@ theorem Tri.Congruent.dist_eq {T U : Tri} (h : T.Congruent U) :
   obtain ⟨f, σ, hf⟩ := h
   exact ⟨σ, fun i j => by rw [← hf i, ← hf j, f.dist_eq]⟩
 
+/-- **Congruent triangles have the same side-length multiset.** The specific vertex
+correspondence `σ` need not be known — for the bridge from "the corner tile is congruent to the
+model" to "the corner tile's own edges have the model's side lengths" (`TilePlacement
+.c_corner_side_a`'s `hmul` hypothesis), only the *unordered* set of three side lengths matters. -/
+theorem Tri.Congruent.sideMultiset_eq {T U : Tri} (h : T.Congruent U) :
+    ({dist (T.pts 0) (T.pts 1), dist (T.pts 2) (T.pts 0), dist (T.pts 1) (T.pts 2)} : Multiset ℝ)
+    = {dist (U.pts 0) (U.pts 1), dist (U.pts 2) (U.pts 0), dist (U.pts 1) (U.pts 2)} := by
+  obtain ⟨σ, hσ⟩ := h.dist_eq
+  have h0 := hσ 0 1
+  have h1 := hσ 2 0
+  have h2 := hσ 1 2
+  have hinj := σ.injective
+  have hne01 : σ 0 ≠ σ 1 := fun he => by simpa using hinj he
+  have hne02 : σ 0 ≠ σ 2 := fun he => by simpa using hinj he
+  have hne12 : σ 1 ≠ σ 2 := fun he => by simpa using hinj he
+  have hall : σ 0 = 0 ∧ σ 1 = 1 ∧ σ 2 = 2
+            ∨ σ 0 = 0 ∧ σ 1 = 2 ∧ σ 2 = 1
+            ∨ σ 0 = 1 ∧ σ 1 = 0 ∧ σ 2 = 2
+            ∨ σ 0 = 1 ∧ σ 1 = 2 ∧ σ 2 = 0
+            ∨ σ 0 = 2 ∧ σ 1 = 0 ∧ σ 2 = 1
+            ∨ σ 0 = 2 ∧ σ 1 = 1 ∧ σ 2 = 0 := by
+    have h30 : σ 0 = 0 ∨ σ 0 = 1 ∨ σ 0 = 2 := by omega
+    have h31 : σ 1 = 0 ∨ σ 1 = 1 ∨ σ 1 = 2 := by omega
+    have h32 : σ 2 = 0 ∨ σ 2 = 1 ∨ σ 2 = 2 := by omega
+    rcases h30 with h30 | h30 | h30 <;> rcases h31 with h31 | h31 | h31 <;>
+      rcases h32 with h32 | h32 | h32 <;>
+      simp_all
+  rw [h0, h1, h2]
+  rcases hall with ⟨e0,e1,e2⟩|⟨e0,e1,e2⟩|⟨e0,e1,e2⟩|⟨e0,e1,e2⟩|⟨e0,e1,e2⟩|⟨e0,e1,e2⟩ <;>
+    rw [e0, e1, e2] <;>
+    simp only [dist_comm (U.pts 1) (U.pts 0), dist_comm (U.pts 2) (U.pts 0),
+      dist_comm (U.pts 2) (U.pts 1)] <;>
+    show ({_, _, _} : Multiset ℝ) = {_, _, _} <;>
+    simp only [Multiset.insert_eq_cons, ← Multiset.singleton_add] <;>
+    simp only [add_comm, add_assoc, add_left_comm]
+
 /-- The tile is positively oriented. -/
 def Tri.Pos (T : Tri) : Prop := 0 < T.det
 
