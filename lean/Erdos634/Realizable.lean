@@ -183,4 +183,39 @@ theorem realizableSet_eq_multiples (T t : Tri) (N₀ : ℕ) :
   · rintro ⟨d, hd, k, hk, rfl⟩
     exact mem_realizableSet_mul T t N₀ hd.1 k hk
 
+/-! ## Toward a real-ratio scale map on a whole dissection
+
+`scaleTri` scales a single `Tri` by any real `r ≠ 0`. `DissectionMap.mapDissection` transports a
+whole `Dissection` along any `Plane ≃ᵃ[ℝ] Plane`. Composing these — scaling a whole
+`CongruentDissection` down (or up) by an arbitrary real ratio, not just a natural blow-up like
+`Ladder.ladder` — is the missing piece for a specific, concrete instance of structural blocker 1:
+`Tiling44Bridge.dissection`'s target and model tile have real side lengths exactly `8×` the
+base-β member `(e,f)=(1,2)`'s abstract `Δ₂`/`(2,3,4)` values (`176,128,128` vs `22,16,16`;
+`16,24,32` vs `2,3,4` — checked directly against `targetTri_sides`/`model_sides`, matching the
+paper's own `Y₁=11,X₁=8,N₁=11` data for this member exactly). Scaling `Tiling44Bridge.dissection`
+down by `1/8` would give a genuine `CongruentDissection` whose model/target sides are the *exact*,
+unscaled values `SideWalk.lean`'s `_of_gammatrap` family (`equal_side_no_b_of_gammatrap` etc.)
+needs for its `hA`,`hB`,`hC`,`hLen` hypotheses — closing a concrete case of structural blocker 1,
+not the general case, but a real one.
+
+`homothetyEquiv` below is the first piece: the homothety about a point, as a genuine
+`Plane ≃ᵃ[ℝ] Plane` (not just the one-directional `AffineMap.homothety` `scaleTri` already uses),
+so `mapDissection` can transport a whole dissection through it. **Not yet done**: proving
+`Tri.Congruent` is preserved under the image of a similarity (a homothety conjugates an isometry to
+an isometry, since the scale factors cancel: `e ∘ f ∘ e⁻¹` scales distances by `|r| · 1 · 1/|r| =
+1`) — needed to show the tiles of a scaled `CongruentDissection` are still all congruent to the
+scaled model. That conjugation lemma, plus assembling the whole `scaleDissection` operation, is the
+next concrete step. -/
+
+/-- The homothety about `p` with ratio `r ≠ 0`, as a genuine affine equivalence (not just the
+one-directional `AffineMap.homothety`). -/
+noncomputable def homothetyEquiv (p : Plane) (r : ℝ) (hr : r ≠ 0) : Plane ≃ᵃ[ℝ] Plane :=
+  AffineEquiv.homothetyUnitsMulHom p (Units.mk0 r hr)
+
+theorem homothetyEquiv_apply (p : Plane) (r : ℝ) (hr : r ≠ 0) (x : Plane) :
+    homothetyEquiv p r hr x = AffineMap.homothety p r x := by
+  show (AffineEquiv.homothetyUnitsMulHom p (Units.mk0 r hr) : Plane → Plane) x = _
+  rw [AffineEquiv.coe_homothetyUnitsMulHom_apply]
+  norm_num
+
 end Erdos634.Realizable
