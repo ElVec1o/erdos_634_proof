@@ -492,4 +492,106 @@ theorem pieceTri_subset_carrier {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling2
   rw [pieceTri_pts t ht k]
   exact vertexOf_mem_carrier ht k
 
+/-! ## (C3) pairwise-disjoint interiors — same "decide existence of a separating edge" pattern as
+`Tiling44Bridge`/`CevianTiling63Bridge`/`Tiling99Bridge` -/
+
+theorem cross_eq_zcross (o a b : PgramTiling22.Pt) :
+    PgramTiling22.cross o a b = zcross (toZPt o) (toZPt a) (toZPt b) := rfl
+
+/-- **A single `sepBy`-true witness gives a genuine separating affine functional** between two
+pieces, read as real `Tri` objects. Same shape as `Tiling44Bridge.sep_of_sepBy`, ported. -/
+theorem sep_of_sepBy {P Q : PgramTiling22.Pt} {A B : PgramTiling22.Tri}
+    (hPQ : (zsub (zx (toZPt P)) (zx (toZPt Q))).1 ^ 2
+             ≠ 15 * (zsub (zx (toZPt P)) (zx (toZPt Q))).2 ^ 2
+         ∨ (zsub (zy (toZPt P)) (zy (toZPt Q))).1 ^ 2
+             ≠ 15 * (zsub (zy (toZPt P)) (zy (toZPt Q))).2 ^ 2)
+    (hsep : PgramTiling22.sepBy P Q A B = true)
+    (hA : A ∈ PgramTiling22.tiles) (hB : B ∈ PgramTiling22.tiles) :
+    ∃ (f : Plane →ᵃ[ℝ] ℝ) (_ : f.linear ≠ 0) (c : ℝ),
+      (∀ x ∈ (pieceTri hA).carrier, f x ≤ c) ∧ (∀ x ∈ (pieceTri hB).carrier, c ≤ f x) := by
+  set f : Plane →ᵃ[ℝ] ℝ :=
+    Erdos634.CertGeom.lineFun (toR (zx (toZPt P))) (toR (zy (toZPt P)))
+      (toR (zx (toZPt Q))) (toR (zy (toZPt Q))) with hfdef
+  have hflin : f.linear ≠ 0 := Erdos634.Tiling44Bridge.lineFun_ne_zero_of_sq_ne hPQ
+  have hfval : ∀ v : PgramTiling22.Pt,
+      f (Erdos634.CertCoord.mkPt (toR (zx (toZPt v))) (toR (zy (toZPt v))))
+        = toR (PgramTiling22.cross P Q v) := by
+    intro v
+    rw [hfdef, Erdos634.CertGeom.lineFun_apply, Erdos634.CertCoord.mkPt_zero,
+      Erdos634.CertCoord.mkPt_one, cross_eq_zcross]
+    exact toR_zcross _ _ _
+  have hpts : ∀ (t : PgramTiling22.Tri) (ht : t ∈ PgramTiling22.tiles) (k : Fin 3),
+      (pieceTri ht).pts k
+        = Erdos634.CertCoord.mkPt (toR (zx (toZPt (vertexOf t k)))) (toR (zy (toZPt (vertexOf t k)))) :=
+    fun t ht k => pieceTri_pts t ht k
+  simp only [PgramTiling22.sepBy, List.all_eq_true, List.mem_cons, Bool.and_eq_true,
+    Bool.or_eq_true, List.map, forall_eq_or_imp] at hsep
+  rcases hsep with ⟨hsA, hsB⟩ | ⟨hsA, hsB⟩
+  · refine ⟨-f, neg_ne_zero.mpr hflin, 0, ?_, ?_⟩
+    · exact Erdos634.CertGeom.le_of_forall_pts_le (-f) (t := pieceTri hA) (c := 0)
+        (fun k => by
+          rw [Erdos634.Tiling44Bridge.affNeg_apply, hpts A hA k, hfval, neg_le, neg_zero]
+          fin_cases k <;> first | exact Erdos634.Z15Real.toR_nonneg hsA.1 | exact Erdos634.Z15Real.toR_nonneg hsA.2.1 | exact Erdos634.Z15Real.toR_nonneg hsA.2.2.1)
+    · intro x hx
+      have hb := Erdos634.CertGeom.le_of_forall_pts_le f (t := pieceTri hB) (c := 0)
+        (fun k => by
+          rw [hpts B hB k, hfval]
+          fin_cases k <;> first | exact Erdos634.Z15Real.toR_nonpos hsB.1 | exact Erdos634.Z15Real.toR_nonpos hsB.2.1 | exact Erdos634.Z15Real.toR_nonpos hsB.2.2.1)
+      have := hb x hx
+      rw [Erdos634.Tiling44Bridge.affNeg_apply]
+      linarith
+  · refine ⟨f, hflin, 0, ?_, ?_⟩
+    · exact Erdos634.CertGeom.le_of_forall_pts_le f (t := pieceTri hA) (c := 0)
+        (fun k => by
+          rw [hpts A hA k, hfval]
+          fin_cases k <;> first | exact Erdos634.Z15Real.toR_nonpos hsA.1 | exact Erdos634.Z15Real.toR_nonpos hsA.2.1 | exact Erdos634.Z15Real.toR_nonpos hsA.2.2.1)
+    · intro x hx
+      have hb := Erdos634.CertGeom.le_of_forall_pts_le (-f) (t := pieceTri hB) (c := 0)
+        (fun k => by
+          rw [Erdos634.Tiling44Bridge.affNeg_apply, hpts B hB k, hfval, neg_le, neg_zero]
+          fin_cases k <;> first | exact Erdos634.Z15Real.toR_nonneg hsB.1 | exact Erdos634.Z15Real.toR_nonneg hsB.2.1 | exact Erdos634.Z15Real.toR_nonneg hsB.2.2.1)
+      have := hb x hx
+      rw [Erdos634.Tiling44Bridge.affNeg_apply] at this
+      linarith
+
+/-! ## Every pair of distinct pieces is separated — the 22×22-pair assembly, decided at once -/
+
+def edgeCands (A B : PgramTiling22.Tri) : List (PgramTiling22.Pt × PgramTiling22.Pt) :=
+  [PgramTiling22.edgeOf A 0, PgramTiling22.edgeOf A 1, PgramTiling22.edgeOf A 2,
+   PgramTiling22.edgeOf B 0, PgramTiling22.edgeOf B 1, PgramTiling22.edgeOf B 2]
+
+def sqCond (pq : PgramTiling22.Pt × PgramTiling22.Pt) : Bool :=
+  decide ((zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).1 ^ 2
+             ≠ 15 * (zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).2 ^ 2
+         ∨ (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).1 ^ 2
+             ≠ 15 * (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).2 ^ 2)
+
+def pairOK (A B : PgramTiling22.Tri) : Bool :=
+  (edgeCands A B).any (fun pq => PgramTiling22.sepBy pq.1 pq.2 A B && sqCond pq)
+
+set_option maxRecDepth 4000 in
+theorem all_pairs_ok :
+    ∀ A ∈ PgramTiling22.tiles, ∀ B ∈ PgramTiling22.tiles, A ≠ B → pairOK A B = true := by
+  decide
+
+theorem sqCond_iff (pq : PgramTiling22.Pt × PgramTiling22.Pt) :
+    sqCond pq = true ↔
+      (zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).1 ^ 2 ≠ 15 * (zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).2 ^ 2
+        ∨ (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).1 ^ 2
+            ≠ 15 * (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).2 ^ 2 := by
+  rw [sqCond, decide_eq_true_iff]
+
+/-- **Every two distinct pieces of `PgramTiling22` have disjoint interiors, as real `Tri`
+objects.** (C3) fully assembled. -/
+theorem pieces_interiors_disjoint {A B : PgramTiling22.Tri} (hA : A ∈ PgramTiling22.tiles)
+    (hB : B ∈ PgramTiling22.tiles) (hne : A ≠ B) :
+    Disjoint (interior (pieceTri hA).carrier) (interior (pieceTri hB).carrier) := by
+  have hok := all_pairs_ok A hA B hB hne
+  simp only [pairOK, List.any_eq_true] at hok
+  obtain ⟨pq, hmem, hsep⟩ := hok
+  rw [Bool.and_eq_true] at hsep
+  obtain ⟨hsepBy, hsq⟩ := hsep
+  obtain ⟨f, hf, c, h1, h2⟩ := sep_of_sepBy ((sqCond_iff pq).mp hsq) hsepBy hA hB
+  exact Erdos634.CertGeom.interiors_disjoint_of_separating f hf c h1 h2
+
 end Erdos634.PgramTiling22Bridge
