@@ -280,3 +280,31 @@ theorem gWallZ_correct (zxp zyp : Erdos634.Z15Real.Z15) :
   push_cast
   have hs : Real.sqrt 15 ^ 2 = 15 := Real.sq_sqrt (by norm_num)
   linear_combination (24 * (zxp.2:ℝ)) * hs
+
+open Erdos634.Z15Real Erdos634.Tiling44Bridge in
+/-- A `Tiling44` vertex's `gWall` value, as an exact `ℤ[√15]` pair. -/
+def wallVal (p : Tiling44.Pt) : Z15 := gWallZ (zx (toZPt p)) (zy (toZPt p))
+
+open Erdos634.Z15Real Erdos634.Tiling44Bridge in
+/-- Whether a `Tiling44` vertex lies exactly on the wall line (`gWall = 4224√15`). -/
+def isWallVertex (p : Tiling44.Pt) : Bool := decide (wallVal p = ((0:ℤ), (4224:ℤ)))
+
+open Erdos634.Tiling44Bridge in
+/-- Whether a tile's edge `k → k+1` is a wall edge (both endpoints on the line). -/
+def isWallEdge (t : Tiling44.Tri) (k : Fin 3) : Bool :=
+  isWallVertex (vertexOf t k) && isWallVertex (vertexOf t (k+1))
+
+open Erdos634.Tiling44Bridge in
+/-- Every wall edge's third vertex, as a `ℤ[√15]` pair minus the wall's own value, satisfies the
+`z.1² ≠ 15z.2²` test — the exact-arithmetic form `hthird` needs, via
+`Z15Real.toR_ne_zero_of_sq_ne`. -/
+def hthirdOK (t : Tiling44.Tri) : Bool :=
+  decide (∀ k : Fin 3, isWallEdge t k = true →
+    (wallVal (vertexOf t (k+2)) - ((0:ℤ),(4224:ℤ))).1 ^ 2
+      ≠ 15 * (wallVal (vertexOf t (k+2)) - ((0:ℤ),(4224:ℤ))).2 ^ 2)
+
+-- `hthird`'s exact-arithmetic core, checked for all 44 tiles. Every wall-edge tile's third
+-- vertex is genuinely off the line — confirmed computationally across the whole family, the same
+-- `decide`-over-`Tiling44.tiles` pattern this project's (C1)–(C4) checks already use.
+set_option maxRecDepth 4000 in
+theorem all_hthird_ok : ∀ t ∈ Tiling44.tiles, hthirdOK t = true := by decide
