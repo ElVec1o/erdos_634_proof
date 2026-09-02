@@ -618,4 +618,45 @@ theorem congruentDissection_boundary_figure_cases (D : CongruentDissection N) (�
     · exact Or.inr (Or.inl ⟨hp, hq, hr⟩)
     · exact Or.inr (Or.inr ⟨hp, hq, hr⟩)
 
+/-- **The boundary figure at a genuine vertex is exactly `{3α,2β}` or `{α,β,γ}`** — excludes the
+degenerate single-straight-tile branch of `congruentDissection_boundary_figure_cases` when some
+tile actually presents a corner angle at `v` (i.e. `v` is a genuine vertex of the dissection's
+combinatorics, not merely an interior point of one tile's edge). Matches `lem:anglecalc` clause
+(4)'s literal two-figure dichotomy ("the only figures are `{3α,2β}` and `{α,β,γ}`"), closing the
+first of that row's two recorded residual gaps. -/
+theorem congruentDissection_boundary_figure_cases_at_vertex (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (i0 : Fin N) (hi0 : (D.tile i0).localAngle v = α ∨ (D.tile i0).localAngle v = β
+      ∨ (D.tile i0).localAngle v = γ) :
+    (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 3 ∧
+      ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 2 ∧
+      ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0) ∨
+    (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 1 ∧
+      ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+      ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1) := by
+  classical
+  rcases congruentDissection_boundary_figure_cases D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0
+    hπ0 hγdef hrel hirr hα' hβ' hγ' hv hnv with ⟨hπ1, hαc, hβc, hγc⟩ | h | h
+  · exfalso
+    rcases hi0 with h | h | h
+    · have hmem : i0 ∈ ({i | (D.tile i).localAngle v = α} : Finset (Fin N)) := by
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq]; exact h
+      simp [Finset.card_eq_zero.mp hαc] at hmem
+    · have hmem : i0 ∈ ({i | (D.tile i).localAngle v = β} : Finset (Fin N)) := by
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq]; exact h
+      simp [Finset.card_eq_zero.mp hβc] at hmem
+    · have hmem : i0 ∈ ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)) := by
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq]; exact h
+      simp [Finset.card_eq_zero.mp hγc] at hmem
+  · exact Or.inl h
+  · exact Or.inr h
+
 end Erdos634.Geometry.Dissection
