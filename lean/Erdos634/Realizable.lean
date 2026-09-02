@@ -198,14 +198,18 @@ unscaled values `SideWalk.lean`'s `_of_gammatrap` family (`equal_side_no_b_of_ga
 needs for its `hA`,`hB`,`hC`,`hLen` hypotheses — closing a concrete case of structural blocker 1,
 not the general case, but a real one.
 
-`homothetyEquiv` below is the first piece: the homothety about a point, as a genuine
-`Plane ≃ᵃ[ℝ] Plane` (not just the one-directional `AffineMap.homothety` `scaleTri` already uses),
-so `mapDissection` can transport a whole dissection through it. **Not yet done**: proving
-`Tri.Congruent` is preserved under the image of a similarity (a homothety conjugates an isometry to
-an isometry, since the scale factors cancel: `e ∘ f ∘ e⁻¹` scales distances by `|r| · 1 · 1/|r| =
-1`) — needed to show the tiles of a scaled `CongruentDissection` are still all congruent to the
-scaled model. That conjugation lemma, plus assembling the whole `scaleDissection` operation, is the
-next concrete step. -/
+**Done, this pass**: `homothetyEquiv` is the homothety about a point as a genuine
+`Plane ≃ᵃ[ℝ] Plane`; `conjIsometry` conjugates an isometry by it (still an isometry, since the scale
+factors `|r|` and `|r|⁻¹` cancel); `mapTri_congruent` shows `Tri.Congruent` survives the image of
+`homothetyEquiv` using that conjugation; and `scaleDissection` assembles the whole operation —
+`CongruentDissection N → (p : Plane) → (r : ℝ) → r ≠ 0 → CongruentDissection N`, scaling a whole
+dissection by an arbitrary real ratio about any centre, generalizing `Ladder.ladder`'s
+natural-number blow-up. **What remains for the concrete lead above**: applying `scaleDissection` at
+`p := Tiling44Bridge.dissection.target.pts 0`, `r := 1/8` and checking the resulting scaled
+dissection's target/model against `SideWalk`'s `hA,hB,hC,hLen` (should follow from
+`scaleDissection_target_pts`/`.model_pts` plus the `8×` correspondence already checked) and its
+remaining hypotheses (`hker`, `hdirab`, `hthird`, `hcornerbase`, `hcornerapex`, `hiso`) — not yet
+attempted. -/
 
 /-- The homothety about `p` with ratio `r ≠ 0`, as a genuine affine equivalence (not just the
 one-directional `AffineMap.homothety`). -/
@@ -217,5 +221,71 @@ theorem homothetyEquiv_apply (p : Plane) (r : ℝ) (hr : r ≠ 0) (x : Plane) :
   show (AffineEquiv.homothetyUnitsMulHom p (Units.mk0 r hr) : Plane → Plane) x = _
   rw [AffineEquiv.coe_homothetyUnitsMulHom_apply]
   norm_num
+
+theorem homothetyEquiv_symm_apply (p : Plane) (r : ℝ) (hr : r ≠ 0) (x : Plane) :
+    (homothetyEquiv p r hr).symm x = AffineMap.homothety p r⁻¹ x := by
+  show ((AffineEquiv.homothetyUnitsMulHom p (Units.mk0 r hr)).symm : Plane → Plane) x = _
+  rw [AffineEquiv.coe_homothetyUnitsMulHom_apply_symm]
+  norm_num
+
+theorem dist_homothety (p : Plane) (r : ℝ) (x y : Plane) :
+    dist (AffineMap.homothety p r x) (AffineMap.homothety p r y) = |r| * dist x y := by
+  rw [dist_eq_norm_vsub Plane, dist_eq_norm_vsub Plane, AffineMap.homothety_apply,
+    AffineMap.homothety_apply]
+  rw [show (r • (x -ᵥ p) +ᵥ p) -ᵥ (r • (y -ᵥ p) +ᵥ p) = r • (x -ᵥ y) by
+    simp; module]
+  rw [norm_smul]
+  simp [Real.norm_eq_abs]
+
+theorem homothetyEquiv_dist (p : Plane) (r : ℝ) (hr : r ≠ 0) (x y : Plane) :
+    dist (homothetyEquiv p r hr x) (homothetyEquiv p r hr y) = |r| * dist x y := by
+  rw [homothetyEquiv_apply, homothetyEquiv_apply, dist_homothety]
+
+theorem homothetyEquiv_symm_dist (p : Plane) (r : ℝ) (hr : r ≠ 0) (x y : Plane) :
+    dist ((homothetyEquiv p r hr).symm x) ((homothetyEquiv p r hr).symm y) = |r|⁻¹ * dist x y := by
+  rw [homothetyEquiv_symm_apply, homothetyEquiv_symm_apply, dist_homothety, abs_inv]
+
+/-- Conjugating an isometry by a homothety of ratio `r ≠ 0` is again an isometry: the scale
+factors `|r|` and `|r|⁻¹` cancel. -/
+noncomputable def conjIsometry (p : Plane) (r : ℝ) (hr : r ≠ 0) (f : Plane ≃ᵢ Plane) :
+    Plane ≃ᵢ Plane :=
+  IsometryEquiv.mk ((homothetyEquiv p r hr).toEquiv.symm.trans
+      (f.toEquiv.trans (homothetyEquiv p r hr).toEquiv))
+    (Isometry.of_dist_eq (fun x y => by
+      show dist (homothetyEquiv p r hr (f (homothetyEquiv p r hr |>.symm x)))
+          (homothetyEquiv p r hr (f (homothetyEquiv p r hr |>.symm y))) = dist x y
+      rw [homothetyEquiv_dist, f.dist_eq, homothetyEquiv_symm_dist]
+      rw [← mul_assoc, show |r| * |r|⁻¹ = 1 by field_simp, one_mul]))
+
+theorem conjIsometry_apply (p : Plane) (r : ℝ) (hr : r ≠ 0) (f : Plane ≃ᵢ Plane) (x : Plane) :
+    conjIsometry p r hr f x = homothetyEquiv p r hr (f ((homothetyEquiv p r hr).symm x)) := rfl
+
+/-- **`Tri.Congruent` survives the image of a homothety.** -/
+theorem mapTri_congruent (p : Plane) (r : ℝ) (hr : r ≠ 0) {T U : Tri} (h : T.Congruent U) :
+    (Erdos634.DissectionMap.mapTri (homothetyEquiv p r hr) T).Congruent
+      (Erdos634.DissectionMap.mapTri (homothetyEquiv p r hr) U) := by
+  obtain ⟨f, σ, hf⟩ := h
+  refine ⟨conjIsometry p r hr f, σ, fun k => ?_⟩
+  show conjIsometry p r hr f ((homothetyEquiv p r hr) (T.pts k))
+    = (homothetyEquiv p r hr) (U.pts (σ k))
+  rw [conjIsometry_apply, (homothetyEquiv p r hr).symm_apply_apply, hf k]
+
+/-- **A whole `CongruentDissection`, scaled by an arbitrary real ratio about any centre.**
+Generalizes `Ladder.ladder`'s natural-number blow-up to any nonzero real scale. -/
+noncomputable def scaleDissection {N : ℕ} (p : Plane) (r : ℝ) (hr : r ≠ 0)
+    (D : CongruentDissection N) : CongruentDissection N where
+  toDissection := Erdos634.DissectionMap.mapDissection (homothetyEquiv p r hr) D.toDissection
+  model := Erdos634.DissectionMap.mapTri (homothetyEquiv p r hr) D.model
+  tiles_congruent := fun i => by
+    rw [Erdos634.DissectionMap.mapDissection_tile]
+    exact mapTri_congruent p r hr (D.tiles_congruent i)
+
+theorem scaleDissection_target_pts {N : ℕ} (p : Plane) (r : ℝ) (hr : r ≠ 0)
+    (D : CongruentDissection N) (k : Fin 3) :
+    (scaleDissection p r hr D).target.pts k = (homothetyEquiv p r hr) (D.target.pts k) := rfl
+
+theorem scaleDissection_model_pts {N : ℕ} (p : Plane) (r : ℝ) (hr : r ≠ 0)
+    (D : CongruentDissection N) (k : Fin 3) :
+    (scaleDissection p r hr D).model.pts k = (homothetyEquiv p r hr) (D.model.pts k) := rfl
 
 end Erdos634.Realizable
