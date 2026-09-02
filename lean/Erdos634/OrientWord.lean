@@ -28,6 +28,17 @@ def word (n : ℕ) (o : ℕ → Orient) : List Orient := (List.range n).map o
 theorem word_length (n : ℕ) (o : ℕ → Orient) : (word n o).length = n := by
   simp [word]
 
+/-- **Reading off a constant word.** If `word n o` is `replicate n c`, every one of its indices
+`m < n` has `o m = c`. Needed to turn `thm:chain`-style "the word is constant" conclusions
+(e.g. `BEdgeReading.side_word_constant`) into a per-edge fact. -/
+theorem word_apply {n : ℕ} {o : ℕ → Orient} {c : Orient} (h : word n o = List.replicate n c)
+    (m : ℕ) (hm : m < n) : o m = c := by
+  have hmem : o m ∈ word n o := by
+    rw [word]
+    exact List.mem_map_of_mem (List.mem_range.mpr hm)
+  rw [h] at hmem
+  exact List.eq_of_mem_replicate hmem
+
 /-- **The word is admissible.**  If at every junction of the chain the two tiles are distinct, the
 junction is a non-vertex point of the frontier, and the two readings hold, then adjacent letters of
 the word satisfy `admissiblePair`.
