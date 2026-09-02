@@ -1204,3 +1204,31 @@ on this path.
 blocker recorded in terms of the *strongest* statement one can imagine wanting is worth much less
 than one recorded in terms of the *weakest* statement that suffices. Both `ConvexCover` and
 `AreaDet` were skipped for weeks behind blockers phrased the first way.
+
+
+## Certificate transfer: the general layer is complete (2026-09-02, later)
+
+Everything a tiling certificate checks now has a Lean counterpart, and none of it is per-tiling:
+
+| certificate check | Lean |
+|---|---|
+| coordinates → a triangle | `CertCoord.mkTri`, via `not_collinear_of_det` |
+| (C1) squared side multiset | `SssCongruent.congruent_of_sq_dist_perm` (squares, and up to relabelling) |
+| (C2) vertex in closed target | `CertCoord.mem_carrier_of_dets` + `CertGeom.carrier_subset_of_pts_mem` |
+| (C3) separating edge-line per pair | `CertGeom.pairwise_disjoint_of_separating` |
+| (C4) signed areas sum | `CertCoord.detTri_mkTri` + `AreaDet.area_identity_of_det` |
+| the whole thing | `CertBridge.ofCert` |
+| `ℤ[√15]` arithmetic → `ℝ` | `Z15Real.toR`, `toR_add/sub/mul`, `toR_nonneg_iff`, `toR_pos` |
+
+`Z15Real` deliberately proves no injectivity of `toR` and so never needs `√15` irrational: every
+certificate check transfers in one direction only, an equality or inequality *in* `ℤ[√15]` implying
+the corresponding real statement.
+
+**What is still missing, precisely.** The certificate files state their content as a *single*
+`Bool` over `List`s (`Tiling44.checkAll = true`, one `decide`). Turning that into the indexed
+`∀ i : Fin 44` / `∀ i j, i ≠ j` facts `CertBridge.ofCert` consumes requires unpacking
+`List.all` and the `checkPairs` recursion for each certificate, and then instantiating the
+44 (resp. 99, 63, 22) triangles as real objects. That is per-certificate engineering with a real
+risk of elaboration cost at the 946-pair (resp. 4851-pair) level, and it is **not started**. No
+theory gap remains on the path; the remaining work is that unpacking, and it should not be
+described as small.
