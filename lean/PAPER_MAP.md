@@ -1237,7 +1237,45 @@ the corresponding real statement.
 `Bool` over `List`s (`Tiling44.checkAll = true`, one `decide`). Turning that into the indexed
 `∀ i : Fin 44` / `∀ i j, i ≠ j` facts `CertBridge.ofCert` consumes requires unpacking
 `List.all` and the `checkPairs` recursion for each certificate, and then instantiating the
-44 (resp. 99, 63, 22) triangles as real objects. That is per-certificate engineering with a real
-risk of elaboration cost at the 946-pair (resp. 4851-pair) level, and it is **not started**. No
-theory gap remains on the path; the remaining work is that unpacking, and it should not be
-described as small.
+44 (resp. 99, 63, 22) triangles as real objects. **Update 2026-09-02: this is done for Tiling44,
+CevianTiling63 and Tiling99** — see `Tiling44Bridge.lean`/`CevianTiling63Bridge.lean`/
+`Tiling99Bridge.lean`, each a `dissection : CongruentDissection N`. The `checkPairs`/`wit`
+recursion turned out unnecessary to unpack directly: `decide`-ing the *existence* of a working
+separating edge among 6 candidates per pair (rather than extracting the certificate's own witness)
+was far cheaper (12s/25s/68s at 946/1953/4851 pairs respectively) and needed no per-pair data
+entry at all. `thm:44` and `thm:63` are VERIFIED; `cor:elevenm`'s positive half and its `N=11m²`
+consequence are done (`ElevenMBridge.lean`).
+
+## Scoping note: the negative certified-search format (2026-09-02)
+
+`thm:frontier`–`thm:frontier4`, `thm:eq105`, and `cor:elevenm`'s `1 ∉ S` clause all cite an engine
+verdict of the shape `EXHAUSTED_NO_TILING` — a claim that an exhaustive backtracking search over
+*all* candidate dissections found none. Scoped what this would take to formalize, precisely:
+
+`code/engine/cengine.cpp` (~790 lines) implements the search as a depth-first backtracking
+procedure (`dfs`) over exact-rational polygon state (`QD`, GMP `mpz_class`), with polygon surgery
+(`subtract`: cut a placed tile out of the remaining region), a containment predicate
+(`containment_ok`), and several pruning heuristics (`pruneA`, `pruneR`, `pruneP4` — area,
+rotational-symmetry and minimum-angle pruning) that cut the search space without changing its
+result. `EXHAUSTED_NO_TILING` means the DFS exhausted every branch without `has_found` ever
+becoming true.
+
+**This is not reachable by a small lemma or a `decide` call.** Certifying it in Lean needs one of:
+1. **Re-implement the search in Lean** and prove the reimplementation matches the engine's result
+   *and* prove the pruning heuristics are sound (don't discard a branch that could contain a
+   tiling) — a from-scratch verified-backtracking-search project, realistically months, not a
+   "modest task".
+2. **Redesign the engine to emit a checkable certificate** of the search itself — e.g. a compact
+   trace or a summary invariant strong enough that a much cheaper Lean-side check (ideally
+   `decide`/`native_decide`) can confirm no tiling exists without replaying the whole search. No
+   such trace format exists today; designing one is itself a nontrivial verification-engineering
+   problem (what invariant is both cheap to check and sound?), separate from anything built this
+   session.
+
+Neither is a natural extension of the positive-witness `CertBridge`/`Tiling*Bridge` machinery
+built 2026-09-02 — that machinery consumes a single witness object and checks it; a nonexistence
+claim has no witness to consume. **Recorded here as a precise, permanent blocker**: do not
+re-scope this from scratch in a future session assuming it might be a quick lemma. If it is ever
+attempted, option 2 (redesign the engine to emit a certificate) is the more promising route, since
+option 1 duplicates ~790 lines of exact-arithmetic geometry code inside Lean's kernel, which is a
+much larger undertaking than anything else in this corpus.
