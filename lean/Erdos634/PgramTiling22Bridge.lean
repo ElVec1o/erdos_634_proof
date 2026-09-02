@@ -349,4 +349,147 @@ theorem pieceTri_congruent {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.til
   rw [pieceTri_dist_sq t ht, pieceTri_dist_sq PgramTiling22.tiles.headI headI_mem_tiles]
   exact congrArg toR (hσ i j)
 
+/-! ## (C2) containment: every piece lies in the target
+
+`insideOK`'s four half-plane checks (`znonneg (cross qᵢ qⱼ v)`, one per target edge) transfer to
+`uOf`/`vOf` bounds via `Ddet_pos` and the four cross-value identities below, then to membership in
+`carrier` via `mem_carrier_iff`. -/
+
+theorem cross12_eq (p : Plane) :
+    Erdos634.CertCoord.det3 (v1 0) (v1 1) (v2 0) (v2 1) (p 0) (p 1) = Ddet * vOf p := by
+  have hD := Ddet_ne_zero
+  show (v2 0 - v1 0) * (p 1 - v1 1) - (p 0 - v1 0) * (v2 1 - v1 1) = Ddet * vOf p
+  simp only [vOf]
+  field_simp
+  simp only [Ddet, d2x, d2y, d4x, d4y]
+  ring
+
+theorem cross41_eq (p : Plane) :
+    Erdos634.CertCoord.det3 (v4 0) (v4 1) (v1 0) (v1 1) (p 0) (p 1) = Ddet * uOf p := by
+  have hD := Ddet_ne_zero
+  show (v1 0 - v4 0) * (p 1 - v4 1) - (p 0 - v4 0) * (v1 1 - v4 1) = Ddet * uOf p
+  simp only [uOf]
+  field_simp
+  simp only [Ddet, d2x, d2y, d4x, d4y]
+  ring
+
+theorem cross23_eq (p : Plane) :
+    Erdos634.CertCoord.det3 (v2 0) (v2 1) (v3 0) (v3 1) (p 0) (p 1) = Ddet * (1 - uOf p) := by
+  have hD := Ddet_ne_zero
+  have hv3 := v3_eq
+  show (v3 0 - v2 0) * (p 1 - v2 1) - (p 0 - v2 0) * (v3 1 - v2 1) = Ddet * (1 - uOf p)
+  have h30 : v3 0 = v2 0 + v4 0 - v1 0 := by rw [hv3]; simp
+  have h31 : v3 1 = v2 1 + v4 1 - v1 1 := by rw [hv3]; simp
+  rw [h30, h31]
+  simp only [uOf]
+  field_simp
+  simp only [Ddet, d2x, d2y, d4x, d4y]
+  ring
+
+theorem cross34_eq (p : Plane) :
+    Erdos634.CertCoord.det3 (v3 0) (v3 1) (v4 0) (v4 1) (p 0) (p 1) = Ddet * (1 - vOf p) := by
+  have hD := Ddet_ne_zero
+  have hv3 := v3_eq
+  show (v4 0 - v3 0) * (p 1 - v3 1) - (p 0 - v3 0) * (v4 1 - v3 1) = Ddet * (1 - vOf p)
+  have h30 : v3 0 = v2 0 + v4 0 - v1 0 := by rw [hv3]; simp
+  have h31 : v3 1 = v2 1 + v4 1 - v1 1 := by rw [hv3]; simp
+  rw [h30, h31]
+  simp only [vOf]
+  field_simp
+  simp only [Ddet, d2x, d2y, d4x, d4y]
+  ring
+
+/-- `Ddet` is positive: `Ddet = toR (zcross q1 q2 q4)`, and that value is `(0,264)` in `ℤ[√15]`
+(computed directly from the `q1,q2,q4` coordinates), i.e. `264√15 > 0`. -/
+theorem Ddet_pos : 0 < Ddet := by
+  show 0 < d2x * d4y - d4x * d2y
+  have heq : Erdos634.CertCoord.det3 (v1 0) (v1 1) (v2 0) (v2 1) (v4 0) (v4 1)
+      = toR (zcross (toZPt PgramTiling22.q1) (toZPt PgramTiling22.q2) (toZPt PgramTiling22.q4)) :=
+    toR_zcross _ _ _
+  have hpos : (0:ℝ) < toR (zcross (toZPt PgramTiling22.q1) (toZPt PgramTiling22.q2)
+      (toZPt PgramTiling22.q4)) := by
+    apply toR_pos; decide
+  rw [← heq] at hpos
+  simp only [Erdos634.CertCoord.det3, d2x, d2y, d4x, d4y] at *
+  convert hpos using 1
+
+/-- **Any point passing `insideOK`'s four half-plane checks lies in `carrier`.** The direct
+converse of the certificate's own containment test, so no diagonal split is needed after all. -/
+theorem mem_carrier_of_cross (q : PgramTiling22.Pt)
+    (h1 : PgramTiling22.znonneg (PgramTiling22.cross PgramTiling22.q1 PgramTiling22.q2 q) = true)
+    (h2 : PgramTiling22.znonneg (PgramTiling22.cross PgramTiling22.q2 PgramTiling22.q3 q) = true)
+    (h3 : PgramTiling22.znonneg (PgramTiling22.cross PgramTiling22.q3 PgramTiling22.q4 q) = true)
+    (h4 : PgramTiling22.znonneg (PgramTiling22.cross PgramTiling22.q4 PgramTiling22.q1 q) = true) :
+    Erdos634.CertCoord.mkPt (toR (zx (toZPt q))) (toR (zy (toZPt q))) ∈ carrier := by
+  set p : Plane := Erdos634.CertCoord.mkPt (toR (zx (toZPt q))) (toR (zy (toZPt q))) with hp
+  have hDp := Ddet_pos
+  rw [mem_carrier_iff]
+  have e1 : Erdos634.CertCoord.det3 (v1 0) (v1 1) (v2 0) (v2 1) (p 0) (p 1)
+      = toR (zcross (toZPt PgramTiling22.q1) (toZPt PgramTiling22.q2) (toZPt q)) := by
+    rw [hp]; simp only [Erdos634.CertCoord.mkPt_zero, Erdos634.CertCoord.mkPt_one]
+    exact toR_zcross _ _ _
+  have e2 : Erdos634.CertCoord.det3 (v2 0) (v2 1) (v3 0) (v3 1) (p 0) (p 1)
+      = toR (zcross (toZPt PgramTiling22.q2) (toZPt PgramTiling22.q3) (toZPt q)) := by
+    rw [hp]; simp only [Erdos634.CertCoord.mkPt_zero, Erdos634.CertCoord.mkPt_one]
+    exact toR_zcross _ _ _
+  have e3 : Erdos634.CertCoord.det3 (v3 0) (v3 1) (v4 0) (v4 1) (p 0) (p 1)
+      = toR (zcross (toZPt PgramTiling22.q3) (toZPt PgramTiling22.q4) (toZPt q)) := by
+    rw [hp]; simp only [Erdos634.CertCoord.mkPt_zero, Erdos634.CertCoord.mkPt_one]
+    exact toR_zcross _ _ _
+  have e4 : Erdos634.CertCoord.det3 (v4 0) (v4 1) (v1 0) (v1 1) (p 0) (p 1)
+      = toR (zcross (toZPt PgramTiling22.q4) (toZPt PgramTiling22.q1) (toZPt q)) := by
+    rw [hp]; simp only [Erdos634.CertCoord.mkPt_zero, Erdos634.CertCoord.mkPt_one]
+    exact toR_zcross _ _ _
+  have n1 : (0:ℝ) ≤ toR (zcross (toZPt PgramTiling22.q1) (toZPt PgramTiling22.q2) (toZPt q)) :=
+    toR_nonneg h1
+  have n2 : (0:ℝ) ≤ toR (zcross (toZPt PgramTiling22.q2) (toZPt PgramTiling22.q3) (toZPt q)) :=
+    toR_nonneg h2
+  have n3 : (0:ℝ) ≤ toR (zcross (toZPt PgramTiling22.q3) (toZPt PgramTiling22.q4) (toZPt q)) :=
+    toR_nonneg h3
+  have n4 : (0:ℝ) ≤ toR (zcross (toZPt PgramTiling22.q4) (toZPt PgramTiling22.q1) (toZPt q)) :=
+    toR_nonneg h4
+  rw [← e1] at n1; rw [← e4] at n4; rw [← e2] at n2; rw [← e3] at n3
+  rw [cross12_eq] at n1
+  rw [cross41_eq] at n4
+  rw [cross23_eq] at n2
+  rw [cross34_eq] at n3
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · nlinarith [n4]
+  · nlinarith [n2]
+  · nlinarith [n1]
+  · nlinarith [n3]
+
+theorem all_pieces_inside : ∀ t ∈ PgramTiling22.tiles, PgramTiling22.insideOK t = true := by
+  decide
+
+theorem insideOK_vertex {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles) (i : Fin 3) :
+    PgramTiling22.znonneg (PgramTiling22.cross PgramTiling22.q1 PgramTiling22.q2 (vertexOf t i)) = true
+    ∧ PgramTiling22.znonneg (PgramTiling22.cross PgramTiling22.q2 PgramTiling22.q3 (vertexOf t i)) = true
+    ∧ PgramTiling22.znonneg (PgramTiling22.cross PgramTiling22.q3 PgramTiling22.q4 (vertexOf t i)) = true
+    ∧ PgramTiling22.znonneg (PgramTiling22.cross PgramTiling22.q4 PgramTiling22.q1 (vertexOf t i)) = true := by
+  have hins := all_pieces_inside t ht
+  simp only [PgramTiling22.insideOK, Bool.and_eq_true, List.all_eq_true] at hins
+  have hv : vertexOf t i ∈
+      ([PgramTiling22.t1 t, PgramTiling22.t2 t, PgramTiling22.t3 t] : List PgramTiling22.Pt) := by
+    fin_cases i <;> simp [vertexOf]
+  have h4 := hins.2 (vertexOf t i) hv
+  simp only [Bool.and_eq_true] at h4
+  exact ⟨h4.1.1.1, h4.1.1.2, h4.1.2, h4.2⟩
+
+theorem vertexOf_mem_carrier {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles) (i : Fin 3) :
+    Erdos634.CertCoord.mkPt (toR (zx (toZPt (vertexOf t i)))) (toR (zy (toZPt (vertexOf t i))))
+      ∈ carrier := by
+  obtain ⟨h1, h2, h3, h4⟩ := insideOK_vertex ht i
+  exact mem_carrier_of_cross (vertexOf t i) h1 h2 h3 h4
+
+/-- **(C2) fully assembled**: every piece of `PgramTiling22`, as a real `Tri`, lies in the
+parallelogram target — no diagonal split needed, the unit-square-affine-image route closes it
+directly. -/
+theorem pieceTri_subset_carrier {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles) :
+    (pieceTri ht).carrier ⊆ carrier := by
+  apply convexHull_min _ convex
+  rintro x ⟨k, rfl⟩
+  rw [pieceTri_pts t ht k]
+  exact vertexOf_mem_carrier ht k
+
 end Erdos634.PgramTiling22Bridge
