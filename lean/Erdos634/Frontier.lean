@@ -463,6 +463,97 @@ theorem close_pair_column_unique {e f k x z x' z' : ℤ} (he : 0 < e) (hf : f �
   rw [ht0, zero_mul] at hte
   exact ⟨by linarith, by linarith⟩
 
+/-! ## `close_pair_column_unique`, without the extra `z ≤ e` hypothesis
+
+`close_pair_column_unique` above needs `z ≤ e`, `z' ≤ e` supplied externally — hypotheses not in
+`prop:closepaircolumns`(iv)'s own statement (only `x, z ≥ 1`). This section derives `z ≤ e`
+unconditionally from the base equation itself, via `one_column_per_k`'s bound ported to `ℤ` and
+applied to *any* representative of `x`'s residue class, not only the canonical least-positive one.
+The resulting `close_pair_column_unique_general` matches the paper's clause (iv) exactly. -/
+
+/-- `one_column_per_k`, ported to `ℤ` (the same proof; `q` need not be nonneg). -/
+theorem one_column_per_k_int {e f k q : ℤ} (he : 0 < e) (hef : e < f) (hk : 1 ≤ k)
+    (hq : q * f ≤ k * e) (hq' : k * e < (q + 1) * f) : e * (1 + q) ≤ k * f := by
+  have h1 : k * e < k * f := by nlinarith
+  have hqk : q < k := by nlinarith
+  have h2 : 1 + q ≤ k := by linarith
+  nlinarith
+
+/-- **The bound holds for *any* `m` with `x = ke − mf ≥ 1`**, not only the canonical least
+positive `x`: since `e(m+1)` is monotone in `m` and `m` is at most the canonical `q =
+⌊ke/f⌋`, `one_column_per_k_int`'s bound at `q` already dominates it. -/
+theorem bound_any_m {e f k m : ℤ} (he : 0 < e) (hef : e < f) (hf : 0 < f) (hk : 1 ≤ k)
+    (hm : m * f < k * e) : e * (m + 1) ≤ k * f := by
+  set q := (k * e) / f with hqdef
+  have hq : q * f ≤ k * e := by
+    nlinarith [Int.ediv_mul_le (k * e) hf.ne', Int.emod_nonneg (k * e) hf.ne']
+  have hq' : k * e < (q + 1) * f := by
+    have h1 := Int.lt_ediv_add_one_mul_self (k * e) hf
+    nlinarith [h1]
+  have hmq : m ≤ q := by
+    by_contra hc
+    push_neg at hc
+    have hc' : q + 1 ≤ m := hc
+    have : (q + 1) * f ≤ m * f := mul_le_mul_of_nonneg_right hc' (le_of_lt hf)
+    linarith
+  have hbase := one_column_per_k_int he hef hk hq hq'
+  nlinarith [mul_le_mul_of_nonneg_left hmq (le_of_lt he)]
+
+/-- **Any solution `(x,z)` of the base equation with `x ≥ 1` has `z ≤ e`.** The missing half of
+`close_pair_column_unique`'s hypotheses, derived rather than assumed. -/
+theorem z_le_e {e f k x z : ℤ} (he : 0 < e) (hef : e < f) (hk : 1 ≤ k)
+    (hx : 1 ≤ x) (hco : IsCoprime f e)
+    (hkey : x * e + z * f = 2 * e * f - k * (f * f - e * e)) :
+    z ≤ e := by
+  have hf : 0 < f := lt_trans he hef
+  have hdvd : f ∣ x - k * e := column_x_congruence e f k x z hco hkey
+  obtain ⟨m, hm⟩ := hdvd
+  have hxeq : x = k * e - f * (-m) := by linarith
+  have hmlt : (-m) * f < k * e := by nlinarith
+  have hb := bound_any_m he hef hf hk hmlt
+  have hid : x * e + f + k * (f * f - e * e) - 2 * e * f = f * (k * f - ((-m) + 2) * e + 1) := by
+    rw [hxeq]; ring
+  have hzf : x * e + f + k * (f * f - e * e) - 2 * e * f = f * (1 - z) := by linarith
+  have heq2 : f * (1 - z) = f * (k * f - ((-m) + 2) * e + 1) := by rw [← hzf, hid]
+  have heq3 : 1 - z = k * f - ((-m) + 2) * e + 1 := mul_left_cancel₀ hf.ne' heq2
+  nlinarith [hb]
+
+/-- **`prop:closepaircolumns`(iv), in full.** For fixed `k ≥ 1`, the pair `(x,z)` satisfying the
+base equation with `x, z ≥ 1` alone (matching the paper's own hypotheses, no `z ≤ e` side
+condition needed) is unique. -/
+theorem close_pair_column_unique_general {e f k x z x' z' : ℤ} (he : 0 < e) (hef : e < f)
+    (hk : 1 ≤ k) (hco : IsCoprime f e)
+    (hx : 1 ≤ x) (hz : 1 ≤ z) (hx' : 1 ≤ x') (hz' : 1 ≤ z')
+    (heq : x * e + z * f = 2 * e * f - k * (f * f - e * e))
+    (heq' : x' * e + z' * f = 2 * e * f - k * (f * f - e * e)) :
+    x = x' ∧ z = z' := by
+  have hf : 0 < f := lt_trans he hef
+  have hzle : z ≤ e := z_le_e he hef hk hx hco heq
+  have hzle' : z' ≤ e := z_le_e he hef hk hx' hco heq'
+  have key : (x - x') * e = (z' - z) * f := by linarith
+  have hdvd : f ∣ x - x' := hco.dvd_of_dvd_mul_left ⟨z' - z, by linarith [key]⟩
+  obtain ⟨t, ht⟩ := hdvd
+  have hzt : z' - z = t * e := by
+    have h1 : (f * t) * e = (z' - z) * f := by rw [← ht]; exact key
+    have h2 : t * e * f = (z' - z) * f := by nlinarith [h1]
+    have h3 : (z' - z) * f = t * e * f := h2.symm
+    have hcancel := mul_right_cancel₀ hf.ne' h3
+    linarith [hcancel]
+  rcases lt_trichotomy t 0 with hneg | hzero | hpos
+  · exfalso
+    have ht1 : 1 ≤ -t := by linarith
+    have hcontra : e + 1 ≤ z := by nlinarith [hzt]
+    linarith [hzle]
+  · have hx0 : x = x' := by
+      have : x - x' = 0 := by rw [ht, hzero]; ring
+      linarith
+    have hz0 : z = z' := by nlinarith [hzt, hzero]
+    exact ⟨hx0, hz0⟩
+  · exfalso
+    have ht1 : 1 ≤ t := hpos
+    have hcontra : e + 1 ≤ z' := by nlinarith [hzt]
+    linarith [hzle']
+
 /-! ## The sharp criterion: which `k` actually carry a column
 
 `k_bound_sharp` bounds `k` but does not decide it: at `(8,17)` it permits `k = 1` while no column
