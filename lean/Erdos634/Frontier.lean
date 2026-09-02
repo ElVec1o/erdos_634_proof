@@ -618,6 +618,23 @@ theorem side_p_le_two {e f p : ℕ} (he : 0 < e) (hpe : p * e < f)
   have hf : 3 * e + 1 ≤ f := by omega
   nlinarith
 
+/-- **`cor:ptwo`**: on a close pair with `f > 2e`, `⌊(f−1)/e⌋ = 2` exactly, not merely `≤ 2`. The
+upper bound is `side_p_le_two`, applied at `p := ⌊(f−1)/e⌋` (which satisfies `p·e < f`); the lower
+bound is the one-line consequence of `f > 2e` the paper's own proof gives (`f ≥ 2e+1`, so
+`(f−1)/e ≥ 2`). Closes the equality `side_p_le_two`'s own docstring only checked computationally
+(126003 close pairs), as a real theorem for every `(e,f)`. -/
+theorem floor_eq_two {e f : ℕ} (he : 0 < e) (h2e : 2 * e < f)
+    (hclose : f * f ≤ 2 * e * f + e * e) : (f - 1) / e = 2 := by
+  have hub : (f - 1) / e ≤ 2 := by
+    have hpe : ((f - 1) / e) * e < f := by
+      have := Nat.div_mul_le_self (f - 1) e
+      omega
+    exact side_p_le_two he hpe hclose
+  have hlb : 2 ≤ (f - 1) / e := by
+    rw [Nat.le_div_iff_mul_le he]
+    omega
+  omega
+
 /-! ## The `γ`-injection budget at `p = 2`, and the subfamily where it is exhausted
 
 The `γ`-injection lemma bounds a side's non-`c` edges by its junction count: `#a + #b ≤ k − 1`, where
