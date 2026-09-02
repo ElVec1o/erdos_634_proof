@@ -535,7 +535,7 @@ recurring causes are named in `CLAUDE.md`; the rows say which applies and why.
 | C `prop:Uplacements` | the two placements of `U` | `ApexRigidity.drops_agree_37` | PROVED — the drop identity is VERIFIED at one member; 'the two placements' is placement |
 | C `prop:figurePprime` | the figure at `P'` is `{β, 3γ}` either way | `ApexRigidity.figure_at_Pprime` | PROVED — same |
 | C `prop:closepaircolumns` | the extra base columns at a close pair | `close_pair_column`, `close_pair_column_unique`, `one_column_per_k` | PROVED — the column arithmetic is VERIFIED; 'a base column of a tiling' has no Lean definition |
-| C `lem:pgram` | the unit parallelogram | `PgramTiling22.pgram22_certificate` | PROVED — one member's certificate is VERIFIED by `decide`; the general parallelogram is a region with no Lean notion of dissection |
+| C `lem:pgram` | the unit parallelogram | `PgramTiling22.pgram22_certificate` | PROVED — one member's certificate is VERIFIED by `decide`; the general parallelogram is a region with no Lean notion of dissection. `PgramTiling22Bridge.lean` (2026-09-02) now has real-coordinate groundwork for this one member — carrier, covering theorem (generic), (C1) congruence, (C2) containment all proved; (C3)/(C4) still open, no covering-theorem instance yet, so still short of even a one-member VERIFIED |
 | C `prop:widecol` | wide parallelograms at all `(e,f)` | `PgramTiling52.*` | PROVED — same |
 
 | Paper | Statement | Lean declaration | Blocker |
