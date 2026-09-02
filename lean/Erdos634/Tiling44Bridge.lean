@@ -108,4 +108,74 @@ theorem lineFun_ne_zero_of_sq_ne {P Q : ZPt}
   · exact Or.inl (sub_ne_zero.mp (by rw [← toR_sub]; exact toR_ne_zero_of_sq_ne h))
   · exact Or.inr (sub_ne_zero.mp (by rw [← toR_sub]; exact toR_ne_zero_of_sq_ne h))
 
+/-- Pointwise negation of an affine map into `ℝ`. -/
+theorem affNeg_apply (g : Plane →ᵃ[ℝ] ℝ) (p : Plane) : (-g) p = -(g p) := by
+  have := congrFun (AffineMap.coe_neg g) p
+  simpa using this
+
+/-- `Tiling44.cross` is literally `Z15Real.zcross` read through `toZPt` — the two files define the
+same operations on the same underlying type, so this is `rfl`. -/
+theorem cross_eq_zcross (o a b : Tiling44.Pt) :
+    Tiling44.cross o a b = zcross (toZPt o) (toZPt a) (toZPt b) := rfl
+
+/-- **A single `sepBy`-true witness gives a genuine separating affine functional** between two
+pieces, read as real `Tri` objects — the assembly step `CertGeom.pairwise_disjoint_of_separating`
+needs, for one pair. `hPQ` is `lineFun_ne_zero_of_sq_ne`'s decidable side condition on the edge
+`(P, Q)`; the certificate's own `sepBy` supplies which sign pattern holds. -/
+theorem sep_of_sepBy {P Q : Tiling44.Pt} {A B : Tiling44.Tri}
+    (hPQ : (zsub (zx (toZPt P)) (zx (toZPt Q))).1 ^ 2
+             ≠ 15 * (zsub (zx (toZPt P)) (zx (toZPt Q))).2 ^ 2
+         ∨ (zsub (zy (toZPt P)) (zy (toZPt Q))).1 ^ 2
+             ≠ 15 * (zsub (zy (toZPt P)) (zy (toZPt Q))).2 ^ 2)
+    (hsep : Tiling44.sepBy P Q A B = true) (hA : A ∈ Tiling44.tiles) (hB : B ∈ Tiling44.tiles) :
+    ∃ (f : Plane →ᵃ[ℝ] ℝ) (_ : f.linear ≠ 0) (c : ℝ),
+      (∀ x ∈ (pieceTri hA).carrier, f x ≤ c) ∧ (∀ x ∈ (pieceTri hB).carrier, c ≤ f x) := by
+  set f : Plane →ᵃ[ℝ] ℝ :=
+    Erdos634.CertGeom.lineFun (toR (zx (toZPt P))) (toR (zy (toZPt P)))
+      (toR (zx (toZPt Q))) (toR (zy (toZPt Q))) with hfdef
+  have hflin : f.linear ≠ 0 := lineFun_ne_zero_of_sq_ne hPQ
+  have hfval : ∀ v : Tiling44.Pt,
+      f (Erdos634.CertCoord.mkPt (toR (zx (toZPt v))) (toR (zy (toZPt v))))
+        = toR (Tiling44.cross P Q v) := by
+    intro v
+    rw [hfdef, Erdos634.CertGeom.lineFun_apply, Erdos634.CertCoord.mkPt_zero,
+      Erdos634.CertCoord.mkPt_one, cross_eq_zcross]
+    exact toR_zcross _ _ _
+  have hpts : ∀ (t : Tiling44.Tri) (ht : t ∈ Tiling44.tiles) (k : Fin 3),
+      (pieceTri ht).pts k
+        = Erdos634.CertCoord.mkPt (toR (zx (toZPt (![Tiling44.t1 t, Tiling44.t2 t, Tiling44.t3 t] k))))
+            (toR (zy (toZPt (![Tiling44.t1 t, Tiling44.t2 t, Tiling44.t3 t] k)))) := by
+    intro t ht k; fin_cases k <;> rfl
+  simp only [Tiling44.sepBy, List.all_eq_true, List.mem_cons, Bool.and_eq_true,
+    Bool.or_eq_true, List.map, forall_eq_or_imp] at hsep
+  rcases hsep with ⟨hsA, hsB⟩ | ⟨hsA, hsB⟩
+  · -- A's vertices have cross ≥ 0, B's have cross ≤ 0 (znonpos)
+    refine ⟨-f, neg_ne_zero.mpr hflin, 0, ?_, ?_⟩
+    · exact Erdos634.CertGeom.le_of_forall_pts_le (-f) (t := pieceTri hA) (c := 0)
+        (fun k => by
+          rw [affNeg_apply, hpts A hA k, hfval, neg_le, neg_zero]
+          fin_cases k <;> first | exact Erdos634.Z15Real.toR_nonneg hsA.1 | exact Erdos634.Z15Real.toR_nonneg hsA.2.1 | exact Erdos634.Z15Real.toR_nonneg hsA.2.2.1)
+    · intro x hx
+      have hb := Erdos634.CertGeom.le_of_forall_pts_le f (t := pieceTri hB) (c := 0)
+        (fun k => by
+          rw [hpts B hB k, hfval]
+          fin_cases k <;> first | exact Erdos634.Z15Real.toR_nonpos hsB.1 | exact Erdos634.Z15Real.toR_nonpos hsB.2.1 | exact Erdos634.Z15Real.toR_nonpos hsB.2.2.1)
+      have := hb x hx
+      rw [affNeg_apply]
+      linarith
+  · -- A's vertices have cross ≤ 0 (znonpos), B's have cross ≥ 0
+    refine ⟨f, hflin, 0, ?_, ?_⟩
+    · exact Erdos634.CertGeom.le_of_forall_pts_le f (t := pieceTri hA) (c := 0)
+        (fun k => by
+          rw [hpts A hA k, hfval]
+          fin_cases k <;> first | exact Erdos634.Z15Real.toR_nonpos hsA.1 | exact Erdos634.Z15Real.toR_nonpos hsA.2.1 | exact Erdos634.Z15Real.toR_nonpos hsA.2.2.1)
+    · intro x hx
+      have hb := Erdos634.CertGeom.le_of_forall_pts_le (-f) (t := pieceTri hB) (c := 0)
+        (fun k => by
+          rw [affNeg_apply, hpts B hB k, hfval, neg_le, neg_zero]
+          fin_cases k <;> first | exact Erdos634.Z15Real.toR_nonneg hsB.1 | exact Erdos634.Z15Real.toR_nonneg hsB.2.1 | exact Erdos634.Z15Real.toR_nonneg hsB.2.2.1)
+      have := hb x hx
+      rw [affNeg_apply] at this
+      linarith
+
 end Erdos634.Tiling44Bridge

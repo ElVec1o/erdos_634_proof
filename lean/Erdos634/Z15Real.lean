@@ -104,6 +104,14 @@ theorem toR_nonneg {z : Z15} (h : znonneg z = true) : 0 ≤ toR z := by
       have h' : ((a:ℝ)) * a ≤ 15 * b * b := by exact_mod_cast h
       nlinarith [hsq, hs, mul_nonneg hb' hs, sq_nonneg ((a:ℝ) + b * Real.sqrt 15)]
 
+theorem toR_neg (z : Z15) : toR (-z.1, -z.2) = -toR z := by simp only [toR]; push_cast; ring
+
+/-- **The nonpositivity test is sound** — `Tiling44`'s (and every certificate's) `znonpos z :=
+znonneg (-z)` pattern, transferred. -/
+theorem toR_nonpos {z : Z15} (h : znonneg (-z.1, -z.2) = true) : toR z ≤ 0 := by
+  have := toR_nonneg h
+  rw [toR_neg] at this; linarith
+
 /-- **The nonnegativity test is also complete**, so it decides the sign exactly. -/
 theorem toR_nonneg_iff {z : Z15} : znonneg z = true ↔ 0 ≤ toR z := by
   refine ⟨toR_nonneg, ?_⟩
