@@ -213,6 +213,25 @@ theorem side_quantized {e f x z : ℕ} (hf : 1 ≤ f) (hco : Nat.Coprime e f)
     rwa [h5] at h6
   exact (Nat.Coprime.dvd_of_dvd_mul_right (Nat.coprime_comm.mp hco)) hd
 
+/-- **`lem:sidequant`, fully assembled.** On any member `(e,f)`, a side's `a`-count is a multiple
+of `f`. Combines `side_no_b_uncond` (no `b`-edges) with `side_quantized` (the resulting `a`,`c`
+walk quantizes) — the bridge their own docstrings describe in prose but leave unassembled:
+substituting `Q = 0` into the `f³`-scale walk and dividing by `f` to reach `side_quantized`'s
+`f²`-scale hypothesis. -/
+theorem side_a_quantized {e f P Q R : ℕ} (hco : Nat.Coprime e f) (hef : e < f)
+    (b : ℕ) (hb : b + e * e = f * f)
+    (hwalk : P * (e * f) + Q * b + R * (f * f) = f * f * f)
+    (hgamma : 1 ≤ R) : f ∣ P := by
+  have hf : 0 < f := by omega
+  have hQ0 : Q = 0 := side_no_b_uncond hco hef hb hwalk hgamma
+  subst hQ0
+  simp only [Nat.zero_mul, Nat.add_zero] at hwalk
+  have hkey : f * (P * e + R * f) = f * (f * f) := by
+    have h1 : f * (P * e + R * f) = P * (e * f) + R * (f * f) := by ring
+    rw [h1, hwalk]; ring
+  have hred : P * e + R * f = f * f := Nat.eq_of_mul_eq_mul_left hf hkey
+  exact side_quantized hf hco hred
+
 
 /-- **A `c`-corner forces `f` side `a`-edges.**
 
