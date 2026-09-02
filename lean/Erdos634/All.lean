@@ -195,3 +195,4 @@ import Erdos634.ElevenMBridge
 import Erdos634.PgramTiling22Bridge
 import Erdos634.PgramTiling52Bridge
 import Erdos634.UnionDissection
+import Erdos634.TranslateDissection
