@@ -174,4 +174,36 @@ theorem congruent_of_dist_three {T U : Tri}
   rcases htri i with rfl | rfl | rfl <;> rcases htri j with rfl | rfl | rfl <;>
     simp_all [dist_comm]
 
+/-! ## SSS up to relabelling, and from *squared* lengths
+
+A certificate checks a squared side **multiset**, so it certifies equal sides only after some
+relabelling of the vertices, and it certifies the *squares*. Both gaps are closed here. -/
+
+/-- `U` with its vertices relabelled by `σ`. -/
+def permTri (U : Tri) (σ : Equiv.Perm (Fin 3)) : Tri where
+  pts := U.pts ∘ σ
+  indep := U.indep.comp_embedding σ.toEmbedding
+
+/-- A relabelling is a congruence — that is exactly what the permutation in `Tri.Congruent` is
+for. -/
+theorem congruent_permTri (U : Tri) (σ : Equiv.Perm (Fin 3)) : (permTri U σ).Congruent U :=
+  ⟨IsometryEquiv.refl Plane, σ, fun k => rfl⟩
+
+/-- **SSS up to relabelling.** -/
+theorem congruent_of_dist_perm {T U : Tri} (σ : Equiv.Perm (Fin 3))
+    (hd : ∀ i j, dist (T.pts i) (T.pts j) = dist (U.pts (σ i)) (U.pts (σ j))) : T.Congruent U :=
+  (congruent_of_dist (U := permTri U σ) hd).trans (congruent_permTri U σ)
+
+/-- Equal squared distances give equal distances. -/
+theorem dist_of_sq {a b c d : Plane} (h : dist a b ^ 2 = dist c d ^ 2) : dist a b = dist c d := by
+  have h1 : (0:ℝ) ≤ dist a b := dist_nonneg
+  have h2 : (0:ℝ) ≤ dist c d := dist_nonneg
+  nlinarith [h, h1, h2]
+
+/-- **SSS from squared side lengths, up to relabelling** — the form a certificate supplies. -/
+theorem congruent_of_sq_dist_perm {T U : Tri} (σ : Equiv.Perm (Fin 3))
+    (hd : ∀ i j, dist (T.pts i) (T.pts j) ^ 2 = dist (U.pts (σ i)) (U.pts (σ j)) ^ 2) :
+    T.Congruent U :=
+  congruent_of_dist_perm σ (fun i j => dist_of_sq (hd i j))
+
 end Erdos634.SssCongruent

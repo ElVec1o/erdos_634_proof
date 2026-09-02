@@ -184,3 +184,5 @@ import Erdos634.Realizable
 import Erdos634.AreaDet
 import Erdos634.SssCongruent
 import Erdos634.CertBridge
+import Erdos634.CertGeom
+import Erdos634.CertCoord
