@@ -48,8 +48,12 @@ noncomputable def columnPieceAt (w : Plane) (i : Fin PgramTiling22.tiles.length)
   mapTri (transEquiv w).toAffineEquiv
     (mapTri (homothetyEquiv (mkPt 0 0) 2 (by norm_num)) (Erdos634.PgramTiling22Bridge.pieceAt i))
 
-/-- The four column-copy translation vectors: `(88j, 12√15·h)` for `j,h ∈ {0,1}`. -/
-noncomputable def colVec (j h : Fin 2) : Plane := mkPt (88 * j.val) (12 * Real.sqrt 15 * h.val)
+/-- The four column-copy translation vectors: `w = (88j+44h, 12√15·h)` for `j,h ∈ {0,1}`, matching
+the hand-derived geometry (`private/VERIFY_PLAN.md`'s `column_piece_corner_disjoint` entry, used
+already for `CollarDisjointM4`'s `gAff` computation) — column `j` occupies base `[88j, 88(j+1)]`,
+half `h` is the bottom (`h=0`) or top (`h=1`) copy of that column. -/
+noncomputable def colVec (j h : Fin 2) : Plane :=
+  mkPt (88 * j.val + 44 * h.val) (12 * Real.sqrt 15 * h.val)
 
 /-- **`Δ_4`'s 176 pieces, as one flat list** (pre-cast form): apex ++ corner ++ the four column
 copies, indexed by the natural (non-literal) sum of the source lengths — kept in this form so the

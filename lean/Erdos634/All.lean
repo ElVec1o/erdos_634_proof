@@ -201,3 +201,4 @@ import Erdos634.CollarDisjointM4
 import Erdos634.CollarContainM4
 import Erdos634.CollarAreaM4
 import Erdos634.CollarPiecesM4
+import Erdos634.CollarPieceContainM4
