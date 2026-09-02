@@ -88,6 +88,7 @@ import Erdos634.SecondEdge
 import Erdos634.SectorArea
 import Erdos634.SegmentDense
 import Erdos634.SideNoB
+import Erdos634.SidePRange
 import Erdos634.SupportFace
 import Erdos634.SurplusLattice
 import Erdos634.TangentCone
