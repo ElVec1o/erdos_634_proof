@@ -1,4 +1,6 @@
 import Erdos634.CollarDisjointM4
+import Erdos634.Tiling44Bridge
+import Erdos634.StraightEdgeSums
 
 /-!
 # A concrete wall line for `Tiling44Bridge`'s target, and its `hker`
@@ -57,3 +59,60 @@ theorem hker_wall : ∀ v : Plane, gWall v = 0 → dirWall v = 0 → v = 0 := by
   have hx0 : xFun v = 0 := by nlinarith [hg, hd', hy0]
   rw [hx0, hy0]
   ext j; fin_cases j <;> simp [mkPt]
+
+open Erdos634.Z15Real in
+/-- `Tiling44Bridge`'s target vertex `0` is exactly `(0,0)`. -/
+theorem tiling44_targetTri_pts0 : Erdos634.Tiling44Bridge.targetTri.pts 0 = mkPt 0 0 := by
+  rw [Erdos634.Tiling44Bridge.targetTri_pts_eq]
+  show mkPt (toR (zx (Erdos634.Tiling44Bridge.toZPt (Tiling44.t1 Tiling44.target))))
+    (toR (zy (Erdos634.Tiling44Bridge.toZPt (Tiling44.t1 Tiling44.target)))) = mkPt 0 0
+  have hx : zx (Erdos634.Tiling44Bridge.toZPt (Tiling44.t1 Tiling44.target)) = ((0:ℤ),(0:ℤ)) := by decide
+  have hy : zy (Erdos634.Tiling44Bridge.toZPt (Tiling44.t1 Tiling44.target)) = ((0:ℤ),(0:ℤ)) := by decide
+  rw [hx, hy]; simp [toR]
+
+open Erdos634.Z15Real in
+/-- `Tiling44Bridge`'s target vertex `1` is exactly `(176,0)`. -/
+theorem tiling44_targetTri_pts1 : Erdos634.Tiling44Bridge.targetTri.pts 1 = mkPt 176 0 := by
+  rw [Erdos634.Tiling44Bridge.targetTri_pts_eq]
+  show mkPt (toR (zx (Erdos634.Tiling44Bridge.toZPt (Tiling44.t2 Tiling44.target))))
+    (toR (zy (Erdos634.Tiling44Bridge.toZPt (Tiling44.t2 Tiling44.target)))) = mkPt 176 0
+  have hx : zx (Erdos634.Tiling44Bridge.toZPt (Tiling44.t2 Tiling44.target)) = ((176:ℤ),(0:ℤ)) := by decide
+  have hy : zy (Erdos634.Tiling44Bridge.toZPt (Tiling44.t2 Tiling44.target)) = ((0:ℤ),(0:ℤ)) := by decide
+  rw [hx, hy]; simp [toR]
+
+open Erdos634.Z15Real in
+/-- `Tiling44Bridge`'s target vertex `2` (the apex) is exactly `(88,24√15)`. -/
+theorem tiling44_targetTri_pts2 :
+    Erdos634.Tiling44Bridge.targetTri.pts 2 = mkPt 88 (24 * Real.sqrt 15) := by
+  rw [Erdos634.Tiling44Bridge.targetTri_pts_eq]
+  show mkPt (toR (zx (Erdos634.Tiling44Bridge.toZPt (Tiling44.t3 Tiling44.target))))
+    (toR (zy (Erdos634.Tiling44Bridge.toZPt (Tiling44.t3 Tiling44.target)))) = mkPt 88 (24 * Real.sqrt 15)
+  have hx : zx (Erdos634.Tiling44Bridge.toZPt (Tiling44.t3 Tiling44.target)) = ((88:ℤ),(0:ℤ)) := by decide
+  have hy : zy (Erdos634.Tiling44Bridge.toZPt (Tiling44.t3 Tiling44.target)) = ((0:ℤ),(24:ℤ)) := by decide
+  rw [hx, hy]; simp [toR]
+
+noncomputable def gWallAff : Plane →ᵃ[ℝ] ℝ := gWall.toAffineMap
+
+theorem gWallAff_mkPt (x y : ℝ) : gWallAff (mkPt x y) = 24 * Real.sqrt 15 * x + 88 * y :=
+  gWall_mkPt x y
+
+/-- **`hwall` for `gWall`**: `Tiling44Bridge`'s target lies entirely on the `gWall ≤ 4224√15`
+side, touching the boundary exactly along the wall line's own two named endpoints. -/
+theorem hwall_wall :
+    ∀ y ∈ Erdos634.Tiling44Bridge.targetTri.carrier, gWallAff y ≤ 4224 * Real.sqrt 15 := by
+  have hi : ∀ i, 0 ≤ (AffineMap.const ℝ Plane (4224 * Real.sqrt 15) - gWallAff)
+      (Erdos634.Tiling44Bridge.targetTri.pts i) := by
+    intro i
+    fin_cases i
+    · show 0 ≤ 4224 * Real.sqrt 15 - gWallAff (Erdos634.Tiling44Bridge.targetTri.pts 0)
+      rw [tiling44_targetTri_pts0, gWallAff_mkPt]
+      nlinarith [Real.sqrt_nonneg (15:ℝ)]
+    · show 0 ≤ 4224 * Real.sqrt 15 - gWallAff (Erdos634.Tiling44Bridge.targetTri.pts 1)
+      rw [tiling44_targetTri_pts1, gWallAff_mkPt]; ring_nf; norm_num
+    · show 0 ≤ 4224 * Real.sqrt 15 - gWallAff (Erdos634.Tiling44Bridge.targetTri.pts 2)
+      rw [tiling44_targetTri_pts2, gWallAff_mkPt]; ring_nf; norm_num
+  intro y hy
+  have hsub := Tri.carrier_subset_halfplane_affine Erdos634.Tiling44Bridge.targetTri
+    (AffineMap.const ℝ Plane (4224 * Real.sqrt 15) - gWallAff) hi y hy
+  have hsub' : 0 ≤ 4224 * Real.sqrt 15 - gWallAff y := hsub
+  linarith
