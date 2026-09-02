@@ -281,4 +281,81 @@ theorem pieceTri_congruent {t : Tiling44.Tri} (ht : t ∈ Tiling44.tiles) :
   rw [pieceTri_dist_sq t ht, pieceTri_dist_sq Tiling44.tiles.headI headI_mem_tiles]
   exact congrArg Erdos634.Z15Real.toR (hσ i j)
 
-end Erdos634.Tiling44Bridge
+/-! ## (C2) containment: every piece lies in the target — the part `all_pieces_pos` skipped
+
+`all_pieces_pos` only captured orientation (`insideOK`'s first conjunct); this is the actual
+vertex-in-target containment, `insideOK`'s second conjunct. -/
+
+/-- **Cyclic invariance of `cross`**: `cross o a b = cross a b o`. Twice the signed area of a
+triangle does not depend on which vertex is named first, only the cyclic order. Needed to match
+`insideOK`'s three checks (each anchored at a different target edge) against
+`CertCoord.mem_carrier_of_dets`'s fixed vertex-0/1/2 convention. -/
+theorem cross_cyclic (o a b : Tiling44.Pt) : Tiling44.cross o a b = Tiling44.cross a b o := by
+  simp only [Tiling44.cross, Tiling44.zsub, Tiling44.zmul, Tiling44.px, Tiling44.py, Prod.ext_iff]
+  constructor <;> ring
+
+/-- **Every one of the 44 pieces' vertices lies in the closed target** — one `decide`. -/
+theorem all_pieces_inside : ∀ t ∈ Tiling44.tiles, Tiling44.insideOK t = true := by decide
+
+/-- Abbreviations for the target's three vertices. -/
+theorem insideOK_vertex {t : Tiling44.Tri} (ht : t ∈ Tiling44.tiles) (i : Fin 3) :
+    Tiling44.znonneg (Tiling44.cross (Tiling44.t1 Tiling44.target) (Tiling44.t2 Tiling44.target)
+        (vertexOf t i)) = true
+    ∧ Tiling44.znonneg (Tiling44.cross (Tiling44.t2 Tiling44.target) (Tiling44.t3 Tiling44.target)
+        (vertexOf t i)) = true
+    ∧ Tiling44.znonneg (Tiling44.cross (Tiling44.t3 Tiling44.target) (Tiling44.t1 Tiling44.target)
+        (vertexOf t i)) = true := by
+  have hins := all_pieces_inside t ht
+  simp only [Tiling44.insideOK, Bool.and_eq_true, List.all_eq_true] at hins
+  have hv : vertexOf t i ∈ ([Tiling44.t1 t, Tiling44.t2 t, Tiling44.t3 t] : List Tiling44.Pt) := by
+    fin_cases i <;> simp [vertexOf]
+  have h3 := hins.2 (vertexOf t i) hv
+  simp only [Bool.and_eq_true] at h3
+  exact ⟨h3.1.1, h3.1.2, h3.2⟩
+
+/-- **The target, real vertex-by-vertex, matches `mem_carrier_of_dets`'s convention.** -/
+theorem vertexOf_mem_targetTri {t : Tiling44.Tri} (ht : t ∈ Tiling44.tiles) (i : Fin 3) :
+    Erdos634.CertCoord.mkPt (toR (zx (toZPt (vertexOf t i)))) (toR (zy (toZPt (vertexOf t i))))
+      ∈ targetTri.carrier := by
+  obtain ⟨h1, h2, h3⟩ := insideOK_vertex ht i
+  refine Erdos634.CertCoord.mem_carrier_of_dets (x₀ := toR (zx (toZPt (Tiling44.t1 Tiling44.target))))
+    (y₀ := toR (zy (toZPt (Tiling44.t1 Tiling44.target))))
+    (x₁ := toR (zx (toZPt (Tiling44.t2 Tiling44.target))))
+    (y₁ := toR (zy (toZPt (Tiling44.t2 Tiling44.target))))
+    (x₂ := toR (zx (toZPt (Tiling44.t3 Tiling44.target))))
+    (y₂ := toR (zy (toZPt (Tiling44.t3 Tiling44.target))))
+    target_det_pos ?_ ?_ ?_
+  · -- h0 : 0 ≤ det3 a b x1 y1 x2 y2 = cross(v, T2, T3) = cross(T2, T3, v) [cyclic]
+    rw [show Erdos634.CertCoord.det3 (toR (zx (toZPt (vertexOf t i)))) (toR (zy (toZPt (vertexOf t i))))
+        (toR (zx (toZPt (Tiling44.t2 Tiling44.target)))) (toR (zy (toZPt (Tiling44.t2 Tiling44.target))))
+        (toR (zx (toZPt (Tiling44.t3 Tiling44.target)))) (toR (zy (toZPt (Tiling44.t3 Tiling44.target))))
+      = toR (zcross (toZPt (vertexOf t i)) (toZPt (Tiling44.t2 Tiling44.target))
+          (toZPt (Tiling44.t3 Tiling44.target))) from toR_zcross _ _ _,
+      ← cross_eq_zcross, cross_cyclic (vertexOf t i) (Tiling44.t2 Tiling44.target) (Tiling44.t3 Tiling44.target)]
+    exact Erdos634.Z15Real.toR_nonneg h2
+  · -- h1 : 0 ≤ det3 x0 y0 a b x2 y2 = cross(T1, v, T3) = cross(T3, T1, v) [two cyclic rotations]
+    rw [show Erdos634.CertCoord.det3 (toR (zx (toZPt (Tiling44.t1 Tiling44.target))))
+        (toR (zy (toZPt (Tiling44.t1 Tiling44.target)))) (toR (zx (toZPt (vertexOf t i))))
+        (toR (zy (toZPt (vertexOf t i)))) (toR (zx (toZPt (Tiling44.t3 Tiling44.target))))
+        (toR (zy (toZPt (Tiling44.t3 Tiling44.target))))
+      = toR (zcross (toZPt (Tiling44.t1 Tiling44.target)) (toZPt (vertexOf t i))
+          (toZPt (Tiling44.t3 Tiling44.target))) from toR_zcross _ _ _,
+      ← cross_eq_zcross,
+      cross_cyclic (Tiling44.t1 Tiling44.target) (vertexOf t i) (Tiling44.t3 Tiling44.target),
+      cross_cyclic (vertexOf t i) (Tiling44.t3 Tiling44.target) (Tiling44.t1 Tiling44.target)]
+    exact Erdos634.Z15Real.toR_nonneg h3
+  · -- h2 : 0 ≤ det3 x0 y0 x1 y1 a b = cross(T1, T2, v), direct match
+    rw [show Erdos634.CertCoord.det3 (toR (zx (toZPt (Tiling44.t1 Tiling44.target))))
+        (toR (zy (toZPt (Tiling44.t1 Tiling44.target)))) (toR (zx (toZPt (Tiling44.t2 Tiling44.target))))
+        (toR (zy (toZPt (Tiling44.t2 Tiling44.target)))) (toR (zx (toZPt (vertexOf t i))))
+        (toR (zy (toZPt (vertexOf t i))))
+      = toR (zcross (toZPt (Tiling44.t1 Tiling44.target)) (toZPt (Tiling44.t2 Tiling44.target))
+          (toZPt (vertexOf t i))) from toR_zcross _ _ _,
+      ← cross_eq_zcross]
+    exact Erdos634.Z15Real.toR_nonneg h1
+
+/-- **(C2) fully assembled**: every piece of `Tiling44`, as a real `Tri`, lies in the target. -/
+theorem pieceTri_subset_target {t : Tiling44.Tri} (ht : t ∈ Tiling44.tiles) :
+    (pieceTri ht).carrier ⊆ targetTri.carrier :=
+  Erdos634.CertGeom.carrier_subset_of_pts_mem (fun k => by
+    rw [pieceTri_pts t ht k]; exact vertexOf_mem_targetTri ht k)
