@@ -4,6 +4,7 @@ import Erdos634.CertGeom
 import Erdos634.TranslateDissection
 import Erdos634.CollarGeometryM4
 import Erdos634.PgramTiling22Bridge
+import Erdos634.Realizable
 
 /-!
 # The `m=2 → m=4` collar step — first disjointness proof
@@ -29,6 +30,7 @@ Axiom-clean; no `sorry`.
 -/
 
 open Erdos634.Geometry Erdos634.CertCoord Erdos634.TranslateDissection Erdos634.CertGeom
+open Erdos634.DissectionMap
 
 /-- The `y`-coordinate of a point of the plane, as a linear functional. -/
 noncomputable def yFun : Plane →ₗ[ℝ] ℝ where
@@ -183,3 +185,77 @@ theorem piece_yBound {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles) (i
   apply carrier_yBound
   apply Erdos634.PgramTiling22Bridge.pieceTri_subset_carrier ht
   exact subset_convexHull ℝ _ (Set.mem_range_self i)
+
+/-! ## Every column piece is disjoint from `Δ_2^apex` — all 88 pieces at once
+
+A raw `PgramTiling22` piece is placed as a column piece by scaling ×2 about the origin, then
+translating: the bottom half of any column by a vector with `y = 0`, the top half by one with
+`y = 12√15` (per `private/VERIFY_PLAN.md`'s 2026-09-05 hand-derivation — the specific `x`-shift
+varies with the column index, but never affects the `y`-bound). `scaledPiece_yBound` shows this
+places every piece's `y`-coordinate in `[0, 24√15]` regardless of which piece or which column, so
+one theorem (`column_piece_apex_disjoint`) gives disjointness from `Δ_2^apex` for all `88` column
+pieces (`2` columns `× 2` halves `× 22` pieces) at once. -/
+
+theorem yAff_homothety (v p : Plane) (r : ℝ) :
+    yAff (AffineMap.homothety v r p) = r * yAff p + (1 - r) * yAff v := by
+  rw [AffineMap.homothety_apply, AffineMap.map_vadd, vadd_eq_add]
+  have h1 : yAff.linear (r • (p -ᵥ v)) = r * yAff p - r * yAff v := by
+    rw [map_smul]
+    show r * yFun (p -ᵥ v) = _
+    have h2 : yFun (p -ᵥ v) = yAff p - yAff v := by
+      show yFun (p - v) = _
+      rw [map_sub]
+      rfl
+    rw [h2]
+    ring
+  rw [h1]
+  ring
+
+theorem yAff_vadd (p w : Plane) : yAff (w +ᵥ p) = yAff w + yAff p := by
+  rw [AffineMap.map_vadd, vadd_eq_add]
+  rfl
+
+/-- Every raw `PgramTiling22` piece, scaled ×2 about the origin, has `y ∈ [0, 12√15]`. -/
+theorem scaledPiece_yBound {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles) (i : Fin 3) :
+    0 ≤ yAff (Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num)
+        ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i)) ∧
+    yAff (Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num)
+        ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i)) ≤ 12 * Real.sqrt 15 := by
+  rw [Erdos634.Realizable.homothetyEquiv_apply, yAff_homothety, yAff_mkPt]
+  have hb := piece_yBound ht i
+  constructor <;> nlinarith [hb.1, hb.2]
+
+/-- **Every placed column piece is disjoint from `Δ_2^apex`.** A raw `PgramTiling22` piece, scaled
+×2 about the origin, then translated by `w` with `y(w) ∈ {0, 12√15}` (the bottom or top half of any
+column), has interior disjoint from `Δ_2^apex`'s — covers all `88` column pieces at once. -/
+theorem column_piece_apex_disjoint {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles)
+    (w : Plane) (hw : yAff w = 0 ∨ yAff w = 12 * Real.sqrt 15) :
+    Disjoint
+      (interior (mapTri (AffineEquiv.constVAdd ℝ Plane w)
+        (mapTri (Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num))
+          (Erdos634.PgramTiling22Bridge.pieceTri ht))).carrier)
+      (interior (translateCongruentDissection (mkPt 88 (24 * Real.sqrt 15))
+        Erdos634.Tiling44Bridge.dissection).target.carrier) := by
+  refine interiors_disjoint_of_separating yAff yAff_linear_ne_zero (24 * Real.sqrt 15) ?_ ?_
+  · apply carrier_yAff_le _ (24 * Real.sqrt 15)
+    intro i
+    show yAff (AffineEquiv.constVAdd ℝ Plane w
+      ((Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num))
+        ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i))) ≤ _
+    show yAff (w +ᵥ Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num)
+        ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i)) ≤ _
+    rw [yAff_vadd]
+    have hb := scaledPiece_yBound ht i
+    rcases hw with hw | hw <;> rw [hw] <;> linarith [hb.2]
+  · apply carrier_yAff_ge _ (24 * Real.sqrt 15)
+    intro i
+    fin_cases i
+    · show _ ≤ yAff ((translateCongruentDissection (mkPt 88 (24 * Real.sqrt 15))
+          Erdos634.Tiling44Bridge.dissection).target.pts 0)
+      rw [apex_copy_pts.1, yAff_mkPt]
+    · show _ ≤ yAff ((translateCongruentDissection (mkPt 88 (24 * Real.sqrt 15))
+          Erdos634.Tiling44Bridge.dissection).target.pts 1)
+      rw [apex_copy_pts.2.1, yAff_mkPt]
+    · show _ ≤ yAff ((translateCongruentDissection (mkPt 88 (24 * Real.sqrt 15))
+          Erdos634.Tiling44Bridge.dissection).target.pts 2)
+      rw [apex_copy_pts.2.2, yAff_mkPt]; nlinarith [Real.sqrt_nonneg (15:ℝ)]
