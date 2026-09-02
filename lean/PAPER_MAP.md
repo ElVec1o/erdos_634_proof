@@ -24,7 +24,7 @@ Labels are the LaTeX `\label` keys. **Status** is the Rule 0 label of the *paper
 | M `prop:product` | invariant product `M_α·M_β = κN` on each shape | `InvariantProduct.F1_product` and the shape table | VERIFIED |
 | M `cor:similar` | tile-similar target forces `N = M_α²`, never prime | `InvariantProduct.tile_similar_not_prime` | VERIFIED |
 | M `prop:b3prime` | Beeson III Thm 8 core: no odd prime | `Beeson3NotPrime.triquadratic_not_prime` | VERIFIED |
-| M `prop:reduction` | Beeson III Thm 12 core: count is composite | `Beeson3NotPrime.fourcomp_not_prime` | PROVED (cited declarations VERIFIED) |
+| M `prop:reduction` | Beeson III Thm 12 core: count is composite | `Beeson3NotPrime.fourcomp_not_prime` | PROVED — **citation mismatch, flagged 2026-09-02, not flipped.** `prop:reduction` (erdos-634.tex:995) is the large angle-`2π/3` corner-type case analysis ("if `T` `N`-tiles and `N` is prime, `ABC` is isosceles not equilateral"); `Beeson3NotPrime.fourcomp_not_prime` proves a narrow arithmetic fact about the unrelated `3α+2β=π` four-component equation. These are different propositions. Do not flip this row from this citation; find or write the Lean theorem for the actual `prop:reduction` case analysis, or retarget `Beeson3NotPrime` to whatever paper claim it actually backs (search obstructions.tex for its Thm 12/four-component content) and fix this row's citation separately. |
 | M `prop:rationality` | γ = 2α tile classification | `Gamma2Alpha` (main theorem) | VERIFIED |
 | M `rem:nogo` | Γ_c route cannot close the branch | `GammaC.gammac_classification`, `.gammac_witness`, `.gammac_j_lt_N` | VERIFIED |
 | C `lem:pentagon` (arith.) | (0,min(a,b)) is a gap of ⟨a,b,c⟩; the stub lies in it | `Pentagon.no_partition`, `.stub_lt_a_and_b`, `.pentagon_stub_kills` | VERIFIED |
@@ -101,12 +101,12 @@ dissection theory was needed. The route was measure-theoretic throughout.
 | M §verification | G4: interior directed lengths balance, unconditionally | `Geometry.Dissection.g4_final` | VERIFIED |
 | C `lem:apexid` | `b·cos(α/2) = c·cos(3α/2)` and `c·sin(3α/2) − b·sin(α/2) = a` | `ApexRigidity.apex_drop_eq`, `.apex_edge_eq` | VERIFIED |
 | C `thm:apexconfig`(c,d) | `T₂` has fraction `b/c` above the chord; `2 + b/c = N/f²` | `ApexRigidity.middle_fraction`, `.area_above_chord` | VERIFIED |
-| C `cor:pbound` | `pe + 2 ≤ f`; `p ≤ 1` on `f = 2e+1` | `ApexRigidity.side_p_bound`, `.p_le_one_of_tight` | PROVED (cited declarations VERIFIED) |
+| C `cor:pbound` | `pe + 2 ≤ f`; `p ≤ 1` on `f = 2e+1` | `ApexRigidity.side_p_bound`, `.p_le_one_of_tight` | PROVED — checked 2026-09-02: the Lean only covers the arithmetic tail (`side_p_bound` *assumes* `n_c ≥ 2` as a hypothesis rather than proving it); the paper's `n_c ≥ 2` is itself geometric (cites `thm:secondc`'s proof chain). Not flippable without that geometric premise. |
 | C `rem:apexscope` | the bound cannot reach `p=1` beyond `(1,2)` | `ApexRigidity.scope_limitation` | VERIFIED |
-| C `prop:figurePprime` | the figure at `P'` is `{β,3γ}` either way | `ApexRigidity.figure_at_Pprime`, `.Pprime_residuals` | PROVED (cited declarations VERIFIED) |
-| C `cor:figureP` | `γ + π + β + α = 2π` at `P` on the `c`-side | `ApexRigidity.figure_at_P` | PROVED (cited declarations VERIFIED) |
+| C `prop:figurePprime` | the figure at `P'` is `{β,3γ}` either way | `ApexRigidity.figure_at_Pprime`, `.Pprime_residuals` | PROVED — checked 2026-09-02, same pattern as `cor:pbound`: pure angle-sum arithmetic, not the geometric figure-identification claim. Not flippable without the tile-placement layer. |
+| C `cor:figureP` | `γ + π + β + α = 2π` at `P` on the `c`-side | `ApexRigidity.figure_at_P` | PROVED — checked 2026-09-02, same pattern: arithmetic identity only, not the geometric location claim. Not flippable without the tile-placement layer. |
 | C `lem:onegamma` | one `γ` never excludes a `T`-junction | `SecondEdge.at_most_one_straight`, `.residuals_lt_pi` | VERIFIED |
-| C `prop:straddle` | every junction chord is straddled (`¬ 2401 ∣ 138n²`) | `ChordDecomp.area_not_integral`, `.admissible_range` | PROVED (cited declarations VERIFIED) |
+| C `prop:straddle` | every junction chord is straddled (`¬ 2401 ∣ 138n²`) | `ChordDecomp.area_not_integral`, `.admissible_range` | PROVED — checked 2026-09-02: Lean proves only the arithmetic non-integrality; the paper's conclusion ("some tile meets both open sides of the chord") is a geometric consequence needing the tile-placement layer, not present. Not flippable as-is. |
 
 ### Formalized core, geometry carried as explicit hypotheses
 
