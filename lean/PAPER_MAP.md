@@ -1123,20 +1123,14 @@ undischarged premise (the same defect class as the ten labels corrected in the 2
 `CongruentArea.congruentDissection_volume_target` now proves the clause outright, with no
 hypothesis. The label was not wrong in substance, but it is only now actually backed.
 
-## `thm:ladder` obligations after 2026-09-02 (late)
+## `thm:ladder` obligations after 2026-09-02 (late) — SUPERSEDED, stale as of 2026-09-09
 
-| # | Obligation | Lean | Label |
-|---|---|---|---|
-| cells | both cell shapes are real `Tri`s | `Subdivision.cellUp`, `.cellDown` | VERIFIED |
-| C2 | every cell lies in the scale-`k` triangle | `Subdivision.bigTri`, `.P_mem_bigTri`, `.cellUp_subset_bigTri`, `.cellDown_subset_bigTri` | **VERIFIED** |
-| C3 | cell interiors pairwise disjoint | `Subdivision.mem_interior_cellUp_iff`, `.mem_interior_cellDown_iff`, `.cellUp_interiors_disjoint`, `.cellDown_interiors_disjoint`, `.cellUp_cellDown_disjoint` | **VERIFIED** |
-| C4 | the areas sum to the big triangle's | available: `CongruentArea.volume_congruent` + `addHaar_image_homothety` | not assembled |
-| C5 | index the `k²` cells by `Fin (k²)` | counts only (`up_count`, `down_shift`, `total_count`); the bijection is absent | **OPEN** |
-
-(C3) was the obligation this row previously named as its remaining content. It is closed, as is
-(C2). The row stays **PROVED**: `Dissection` wants `tile : Fin N → Tri`, and (C5) — the bijection
-from `Fin (k²)` onto `{(i,j) : i+j+1 ≤ k} ⊕ {(i,j) : i+j+2 ≤ k}` — is not built. That is index
-bookkeeping rather than geometry, but it is not yet done, and the label does not move until it is.
+This sub-table described an intermediate, incomplete state (C4/C5 still open). It is now stale:
+the main `thm:ladder` row (see "`M thm:ladder` | `kT` is cut into `k²N` copies" above, dated
+**VERIFIED 2026-09-02**) records that `Subdivision.ladderDissection`'s `cellIdx` closed the C5
+indexing gap and `volume_cellOf` closed C4, later the same day — this leftover table was never
+deleted after the flip. Left here, struck through, only so a future session doesn't re-read it as
+a live obligation list; the authoritative status is the VERIFIED row above.
 
 
 ## `thm:ladder` closed, 2026-09-02
