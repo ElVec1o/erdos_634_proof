@@ -4,6 +4,7 @@ import Erdos634.CertGeom
 import Erdos634.SssCongruent
 import Erdos634.ConvexCover
 import Erdos634.AreaDet
+import Erdos634.Tiling44Bridge
 
 /-!
 # `PgramTiling22`, toward a genuine covering statement of the unit parallelogram
@@ -141,5 +142,70 @@ theorem covers_of_volume {N : ℕ} (tile : Fin N → Tri)
     ENNReal.add_lt_add_left volume_ne_top hWpos
   simp only [add_zero] at this
   exact absurd hsum (not_le.mpr this)
+
+/-! ## (C1)/(C2 orientation): the 22 pieces, as real `Tri` objects -/
+
+theorem det3_eq_toR_cross (t : PgramTiling22.Tri) :
+    Erdos634.CertCoord.det3
+      (toR (zx (toZPt (PgramTiling22.t1 t)))) (toR (zy (toZPt (PgramTiling22.t1 t))))
+      (toR (zx (toZPt (PgramTiling22.t2 t)))) (toR (zy (toZPt (PgramTiling22.t2 t))))
+      (toR (zx (toZPt (PgramTiling22.t3 t)))) (toR (zy (toZPt (PgramTiling22.t3 t))))
+    = toR (zcross (toZPt (PgramTiling22.t1 t)) (toZPt (PgramTiling22.t2 t))
+        (toZPt (PgramTiling22.t3 t))) :=
+  toR_zcross _ _ _
+
+set_option maxRecDepth 2000 in
+theorem all_pieces_pos :
+    ∀ t ∈ PgramTiling22.tiles,
+      zpos (zcross (toZPt (PgramTiling22.t1 t)) (toZPt (PgramTiling22.t2 t))
+        (toZPt (PgramTiling22.t3 t))) = true := by
+  decide
+
+noncomputable def pieceTri {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles) : Tri :=
+  Erdos634.CertCoord.mkTri
+    (toR (zx (toZPt (PgramTiling22.t1 t)))) (toR (zy (toZPt (PgramTiling22.t1 t))))
+    (toR (zx (toZPt (PgramTiling22.t2 t)))) (toR (zy (toZPt (PgramTiling22.t2 t))))
+    (toR (zx (toZPt (PgramTiling22.t3 t)))) (toR (zy (toZPt (PgramTiling22.t3 t))))
+    (by rw [det3_eq_toR_cross]; exact (toR_pos (all_pieces_pos t ht)).ne')
+
+theorem dist2_eq_zdist2 (p q : PgramTiling22.Pt) :
+    PgramTiling22.dist2 p q = zdist2 (toZPt p) (toZPt q) := rfl
+
+/-- **A piece's vertex, named by index.** -/
+def vertexOf (t : PgramTiling22.Tri) (i : Fin 3) : PgramTiling22.Pt :=
+  ![PgramTiling22.t1 t, PgramTiling22.t2 t, PgramTiling22.t3 t] i
+
+theorem pieceTri_pts (t : PgramTiling22.Tri) (ht : t ∈ PgramTiling22.tiles) (i : Fin 3) :
+    (pieceTri ht).pts i
+      = Erdos634.CertCoord.mkPt (toR (zx (toZPt (vertexOf t i)))) (toR (zy (toZPt (vertexOf t i)))) := by
+  fin_cases i <;> rfl
+
+theorem pieceTri_dist_sq (t : PgramTiling22.Tri) (ht : t ∈ PgramTiling22.tiles) (i j : Fin 3) :
+    dist ((pieceTri ht).pts i) ((pieceTri ht).pts j) ^ 2
+      = toR (PgramTiling22.dist2 (vertexOf t i) (vertexOf t j)) := by
+  rw [pieceTri_pts t ht i, pieceTri_pts t ht j, Erdos634.CertCoord.dist_sq_mkPt, dist2_eq_zdist2]
+  exact toR_zdist2 _ _
+
+/-! ## (C1): every piece is congruent to a fixed model -/
+
+theorem headI_mem_tiles : PgramTiling22.tiles.headI ∈ PgramTiling22.tiles := by decide
+
+def congOK' (t : PgramTiling22.Tri) : Bool :=
+  decide (∃ σ : Equiv.Perm (Fin 3), ∀ i j : Fin 3,
+    PgramTiling22.dist2 (vertexOf t i) (vertexOf t j)
+      = PgramTiling22.dist2 (vertexOf PgramTiling22.tiles.headI (σ i))
+          (vertexOf PgramTiling22.tiles.headI (σ j)))
+
+set_option maxRecDepth 2000 in
+theorem all_pieces_cong : ∀ t ∈ PgramTiling22.tiles, congOK' t = true := by decide
+
+theorem pieceTri_congruent {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles) :
+    (pieceTri ht).Congruent (pieceTri headI_mem_tiles) := by
+  have hex := all_pieces_cong t ht
+  simp only [congOK', decide_eq_true_eq] at hex
+  obtain ⟨σ, hσ⟩ := hex
+  refine Erdos634.SssCongruent.congruent_of_sq_dist_perm σ (fun i j => ?_)
+  rw [pieceTri_dist_sq t ht, pieceTri_dist_sq PgramTiling22.tiles.headI headI_mem_tiles]
+  exact congrArg toR (hσ i j)
 
 end Erdos634.PgramTiling22Bridge
