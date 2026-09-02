@@ -101,6 +101,30 @@ theorem Tri.unreflected_or_reflected (T model : Tri) : T.Unreflected model ∨ T
   · exact Or.inr ⟨fun h => absurd h (asymm hT), fun h => absurd h (asymm hm)⟩
   · exact Or.inl ⟨fun h => absurd h (asymm hT), fun h => absurd h (asymm hm)⟩
 
+/-- **Relabelling a tile's vertices by a permutation** — the same triangle, same carrier, just a
+different `pts : Fin 3 → Plane` indexing. Needed because a `CongruentDissection`'s `model`'s vertex
+order is whatever a certificate happened to produce, and matching it against an external
+convention (e.g. `TilePlacement.sideOpp`'s side-`j`-opposite-vertex-`j` labelling) may need a
+different order. -/
+noncomputable def Tri.relabel (T : Tri) (τ : Equiv.Perm (Fin 3)) : Tri where
+  pts := T.pts ∘ τ
+  indep := T.indep.comp_embedding τ.toEmbedding
+
+theorem Tri.relabel_pts (T : Tri) (τ : Equiv.Perm (Fin 3)) (k : Fin 3) :
+    (T.relabel τ).pts k = T.pts (τ k) := rfl
+
+/-- **A relabelling is congruent to the original** — trivially, via the identity isometry and the
+permutation itself. -/
+theorem Tri.congruent_relabel (T : Tri) (τ : Equiv.Perm (Fin 3)) : T.Congruent (T.relabel τ) := by
+  refine ⟨IsometryEquiv.refl Plane, τ.symm, fun k => ?_⟩
+  show T.pts k = (T.relabel τ).pts (τ.symm k)
+  simp [Tri.relabel_pts]
+
+/-- Congruence composes through a relabelling of the target. -/
+theorem Tri.Congruent.relabel {T U : Tri} (h : T.Congruent U) (τ : Equiv.Perm (Fin 3)) :
+    T.Congruent (U.relabel τ) :=
+  h.trans (U.congruent_relabel τ)
+
 /-- **A dissection into congruent copies of one tile.**  This is the structure the problem
 is actually about, and the one `Dissection` alone does not express. -/
 structure CongruentDissection (N : ℕ) extends Dissection N where
@@ -135,6 +159,19 @@ theorem layer_all_unreflected (D : CongruentDissection N) (idx : ℕ → Fin N)
     (step : ∀ j, D.UnreflectedAt (idx j) → D.UnreflectedAt (idx (j + 1))) :
     ∀ j, D.UnreflectedAt (idx j) :=
   fun j => Nat.rec base step j
+
+/-- **The same `CongruentDissection`, with its model relabelled by a permutation.** Every tile is
+still congruent (relabelling composes with the existing witness), and the target/tiles are
+untouched — only which index of `model` names which vertex changes. Useful for matching a
+certificate-produced model's vertex order against an external convention. -/
+noncomputable def relabelModel (D : CongruentDissection N) (τ : Equiv.Perm (Fin 3)) :
+    CongruentDissection N where
+  toDissection := D.toDissection
+  model := D.model.relabel τ
+  tiles_congruent := fun i => (D.tiles_congruent i).relabel τ
+
+theorem relabelModel_model_pts (D : CongruentDissection N) (τ : Equiv.Perm (Fin 3)) (k : Fin 3) :
+    (D.relabelModel τ).model.pts k = D.model.pts (τ k) := rfl
 
 end CongruentDissection
 
