@@ -1,6 +1,7 @@
 import Erdos634.Tiling44
 import Erdos634.Z15Real
 import Erdos634.CertGeom
+import Erdos634.SssCongruent
 
 /-!
 # Instantiating `Tiling44`'s target and first piece as real `Tri` objects
@@ -118,6 +119,28 @@ same operations on the same underlying type, so this is `rfl`. -/
 theorem cross_eq_zcross (o a b : Tiling44.Pt) :
     Tiling44.cross o a b = zcross (toZPt o) (toZPt a) (toZPt b) := rfl
 
+/-- `Tiling44.dist2` is literally `Z15Real.zdist2` read through `toZPt` — again `rfl`. -/
+theorem dist2_eq_zdist2 (p q : Tiling44.Pt) :
+    Tiling44.dist2 p q = zdist2 (toZPt p) (toZPt q) := rfl
+
+/-- **A piece's vertex, named by index.** -/
+def vertexOf (t : Tiling44.Tri) (i : Fin 3) : Tiling44.Pt :=
+  ![Tiling44.t1 t, Tiling44.t2 t, Tiling44.t3 t] i
+
+/-- **`pieceTri`'s vertices are exactly `vertexOf`, read as real points.** -/
+theorem pieceTri_pts (t : Tiling44.Tri) (ht : t ∈ Tiling44.tiles) (i : Fin 3) :
+    (pieceTri ht).pts i
+      = Erdos634.CertCoord.mkPt (toR (zx (toZPt (vertexOf t i)))) (toR (zy (toZPt (vertexOf t i)))) := by
+  fin_cases i <;> rfl
+
+/-- **Squared distances between a piece's vertices, transferred to `ℝ` from the certificate's own
+`dist2`.** -/
+theorem pieceTri_dist_sq (t : Tiling44.Tri) (ht : t ∈ Tiling44.tiles) (i j : Fin 3) :
+    dist ((pieceTri ht).pts i) ((pieceTri ht).pts j) ^ 2 = toR (Tiling44.dist2 (vertexOf t i) (vertexOf t j)) := by
+  rw [pieceTri_pts t ht i, pieceTri_pts t ht j, Erdos634.CertCoord.dist_sq_mkPt,
+    dist2_eq_zdist2]
+  exact toR_zdist2 _ _
+
 /-- **A single `sepBy`-true witness gives a genuine separating affine functional** between two
 pieces, read as real `Tri` objects — the assembly step `CertGeom.pairwise_disjoint_of_separating`
 needs, for one pair. `hPQ` is `lineFun_ne_zero_of_sq_ne`'s decidable side condition on the edge
@@ -229,5 +252,33 @@ theorem pieces_interiors_disjoint {A B : Tiling44.Tri} (hA : A ∈ Tiling44.tile
   obtain ⟨hsepBy, hsq⟩ := hsep
   obtain ⟨f, hf, c, h1, h2⟩ := sep_of_sepBy ((sqCond_iff pq).mp hsq) hsepBy hA hB
   exact Erdos634.CertGeom.interiors_disjoint_of_separating f hf c h1 h2
+
+/-! ## (C1): every piece is congruent to a fixed model — the first piece, decided at once -/
+
+/-- **The model tile**: `Tiling44`'s first certificate piece. Any piece works as the model since
+all are mutually congruent; picking one already in `tiles` avoids naming new coordinates. -/
+theorem headI_mem_tiles : Tiling44.tiles.headI ∈ Tiling44.tiles := by decide
+
+/-- **Some permutation matches a piece's squared side lengths to the model's, positionally.**
+`decide` over the `Fintype (Equiv.Perm (Fin 3))` (6 elements) × 44 pieces × 9 pairs — cheap. -/
+def congOK' (t : Tiling44.Tri) : Bool :=
+  decide (∃ σ : Equiv.Perm (Fin 3), ∀ i j : Fin 3,
+    Tiling44.dist2 (vertexOf t i) (vertexOf t j)
+      = Tiling44.dist2 (vertexOf Tiling44.tiles.headI (σ i)) (vertexOf Tiling44.tiles.headI (σ j)))
+
+/-- **Every one of the 44 pieces has a matching permutation** — one `decide`, no per-piece data
+entry, matching the pattern established for (C2)/(C3). -/
+theorem all_pieces_cong : ∀ t ∈ Tiling44.tiles, congOK' t = true := by decide
+
+/-- **(C1) fully assembled**: every piece of `Tiling44`, as a real `Tri`, is congruent to the
+model tile. -/
+theorem pieceTri_congruent {t : Tiling44.Tri} (ht : t ∈ Tiling44.tiles) :
+    (pieceTri ht).Congruent (pieceTri headI_mem_tiles) := by
+  have hex := all_pieces_cong t ht
+  simp only [congOK', decide_eq_true_eq] at hex
+  obtain ⟨σ, hσ⟩ := hex
+  refine Erdos634.SssCongruent.congruent_of_sq_dist_perm σ (fun i j => ?_)
+  rw [pieceTri_dist_sq t ht, pieceTri_dist_sq Tiling44.tiles.headI headI_mem_tiles]
+  exact congrArg Erdos634.Z15Real.toR (hσ i j)
 
 end Erdos634.Tiling44Bridge

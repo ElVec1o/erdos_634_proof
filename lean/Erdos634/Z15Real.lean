@@ -185,4 +185,15 @@ theorem toR_zcross (o a b : ZPt) :
       (toR (zx b)) (toR (zy b)) = toR (zcross o a b) := by
   simp only [zcross, Erdos634.CertCoord.det3, toR_sub, toR_mul]; ring
 
+/-- The `ℤ[√15]` squared distance, matching every certificate file's `dist2`. -/
+def zdist2 (p q : ZPt) : Z15 :=
+  zadd (zmul (zsub (zx q) (zx p)) (zsub (zx q) (zx p)))
+       (zmul (zsub (zy q) (zy p)) (zsub (zy q) (zy p)))
+
+/-- **The transfer lemma for squared distances**: a certificate's `zdist2`, read through `toR`, is
+exactly the real squared distance between the transferred coordinate points. -/
+theorem toR_zdist2 (p q : ZPt) :
+    (toR (zx p) - toR (zx q)) ^ 2 + (toR (zy p) - toR (zy q)) ^ 2 = toR (zdist2 p q) := by
+  simp only [zdist2, toR_add, toR_mul, toR_sub]; ring
+
 end Erdos634.Z15Real
