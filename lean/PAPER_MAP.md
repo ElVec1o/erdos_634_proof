@@ -201,7 +201,7 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 | C `lem:noapexline` | The chain never needs the apex line | `chain_needs_small_lines` |
 | C `lem:parity` | Straight-figure parity | `census_parity` |
 | C `lem:shadow` | The shadow at a $c$-corner | `strips_tall`, `shadow_footage_e1` |
-| C `lem:sidequant` | Thick-side quantization | `side_no_b_uncond`, `side_quantized` |
+| C `lem:sidequant` | Thick-side quantization | `side_no_b_uncond`, `side_quantized`, `SideNoB.side_a_quantized` | **VERIFIED 2026-09-08.** `side_no_b_uncond` and `side_quantized` each existed, and each one's own docstring described the bridge between them in prose (substitute `Q=0` into the `f³`-scale walk, divide by `f`, reach `side_quantized`'s `f²`-scale hypothesis) — but that bridge was never assembled as Lean. `side_a_quantized` (new) closes it: from the `f³`-scale walk plus the `γ`-trap, concludes `f ∣ P` directly, matching the lemma's own text word for word. `lake build Erdos634.All` clean, no `sorry`. |
 | C `lem:solitary` | The crossing kill, and solitude of branches | `crossing_tangency` |
 | C `lem:termination` | Termination is one condition, boundary or interior | `consecutive_gap` |
 | C `lem:tight` | The $\gamma$-injection budget at $p=2$ | `gamma_slack`, `p_two_tight_iff` |
