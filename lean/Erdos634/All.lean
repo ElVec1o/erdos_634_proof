@@ -187,3 +187,4 @@ import Erdos634.CertBridge
 import Erdos634.CertGeom
 import Erdos634.CertCoord
 import Erdos634.Z15Real
+import Erdos634.Tiling44Bridge
