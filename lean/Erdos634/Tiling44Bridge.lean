@@ -447,4 +447,66 @@ noncomputable def dissection : CongruentDissection Tiling44.tiles.length where
   model := pieceTri headI_mem_tiles
   tiles_congruent := fun i => pieceTri_congruent (List.getElem_mem i.isLt)
 
+/-! ## Checking `dissection`'s shape against `thm:44`'s exact statement (Rule 5)
+
+`thm:44` (erdos-634.tex): "the isosceles triangle with sides `(16,16,22)` is tiled by 44 congruent
+copies of the `(2,3,4)` triangle. Consequently `44m²` is a tile count for every `m ≥ 1`." Two
+clauses — only the first is checked here. -/
+
+/-- **`dissection`'s target has sides in ratio `16:16:22`** (squared `256:256:484`, scaled by the
+certificate's own `8²`: `16384:16384:30976`). -/
+theorem targetTri_pts_eq (k : Fin 3) :
+    targetTri.pts k = Erdos634.CertCoord.mkPt
+      (toR (zx (toZPt (![Tiling44.t1 Tiling44.target, Tiling44.t2 Tiling44.target,
+        Tiling44.t3 Tiling44.target] k))))
+      (toR (zy (toZPt (![Tiling44.t1 Tiling44.target, Tiling44.t2 Tiling44.target,
+        Tiling44.t3 Tiling44.target] k)))) := by
+  fin_cases k <;> rfl
+
+theorem targetTri_dist_sq (i j : Fin 3) :
+    dist (targetTri.pts i) (targetTri.pts j) ^ 2
+      = toR (Tiling44.dist2
+          (![Tiling44.t1 Tiling44.target, Tiling44.t2 Tiling44.target, Tiling44.t3 Tiling44.target] i)
+          (![Tiling44.t1 Tiling44.target, Tiling44.t2 Tiling44.target, Tiling44.t3 Tiling44.target] j)) := by
+  rw [targetTri_pts_eq i, targetTri_pts_eq j, Erdos634.CertCoord.dist_sq_mkPt, dist2_eq_zdist2]
+  exact toR_zdist2 _ _
+
+theorem targetTri_sides :
+    dist (targetTri.pts 0) (targetTri.pts 1) ^ 2 = 30976
+    ∧ dist (targetTri.pts 1) (targetTri.pts 2) ^ 2 = 16384
+    ∧ dist (targetTri.pts 2) (targetTri.pts 0) ^ 2 = 16384 := by
+  have e01 : Tiling44.dist2 (Tiling44.t1 Tiling44.target) (Tiling44.t2 Tiling44.target)
+      = ((30976:ℤ),(0:ℤ)) := by decide
+  have e12 : Tiling44.dist2 (Tiling44.t2 Tiling44.target) (Tiling44.t3 Tiling44.target)
+      = ((16384:ℤ),(0:ℤ)) := by decide
+  have e20 : Tiling44.dist2 (Tiling44.t3 Tiling44.target) (Tiling44.t1 Tiling44.target)
+      = ((16384:ℤ),(0:ℤ)) := by decide
+  refine ⟨?_, ?_, ?_⟩
+  · rw [targetTri_dist_sq 0 1]; simp; rw [e01]; simp [toR]
+  · rw [targetTri_dist_sq 1 2]; simp; rw [e12]; simp [toR]
+  · rw [targetTri_dist_sq 2 0]; simp; rw [e20]; simp [toR]
+
+/-- **The model tile's sides are in ratio `2:3:4`** (squared `4:9:16`, scaled by `8²`:
+`256:576:1024`). -/
+theorem model_sides :
+    (dist ((pieceTri headI_mem_tiles).pts 0) ((pieceTri headI_mem_tiles).pts 1) ^ 2 = 256
+      ∨ dist ((pieceTri headI_mem_tiles).pts 0) ((pieceTri headI_mem_tiles).pts 1) ^ 2 = 576
+      ∨ dist ((pieceTri headI_mem_tiles).pts 0) ((pieceTri headI_mem_tiles).pts 1) ^ 2 = 1024)
+    ∧ (dist ((pieceTri headI_mem_tiles).pts 1) ((pieceTri headI_mem_tiles).pts 2) ^ 2 = 256
+      ∨ dist ((pieceTri headI_mem_tiles).pts 1) ((pieceTri headI_mem_tiles).pts 2) ^ 2 = 576
+      ∨ dist ((pieceTri headI_mem_tiles).pts 1) ((pieceTri headI_mem_tiles).pts 2) ^ 2 = 1024)
+    ∧ (dist ((pieceTri headI_mem_tiles).pts 2) ((pieceTri headI_mem_tiles).pts 0) ^ 2 = 256
+      ∨ dist ((pieceTri headI_mem_tiles).pts 2) ((pieceTri headI_mem_tiles).pts 0) ^ 2 = 576
+      ∨ dist ((pieceTri headI_mem_tiles).pts 2) ((pieceTri headI_mem_tiles).pts 0) ^ 2 = 1024) := by
+  have e01 : Tiling44.dist2 (vertexOf Tiling44.tiles.headI 0) (vertexOf Tiling44.tiles.headI 1)
+      = ((256:ℤ),(0:ℤ)) := by decide
+  have e12 : Tiling44.dist2 (vertexOf Tiling44.tiles.headI 1) (vertexOf Tiling44.tiles.headI 2)
+      = ((576:ℤ),(0:ℤ)) := by decide
+  have e20 : Tiling44.dist2 (vertexOf Tiling44.tiles.headI 2) (vertexOf Tiling44.tiles.headI 0)
+      = ((1024:ℤ),(0:ℤ)) := by decide
+  refine ⟨Or.inl ?_, Or.inr (Or.inl ?_), Or.inr (Or.inr ?_)⟩
+  · rw [pieceTri_dist_sq _ headI_mem_tiles 0 1, e01]; simp [toR]
+  · rw [pieceTri_dist_sq _ headI_mem_tiles 1 2, e12]; simp [toR]
+  · rw [pieceTri_dist_sq _ headI_mem_tiles 2 0, e20]; simp [toR]
+
 end Erdos634.Tiling44Bridge
