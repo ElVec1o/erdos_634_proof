@@ -162,9 +162,40 @@ theorem base_b_count (e f b na nb nc : ℤ)
   rw [ht0, mul_zero] at ht
   linarith [ht]
 
+/-- **`thm:walkstruct` clause (ii)'s shape**: once `n_b = e` (`base_b_count`), the walk equation
+rearranges (cancelling `f` twice, mirroring `equal_side_shape`'s derivation for clause (i)) to
+`n_a = f·ℓ ⟹ n_c = e·(2−ℓ)` — the paper's own "subtracting and cancelling `f` leaves
+`nₐe+n_cf=2ef`, whence `f∣nₐ`, and writing `nₐ=fℓ` gives `n_c=e(2−ℓ)`". -/
+theorem base_shape (e f l na nc b : ℤ) (he : 1 ≤ e) (hef : e < f)
+    (hb : b + e ^ 2 = f ^ 2) (hl : na = f * l)
+    (hwalk : na * (e * f) + e * b + nc * f ^ 2 = e * (3 * f ^ 2 - e ^ 2)) :
+    nc = e * (2 - l) := by
+  have hf0 : (0:ℤ) < f := by linarith
+  rw [hl] at hwalk
+  have hcancel : f * (f * l * e + nc * f) = f * (f * (2 * e)) := by
+    have hbe : b = f ^ 2 - e ^ 2 := by linarith
+    rw [hbe] at hwalk
+    ring_nf
+    ring_nf at hwalk
+    linarith
+  have h1 := mul_left_cancel₀ (ne_of_gt hf0) hcancel
+  have h2 : f * nc = f * (e * (2 - l)) := by ring_nf; ring_nf at h1; linarith
+  exact mul_left_cancel₀ (ne_of_gt hf0) h2
+
+/-- **`thm:walkstruct` clause (ii)'s final step**: `n_c ≥ 1` forces `ℓ ≤ 1` — "`n_c ≥ 1` forces
+`ℓ ≤ 1`" in the paper's own words. -/
+theorem base_shape_ell_le_one (e f l na nc b : ℤ) (he : 1 ≤ e) (hef : e < f)
+    (hb : b + e ^ 2 = f ^ 2) (hl : na = f * l)
+    (hwalk : na * (e * f) + e * b + nc * f ^ 2 = e * (3 * f ^ 2 - e ^ 2))
+    (hnc1 : 1 ≤ nc) : l ≤ 1 := by
+  have hshape := base_shape e f l na nc b he hef hb hl hwalk
+  nlinarith [hshape, hnc1, he]
+
 end Erdos634.BaseBetaWalkArith
 
 #print axioms Erdos634.BaseBetaWalkArith.eq_zero_of_dvd_of_lt
 #print axioms Erdos634.BaseBetaWalkArith.equal_side_no_b
 #print axioms Erdos634.BaseBetaWalkArith.equal_side_shape
 #print axioms Erdos634.BaseBetaWalkArith.base_b_count
+#print axioms Erdos634.BaseBetaWalkArith.base_shape
+#print axioms Erdos634.BaseBetaWalkArith.base_shape_ell_le_one
