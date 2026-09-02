@@ -234,7 +234,10 @@ theorem equal_side_no_b_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ
     (hC : sideOpp D.model 2 = ((f0 ^ 2 : ℤ) : ℝ))
     (hLen : dist (D.target.pts k) (D.target.pts (k + 1)) = ((f0 ^ 3 : ℤ) : ℝ)) :
     ∃ Pc Qc Rc : ℕ, Qc = 0 ∧
-      (Pc : ℤ) * (e0 * f0) + (Rc : ℤ) * f0 ^ 2 = f0 ^ 3 := by
+      (Pc : ℤ) * (e0 * f0) + (Rc : ℤ) * f0 ^ 2 = f0 ^ 3 ∧
+      ∃ p ∈ Erdos634.BaseChain.wallList D.toDissection (wallFun D.target k) 0,
+        edgeEast D.toDissection dir p = D.target.pts (k + 1) ∧
+        dist (edgeWest D.toDissection dir p) (edgeEast D.toDissection dir p) = sideOpp D.model 2 := by
   classical
   set g := wallFun D.target k with hgdef
   set a := D.target.pts k with hadef
@@ -324,7 +327,7 @@ theorem equal_side_no_b_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ
   have hnc1 : 1 ≤ RcL := by
     obtain ⟨ic, hiclt, hiceq⟩ := hsurj pc hpcmem
     subst hiceq
-    apply ChainWalk.count_pos n (fun j => R j - L j) (sideOpp D.model 2) ic
+    apply Erdos634.ChainWalk.count_pos n (fun j => R j - L j) (sideOpp D.model 2) ic
       (Finset.mem_range.mpr hiclt)
     have hwm := (Erdos634.BaseChain.mem_wallList D.toDissection g 0 (E ic)).mp hpcmem
     have hdist : dist ((D.tile (E ic).1).pts (E ic).2) ((D.tile (E ic).1).pts ((E ic).2 + 1))
@@ -351,7 +354,158 @@ theorem equal_side_no_b_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ
   have hQc0 : QcL = 0 := by exact_mod_cast hnb0
   have hcast2 : (PcL : ℤ) * (e0 * f0) + (RcL : ℤ) * f0 ^ 2 = f0 ^ 3 := by
     rw [hnb0] at hcast; linarith [hcast]
-  exact ⟨PcL, QcL, RcL, hQc0, hcast2⟩
+  -- apex-edge argument begins
+  have hn1 : n - 1 < n := by omega
+  have hlast_mem := hmem (n - 1) hn1
+  set plast := E (n - 1) with hplastdef
+  have hidxE : (D.tile plast.1).pts plast.2 = b ∨ (D.tile plast.1).pts (plast.2 + 1) = b := by
+    have hthis : edgeEast D.toDissection dir plast = b := heastlast
+    unfold edgeEast at hthis
+    classical
+    split at hthis
+    · exact Or.inr hthis
+    · exact Or.inl hthis
+  have hapex := Erdos634.Geometry.Dissection.congruentDissection_apex_counts D α β γ hαβ hαγ hαπ hα0
+    hβγ hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hα' hβ' hγ' (k + 1) hcornerapex
+  have hvals : (D.tile plast.1).localAngle (D.target.pts (k + 1)) ∈
+      ({α, β, γ, Real.pi, 0} : Finset ℝ) :=
+    Erdos634.Geometry.Dissection.congruentDissection_localAngle_mem D α β γ hα' hβ' hγ' (k + 1)
+      plast.1
+  have hcardβ := hapex.2.1
+  have hcardγ := hapex.2.2.1
+  have hcardπ := hapex.2.2.2
+  have hnotβ : (D.tile plast.1).localAngle (D.target.pts (k + 1)) ≠ β := by
+    intro hcon
+    have hpos : 0 < ({i : Fin N | (D.tile i).localAngle (D.target.pts (k + 1)) = β} :
+        Finset (Fin N)).card := Finset.card_pos.mpr ⟨plast.1, by simpa using hcon⟩
+    omega
+  have hnotγ : (D.tile plast.1).localAngle (D.target.pts (k + 1)) ≠ γ := by
+    intro hcon
+    have hpos : 0 < ({i : Fin N | (D.tile i).localAngle (D.target.pts (k + 1)) = γ} :
+        Finset (Fin N)).card := Finset.card_pos.mpr ⟨plast.1, by simpa using hcon⟩
+    omega
+  have hnotπ : (D.tile plast.1).localAngle (D.target.pts (k + 1)) ≠ Real.pi := by
+    intro hcon
+    have hpos : 0 < ({i : Fin N | (D.tile i).localAngle (D.target.pts (k + 1)) = Real.pi} :
+        Finset (Fin N)).card := Finset.card_pos.mpr ⟨plast.1, by simpa using hcon⟩
+    omega
+  have hncolR : ¬ Collinear ℝ (Set.range (D.tile plast.1).pts) :=
+    affineIndependent_iff_not_collinear.mp (D.tile plast.1).indep
+  have hncol : ∀ j : Fin 3, ¬ Collinear ℝ ({(D.tile plast.1).pts (j+1), (D.tile plast.1).pts j,
+      (D.tile plast.1).pts (j+2)} : Set Plane) := by
+    intro j hcol
+    apply hncolR
+    have heqset : ({(D.tile plast.1).pts (j+1), (D.tile plast.1).pts j, (D.tile plast.1).pts (j+2)} :
+        Set Plane) = Set.range (D.tile plast.1).pts := by
+      ext x
+      simp only [Set.mem_insert_iff, Set.mem_singleton_iff, Set.mem_range]
+      constructor
+      · rintro (rfl | rfl | rfl)
+        · exact ⟨j+1, rfl⟩
+        · exact ⟨j, rfl⟩
+        · exact ⟨j+2, rfl⟩
+      · rintro ⟨i, rfl⟩
+        fin_cases j <;> fin_cases i <;>
+          first | (left; rfl) | (right; left; rfl) | (right; right; rfl)
+    rwa [heqset] at hcol
+  have hne0 : (D.tile plast.1).localAngle (D.target.pts (k + 1)) ≠ 0 := by
+    intro hcon
+    rcases hidxE with hidx | hidx
+    · rw [show D.target.pts (k+1) = b from rfl, ← hidx] at hcon
+      have hval : (D.tile plast.1).localAngle ((D.tile plast.1).pts plast.2) =
+          cornerAngle ((D.tile plast.1).pts (plast.2+1)) ((D.tile plast.1).pts plast.2)
+            ((D.tile plast.1).pts (plast.2+2)) :=
+        Erdos634.Geometry.Tri.localAngle_vertex (D.tile plast.1) plast.2
+      rw [hval] at hcon
+      have hne : EuclideanGeometry.angle ((D.tile plast.1).pts (plast.2+1))
+          ((D.tile plast.1).pts plast.2) ((D.tile plast.1).pts (plast.2+2)) ≠ 0 :=
+        EuclideanGeometry.angle_ne_zero_of_not_collinear (hncol plast.2)
+      exact hne hcon
+    · rw [show D.target.pts (k+1) = b from rfl, ← hidx] at hcon
+      have hval : (D.tile plast.1).localAngle ((D.tile plast.1).pts (plast.2+1)) =
+          cornerAngle ((D.tile plast.1).pts (plast.2+1+1)) ((D.tile plast.1).pts (plast.2+1))
+            ((D.tile plast.1).pts (plast.2+1+2)) :=
+        Erdos634.Geometry.Tri.localAngle_vertex (D.tile plast.1) (plast.2+1)
+      rw [hval] at hcon
+      have hne : EuclideanGeometry.angle ((D.tile plast.1).pts (plast.2+1+1))
+          ((D.tile plast.1).pts (plast.2+1)) ((D.tile plast.1).pts (plast.2+1+2)) ≠ 0 :=
+        EuclideanGeometry.angle_ne_zero_of_not_collinear (hncol (plast.2+1))
+      exact hne hcon
+  have heqα : (D.tile plast.1).localAngle (D.target.pts (k + 1)) = α := by
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hvals
+    rcases hvals with h | h | h | h | h
+    · exact h
+    · exact absurd h hnotβ
+    · exact absurd h hnotγ
+    · exact absurd h hnotπ
+    · exact absurd h hne0
+  have hangleα : ∀ j : Fin 3, (D.tile plast.1).pts j = D.target.pts (k + 1) →
+      Erdos634.TilePlacement.angleAt (D.tile plast.1) j = α := by
+    intro j hj
+    rw [← heqα, ← hj]
+    exact (Erdos634.Geometry.Tri.localAngle_vertex (D.tile plast.1) j).symm
+  have hnota : dist ((D.tile plast.1).pts plast.2) ((D.tile plast.1).pts (plast.2 + 1))
+      ≠ sideOpp D.model 0 := by
+    intro hlen
+    obtain ⟨hex1, hex2⟩ := edge_excludes_own_angle D α β γ hα' hβ' hγ' hscalenef hαβ hαγ hβγ
+      plast.1 plast.2 0 α rfl hlen
+    rcases hidxE with hidx | hidx
+    · exact hex1 (hangleα plast.2 hidx)
+    · exact hex2 (hangleα (plast.2 + 1) hidx)
+  have hdist_last : dist ((D.tile plast.1).pts plast.2) ((D.tile plast.1).pts (plast.2 + 1))
+      = R (n - 1) - L (n - 1) := by
+    have hwm := (Erdos634.BaseChain.mem_wallList D.toDissection g 0 plast).mp hlast_mem
+    rw [hiso _ _ hwm.1 hwm.2]
+    show |dir ((D.tile plast.1).pts plast.2) - dir ((D.tile plast.1).pts (plast.2 + 1))|
+      = Erdos634.ChainInstance.edgeEnd D.toDissection dir plast
+        - Erdos634.OrientBridge.edgePos D.toDissection dir plast
+    rw [show Erdos634.OrientBridge.edgePos D.toDissection dir plast
+          = min (dir ((D.tile plast.1).pts plast.2)) (dir ((D.tile plast.1).pts (plast.2 + 1)))
+        from rfl,
+      show Erdos634.ChainInstance.edgeEnd D.toDissection dir plast
+          = max (dir ((D.tile plast.1).pts plast.2)) (dir ((D.tile plast.1).pts (plast.2 + 1)))
+        from rfl]
+    rcases le_total (dir ((D.tile plast.1).pts plast.2))
+        (dir ((D.tile plast.1).pts (plast.2 + 1))) with h | h
+    · rw [min_eq_left h, max_eq_right h, abs_of_nonpos (by linarith)]; ring
+    · rw [min_eq_right h, max_eq_left h, abs_of_nonneg (by linarith)]
+  have hdist_last : dist ((D.tile plast.1).pts plast.2) ((D.tile plast.1).pts (plast.2 + 1))
+      = R (n - 1) - L (n - 1) := by
+    have hwm := (Erdos634.BaseChain.mem_wallList D.toDissection g 0 plast).mp hlast_mem
+    rw [hiso _ _ hwm.1 hwm.2]
+    show |dir ((D.tile plast.1).pts plast.2) - dir ((D.tile plast.1).pts (plast.2 + 1))|
+      = Erdos634.ChainInstance.edgeEnd D.toDissection dir plast
+        - Erdos634.OrientBridge.edgePos D.toDissection dir plast
+    rw [show Erdos634.OrientBridge.edgePos D.toDissection dir plast
+          = min (dir ((D.tile plast.1).pts plast.2)) (dir ((D.tile plast.1).pts (plast.2 + 1)))
+        from rfl,
+      show Erdos634.ChainInstance.edgeEnd D.toDissection dir plast
+          = max (dir ((D.tile plast.1).pts plast.2)) (dir ((D.tile plast.1).pts (plast.2 + 1)))
+        from rfl]
+    rcases le_total (dir ((D.tile plast.1).pts plast.2))
+        (dir ((D.tile plast.1).pts (plast.2 + 1))) with h | h
+    · rw [min_eq_left h, max_eq_right h, abs_of_nonpos (by linarith)]; ring
+    · rw [min_eq_right h, max_eq_left h, abs_of_nonneg (by linarith)]
+  have hlastRL := hRL (n - 1) hn1
+  rw [← hdist_last] at hlastRL
+  refine ⟨PcL, QcL, RcL, hQc0, hcast2, plast, hlast_mem, heastlast, ?_⟩
+  have hWE_dist : dist (edgeWest D.toDissection dir plast) (edgeEast D.toDissection dir plast)
+      = dist ((D.tile plast.1).pts plast.2) ((D.tile plast.1).pts (plast.2 + 1)) := by
+    unfold edgeWest edgeEast
+    classical
+    split
+    · rfl
+    · exact dist_comm _ _
+  rw [hWE_dist]
+  rcases hlastRL with h0 | h1 | h2
+  · exact absurd h0 hnota
+  · exfalso
+    have hmemQc : (n - 1) ∈ (Finset.range n).filter (fun j => R j - L j = sideOpp D.model 1) := by
+      rw [Finset.mem_filter]
+      exact ⟨Finset.mem_range.mpr hn1, by rw [← hdist_last]; exact h1⟩
+    have : (0:ℕ) < QcL := hQcdef ▸ Finset.card_pos.mpr ⟨n - 1, hmemQc⟩
+    omega
+  · exact h2
 
 /-- **`thm:walkstruct` clause (i)'s shape, for a real dissection's side**: `n_c = f - k·e` where
 `n_a = f·k`. Composes `equal_side_no_b_of_gammatrap`'s output with `f₀ ∣ Pc` (derived from the walk
@@ -387,7 +541,7 @@ theorem equal_side_shape_of_gammatrap (D : CongruentDissection N) (α β γ : �
     (hC : sideOpp D.model 2 = ((f0 ^ 2 : ℤ) : ℝ))
     (hLen : dist (D.target.pts k) (D.target.pts (k + 1)) = ((f0 ^ 3 : ℤ) : ℝ)) :
     ∃ Pc Rc kk : ℕ, (Pc : ℤ) = f0 * kk ∧ (Rc : ℤ) = f0 - kk * e0 := by
-  obtain ⟨Pc, Qc, Rc, hQc0, hcast2⟩ := equal_side_no_b_of_gammatrap D α β γ hαβ hαγ hαπ hα0 hβγ
+  obtain ⟨Pc, Qc, Rc, hQc0, hcast2, _⟩ := equal_side_no_b_of_gammatrap D α β γ hαβ hαγ hαπ hα0 hβγ
     hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hscalenef hα' hβ' hγ' k dir hker hdirab hthird
     hcornerbase hcornerapex hiso hN e0 f0 b0 he0 hef0 hcop hb0 hthin hA hB hC hLen
   have hf0 : (0 : ℤ) < f0 := by linarith
