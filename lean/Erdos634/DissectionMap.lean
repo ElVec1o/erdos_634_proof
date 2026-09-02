@@ -57,4 +57,29 @@ theorem mapDissection_target {N : ℕ} (e : Plane ≃ᵃ[ℝ] Plane) (D : Dissec
 theorem mapDissection_tile {N : ℕ} (e : Plane ≃ᵃ[ℝ] Plane) (D : Dissection N) (i : Fin N) :
     (mapDissection e D).tile i = mapTri e (D.tile i) := rfl
 
+/-- **An affine equivalence preserves interior-disjointness.** If two triangles' interiors are
+disjoint, so are the interiors of their images under any affine equivalence of the plane — the same
+argument `mapDissection`'s own `interiors_disjoint` field uses, extracted as a standalone, reusable
+fact (needed to transport a certificate's own within-piece disjointness through a placement map,
+e.g. for `CollarDisjointM4`'s collar construction). -/
+theorem mapTri_interiors_disjoint {T U : Tri} (e : Plane ≃ᵃ[ℝ] Plane)
+    (h : Disjoint (interior T.carrier) (interior U.carrier)) :
+    Disjoint (interior (mapTri e T).carrier) (interior (mapTri e U).carrier) := by
+  have hcont : Continuous e := AffineEquiv.continuous_of_finiteDimensional e
+  have hcont' : Continuous e.symm := AffineEquiv.continuous_of_finiteDimensional e.symm
+  let eh : Plane ≃ₜ Plane := ⟨e.toEquiv, hcont, hcont'⟩
+  have himg : ∀ S : Set Plane, interior (e '' S) = e '' interior S := by
+    intro S
+    exact (eh.image_interior S).symm
+  simp only [mapTri_carrier, himg]
+  exact (Set.disjoint_image_iff e.injective).mpr h
+
+/-- Composing two affine equivalences also preserves interior-disjointness (apply the single-map
+version twice) — the shape a placement built from a scale then a translate needs. -/
+theorem mapTri_mapTri_interiors_disjoint {T U : Tri} (e f : Plane ≃ᵃ[ℝ] Plane)
+    (h : Disjoint (interior T.carrier) (interior U.carrier)) :
+    Disjoint (interior (mapTri f (mapTri e T)).carrier)
+      (interior (mapTri f (mapTri e U)).carrier) :=
+  mapTri_interiors_disjoint f (mapTri_interiors_disjoint e h)
+
 end Erdos634.DissectionMap

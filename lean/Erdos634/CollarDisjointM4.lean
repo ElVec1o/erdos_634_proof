@@ -259,3 +259,27 @@ theorem column_piece_apex_disjoint {t : PgramTiling22.Tri} (ht : t ∈ PgramTili
     · show _ ≤ yAff ((translateCongruentDissection (mkPt 88 (24 * Real.sqrt 15))
           Erdos634.Tiling44Bridge.dissection).target.pts 2)
       rw [apex_copy_pts.2.2, yAff_mkPt]; nlinarith [Real.sqrt_nonneg (15:ℝ)]
+
+/-! ## Within-copy disjointness, transported from the source certificates
+
+`PgramTiling22Bridge.pieces_interiors_disjoint` already proves any two distinct pieces of
+`PgramTiling22` are interior-disjoint, unconditionally. `DissectionMap.mapTri_mapTri_interiors_disjoint`
+transports that fact through the placement maps (scale ×2 about the origin, then translate) without
+re-deriving any separating line — the same technique `mapDissection`'s own `interiors_disjoint`
+field already uses, now available as a standalone tool for a placement outside a `Dissection`
+wrapper (needed here since `PgramTiling22` itself has no `CongruentDissection` object). -/
+
+/-- **Two distinct pieces of the same placed `PgramTiling22` copy are interior-disjoint.**
+Transports `PgramTiling22Bridge.pieces_interiors_disjoint` through the placement maps — no new
+separating-line argument needed. -/
+theorem placed_pieces_interiors_disjoint {A B : PgramTiling22.Tri}
+    (hA : A ∈ PgramTiling22.tiles) (hB : B ∈ PgramTiling22.tiles) (hne : A ≠ B) (w : Plane) :
+    Disjoint
+      (interior (mapTri (AffineEquiv.constVAdd ℝ Plane w)
+        (mapTri (Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num))
+          (Erdos634.PgramTiling22Bridge.pieceTri hA))).carrier)
+      (interior (mapTri (AffineEquiv.constVAdd ℝ Plane w)
+        (mapTri (Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num))
+          (Erdos634.PgramTiling22Bridge.pieceTri hB))).carrier) :=
+  mapTri_mapTri_interiors_disjoint _ _
+    (Erdos634.PgramTiling22Bridge.pieces_interiors_disjoint hA hB hne)
