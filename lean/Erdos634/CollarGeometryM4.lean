@@ -1,6 +1,7 @@
 import Erdos634.PgramTiling22Bridge
 import Erdos634.TranslateDissection
 import Erdos634.Tiling44Bridge
+import Erdos634.Realizable
 import Erdos634.CertCoord
 
 /-!
@@ -130,3 +131,41 @@ theorem corner_copy_pts :
   · have := key 0 0 0 (by constructor <;> decide); rw [this]; norm_num
   · have := key 1 176 0 (by constructor <;> decide); rw [this]; norm_num
   · have := key 2 88 24 (by constructor <;> decide); rw [this]; push_cast; congr 1 <;> ring
+
+/-- **Column-piece placement, checked on `PgramTiling22`'s first raw piece.** Rescaling any piece
+of `PgramTiling22` (via the homothety about the origin) by `×2` matches the same `×2` rescale
+already checked for the four corner points (`pgram_scaled_corners`), confirming the piece-level
+route agrees with the aggregate one before it is applied to all `22` pieces (`PgramTiling22` has no
+`CongruentDissection` wrapper, so `TranslateDissection`'s tool can't be reused directly here — each
+raw `Tri` piece needs its own `mapTri`/homothety application). -/
+theorem piece0_scaled_pts :
+    Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num)
+      ((Erdos634.PgramTiling22Bridge.pieceAt ⟨0, by decide⟩).pts 0) = mkPt 0 0 ∧
+    Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num)
+      ((Erdos634.PgramTiling22Bridge.pieceAt ⟨0, by decide⟩).pts 1) = mkPt 16 0 ∧
+    Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num)
+      ((Erdos634.PgramTiling22Bridge.pieceAt ⟨0, by decide⟩).pts 2)
+      = mkPt 22 (6 * Real.sqrt 15) := by
+  have h0 : mkPt (0:ℝ) 0 = (0 : Plane) := by ext i; fin_cases i <;> simp [mkPt_zero, mkPt_one]
+  have key : ∀ (k : Fin 3) (a b : ℤ),
+      (Erdos634.Z15Real.zx (Erdos634.PgramTiling22Bridge.toZPt
+          (Erdos634.PgramTiling22Bridge.vertexOf PgramTiling22.tiles[0] k)) = (a, 0) ∧
+       Erdos634.Z15Real.zy (Erdos634.PgramTiling22Bridge.toZPt
+          (Erdos634.PgramTiling22Bridge.vertexOf PgramTiling22.tiles[0] k)) = (0, b)) →
+      Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num)
+        ((Erdos634.PgramTiling22Bridge.pieceAt ⟨0, by decide⟩).pts k)
+        = mkPt ((a:ℝ) * 2) ((b:ℝ) * 2 * Real.sqrt 15) := by
+    intro k a b ⟨hx, hy⟩
+    unfold Erdos634.PgramTiling22Bridge.pieceAt
+    rw [Erdos634.PgramTiling22Bridge.pieceTri_pts, Erdos634.Realizable.homothetyEquiv_apply]
+    simp only [AffineMap.homothety_apply]
+    rw [h0]; simp
+    rw [hx, hy]
+    simp only [Erdos634.Z15Real.toR]
+    push_cast
+    rw [smul_mkPt]
+    congr 1 <;> ring
+  refine ⟨?_, ?_, ?_⟩
+  · have := key 0 0 0 (by constructor <;> decide); rw [this]; norm_num
+  · have := key 1 8 0 (by constructor <;> decide); rw [this]; norm_num
+  · have := key 2 11 3 (by constructor <;> decide); rw [this]; push_cast; congr 1 <;> ring
