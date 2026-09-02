@@ -129,4 +129,103 @@ noncomputable def ofDetCertificate {N : ℕ} (target : Tri) (tile : Fin N → Tr
   Erdos634.ConvexCover.ofCertificate target tile hsub hdisj
     (area_identity_of_det target tile hdet)
 
+/-! ## Toward `volume stdCarrier = 1/2`
+
+Needed for non-`Tri` targets whose reference measure is a *square*, not `stdCarrier` itself (see
+`Erdos634.PgramTiling22Bridge`): `stdCarrier` is exactly half of the unit square `[0,1]²`, split by
+its diagonal, so its volume is `1/2`. The two pieces below build the volume-preserving point
+reflection through the square's center and identify its image of `stdCarrier` as the mirror
+triangle; what remains (not yet done) is showing the two triangles' union is exactly the unit
+square and their interiors are disjoint, then combining via measure additivity. -/
+
+/-- The square's center, `pb 0 + pb 1`. -/
+noncomputable def reflC : Plane := pb 0 + pb 1
+
+/-- Point reflection through `reflC`. -/
+noncomputable def reflMap (x : Plane) : Plane := reflC - x
+
+/-- **Point reflection preserves volume** — negation has determinant `1` in even dimension (here
+`2`), so `Measure.addHaar_image_linearMap` gives back the same volume, and translation invariance
+(the same step `volume_carrier_eq` uses) removes the constant shift. -/
+theorem volume_neg_image (S : Set Plane) :
+    volume ((fun x : Plane => -x) '' S) = volume S := by
+  have hcomp : (fun x : Plane => -x) '' S = (-LinearMap.id : Plane →ₗ[ℝ] Plane) '' S := by
+    ext y; simp
+  rw [hcomp, Measure.addHaar_image_linearMap]
+  rw [show LinearMap.det (-LinearMap.id : Plane →ₗ[ℝ] Plane) = 1 by
+    rw [show (-LinearMap.id : Plane →ₗ[ℝ] Plane) = (-1:ℝ) • LinearMap.id by ext x; simp,
+      LinearMap.det_smul]; simp]
+  simp
+
+theorem volume_reflMap_image (S : Set Plane) : volume (reflMap '' S) = volume S := by
+  have hfun : reflMap = (fun y : Plane => reflC + y) ∘ (fun x : Plane => -x) := by
+    funext x
+    show reflC - x = reflC + (-x)
+    abel
+  rw [show reflMap '' S = (fun y : Plane => reflC + y) '' ((fun x : Plane => -x) '' S) from
+    hfun ▸ Set.image_comp _ _ S]
+  have hpre : (fun y : Plane => reflC + y) '' ((fun x : Plane => -x) '' S)
+      = (fun y : Plane => (-reflC) + y) ⁻¹' ((fun x : Plane => -x) '' S) := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩; simpa using hx
+    · intro hy; exact ⟨(-reflC) + y, hy, by abel⟩
+  rw [hpre, measure_preimage_add, volume_neg_image]
+
+/-- `reflMap`, as a genuine affine map (needed for `AffineMap.image_convexHull`). -/
+noncomputable def reflAff : Plane →ᵃ[ℝ] Plane :=
+  (AffineEquiv.constVAdd ℝ Plane reflC).toAffineMap.comp
+    ((-LinearMap.id : Plane →ₗ[ℝ] Plane).toAffineMap)
+
+theorem reflAff_apply (x : Plane) : reflAff x = reflC - x := by
+  show reflC +ᵥ (-x) = reflC - x
+  rw [vadd_eq_add]; abel
+
+theorem reflAff_eq_reflMap : (reflAff : Plane → Plane) = reflMap := by
+  funext x; rw [reflAff_apply]; rfl
+
+/-- **The reflection of `stdCarrier` is the mirror triangle** spanning `reflC`, `pb 1`, `pb 0`
+(since `reflC - pb 0 = pb 1` and `reflC - pb 1 = pb 0`). -/
+theorem reflMap_stdCarrier :
+    reflMap '' stdCarrier = convexHull ℝ (Set.range ![reflC, pb 1, pb 0]) := by
+  rw [← reflAff_eq_reflMap, stdCarrier, AffineMap.image_convexHull]
+  congr 1
+  rw [← Set.range_comp]
+  apply congrArg Set.range
+  funext i
+  fin_cases i
+  · show reflAff 0 = reflC
+    rw [reflAff_apply]; abel
+  · show reflAff (pb 0) = pb 1
+    rw [reflAff_apply]
+    show reflC - pb 0 = pb 1
+    show (pb 0 + pb 1) - pb 0 = pb 1
+    abel
+  · show reflAff (pb 1) = pb 0
+    rw [reflAff_apply]
+    show reflC - pb 1 = pb 0
+    show (pb 0 + pb 1) - pb 1 = pb 0
+    abel
+
+/-- The mirror triangle: the "other half" of the unit square. -/
+noncomputable def stdCarrier2 : Set Plane := convexHull ℝ (Set.range ![reflC, pb 1, pb 0])
+
+/-- **`stdCarrier` and its mirror have equal volume**, by the volume-preserving reflection. -/
+theorem volume_stdCarrier2_eq : volume stdCarrier2 = volume stdCarrier := by
+  rw [stdCarrier2, ← reflMap_stdCarrier, volume_reflMap_image]
+
+/-! **Still open**: `stdCarrier ∪ stdCarrier2 = {x : Plane | x 0 ∈ Set.Icc (0:ℝ) 1 ∧
+x 1 ∈ Set.Icc (0:ℝ) 1}` (the unit square) with disjoint interiors, which combined with
+`volume_stdCarrier2_eq` and the square's volume `1` (see
+`Erdos634.PgramTiling22Bridge.volume_stdSquare` for that computation, on a square defined the same
+way) would give `volume stdCarrier = 1/2` by measure additivity. What remains: a coordinate
+characterization of `stdCarrier`'s membership (`x ∈ stdCarrier ↔ 0 ≤ x 0 ∧ 0 ≤ x 1 ∧ x 0 + x 1 ≤
+1`) — the ⊇ direction follows from `x = x 0 • pb 0 + x 1 • pb 1` (`Basis.sum_repr` plus `pb_repr`,
+already available) giving an explicit barycentric combination directly; the ⊆ direction needs
+either building `stdCarrier` as a genuine `Tri.carrier` (requiring `AffineIndependent ℝ ![0, pb 0,
+pb 1]`, not yet proven anywhere in this corpus) to reuse `Tri.carrier_eq_nonneg_coord`, or a direct
+convexity argument that the three points all satisfy the halfplane inequalities and those
+inequalities cut out a convex set.
+-/
+
 end Erdos634.AreaDet
