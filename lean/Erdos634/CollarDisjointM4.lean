@@ -283,3 +283,22 @@ theorem placed_pieces_interiors_disjoint {A B : PgramTiling22.Tri}
           (Erdos634.PgramTiling22Bridge.pieceTri hB))).carrier) :=
   mapTri_mapTri_interiors_disjoint _ _
     (Erdos634.PgramTiling22Bridge.pieces_interiors_disjoint hA hB hne)
+
+/-! ## Within-copy disjointness for the two `Tiling44`-based pieces
+
+The same transport pattern as `placed_pieces_interiors_disjoint`, applied to
+`Tiling44Bridge.dissection.interiors_disjoint` instead of `PgramTiling22Bridge`'s: covers
+within-`Δ_2^apex` and within-corner-triangle disjointness at once, for any translation vector. -/
+
+/-- **Two distinct tiles of a translated copy of `Tiling44Bridge.dissection` are interior-disjoint.**
+Transports `Tiling44Bridge.dissection.interiors_disjoint` through the translation — no new
+separating-line argument needed. Instantiating `v` at `(88, 24√15)` or `(176, 0)` gives
+within-`Δ_2^apex` and within-corner-triangle disjointness respectively. -/
+theorem translated_tiling44_interiors_disjoint (v : Plane)
+    {i j : Fin Tiling44.tiles.length} (hij : i ≠ j) :
+    Disjoint (interior ((translateCongruentDissection v
+        Erdos634.Tiling44Bridge.dissection).tile i).carrier)
+      (interior ((translateCongruentDissection v
+        Erdos634.Tiling44Bridge.dissection).tile j).carrier) := by
+  simp only [translateCongruentDissection_tile]
+  exact mapTri_interiors_disjoint _ (Erdos634.Tiling44Bridge.dissection.interiors_disjoint hij)
