@@ -1184,8 +1184,21 @@ per-tiling data entry, which is a different kind of debt and should be recorded 
 **What actually remains for those eight rows**, stated without a hidden theory gap: for each named
 tiling, (a) write its pieces as `Tri` objects with their exact coordinates, (b) discharge (C2) and
 (C3) — decidable arithmetic, one separating line per pair — and (c) discharge (C1), congruence to
-the tile, for which the corpus has `SssTri` but no side-multiset-to-`Tri.Congruent` wrapper yet.
-That wrapper is the one genuinely missing lemma; everything else is data.
+the tile.
+
+**Update, same day: (c) is done.** `Erdos634.SssCongruent.congruent_of_dist_three` is SSS *with an
+ambient isometry* — equal corresponding side lengths give a genuine `Plane ≃ᵢ Plane` carrying one
+triangle onto the other, vertex for vertex, which is what `Tri.Congruent` demands. Mathlib's
+`EuclideanGeometry.side_side_side` is strictly weaker: it proves the metric statement and produces
+no map. The proof is concrete because the plane is two-dimensional — `ev_indep` (edge vectors at a
+vertex are linearly independent, from affine independence), `inner_ev_eq` (polarisation turns equal
+sides into equal inner products), `LinearEquiv.isometryOfInner`, then conjugation by the two
+translations that move the base vertices to the origin.
+
+So **all three of (C1), (C2)+(C3), (C4) now have general machinery**, and what remains for the eight
+rows is per-tiling data entry only: writing each named tiling's pieces as `Tri` objects with their
+exact coordinates and discharging two decidable arithmetic checks per pair. No theory gap is left
+on this path.
 
 **Methodological note, third occurrence.** "No Mathlib lemma states X" is not "X is hard", and a
 blocker recorded in terms of the *strongest* statement one can imagine wanting is worth much less

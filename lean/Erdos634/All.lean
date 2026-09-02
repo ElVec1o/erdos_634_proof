@@ -182,3 +182,4 @@ import Erdos634.Compose
 import Erdos634.Ladder
 import Erdos634.Realizable
 import Erdos634.AreaDet
+import Erdos634.SssCongruent
