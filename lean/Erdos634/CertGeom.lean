@@ -35,6 +35,16 @@ theorem carrier_subset_of_pts_mem {t T : Tri} (h : ∀ k, t.pts k ∈ T.carrier)
     t.carrier ⊆ T.carrier :=
   convexHull_min (Set.range_subset_iff.mpr h) T.convex
 
+/-- **An affine functional bounded at the three vertices is bounded on the whole carrier.** A
+certificate's (C3) check only tests the three vertices; this is what promotes that to the
+statement `interiors_disjoint_of_separating` actually needs (bounded on all of `t.carrier`). -/
+theorem le_of_forall_pts_le {t : Tri} (f : Plane →ᵃ[ℝ] ℝ) {c : ℝ} (h : ∀ k, f (t.pts k) ≤ c) :
+    ∀ x ∈ t.carrier, f x ≤ c := by
+  have hconv : Convex ℝ (f ⁻¹' Set.Iic c) := (convex_Iic c).affine_preimage f
+  have hsub : t.carrier ⊆ f ⁻¹' Set.Iic c :=
+    convexHull_min (Set.range_subset_iff.mpr h) hconv
+  exact fun x hx => hsub hx
+
 /-- **The vertex test.** Nonnegative weights summing to one exhibit a point of the carrier — the
 conclusion a determinant-sign check certifies. -/
 theorem mem_carrier_of_combo (T : Tri) (x : Plane) (w : Fin 3 → ℝ)
