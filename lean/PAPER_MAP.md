@@ -193,7 +193,7 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 | C `lem:chord` | The chord at the last junction | `tile_contact_face`, `contact_is_edge` |
 | C `lem:collar` | Collar decomposition | `collar_cells` |
 | C `lem:eastfan` | The east fan at the fork is forced | `straight_junction_gamma_bound`, `straight_junction_cases` |
-| C `lem:firstrun` | First-run orientation | `PentagonLemma.partner_unique`, `OrderForcing.first_run_kill`, `gamma_far_absorbing` |
+| C `lem:firstrun` | First-run orientation | `PentagonLemma.partner_unique`, `OrderForcing.first_run_kill`, `gamma_far_absorbing` | **Checked 2026-09-08**: needs chord endpoints (corner tile's `b`-edge as a two-boundary-point chord) and junction-figure exclusion — deep tile-placement-layer territory, no route found. The three cited declarations are each real arithmetic sub-facts the proof invokes mid-argument, not the geometric claim itself. |
 | C `lem:jbline` | The $jb$-line partition | `partition_jb` |
 | C `lem:ladder` | Descent identities and the ladder | `descent_ident`, `sinb_ident`, `ladder_no_base` |
 | C `lem:monochotomy` | the only decomposition of `c` at a thick member is the single `c` | `CChord.c_chord_unique_thick` | VERIFIED — the lemma now states only the arithmetic, which is the declaration; its geometric consequence was split into `rem:monochain` |
@@ -218,7 +218,7 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 | C `thm:align` | Alignment of the mismatch ray | `far_near_disjoint`, `far_is_bpow`, `b_not_dvd_fsq` |
 | C `thm:basebeta-e1` | The base-$\beta$ family at $e=1$, $f=2$ | `tile_alpha_irrational`, `vertex_pi`, `vertex_beta_corner`, `vertex_apex` |
 | C `thm:depthwindow` | Reach three behind a thick block, and the pincer win | `pincer_window` |
-| C `thm:e1cascade` | The cascade closes every initial-block-1 configurati | `cascade_reaches`, `reversal_covers`, `partition_2b` |
+| C `thm:e1cascade` | The cascade closes every initial-block-1 configurati | `cascade_reaches`, `reversal_covers`, `partition_2b` | **Checked 2026-09-08**: a three-lemma cascade argument (chord induction, `f`-`a` branch, reversal), deeply geometric throughout — no route found. |
 | C `thm:elltwo` | The block-two chain runs to arbitrary depth | `partition_2b`, `east_cover_gap` |
 | C `thm:halfangle` | The angle $(\pi-\alpha)/2$ | `halfpi_minus_alpha_unique` |
 | C `thm:kbrep` | Unique representation of $k\,b$ | `kb_unique_rep` |
