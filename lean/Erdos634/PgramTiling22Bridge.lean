@@ -594,4 +594,80 @@ theorem pieces_interiors_disjoint {A B : PgramTiling22.Tri} (hA : A ∈ PgramTil
   obtain ⟨f, hf, c, h1, h2⟩ := sep_of_sepBy ((sqCond_iff pq).mp hsq) hsepBy hA hB
   exact Erdos634.CertGeom.interiors_disjoint_of_separating f hf c h1 h2
 
+/-! ## (C4) the area sum — exact arithmetic transfer, ported from `Tiling44Bridge`
+
+`PgramTiling22`'s own `checkAll` already checks `zsum (tiles.map area2) == area2target`; this
+section transfers that Bool equality to the real determinant sum
+`AreaDet.area_identity_of_det`-style theorems need. Unlike `Tiling44Bridge`, there is no `target :
+Tri` here — the parallelogram target is fixed by the constant `area2target`, so this stops one
+step short of the volume identity `AreaDet.area_identity_of_det` gives for a `Tri` target: relating
+`|Ddet|` (the parallelogram's real "determinant") to `MeasureTheory.volume carrier` is a genuinely
+new step, not a routine port — see `VERIFY_PLAN.md`. -/
+
+/-- Every piece of `PgramTiling22`, indexed by `Fin PgramTiling22.tiles.length`. -/
+noncomputable def pieceAt (i : Fin PgramTiling22.tiles.length) : Tri :=
+  pieceTri (t := PgramTiling22.tiles[i.val]) (List.getElem_mem i.isLt)
+
+theorem detTri_pieceAt (i : Fin PgramTiling22.tiles.length) :
+    Erdos634.AreaDet.detTri (pieceAt i) = toR (PgramTiling22.area2 (PgramTiling22.tiles[i.val])) := by
+  unfold pieceAt pieceTri
+  rw [Erdos634.CertCoord.detTri_mkTri, det3_eq_toR_cross]
+  rfl
+
+theorem foldl_zadd_eq (l : List PgramTiling22.Z15) (acc : PgramTiling22.Z15) :
+    l.foldl PgramTiling22.zadd acc = acc + l.sum := by
+  induction l generalizing acc with
+  | nil => simp
+  | cons a t ih =>
+    simp only [List.foldl_cons, List.sum_cons]
+    rw [ih]; apply Prod.ext <;> simp [PgramTiling22.zadd] <;> ring
+
+theorem zsum_eq_sum (l : List PgramTiling22.Z15) : PgramTiling22.zsum l = l.sum := by
+  simp only [PgramTiling22.zsum]; rw [foldl_zadd_eq]; simp
+
+theorem pgram_zadd_eq_zreal (u v : PgramTiling22.Z15) : PgramTiling22.zadd u v = zadd u v := rfl
+
+theorem toR_list_sum (l : List PgramTiling22.Z15) : toR l.sum = (l.map toR).sum := by
+  induction l with
+  | nil => simp [toR]
+  | cons a t ih =>
+    simp only [List.sum_cons, List.map_cons]
+    show toR (a + t.sum) = toR a + (List.map toR t).sum
+    rw [show (a + t.sum : PgramTiling22.Z15) = PgramTiling22.zadd a t.sum from rfl,
+      pgram_zadd_eq_zreal, toR_add, ih]
+
+theorem area_sum_transfer :
+    ∑ i : Fin PgramTiling22.tiles.length, toR (PgramTiling22.area2 (PgramTiling22.tiles[i.val]))
+      = toR (PgramTiling22.zsum (PgramTiling22.tiles.map PgramTiling22.area2)) := by
+  rw [zsum_eq_sum, toR_list_sum, List.map_map,
+    ← List.ofFn_getElem_eq_map PgramTiling22.tiles (toR ∘ PgramTiling22.area2)]
+  rfl
+
+/-- **The (C4) area sum, transferred to `ℝ`** — matching `PgramTiling22`'s own `checkAll`
+equality. -/
+theorem area_sum_eq_target :
+    ∑ i : Fin PgramTiling22.tiles.length, toR (PgramTiling22.area2 (PgramTiling22.tiles[i.val]))
+      = toR PgramTiling22.area2target := by
+  rw [area_sum_transfer]
+  apply congrArg toR
+  have h := PgramTiling22.pgram22_certificate
+  simp only [PgramTiling22.checkAll, Bool.and_eq_true, beq_iff_eq] at h
+  exact h.2
+
+/-- **The exact-arithmetic half of (C4)**: the pieces' unsigned determinants sum to the target's
+(`area2target = (0,528)`, i.e. `528√15`, positive) — every piece positively oriented
+(`all_pieces_pos`), so `|det| = det` throughout. -/
+theorem abs_detTri_sum_eq_target :
+    ∑ i : Fin PgramTiling22.tiles.length, |Erdos634.AreaDet.detTri (pieceAt i)|
+      = |toR PgramTiling22.area2target| := by
+  have step : ∑ i : Fin PgramTiling22.tiles.length, |Erdos634.AreaDet.detTri (pieceAt i)|
+      = ∑ i : Fin PgramTiling22.tiles.length,
+          toR (PgramTiling22.area2 (PgramTiling22.tiles[i.val])) := by
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [detTri_pieceAt]
+    exact abs_of_pos (toR_pos (all_pieces_pos _ (List.getElem_mem i.isLt)))
+  rw [step, area_sum_eq_target, abs_of_pos]
+  apply toR_pos
+  decide
+
 end Erdos634.PgramTiling22Bridge
