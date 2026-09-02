@@ -201,3 +201,55 @@ theorem hface_wall :
   rw [hfilter] at hmax
   rw [Finset.coe_insert, Finset.coe_singleton, convexHull_pair] at hmax
   exact hmax
+
+/-- **`hiso` for `(gWall, dirWall)`**: `dirWall` measures real distance exactly, for any two
+points on the wall line. Both points lying on `gWall = 4224√15` forces their difference into
+`gWall`'s kernel — the span of the wall's own direction vector `(-88, 24√15)`, of length exactly
+`128` — and `dirWall`'s `/128` normalization is exactly what makes the two quantities coincide. -/
+theorem hiso_wall :
+    ∀ p q : Plane, gWallAff p = 4224 * Real.sqrt 15 → gWallAff q = 4224 * Real.sqrt 15 →
+      dist p q = |dirWall p - dirWall q| := by
+  intro p q hp hq
+  have hp' : p = mkPt (xFun p) (yFun p) := by
+    ext j; fin_cases j
+    · show _ = xFun p; rfl
+    · show _ = yFun p; rfl
+  have hq' : q = mkPt (xFun q) (yFun q) := by
+    ext j; fin_cases j
+    · show _ = xFun q; rfl
+    · show _ = yFun q; rfl
+  have hgp : gWall p = 4224 * Real.sqrt 15 := hp
+  have hgq : gWall q = 4224 * Real.sqrt 15 := hq
+  rw [hp', gWall_mkPt] at hgp
+  rw [hq', gWall_mkPt] at hgq
+  have hs : Real.sqrt 15 ^ 2 = 15 := Real.sq_sqrt (by norm_num)
+  set a := xFun p - xFun q with hadef
+  set b := yFun p - yFun q with hbdef
+  have hdiff : 24 * Real.sqrt 15 * a + 88 * b = 0 := by rw [hadef, hbdef]; linarith
+  have hy_eq : b = -24 * Real.sqrt 15 / 88 * a := by
+    field_simp
+    linarith [hdiff]
+  have hdsq : dist p q ^ 2 = a^2 + b^2 := by
+    rw [hp', hq']; exact Erdos634.CertCoord.dist_sq_mkPt _ _ _ _
+  have hdirp : dirWall p = (-88 * xFun p + 24 * Real.sqrt 15 * yFun p) / 128 := by
+    rw [hp']; exact dirWall_mkPt _ _
+  have hdirq : dirWall q = (-88 * xFun q + 24 * Real.sqrt 15 * yFun q) / 128 := by
+    rw [hq']; exact dirWall_mkPt _ _
+  have hdirdiff : dirWall p - dirWall q = (-88 * a + 24 * Real.sqrt 15 * b) / 128 := by
+    rw [hdirp, hdirq]; ring
+  have hdirdiff' : dirWall p - dirWall q = -16/11 * a := by
+    rw [hdirdiff, hy_eq]
+    have heq : -88 * a + 24 * Real.sqrt 15 * (-24 * Real.sqrt 15 / 88 * a)
+        = -88 * a - (Real.sqrt 15 * Real.sqrt 15) * (24 * 24 / 88) * a := by ring
+    rw [heq, Real.mul_self_sqrt (by norm_num : (15:ℝ) ≥ 0)]
+    ring
+  have hdsq' : dist p q ^ 2 = (16/11 * a)^2 := by
+    rw [hdsq, hy_eq]
+    have heq2 : a^2 + (-24 * Real.sqrt 15 / 88 * a)^2
+        = a^2 * (1 + (Real.sqrt 15 * Real.sqrt 15) * (24/88)^2) := by ring
+    rw [heq2, Real.mul_self_sqrt (by norm_num : (15:ℝ) ≥ 0)]
+    ring
+  rw [hdirdiff']
+  have hdp : 0 ≤ dist p q := dist_nonneg
+  have h1 : dist p q = Real.sqrt (dist p q ^ 2) := (Real.sqrt_sq hdp).symm
+  rw [h1, hdsq', show (-16/11 * a) = -(16/11*a) by ring, abs_neg, ← Real.sqrt_sq_eq_abs]
