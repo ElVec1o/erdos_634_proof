@@ -1,6 +1,7 @@
 import Erdos634.CollarDisjointM4
 import Erdos634.Tiling44Bridge
 import Erdos634.StraightEdgeSums
+import Erdos634.SideWall
 
 /-!
 # A concrete wall line for `Tiling44Bridge`'s target, and its `hker`
@@ -116,3 +117,31 @@ theorem hwall_wall :
     (AffineMap.const ℝ Plane (4224 * Real.sqrt 15) - gWallAff) hi y hy
   have hsub' : 0 ≤ 4224 * Real.sqrt 15 - gWallAff y := hsub
   linarith
+
+/-- **`hbase` for `gWall`**: the segment from `(176,0)` to the apex `(88,24√15)` is the equal
+side's own edge, hence lies on the target's frontier. -/
+theorem hbase_wall :
+    segment ℝ (Erdos634.Tiling44Bridge.targetTri.pts 1) (Erdos634.Tiling44Bridge.targetTri.pts 2)
+      ⊆ frontier Erdos634.Tiling44Bridge.targetTri.carrier := by
+  have := Erdos634.SideWall.edge_subset_frontier Erdos634.Tiling44Bridge.targetTri 1
+  rwa [Tri.edge] at this
+
+/-- **`hline` for `gWall`**: `gWall` is exactly `4224√15` on the whole segment, not just at its
+endpoints — a direct consequence of `gWall` agreeing with that value at both ends and being
+affine. -/
+theorem hline_wall :
+    ∀ y ∈ segment ℝ (Erdos634.Tiling44Bridge.targetTri.pts 1)
+      (Erdos634.Tiling44Bridge.targetTri.pts 2), gWallAff y = 4224 * Real.sqrt 15 := by
+  intro y hy
+  obtain ⟨u, v, hu, hv, huv, rfl⟩ := hy
+  rw [tiling44_targetTri_pts1, tiling44_targetTri_pts2] at *
+  have hmk : u • mkPt 176 0 + v • mkPt 88 (24 * Real.sqrt 15)
+      = mkPt (176 * u + 88 * v) (24 * Real.sqrt 15 * v) := by
+    ext j; fin_cases j
+    · show u * (mkPt (176:ℝ) 0) 0 + v * (mkPt (88:ℝ) (24 * Real.sqrt 15)) 0 = _
+      simp [mkPt]; ring
+    · show u * (mkPt (176:ℝ) 0) 1 + v * (mkPt (88:ℝ) (24 * Real.sqrt 15)) 1 = _
+      simp [mkPt]; ring
+  rw [hmk, gWallAff_mkPt]
+  have : u = 1 - v := by linarith
+  rw [this]; ring
