@@ -308,3 +308,51 @@ def hthirdOK (t : Tiling44.Tri) : Bool :=
 -- `decide`-over-`Tiling44.tiles` pattern this project's (C1)–(C4) checks already use.
 set_option maxRecDepth 4000 in
 theorem all_hthird_ok : ∀ t ∈ Tiling44.tiles, hthirdOK t = true := by decide
+
+open Erdos634.Tiling44Bridge in
+/-- For every vertex of every tile, either its `ℤ[√15]` value is exactly the wall's value
+`(0,4224)`, or the difference from it satisfies `z.1² ≠ 15z.2²` — the dichotomy needed to connect
+the real-valued `gWall (vertex) = c` condition to the Bool-valued `isWallVertex`. -/
+def vertexDichotomyOK (t : Tiling44.Tri) : Bool :=
+  decide (∀ i : Fin 3, wallVal (vertexOf t i) = ((0:ℤ), (4224:ℤ)) ∨
+    (wallVal (vertexOf t i) - ((0:ℤ),(4224:ℤ))).1 ^ 2
+      ≠ 15 * (wallVal (vertexOf t i) - ((0:ℤ),(4224:ℤ))).2 ^ 2)
+
+set_option maxRecDepth 4000 in
+theorem all_vertex_dichotomy_ok : ∀ t ∈ Tiling44.tiles, vertexDichotomyOK t = true := by decide
+
+open Erdos634.Tiling44Bridge Erdos634.Z15Real in
+/-- The real-valued wall test on a piece's vertex agrees exactly with the `ℤ[√15]`-valued
+`wallVal` test, for every tile and every vertex. Bridges `gWall`/`gWallAff` (needed by
+`side_walk_of_dissection`'s real hypotheses) to the already-computed Bool facts `isWallEdge`,
+`all_hthird_ok`. -/
+theorem g_eq_iff_wallVal {t : Tiling44.Tri} (ht : t ∈ Tiling44.tiles) (i : Fin 3) :
+    gWall ((pieceTri ht).pts i) = 4224 * Real.sqrt 15 ↔
+      wallVal (vertexOf t i) = ((0:ℤ), (4224:ℤ)) := by
+  rw [pieceTri_pts t ht i, gWall_mkPt]
+  have hcorrect := gWallZ_correct (zx (toZPt (vertexOf t i))) (zy (toZPt (vertexOf t i)))
+  rw [gWall_mkPt] at hcorrect
+  have hwv : wallVal (vertexOf t i)
+      = gWallZ (zx (toZPt (vertexOf t i))) (zy (toZPt (vertexOf t i))) := rfl
+  constructor
+  · intro heq
+    rw [hwv]
+    by_contra hne
+    have hdi := all_vertex_dichotomy_ok t ht
+    simp only [vertexDichotomyOK, decide_eq_true_eq] at hdi
+    rcases hdi i with h | h
+    · exact hne (by rw [← hwv]; exact h)
+    · rw [hwv] at h
+      apply toR_ne_zero_of_sq_ne h
+      show toR (zsub (gWallZ (zx (toZPt (vertexOf t i))) (zy (toZPt (vertexOf t i))))
+        ((0:ℤ),(4224:ℤ))) = 0
+      rw [toR_sub, ← hcorrect]
+      show (24 * Real.sqrt 15 * toR (zx (toZPt (vertexOf t i)))
+        + 88 * toR (zy (toZPt (vertexOf t i)))) - toR ((0:ℤ),(4224:ℤ)) = 0
+      rw [heq]
+      simp [toR]
+  · intro heq
+    rw [hwv] at heq
+    rw [heq] at hcorrect
+    rw [hcorrect]
+    simp [toR]
