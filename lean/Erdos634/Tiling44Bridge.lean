@@ -1,5 +1,6 @@
 import Erdos634.Tiling44
 import Erdos634.Z15Real
+import Erdos634.CertGeom
 
 /-!
 # Instantiating `Tiling44`'s target and first piece as real `Tri` objects
@@ -92,5 +93,19 @@ noncomputable def pieceTri {t : Tiling44.Tri} (ht : t ∈ Tiling44.tiles) : Tri 
     (by
       rw [det3_eq_toR_cross]
       exact (toR_pos (all_pieces_pos t ht)).ne')
+
+/-- **The `lineFun` of a certificate edge is nonconstant**, for two *concrete* endpoints `P ≠ Q`
+whose real coordinates differ — resolved via `Z15Real.toR_ne_zero_of_sq_ne` rather than injectivity
+of `toR` (which this project deliberately never proves). `hx`/`hy` are the decidable `ℤ[√15]`
+side conditions (`zx Q - zx P` resp. `zy Q - zy P` squared-nonequal to `15 * (other coord)²`); one
+of the two always holds for a genuine edge, matching whichever coordinate actually differs. -/
+theorem lineFun_ne_zero_of_sq_ne {P Q : ZPt}
+    (h : (zsub (zx P) (zx Q)).1 ^ 2 ≠ 15 * (zsub (zx P) (zx Q)).2 ^ 2
+       ∨ (zsub (zy P) (zy Q)).1 ^ 2 ≠ 15 * (zsub (zy P) (zy Q)).2 ^ 2) :
+    (Erdos634.CertGeom.lineFun (toR (zx P)) (toR (zy P)) (toR (zx Q)) (toR (zy Q))).linear ≠ 0 := by
+  apply Erdos634.CertGeom.lineFun_linear_ne_zero
+  rcases h with h | h
+  · exact Or.inl (sub_ne_zero.mp (by rw [← toR_sub]; exact toR_ne_zero_of_sq_ne h))
+  · exact Or.inr (sub_ne_zero.mp (by rw [← toR_sub]; exact toR_ne_zero_of_sq_ne h))
 
 end Erdos634.Tiling44Bridge

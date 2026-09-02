@@ -32,6 +32,23 @@ theorem sqrt15_sq : Real.sqrt 15 ^ 2 = 15 := Real.sq_sqrt (by norm_num)
 
 theorem sqrt15_pos : (0:ℝ) < Real.sqrt 15 := Real.sqrt_pos.mpr (by norm_num)
 
+/-- **A concrete-instance nonvanishing test, decidable per certificate edge.** `toR z = 0` forces
+`z.1 = -z.2 * √15`, and squaring (valid regardless of sign) gives the integer equation
+`z.1 ^ 2 = 15 * z.2 ^ 2` — false for any specific `z` one can name, checkable by `decide`/`norm_num`
+without proving `√15` irrational in general. This is exactly what a certificate's edge endpoints
+need for `CertGeom.lineFun_linear_ne_zero`: `P ≠ Q` in `ℤ[√15]` alone does not give `toR P ≠ toR Q`
+(since `toR` is deliberately not proved injective), but for a *named* edge the difference
+`zx Q - zx P` / `zy Q - zy P` is a concrete pair, and this lemma closes it. -/
+theorem toR_ne_zero_of_sq_ne {z : Z15} (h : z.1 ^ 2 ≠ 15 * z.2 ^ 2) : toR z ≠ 0 := by
+  intro heq
+  have h0 : (z.1 : ℝ) = -(z.2 : ℝ) * Real.sqrt 15 := by
+    simp only [toR] at heq; linarith
+  have hsq : (z.1 : ℝ) ^ 2 = 15 * (z.2 : ℝ) ^ 2 := by
+    have h1 : (z.1 : ℝ) ^ 2 = (z.2 : ℝ) ^ 2 * Real.sqrt 15 ^ 2 := by rw [h0]; ring
+    rw [sqrt15_sq] at h1; linarith
+  have : (z.1 ^ 2 : ℤ) = 15 * z.2 ^ 2 := by exact_mod_cast hsq
+  exact h this
+
 /-- Addition in `ℤ[√15]`. -/
 def zadd (u v : Z15) : Z15 := (u.1 + v.1, u.2 + v.2)
 /-- Subtraction in `ℤ[√15]`. -/
