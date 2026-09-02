@@ -1219,6 +1219,7 @@ Everything a tiling certificate checks now has a Lean counterpart, and none of i
 | (C4) signed areas sum | `CertCoord.detTri_mkTri` + `AreaDet.area_identity_of_det` |
 | the whole thing | `CertBridge.ofCert` |
 | `ℤ[√15]` arithmetic → `ℝ` | `Z15Real.toR`, `toR_add/sub/mul`, `toR_nonneg_iff`, `toR_pos` |
+| a certificate's named edge → the affine functional (C3) needs | `CertGeom.lineFun`, `lineFun_linear_ne_zero` (2026-09-02: fixed a stalled proof — the nonconstancy check now evaluates at concrete `EuclideanSpace.single` vectors instead of the `AreaDet.pb` Mathlib-basis representation, which `simp` would not reduce) |
 
 `Z15Real` deliberately proves no injectivity of `toR` and so never needs `√15` irrational: every
 certificate check transfers in one direction only, an equality or inequality *in* `ℤ[√15]` implying

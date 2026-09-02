@@ -1,5 +1,6 @@
 import Erdos634.CellCoord
 import Erdos634.InteriorCoord
+import Erdos634.AreaDet
 
 /-!
 # The three geometric checks a certificate performs, as lemmas about `Tri`
@@ -83,5 +84,46 @@ theorem pairwise_disjoint_of_separating {N : ℕ} (tile : Fin N → Tri)
   intro i j hij
   obtain ⟨f, hf, c, h1, h2⟩ := sep i j hij
   exact interiors_disjoint_of_separating f hf c h1 h2
+
+/-! ## The separating line a certificate names
+
+A certificate separates two pieces by an *edge*: it names two points `P ≠ Q` and checks the sign of
+`cross P Q v` at the six vertices. `lineFun` is that cross product as an affine functional of `v`,
+which is what `interiors_disjoint_of_separating` consumes. -/
+
+/-- The signed area functional `v ↦ det(Q - P, v - P)`, as an affine map. -/
+noncomputable def lineFun (px py qx qy : ℝ) : Plane →ᵃ[ℝ] ℝ where
+  toFun v := (qx - px) * (v 1 - py) - (v 0 - px) * (qy - py)
+  linear :=
+    { toFun := fun w => (qx - px) * w 1 - w 0 * (qy - py)
+      map_add' := by intro w z; simp only [PiLp.add_apply]; ring
+      map_smul' := by intro c w; simp only [PiLp.smul_apply, smul_eq_mul, RingHom.id_apply]; ring }
+  map_vadd' := by
+    intro v w
+    simp only [vadd_eq_add, PiLp.add_apply, LinearMap.coe_mk, AddHom.coe_mk]
+    ring
+
+@[simp] theorem lineFun_apply (px py qx qy : ℝ) (v : Plane) :
+    lineFun px py qx qy v = (qx - px) * (v 1 - py) - (v 0 - px) * (qy - py) := rfl
+
+/-- **The functional is nonconstant as soon as the two points differ.** -/
+theorem lineFun_linear_ne_zero {px py qx qy : ℝ} (h : px ≠ qx ∨ py ≠ qy) :
+    (lineFun px py qx qy).linear ≠ 0 := by
+  intro hcon
+  set e0 : Plane := EuclideanSpace.single 0 (1 : ℝ) with he0
+  set e1 : Plane := EuclideanSpace.single 1 (1 : ℝ) with he1
+  have hb00 : e0 0 = 1 := by simp [he0]
+  have hb01 : e0 1 = 0 := by simp [he0]
+  have hb10 : e1 0 = 0 := by simp [he1]
+  have hb11 : e1 1 = 1 := by simp [he1]
+  have h0 : (lineFun px py qx qy).linear e0 = 0 := by rw [hcon]; rfl
+  have h1 : (lineFun px py qx qy).linear e1 = 0 := by rw [hcon]; rfl
+  have eq0 : (qx - px) * e0 1 - e0 0 * (qy - py) = 0 := h0
+  have eq1 : (qx - px) * e1 1 - e1 0 * (qy - py) = 0 := h1
+  rw [hb00, hb01] at eq0
+  rw [hb10, hb11] at eq1
+  rcases h with h | h
+  · exact h (by linarith)
+  · exact h (by linarith)
 
 end Erdos634.CertGeom
