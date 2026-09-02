@@ -670,4 +670,49 @@ theorem abs_detTri_sum_eq_target :
   apply toR_pos
   decide
 
+/-! ## Toward the volume identity: `Ddet` as a genuine `Plane →ₗ[ℝ] Plane` determinant
+
+`AreaDet.area_identity_of_det` closes (C4) for a `Tri` target via `volume_eq_det_mul`, built from
+`edgeMap T : Plane →ₗ[ℝ] Plane` (both sides the *same* space, which is exactly what
+`Measure.addHaar_image_linearMap` needs). `PgramTiling22Bridge.paramMap`, by contrast, is
+`ℝ × ℝ →ᵃ[ℝ] Plane` — a *different* domain, so `addHaar_image_linearMap` does not apply to
+`paramMap.linear` directly. `dEdge` below is the same construction as `AreaDet.edgeMap`, but built
+from the parallelogram's own two edge vectors `v2 - v1`, `v4 - v1` — a genuine `Plane →ₗ[ℝ] Plane`
+map, to which `Measure.addHaar_image_linearMap` *does* apply. -/
+
+/-- The linear map sending the standard basis to the parallelogram's two edge vectors at `v1`. -/
+noncomputable def dEdge : Plane →ₗ[ℝ] Plane :=
+  Erdos634.AreaDet.pb.constr ℝ (fun i : Fin 2 => ![v2 - v1, v4 - v1] i)
+
+/-- `dEdge`'s determinant, which should coincide with `Ddet`, and does. -/
+noncomputable def dDet : ℝ := LinearMap.det dEdge
+
+theorem dEdge_basis (i : Fin 2) : dEdge (Erdos634.AreaDet.pb i) = ![v2 - v1, v4 - v1] i := by
+  simp [dEdge, Module.Basis.constr_basis]
+
+/-- **`dEdge`'s determinant, in coordinates, is exactly `Ddet`.** Same computation as
+`AreaDet.detTri_eq`, specialized to the parallelogram's two edge vectors. -/
+theorem dDet_eq_Ddet : dDet = Ddet := by
+  rw [dDet, ← LinearMap.det_toMatrix Erdos634.AreaDet.pb, Matrix.det_fin_two]
+  simp only [LinearMap.toMatrix_apply, dEdge_basis, Erdos634.AreaDet.pb_repr]
+  show (v2 - v1) 0 * (v4 - v1) 1 - (v4 - v1) 0 * (v2 - v1) 1 = Ddet
+  show (v2 0 - v1 0) * (v4 1 - v1 1) - (v4 0 - v1 0) * (v2 1 - v1 1) = Ddet
+  simp only [Ddet, d2x, d2y, d4x, d4y]
+
+/-! **Still open**: the volume identity itself, `volume carrier = ENNReal.ofReal |Ddet| *
+volume stdSquare` for some reference square `stdSquare : Set Plane` with `volume stdSquare = 1`
+(the parallelogram analog of `AreaDet.volume_eq_det_mul`). `dEdge`/`dDet_eq_Ddet` supply the
+determinant half; what remains is (a) defining `stdSquare` (e.g. as the image in `Plane` of the
+unit box under the same coordinate identification `carrier_eq_image` uses) and relating
+`dEdge '' stdSquare` translated by `v1` to `carrier` via `carrier_eq_image`, then (b) computing
+`volume stdSquare = 1`, likely via `EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp`
+(Plane's Lebesgue measure agrees with the `Fin 2 → ℝ` Pi-measure through the standard-basis
+coordinates) composed with a Pi-box volume computation (`Measure.volume_pi_pi` + `Real.volume_Icc`),
+neither of which is yet used anywhere in this corpus. Once both are done,
+`Measure.addHaar_image_linearMap` on `dEdge` plus translation invariance (the same two steps
+`AreaDet.volume_eq_det_mul` uses) gives the identity, and `AreaDet.area_identity_of_det`'s proof
+pattern (not the `Tri`-typed statement itself) carries over to close (C4) fully and instantiate
+`covers_of_volume`.
+-/
+
 end Erdos634.PgramTiling22Bridge
