@@ -359,3 +359,92 @@ theorem pieceTri_subset_target {t : Tiling44.Tri} (ht : t ∈ Tiling44.tiles) :
     (pieceTri ht).carrier ⊆ targetTri.carrier :=
   Erdos634.CertGeom.carrier_subset_of_pts_mem (fun k => by
     rw [pieceTri_pts t ht k]; exact vertexOf_mem_targetTri ht k)
+
+/-! ## (C4): the area sum, and the assembled `CongruentDissection`
+
+`Tiling44`'s own `checkAll` already checks `zsum (tiles.map area2) == area2 target`; this section
+transfers that Bool equality to the real determinant sum `AreaDet.area_identity_of_det` needs. -/
+
+/-- Every piece of `Tiling44`, indexed by `Fin Tiling44.tiles.length` (rather than a fixed literal
+`44`, so no length-cast bookkeeping is needed anywhere in this section). -/
+noncomputable def pieceAt (i : Fin Tiling44.tiles.length) : Tri :=
+  pieceTri (t := Tiling44.tiles[i.val]) (List.getElem_mem i.isLt)
+
+theorem detTri_pieceAt (i : Fin Tiling44.tiles.length) :
+    Erdos634.AreaDet.detTri (pieceAt i) = toR (Tiling44.area2 (Tiling44.tiles[i.val])) := by
+  unfold pieceAt pieceTri
+  rw [Erdos634.CertCoord.detTri_mkTri, det3_eq_toR_cross]
+  rfl
+
+theorem foldl_zadd_eq (l : List Tiling44.Z15) (acc : Tiling44.Z15) :
+    l.foldl Tiling44.zadd acc = acc + l.sum := by
+  induction l generalizing acc with
+  | nil => simp
+  | cons a t ih =>
+    simp only [List.foldl_cons, List.sum_cons]
+    rw [ih]; apply Prod.ext <;> simp [Tiling44.zadd] <;> ring
+
+theorem zsum_eq_sum (l : List Tiling44.Z15) : Tiling44.zsum l = l.sum := by
+  simp only [Tiling44.zsum]; rw [foldl_zadd_eq]; simp
+
+theorem tiling44_zadd_eq_zreal (u v : Tiling44.Z15) : Tiling44.zadd u v = zadd u v := rfl
+
+theorem toR_list_sum (l : List Tiling44.Z15) : toR l.sum = (l.map toR).sum := by
+  induction l with
+  | nil => simp [toR]
+  | cons a t ih =>
+    simp only [List.sum_cons, List.map_cons]
+    show toR (a + t.sum) = toR a + (List.map toR t).sum
+    rw [show (a + t.sum : Tiling44.Z15) = Tiling44.zadd a t.sum from rfl,
+      tiling44_zadd_eq_zreal, toR_add, ih]
+
+theorem area_sum_transfer :
+    ∑ i : Fin Tiling44.tiles.length, toR (Tiling44.area2 (Tiling44.tiles[i.val]))
+      = toR (Tiling44.zsum (Tiling44.tiles.map Tiling44.area2)) := by
+  rw [zsum_eq_sum, toR_list_sum, List.map_map,
+    ← List.ofFn_getElem_eq_map Tiling44.tiles (toR ∘ Tiling44.area2)]
+  rfl
+
+/-- **The (C4) area sum, transferred to `ℝ`** — matching `Tiling44`'s own `checkAll` equality. -/
+theorem area_sum_eq_target :
+    ∑ i : Fin Tiling44.tiles.length, toR (Tiling44.area2 (Tiling44.tiles[i.val]))
+      = toR (Tiling44.area2 Tiling44.target) := by
+  rw [area_sum_transfer]
+  apply congrArg toR
+  have h := Tiling44.tiling44_certificate
+  simp only [Tiling44.checkAll, Bool.and_eq_true, beq_iff_eq] at h
+  exact h.2
+
+/-- **(C4) fully assembled**, with absolute values — every piece is positively oriented
+(`all_pieces_pos`) and so is the target (`target_det_pos`), so `|det| = det` throughout. -/
+theorem abs_detTri_sum_eq_target :
+    ∑ i : Fin Tiling44.tiles.length, |Erdos634.AreaDet.detTri (pieceAt i)|
+      = |Erdos634.AreaDet.detTri targetTri| := by
+  have htarget : Erdos634.AreaDet.detTri targetTri = toR (Tiling44.area2 Tiling44.target) := by
+    unfold targetTri
+    rw [Erdos634.CertCoord.detTri_mkTri, det3_eq_toR_cross]
+    rfl
+  have htpos : (0:ℝ) < Erdos634.AreaDet.detTri targetTri := by
+    unfold targetTri; rw [Erdos634.CertCoord.detTri_mkTri]; exact target_det_pos
+  rw [htarget, abs_of_pos (htarget ▸ htpos)]
+  rw [← area_sum_eq_target]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [detTri_pieceAt]
+  exact abs_of_pos (toR_pos (all_pieces_pos _ (List.getElem_mem i.isLt)))
+
+/-- **`Tiling44`'s certificate, assembled into a genuine `CongruentDissection`.** All four
+certificate checks (C1)–(C4) are discharged: (C1) `pieceTri_congruent`, (C2)
+`pieceTri_subset_target`, (C3) `pieces_interiors_disjoint`, (C4) `abs_detTri_sum_eq_target`. -/
+theorem tiles_getElem_inj : ∀ i j : Fin Tiling44.tiles.length, i ≠ j →
+    Tiling44.tiles[i.val] ≠ Tiling44.tiles[j.val] := by decide
+
+noncomputable def dissection : CongruentDissection Tiling44.tiles.length where
+  toDissection := Erdos634.AreaDet.ofDetCertificate targetTri pieceAt
+    (fun i => pieceTri_subset_target (List.getElem_mem i.isLt))
+    (fun i j hij => pieces_interiors_disjoint (List.getElem_mem i.isLt) (List.getElem_mem j.isLt)
+      (tiles_getElem_inj i j hij))
+    abs_detTri_sum_eq_target
+  model := pieceTri headI_mem_tiles
+  tiles_congruent := fun i => pieceTri_congruent (List.getElem_mem i.isLt)
+
+end Erdos634.Tiling44Bridge
