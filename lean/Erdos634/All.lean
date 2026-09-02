@@ -198,3 +198,4 @@ import Erdos634.UnionDissection
 import Erdos634.TranslateDissection
 import Erdos634.CollarGeometryM4
 import Erdos634.CollarDisjointM4
+import Erdos634.CollarContainM4
