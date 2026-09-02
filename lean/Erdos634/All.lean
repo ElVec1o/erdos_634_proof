@@ -193,3 +193,4 @@ import Erdos634.CevianTiling63Bridge
 import Erdos634.Tiling99Bridge
 import Erdos634.ElevenMBridge
 import Erdos634.PgramTiling22Bridge
+import Erdos634.PgramTiling52Bridge

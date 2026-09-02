@@ -1,0 +1,907 @@
+import Erdos634.PgramTiling52
+import Erdos634.Z35Real
+import Erdos634.CertGeom
+import Erdos634.SssCongruent
+import Erdos634.ConvexCover
+import Erdos634.AreaDet
+import Erdos634.Tiling44Bridge
+
+/-!
+# `PgramTiling52`, toward a genuine covering statement of the unit parallelogram
+
+Erdős #634. `lem:pgram`/`prop:widecol`'s recorded blocker is "the general parallelogram is a
+region with no Lean notion of dissection" — `Dissection`'s `target` field is a `Tri`, so a
+parallelogram target cannot literally be packaged as one. But nothing in `ConvexCover`'s actual
+*proof* is triangle-specific: `Tri.isCompact`, `.nullMeasurableSet`, `.volume_frontier`,
+`.interior_nonempty` all come from generic facts (`Set.finite_range`, `Convex.addHaar_frontier`,
+`Convex.interior_nonempty_iff_affineSpan_eq_top`) that hold for the convex hull of *any* finite
+point set with full affine span — not just three points. This file builds that generic base for
+the specific unit-parallelogram target `(q1,q2,q3,q4)`, as a first step toward a real covering
+statement (not yet a `Dissection`, since that type doesn't fit a 4-gon target — the eventual
+statement will be a bespoke pointwise-covering `Prop`, built the same way `ConvexCover` was).
+
+**Not a paper-row flip**: this is the target-region groundwork only. The covering statement
+itself, the per-piece (C1)-(C4) transfer, and the containment test (needs a diagonal split into
+two triangles, since `CertCoord.mem_carrier_of_dets` is a 3-vertex barycentric test) are not done.
+
+Axiom-clean; no `sorry`.
+-/
+
+namespace Erdos634.PgramTiling52Bridge
+
+open Erdos634.Z35Real Erdos634.Geometry
+
+def toZPt (p : PgramTiling52.Pt) : ZPt := p
+
+/-- The parallelogram's four real vertices. -/
+noncomputable def v1 : Plane := Erdos634.CertCoord.mkPt (toR (zx (toZPt PgramTiling52.q1)))
+  (toR (zy (toZPt PgramTiling52.q1)))
+noncomputable def v2 : Plane := Erdos634.CertCoord.mkPt (toR (zx (toZPt PgramTiling52.q2)))
+  (toR (zy (toZPt PgramTiling52.q2)))
+noncomputable def v3 : Plane := Erdos634.CertCoord.mkPt (toR (zx (toZPt PgramTiling52.q3)))
+  (toR (zy (toZPt PgramTiling52.q3)))
+noncomputable def v4 : Plane := Erdos634.CertCoord.mkPt (toR (zx (toZPt PgramTiling52.q4)))
+  (toR (zy (toZPt PgramTiling52.q4)))
+
+/-- The parallelogram, as the convex hull of its four vertices. -/
+noncomputable def carrier : Set Plane := convexHull ℝ {v1, v2, v3, v4}
+
+/-- **The parallelogram property**: `v3 = v2 + v4 - v1` (opposite vertices, so the diagonals
+bisect each other) — checked componentwise in `ℤ[√35]` by `decide`, transferred by `toR`'s
+additivity. This is what makes the affine-parametrization route to (C2) containment work: a
+general quadrilateral has no clean closed-form membership test, but a parallelogram is exactly the
+affine image of the unit square. -/
+theorem v3_eq : v3 = v2 + v4 - v1 := by
+  simp only [v1, v2, v3, v4, Erdos634.CertCoord.mkPt]
+  have hx : zx (toZPt PgramTiling52.q3)
+      = zsub (zadd (zx (toZPt PgramTiling52.q2)) (zx (toZPt PgramTiling52.q4)))
+          (zx (toZPt PgramTiling52.q1)) := by decide
+  have hy : zy (toZPt PgramTiling52.q3)
+      = zsub (zadd (zy (toZPt PgramTiling52.q2)) (zy (toZPt PgramTiling52.q4)))
+          (zy (toZPt PgramTiling52.q1)) := by decide
+  ext i
+  fin_cases i <;> simp <;>
+    first
+    | (rw [show toR (zx (toZPt PgramTiling52.q3)) = _ from congrArg toR hx, toR_sub, toR_add])
+    | (rw [show toR (zy (toZPt PgramTiling52.q3)) = _ from congrArg toR hy, toR_sub, toR_add])
+
+/-- **The affine parametrization of the parallelogram**: `(u,v) ↦ v1 + u•(v2-v1) + v•(v4-v1)`. -/
+noncomputable def paramMap : (ℝ × ℝ) →ᵃ[ℝ] Plane where
+  toFun p := v1 + p.1 • (v2 - v1) + p.2 • (v4 - v1)
+  linear :=
+    { toFun := fun p => p.1 • (v2 - v1) + p.2 • (v4 - v1)
+      map_add' := by intro x y; simp; module
+      map_smul' := by intro c x; simp; module }
+  map_vadd' := by intro p q; simp [vadd_eq_add]; module
+
+theorem paramMap_00 : paramMap (0, 0) = v1 := by simp [paramMap]
+theorem paramMap_10 : paramMap (1, 0) = v2 := by simp [paramMap]
+theorem paramMap_01 : paramMap (0, 1) = v4 := by simp [paramMap]
+theorem paramMap_11 : paramMap (1, 1) = v3 := by simp [paramMap, v3_eq]; module
+
+/-- `paramMap` sends the unit square's four corners to the parallelogram's four vertices. -/
+theorem corners_eq : paramMap '' (({(0:ℝ), 1} : Set ℝ) ×ˢ ({(0:ℝ), 1} : Set ℝ)) = {v1, v2, v3, v4} := by
+  ext p
+  simp only [Set.mem_image, Set.mem_prod, Set.mem_insert_iff, Set.mem_singleton_iff]
+  constructor
+  · rintro ⟨⟨a, b⟩, ⟨(rfl | rfl), (rfl | rfl)⟩, rfl⟩
+    · left; exact paramMap_00
+    · right; right; right; exact paramMap_01
+    · right; left; exact paramMap_10
+    · right; right; left; exact paramMap_11
+  · rintro (rfl | rfl | rfl | rfl)
+    · exact ⟨(0, 0), ⟨Or.inl rfl, Or.inl rfl⟩, paramMap_00⟩
+    · exact ⟨(1, 0), ⟨Or.inr rfl, Or.inl rfl⟩, paramMap_10⟩
+    · exact ⟨(1, 1), ⟨Or.inr rfl, Or.inr rfl⟩, paramMap_11⟩
+    · exact ⟨(0, 1), ⟨Or.inl rfl, Or.inr rfl⟩, paramMap_01⟩
+
+/-- **The parallelogram is exactly the affine image of the unit square.** This is what solves
+(C2) containment: a point lies in `carrier` iff its `paramMap`-preimage has both coordinates in
+`[0,1]`, which the certificate's four half-plane checks should transfer to directly (not yet
+done, but this is the geometric fact those checks encode). -/
+theorem carrier_eq_image :
+    carrier = paramMap '' ((Set.Icc (0:ℝ) 1) ×ˢ (Set.Icc (0:ℝ) 1)) := by
+  rw [show (Set.Icc (0:ℝ) 1) ×ˢ (Set.Icc (0:ℝ) 1) =
+      convexHull ℝ (({(0:ℝ), 1} : Set ℝ) ×ˢ ({(0:ℝ), 1} : Set ℝ)) from by
+    rw [convexHull_prod, convexHull_pair, segment_eq_Icc (by norm_num : (0:ℝ) ≤ 1)],
+    AffineMap.image_convexHull, corners_eq]
+  rfl
+
+theorem convex : Convex ℝ carrier := convex_convexHull ℝ _
+
+theorem isCompact : IsCompact carrier :=
+  (Set.toFinite ({v1, v2, v3, v4} : Set Plane)).isCompact_convexHull ℝ
+
+theorem measurableSet : MeasurableSet carrier := isCompact.measurableSet
+
+theorem nullMeasurableSet : MeasureTheory.NullMeasurableSet carrier MeasureTheory.volume :=
+  measurableSet.nullMeasurableSet
+
+theorem volume_frontier : MeasureTheory.volume (frontier carrier) = 0 :=
+  convex.addHaar_frontier MeasureTheory.volume
+
+/-- **Non-degeneracy**: `q1, q2, q3` are affinely independent (a nonzero determinant, `decide`d in
+`ℤ[√35]` the same way a triangle's is), so their affine span is already the whole plane. -/
+theorem affineIndependent_123 :
+    AffineIndependent ℝ (![v1, v2, v3] : Fin 3 → Plane) := by
+  apply (affineIndependent_iff_not_collinear_of_ne
+    (show (0 : Fin 3) ≠ 1 by decide) (show (0 : Fin 3) ≠ 2 by decide)
+    (show (1 : Fin 3) ≠ 2 by decide)).mpr
+  apply Erdos634.CertCoord.not_collinear_of_det
+  show Erdos634.CertCoord.det3 (toR (zx (toZPt PgramTiling52.q1))) (toR (zy (toZPt PgramTiling52.q1)))
+    (toR (zx (toZPt PgramTiling52.q2))) (toR (zy (toZPt PgramTiling52.q2)))
+    (toR (zx (toZPt PgramTiling52.q3))) (toR (zy (toZPt PgramTiling52.q3))) ≠ 0
+  rw [show Erdos634.CertCoord.det3 (toR (zx (toZPt PgramTiling52.q1))) (toR (zy (toZPt PgramTiling52.q1)))
+      (toR (zx (toZPt PgramTiling52.q2))) (toR (zy (toZPt PgramTiling52.q2)))
+      (toR (zx (toZPt PgramTiling52.q3))) (toR (zy (toZPt PgramTiling52.q3)))
+    = toR (zcross (toZPt PgramTiling52.q1) (toZPt PgramTiling52.q2) (toZPt PgramTiling52.q3))
+    from toR_zcross _ _ _]
+  exact toR_ne_zero_of_sq_ne (by decide)
+
+/-- **The affine span of the parallelogram's carrier is the whole plane** — via three of its four
+vertices being affinely independent, so their span already fills `Plane`. -/
+theorem affineSpan_eq_top : affineSpan ℝ carrier = ⊤ := by
+  have h : affineSpan ℝ carrier = affineSpan ℝ ({v1, v2, v3, v4} : Set Plane) :=
+    affineSpan_convexHull _
+  rw [h]
+  have h3 : affineSpan ℝ (Set.range (![v1, v2, v3] : Fin 3 → Plane)) = ⊤ :=
+    affineIndependent_123.affineSpan_eq_top_iff_card_eq_finrank_add_one.mpr (by simp)
+  refine top_unique ?_
+  rw [← h3]
+  apply affineSpan_mono
+  intro x hx
+  simp only [Set.mem_range] at hx
+  obtain ⟨i, rfl⟩ := hx
+  fin_cases i <;> simp
+
+theorem interior_nonempty : (interior carrier).Nonempty :=
+  convex.interior_nonempty_iff_affineSpan_eq_top.mpr affineSpan_eq_top
+
+theorem volume_ne_top : MeasureTheory.volume carrier ≠ ⊤ := isCompact.measure_lt_top.ne
+
+open MeasureTheory
+
+/-- **The covering theorem for the parallelogram target**, the same measure argument as
+`ConvexCover.covers_of_volume`, none of which was actually triangle-specific: containment,
+pairwise-disjoint interiors and the exact area identity force the pieces to cover the whole
+parallelogram, not just sit inside it. -/
+theorem covers_of_volume {N : ℕ} (tile : Fin N → Tri)
+    (hsub : ∀ i, (tile i).carrier ⊆ carrier)
+    (hdisj : Pairwise fun i j => Disjoint (interior (tile i).carrier) (interior (tile j).carrier))
+    (hvol : ∑ i, volume (tile i).carrier = volume carrier) :
+    (⋃ i, (tile i).carrier) = carrier := by
+  classical
+  set U : Set Plane := ⋃ i, (tile i).carrier with hUdef
+  have hUsub : U ⊆ carrier := Set.iUnion_subset hsub
+  have hUvol : volume U = volume carrier := by
+    rw [hUdef, Erdos634.ConvexCover.volume_iUnion_eq_sum tile hdisj, hvol]
+  have hUclosed : IsClosed U := by
+    rw [hUdef]; exact isClosed_iUnion_of_finite fun i => (tile i).isCompact.isClosed
+  refine Set.Subset.antisymm hUsub ?_
+  by_contra hcon
+  obtain ⟨x, hxT, hxU⟩ : ∃ x, x ∈ carrier ∧ x ∉ U := by
+    by_contra hall; push_neg at hall; exact hcon fun x hx => hall x hx
+  have hVopen : IsOpen (Uᶜ) := hUclosed.isOpen_compl
+  have hxcl : x ∈ closure (interior carrier) := by
+    have hclosed : IsClosed carrier := isCompact.isClosed
+    have := convex.closure_interior_eq_closure_of_nonempty_interior interior_nonempty
+    rw [this, hclosed.closure_eq]; exact hxT
+  obtain ⟨y, hyV, hyI⟩ : ∃ y, y ∈ Uᶜ ∧ y ∈ interior carrier :=
+    mem_closure_iff.mp hxcl (Uᶜ) hVopen hxU
+  set W : Set Plane := Uᶜ ∩ interior carrier with hWdef
+  have hWopen : IsOpen W := hVopen.inter isOpen_interior
+  have hWne : W.Nonempty := ⟨y, hyV, hyI⟩
+  have hWpos : 0 < volume W := hWopen.measure_pos volume hWne
+  have hWsub : W ⊆ carrier := fun z hz => interior_subset hz.2
+  have hWdisj : Disjoint U W := Set.disjoint_right.mpr fun z hz => hz.1
+  have hsum : volume U + volume W ≤ volume carrier := by
+    have hunion : volume (U ∪ W) = volume U + volume W :=
+      measure_union₀ hWopen.measurableSet.nullMeasurableSet hWdisj.aedisjoint
+    rw [← hunion]; exact measure_mono (Set.union_subset hUsub hWsub)
+  rw [hUvol] at hsum
+  have : volume carrier + 0 < volume carrier + volume W :=
+    ENNReal.add_lt_add_left volume_ne_top hWpos
+  simp only [add_zero] at this
+  exact absurd hsum (not_le.mpr this)
+
+/-! ## `paramMap` invertibility: the explicit inverse via Cramer's rule
+
+`carrier_eq_image` says `carrier` is the image of the unit square under `paramMap`. To turn that
+into a membership test (`mem_carrier_iff`) we need `paramMap` invertible on its domain; since it is
+affine with linear part given by the matrix `[[d2x, d4x], [d2y, d4y]]`, the inverse is the standard
+Cramer's-rule formula, and the matrix is nonsingular because `q1, q2, q4` are non-collinear (the
+same determinant fact used for `affineIndependent_123`). -/
+
+noncomputable def d2x : ℝ := v2 0 - v1 0
+noncomputable def d2y : ℝ := v2 1 - v1 1
+noncomputable def d4x : ℝ := v4 0 - v1 0
+noncomputable def d4y : ℝ := v4 1 - v1 1
+noncomputable def Ddet : ℝ := d2x * d4y - d4x * d2y
+
+theorem Ddet_ne_zero : Ddet ≠ 0 := by
+  show d2x * d4y - d4x * d2y ≠ 0
+  have : Erdos634.CertCoord.det3 (v1 0) (v1 1) (v2 0) (v2 1) (v4 0) (v4 1) ≠ 0 := by
+    show Erdos634.CertCoord.det3 (toR (zx (toZPt PgramTiling52.q1))) (toR (zy (toZPt PgramTiling52.q1)))
+      (toR (zx (toZPt PgramTiling52.q2))) (toR (zy (toZPt PgramTiling52.q2)))
+      (toR (zx (toZPt PgramTiling52.q4))) (toR (zy (toZPt PgramTiling52.q4))) ≠ 0
+    rw [show Erdos634.CertCoord.det3 (toR (zx (toZPt PgramTiling52.q1))) (toR (zy (toZPt PgramTiling52.q1)))
+        (toR (zx (toZPt PgramTiling52.q2))) (toR (zy (toZPt PgramTiling52.q2)))
+        (toR (zx (toZPt PgramTiling52.q4))) (toR (zy (toZPt PgramTiling52.q4)))
+      = toR (zcross (toZPt PgramTiling52.q1) (toZPt PgramTiling52.q2) (toZPt PgramTiling52.q4))
+      from toR_zcross _ _ _]
+    exact toR_ne_zero_of_sq_ne (by decide)
+  simp only [Erdos634.CertCoord.det3, d2x, d2y, d4x, d4y] at *
+  convert this using 1
+
+noncomputable def uOf (p : Plane) : ℝ := ((p 0 - v1 0) * d4y - d4x * (p 1 - v1 1)) / Ddet
+noncomputable def vOf (p : Plane) : ℝ := (d2x * (p 1 - v1 1) - (p 0 - v1 0) * d2y) / Ddet
+
+theorem paramMap_uOf_vOf (p : Plane) : paramMap (uOf p, vOf p) = p := by
+  have hD := Ddet_ne_zero
+  have h0 : (paramMap (uOf p, vOf p)) 0 = p 0 := by
+    show v1 0 + uOf p * (v2 0 - v1 0) + vOf p * (v4 0 - v1 0) = p 0
+    simp only [uOf, vOf]
+    field_simp
+    simp only [Ddet, d2x, d2y, d4x, d4y]
+    ring
+  have h1 : (paramMap (uOf p, vOf p)) 1 = p 1 := by
+    show v1 1 + uOf p * (v2 1 - v1 1) + vOf p * (v4 1 - v1 1) = p 1
+    simp only [uOf, vOf]
+    field_simp
+    simp only [Ddet, d2x, d2y, d4x, d4y]
+    ring
+  ext i
+  fin_cases i
+  · exact h0
+  · exact h1
+
+theorem paramMap_unique (u v : ℝ) (p : Plane) (hp : paramMap (u, v) = p) :
+    u = uOf p ∧ v = vOf p := by
+  have hD := Ddet_ne_zero
+  have e0 : (paramMap (u, v)) 0 = p 0 := by rw [hp]
+  have e1 : (paramMap (u, v)) 1 = p 1 := by rw [hp]
+  have e0' : v1 0 + u * (v2 0 - v1 0) + v * (v4 0 - v1 0) = p 0 := e0
+  have e1' : v1 1 + u * (v2 1 - v1 1) + v * (v4 1 - v1 1) = p 1 := e1
+  constructor
+  · show u = ((p 0 - v1 0) * d4y - d4x * (p 1 - v1 1)) / Ddet
+    rw [eq_div_iff hD]
+    simp only [Ddet, d2x, d2y, d4x, d4y]
+    linear_combination (v4 1 - v1 1) * e0' - (v4 0 - v1 0) * e1'
+  · show v = (d2x * (p 1 - v1 1) - (p 0 - v1 0) * d2y) / Ddet
+    rw [eq_div_iff hD]
+    simp only [Ddet, d2x, d2y, d4x, d4y]
+    linear_combination (v2 0 - v1 0) * e1' - (v2 1 - v1 1) * e0'
+
+/-- Membership test for `carrier`: `p` is in the parallelogram iff its `paramMap`-preimage
+coordinates both lie in `[0,1]`. -/
+theorem mem_carrier_iff (p : Plane) :
+    p ∈ carrier ↔ 0 ≤ uOf p ∧ uOf p ≤ 1 ∧ 0 ≤ vOf p ∧ vOf p ≤ 1 := by
+  rw [carrier_eq_image]
+  constructor
+  · rintro ⟨⟨u,v⟩, ⟨hu,hv⟩, hp⟩
+    obtain ⟨hu', hv'⟩ := paramMap_unique u v p hp
+    exact ⟨hu' ▸ hu.1, hu' ▸ hu.2, hv' ▸ hv.1, hv' ▸ hv.2⟩
+  · rintro ⟨h1,h2,h3,h4⟩
+    exact ⟨(uOf p, vOf p), ⟨⟨h1,h2⟩,⟨h3,h4⟩⟩, paramMap_uOf_vOf p⟩
+
+/-! ## (C1)/(C2 orientation): the 52 pieces, as real `Tri` objects -/
+
+theorem det3_eq_toR_cross (t : PgramTiling52.Tri) :
+    Erdos634.CertCoord.det3
+      (toR (zx (toZPt (PgramTiling52.t1 t)))) (toR (zy (toZPt (PgramTiling52.t1 t))))
+      (toR (zx (toZPt (PgramTiling52.t2 t)))) (toR (zy (toZPt (PgramTiling52.t2 t))))
+      (toR (zx (toZPt (PgramTiling52.t3 t)))) (toR (zy (toZPt (PgramTiling52.t3 t))))
+    = toR (zcross (toZPt (PgramTiling52.t1 t)) (toZPt (PgramTiling52.t2 t))
+        (toZPt (PgramTiling52.t3 t))) :=
+  toR_zcross _ _ _
+
+set_option maxRecDepth 2000 in
+theorem all_pieces_pos :
+    ∀ t ∈ PgramTiling52.tiles,
+      zpos (zcross (toZPt (PgramTiling52.t1 t)) (toZPt (PgramTiling52.t2 t))
+        (toZPt (PgramTiling52.t3 t))) = true := by
+  decide
+
+noncomputable def pieceTri {t : PgramTiling52.Tri} (ht : t ∈ PgramTiling52.tiles) : Tri :=
+  Erdos634.CertCoord.mkTri
+    (toR (zx (toZPt (PgramTiling52.t1 t)))) (toR (zy (toZPt (PgramTiling52.t1 t))))
+    (toR (zx (toZPt (PgramTiling52.t2 t)))) (toR (zy (toZPt (PgramTiling52.t2 t))))
+    (toR (zx (toZPt (PgramTiling52.t3 t)))) (toR (zy (toZPt (PgramTiling52.t3 t))))
+    (by rw [det3_eq_toR_cross]; exact (toR_pos (all_pieces_pos t ht)).ne')
+
+theorem dist2_eq_zdist2 (p q : PgramTiling52.Pt) :
+    PgramTiling52.dist2 p q = zdist2 (toZPt p) (toZPt q) := rfl
+
+/-- **A piece's vertex, named by index.** -/
+def vertexOf (t : PgramTiling52.Tri) (i : Fin 3) : PgramTiling52.Pt :=
+  ![PgramTiling52.t1 t, PgramTiling52.t2 t, PgramTiling52.t3 t] i
+
+theorem pieceTri_pts (t : PgramTiling52.Tri) (ht : t ∈ PgramTiling52.tiles) (i : Fin 3) :
+    (pieceTri ht).pts i
+      = Erdos634.CertCoord.mkPt (toR (zx (toZPt (vertexOf t i)))) (toR (zy (toZPt (vertexOf t i)))) := by
+  fin_cases i <;> rfl
+
+theorem pieceTri_dist_sq (t : PgramTiling52.Tri) (ht : t ∈ PgramTiling52.tiles) (i j : Fin 3) :
+    dist ((pieceTri ht).pts i) ((pieceTri ht).pts j) ^ 2
+      = toR (PgramTiling52.dist2 (vertexOf t i) (vertexOf t j)) := by
+  rw [pieceTri_pts t ht i, pieceTri_pts t ht j, Erdos634.CertCoord.dist_sq_mkPt, dist2_eq_zdist2]
+  exact toR_zdist2 _ _
+
+/-! ## (C1): every piece is congruent to a fixed model -/
+
+theorem headI_mem_tiles : PgramTiling52.tiles.headI ∈ PgramTiling52.tiles := by decide
+
+def congOK' (t : PgramTiling52.Tri) : Bool :=
+  decide (∃ σ : Equiv.Perm (Fin 3), ∀ i j : Fin 3,
+    PgramTiling52.dist2 (vertexOf t i) (vertexOf t j)
+      = PgramTiling52.dist2 (vertexOf PgramTiling52.tiles.headI (σ i))
+          (vertexOf PgramTiling52.tiles.headI (σ j)))
+
+set_option maxRecDepth 2000 in
+theorem all_pieces_cong : ∀ t ∈ PgramTiling52.tiles, congOK' t = true := by decide
+
+theorem pieceTri_congruent {t : PgramTiling52.Tri} (ht : t ∈ PgramTiling52.tiles) :
+    (pieceTri ht).Congruent (pieceTri headI_mem_tiles) := by
+  have hex := all_pieces_cong t ht
+  simp only [congOK', decide_eq_true_eq] at hex
+  obtain ⟨σ, hσ⟩ := hex
+  refine Erdos634.SssCongruent.congruent_of_sq_dist_perm σ (fun i j => ?_)
+  rw [pieceTri_dist_sq t ht, pieceTri_dist_sq PgramTiling52.tiles.headI headI_mem_tiles]
+  exact congrArg toR (hσ i j)
+
+/-- **The model tile's sides are in ratio `2:3:4`** (squared `4:9:16`, scaled by `4²`:
+`324:2304:2916`) — matching the paper's cited tile `(3,8,9)` for member `(e,f)=(1,3)`, not merely
+mutual self-consistency among the 52 pieces. -/
+theorem model_sides :
+    (dist ((pieceTri headI_mem_tiles).pts 0) ((pieceTri headI_mem_tiles).pts 1) ^ 2 = 324)
+    ∧ (dist ((pieceTri headI_mem_tiles).pts 1) ((pieceTri headI_mem_tiles).pts 2) ^ 2 = 2304)
+    ∧ (dist ((pieceTri headI_mem_tiles).pts 2) ((pieceTri headI_mem_tiles).pts 0) ^ 2 = 2916) := by
+  have e01 : PgramTiling52.dist2 (vertexOf PgramTiling52.tiles.headI 0)
+      (vertexOf PgramTiling52.tiles.headI 1) = ((324:ℤ),(0:ℤ)) := by decide
+  have e12 : PgramTiling52.dist2 (vertexOf PgramTiling52.tiles.headI 1)
+      (vertexOf PgramTiling52.tiles.headI 2) = ((2304:ℤ),(0:ℤ)) := by decide
+  have e20 : PgramTiling52.dist2 (vertexOf PgramTiling52.tiles.headI 2)
+      (vertexOf PgramTiling52.tiles.headI 0) = ((2916:ℤ),(0:ℤ)) := by decide
+  refine ⟨?_, ?_, ?_⟩
+  · rw [pieceTri_dist_sq PgramTiling52.tiles.headI headI_mem_tiles 0 1, e01]; simp [toR]
+  · rw [pieceTri_dist_sq PgramTiling52.tiles.headI headI_mem_tiles 1 2, e12]; simp [toR]
+  · rw [pieceTri_dist_sq PgramTiling52.tiles.headI headI_mem_tiles 2 0, e20]; simp [toR]
+
+/-! ## (C2) containment: every piece lies in the target
+
+`insideOK`'s four half-plane checks (`znonneg (cross qᵢ qⱼ v)`, one per target edge) transfer to
+`uOf`/`vOf` bounds via `Ddet_pos` and the four cross-value identities below, then to membership in
+`carrier` via `mem_carrier_iff`. -/
+
+theorem cross12_eq (p : Plane) :
+    Erdos634.CertCoord.det3 (v1 0) (v1 1) (v2 0) (v2 1) (p 0) (p 1) = Ddet * vOf p := by
+  have hD := Ddet_ne_zero
+  show (v2 0 - v1 0) * (p 1 - v1 1) - (p 0 - v1 0) * (v2 1 - v1 1) = Ddet * vOf p
+  simp only [vOf]
+  field_simp
+  simp only [Ddet, d2x, d2y, d4x, d4y]
+  ring
+
+theorem cross41_eq (p : Plane) :
+    Erdos634.CertCoord.det3 (v4 0) (v4 1) (v1 0) (v1 1) (p 0) (p 1) = Ddet * uOf p := by
+  have hD := Ddet_ne_zero
+  show (v1 0 - v4 0) * (p 1 - v4 1) - (p 0 - v4 0) * (v1 1 - v4 1) = Ddet * uOf p
+  simp only [uOf]
+  field_simp
+  simp only [Ddet, d2x, d2y, d4x, d4y]
+  ring
+
+theorem cross23_eq (p : Plane) :
+    Erdos634.CertCoord.det3 (v2 0) (v2 1) (v3 0) (v3 1) (p 0) (p 1) = Ddet * (1 - uOf p) := by
+  have hD := Ddet_ne_zero
+  have hv3 := v3_eq
+  show (v3 0 - v2 0) * (p 1 - v2 1) - (p 0 - v2 0) * (v3 1 - v2 1) = Ddet * (1 - uOf p)
+  have h30 : v3 0 = v2 0 + v4 0 - v1 0 := by rw [hv3]; simp
+  have h31 : v3 1 = v2 1 + v4 1 - v1 1 := by rw [hv3]; simp
+  rw [h30, h31]
+  simp only [uOf]
+  field_simp
+  simp only [Ddet, d2x, d2y, d4x, d4y]
+  ring
+
+theorem cross34_eq (p : Plane) :
+    Erdos634.CertCoord.det3 (v3 0) (v3 1) (v4 0) (v4 1) (p 0) (p 1) = Ddet * (1 - vOf p) := by
+  have hD := Ddet_ne_zero
+  have hv3 := v3_eq
+  show (v4 0 - v3 0) * (p 1 - v3 1) - (p 0 - v3 0) * (v4 1 - v3 1) = Ddet * (1 - vOf p)
+  have h30 : v3 0 = v2 0 + v4 0 - v1 0 := by rw [hv3]; simp
+  have h31 : v3 1 = v2 1 + v4 1 - v1 1 := by rw [hv3]; simp
+  rw [h30, h31]
+  simp only [vOf]
+  field_simp
+  simp only [Ddet, d2x, d2y, d4x, d4y]
+  ring
+
+/-- `Ddet` is positive: `Ddet = toR (zcross q1 q2 q4)`, and that value is `(0,264)` in `ℤ[√35]`
+(computed directly from the `q1,q2,q4` coordinates), i.e. `264√35 > 0`. -/
+theorem Ddet_pos : 0 < Ddet := by
+  show 0 < d2x * d4y - d4x * d2y
+  have heq : Erdos634.CertCoord.det3 (v1 0) (v1 1) (v2 0) (v2 1) (v4 0) (v4 1)
+      = toR (zcross (toZPt PgramTiling52.q1) (toZPt PgramTiling52.q2) (toZPt PgramTiling52.q4)) :=
+    toR_zcross _ _ _
+  have hpos : (0:ℝ) < toR (zcross (toZPt PgramTiling52.q1) (toZPt PgramTiling52.q2)
+      (toZPt PgramTiling52.q4)) := by
+    apply toR_pos; decide
+  rw [← heq] at hpos
+  simp only [Erdos634.CertCoord.det3, d2x, d2y, d4x, d4y] at *
+  convert hpos using 1
+
+/-- **Any point passing `insideOK`'s four half-plane checks lies in `carrier`.** The direct
+converse of the certificate's own containment test, so no diagonal split is needed after all. -/
+theorem mem_carrier_of_cross (q : PgramTiling52.Pt)
+    (h1 : PgramTiling52.znonneg (PgramTiling52.cross PgramTiling52.q1 PgramTiling52.q2 q) = true)
+    (h2 : PgramTiling52.znonneg (PgramTiling52.cross PgramTiling52.q2 PgramTiling52.q3 q) = true)
+    (h3 : PgramTiling52.znonneg (PgramTiling52.cross PgramTiling52.q3 PgramTiling52.q4 q) = true)
+    (h4 : PgramTiling52.znonneg (PgramTiling52.cross PgramTiling52.q4 PgramTiling52.q1 q) = true) :
+    Erdos634.CertCoord.mkPt (toR (zx (toZPt q))) (toR (zy (toZPt q))) ∈ carrier := by
+  set p : Plane := Erdos634.CertCoord.mkPt (toR (zx (toZPt q))) (toR (zy (toZPt q))) with hp
+  have hDp := Ddet_pos
+  rw [mem_carrier_iff]
+  have e1 : Erdos634.CertCoord.det3 (v1 0) (v1 1) (v2 0) (v2 1) (p 0) (p 1)
+      = toR (zcross (toZPt PgramTiling52.q1) (toZPt PgramTiling52.q2) (toZPt q)) := by
+    rw [hp]; simp only [Erdos634.CertCoord.mkPt_zero, Erdos634.CertCoord.mkPt_one]
+    exact toR_zcross _ _ _
+  have e2 : Erdos634.CertCoord.det3 (v2 0) (v2 1) (v3 0) (v3 1) (p 0) (p 1)
+      = toR (zcross (toZPt PgramTiling52.q2) (toZPt PgramTiling52.q3) (toZPt q)) := by
+    rw [hp]; simp only [Erdos634.CertCoord.mkPt_zero, Erdos634.CertCoord.mkPt_one]
+    exact toR_zcross _ _ _
+  have e3 : Erdos634.CertCoord.det3 (v3 0) (v3 1) (v4 0) (v4 1) (p 0) (p 1)
+      = toR (zcross (toZPt PgramTiling52.q3) (toZPt PgramTiling52.q4) (toZPt q)) := by
+    rw [hp]; simp only [Erdos634.CertCoord.mkPt_zero, Erdos634.CertCoord.mkPt_one]
+    exact toR_zcross _ _ _
+  have e4 : Erdos634.CertCoord.det3 (v4 0) (v4 1) (v1 0) (v1 1) (p 0) (p 1)
+      = toR (zcross (toZPt PgramTiling52.q4) (toZPt PgramTiling52.q1) (toZPt q)) := by
+    rw [hp]; simp only [Erdos634.CertCoord.mkPt_zero, Erdos634.CertCoord.mkPt_one]
+    exact toR_zcross _ _ _
+  have n1 : (0:ℝ) ≤ toR (zcross (toZPt PgramTiling52.q1) (toZPt PgramTiling52.q2) (toZPt q)) :=
+    toR_nonneg h1
+  have n2 : (0:ℝ) ≤ toR (zcross (toZPt PgramTiling52.q2) (toZPt PgramTiling52.q3) (toZPt q)) :=
+    toR_nonneg h2
+  have n3 : (0:ℝ) ≤ toR (zcross (toZPt PgramTiling52.q3) (toZPt PgramTiling52.q4) (toZPt q)) :=
+    toR_nonneg h3
+  have n4 : (0:ℝ) ≤ toR (zcross (toZPt PgramTiling52.q4) (toZPt PgramTiling52.q1) (toZPt q)) :=
+    toR_nonneg h4
+  rw [← e1] at n1; rw [← e4] at n4; rw [← e2] at n2; rw [← e3] at n3
+  rw [cross12_eq] at n1
+  rw [cross41_eq] at n4
+  rw [cross23_eq] at n2
+  rw [cross34_eq] at n3
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · nlinarith [n4]
+  · nlinarith [n2]
+  · nlinarith [n1]
+  · nlinarith [n3]
+
+theorem all_pieces_inside : ∀ t ∈ PgramTiling52.tiles, PgramTiling52.insideOK t = true := by
+  decide
+
+theorem insideOK_vertex {t : PgramTiling52.Tri} (ht : t ∈ PgramTiling52.tiles) (i : Fin 3) :
+    PgramTiling52.znonneg (PgramTiling52.cross PgramTiling52.q1 PgramTiling52.q2 (vertexOf t i)) = true
+    ∧ PgramTiling52.znonneg (PgramTiling52.cross PgramTiling52.q2 PgramTiling52.q3 (vertexOf t i)) = true
+    ∧ PgramTiling52.znonneg (PgramTiling52.cross PgramTiling52.q3 PgramTiling52.q4 (vertexOf t i)) = true
+    ∧ PgramTiling52.znonneg (PgramTiling52.cross PgramTiling52.q4 PgramTiling52.q1 (vertexOf t i)) = true := by
+  have hins := all_pieces_inside t ht
+  simp only [PgramTiling52.insideOK, Bool.and_eq_true, List.all_eq_true] at hins
+  have hv : vertexOf t i ∈
+      ([PgramTiling52.t1 t, PgramTiling52.t2 t, PgramTiling52.t3 t] : List PgramTiling52.Pt) := by
+    fin_cases i <;> simp [vertexOf]
+  have h4 := hins.2 (vertexOf t i) hv
+  simp only [Bool.and_eq_true] at h4
+  exact ⟨h4.1.1.1, h4.1.1.2, h4.1.2, h4.2⟩
+
+theorem vertexOf_mem_carrier {t : PgramTiling52.Tri} (ht : t ∈ PgramTiling52.tiles) (i : Fin 3) :
+    Erdos634.CertCoord.mkPt (toR (zx (toZPt (vertexOf t i)))) (toR (zy (toZPt (vertexOf t i))))
+      ∈ carrier := by
+  obtain ⟨h1, h2, h3, h4⟩ := insideOK_vertex ht i
+  exact mem_carrier_of_cross (vertexOf t i) h1 h2 h3 h4
+
+/-- **(C2) fully assembled**: every piece of `PgramTiling52`, as a real `Tri`, lies in the
+parallelogram target — no diagonal split needed, the unit-square-affine-image route closes it
+directly. -/
+theorem pieceTri_subset_carrier {t : PgramTiling52.Tri} (ht : t ∈ PgramTiling52.tiles) :
+    (pieceTri ht).carrier ⊆ carrier := by
+  apply convexHull_min _ convex
+  rintro x ⟨k, rfl⟩
+  rw [pieceTri_pts t ht k]
+  exact vertexOf_mem_carrier ht k
+
+/-! ## (C3) pairwise-disjoint interiors — same "decide existence of a separating edge" pattern as
+`Tiling44Bridge`/`CevianTiling63Bridge`/`Tiling99Bridge` -/
+
+theorem cross_eq_zcross (o a b : PgramTiling52.Pt) :
+    PgramTiling52.cross o a b = zcross (toZPt o) (toZPt a) (toZPt b) := rfl
+
+/-- **The `lineFun` of a certificate edge is nonconstant**, `ℤ[√35]` version of
+`Tiling44Bridge.lineFun_ne_zero_of_sq_ne` (which is hardcoded to `ℤ[√15]` and so cannot be reused
+here — `PgramTiling52`'s certificate lives in a different quadratic field). -/
+theorem lineFun_ne_zero_of_sq_ne35 {P Q : ZPt}
+    (h : (zsub (zx P) (zx Q)).1 ^ 2 ≠ 35 * (zsub (zx P) (zx Q)).2 ^ 2
+       ∨ (zsub (zy P) (zy Q)).1 ^ 2 ≠ 35 * (zsub (zy P) (zy Q)).2 ^ 2) :
+    (Erdos634.CertGeom.lineFun (toR (zx P)) (toR (zy P)) (toR (zx Q)) (toR (zy Q))).linear ≠ 0 := by
+  apply Erdos634.CertGeom.lineFun_linear_ne_zero
+  rcases h with h | h
+  · exact Or.inl (sub_ne_zero.mp (by rw [← toR_sub]; exact toR_ne_zero_of_sq_ne h))
+  · exact Or.inr (sub_ne_zero.mp (by rw [← toR_sub]; exact toR_ne_zero_of_sq_ne h))
+
+/-- **A single `sepBy`-true witness gives a genuine separating affine functional** between two
+pieces, read as real `Tri` objects. Same shape as `Tiling44Bridge.sep_of_sepBy`, ported. -/
+theorem sep_of_sepBy {P Q : PgramTiling52.Pt} {A B : PgramTiling52.Tri}
+    (hPQ : (zsub (zx (toZPt P)) (zx (toZPt Q))).1 ^ 2
+             ≠ 35 * (zsub (zx (toZPt P)) (zx (toZPt Q))).2 ^ 2
+         ∨ (zsub (zy (toZPt P)) (zy (toZPt Q))).1 ^ 2
+             ≠ 35 * (zsub (zy (toZPt P)) (zy (toZPt Q))).2 ^ 2)
+    (hsep : PgramTiling52.sepBy P Q A B = true)
+    (hA : A ∈ PgramTiling52.tiles) (hB : B ∈ PgramTiling52.tiles) :
+    ∃ (f : Plane →ᵃ[ℝ] ℝ) (_ : f.linear ≠ 0) (c : ℝ),
+      (∀ x ∈ (pieceTri hA).carrier, f x ≤ c) ∧ (∀ x ∈ (pieceTri hB).carrier, c ≤ f x) := by
+  set f : Plane →ᵃ[ℝ] ℝ :=
+    Erdos634.CertGeom.lineFun (toR (zx (toZPt P))) (toR (zy (toZPt P)))
+      (toR (zx (toZPt Q))) (toR (zy (toZPt Q))) with hfdef
+  have hflin : f.linear ≠ 0 := lineFun_ne_zero_of_sq_ne35 hPQ
+  have hfval : ∀ v : PgramTiling52.Pt,
+      f (Erdos634.CertCoord.mkPt (toR (zx (toZPt v))) (toR (zy (toZPt v))))
+        = toR (PgramTiling52.cross P Q v) := by
+    intro v
+    rw [hfdef, Erdos634.CertGeom.lineFun_apply, Erdos634.CertCoord.mkPt_zero,
+      Erdos634.CertCoord.mkPt_one, cross_eq_zcross]
+    exact toR_zcross _ _ _
+  have hpts : ∀ (t : PgramTiling52.Tri) (ht : t ∈ PgramTiling52.tiles) (k : Fin 3),
+      (pieceTri ht).pts k
+        = Erdos634.CertCoord.mkPt (toR (zx (toZPt (vertexOf t k)))) (toR (zy (toZPt (vertexOf t k)))) :=
+    fun t ht k => pieceTri_pts t ht k
+  simp only [PgramTiling52.sepBy, List.all_eq_true, List.mem_cons, Bool.and_eq_true,
+    Bool.or_eq_true, List.map, forall_eq_or_imp] at hsep
+  rcases hsep with ⟨hsA, hsB⟩ | ⟨hsA, hsB⟩
+  · refine ⟨-f, neg_ne_zero.mpr hflin, 0, ?_, ?_⟩
+    · exact Erdos634.CertGeom.le_of_forall_pts_le (-f) (t := pieceTri hA) (c := 0)
+        (fun k => by
+          rw [Erdos634.Tiling44Bridge.affNeg_apply, hpts A hA k, hfval, neg_le, neg_zero]
+          fin_cases k <;> first | exact Erdos634.Z35Real.toR_nonneg hsA.1 | exact Erdos634.Z35Real.toR_nonneg hsA.2.1 | exact Erdos634.Z35Real.toR_nonneg hsA.2.2.1)
+    · intro x hx
+      have hb := Erdos634.CertGeom.le_of_forall_pts_le f (t := pieceTri hB) (c := 0)
+        (fun k => by
+          rw [hpts B hB k, hfval]
+          fin_cases k <;> first | exact Erdos634.Z35Real.toR_nonpos hsB.1 | exact Erdos634.Z35Real.toR_nonpos hsB.2.1 | exact Erdos634.Z35Real.toR_nonpos hsB.2.2.1)
+      have := hb x hx
+      rw [Erdos634.Tiling44Bridge.affNeg_apply]
+      linarith
+  · refine ⟨f, hflin, 0, ?_, ?_⟩
+    · exact Erdos634.CertGeom.le_of_forall_pts_le f (t := pieceTri hA) (c := 0)
+        (fun k => by
+          rw [hpts A hA k, hfval]
+          fin_cases k <;> first | exact Erdos634.Z35Real.toR_nonpos hsA.1 | exact Erdos634.Z35Real.toR_nonpos hsA.2.1 | exact Erdos634.Z35Real.toR_nonpos hsA.2.2.1)
+    · intro x hx
+      have hb := Erdos634.CertGeom.le_of_forall_pts_le (-f) (t := pieceTri hB) (c := 0)
+        (fun k => by
+          rw [Erdos634.Tiling44Bridge.affNeg_apply, hpts B hB k, hfval, neg_le, neg_zero]
+          fin_cases k <;> first | exact Erdos634.Z35Real.toR_nonneg hsB.1 | exact Erdos634.Z35Real.toR_nonneg hsB.2.1 | exact Erdos634.Z35Real.toR_nonneg hsB.2.2.1)
+      have := hb x hx
+      rw [Erdos634.Tiling44Bridge.affNeg_apply] at this
+      linarith
+
+/-! ## Every pair of distinct pieces is separated — the 52×52-pair assembly, decided at once -/
+
+def edgeCands (A B : PgramTiling52.Tri) : List (PgramTiling52.Pt × PgramTiling52.Pt) :=
+  [PgramTiling52.edgeOf A 0, PgramTiling52.edgeOf A 1, PgramTiling52.edgeOf A 2,
+   PgramTiling52.edgeOf B 0, PgramTiling52.edgeOf B 1, PgramTiling52.edgeOf B 2]
+
+def sqCond (pq : PgramTiling52.Pt × PgramTiling52.Pt) : Bool :=
+  decide ((zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).1 ^ 2
+             ≠ 35 * (zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).2 ^ 2
+         ∨ (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).1 ^ 2
+             ≠ 35 * (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).2 ^ 2)
+
+def pairOK (A B : PgramTiling52.Tri) : Bool :=
+  (edgeCands A B).any (fun pq => PgramTiling52.sepBy pq.1 pq.2 A B && sqCond pq)
+
+set_option maxRecDepth 8192 in
+set_option maxHeartbeats 4000000 in
+theorem all_pairs_ok :
+    ∀ A ∈ PgramTiling52.tiles, ∀ B ∈ PgramTiling52.tiles, A ≠ B → pairOK A B = true := by
+  decide
+
+theorem sqCond_iff (pq : PgramTiling52.Pt × PgramTiling52.Pt) :
+    sqCond pq = true ↔
+      (zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).1 ^ 2 ≠ 35 * (zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).2 ^ 2
+        ∨ (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).1 ^ 2
+            ≠ 35 * (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).2 ^ 2 := by
+  rw [sqCond, decide_eq_true_iff]
+
+/-- **Every two distinct pieces of `PgramTiling52` have disjoint interiors, as real `Tri`
+objects.** (C3) fully assembled. -/
+theorem pieces_interiors_disjoint {A B : PgramTiling52.Tri} (hA : A ∈ PgramTiling52.tiles)
+    (hB : B ∈ PgramTiling52.tiles) (hne : A ≠ B) :
+    Disjoint (interior (pieceTri hA).carrier) (interior (pieceTri hB).carrier) := by
+  have hok := all_pairs_ok A hA B hB hne
+  simp only [pairOK, List.any_eq_true] at hok
+  obtain ⟨pq, hmem, hsep⟩ := hok
+  rw [Bool.and_eq_true] at hsep
+  obtain ⟨hsepBy, hsq⟩ := hsep
+  obtain ⟨f, hf, c, h1, h2⟩ := sep_of_sepBy ((sqCond_iff pq).mp hsq) hsepBy hA hB
+  exact Erdos634.CertGeom.interiors_disjoint_of_separating f hf c h1 h2
+
+/-! ## (C4) the area sum — exact arithmetic transfer, ported from `Tiling44Bridge`
+
+`PgramTiling52`'s own `checkAll` already checks `zsum (tiles.map area2) == area2target`; this
+section transfers that Bool equality to the real determinant sum
+`AreaDet.area_identity_of_det`-style theorems need. Unlike `Tiling44Bridge`, there is no `target :
+Tri` here — the parallelogram target is fixed by the constant `area2target`, so this stops one
+step short of the volume identity `AreaDet.area_identity_of_det` gives for a `Tri` target: relating
+`|Ddet|` (the parallelogram's real "determinant") to `MeasureTheory.volume carrier` is a genuinely
+new step, not a routine port — see `VERIFY_PLAN.md`. -/
+
+/-- Every piece of `PgramTiling52`, indexed by `Fin PgramTiling52.tiles.length`. -/
+noncomputable def pieceAt (i : Fin PgramTiling52.tiles.length) : Tri :=
+  pieceTri (t := PgramTiling52.tiles[i.val]) (List.getElem_mem i.isLt)
+
+theorem detTri_pieceAt (i : Fin PgramTiling52.tiles.length) :
+    Erdos634.AreaDet.detTri (pieceAt i) = toR (PgramTiling52.area2 (PgramTiling52.tiles[i.val])) := by
+  unfold pieceAt pieceTri
+  rw [Erdos634.CertCoord.detTri_mkTri, det3_eq_toR_cross]
+  rfl
+
+theorem foldl_zadd_eq (l : List PgramTiling52.ZD) (acc : PgramTiling52.ZD) :
+    l.foldl PgramTiling52.zadd acc = acc + l.sum := by
+  induction l generalizing acc with
+  | nil => simp
+  | cons a t ih =>
+    simp only [List.foldl_cons, List.sum_cons]
+    rw [ih]; apply Prod.ext <;> simp [PgramTiling52.zadd] <;> ring
+
+theorem zsum_eq_sum (l : List PgramTiling52.ZD) : PgramTiling52.zsum l = l.sum := by
+  simp only [PgramTiling52.zsum]; rw [foldl_zadd_eq]; simp
+
+theorem pgram_zadd_eq_zreal (u v : PgramTiling52.ZD) : PgramTiling52.zadd u v = zadd u v := rfl
+
+theorem toR_list_sum (l : List PgramTiling52.ZD) : toR l.sum = (l.map toR).sum := by
+  induction l with
+  | nil => simp [toR]
+  | cons a t ih =>
+    simp only [List.sum_cons, List.map_cons]
+    show toR (a + t.sum) = toR a + (List.map toR t).sum
+    rw [show (a + t.sum : PgramTiling52.ZD) = PgramTiling52.zadd a t.sum from rfl,
+      pgram_zadd_eq_zreal, toR_add, ih]
+
+theorem area_sum_transfer :
+    ∑ i : Fin PgramTiling52.tiles.length, toR (PgramTiling52.area2 (PgramTiling52.tiles[i.val]))
+      = toR (PgramTiling52.zsum (PgramTiling52.tiles.map PgramTiling52.area2)) := by
+  rw [zsum_eq_sum, toR_list_sum, List.map_map,
+    ← List.ofFn_getElem_eq_map PgramTiling52.tiles (toR ∘ PgramTiling52.area2)]
+  rfl
+
+/-- **The (C4) area sum, transferred to `ℝ`** — matching `PgramTiling52`'s own `checkAll`
+equality. -/
+theorem area_sum_eq_target :
+    ∑ i : Fin PgramTiling52.tiles.length, toR (PgramTiling52.area2 (PgramTiling52.tiles[i.val]))
+      = toR PgramTiling52.area2target := by
+  rw [area_sum_transfer]
+  apply congrArg toR
+  have h := PgramTiling52.pgramtiling52_certificate
+  simp only [PgramTiling52.checkAll, Bool.and_eq_true, beq_iff_eq] at h
+  exact h.2
+
+/-- **The exact-arithmetic half of (C4)**: the pieces' unsigned determinants sum to the target's
+(`area2target = (0,7488)`, i.e. `7488√35`, positive) — every piece positively oriented
+(`all_pieces_pos`), so `|det| = det` throughout. -/
+theorem abs_detTri_sum_eq_target :
+    ∑ i : Fin PgramTiling52.tiles.length, |Erdos634.AreaDet.detTri (pieceAt i)|
+      = |toR PgramTiling52.area2target| := by
+  have step : ∑ i : Fin PgramTiling52.tiles.length, |Erdos634.AreaDet.detTri (pieceAt i)|
+      = ∑ i : Fin PgramTiling52.tiles.length,
+          toR (PgramTiling52.area2 (PgramTiling52.tiles[i.val])) := by
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [detTri_pieceAt]
+    exact abs_of_pos (toR_pos (all_pieces_pos _ (List.getElem_mem i.isLt)))
+  rw [step, area_sum_eq_target, abs_of_pos]
+  apply toR_pos
+  decide
+
+/-! ## Toward the volume identity: `Ddet` as a genuine `Plane →ₗ[ℝ] Plane` determinant
+
+`AreaDet.area_identity_of_det` closes (C4) for a `Tri` target via `volume_eq_det_mul`, built from
+`edgeMap T : Plane →ₗ[ℝ] Plane` (both sides the *same* space, which is exactly what
+`Measure.addHaar_image_linearMap` needs). `PgramTiling52Bridge.paramMap`, by contrast, is
+`ℝ × ℝ →ᵃ[ℝ] Plane` — a *different* domain, so `addHaar_image_linearMap` does not apply to
+`paramMap.linear` directly. `dEdge` below is the same construction as `AreaDet.edgeMap`, but built
+from the parallelogram's own two edge vectors `v2 - v1`, `v4 - v1` — a genuine `Plane →ₗ[ℝ] Plane`
+map, to which `Measure.addHaar_image_linearMap` *does* apply. -/
+
+/-- The linear map sending the standard basis to the parallelogram's two edge vectors at `v1`. -/
+noncomputable def dEdge : Plane →ₗ[ℝ] Plane :=
+  Erdos634.AreaDet.pb.constr ℝ (fun i : Fin 2 => ![v2 - v1, v4 - v1] i)
+
+/-- `dEdge`'s determinant, which should coincide with `Ddet`, and does. -/
+noncomputable def dDet : ℝ := LinearMap.det dEdge
+
+theorem dEdge_basis (i : Fin 2) : dEdge (Erdos634.AreaDet.pb i) = ![v2 - v1, v4 - v1] i := by
+  simp [dEdge, Module.Basis.constr_basis]
+
+/-- **`dEdge`'s determinant, in coordinates, is exactly `Ddet`.** Same computation as
+`AreaDet.detTri_eq`, specialized to the parallelogram's two edge vectors. -/
+theorem dDet_eq_Ddet : dDet = Ddet := by
+  rw [dDet, ← LinearMap.det_toMatrix Erdos634.AreaDet.pb, Matrix.det_fin_two]
+  simp only [LinearMap.toMatrix_apply, dEdge_basis, Erdos634.AreaDet.pb_repr]
+  show (v2 - v1) 0 * (v4 - v1) 1 - (v4 - v1) 0 * (v2 - v1) 1 = Ddet
+  show (v2 0 - v1 0) * (v4 1 - v1 1) - (v4 0 - v1 0) * (v2 1 - v1 1) = Ddet
+  simp only [Ddet, d2x, d2y, d4x, d4y]
+
+/-! ## The volume identity itself: `volume carrier = ENNReal.ofReal |Ddet|`
+
+The parallelogram analog of `AreaDet.volume_eq_det_mul`, built the same way (translation
+invariance + `Measure.addHaar_image_linearMap`) but starting from a reference *square* `stdSquare`
+rather than `AreaDet`'s reference triangle, since `dEdge`'s domain is the whole parallelogram
+picture, not three vertices. -/
+
+/-- The reference unit square, living in `Plane` directly (not `ℝ × ℝ`), so `dEdge`'s image of it
+can be compared against `carrier` without crossing spaces. -/
+noncomputable def stdSquare : Set Plane :=
+  {x : Plane | x 0 ∈ Set.Icc (0:ℝ) 1 ∧ x 1 ∈ Set.Icc (0:ℝ) 1}
+
+/-- `stdSquare` is the preimage, under the canonical (measure-preserving) identification of
+`Plane` with `Fin 2 → ℝ`, of the Pi-indexed unit box. -/
+theorem stdSquare_eq_preimage :
+    stdSquare = (WithLp.ofLp : Plane → (Fin 2 → ℝ)) ⁻¹' (Set.Icc (0 : Fin 2 → ℝ) 1) := by
+  ext x
+  simp only [stdSquare, Set.mem_setOf_eq, Set.mem_preimage, Set.mem_Icc, Pi.le_def, Pi.zero_apply,
+    Pi.one_apply]
+  constructor
+  · rintro ⟨h0, h1⟩
+    refine ⟨fun i => ?_, fun i => ?_⟩ <;> fin_cases i <;> simp_all
+  · rintro ⟨h0, h1⟩
+    exact ⟨⟨h0 0, h1 0⟩, ⟨h0 1, h1 1⟩⟩
+
+/-- **`stdSquare` has volume 1** — transported from the Pi-box volume `Real.volume_Icc_pi` via
+`PiLp.volume_preserving_ofLp`, the measure-preserving identification of `Plane` with the Pi-measure
+on `Fin 2 → ℝ`. Neither of these two Mathlib facts was used anywhere else in this corpus before. -/
+theorem volume_stdSquare : MeasureTheory.volume stdSquare = 1 := by
+  rw [stdSquare_eq_preimage, (PiLp.volume_preserving_ofLp (Fin 2)).measure_preimage]
+  · rw [Real.volume_Icc_pi]; simp
+  · exact measurableSet_Icc.nullMeasurableSet
+
+/-- `dEdge`, unfolded to its `Plane`-coordinate formula. -/
+theorem dEdge_apply (x : Plane) : dEdge x = x 0 • (v2 - v1) + x 1 • (v4 - v1) := by
+  have := Erdos634.AreaDet.pb.constr_apply_fintype ℝ (fun i : Fin 2 => ![v2 - v1, v4 - v1] i) x
+  show dEdge x = _
+  unfold dEdge
+  rw [this]
+  simp only [Erdos634.AreaDet.pb.equivFun_apply, Erdos634.AreaDet.pb_repr]
+  rw [Fin.sum_univ_two]
+  simp
+
+/-- **`carrier` is exactly `dEdge`'s image of `stdSquare`, translated by `v1`** — the `Plane`-native
+counterpart of `carrier_eq_image`, matching `dEdge`'s domain instead of `paramMap`'s. -/
+theorem carrier_eq_gimage : carrier = (fun x : Plane => v1 + dEdge x) '' stdSquare := by
+  ext p
+  simp only [Set.mem_image]
+  constructor
+  · intro hp
+    rw [mem_carrier_iff] at hp
+    obtain ⟨h1, h2, h3, h4⟩ := hp
+    refine ⟨Erdos634.CertCoord.mkPt (uOf p) (vOf p), ?_, ?_⟩
+    · simp only [stdSquare, Set.mem_setOf_eq, Erdos634.CertCoord.mkPt_zero,
+        Erdos634.CertCoord.mkPt_one]
+      exact ⟨⟨h1, h2⟩, ⟨h3, h4⟩⟩
+    · rw [dEdge_apply, Erdos634.CertCoord.mkPt_zero, Erdos634.CertCoord.mkPt_one]
+      show v1 + (uOf p • (v2 - v1) + vOf p • (v4 - v1)) = p
+      have heq : v1 + (uOf p • (v2 - v1) + vOf p • (v4 - v1))
+          = paramMap (uOf p, vOf p) := by
+        show v1 + (uOf p • (v2 - v1) + vOf p • (v4 - v1))
+          = v1 + uOf p • (v2 - v1) + vOf p • (v4 - v1)
+        abel
+      rw [heq, paramMap_uOf_vOf]
+  · rintro ⟨x, hx, rfl⟩
+    rw [mem_carrier_iff]
+    simp only [stdSquare, Set.mem_setOf_eq] at hx
+    rw [dEdge_apply]
+    have heq : v1 + (x 0 • (v2 - v1) + x 1 • (v4 - v1)) = paramMap (x 0, x 1) := by
+      show v1 + (x 0 • (v2 - v1) + x 1 • (v4 - v1)) = v1 + x 0 • (v2 - v1) + x 1 • (v4 - v1)
+      abel
+    rw [heq]
+    obtain ⟨hu', hv'⟩ := paramMap_unique (x 0) (x 1) (paramMap (x 0, x 1)) rfl
+    rw [← hu', ← hv']
+    exact ⟨hx.1.1, hx.1.2, hx.2.1, hx.2.2⟩
+
+/-- **The volume identity**, translation invariance plus `Measure.addHaar_image_linearMap` on
+`dEdge` — the same two steps `AreaDet.volume_eq_det_mul` uses, ported to a square reference domain
+instead of a triangular one. -/
+theorem volume_carrier_eq :
+    MeasureTheory.volume carrier = ENNReal.ofReal |Ddet| * MeasureTheory.volume stdSquare := by
+  rw [carrier_eq_gimage]
+  have hcomp : (fun x : Plane => v1 + dEdge x) '' stdSquare
+      = (fun h : Plane => v1 + h) '' (dEdge '' stdSquare) := by
+    rw [← Set.image_comp]; rfl
+  have hpre : (fun h : Plane => v1 + h) '' (dEdge '' stdSquare)
+      = (fun h : Plane => (-v1) + h) ⁻¹' (dEdge '' stdSquare) := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩; simpa using hx
+    · intro hy; exact ⟨(-v1) + y, hy, by abel⟩
+  rw [hcomp, hpre, MeasureTheory.measure_preimage_add, MeasureTheory.Measure.addHaar_image_linearMap]
+  rw [show LinearMap.det dEdge = Ddet from dDet_eq_Ddet]
+
+/-- **(C4)'s volume identity, fully assembled**: the parallelogram's carrier has volume exactly
+`|Ddet|`. This is what `covers_of_volume` needs alongside `abs_detTri_sum_eq_target`. -/
+theorem volume_carrier_eq_abs_Ddet : MeasureTheory.volume carrier = ENNReal.ofReal |Ddet| := by
+  rw [volume_carrier_eq, volume_stdSquare, mul_one]
+
+/-! ## The covering theorem, instantiated: `PgramTiling52`'s 52 pieces genuinely cover the target
+
+Everything is now in place: (C1)-(C4) and the volume identity. What remains is arithmetic — matching
+`PgramTiling52`'s doubled-area constant `area2target` (`528√35`, twice the pieces' total unsigned
+determinant) against `Ddet` (`3744√35`, the parallelogram's own determinant, not doubled), then
+combining `AreaDet.volume_eq_det_mul` per piece with `AreaDet.volume_stdCarrier_half` to get `hvol`
+for `covers_of_volume`. -/
+
+/-- **The doubled-area identity**: `area2target`, read as a real number, is exactly `2 * Ddet` —
+`zcross q1 q2 q4` doubled is `area2target` in `ℤ[√35]` (`decide`), transferred by `toR`. -/
+theorem area2target_eq_two_Ddet : toR PgramTiling52.area2target = 2 * Ddet := by
+  have hz : PgramTiling52.area2target
+      = zadd (zcross (toZPt PgramTiling52.q1) (toZPt PgramTiling52.q2) (toZPt PgramTiling52.q4))
+          (zcross (toZPt PgramTiling52.q1) (toZPt PgramTiling52.q2) (toZPt PgramTiling52.q4)) := by
+    decide
+  rw [hz, toR_add]
+  have heq : Erdos634.CertCoord.det3 (v1 0) (v1 1) (v2 0) (v2 1) (v4 0) (v4 1)
+      = toR (zcross (toZPt PgramTiling52.q1) (toZPt PgramTiling52.q2) (toZPt PgramTiling52.q4)) :=
+    toR_zcross _ _ _
+  have hDdet : Ddet = toR (zcross (toZPt PgramTiling52.q1) (toZPt PgramTiling52.q2)
+      (toZPt PgramTiling52.q4)) := by
+    show d2x * d4y - d4x * d2y = _
+    rw [← heq]
+    simp only [Erdos634.CertCoord.det3, d2x, d2y, d4x, d4y]
+  rw [hDdet]; ring
+
+/-- **The volume-sum identity `hvol`**: the 52 pieces' volumes sum to the target's. -/
+theorem hvol_pgram :
+    ∑ i : Fin PgramTiling52.tiles.length, volume (pieceAt i).carrier = volume carrier := by
+  have hstep : ∀ i, volume (pieceAt i).carrier
+      = ENNReal.ofReal (Erdos634.AreaDet.detTri (pieceAt i)) * (1/2 : ENNReal) := by
+    intro i
+    rw [Erdos634.AreaDet.volume_eq_det_mul, Erdos634.AreaDet.volume_stdCarrier_half]
+    congr 1
+    rw [abs_of_pos]
+    rw [detTri_pieceAt]
+    exact toR_pos (all_pieces_pos _ (List.getElem_mem i.isLt))
+  simp_rw [hstep]
+  rw [← Finset.sum_mul]
+  have hpos : ∀ i, 0 < Erdos634.AreaDet.detTri (pieceAt i) := fun i => by
+    rw [detTri_pieceAt]; exact toR_pos (all_pieces_pos _ (List.getElem_mem i.isLt))
+  have hsum : ∑ i : Fin PgramTiling52.tiles.length,
+      ENNReal.ofReal (Erdos634.AreaDet.detTri (pieceAt i))
+      = ENNReal.ofReal (∑ i, Erdos634.AreaDet.detTri (pieceAt i)) := by
+    rw [ENNReal.ofReal_sum_of_nonneg]
+    intro i _
+    exact (hpos i).le
+  rw [hsum]
+  have hsum2 : ∑ i : Fin PgramTiling52.tiles.length, Erdos634.AreaDet.detTri (pieceAt i)
+      = toR PgramTiling52.area2target := by
+    have habs := abs_detTri_sum_eq_target
+    rw [Finset.sum_congr rfl (fun i _ => abs_of_pos (hpos i)),
+      abs_of_pos (by apply toR_pos; decide)] at habs
+    exact habs
+  rw [hsum2, area2target_eq_two_Ddet, volume_carrier_eq_abs_Ddet]
+  rw [abs_of_pos (by have := Ddet_pos; linarith)]
+  rw [ENNReal.ofReal_mul (by norm_num)]
+  rw [show (ENNReal.ofReal (2:ℝ)) = 2 by norm_num [ENNReal.ofReal_eq_ofNat]]
+  rw [mul_right_comm, one_div, ENNReal.mul_inv_cancel (by norm_num) (by norm_num), one_mul]
+
+/-- **Injectivity of `tiles[·]`**, needed to convert `A ≠ B` (`Tri`-level) to `i ≠ j`
+(index-level) for `pieces_interiors_disjoint`. -/
+theorem tiles_getElem_inj : ∀ i j : Fin PgramTiling52.tiles.length, i ≠ j →
+    PgramTiling52.tiles[i.val] ≠ PgramTiling52.tiles[j.val] := by decide
+
+/-- **The covering theorem, fully instantiated**: `PgramTiling52`'s 52 pieces genuinely cover the
+parallelogram target — the first non-triangular covering-theorem application in this corpus. -/
+theorem pgram52_covers :
+    (⋃ i : Fin PgramTiling52.tiles.length, (pieceAt i).carrier) = carrier :=
+  covers_of_volume pieceAt
+    (fun i => pieceTri_subset_carrier (List.getElem_mem i.isLt))
+    (fun i j hij => pieces_interiors_disjoint (List.getElem_mem i.isLt) (List.getElem_mem j.isLt)
+      (tiles_getElem_inj i j hij))
+    hvol_pgram
+
+end Erdos634.PgramTiling52Bridge
