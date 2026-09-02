@@ -349,6 +349,24 @@ theorem pieceTri_congruent {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.til
   rw [pieceTri_dist_sq t ht, pieceTri_dist_sq PgramTiling22.tiles.headI headI_mem_tiles]
   exact congrArg toR (hσ i j)
 
+/-- **The model tile's sides are in ratio `2:3:4`** (squared `4:9:16`, scaled by `4²`:
+`64:144:256`) — matching the paper's cited tile `(2,3,4)` for member `(e,f)=(1,2)`, not merely
+mutual self-consistency among the 22 pieces. -/
+theorem model_sides :
+    (dist ((pieceTri headI_mem_tiles).pts 0) ((pieceTri headI_mem_tiles).pts 1) ^ 2 = 64)
+    ∧ (dist ((pieceTri headI_mem_tiles).pts 1) ((pieceTri headI_mem_tiles).pts 2) ^ 2 = 144)
+    ∧ (dist ((pieceTri headI_mem_tiles).pts 2) ((pieceTri headI_mem_tiles).pts 0) ^ 2 = 256) := by
+  have e01 : PgramTiling22.dist2 (vertexOf PgramTiling22.tiles.headI 0)
+      (vertexOf PgramTiling22.tiles.headI 1) = ((64:ℤ),(0:ℤ)) := by decide
+  have e12 : PgramTiling22.dist2 (vertexOf PgramTiling22.tiles.headI 1)
+      (vertexOf PgramTiling22.tiles.headI 2) = ((144:ℤ),(0:ℤ)) := by decide
+  have e20 : PgramTiling22.dist2 (vertexOf PgramTiling22.tiles.headI 2)
+      (vertexOf PgramTiling22.tiles.headI 0) = ((256:ℤ),(0:ℤ)) := by decide
+  refine ⟨?_, ?_, ?_⟩
+  · rw [pieceTri_dist_sq PgramTiling22.tiles.headI headI_mem_tiles 0 1, e01]; simp [toR]
+  · rw [pieceTri_dist_sq PgramTiling22.tiles.headI headI_mem_tiles 1 2, e12]; simp [toR]
+  · rw [pieceTri_dist_sq PgramTiling22.tiles.headI headI_mem_tiles 2 0, e20]; simp [toR]
+
 /-! ## (C2) containment: every piece lies in the target
 
 `insideOK`'s four half-plane checks (`znonneg (cross qᵢ qⱼ v)`, one per target edge) transfer to
