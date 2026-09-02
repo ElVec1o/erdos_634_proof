@@ -377,6 +377,76 @@ theorem congruentDissection_base_corner_tile_unique (D : CongruentDissection N) 
   rw [← heq_of_ne w (Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ hw)]
   exact hw
 
+/-! ## The corner point is a *vertex* of the corner tile
+
+`congruentDissection_base_corner_tile_unique` only says the corner point lies in the unique
+tile's *carrier* — not yet that it is one of that tile's three named vertices, which is what
+`TilePlacement.c_corner_side_a`/`.a_corner_side_c` (the abstract "corner tile lays `c` ⟹ lays
+`a`" fact) need to apply. `Tri.localAngle`'s own definition branches on `∃ j, p = T.pts j` before
+falling through to the `2π`/`π`/`0` cases, so a point whose local angle is a genuine corner value
+(`β`, ruled out from being `2π`, `π`, or `0`) forces that branch — this is the missing bridge,
+built directly from `Tri.localAngle`'s definition rather than assumed. -/
+
+open Erdos634.TilePlacement in
+/-- **The corner tile, with the corner point identified as one of its vertices.** Strengthens
+`congruentDissection_base_corner_tile_unique`: the unique covering tile's corner point is not
+merely contained in its carrier but equals `(D.tile i).pts j` for an explicit `j`, with local
+angle `β` there — the data `c_corner_side_a`/`a_corner_side_c` need to conclude which edge the
+corner tile lays on the base. -/
+theorem congruentDissection_base_corner_tile_vertex (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0) (hβ2π : β ≠ 2 * Real.pi)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (k : Fin 3)
+    (hcorner : cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β) :
+    ∃ i : Fin N, ∃ j : Fin 3, D.target.pts k = (D.tile i).pts j
+      ∧ (D.tile i).localAngle (D.target.pts k) = β
+      ∧ ∀ i' : Fin N, D.target.pts k ∈ (D.tile i').carrier → i' = i := by
+  classical
+  obtain ⟨i0, hi0mem, hi0uniq⟩ :=
+    congruentDissection_base_corner_tile_unique D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0
+      hγdef hrel hirr hα' hβ' hγ' k hcorner
+  have hvals : ∀ i, (D.tile i).localAngle (D.target.pts k) ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ) :=
+    fun i => congruentDissection_localAngle_mem D α β γ hα' hβ' hγ' k i
+  obtain ⟨hαc, hβc, hγc, hπc⟩ :=
+    congruentDissection_base_corner_counts D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0
+      hγdef hrel hirr hα' hβ' hγ' k hcorner
+  have hangle : (D.tile i0).localAngle (D.target.pts k) = β := by
+    have hv := hvals i0
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hv
+    have hnotv : ∀ (v : ℝ),
+        ({j : Fin N | (D.tile j).localAngle (D.target.pts k) = v} : Finset (Fin N)).card = 0 →
+        (D.tile i0).localAngle (D.target.pts k) ≠ v := by
+      intro v hv0 heq
+      have hmem : i0 ∈ ({j : Fin N | (D.tile j).localAngle (D.target.pts k) = v} :
+          Finset (Fin N)) := by simpa using heq
+      rw [Finset.card_eq_zero.mp hv0] at hmem
+      exact absurd hmem (Finset.notMem_empty i0)
+    rcases hv with h | h | h | h | h
+    · exact absurd h (hnotv α hαc)
+    · exact h
+    · exact absurd h (hnotv γ hγc)
+    · exact absurd h (hnotv Real.pi hπc)
+    · exact absurd h (Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ hi0mem)
+  have hisvertex : ∃ j, D.target.pts k = (D.tile i0).pts j := by
+    classical
+    by_contra hcon
+    push_neg at hcon
+    rw [Erdos634.Geometry.Tri.localAngle] at hangle
+    simp only [hcon, exists_false, dif_neg, not_false_eq_true] at hangle
+    split at hangle
+    · exact hβ2π hangle.symm
+    · split at hangle
+      · exact hβπ hangle.symm
+      · exact hβ0 hangle.symm
+  obtain ⟨j, hj⟩ := hisvertex
+  exact ⟨i0, j, hj, hangle, hi0uniq⟩
+
 /-! ## `lem:endpoints`, fully assembled
 
 The chain's first tile has `a` as one of its own vertices (`WallEndpoints.chain_endpoints`), so its
