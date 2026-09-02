@@ -798,4 +798,79 @@ theorem volume_carrier_eq :
 theorem volume_carrier_eq_abs_Ddet : MeasureTheory.volume carrier = ENNReal.ofReal |Ddet| := by
   rw [volume_carrier_eq, volume_stdSquare, mul_one]
 
+/-! ## The covering theorem, instantiated: `PgramTiling22`'s 22 pieces genuinely cover the target
+
+Everything is now in place: (C1)-(C4) and the volume identity. What remains is arithmetic — matching
+`PgramTiling22`'s doubled-area constant `area2target` (`528√15`, twice the pieces' total unsigned
+determinant) against `Ddet` (`264√15`, the parallelogram's own determinant, not doubled), then
+combining `AreaDet.volume_eq_det_mul` per piece with `AreaDet.volume_stdCarrier_half` to get `hvol`
+for `covers_of_volume`. -/
+
+/-- **The doubled-area identity**: `area2target`, read as a real number, is exactly `2 * Ddet` —
+`zcross q1 q2 q4` doubled is `area2target` in `ℤ[√15]` (`decide`), transferred by `toR`. -/
+theorem area2target_eq_two_Ddet : toR PgramTiling22.area2target = 2 * Ddet := by
+  have hz : PgramTiling22.area2target
+      = zadd (zcross (toZPt PgramTiling22.q1) (toZPt PgramTiling22.q2) (toZPt PgramTiling22.q4))
+          (zcross (toZPt PgramTiling22.q1) (toZPt PgramTiling22.q2) (toZPt PgramTiling22.q4)) := by
+    decide
+  rw [hz, toR_add]
+  have heq : Erdos634.CertCoord.det3 (v1 0) (v1 1) (v2 0) (v2 1) (v4 0) (v4 1)
+      = toR (zcross (toZPt PgramTiling22.q1) (toZPt PgramTiling22.q2) (toZPt PgramTiling22.q4)) :=
+    toR_zcross _ _ _
+  have hDdet : Ddet = toR (zcross (toZPt PgramTiling22.q1) (toZPt PgramTiling22.q2)
+      (toZPt PgramTiling22.q4)) := by
+    show d2x * d4y - d4x * d2y = _
+    rw [← heq]
+    simp only [Erdos634.CertCoord.det3, d2x, d2y, d4x, d4y]
+  rw [hDdet]; ring
+
+/-- **The volume-sum identity `hvol`**: the 22 pieces' volumes sum to the target's. -/
+theorem hvol_pgram :
+    ∑ i : Fin PgramTiling22.tiles.length, volume (pieceAt i).carrier = volume carrier := by
+  have hstep : ∀ i, volume (pieceAt i).carrier
+      = ENNReal.ofReal (Erdos634.AreaDet.detTri (pieceAt i)) * (1/2 : ENNReal) := by
+    intro i
+    rw [Erdos634.AreaDet.volume_eq_det_mul, Erdos634.AreaDet.volume_stdCarrier_half]
+    congr 1
+    rw [abs_of_pos]
+    rw [detTri_pieceAt]
+    exact toR_pos (all_pieces_pos _ (List.getElem_mem i.isLt))
+  simp_rw [hstep]
+  rw [← Finset.sum_mul]
+  have hpos : ∀ i, 0 < Erdos634.AreaDet.detTri (pieceAt i) := fun i => by
+    rw [detTri_pieceAt]; exact toR_pos (all_pieces_pos _ (List.getElem_mem i.isLt))
+  have hsum : ∑ i : Fin PgramTiling22.tiles.length,
+      ENNReal.ofReal (Erdos634.AreaDet.detTri (pieceAt i))
+      = ENNReal.ofReal (∑ i, Erdos634.AreaDet.detTri (pieceAt i)) := by
+    rw [ENNReal.ofReal_sum_of_nonneg]
+    intro i _
+    exact (hpos i).le
+  rw [hsum]
+  have hsum2 : ∑ i : Fin PgramTiling22.tiles.length, Erdos634.AreaDet.detTri (pieceAt i)
+      = toR PgramTiling22.area2target := by
+    have habs := abs_detTri_sum_eq_target
+    rw [Finset.sum_congr rfl (fun i _ => abs_of_pos (hpos i)),
+      abs_of_pos (by apply toR_pos; decide)] at habs
+    exact habs
+  rw [hsum2, area2target_eq_two_Ddet, volume_carrier_eq_abs_Ddet]
+  rw [abs_of_pos (by have := Ddet_pos; linarith)]
+  rw [ENNReal.ofReal_mul (by norm_num)]
+  rw [show (ENNReal.ofReal (2:ℝ)) = 2 by norm_num [ENNReal.ofReal_eq_ofNat]]
+  rw [mul_right_comm, one_div, ENNReal.mul_inv_cancel (by norm_num) (by norm_num), one_mul]
+
+/-- **Injectivity of `tiles[·]`**, needed to convert `A ≠ B` (`Tri`-level) to `i ≠ j`
+(index-level) for `pieces_interiors_disjoint`. -/
+theorem tiles_getElem_inj : ∀ i j : Fin PgramTiling22.tiles.length, i ≠ j →
+    PgramTiling22.tiles[i.val] ≠ PgramTiling22.tiles[j.val] := by decide
+
+/-- **The covering theorem, fully instantiated**: `PgramTiling22`'s 22 pieces genuinely cover the
+parallelogram target — the first non-triangular covering-theorem application in this corpus. -/
+theorem pgram22_covers :
+    (⋃ i : Fin PgramTiling22.tiles.length, (pieceAt i).carrier) = carrier :=
+  covers_of_volume pieceAt
+    (fun i => pieceTri_subset_carrier (List.getElem_mem i.isLt))
+    (fun i j hij => pieces_interiors_disjoint (List.getElem_mem i.isLt) (List.getElem_mem j.isLt)
+      (tiles_getElem_inj i j hij))
+    hvol_pgram
+
 end Erdos634.PgramTiling22Bridge
