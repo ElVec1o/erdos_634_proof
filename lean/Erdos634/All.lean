@@ -95,6 +95,7 @@ import Erdos634.Tiling44WallFinal
 import Erdos634.Tiling44EqualSideWalk
 import Erdos634.Tiling44CornerTile
 import Erdos634.Tiling44EqualSideWalkPos
+import Erdos634.ReflectBrick
 import Erdos634.SupportFace
 import Erdos634.SurplusLattice
 import Erdos634.TangentCone
