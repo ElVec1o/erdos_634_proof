@@ -1,4 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Erdos634.CertCoord
 
 /-!
 # `ℤ[√15]` as real numbers
@@ -140,5 +141,23 @@ abbrev ZPt := ℤ × ℤ × ℤ × ℤ
 def zx (p : ZPt) : Z15 := (p.1, p.2.1)
 /-- Its `y` coordinate. -/
 def zy (p : ZPt) : Z15 := (p.2.2.1, p.2.2.2)
+
+/-- The point of `Plane` a certificate point names. -/
+noncomputable def toPlanePt (p : ZPt) : Erdos634.Geometry.Plane :=
+  Erdos634.CertCoord.mkPt (toR (zx p)) (toR (zy p))
+
+/-- The `ℤ[√15]` cross product `(a-o) × (b-o)`, matching every certificate file's `cross`. -/
+def zcross (o a b : ZPt) : Z15 :=
+  zsub (zmul (zsub (zx a) (zx o)) (zsub (zy b) (zy o)))
+       (zmul (zsub (zy a) (zy o)) (zsub (zx b) (zx o)))
+
+/-- **The transfer lemma the certificate-to-`Tri` bridge needs**: a certificate's `ℤ[√15]` cross
+product, read through `toR`, is exactly `CertCoord.det3` on the transferred real coordinates. So a
+`decide`-checked sign of `zcross` transfers directly to the sign hypotheses `CertCoord.mkTri` and
+`CertCoord.mem_carrier_of_dets` consume. -/
+theorem toR_zcross (o a b : ZPt) :
+    Erdos634.CertCoord.det3 (toR (zx o)) (toR (zy o)) (toR (zx a)) (toR (zy a))
+      (toR (zx b)) (toR (zy b)) = toR (zcross o a b) := by
+  simp only [zcross, Erdos634.CertCoord.det3, toR_sub, toR_mul]; ring
 
 end Erdos634.Z15Real
