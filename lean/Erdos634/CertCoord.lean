@@ -78,4 +78,52 @@ theorem detTri_mkTri (x₀ y₀ x₁ y₁ x₂ y₂ : ℝ) (hdet : det3 x₀ y�
       - (mkPt x₂ y₂ - mkPt x₀ y₀) 0 * (mkPt x₁ y₁ - mkPt x₀ y₀) 1 = _
   simp only [PiLp.sub_apply, mkPt_zero, mkPt_one]
 
+/-- The three determinants add up to the whole — the identity behind barycentric weights. -/
+theorem det3_split (x₀ y₀ x₁ y₁ x₂ y₂ a b : ℝ) :
+    det3 a b x₁ y₁ x₂ y₂ + det3 x₀ y₀ a b x₂ y₂ + det3 x₀ y₀ x₁ y₁ a b
+      = det3 x₀ y₀ x₁ y₁ x₂ y₂ := by
+  simp only [det3]; ring
+
+/-- **The vertex containment test, exactly as a certificate performs it.** For a positively
+oriented triangle, three determinant sign checks put a point in the closed triangle. -/
+theorem mem_carrier_of_dets {x₀ y₀ x₁ y₁ x₂ y₂ a b : ℝ}
+    (hD : 0 < det3 x₀ y₀ x₁ y₁ x₂ y₂)
+    (h₀ : 0 ≤ det3 a b x₁ y₁ x₂ y₂)
+    (h₁ : 0 ≤ det3 x₀ y₀ a b x₂ y₂)
+    (h₂ : 0 ≤ det3 x₀ y₀ x₁ y₁ a b) :
+    mkPt a b ∈ (mkTri x₀ y₀ x₁ y₁ x₂ y₂ hD.ne').carrier := by
+  set D := det3 x₀ y₀ x₁ y₁ x₂ y₂ with hDdef
+  refine Erdos634.CertGeom.mem_carrier_of_combo _ _
+    ![det3 a b x₁ y₁ x₂ y₂ / D, det3 x₀ y₀ a b x₂ y₂ / D, det3 x₀ y₀ x₁ y₁ a b / D] ?_ ?_ ?_
+  · show _ / D + _ / D + _ / D = 1
+    rw [← add_div, ← add_div, det3_split, hDdef]
+    exact div_self hD.ne'
+  · intro k
+    have htri : ∀ y : Fin 3, y = 0 ∨ y = 1 ∨ y = 2 := by decide
+    rcases htri k with rfl | rfl | rfl
+    · exact div_nonneg h₀ hD.le
+    · exact div_nonneg h₁ hD.le
+    · exact div_nonneg h₂ hD.le
+  · show mkPt a b = _ • (mkTri x₀ y₀ x₁ y₁ x₂ y₂ hD.ne').pts 0
+        + _ • (mkTri x₀ y₀ x₁ y₁ x₂ y₂ hD.ne').pts 1
+        + _ • (mkTri x₀ y₀ x₁ y₁ x₂ y₂ hD.ne').pts 2
+    have hpts : ∀ (i : Fin 3), (mkTri x₀ y₀ x₁ y₁ x₂ y₂ hD.ne').pts i
+        = ![mkPt x₀ y₀, mkPt x₁ y₁, mkPt x₂ y₂] i := fun _ => rfl
+    rw [hpts 0, hpts 1, hpts 2]
+    have hD' : D ≠ 0 := hD.ne'
+    refine PiLp.ext ?_
+    intro i
+    have hi : i = 0 ∨ i = 1 := by omega
+    simp only [PiLp.add_apply, PiLp.smul_apply, smul_eq_mul, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.tail_cons]
+    rcases hi with rfl | rfl
+    · simp only [mkPt_zero]
+      field_simp
+      simp only [hDdef, det3]
+      ring
+    · simp only [mkPt_one]
+      field_simp
+      simp only [hDdef, det3]
+      ring
+
 end Erdos634.CertCoord
