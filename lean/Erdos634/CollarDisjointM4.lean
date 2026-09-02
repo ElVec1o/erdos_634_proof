@@ -3,6 +3,7 @@ import Erdos634.StraightEdgeSums
 import Erdos634.CertGeom
 import Erdos634.TranslateDissection
 import Erdos634.CollarGeometryM4
+import Erdos634.PgramTiling22Bridge
 
 /-!
 # The `m=2 → m=4` collar step — first disjointness proof
@@ -110,3 +111,75 @@ theorem apex_corner_disjoint :
     · show _ ≤ yAff ((translateCongruentDissection (mkPt 88 (24 * Real.sqrt 15))
           Erdos634.Tiling44Bridge.dissection).target.pts 2)
       rw [apex_copy_pts.2.2, yAff_mkPt]; nlinarith [Real.sqrt_nonneg (15:ℝ)]
+
+/-! ## A uniform `y`-bound for every `PgramTiling22` piece
+
+Every one of `PgramTiling22`'s `22` raw pieces has `y`-coordinates in `[0, 6√15]` (before any
+placement rescale/translation) — a single fact, derived once via convexity, that will let the
+eventual full certificate show *every* column piece (all four translated/rescaled copies) is
+disjoint from `Δ_2^apex` without 88 separate per-piece checks: after `×2` rescale and the column's
+own translation, this becomes `y ∈ [0, 24√15]`, matching `apex_corner_disjoint`'s separating line
+exactly. -/
+
+theorem v_ycoords :
+    yAff Erdos634.PgramTiling22Bridge.v1 = 0 ∧
+    yAff Erdos634.PgramTiling22Bridge.v2 = 0 ∧
+    yAff Erdos634.PgramTiling22Bridge.v3 = 6 * Real.sqrt 15 ∧
+    yAff Erdos634.PgramTiling22Bridge.v4 = 6 * Real.sqrt 15 := by
+  have key : ∀ (q : PgramTiling22.Pt) (b : ℤ),
+      Erdos634.Z15Real.zy (q : Erdos634.Z15Real.ZPt) = (0, b) →
+      yAff (mkPt (Erdos634.Z15Real.toR (Erdos634.Z15Real.zx (q : Erdos634.Z15Real.ZPt)))
+          (Erdos634.Z15Real.toR (Erdos634.Z15Real.zy (q : Erdos634.Z15Real.ZPt))))
+        = (b:ℝ) * Real.sqrt 15 := by
+    intro q b hy
+    rw [hy, yAff_mkPt]
+    simp only [Erdos634.Z15Real.toR]
+    push_cast
+    ring
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · have := key PgramTiling22.q1 0 (by decide)
+    unfold Erdos634.PgramTiling22Bridge.v1 Erdos634.PgramTiling22Bridge.toZPt
+    rw [this]; norm_num
+  · have := key PgramTiling22.q2 0 (by decide)
+    unfold Erdos634.PgramTiling22Bridge.v2 Erdos634.PgramTiling22Bridge.toZPt
+    rw [this]; norm_num
+  · have := key PgramTiling22.q3 6 (by decide)
+    unfold Erdos634.PgramTiling22Bridge.v3 Erdos634.PgramTiling22Bridge.toZPt
+    rw [this]; norm_num
+  · have := key PgramTiling22.q4 6 (by decide)
+    unfold Erdos634.PgramTiling22Bridge.v4 Erdos634.PgramTiling22Bridge.toZPt
+    rw [this]; norm_num
+
+/-- **`PgramTiling22`'s whole carrier has `y`-coordinates in `[0, 6√15]`.** Composes the four
+corners' `y`-bounds with `convexHull_min`, since the halfplane bounds are convex. -/
+theorem carrier_yBound :
+    ∀ p ∈ Erdos634.PgramTiling22Bridge.carrier, 0 ≤ yAff p ∧ yAff p ≤ 6 * Real.sqrt 15 := by
+  have hconv : Convex ℝ {p : Plane | 0 ≤ yAff p ∧ yAff p ≤ 6 * Real.sqrt 15} := by
+    apply Convex.inter
+    · exact (convex_Ici (0:ℝ)).affine_preimage yAff
+    · exact (convex_Iic (6 * Real.sqrt 15)).affine_preimage yAff
+  have hsub : ({Erdos634.PgramTiling22Bridge.v1, Erdos634.PgramTiling22Bridge.v2,
+      Erdos634.PgramTiling22Bridge.v3, Erdos634.PgramTiling22Bridge.v4} : Set Plane)
+      ⊆ {p : Plane | 0 ≤ yAff p ∧ yAff p ≤ 6 * Real.sqrt 15} := by
+    have h1 := v_ycoords.1
+    have h2 := v_ycoords.2.1
+    have h3 := v_ycoords.2.2.1
+    have h4 := v_ycoords.2.2.2
+    have hpos : (0:ℝ) ≤ 6 * Real.sqrt 15 := by positivity
+    intro p hp
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hp
+    rcases hp with rfl | rfl | rfl | rfl
+    · exact ⟨h1.ge, by rw [h1]; exact hpos⟩
+    · exact ⟨h2.ge, by rw [h2]; exact hpos⟩
+    · exact ⟨by rw [h3]; exact hpos, h3.le⟩
+    · exact ⟨by rw [h4]; exact hpos, h4.le⟩
+  exact convexHull_min hsub hconv
+
+/-- **Every piece of `PgramTiling22` has `y`-coordinates in `[0, 6√15]`** (before any placement
+rescale/translation) — composes `pieceTri_subset_carrier` with `carrier_yBound`. -/
+theorem piece_yBound {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles) (i : Fin 3) :
+    0 ≤ yAff ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i) ∧
+    yAff ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i) ≤ 6 * Real.sqrt 15 := by
+  apply carrier_yBound
+  apply Erdos634.PgramTiling22Bridge.pieceTri_subset_carrier ht
+  exact subset_convexHull ℝ _ (Set.mem_range_self i)
