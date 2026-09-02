@@ -97,4 +97,49 @@ theorem interior_nonempty : (interior carrier).Nonempty :=
 
 theorem volume_ne_top : MeasureTheory.volume carrier ≠ ⊤ := isCompact.measure_lt_top.ne
 
+open MeasureTheory
+
+/-- **The covering theorem for the parallelogram target**, the same measure argument as
+`ConvexCover.covers_of_volume`, none of which was actually triangle-specific: containment,
+pairwise-disjoint interiors and the exact area identity force the pieces to cover the whole
+parallelogram, not just sit inside it. -/
+theorem covers_of_volume {N : ℕ} (tile : Fin N → Tri)
+    (hsub : ∀ i, (tile i).carrier ⊆ carrier)
+    (hdisj : Pairwise fun i j => Disjoint (interior (tile i).carrier) (interior (tile j).carrier))
+    (hvol : ∑ i, volume (tile i).carrier = volume carrier) :
+    (⋃ i, (tile i).carrier) = carrier := by
+  classical
+  set U : Set Plane := ⋃ i, (tile i).carrier with hUdef
+  have hUsub : U ⊆ carrier := Set.iUnion_subset hsub
+  have hUvol : volume U = volume carrier := by
+    rw [hUdef, Erdos634.ConvexCover.volume_iUnion_eq_sum tile hdisj, hvol]
+  have hUclosed : IsClosed U := by
+    rw [hUdef]; exact isClosed_iUnion_of_finite fun i => (tile i).isCompact.isClosed
+  refine Set.Subset.antisymm hUsub ?_
+  by_contra hcon
+  obtain ⟨x, hxT, hxU⟩ : ∃ x, x ∈ carrier ∧ x ∉ U := by
+    by_contra hall; push_neg at hall; exact hcon fun x hx => hall x hx
+  have hVopen : IsOpen (Uᶜ) := hUclosed.isOpen_compl
+  have hxcl : x ∈ closure (interior carrier) := by
+    have hclosed : IsClosed carrier := isCompact.isClosed
+    have := convex.closure_interior_eq_closure_of_nonempty_interior interior_nonempty
+    rw [this, hclosed.closure_eq]; exact hxT
+  obtain ⟨y, hyV, hyI⟩ : ∃ y, y ∈ Uᶜ ∧ y ∈ interior carrier :=
+    mem_closure_iff.mp hxcl (Uᶜ) hVopen hxU
+  set W : Set Plane := Uᶜ ∩ interior carrier with hWdef
+  have hWopen : IsOpen W := hVopen.inter isOpen_interior
+  have hWne : W.Nonempty := ⟨y, hyV, hyI⟩
+  have hWpos : 0 < volume W := hWopen.measure_pos volume hWne
+  have hWsub : W ⊆ carrier := fun z hz => interior_subset hz.2
+  have hWdisj : Disjoint U W := Set.disjoint_right.mpr fun z hz => hz.1
+  have hsum : volume U + volume W ≤ volume carrier := by
+    have hunion : volume (U ∪ W) = volume U + volume W :=
+      measure_union₀ hWopen.measurableSet.nullMeasurableSet hWdisj.aedisjoint
+    rw [← hunion]; exact measure_mono (Set.union_subset hUsub hWsub)
+  rw [hUvol] at hsum
+  have : volume carrier + 0 < volume carrier + volume W :=
+    ENNReal.add_lt_add_left volume_ne_top hWpos
+  simp only [add_zero] at this
+  exact absurd hsum (not_le.mpr this)
+
 end Erdos634.PgramTiling22Bridge
