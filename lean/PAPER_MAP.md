@@ -38,7 +38,7 @@ Labels are the LaTeX `\label` keys. **Status** is the Rule 0 label of the *paper
 | Paper | Object | Lean declaration | Status |
 |---|---|---|---|
 | M realizations | 28-, 44-, 77-, 99-tilings | `Tiling28/44/77/99.*_certificate` | VERIFIED |
-| C `lem:pgram` | unit parallelogram, (1,2) and (1,3) | `PgramTiling22.*`/`PgramTiling22Bridge.*`, `PgramTiling52.*` | (1,2) member **VERIFIED (2026-09-02)** — see the detailed row above; (1,3) member (`PgramTiling52`) still PROVED, certificate only, no real-coordinate bridge built |
+| C `lem:pgram` | unit parallelogram, (1,2) and (1,3) | `PgramTiling22.*`/`PgramTiling22Bridge.*`, `PgramTiling52.*`/`PgramTiling52Bridge.*` | (1,2) member **VERIFIED (2026-09-02)** — see the detailed row above. (1,3) member: `PgramTiling52Bridge.lean` (2026-09-02) now has the **same full real-coordinate bridge** (carrier, (C1)-(C4), volume identity, `pgram52_covers` the actual covering) — but this member is cited only in an *untagged* remark (`rem:collarprogram`, no `\lab`), not a separate formally-tracked claim, so there is no independent row to flip; this strengthens that remark's citation without changing the census |
 | C cevian seeds | Δ₂ = 16+28 and Δ₃ = 36+63 at (1,2) | `CevianTiling28.*`, `CevianTiling63.*` | VERIFIED |
 
 ## Proved on paper, arithmetic core formalized, geometry not
