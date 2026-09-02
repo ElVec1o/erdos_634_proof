@@ -72,4 +72,25 @@ theorem piece0_det_pos :
     (toZPt (Tiling44.t2 (Tiling44.tiles.headI))) (toZPt (Tiling44.t3 (Tiling44.tiles.headI))))
     (by decide)
 
+/-- **Every one of the 44 pieces is positively oriented** — `decide` on the whole list, ~15s to
+build, not per-piece: this is the scaling probe `private/VERIFY_PLAN.md` asked for, answered. It
+means the indexed-`∀`-over-`Fin 44` shape (rather than 44 separate named theorems) is the right
+approach for (C1)/(C2), and there is no elaboration-cost obstruction at this level. -/
+theorem all_pieces_pos :
+    ∀ t ∈ Tiling44.tiles,
+      zpos (zcross (toZPt (Tiling44.t1 t)) (toZPt (Tiling44.t2 t)) (toZPt (Tiling44.t3 t)))
+        = true := by
+  decide
+
+/-- **Every piece, as a real `Tri`**, uniformly — the general form `thm:44`'s data entry needs,
+combining `all_pieces_pos` with `det3_eq_toR_cross` instead of writing 44 separate constructions. -/
+noncomputable def pieceTri {t : Tiling44.Tri} (ht : t ∈ Tiling44.tiles) : Tri :=
+  Erdos634.CertCoord.mkTri
+    (toR (zx (toZPt (Tiling44.t1 t)))) (toR (zy (toZPt (Tiling44.t1 t))))
+    (toR (zx (toZPt (Tiling44.t2 t)))) (toR (zy (toZPt (Tiling44.t2 t))))
+    (toR (zx (toZPt (Tiling44.t3 t)))) (toR (zy (toZPt (Tiling44.t3 t))))
+    (by
+      rw [det3_eq_toR_cross]
+      exact (toR_pos (all_pieces_pos t ht)).ne')
+
 end Erdos634.Tiling44Bridge
