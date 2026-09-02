@@ -1,5 +1,7 @@
 import Erdos634.CollarContainM4
 import Erdos634.AreaDet
+import Erdos634.Tiling44Bridge
+import Erdos634.PgramTiling22Bridge
 
 /-!
 # The `m=2 → m=4` collar step — area transport under placement maps
@@ -67,3 +69,36 @@ pieces, both placed by pure translation. -/
 theorem detTri_transEquiv (v : Plane) (T : Tri) :
     detTri (mapTri (Erdos634.TranslateDissection.transEquiv v).toAffineEquiv T) = detTri T := by
   rw [detTri_mapTri, transEquiv_linear, LinearMap.det_id, one_mul]
+
+/-! ## Per-region area sums
+
+`Δ_4`'s three region shapes (apex, corner: translated `Tiling44Bridge` copies; column: `PgramTiling22Bridge`
+pieces scaled ×2 about the origin then translated), each summed in unsigned `detTri`. -/
+
+open Erdos634.TranslateDissection Erdos634.Z15Real in
+/-- **Apex/corner region area sum**: a translated copy of `Tiling44Bridge`'s 44 pieces sums, in
+unsigned `detTri`, to exactly `Tiling44Bridge`'s own target area — translation preserves area
+exactly. Instantiated at `v = (88,24√15)` for the apex, `v = (176,0)` for the corner. -/
+theorem apex_area_sum (v : Plane) :
+    ∑ i : Fin Tiling44.tiles.length,
+        |detTri (mapTri (transEquiv v).toAffineEquiv (Erdos634.Tiling44Bridge.pieceAt i))|
+      = |detTri Erdos634.Tiling44Bridge.targetTri| := by
+  rw [← Erdos634.Tiling44Bridge.abs_detTri_sum_eq_target]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [detTri_transEquiv]
+
+open Erdos634.TranslateDissection Erdos634.Z15Real in
+/-- **Column-copy area sum**: one copy's 22 `PgramTiling22Bridge` pieces, scaled ×2 about the
+origin then translated by `w`, sum, in unsigned `detTri`, to `4×` `PgramTiling22Bridge`'s own
+target sum (`528√15`, so `2112√15` per copy) — the ratio-2 homothety scales area by `r²=4`,
+translation preserves it exactly. Each of `Δ_4`'s two columns is two such copies (`h ∈ {0,1}`). -/
+theorem column_area_sum (w : Plane) :
+    ∑ i : Fin PgramTiling22.tiles.length,
+        |detTri (mapTri (transEquiv w).toAffineEquiv
+          (mapTri (homothetyEquiv (mkPt 0 0) 2 (by norm_num))
+            (Erdos634.PgramTiling22Bridge.pieceAt i)))|
+      = 4 * |toR PgramTiling22.area2target| := by
+  rw [← Erdos634.PgramTiling22Bridge.abs_detTri_sum_eq_target, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [detTri_transEquiv, detTri_homothetyEquiv, abs_mul]
+  norm_num
