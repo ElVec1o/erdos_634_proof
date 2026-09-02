@@ -178,7 +178,7 @@ Every labelled statement of both papers now appears exactly once, here or in a s
 |---|---|---|
 | C `conj:advance` | Advance-and-collide | `first_run_kill`, `through_edge_exclusive`, `chord_two_b`, `chord_two_b_half` |
 | C `cor:basedi2e` | The base trichotomy and dichotomy without separation | `base_dichotomy_thick`, `no_extra_column_of_f_gt_two_e` |
-| C `cor:ptwo` | A uniform two-case side problem | `side_p_le_two` |
+| C `cor:ptwo` | A uniform two-case side problem | `side_p_le_two`, `Frontier.floor_eq_two` | **VERIFIED 2026-09-08.** `side_p_le_two` only gave the upper bound `p ≤ 2` (its own docstring noted the matching equality `⌊(f-1)/e⌋=2` was checked computationally, 126003 close pairs, not proved). `floor_eq_two` (new) closes the equality for real: the upper bound via `side_p_le_two` instantiated at `p := (f-1)/e`, the lower bound via the paper's own one-line argument (`f > 2e ⟹ (f-1)/e ≥ 2`, `Nat.le_div_iff_mul_le`). Matches `cor:ptwo`'s own stated conclusion word for word. `lake build Erdos634.All` clean, no `sorry`. |
 | C `cor:walls16` | corollary | `pincer_window_four` |
 | C `cor:wallsf2e` | The walls form at $e=1$, $f\ge3$ | `SideNoB.side_no_b_uncond`, `SideNoB.side_quantized`, `SideNoB.c_corner_forces_side_a` | *(`c_corner_forces_side_a` is `SideNoB.lean`'s own side-parameter fact — `0 < f·p → 1 ≤ p`, i.e. a `c`-corner fails `hyp:walls`'s `p=0` side condition — genuinely relevant here, not a mis-citation. **Note 2026-09-04**: the stale cross-reference to `lem:shadow`'s row was removed; `lem:shadow`'s own citation was corrected to `OrderForcing.strips_tall`/`.shadow_footage_e1` and no longer mentions this theorem at all, so the old pointer was dangling.)*
 | C `lem:anglethreshold` | The angle threshold | `cos_alpha_closed` |
