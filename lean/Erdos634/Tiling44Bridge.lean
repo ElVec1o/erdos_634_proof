@@ -178,4 +178,56 @@ theorem sep_of_sepBy {P Q : Tiling44.Pt} {A B : Tiling44.Tri}
       rw [affNeg_apply] at this
       linarith
 
+/-! ## Every pair of distinct pieces is separated — the 946-pair assembly, decided at once
+
+Rather than unpacking `Tiling44.wit`/`checkPairs`'s exact witness list (946 individual
+extractions), it is far cheaper to `decide` the *existence* of a separating edge candidate per
+pair directly: for each of the 44×44 ordered pairs, some one of the 6 candidate edges (3 from each
+triangle) both separates them (`sepBy`) and satisfies `sep_of_sepBy`'s decidable side condition
+(`sqCond`). This one `decide` (~12s) replaces per-pair data entry entirely. -/
+
+/-- The 6 candidate separating edges for a pair: each triangle's own 3 edges. -/
+def edgeCands (A B : Tiling44.Tri) : List (Tiling44.Pt × Tiling44.Pt) :=
+  [Tiling44.edgeOf A 0, Tiling44.edgeOf A 1, Tiling44.edgeOf A 2,
+   Tiling44.edgeOf B 0, Tiling44.edgeOf B 1, Tiling44.edgeOf B 2]
+
+/-- The decidable side condition `sep_of_sepBy` needs for an edge `(P, Q)`, as a `Bool` — a direct
+`decide` of the exact `Prop` `sep_of_sepBy` wants, so `sqCond_iff` is immediate. -/
+def sqCond (pq : Tiling44.Pt × Tiling44.Pt) : Bool :=
+  decide ((zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).1 ^ 2
+             ≠ 15 * (zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).2 ^ 2
+         ∨ (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).1 ^ 2
+             ≠ 15 * (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).2 ^ 2)
+
+/-- Some candidate edge both separates `A` and `B` and satisfies the side condition. -/
+def pairOK (A B : Tiling44.Tri) : Bool :=
+  (edgeCands A B).any (fun pq => Tiling44.sepBy pq.1 pq.2 A B && sqCond pq)
+
+/-- **Every one of the 44×44 ordered pairs of distinct pieces has a working separating edge** —
+one `decide`, ~12s, no per-pair data entry. -/
+theorem all_pairs_ok : ∀ A ∈ Tiling44.tiles, ∀ B ∈ Tiling44.tiles, A ≠ B → pairOK A B = true := by
+  decide
+
+/-- `sqCond`'s `Bool` and `sep_of_sepBy`'s `Prop` side condition agree. -/
+theorem sqCond_iff (pq : Tiling44.Pt × Tiling44.Pt) :
+    sqCond pq = true ↔
+      (zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).1 ^ 2 ≠ 15 * (zsub (zx (toZPt pq.1)) (zx (toZPt pq.2))).2 ^ 2
+        ∨ (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).1 ^ 2
+            ≠ 15 * (zsub (zy (toZPt pq.1)) (zy (toZPt pq.2))).2 ^ 2 := by
+  rw [sqCond, decide_eq_true_iff]
+
+/-- **Every two distinct pieces of `Tiling44` have disjoint interiors, as real `Tri` objects.**
+This is (C3) fully assembled: existence of the separating edge (`all_pairs_ok`), transferred to a
+genuine affine functional bounded on the whole carrier (`sep_of_sepBy`). -/
+theorem pieces_interiors_disjoint {A B : Tiling44.Tri} (hA : A ∈ Tiling44.tiles)
+    (hB : B ∈ Tiling44.tiles) (hne : A ≠ B) :
+    Disjoint (interior (pieceTri hA).carrier) (interior (pieceTri hB).carrier) := by
+  have hok := all_pairs_ok A hA B hB hne
+  simp only [pairOK, List.any_eq_true] at hok
+  obtain ⟨pq, hmem, hsep⟩ := hok
+  rw [Bool.and_eq_true] at hsep
+  obtain ⟨hsepBy, hsq⟩ := hsep
+  obtain ⟨f, hf, c, h1, h2⟩ := sep_of_sepBy ((sqCond_iff pq).mp hsq) hsepBy hA hB
+  exact Erdos634.CertGeom.interiors_disjoint_of_separating f hf c h1 h2
+
 end Erdos634.Tiling44Bridge
