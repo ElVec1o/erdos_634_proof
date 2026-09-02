@@ -2,6 +2,7 @@ import Erdos634.CollarDisjointM4
 import Erdos634.Tiling44Bridge
 import Erdos634.StraightEdgeSums
 import Erdos634.SideWall
+import Erdos634.SupportFace
 
 /-!
 # A concrete wall line for `Tiling44Bridge`'s target, and its `hker`
@@ -145,3 +146,58 @@ theorem hline_wall :
   rw [hmk, gWallAff_mkPt]
   have : u = 1 - v := by linarith
   rw [this]; ring
+
+/-- **`hface` for `gWall`**: any target point where `gWall` reaches `4224√15` lies on the wall
+segment — the target only touches its own supporting line along this one edge. Via
+`SupportFace.mem_convexHull_max` (pre-existing, general): a convex-hull point attaining a linear
+functional's bound must be a combination of only the vertices that also attain it, and here only
+`pts 1` and `pts 2` do (`pts 0` is strictly below, `gWall (pts 0) = 0 < 4224√15`). -/
+theorem hface_wall :
+    ∀ y ∈ Erdos634.Tiling44Bridge.targetTri.carrier, gWallAff y = 4224 * Real.sqrt 15 →
+      y ∈ segment ℝ (Erdos634.Tiling44Bridge.targetTri.pts 1)
+        (Erdos634.Tiling44Bridge.targetTri.pts 2) := by
+  intro y hy hgy
+  set T := Erdos634.Tiling44Bridge.targetTri
+  set s : Finset Plane := {T.pts 0, T.pts 1, T.pts 2} with hs
+  have hrange : Set.range T.pts = (s : Set Plane) := by
+    rw [hs]
+    ext x
+    simp only [Set.mem_range, Finset.coe_insert, Finset.coe_singleton, Set.mem_insert_iff,
+      Set.mem_singleton_iff]
+    constructor
+    · rintro ⟨i, rfl⟩; fin_cases i <;> simp
+    · rintro (rfl | rfl | rfl)
+      · exact ⟨0, rfl⟩
+      · exact ⟨1, rfl⟩
+      · exact ⟨2, rfl⟩
+  have hxs : y ∈ convexHull ℝ (s : Set Plane) := by
+    rw [← hrange]; exact hy
+  have hle : ∀ v ∈ s, gWall v ≤ 4224 * Real.sqrt 15 := by
+    intro v hv
+    have hvmem : v ∈ Set.range T.pts := by rw [hrange]; exact hv
+    obtain ⟨i, rfl⟩ := hvmem
+    exact hwall_wall (T.pts i) (subset_convexHull ℝ _ (Set.mem_range_self i))
+  have hfx : gWall y = 4224 * Real.sqrt 15 := hgy
+  have hmax := Erdos634.SupportFace.mem_convexHull_max gWall (4224 * Real.sqrt 15) s hle hxs hfx
+  have hfilter : s.filter (fun v => gWall v = 4224 * Real.sqrt 15) = {T.pts 1, T.pts 2} := by
+    rw [hs]
+    ext v
+    simp only [Finset.mem_filter, Finset.mem_insert, Finset.mem_singleton]
+    constructor
+    · rintro ⟨hv, hgv⟩
+      rcases hv with rfl | rfl | rfl
+      · exfalso
+        rw [tiling44_targetTri_pts0] at hgv
+        rw [gWall_mkPt] at hgv
+        nlinarith [Real.sqrt_nonneg (15:ℝ), Real.sq_sqrt (show (0:ℝ) ≤ 15 by norm_num)]
+      · exact Or.inl rfl
+      · exact Or.inr rfl
+    · rintro (rfl | rfl)
+      · refine ⟨Or.inr (Or.inl rfl), ?_⟩
+        rw [tiling44_targetTri_pts1, gWall_mkPt]; ring
+      · refine ⟨Or.inr (Or.inr rfl), ?_⟩
+        rw [tiling44_targetTri_pts2]
+        rw [gWall_mkPt]; ring
+  rw [hfilter] at hmax
+  rw [Finset.coe_insert, Finset.coe_singleton, convexHull_pair] at hmax
+  exact hmax
