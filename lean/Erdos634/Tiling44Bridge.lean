@@ -2,6 +2,7 @@ import Erdos634.Tiling44
 import Erdos634.Z15Real
 import Erdos634.CertGeom
 import Erdos634.SssCongruent
+import Erdos634.Ladder
 
 /-!
 # Instantiating `Tiling44`'s target and first piece as real `Tri` objects
@@ -508,5 +509,50 @@ theorem model_sides :
   · rw [pieceTri_dist_sq _ headI_mem_tiles 0 1, e01]; simp [toR]
   · rw [pieceTri_dist_sq _ headI_mem_tiles 1 2, e12]; simp [toR]
   · rw [pieceTri_dist_sq _ headI_mem_tiles 2 0, e20]; simp [toR]
+
+/-! ## Clause 2 of `thm:44`: "consequently `44m²` is a tile count for every `m ≥ 1`"
+
+Composing `dissection` with `Ladder.ladder` for arbitrary `m` scales the target by `m` in each
+direction, multiplying the piece count by `m²`. -/
+
+theorem targetTri_eq_mkTri :
+    targetTri = Erdos634.CertCoord.mkTri
+      (toR (zx (toZPt (Tiling44.t1 Tiling44.target)))) (toR (zy (toZPt (Tiling44.t1 Tiling44.target))))
+      (toR (zx (toZPt (Tiling44.t2 Tiling44.target)))) (toR (zy (toZPt (Tiling44.t2 Tiling44.target))))
+      (toR (zx (toZPt (Tiling44.t3 Tiling44.target)))) (toR (zy (toZPt (Tiling44.t3 Tiling44.target))))
+      target_det_pos.ne' := rfl
+
+/-- **Clause 2 of `thm:44`**: for every `m ≥ 1`, there is a `CongruentDissection` with `44 * m * m`
+pieces, all congruent to the `(2,3,4)`-shaped model tile, of the `m`-times-enlarged target. This is
+`Ladder.ladder` applied to `dissection`. -/
+theorem exists_dissection_mul_sq (m : ℕ) (hm : 0 < m) :
+    ∃ E : CongruentDissection (m * m * Tiling44.tiles.length), E.model = pieceTri headI_mem_tiles :=
+  ⟨(Erdos634.Ladder.ladder
+      (A := Erdos634.CertCoord.mkPt (toR (zx (toZPt (Tiling44.t1 Tiling44.target))))
+        (toR (zy (toZPt (Tiling44.t1 Tiling44.target)))))
+      (B := Erdos634.CertCoord.mkPt (toR (zx (toZPt (Tiling44.t2 Tiling44.target))))
+        (toR (zy (toZPt (Tiling44.t2 Tiling44.target)))))
+      (C := Erdos634.CertCoord.mkPt (toR (zx (toZPt (Tiling44.t3 Tiling44.target))))
+        (toR (zy (toZPt (Tiling44.t3 Tiling44.target)))))
+      targetTri.indep dissection targetTri_eq_mkTri m hm).choose,
+    (Erdos634.Ladder.ladder
+      (A := Erdos634.CertCoord.mkPt (toR (zx (toZPt (Tiling44.t1 Tiling44.target))))
+        (toR (zy (toZPt (Tiling44.t1 Tiling44.target)))))
+      (B := Erdos634.CertCoord.mkPt (toR (zx (toZPt (Tiling44.t2 Tiling44.target))))
+        (toR (zy (toZPt (Tiling44.t2 Tiling44.target)))))
+      (C := Erdos634.CertCoord.mkPt (toR (zx (toZPt (Tiling44.t3 Tiling44.target))))
+        (toR (zy (toZPt (Tiling44.t3 Tiling44.target)))))
+      targetTri.indep dissection targetTri_eq_mkTri m hm).choose_spec.2⟩
+
+theorem tiles_length_eq_44 : Tiling44.tiles.length = 44 := by decide
+
+/-- **Clause 2, restated in the paper's own numeral form**: `44 * m ^ 2` is a tile count for every
+`m ≥ 1`. -/
+theorem exists_dissection_44_mul_sq (m : ℕ) (hm : 0 < m) :
+    ∃ E : CongruentDissection (44 * m ^ 2), E.model = pieceTri headI_mem_tiles := by
+  obtain ⟨E, hE⟩ := exists_dissection_mul_sq m hm
+  have hnum : m * m * Tiling44.tiles.length = 44 * m ^ 2 := by
+    rw [tiles_length_eq_44]; ring
+  exact hnum ▸ ⟨E, hE⟩
 
 end Erdos634.Tiling44Bridge
