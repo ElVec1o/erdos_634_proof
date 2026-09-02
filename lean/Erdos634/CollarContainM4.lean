@@ -85,3 +85,43 @@ theorem apex_subset_delta4 :
   · show (translateCongruentDissection (mkPt 88 (24 * Real.sqrt 15))
       Erdos634.Tiling44Bridge.dissection).target.pts 2 ∈ delta4.carrier
     rw [apex_copy_pts.2.2]; exact apex_vertex2_mem_delta4
+
+/-! ## Corner-triangle containment
+
+The corner triangle's vertices are also midpoints/vertices of `Δ_4`'s own edges — the same
+shortcut as `Δ_2^apex` applies. -/
+
+/-- The corner's base-left vertex is the midpoint of `Δ_4`'s base. -/
+theorem corner_vertex0_mem_delta4 : mkPt 176 0 ∈ delta4.carrier := by
+  have heq : mkPt (176:ℝ) 0 = midpoint ℝ (delta4.pts 0) (delta4.pts 1) := by
+    show mkPt (176:ℝ) 0 = midpoint ℝ (mkPt 0 0) (mkPt 352 0)
+    rw [mkPt_midpoint]; norm_num
+  rw [heq]
+  exact segment_subset_convexHull (Set.mem_range_self _) (Set.mem_range_self _)
+    (midpoint_mem_segment _ _)
+
+/-- The corner's base-right vertex coincides with `Δ_4`'s own base-right vertex. -/
+theorem corner_vertex1_mem_delta4 : mkPt 352 0 ∈ delta4.carrier :=
+  subset_convexHull ℝ _ (Set.mem_range_self 1)
+
+/-- The corner's apex is the same point as `Δ_2^apex`'s base-right vertex — the midpoint of
+`Δ_4`'s right leg. -/
+theorem corner_vertex2_mem_delta4 : mkPt 264 (24 * Real.sqrt 15) ∈ delta4.carrier :=
+  apex_vertex1_mem_delta4
+
+/-- **The corner triangle sits inside `Δ_4`.** -/
+theorem corner_subset_delta4 :
+    (translateCongruentDissection (mkPt 176 0)
+      Erdos634.Tiling44Bridge.dissection).target.carrier ⊆ delta4.carrier := by
+  apply carrier_subset_of_pts_mem
+  intro k
+  fin_cases k
+  · show (translateCongruentDissection (mkPt 176 0)
+      Erdos634.Tiling44Bridge.dissection).target.pts 0 ∈ delta4.carrier
+    rw [corner_copy_pts.1]; exact corner_vertex0_mem_delta4
+  · show (translateCongruentDissection (mkPt 176 0)
+      Erdos634.Tiling44Bridge.dissection).target.pts 1 ∈ delta4.carrier
+    rw [corner_copy_pts.2.1]; exact corner_vertex1_mem_delta4
+  · show (translateCongruentDissection (mkPt 176 0)
+      Erdos634.Tiling44Bridge.dissection).target.pts 2 ∈ delta4.carrier
+    rw [corner_copy_pts.2.2]; exact corner_vertex2_mem_delta4
