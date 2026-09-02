@@ -699,20 +699,103 @@ theorem dDet_eq_Ddet : dDet = Ddet := by
   show (v2 0 - v1 0) * (v4 1 - v1 1) - (v4 0 - v1 0) * (v2 1 - v1 1) = Ddet
   simp only [Ddet, d2x, d2y, d4x, d4y]
 
-/-! **Still open**: the volume identity itself, `volume carrier = ENNReal.ofReal |Ddet| *
-volume stdSquare` for some reference square `stdSquare : Set Plane` with `volume stdSquare = 1`
-(the parallelogram analog of `AreaDet.volume_eq_det_mul`). `dEdge`/`dDet_eq_Ddet` supply the
-determinant half; what remains is (a) defining `stdSquare` (e.g. as the image in `Plane` of the
-unit box under the same coordinate identification `carrier_eq_image` uses) and relating
-`dEdge '' stdSquare` translated by `v1` to `carrier` via `carrier_eq_image`, then (b) computing
-`volume stdSquare = 1`, likely via `EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp`
-(Plane's Lebesgue measure agrees with the `Fin 2 → ℝ` Pi-measure through the standard-basis
-coordinates) composed with a Pi-box volume computation (`Measure.volume_pi_pi` + `Real.volume_Icc`),
-neither of which is yet used anywhere in this corpus. Once both are done,
-`Measure.addHaar_image_linearMap` on `dEdge` plus translation invariance (the same two steps
-`AreaDet.volume_eq_det_mul` uses) gives the identity, and `AreaDet.area_identity_of_det`'s proof
-pattern (not the `Tri`-typed statement itself) carries over to close (C4) fully and instantiate
-`covers_of_volume`.
--/
+/-! ## The volume identity itself: `volume carrier = ENNReal.ofReal |Ddet|`
+
+The parallelogram analog of `AreaDet.volume_eq_det_mul`, built the same way (translation
+invariance + `Measure.addHaar_image_linearMap`) but starting from a reference *square* `stdSquare`
+rather than `AreaDet`'s reference triangle, since `dEdge`'s domain is the whole parallelogram
+picture, not three vertices. -/
+
+/-- The reference unit square, living in `Plane` directly (not `ℝ × ℝ`), so `dEdge`'s image of it
+can be compared against `carrier` without crossing spaces. -/
+noncomputable def stdSquare : Set Plane :=
+  {x : Plane | x 0 ∈ Set.Icc (0:ℝ) 1 ∧ x 1 ∈ Set.Icc (0:ℝ) 1}
+
+/-- `stdSquare` is the preimage, under the canonical (measure-preserving) identification of
+`Plane` with `Fin 2 → ℝ`, of the Pi-indexed unit box. -/
+theorem stdSquare_eq_preimage :
+    stdSquare = (WithLp.ofLp : Plane → (Fin 2 → ℝ)) ⁻¹' (Set.Icc (0 : Fin 2 → ℝ) 1) := by
+  ext x
+  simp only [stdSquare, Set.mem_setOf_eq, Set.mem_preimage, Set.mem_Icc, Pi.le_def, Pi.zero_apply,
+    Pi.one_apply]
+  constructor
+  · rintro ⟨h0, h1⟩
+    refine ⟨fun i => ?_, fun i => ?_⟩ <;> fin_cases i <;> simp_all
+  · rintro ⟨h0, h1⟩
+    exact ⟨⟨h0 0, h1 0⟩, ⟨h0 1, h1 1⟩⟩
+
+/-- **`stdSquare` has volume 1** — transported from the Pi-box volume `Real.volume_Icc_pi` via
+`PiLp.volume_preserving_ofLp`, the measure-preserving identification of `Plane` with the Pi-measure
+on `Fin 2 → ℝ`. Neither of these two Mathlib facts was used anywhere else in this corpus before. -/
+theorem volume_stdSquare : MeasureTheory.volume stdSquare = 1 := by
+  rw [stdSquare_eq_preimage, (PiLp.volume_preserving_ofLp (Fin 2)).measure_preimage]
+  · rw [Real.volume_Icc_pi]; simp
+  · exact measurableSet_Icc.nullMeasurableSet
+
+/-- `dEdge`, unfolded to its `Plane`-coordinate formula. -/
+theorem dEdge_apply (x : Plane) : dEdge x = x 0 • (v2 - v1) + x 1 • (v4 - v1) := by
+  have := Erdos634.AreaDet.pb.constr_apply_fintype ℝ (fun i : Fin 2 => ![v2 - v1, v4 - v1] i) x
+  show dEdge x = _
+  unfold dEdge
+  rw [this]
+  simp only [Erdos634.AreaDet.pb.equivFun_apply, Erdos634.AreaDet.pb_repr]
+  rw [Fin.sum_univ_two]
+  simp
+
+/-- **`carrier` is exactly `dEdge`'s image of `stdSquare`, translated by `v1`** — the `Plane`-native
+counterpart of `carrier_eq_image`, matching `dEdge`'s domain instead of `paramMap`'s. -/
+theorem carrier_eq_gimage : carrier = (fun x : Plane => v1 + dEdge x) '' stdSquare := by
+  ext p
+  simp only [Set.mem_image]
+  constructor
+  · intro hp
+    rw [mem_carrier_iff] at hp
+    obtain ⟨h1, h2, h3, h4⟩ := hp
+    refine ⟨Erdos634.CertCoord.mkPt (uOf p) (vOf p), ?_, ?_⟩
+    · simp only [stdSquare, Set.mem_setOf_eq, Erdos634.CertCoord.mkPt_zero,
+        Erdos634.CertCoord.mkPt_one]
+      exact ⟨⟨h1, h2⟩, ⟨h3, h4⟩⟩
+    · rw [dEdge_apply, Erdos634.CertCoord.mkPt_zero, Erdos634.CertCoord.mkPt_one]
+      show v1 + (uOf p • (v2 - v1) + vOf p • (v4 - v1)) = p
+      have heq : v1 + (uOf p • (v2 - v1) + vOf p • (v4 - v1))
+          = paramMap (uOf p, vOf p) := by
+        show v1 + (uOf p • (v2 - v1) + vOf p • (v4 - v1))
+          = v1 + uOf p • (v2 - v1) + vOf p • (v4 - v1)
+        abel
+      rw [heq, paramMap_uOf_vOf]
+  · rintro ⟨x, hx, rfl⟩
+    rw [mem_carrier_iff]
+    simp only [stdSquare, Set.mem_setOf_eq] at hx
+    rw [dEdge_apply]
+    have heq : v1 + (x 0 • (v2 - v1) + x 1 • (v4 - v1)) = paramMap (x 0, x 1) := by
+      show v1 + (x 0 • (v2 - v1) + x 1 • (v4 - v1)) = v1 + x 0 • (v2 - v1) + x 1 • (v4 - v1)
+      abel
+    rw [heq]
+    obtain ⟨hu', hv'⟩ := paramMap_unique (x 0) (x 1) (paramMap (x 0, x 1)) rfl
+    rw [← hu', ← hv']
+    exact ⟨hx.1.1, hx.1.2, hx.2.1, hx.2.2⟩
+
+/-- **The volume identity**, translation invariance plus `Measure.addHaar_image_linearMap` on
+`dEdge` — the same two steps `AreaDet.volume_eq_det_mul` uses, ported to a square reference domain
+instead of a triangular one. -/
+theorem volume_carrier_eq :
+    MeasureTheory.volume carrier = ENNReal.ofReal |Ddet| * MeasureTheory.volume stdSquare := by
+  rw [carrier_eq_gimage]
+  have hcomp : (fun x : Plane => v1 + dEdge x) '' stdSquare
+      = (fun h : Plane => v1 + h) '' (dEdge '' stdSquare) := by
+    rw [← Set.image_comp]; rfl
+  have hpre : (fun h : Plane => v1 + h) '' (dEdge '' stdSquare)
+      = (fun h : Plane => (-v1) + h) ⁻¹' (dEdge '' stdSquare) := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩; simpa using hx
+    · intro hy; exact ⟨(-v1) + y, hy, by abel⟩
+  rw [hcomp, hpre, MeasureTheory.measure_preimage_add, MeasureTheory.Measure.addHaar_image_linearMap]
+  rw [show LinearMap.det dEdge = Ddet from dDet_eq_Ddet]
+
+/-- **(C4)'s volume identity, fully assembled**: the parallelogram's carrier has volume exactly
+`|Ddet|`. This is what `covers_of_volume` needs alongside `abs_detTri_sum_eq_target`. -/
+theorem volume_carrier_eq_abs_Ddet : MeasureTheory.volume carrier = ENNReal.ofReal |Ddet| := by
+  rw [volume_carrier_eq, volume_stdSquare, mul_one]
 
 end Erdos634.PgramTiling22Bridge
