@@ -302,3 +302,212 @@ theorem translated_tiling44_interiors_disjoint (v : Plane)
         Erdos634.Tiling44Bridge.dissection).tile j).carrier) := by
   simp only [translateCongruentDissection_tile]
   exact mapTri_interiors_disjoint _ (Erdos634.Tiling44Bridge.dissection.interiors_disjoint hij)
+
+/-! ## Corner-vs-column disjointness — the slanted separating line
+
+Corner and column pieces share a diagonal boundary edge (from `(176,0)` to `(264,24√15)`), so a
+horizontal separator (as used for apex-vs-column) does not apply here. The separating functional is
+`g(x,y) = 24√15·x − 88·y`, hand-derived from the shared edge's direction — the corner triangle has
+`g ≥ 4224√15`, every placed column piece has `g ≤ 4224√15` (in fact exactly `g ∈ [2112√15·j,
+2112√15·(j+1)]` for column `j ∈ {0,1}`, so this one line separates the corner from *both* columns,
+not just the adjacent one). Same pattern as the `yAff` development above, now for `gAff`. -/
+
+noncomputable def xFun : Plane →ₗ[ℝ] ℝ where
+  toFun p := p 0
+  map_add' p q := by simp [PiLp.add_apply]
+  map_smul' c p := by simp [PiLp.smul_apply]
+
+theorem xFun_mkPt (x y : ℝ) : xFun (mkPt x y) = x := by
+  show mkPt x y 0 = x
+  exact mkPt_zero x y
+
+noncomputable def gFun : Plane →ₗ[ℝ] ℝ := (24 * Real.sqrt 15) • xFun - (88:ℝ) • yFun
+
+theorem gFun_mkPt (x y : ℝ) : gFun (mkPt x y) = 24 * Real.sqrt 15 * x - 88 * y := by
+  simp only [gFun, LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul, xFun_mkPt, yFun_mkPt]
+
+theorem gFun_ne_zero : gFun ≠ 0 := by
+  intro h
+  have h2 : gFun (mkPt 1 0) = 24 * Real.sqrt 15 := by rw [gFun_mkPt]; ring
+  rw [h] at h2
+  simp only [LinearMap.zero_apply] at h2
+  have hpos : (0:ℝ) < 24 * Real.sqrt 15 := by positivity
+  linarith
+
+noncomputable def gAff : Plane →ᵃ[ℝ] ℝ := gFun.toAffineMap
+
+theorem gAff_linear_ne_zero : gAff.linear ≠ 0 := gFun_ne_zero
+
+theorem gAff_mkPt (x y : ℝ) : gAff (mkPt x y) = 24 * Real.sqrt 15 * x - 88 * y := gFun_mkPt x y
+
+theorem gAff_homothety (v p : Plane) (r : ℝ) :
+    gAff (AffineMap.homothety v r p) = r * gAff p + (1 - r) * gAff v := by
+  rw [AffineMap.homothety_apply, AffineMap.map_vadd, vadd_eq_add]
+  have h1 : gAff.linear (r • (p -ᵥ v)) = r * gAff p - r * gAff v := by
+    rw [map_smul]
+    show r * gFun (p -ᵥ v) = _
+    have h2 : gFun (p -ᵥ v) = gAff p - gAff v := by
+      show gFun (p - v) = _
+      rw [map_sub]
+      rfl
+    rw [h2]
+    ring
+  rw [h1]
+  ring
+
+theorem gAff_vadd (p w : Plane) : gAff (w +ᵥ p) = gAff w + gAff p := by
+  rw [AffineMap.map_vadd, vadd_eq_add]
+  rfl
+
+theorem v_gcoords :
+    gAff Erdos634.PgramTiling22Bridge.v1 = 0 ∧
+    gAff Erdos634.PgramTiling22Bridge.v2 = 1056 * Real.sqrt 15 ∧
+    gAff Erdos634.PgramTiling22Bridge.v3 = 1056 * Real.sqrt 15 ∧
+    gAff Erdos634.PgramTiling22Bridge.v4 = 0 := by
+  have key : ∀ (q : PgramTiling22.Pt) (a b : ℤ),
+      Erdos634.Z15Real.zx (q : Erdos634.Z15Real.ZPt) = (a, 0) →
+      Erdos634.Z15Real.zy (q : Erdos634.Z15Real.ZPt) = (0, b) →
+      gAff (mkPt (Erdos634.Z15Real.toR (Erdos634.Z15Real.zx (q : Erdos634.Z15Real.ZPt)))
+          (Erdos634.Z15Real.toR (Erdos634.Z15Real.zy (q : Erdos634.Z15Real.ZPt))))
+        = 24 * (a:ℝ) * Real.sqrt 15 - 88 * (b:ℝ) * Real.sqrt 15 := by
+    intro q a b hx hy
+    rw [hx, hy, gAff_mkPt]
+    simp only [Erdos634.Z15Real.toR]
+    push_cast
+    ring
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · have := key PgramTiling22.q1 0 0 (by decide) (by decide)
+    unfold Erdos634.PgramTiling22Bridge.v1 Erdos634.PgramTiling22Bridge.toZPt
+    rw [this]; ring
+  · have := key PgramTiling22.q2 44 0 (by decide) (by decide)
+    unfold Erdos634.PgramTiling22Bridge.v2 Erdos634.PgramTiling22Bridge.toZPt
+    rw [this]; ring
+  · have := key PgramTiling22.q3 66 6 (by decide) (by decide)
+    unfold Erdos634.PgramTiling22Bridge.v3 Erdos634.PgramTiling22Bridge.toZPt
+    rw [this]; ring
+  · have := key PgramTiling22.q4 22 6 (by decide) (by decide)
+    unfold Erdos634.PgramTiling22Bridge.v4 Erdos634.PgramTiling22Bridge.toZPt
+    rw [this]; ring
+
+theorem carrier_gBound :
+    ∀ p ∈ Erdos634.PgramTiling22Bridge.carrier, 0 ≤ gAff p ∧ gAff p ≤ 1056 * Real.sqrt 15 := by
+  have hconv : Convex ℝ {p : Plane | 0 ≤ gAff p ∧ gAff p ≤ 1056 * Real.sqrt 15} := by
+    apply Convex.inter
+    · exact (convex_Ici (0:ℝ)).affine_preimage gAff
+    · exact (convex_Iic (1056 * Real.sqrt 15)).affine_preimage gAff
+  have hsub : ({Erdos634.PgramTiling22Bridge.v1, Erdos634.PgramTiling22Bridge.v2,
+      Erdos634.PgramTiling22Bridge.v3, Erdos634.PgramTiling22Bridge.v4} : Set Plane)
+      ⊆ {p : Plane | 0 ≤ gAff p ∧ gAff p ≤ 1056 * Real.sqrt 15} := by
+    have h1 := v_gcoords.1
+    have h2 := v_gcoords.2.1
+    have h3 := v_gcoords.2.2.1
+    have h4 := v_gcoords.2.2.2
+    have hpos : (0:ℝ) ≤ 1056 * Real.sqrt 15 := by positivity
+    intro p hp
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hp
+    rcases hp with rfl | rfl | rfl | rfl
+    · exact ⟨h1.ge, by rw [h1]; exact hpos⟩
+    · exact ⟨by rw [h2]; exact hpos, h2.le⟩
+    · exact ⟨by rw [h3]; exact hpos, h3.le⟩
+    · exact ⟨h4.ge, by rw [h4]; exact hpos⟩
+  exact convexHull_min hsub hconv
+
+theorem piece_gBound {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles) (i : Fin 3) :
+    0 ≤ gAff ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i) ∧
+    gAff ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i) ≤ 1056 * Real.sqrt 15 := by
+  apply carrier_gBound
+  apply Erdos634.PgramTiling22Bridge.pieceTri_subset_carrier ht
+  exact subset_convexHull ℝ _ (Set.mem_range_self i)
+
+theorem scaledPiece_gBound {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles) (i : Fin 3) :
+    0 ≤ gAff (Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num)
+        ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i)) ∧
+    gAff (Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num)
+        ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i)) ≤ 2112 * Real.sqrt 15 := by
+  rw [Erdos634.Realizable.homothetyEquiv_apply, gAff_homothety, gAff_mkPt]
+  have hb := piece_gBound ht i
+  constructor <;> nlinarith [hb.1, hb.2]
+
+/-- **Every placed column piece is disjoint from the corner triangle.** A raw `PgramTiling22`
+piece, scaled ×2 about the origin then translated by `w = (88j + 44h, 12√15·h)` for column `j ∈
+{0,1}`, half `h ∈ {0,1}` -- has `gAff w = 2112√15·j`, so the piece's `gAff`-range is
+`[2112√15·j, 2112√15·(j+1)] ⊆ [0, 4224√15]`, strictly below the corner triangle's own range
+`[4224√15, 8448√15]`. Covers all `88` column pieces against the corner at once. -/
+theorem carrier_gAff_ge (T : Tri) (c : ℝ) (h : ∀ i, c ≤ gAff (T.pts i)) :
+    ∀ y ∈ T.carrier, c ≤ gAff y := by
+  have hg : ∀ i, 0 ≤ (gAff - AffineMap.const ℝ Plane c) (T.pts i) := by
+    intro i
+    show 0 ≤ gAff (T.pts i) - c
+    linarith [h i]
+  have hsub := Tri.carrier_subset_halfplane_affine T (gAff - AffineMap.const ℝ Plane c) hg
+  intro y hy
+  have h2 : 0 ≤ gAff y - c := hsub y hy
+  linarith
+
+theorem carrier_gAff_le (T : Tri) (c : ℝ) (h : ∀ i, gAff (T.pts i) ≤ c) :
+    ∀ y ∈ T.carrier, gAff y ≤ c := by
+  have hg : ∀ i, 0 ≤ (AffineMap.const ℝ Plane c - gAff) (T.pts i) := by
+    intro i
+    show 0 ≤ c - gAff (T.pts i)
+    linarith [h i]
+  have hsub := Tri.carrier_subset_halfplane_affine T (AffineMap.const ℝ Plane c - gAff) hg
+  intro y hy
+  have h2 : 0 ≤ c - gAff y := hsub y hy
+  linarith
+
+theorem column_piece_corner_disjoint {t : PgramTiling22.Tri} (ht : t ∈ PgramTiling22.tiles)
+    (w : Plane) (hw : gAff w = 0 ∨ gAff w = 2112 * Real.sqrt 15) :
+    Disjoint
+      (interior (mapTri (AffineEquiv.constVAdd ℝ Plane w)
+        (mapTri (Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num))
+          (Erdos634.PgramTiling22Bridge.pieceTri ht))).carrier)
+      (interior (translateCongruentDissection (mkPt 176 0)
+        Erdos634.Tiling44Bridge.dissection).target.carrier) := by
+  refine interiors_disjoint_of_separating gAff gAff_linear_ne_zero (4224 * Real.sqrt 15) ?_ ?_
+  · apply carrier_gAff_le _ (4224 * Real.sqrt 15)
+    intro i
+    show gAff (AffineEquiv.constVAdd ℝ Plane w
+      ((Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num))
+        ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i))) ≤ _
+    show gAff (w +ᵥ Erdos634.Realizable.homothetyEquiv (mkPt 0 0) 2 (by norm_num)
+        ((Erdos634.PgramTiling22Bridge.pieceTri ht).pts i)) ≤ _
+    rw [gAff_vadd]
+    have hb := scaledPiece_gBound ht i
+    rcases hw with hw | hw <;> rw [hw] <;> linarith [hb.2]
+  · apply carrier_gAff_ge _ (4224 * Real.sqrt 15)
+    intro i
+    have key : ∀ (k : Fin 3) (a b : ℤ),
+        (Erdos634.Z15Real.zx (Erdos634.Tiling44Bridge.toZPt
+            (![Tiling44.t1 Tiling44.target, Tiling44.t2 Tiling44.target,
+              Tiling44.t3 Tiling44.target] k)) = (a, 0) ∧
+         Erdos634.Z15Real.zy (Erdos634.Tiling44Bridge.toZPt
+            (![Tiling44.t1 Tiling44.target, Tiling44.t2 Tiling44.target,
+              Tiling44.t3 Tiling44.target] k)) = (0, b)) →
+        gAff ((translateCongruentDissection (mkPt 176 0)
+          Erdos634.Tiling44Bridge.dissection).target.pts k)
+          = 4224 * Real.sqrt 15 + (24 * (a:ℝ) * Real.sqrt 15 - 88 * (b:ℝ) * Real.sqrt 15) := by
+      intro k a b ⟨hx, hy⟩
+      show gAff ((translateCongruentDissection (mkPt 176 0)
+        Erdos634.Tiling44Bridge.dissection).target.pts k) = _
+      have hshow : (translateCongruentDissection (mkPt 176 0)
+          Erdos634.Tiling44Bridge.dissection).target.pts k
+          = (transEquiv (mkPt 176 0)).toAffineEquiv (Erdos634.Tiling44Bridge.targetTri.pts k) := rfl
+      rw [hshow, Erdos634.Tiling44Bridge.targetTri_pts_eq k, hx, hy]
+      show gAff (mkPt 176 0 + mkPt (Erdos634.Z15Real.toR (a,0)) (Erdos634.Z15Real.toR (0,b))) = _
+      have hadd : mkPt (176:ℝ) 0 + mkPt (Erdos634.Z15Real.toR (a,0)) (Erdos634.Z15Real.toR (0,b))
+          = mkPt (176 + Erdos634.Z15Real.toR (a,0)) (Erdos634.Z15Real.toR (0,b)) := by
+        ext j; fin_cases j <;> simp [PiLp.add_apply, mkPt_zero, mkPt_one]
+      rw [hadd, gAff_mkPt]
+      simp only [Erdos634.Z15Real.toR]
+      push_cast
+      ring
+    fin_cases i
+    · show 4224 * Real.sqrt 15 ≤ gAff ((translateCongruentDissection (mkPt 176 0)
+          Erdos634.Tiling44Bridge.dissection).target.pts 0)
+      have := key 0 0 0 (by constructor <;> decide); rw [this]; push_cast; nlinarith [Real.sqrt_nonneg (15:ℝ)]
+    · show 4224 * Real.sqrt 15 ≤ gAff ((translateCongruentDissection (mkPt 176 0)
+          Erdos634.Tiling44Bridge.dissection).target.pts 1)
+      have := key 1 176 0 (by constructor <;> decide); rw [this]; push_cast; nlinarith [Real.sqrt_nonneg (15:ℝ)]
+    · show 4224 * Real.sqrt 15 ≤ gAff ((translateCongruentDissection (mkPt 176 0)
+          Erdos634.Tiling44Bridge.dissection).target.pts 2)
+      have := key 2 88 24 (by constructor <;> decide); rw [this]; push_cast; nlinarith [Real.sqrt_nonneg (15:ℝ)]
