@@ -204,6 +204,86 @@ theorem covers_of_volume {N : ℕ} (tile : Fin N → Tri)
   simp only [add_zero] at this
   exact absurd hsum (not_le.mpr this)
 
+/-! ## `paramMap` invertibility: the explicit inverse via Cramer's rule
+
+`carrier_eq_image` says `carrier` is the image of the unit square under `paramMap`. To turn that
+into a membership test (`mem_carrier_iff`) we need `paramMap` invertible on its domain; since it is
+affine with linear part given by the matrix `[[d2x, d4x], [d2y, d4y]]`, the inverse is the standard
+Cramer's-rule formula, and the matrix is nonsingular because `q1, q2, q4` are non-collinear (the
+same determinant fact used for `affineIndependent_123`). -/
+
+noncomputable def d2x : ℝ := v2 0 - v1 0
+noncomputable def d2y : ℝ := v2 1 - v1 1
+noncomputable def d4x : ℝ := v4 0 - v1 0
+noncomputable def d4y : ℝ := v4 1 - v1 1
+noncomputable def Ddet : ℝ := d2x * d4y - d4x * d2y
+
+theorem Ddet_ne_zero : Ddet ≠ 0 := by
+  show d2x * d4y - d4x * d2y ≠ 0
+  have : Erdos634.CertCoord.det3 (v1 0) (v1 1) (v2 0) (v2 1) (v4 0) (v4 1) ≠ 0 := by
+    show Erdos634.CertCoord.det3 (toR (zx (toZPt PgramTiling22.q1))) (toR (zy (toZPt PgramTiling22.q1)))
+      (toR (zx (toZPt PgramTiling22.q2))) (toR (zy (toZPt PgramTiling22.q2)))
+      (toR (zx (toZPt PgramTiling22.q4))) (toR (zy (toZPt PgramTiling22.q4))) ≠ 0
+    rw [show Erdos634.CertCoord.det3 (toR (zx (toZPt PgramTiling22.q1))) (toR (zy (toZPt PgramTiling22.q1)))
+        (toR (zx (toZPt PgramTiling22.q2))) (toR (zy (toZPt PgramTiling22.q2)))
+        (toR (zx (toZPt PgramTiling22.q4))) (toR (zy (toZPt PgramTiling22.q4)))
+      = toR (zcross (toZPt PgramTiling22.q1) (toZPt PgramTiling22.q2) (toZPt PgramTiling22.q4))
+      from toR_zcross _ _ _]
+    exact toR_ne_zero_of_sq_ne (by decide)
+  simp only [Erdos634.CertCoord.det3, d2x, d2y, d4x, d4y] at *
+  convert this using 1
+
+noncomputable def uOf (p : Plane) : ℝ := ((p 0 - v1 0) * d4y - d4x * (p 1 - v1 1)) / Ddet
+noncomputable def vOf (p : Plane) : ℝ := (d2x * (p 1 - v1 1) - (p 0 - v1 0) * d2y) / Ddet
+
+theorem paramMap_uOf_vOf (p : Plane) : paramMap (uOf p, vOf p) = p := by
+  have hD := Ddet_ne_zero
+  have h0 : (paramMap (uOf p, vOf p)) 0 = p 0 := by
+    show v1 0 + uOf p * (v2 0 - v1 0) + vOf p * (v4 0 - v1 0) = p 0
+    simp only [uOf, vOf]
+    field_simp
+    simp only [Ddet, d2x, d2y, d4x, d4y]
+    ring
+  have h1 : (paramMap (uOf p, vOf p)) 1 = p 1 := by
+    show v1 1 + uOf p * (v2 1 - v1 1) + vOf p * (v4 1 - v1 1) = p 1
+    simp only [uOf, vOf]
+    field_simp
+    simp only [Ddet, d2x, d2y, d4x, d4y]
+    ring
+  ext i
+  fin_cases i
+  · exact h0
+  · exact h1
+
+theorem paramMap_unique (u v : ℝ) (p : Plane) (hp : paramMap (u, v) = p) :
+    u = uOf p ∧ v = vOf p := by
+  have hD := Ddet_ne_zero
+  have e0 : (paramMap (u, v)) 0 = p 0 := by rw [hp]
+  have e1 : (paramMap (u, v)) 1 = p 1 := by rw [hp]
+  have e0' : v1 0 + u * (v2 0 - v1 0) + v * (v4 0 - v1 0) = p 0 := e0
+  have e1' : v1 1 + u * (v2 1 - v1 1) + v * (v4 1 - v1 1) = p 1 := e1
+  constructor
+  · show u = ((p 0 - v1 0) * d4y - d4x * (p 1 - v1 1)) / Ddet
+    rw [eq_div_iff hD]
+    simp only [Ddet, d2x, d2y, d4x, d4y]
+    linear_combination (v4 1 - v1 1) * e0' - (v4 0 - v1 0) * e1'
+  · show v = (d2x * (p 1 - v1 1) - (p 0 - v1 0) * d2y) / Ddet
+    rw [eq_div_iff hD]
+    simp only [Ddet, d2x, d2y, d4x, d4y]
+    linear_combination (v2 0 - v1 0) * e1' - (v2 1 - v1 1) * e0'
+
+/-- Membership test for `carrier`: `p` is in the parallelogram iff its `paramMap`-preimage
+coordinates both lie in `[0,1]`. -/
+theorem mem_carrier_iff (p : Plane) :
+    p ∈ carrier ↔ 0 ≤ uOf p ∧ uOf p ≤ 1 ∧ 0 ≤ vOf p ∧ vOf p ≤ 1 := by
+  rw [carrier_eq_image]
+  constructor
+  · rintro ⟨⟨u,v⟩, ⟨hu,hv⟩, hp⟩
+    obtain ⟨hu', hv'⟩ := paramMap_unique u v p hp
+    exact ⟨hu' ▸ hu.1, hu' ▸ hu.2, hv' ▸ hv.1, hv' ▸ hv.2⟩
+  · rintro ⟨h1,h2,h3,h4⟩
+    exact ⟨(uOf p, vOf p), ⟨⟨h1,h2⟩,⟨h3,h4⟩⟩, paramMap_uOf_vOf p⟩
+
 /-! ## (C1)/(C2 orientation): the 22 pieces, as real `Tri` objects -/
 
 theorem det3_eq_toR_cross (t : PgramTiling22.Tri) :
