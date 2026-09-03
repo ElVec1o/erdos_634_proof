@@ -3582,3 +3582,34 @@ against `OrderForcing.vertex_census`'s `ha`, `hb`, `hg`. Then `vertex_census` ap
 checked against the paper's statement, not its ingredients.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census`'s conclusion, derived for a real congruent dissection
+
+`congruentDissection_vertex_census` (`CornerAnglePerm.lean`, thirty-two declarations, axiom-clean,
+no `sorry`, `Erdos634.All` clean):
+
+> `|(0,1,3)| = 1 + |(3,2,0)| + |(4,3,1)| + 2·|(6,4,0)|`
+
+which, with the classes named by their multiplicity vectors, is `v₁ = 1 + n₂ + v₃ + 2v₄` — the
+identity `lem:census` states. The three class-sum identities expand over the eight-element
+`censusLabels`, the apex and base fibres are replaced by `1` and `2`, and `omega` closes.
+
+**The label is NOT being moved this tick, deliberately.** Rule 5 says VERIFIED means *the paper
+statement, as written, is the Lean theorem* — and the 2026-08-30 audit found ten labels wrong from
+exactly the shortcut of checking ingredients instead. Having just built the ingredients, I am the
+worst-placed reader to also certify the match in the same breath. The next iteration will do a
+separate, deliberate check of `lem:census`'s statement text against this theorem, specifically:
+
+* whether the paper's `n₁, n₂, v₁…v₄` (counts of *figures* of named types) really coincide with the
+  fibres of the multiplicity vector — the arithmetic matches (`{β,3γ}` is `(0,1,3)`, and all four
+  interior figures sum to `2π`, both straight figures to `π`), but this needs checking against the
+  paper's wording, not my reconstruction of it;
+* whether "in every tiling of the base-`β` target" is fully captured by `CongruentDissection` plus
+  `htarget`, or whether the paper assumes more about the target than its corner angles;
+* whether the clause "the base corners fill uniquely as `{β}` and the apex as `{3α}`" is covered —
+  `TileAt.congruentDissection_base_corner_counts` / `.apex_counts` appear to, but that is part of
+  the statement and must be confirmed, not assumed.
+
+Until that check is done and written down, `lem:census` stays **PROVED**.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
