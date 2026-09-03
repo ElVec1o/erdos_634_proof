@@ -2264,3 +2264,22 @@ time pressure in its base case and was discarded rather than committed with a `s
 failure mode as the very first full-assembly attempt earlier in this file, now recurring at smaller
 scale. `chord_endpoint_not_interior'` is the one genuinely reusable fact that attempt surfaced;
 `exists_geometric_chain` itself remains unwritten.
+
+## ChordFinsetGeometricChainBase, session of 2026-09-03 continued
+
+**`not_interior_of_all_excluded` built** — the actual base case of `exists_geometric_chain` (`L =
+[]`), completed this time (small, self-contained, verified on the first attempt after
+`chord_endpoint_not_interior'` supplied the missing fact): if every straddling tile's far endpoint
+weakly precedes the current position `bound`, no tile's interior meets `bound` itself. If some tile
+`k`'s interior did contain `bound`, `bound` would lie in `k`'s own trace (a local betweenness fact),
+placing it — via `wbtw_global_of_local` — weakly between `P` and `k`'s far endpoint `S k`; combined
+with the exclusion bound (`S k` weakly precedes `bound`) via `wbtw_antisymm_of_wbtw`, this forces
+`S k = bound` exactly. But `chord_endpoint_not_interior'` already rules out `S k` (a trace's own
+extreme point) from being interior to its own tile — contradiction. `lake build Erdos634.All`
+clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+This, together with `chord_decomposition_of_gap'`/`chord_decomposition_of_trivial_gap`, fully
+closes the base case of `exists_geometric_chain`. What remains is the `cons` (successor) case,
+mirroring `exists_injective_chain`'s own successor case but threading the `Wbtw`/gap-freedom
+payload via `gap_free_of_finset_step'` (bridged to the list's tail through `List.toFinset`) and
+`far_precedes_of_minimal`/`excl_new_self`/`excl_carries_forward` for the invariant's continuation.
