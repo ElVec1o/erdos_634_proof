@@ -186,4 +186,16 @@ theorem wbtw_middle_of_wbtw_wbtw {p a b c : Plane} (hab : Wbtw ℝ p a b) (hbc :
   have hsum3 : dist p a + dist a c = dist p c := dist_add_dist_eq_iff.mpr hac
   exact dist_add_dist_eq_iff.mp (by linarith)
 
+/-- **A point locally between two globally-ordered points is itself globally ordered.** The
+converse direction of `wbtw_middle_of_wbtw_wbtw`: if `a` lies weakly between `P` and `c` (a "global"
+bracket from some fixed reference `P`), and `b` lies weakly between `a` and `c` (a "local" fact,
+e.g. `b` a point of the trace `[a, c]`), then `b` too lies weakly between `P` and `c`, and `a`
+weakly between `P` and `b`. This is what lets a point known only to lie *within* some segment be
+placed into a *global* order from a fixed reference — exactly what a `Finset`-sort construction
+needs to compare an arbitrary point of one straddler's trace against another straddler's own
+position, without recomputing a fresh common bound each time. -/
+theorem wbtw_global_of_local {P a b c : Plane} (hac : Wbtw ℝ P a c) (hlocal : Wbtw ℝ a b c) :
+    Wbtw ℝ P a b ∧ Wbtw ℝ P b c :=
+  ⟨hac.trans_right_left hlocal, hac.trans_right hlocal⟩
+
 end Erdos634.ChordTraceReal

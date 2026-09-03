@@ -1736,6 +1736,29 @@ that common bound throughout the whole construction unconditionally, for every s
 simultaneously — comparisons only ever need `Wbtw P p Q` (how far the current sub-chord start has
 advanced) tracked alongside the recursion, not a fresh bound per straddler.
 
+**A real attempt at the `Finset` wrapper, and what it found (2026-09-03, later still)**: attempted
+the full construction directly. It surfaced a genuine correction to the plan recorded above: the
+exclusion invariant must bound an excluded straddler's *far* endpoint (`Wbtw ℝ P (S k) p`), not its
+near endpoint — bounding only `R k` leaves room for the excluded straddler's trace to still reach
+past `p` into the current gap, which is not actually excluded. `far_precedes_of_minimal` already
+proves the right thing to *maintain* this invariant across steps; the base case (`T` empty) needing
+it correctly is what exposed the near/far distinction. Also needed and now built:
+`WbtwChain.wbtw_global_of_local` — the converse of `wbtw_middle_of_wbtw_wbtw`: if `a` lies weakly
+between a fixed reference `P` and `c`, and `b` lies weakly between `a` and `c` (e.g. a point of the
+trace `[a, c]`), then `b` (and `a`) are themselves weakly ordered from `P` too
+(`hac.trans_right_left hlocal`, `hac.trans_right hlocal` — both already-existing Mathlib
+combinators, just newly composed). `lake build Erdos634.All` clean, no `sorry`, `#print axioms`
+confirms only the standard three.
+
+The full wrapper attempt itself did not survive contact with the base case's actual proof
+obligations cleanly — assembling `wbtw_global_of_local`, `far_precedes_of_minimal`, and
+`gap_free_of_minimal` correctly into one `Finset.strongInduction` produced tactic-level errors that
+a rushed fix would have papered over with unsound term combinators; the attempt was discarded rather
+than committed with a `sorry` or a wrong proof, per this project's standing rule. The corrected
+exclusion invariant above is the real, usable output of the attempt and is recorded precisely so the
+next attempt does not re-derive it. What remains unbuilt: the actual `Finset.strongInduction`
+assembly, redone carefully with the corrected invariant.
+
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
