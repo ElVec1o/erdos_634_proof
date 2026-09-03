@@ -962,3 +962,28 @@ theorem partition_c_sub_a_gap {e f x y z B : ℕ} (he : 2 ≤ e) (hef : e < f)
   omega
 
 end Erdos634.OrderForcing
+
+namespace Erdos634.OrderForcing
+
+/-- **The three corner-balance equations have rank two.**  The `γ`-identity is a consequence of the
+`α`- and `β`-identities: `hg = 3·hb − 2·ha` as linear forms, with the constants matching
+(`3·2 − 2·3 = 0`). So the three balance equations are dependent, and after eliminating `N` they
+yield exactly one independent relation among the figure counts — which is `vertex_census`'s
+`v₁ = 1 + n₂ + v₃ + 2v₄`.
+
+This is `lem:census`'s closing clause, "the three balance equations admit exactly one relation": the
+dependency is exhibited here, so no *second* independent relation can exist. -/
+theorem census_gamma_dependent {N n1 n2 v1 v2 v3 v4 : ℕ}
+    (ha : 3 + n1 + 3 * n2 + 2 * v2 + 4 * v3 + 6 * v4 = N)
+    (hb : 2 + n1 + 2 * n2 + v1 + 2 * v2 + 3 * v3 + 4 * v4 = N) :
+    n1 + 3 * v1 + 2 * v2 + v3 = N := by omega
+
+/-- **The single relation, isolated.**  Eliminating `N` from the `α`- and `β`-identities gives
+exactly `v₁ = 1 + n₂ + v₃ + 2v₄` — the same conclusion `vertex_census` reaches from all three, which
+is what "the three balance equations admit exactly one relation" asserts. -/
+theorem census_single_relation {N n1 n2 v1 v2 v3 v4 : ℕ}
+    (ha : 3 + n1 + 3 * n2 + 2 * v2 + 4 * v3 + 6 * v4 = N)
+    (hb : 2 + n1 + 2 * n2 + v1 + 2 * v2 + 3 * v3 + 4 * v4 = N) :
+    v1 = 1 + n2 + v3 + 2 * v4 := by omega
+
+end Erdos634.OrderForcing

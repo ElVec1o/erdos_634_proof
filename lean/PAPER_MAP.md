@@ -3642,3 +3642,28 @@ is derived. The blocker is replaced by two smaller and different ones:
    attachment gap that blocks route 1.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census`'s rank clause: the `γ`-identity is a consequence of the other two
+
+`census_gamma_dependent`, `census_single_relation` (`OrderForcing.lean`, axiom-clean,
+`Erdos634.All` clean).
+
+Working out what "the three balance equations admit exactly one relation" means: the coefficient
+vectors of the three identities in `(n₁, n₂, v₁, v₂, v₃, v₄, N)` are `(1,3,0,2,4,6,−1)`,
+`(1,2,1,2,3,4,−1)`, `(1,0,3,2,1,0,−1)`, and they satisfy `2·ha − 3·hb + hg = 0` — constants
+included, `2·3 − 3·2 + 0 = 0`. Equivalently **`hg = 3·hb − 2·ha`: the `γ`-identity is *derivable*
+from the `α`- and `β`-identities.** `census_gamma_dependent` is that, by `omega`.
+
+So the system has rank two, and eliminating `N` from the two independent identities leaves exactly
+one relation among the figure counts — `census_single_relation` derives `v₁ = 1 + n₂ + v₃ + 2v₄`
+from `ha` and `hb` alone, without `hg`. That is the clause's content: no *second* independent
+relation can exist, because the third equation carries no information beyond the first two.
+
+**One clause of the audit is therefore closed.** `lem:census`'s remaining uncovered clause is the
+other one: `htarget` — that the base-`β` target's corners are `3α` and `β` — assumed rather than
+derived, for want of a target object. That is the attachment gap, the same one blocking route 1.
+
+`lem:census` stays **PROVED**; one of its two audit gaps is gone, the other is the standing
+attachment blocker.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
