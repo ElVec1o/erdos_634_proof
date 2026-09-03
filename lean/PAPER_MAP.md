@@ -2005,6 +2005,17 @@ directly. What remains is: (1) actually sorting the `Finset` into such a `List` 
 `excl_new_self` / `excl_carries_forward` already supply per-step, needing only to be threaded
 through the same `List` induction `exists_injective_chain` already demonstrates the shape of.
 
+**Checked how much of that threading is actually direct**: `gap_free_of_finset_step'` and
+`far_precedes_of_minimal` are stated in terms of a `Finset (Fin N)` (the *remaining* straddler set
+`T`, used for `hmin`/`hexcl`'s own quantifiers), not a `List` — restating the induction over a
+`List` (as `exists_injective_chain` does, for good reason: `List.get`/index access is what
+`chord_decomposition_of_chain` itself consumes) means every per-step call to those two lemmas needs
+`T := (the tail of the list, as a Finset)`, and the membership/exclusion facts translated between
+"in the list's tail" and "in that Finset" at each step. This is real bridging work — mechanical, not
+new mathematics, but a genuine reconciliation between two representations that hasn't been written,
+not a direct plug-in of already-built lemmas. Recorded precisely as the next concrete task rather
+than attempted as a quick restatement that would risk quietly getting the translation wrong.
+
 **One more check before implementing, and a broader finding**: `chord_decomposition_of_chain`'s
 `hne` hypothesis is required *unconditionally*, for every consecutive pair from `i = 0` to
 `i = 2n`, supplied by the caller — the theorem does not internally tolerate or skip a degenerate
