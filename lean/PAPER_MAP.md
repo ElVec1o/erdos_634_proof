@@ -1112,8 +1112,30 @@ pierce configuration / placement figure"), i.e. tracking a *specific* boundary s
 cover by possibly many tile edges in sequence (not just the immediate neighbor at one point), plus
 matching an edge's *length* to a named value (`a`, `b`, or `c`), which needs `hausdorff_edge`-style
 length bookkeeping combined with the direction fact above. `otherTile`/`leftDir_antiparallel`
-together are the true first two bricks; the chord-trace object is the next, larger one, and is not
-yet scoped precisely enough to attempt as a bounded step.
+together are the true first two bricks; the chord-trace object is the next, larger one.
+
+**`ChordTraceReal.lean` landed, 2026-09-03**: `Tri.sign_trichotomy` (any tile against any external
+line either lies weakly below it, weakly above it, or straddles — vertices strictly on both sides),
+proved cleanly from convexity alone (`Tri.le_iff_forall_vertices_le`/`.ge_iff_forall_vertices_ge`,
+extrema of a linear functional over a triangle occur at its vertices). This is real progress
+`tile_contact_face` couldn't supply (it assumes one-sidedness, false exactly for a straddling
+tile). Committed, builds clean.
+
+**Segment-extraction attempted, not completed, same day**: the natural next step — showing a
+convex compact set's intersection with a line is always a segment `[p,q]` between two explicit
+points — was scoped and partially built in a scratch probe (not committed, since it hit a real
+unproved step): (1) `ker f` has `finrank` 1 for `f ≠ 0` on `Plane` (rank-nullity, `finrank Plane =
+2`) — worked. (2) A nonzero `v ∈ ker f` exists (`Module.finrank_pos_iff_exists_ne_zero`) — worked.
+(3) `finrank_eq_one_iff_of_nonzero'` gives every vector of `ker f` as a scalar multiple of `v` —
+identified as the right lemma, not yet wired in. (4) Pulling back convexity of `S` along
+`t ↦ x0 + t•v` to get a convex `S' ⊆ ℝ` — worked (direct `module`-tactic algebra). (5)
+**Blocked here**: showing `S'` is *compact*, i.e. that `t ↦ x0 + t•v` is a proper map (preimage of
+compact is compact) — true (an injective linear map on a finite-dimensional space is a closed
+embedding) but needs the right Mathlib lemma, not yet found. (6) The final step, applying "compact
+convex subset of `ℝ` is `Icc (sInf S') (sSup S')`" (this piece **is** fully proved, standalone,
+tested) and pushing the interval back through the parametrization to get `p, q` — not yet attempted
+since (5) blocks it. **Do not re-derive steps (1)-(4) or the `ℝ`-interval fact from scratch**: they
+work; only step (5)'s properness lemma and the final assembly remain.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
