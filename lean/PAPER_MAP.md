@@ -4407,3 +4407,39 @@ for a dedicated pass rather than rushed this tick.
 
 **Debt-file-split queue is now empty of previously-flagged items** — both files named in the
 standing next-steps list are done.
+
+### `prop:orientmono`'s first covering-equality witness — `Erdos634/OrientMonoWitness.lean`
+
+The row's residual gap read: "the covering-equality hypothesis itself (that a specific tile subset
+really does fill one occurrence `Δ_k`) is the actual content of 'occurrence' theory ... and is
+genuinely unbuilt — confirmed, not assumed." This supplies the **first** concrete instance.
+
+`CollarCongruentM4.delta4CongruentDissection : CongruentDissection 176` (the `m=2→4` collar witness)
+is assembled from six `Fin.append` blocks; its first block, `apexPieceAt`, is *literally*
+`Tiling44Bridge.dissection`'s own 44 pieces translated by `(88, 24√15)` — a real occurrence `Δ_2`
+sitting inside `Δ_4`. This file:
+
+* `apexIndices : Finset (Fin 176)` — the apex block's 44 indices, via the same `finCongr`/
+  `Fin.castAdd` renumbering `CollarPiecesM4`/`CollarAssembleM4` already use.
+* `delta4Pieces_apex` — `delta4Pieces` at an apex index literally is `apexPieceAt` at the
+  corresponding `Fin 44` (unfolding `Fin.append_left`).
+* `apex_union_eq_translated_target` — the 44 apex tiles' union is *exactly* the translated
+  `Tiling44` target's carrier: this is `Tiling44Bridge.dissection.covers` transported through
+  `translateCongruentDissection`, using that `apexPieceAt` is definitionally the translate of
+  `Tiling44Bridge.pieceAt` and that `ofCertificate`'s `.tile`/`.target` fields are `rfl`-equal to
+  their inputs (checked directly, not assumed).
+* `apex_covers` — the actual `hcov` `SubDissection.restrictCongruent` needs, in terms of
+  `delta4CongruentDissection.tile` and `apexIndices`.
+* `occurrenceWitness : CongruentDissection apexIndices.card` — the assembled witness: restricting
+  `delta4CongruentDissection` to the apex block genuinely recovers a `CongruentDissection` of the
+  translated `Tiling44` target.
+
+Axiom-clean; `lake build Erdos634.All` clean at 3699 jobs.
+
+**Scope, precisely.** This is *one* occurrence witness, not the general "occurrence theory" the row
+still needs — `prop:orientmono` itself is not flipped, and the row's own text already said this work
+is needed "row by row." What this changes: the covering-equality hypothesis is no longer merely
+"genuinely unbuilt" in the abstract — a real, non-trivial instance now exists and typechecks, so the
+next occurrence (or the general pattern, if one exists across all four `PgramTiling22`-shaped column
+occurrences already sitting in the same `delta4CongruentDissection`) is now a matter of repeating
+this same argument, not inventing it. No label moves.
