@@ -1925,6 +1925,21 @@ fully generalizing `chord_decomposition_of_chain` for arbitrary degenerate coinc
 need a degenerate-tolerant variant of `wbtw_chain_bounded` itself — core betweenness-chain
 infrastructure, not a small follow-up. This is now the precisely-located remaining obstacle.
 
+**Why it resists a quick fix**: checked whether `wbtw_chain_bounded`'s distinctness requirement
+could be dropped by rebuilding it from `wbtw_of_wbtw_wbtw`/`wbtw_middle_of_wbtw_wbtw` (both already
+fully degenerate-tolerant, needing no distinctness anywhere in their own proofs). It cannot, cleanly:
+those two compose a *fixed* triple of points into another fact about the *same* points, never
+advancing which index plays which role, so they cannot substitute for the genuine combinatorial
+content `wbtw_chain_bounded` supplies — reaching an arbitrary index `k` from a chain of only
+*consecutive* facts, which is what actually needs `Wbtw.trans_expand_left`/`_right`'s own
+distinctness side-condition to advance the "middle" role from one index to the next. This looks like
+a real structural fact, not a proof-search gap: indexing an ordered chain by raw `ℕ` position and
+asking for full pairwise `Wbtw` from only consecutive data seems to inherently need consecutive
+points distinct, unless the sequence is first de-duplicated (a genuinely different, coarser
+indexing, not a small patch to `WbtwChain.lean`). Recorded as a real mathematical obstacle to the
+fully general (arbitrary-coincidence-tolerant) form of `chord_decomposition_of_chain`, not merely an
+unfinished proof.
+
 **One more check before implementing, and a broader finding**: `chord_decomposition_of_chain`'s
 `hne` hypothesis is required *unconditionally*, for every consecutive pair from `i = 0` to
 `i = 2n`, supplied by the caller — the theorem does not internally tolerate or skip a degenerate
