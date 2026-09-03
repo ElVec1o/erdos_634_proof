@@ -1638,6 +1638,28 @@ sequence `chord_decomposition_cons` consumes one straddler at a time, and prove 
 sorted list's length that repeated application closes the whole chord — a `List.rec`/`Finset.sum`
 argument over data this session's lemmas fully support, not yet written.
 
+**The base-case gap-freedom fact, same session, later still (2026-09-03)**:
+`WbtwGapFreeOfMinimal.gap_free_of_minimal` — the `hgap` hypothesis
+`chord_decomposition_cons` needs at each step of the induction: if a straddler `m`'s oriented trace
+`[r, s]` is *first* (every point of every other straddler's own trace is weakly farther from `p`
+than `r`), no tile's interior meets the open gap `(p, r)`. Any interior point there must belong to a
+straddling tile (`interior_on_line_straddles`); if that tile is `m`, `openSegment_disjoint_segment_
+of_wbtw` rules it out; otherwise minimality plus `wbtw_antisymm_of_wbtw` collapses the point to `r`
+itself, contradicting the gap's own openness. `lake build Erdos634.All` clean, no `sorry`,
+`#print axioms` confirms only the standard three.
+
+With this, `chord_decomposition_cons`'s `hgap` hypothesis is *derived*, not assumed, at every step
+of a sort-and-recurse construction: pick the straddler minimizing "how far its trace starts from
+`p`" (well-defined by `Finset.exists_min_image` on the finite straddler set, tie-broken
+lexicographically by far-endpoint distance if two straddlers share a near endpoint — the one
+remaining subtlety identified, not yet needed since no instance forces it), apply
+`gap_free_of_minimal` for its gap-freedom, `chord_decomposition_cons` to peel it off, and recurse on
+the remaining straddler set restricted to `[s, q]` by strong induction on `Finset.card`. Every
+individual fact this recursion needs now exists; assembling the induction itself (the
+`Finset.card`-recursion, the choice-function packaging of each straddler's oriented trace, and
+verifying the recursive call's straddler set is exactly the right restriction) is real remaining
+work, sized like a standalone small project rather than one more lemma.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
