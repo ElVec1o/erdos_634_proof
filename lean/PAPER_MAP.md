@@ -2768,3 +2768,44 @@ OPEN, and nothing in this session touches it. Case (b)'s and case (a)'s removal 
 
 **`conj:advance` remains CONJECTURE. `e = 1` is not closed. `e ≥ 2` is untouched. The prime case is
 not advanced.**
+
+### RouteOneThroughEdge, seventh increment: the `[V,E]` question itself, answered
+
+Five more theorems (`edge_length_mem_model`, `edge_length_mem_model'`, `dist_eq_x_of_horizontal`,
+`VE_dichotomy`, `VE_dichotomy_of_flank`); 36 declarations in the file, all axiom-clean,
+`Erdos634.All` clean, no `sorry`.
+
+`rem:route1uniform` reduces route 1 to one question — *what covers the segment `[V,E]` of length
+exactly `a`?* — and says "We do not prove that here". With the flank in hand it is now forced.
+`edge_length_mem_model` uses `Congruence.Tri.Congruent.sideMultiset_eq` and
+`CongruentTileEdges.Tri.sideMultiset_shift` to put any tile edge's length among the model's three
+sides; `dist_eq_x_of_horizontal` identifies a horizontal edge's length with its `x`-offset; and
+`overshoot_dichotomy` closes:
+
+> **`VE_dichotomy_of_flank`.** For a tile of a `CongruentDissection` whose model has sides
+> `f, f²−1, f²` (the `e = 1` base-`β` family in `rem:route1uniform`'s own scaling), a horizontal
+> rightward edge from `V` either has length exactly `a = f` — its far endpoint *is* `E`, so `E` is a
+> junction and the march advances — or its length exceeds `f`, so `E` lies strictly inside it, which
+> is the tile-interior blocking whose failure defined the escape, and the branch dies.
+
+It is stated over the flank's own disjunction (either neighbour of `V`), so it composes directly with
+`route_one_flank_of_vertices` and `flank_propagates`. **No straight angle is assumed anywhere in the
+chain.**
+
+**Where route 1 now stands, as a chain of machine-checked steps.** flank at `V`
+(`route_one_flank_of_vertices`, from vertex signs + approach + the `α`-tile's edge + interiority) →
+`[V,E]` dichotomy (`VE_dichotomy_of_flank`, from congruence) → on the surviving branch, flank at `E`
+(`flank_propagates`, the previous step's edge in the `α`-tile's role) → terminus
+(`terminus_of_run_length`, VERIFIED) → descent (`route_one_closes'`, VERIFIED, figure-free).
+
+**What is still missing — unchanged and now isolated.** The *attachment*: every hypothesis of these
+theorems (the vertex sign conditions, the tangential approach at each point, interiority, the
+`α`-tile's horizontal edge, `i ≠ j`, and the model's side lengths) has to be exhibited in a
+hypothetical base-`β` tiling, and the steps composed into an `htri` for `route_one_closes'`. That is
+`rem:routeoneopen` (OPEN), and it is blocked on the standing "no tile-placement layer" blocker
+recorded in `CLAUDE.md`. Nothing in this session touches it.
+
+**`conj:advance` remains CONJECTURE. `e = 1` is not closed. `e ≥ 2` is untouched. The prime case is
+not advanced.**
+
+| C `rem:route1uniform` (the `[V,E]` question) | what covers `[V,E]`: length `a` (junction, march advances) or longer (`E` interior, branch dies) | `RouteOne.VE_dichotomy_of_flank`, `.VE_dichotomy`, `.edge_length_mem_model` | VERIFIED (given the flank and the model's sides; the attachment remains OPEN) |
