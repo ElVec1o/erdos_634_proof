@@ -147,4 +147,43 @@ theorem wbtw_trans_of_wbtw {p q x y z : Plane}
     rw [heq]
     exact wbtw_self_right ℝ p x
 
+/-- **A ray composes without needing a common upper bound.** If `a` lies weakly between `p` and
+`b`, and `b` lies weakly between `p` and `c`, then `a` lies weakly between `p` and `c` — the same
+fact `wbtw_trans_of_wbtw` proves, but self-contained: no external point playing `q`'s role is
+needed, since `a`'s and `c`'s same-ray-ness compose directly through `b`. -/
+theorem wbtw_of_wbtw_wbtw {p a b c : Plane} (hab : Wbtw ℝ p a b) (hbc : Wbtw ℝ p b c) :
+    Wbtw ℝ p a c := by
+  have hrab : SameRay ℝ (a -ᵥ p) (b -ᵥ p) := hab.sameRay_vsub_left
+  have hrbc : SameRay ℝ (b -ᵥ p) (c -ᵥ p) := hbc.sameRay_vsub_left
+  have hsame : SameRay ℝ (a -ᵥ p) (c -ᵥ p) := by
+    refine hrab.trans hrbc (fun hb0 => ?_)
+    have hbp : b = p := vsub_eq_zero_iff_eq.mp hb0
+    have haa : Wbtw ℝ p a p := hbp ▸ hab
+    have hap : a = p := (wbtw_self_iff (R := ℝ)).mp haa
+    exact Or.inl (by rw [hap]; exact vsub_self p)
+  rcases wbtw_total_of_sameRay_vsub_left hsame with h | h
+  · exact h
+  · have hsum1 : dist p a + dist a b = dist p b := dist_add_dist_eq_iff.mpr hab
+    have hsum2 : dist p b + dist b c = dist p c := dist_add_dist_eq_iff.mpr hbc
+    have hsum3 : dist p c + dist c a = dist p a := dist_add_dist_eq_iff.mpr h
+    have h0 : dist c a = 0 := by
+      linarith [dist_nonneg (x := a) (y := b), dist_nonneg (x := b) (y := c),
+        dist_nonneg (x := c) (y := a)]
+    have heq : c = a := dist_eq_zero.mp h0
+    rw [heq]
+    exact wbtw_self_right ℝ p a
+
+/-- **The middle point of a `p`-chain is genuinely between its own outer two.** If `a` lies weakly
+between `p` and `b`, and `b` lies weakly between `p` and `c`, then `b` lies weakly between `a` and
+`c` directly — no reference to `p` in the conclusion. This is what turns "closer to `p`" order
+information into actual segment membership (`b ∈ segment ℝ a c`), the fact the multi-straddler
+separation argument needs. -/
+theorem wbtw_middle_of_wbtw_wbtw {p a b c : Plane} (hab : Wbtw ℝ p a b) (hbc : Wbtw ℝ p b c) :
+    Wbtw ℝ a b c := by
+  have hac : Wbtw ℝ p a c := wbtw_of_wbtw_wbtw hab hbc
+  have hsum1 : dist p a + dist a b = dist p b := dist_add_dist_eq_iff.mpr hab
+  have hsum2 : dist p b + dist b c = dist p c := dist_add_dist_eq_iff.mpr hbc
+  have hsum3 : dist p a + dist a c = dist p c := dist_add_dist_eq_iff.mpr hac
+  exact dist_add_dist_eq_iff.mp (by linarith)
+
 end Erdos634.ChordTraceReal

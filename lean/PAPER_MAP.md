@@ -1569,6 +1569,24 @@ satisfies `wbtw_chain_bounded`'s hypotheses, and run the `Finset.sum` induction 
 `chord_decomposition_of_gap` with `straddle_total_eq_sum`. No further individual geometric facts
 are missing — every piece this session built is aimed at exactly this remaining assembly.
 
+**Two more chain-composition lemmas, same session, later still (2026-09-03)**:
+`WbtwChain.wbtw_of_wbtw_wbtw` / `wbtw_middle_of_wbtw_wbtw` — built while trying to separate two
+straddlers' traces (the next combinatorial piece the general induction needs): `wbtw_of_wbtw_wbtw`
+reproves `wbtw_trans_of_wbtw`'s conclusion (`Wbtw p a b, Wbtw p b c ⟹ Wbtw p a c`) *without* an
+external upper-bound point playing `q`'s role — composing the two `SameRay` facts directly through
+`b` and ruling out the wrong branch the same distance-additivity way. `wbtw_middle_of_wbtw_wbtw`
+then converts that "closer to `p`" order information into actual segment membership: `Wbtw p a b`
+and `Wbtw p b c` together give `Wbtw a b c` (`b` is genuinely between `a` and `c`, no reference to
+`p` in the conclusion) — combining the three distance-additivity equations directly. `lake build
+Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three for both.
+
+This is exactly the fact needed to show two straddlers' near/far trace endpoints, once compared via
+`wbtw_trichotomy_of_wbtw`, actually land *inside* each other's trace segments — the step toward
+proving two straddlers' traces (known disjoint in at most one point, via `trace_disjoint_of_straddle`)
+must be entirely separated (one trace's far endpoint precedes the other's near endpoint), which is
+the combinatorial fact the sorted-gap construction needs. Not yet assembled into that separation
+theorem — this is its key ingredient, not the theorem itself.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
