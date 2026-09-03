@@ -4264,3 +4264,49 @@ cannot be mechanically generalized into, the `∀m≥2` induction step `Collar.t
 blocker on `thm:realize12`'s existence half is unchanged by this file: a *general-in-`m`* collar
 construction is still missing, and this concrete `m=4` instance — built entirely from fixed
 coordinates — gives no template for one. This closes the probe negatively; no label moves.
+
+### New TENSION found: `rem:spectral`'s dual-graph figures do not match the certified 44-tiling (2026-09-04)
+
+Reading `rem:spectral` to formalize it, its **first clause is a checkable computation**: "the dual
+graph of our certified 44-tiling ... has 44 vertices, 45 shared full edges, degree distribution
+`{1¹¹,2²⁰,3¹³}` and four components of orders `4,8,16,16`". `Tiling44.lean`'s `def tiles` is exactly
+that certified 44-tiling, in exact `Z[√15]` integer coordinates — so this is directly checkable, no
+floating point needed. `code/dualgraph44_count.py` does it, parsing the tile list, taking "shares a
+full edge" as *both tiles list the same unordered pair of vertices among their three edges*.
+
+**Result:**
+```
+tiles: 44                                    — matches
+shared full edges: 45                        — matches exactly
+degree distribution: {1:12, 2:18, 3:14}      — paper says {1:11, 2:20, 3:13}
+components: 5, sizes [2, 4, 8, 14, 16]       — paper says 4 components, sizes 4,8,16,16
+```
+Vertex count and edge count match exactly. Degree distribution and component structure do not.
+
+**Ruled out, so this is not a definitional mismatch.** The natural alternative reading — "adjacent"
+meaning *any* boundary contact, including T-junctions, not just a matching full edge — was tested
+directly (segment-overlap check, `code/dualgraph44_count.py`'s discarded broader variant): it merges
+the whole tiling into **one** component of 44, which cannot be reconciled with the paper's claim of
+four *disconnected* components at all. So the paper's own claim only makes sense under the strict
+full-edge reading, which is the one computed above, and which is where the mismatch sits. A genuine
+T-junction was confirmed to exist (tile 14's vertex `(138, 6√15)` lies strictly inside tile 28's
+edge `(122,6√15)–(154,6√15)`) — this tiling is not edge-to-edge everywhere, which is presumably why
+component-splitting is delicate here.
+
+Suggestively, `14 + 2 = 16`: the paper's two size-16 components could be my size-14 and size-2
+components merged, if one shared edge was missed on either side of that count — but no edge or
+T-junction connecting them was found by either check above, so this is only a numerical coincidence
+noted for whoever rechecks the paper's own hand computation, not a fix I am making.
+
+**What this does and does not affect.** `rem:spectral`'s **decisive** argument — that a spectral
+criterion's admissible constraints are exactly the vertex-figure counts of `prop:globalsys`, which
+admit prime solutions (VERIFIED) — does not depend on these illustrative numbers at all; it is
+untouched. What is affected is only the worked example's own stated figures. **Not editing the paper
+unilaterally**, per the same standing rule as the `N=47` tension — this is reported for a decision,
+with a reproducible script attached. Label unaffected (PROVED; the decisive clause is what any Lean
+formalization would target, and it doesn't depend on this).
+
+Recording as a second open TENSION alongside `N=47`'s (which was resolved in favor of the
+computation, 2026-09-03). This one has **not** been resolved either way — the paper's numbers might
+be a hand-computation slip, or my adjacency definition might still miss something paper-side that
+neither test above found; both remain open.
