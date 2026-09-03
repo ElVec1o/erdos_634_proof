@@ -3556,3 +3556,29 @@ and third coordinates), then feeding all three, with `apex_fibre_card` and `base
 `OrderForcing.vertex_census`. `lem:census` has **not** flipped; label stays PROVED.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` piece 4k: all three identities
+
+`census_beta_sum`, `census_gamma_sum` (`CornerAnglePerm.lean`, thirty-one declarations,
+axiom-clean, `Erdos634.All` clean). The same `sum_over_fibers_const` instantiation as
+`census_alpha_sum`, with the label's second and third coordinates as the class constant and
+`congruentDissection_corner_balance` taken at model-corner indices `1` and `2`.
+
+So all three of `lem:census`'s counting identities now exist in class-sum form:
+
+```
+∑_y y.1 · |fibre y| = N      ∑_y y.2.1 · |fibre y| = N      ∑_y y.2.2 · |fibre y| = N
+```
+
+with `apex_fibre_card` and `base_fibre_card` fixing the two class counts the paper writes as
+constants.
+
+**Remaining:** expand each sum over the eight-element `censusLabels` — a `Finset` literal, so this
+is `Finset.sum_insert` bookkeeping — substitute the two known fibre cards, and match the results
+against `OrderForcing.vertex_census`'s `ha`, `hb`, `hg`. Then `vertex_census` applies and
+`lem:census`'s stated conclusion `v₁ = 1 + n₂ + v₃ + 2v₄` holds for a real congruent dissection.
+
+`lem:census` has **not** flipped; label stays PROVED until that assembly is actually done and
+checked against the paper's statement, not its ingredients.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

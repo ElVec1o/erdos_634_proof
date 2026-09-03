@@ -992,4 +992,78 @@ theorem base_fibre_card {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
       rw [← hm']; exact mem_cornerPts D.toDissection i m'
   rw [himg, Finset.card_image_of_injective _ D.target.indep.injective, hsplit]
 
+/-- **The `β`-identity of the census, as a sum over the eight classes.** -/
+theorem census_beta_sum {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (htarget : ∀ k : Fin 3,
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = 3 * α ∨
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β) :
+    ∑ y ∈ censusLabels, y.2.1 *
+        ((cornerPts D.toDissection).filter (fun v =>
+          ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+            ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+            ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ) = y)).card
+      = N := by
+  classical
+  rw [← sum_over_fibers_const (cornerPts D.toDissection) censusLabels _
+    (fun v hv => figureVec_mem_censusLabels D α β γ hαβ hαγ hαπ hα2π hα0 hβγ hβπ hβ2π hβ0
+      hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr htarget hv)
+    (fun v => ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card)
+    (fun y => y.2.1) (fun _ _ => rfl)]
+  have hbal := congruentDissection_corner_balance D
+    (model_corner_dist D hmα hmβ hmγ hαβ hαγ hβγ) 1
+    (by rw [show (1 : Fin 3) + 1 = 2 from rfl, show (1 : Fin 3) + 2 = 0 from rfl, hmβ]
+        exact hβ0)
+    (by rw [show (1 : Fin 3) + 1 = 2 from rfl, show (1 : Fin 3) + 2 = 0 from rfl, hmβ]
+        exact hβπ)
+    (by rw [show (1 : Fin 3) + 1 = 2 from rfl, show (1 : Fin 3) + 2 = 0 from rfl, hmβ]
+        exact hβ2π)
+  rw [show (1 : Fin 3) + 1 = 2 from rfl, show (1 : Fin 3) + 2 = 0 from rfl, hmβ] at hbal
+  exact hbal
+
+/-- **The `γ`-identity of the census, as a sum over the eight classes.** -/
+theorem census_gamma_sum {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (htarget : ∀ k : Fin 3,
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = 3 * α ∨
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β) :
+    ∑ y ∈ censusLabels, y.2.2 *
+        ((cornerPts D.toDissection).filter (fun v =>
+          ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+            ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+            ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ) = y)).card
+      = N := by
+  classical
+  rw [← sum_over_fibers_const (cornerPts D.toDissection) censusLabels _
+    (fun v hv => figureVec_mem_censusLabels D α β γ hαβ hαγ hαπ hα2π hα0 hβγ hβπ hβ2π hβ0
+      hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr htarget hv)
+    (fun v => ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card)
+    (fun y => y.2.2) (fun _ _ => rfl)]
+  have hbal := congruentDissection_corner_balance D
+    (model_corner_dist D hmα hmβ hmγ hαβ hαγ hβγ) 2
+    (by rw [show (2 : Fin 3) + 1 = 0 from rfl, show (2 : Fin 3) + 2 = 1 from rfl, hmγ]
+        exact hγ0)
+    (by rw [show (2 : Fin 3) + 1 = 0 from rfl, show (2 : Fin 3) + 2 = 1 from rfl, hmγ]
+        exact hγπ)
+    (by rw [show (2 : Fin 3) + 1 = 0 from rfl, show (2 : Fin 3) + 2 = 1 from rfl, hmγ]
+        exact hγ2π)
+  rw [show (2 : Fin 3) + 1 = 0 from rfl, show (2 : Fin 3) + 2 = 1 from rfl, hmγ] at hbal
+  exact hbal
+
 end Erdos634.Geometry
