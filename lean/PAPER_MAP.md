@@ -1905,8 +1905,23 @@ question involved at all. Then add the final leftover bit `[S(m_last), Q]` as on
 no modification to `chord_decomposition_of_chain`, no new geometric fact, and resolves the
 degenerate case in *both* the flat-sum and the existence-of-chain framings identically: the whole
 wrapper is `chain's total over the n straddlers` + `one final gap/trivial-gap total`, combined via a
-single `hausdorff_segment_split`-style addition at the very end. Not yet implemented, but the
-blocking question from every earlier entry above is now closed.
+single `hausdorff_segment_split`-style addition at the very end. Not yet implemented.
+
+**One more check before implementing, and a broader finding**: `chord_decomposition_of_chain`'s
+`hne` hypothesis is required *unconditionally*, for every consecutive pair from `i = 0` to
+`i = 2n`, supplied by the caller — the theorem does not internally tolerate or skip a degenerate
+consecutive pair anywhere, not just at the trailing end. So the "end at `S(m_last)`, not `Q`" fix
+above resolves the *trailing* degeneracy, but the *same* question recurs at every interior boundary:
+could a straddler's own near endpoint coincide with the previous straddler's far endpoint (`p = r`
+mid-recursion, the second degenerate case flagged earlier), or could two straddlers even share a
+trace endpoint outright? `ChordFinsetDegenerate` and the "skip the leading gap" branch sketched in
+the discarded assembly attempt show *how* to handle a single such collapse when it's known to occur,
+but `chord_decomposition_of_chain` itself has no built-in tolerance for it — the wrapper would need
+to either rule out every such coincidence in general (a genuine geometric question, not yet checked)
+or dynamically merge/skip degenerate points while constructing `g`, which changes the induction's
+bookkeeping non-trivially. This is a real, larger piece of remaining work than the single trailing
+case alone, and is not resolved by the fix above — it only closes the one instance of it that this
+session's investigation happened to focus on first.
 
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
