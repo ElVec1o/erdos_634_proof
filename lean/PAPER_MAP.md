@@ -2453,3 +2453,27 @@ straddler set's own general-position facts) is the remaining top-level wiring �
 before a complete, fully general `prop:chorddecomp` skeleton (still needing the flush total and the
 member-specific `(3,7)` numerics on top, as always noted). Not yet done, but every fact either side
 needs is now built and independently verified.
+
+## ChordFinsetWrapper, session of 2026-09-03 continued
+
+**`exists_geometric_chain_of_finset` built** — the top-level wiring identified as the last piece:
+instantiates `exists_sorted_list_of_finset` with `key := fun k => dist P (R k)` on a straddler
+`Finset T`, then feeds the resulting sorted `List` into `exists_geometric_chain`. Discharges
+`exists_geometric_chain`'s `hle`/`hbne`/`hsorted`/`hpairwise`/`hptdist`/`hexcl` hypotheses from the
+sort's own guarantees plus `T`'s general-position hypotheses (`hle`, `hbne`, `hcross`, `hptcross`,
+`hexcl`, all stated directly over `T` rather than a `List`). The `hsorted` case needed
+`wbtw_near_endpoint_to_Q` (already built) plus `WbtwDistCoord.wbtw_iff_dist_le_of_wbtw` to convert
+the sort's `dist`-order into the required `Wbtw`-order — both already-verified facts, no new
+geometric content. The tile-trace conjunct is stated as `∀ i < T.card, ∃ t, ...` rather than a total
+`ℕ → Fin N` function, since a total default value doesn't exist when `N = 0` — this is bookkeeping,
+not a strength loss for `prop:chorddecomp`'s own use.
+
+This closes the general N-straddler combinatorial core end to end: given a straddler `Finset` and
+its own general-position facts, the point sequence `g`, its gap-freedom, its interior-exclusion, and
+its match to each straddler's own trace, all fall out. `lake build Erdos634.All` clean, no `sorry`,
+`#print axioms` confirms only the standard three.
+
+**What is still missing for `prop:chorddecomp` itself** (unchanged from every prior entry): appending
+the final `[S(last), Q]` trailing segment to bridge to the full chord `[P,Q]`; the flush total; the
+member-specific `(3,7)` numerics. None of those are started. This file is infrastructure — it does
+not move any paper statement's label.

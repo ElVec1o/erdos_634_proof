@@ -266,3 +266,4 @@ import Erdos634.WbtwGlobalBoundHelpers
 import Erdos634.ChordFinsetReachLemma
 import Erdos634.ChordFinsetGeometricChain
 import Erdos634.FinsetSortedList
+import Erdos634.ChordFinsetWrapper
