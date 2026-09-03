@@ -260,3 +260,4 @@ import Erdos634.ChordDecompositionGapGeneral
 import Erdos634.ChordDecompositionConsGeneral
 import Erdos634.ChordFinsetPrependInj
 import Erdos634.ChordFinsetChainInj
+import Erdos634.ChordEndpointFrontierGeneral

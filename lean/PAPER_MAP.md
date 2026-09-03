@@ -2245,3 +2245,22 @@ Neither is flippable yet, but the blocker is now precisely scoped: build a `Cong
 of the W-connecting-parallelogram (reusing `PgramTiling22Bridge`'s certificate-bridge pattern for a
 new concrete shape), not a new composition primitive — that part already exists. No label change
 this iteration; this is a real re-scoping, not a proof.
+
+## ChordEndpointFrontierGeneral, session of 2026-09-03 continued
+
+**`ChordEndpointFrontierGeneral.chord_endpoint_not_interior'` built**: attempting the base case of
+the geometric threading (`exists_geometric_chain`, `L = []`) surfaced a missing fact: a straddler's
+own trace endpoint is never interior to *that tile itself* — needed to rule out the current
+position `p` (always `P` or a previous straddler's far endpoint) from being interior to the very
+last straddler placed. `ChordEndpointFrontier.chord_endpoint_not_interior` already proves exactly
+this shape of fact, but only for `D.target` specifically; checking its proof shows it never uses
+anything about `D.target` beyond the carrier and the chord identity, so it generalizes verbatim to
+*any* `Tri` (in particular, `D.tile k`). `lake build Erdos634.All` clean, no `sorry`, `#print axioms`
+confirms only the standard three.
+
+A first attempt at writing `exists_geometric_chain` itself (mirroring `exists_injective_chain`'s
+proven structure, adding the `Wbtw`/gap-freedom payload) produced unsound tactic combinations under
+time pressure in its base case and was discarded rather than committed with a `sorry` — the same
+failure mode as the very first full-assembly attempt earlier in this file, now recurring at smaller
+scale. `chord_endpoint_not_interior'` is the one genuinely reusable fact that attempt surfaced;
+`exists_geometric_chain` itself remains unwritten.
