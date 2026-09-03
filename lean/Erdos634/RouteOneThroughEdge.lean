@@ -51,11 +51,12 @@ the flank conclusion from configuration data only: the two tiles keep to the upp
 nowhere else. It does **not** close `conj:advance`. Three things it does not touch. (i) The
 attachment: every hypothesis here — `habovei`, `habovej`, `hserve`, `hne0`, `hne2pi`, the `α`-tile's
 edge, interiority — must still be exhibited in a hypothetical base-`β` tiling, which is
-`rem:routeoneopen`'s standing obligation (OPEN). (ii) The descent's own figure input needs a
-straight angle at the *advanced* point `E`, a separate instance of the same kind of fact; this file
-says nothing about it. (iii) Case (b), case (c), and all of `e ≥ 2`. `e = 1` is not closed and the
-prime case is not advanced. What changed at this one step is the *kind* of obligation: a
-crossing-question fact about where an edge lies became a covering fact, and then no fact at all.
+`rem:routeoneopen`'s standing obligation (OPEN). (ii) The per-step hypotheses of `flank_propagates` — an
+approach at each advanced point, each new serving tile above the wall, interiority — have to be
+produced *uniformly in `n`*, which is not done here. (iii) Case (b), case (c), and all of `e ≥ 2`. `e = 1` is not closed and the
+prime case is not advanced. What changed is the *kind* of obligation: a crossing-question fact about
+where an edge lies became a covering fact, and then no fact at all — and, via `flank_propagates`,
+the descent's step no longer needs a figure at the advanced point either.
 
 Axiom-clean; no `sorry`.
 -/
@@ -537,11 +538,13 @@ interior to one of its edges.
 This is `conj:advance`'s case (a) discharged *for this step*: the straight angle below the line is
 never invoked. What replaces it is the `α`-tile's own horizontal edge, together with the fact that
 the wall carries tiles beneath it. -/
-theorem serving_ne_pi_of_left_edge {N : ℕ} (D : Dissection N) (i j : Fin N) (V A : Plane)
+theorem serving_ne_pi_of_side_edge {N : ℕ} (D : Dissection N) (i j : Fin N) (V A : Plane)
     (hij : i ≠ j)
     (habove : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - V) 1)
     (hnv : ¬ ∃ m, V = (D.tile i).pts m)
-    (mj : Fin 3) (hjV : (D.tile j).pts (mj + 1) = V) (hjA : (D.tile j).pts (mj + 2) = A)
+    (mj : Fin 3)
+    (hjseg : openSegment ℝ V A
+      ⊆ openSegment ℝ ((D.tile j).pts (mj + 1)) ((D.tile j).pts (mj + 2)))
     (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
     (hthird : ∀ W : Plane, W ∈ openSegment ℝ V A →
       W ∈ interior D.target.carrier ∧ ∃ k : Fin N, k ≠ i ∧ k ≠ j ∧ W ∈ (D.tile k).carrier) :
@@ -613,7 +616,21 @@ theorem serving_ne_pi_of_left_edge {N : ℕ} (D : Dissection N) (i j : Fin N) (V
       ring
   obtain ⟨hWint, kk, hki, hkj, hWk⟩ := hthird W hW1
   exact shared_edge_interior_excludes_third D i j kk W hij (Ne.symm hki) (Ne.symm hkj)
-    hWint k hW2 mj (by rw [hjV, hjA]; exact hW1) hWk
+    hWint k hW2 mj (hjseg hW1) hWk
+
+/-- **The `π` branch is impossible**, in the common case where the second tile's edge runs from `V`
+leftward to `A` exactly. -/
+theorem serving_ne_pi_of_left_edge {N : ℕ} (D : Dissection N) (i j : Fin N) (V A : Plane)
+    (hij : i ≠ j)
+    (habove : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - V) 1)
+    (hnv : ¬ ∃ m, V = (D.tile i).pts m)
+    (mj : Fin 3) (hjV : (D.tile j).pts (mj + 1) = V) (hjA : (D.tile j).pts (mj + 2) = A)
+    (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
+    (hthird : ∀ W : Plane, W ∈ openSegment ℝ V A →
+      W ∈ interior D.target.carrier ∧ ∃ k : Fin N, k ≠ i ∧ k ≠ j ∧ W ∈ (D.tile k).carrier) :
+    (D.tile i).localAngle V ≠ Real.pi :=
+  serving_ne_pi_of_side_edge D i j V A hij habove hnv mj
+    (fun W hW => by rw [hjV, hjA]; exact hW) hAy hAx hthird
 
 /-- **Route 1's flank at `V`, with the straight-angle hypothesis removed.**  This is
 `route_one_flank_composed` with `hcard` (the `π`-count is one) and `hb` (the tile below carries the
@@ -630,7 +647,9 @@ theorem route_one_flank_no_straight {N : ℕ} (D : Dissection N) (i j : Fin N) (
     (habove : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - V) 1)
     (hserve : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i).carrier ∧
       0 < (q - V) 0 ∧ (q - V) 1 ≤ δ * ((q - V) 0))
-    (mj : Fin 3) (hjV : (D.tile j).pts (mj + 1) = V) (hjA : (D.tile j).pts (mj + 2) = A)
+    (mj : Fin 3)
+    (hjseg : openSegment ℝ V A
+      ⊆ openSegment ℝ ((D.tile j).pts (mj + 1)) ((D.tile j).pts (mj + 2)))
     (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
     (hthird : ∀ W : Plane, W ∈ openSegment ℝ V A →
       W ∈ interior D.target.carrier ∧ ∃ k : Fin N, k ≠ i ∧ k ≠ j ∧ W ∈ (D.tile k).carrier) :
@@ -651,7 +670,7 @@ theorem route_one_flank_no_straight {N : ℕ} (D : Dissection N) (i j : Fin N) (
     · exact Or.inl ⟨by rw [hm]; exact hy, by rw [hm]; exact hx⟩
     · exact Or.inr ⟨by rw [hm]; exact hy, by rw [hm]; exact hx⟩
   · exact absurd (serving_has_vertex D i V hne0 hne2pi
-      (serving_ne_pi_of_left_edge D i j V A hij habove hnv mj hjV hjA hAy hAx hthird))
+      (serving_ne_pi_of_side_edge D i j V A hij habove hnv mj hjseg hAy hAx hthird))
       (by rintro ⟨m, hm⟩; exact hnv ⟨m, hm.symm⟩)
 
 /-! ## Discharging `hthird`: something always lies beneath an interior point
@@ -773,7 +792,9 @@ theorem route_one_flank_from_configuration {N : ℕ} (D : Dissection N) (i j : F
     (habovej : ∀ q : Plane, q ∈ (D.tile j).carrier → 0 ≤ (q - V) 1)
     (hserve : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i).carrier ∧
       0 < (q - V) 0 ∧ (q - V) 1 ≤ δ * ((q - V) 0))
-    (mj : Fin 3) (hjV : (D.tile j).pts (mj + 1) = V) (hjA : (D.tile j).pts (mj + 2) = A)
+    (mj : Fin 3)
+    (hjseg : openSegment ℝ V A
+      ⊆ openSegment ℝ ((D.tile j).pts (mj + 1)) ((D.tile j).pts (mj + 2)))
     (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
     (hVint : V ∈ interior D.target.carrier) (hAint : A ∈ interior D.target.carrier) :
     ∃ m : Fin 3, (D.tile i).pts m = V ∧
@@ -783,7 +804,58 @@ theorem route_one_flank_from_configuration {N : ℕ} (D : Dissection N) (i j : F
     intro W hW
     exact (D.target.convex.interior).segment_subset hVint hAint
       (openSegment_subset_segment ℝ V A hW)
-  exact route_one_flank_no_straight D i j V A hij hne0 hne2pi habovei hserve mj hjV hjA hAy hAx
+  exact route_one_flank_no_straight D i j V A hij hne0 hne2pi habovei hserve mj hjseg hAy hAx
     (third_tile_of_interior D i j V A hAy habovei habovej hint)
+
+/-! ## Does the mechanism transfer to `E`?  It does — but not in the obvious direction
+
+The descent's `fig n` input wants a *straight angle at the advanced point* `E`, and the mechanism of
+`two_through_excludes_mem` **excludes** straight angles rather than producing them, so it does not
+transfer as stated.  What transfers is the whole flank argument.
+
+`route_one_flank_from_configuration` needs, at its point, some *other* tile laying a horizontal edge
+from that point **leftward**.  At `V` that role is the `α`-tile's edge `VA`.  At `E` it is played by
+the edge just produced: the serving tile at `V` lays a horizontal edge from `V` rightward to `E`, and
+that same edge, read from `E`, runs horizontally *leftward* to `V`.  So the step supplies its own
+successor's hypothesis, and the flank conclusion at `E` follows with **no figure at `E` and no
+straight angle there**. -/
+
+/-- **The flank conclusion propagates.**  Given the flank conclusion at `V` — the tile `i` has `V` as
+a vertex and a horizontal rightward edge from `V` to `E` — the flank conclusion holds at `E` for the
+tile `i'` serving the tangential approach there, with no new figure and no straight angle at `E`.
+The edge laid at the previous step plays the role the `α`-tile played at `V`. -/
+theorem flank_propagates {N : ℕ} (D : Dissection N) (i i' : Fin N) (V E : Plane) (m : Fin 3)
+    (hii' : i' ≠ i)
+    (hV : (D.tile i).pts m = V)
+    (hE : (D.tile i).pts (m + 1) = E ∨ (D.tile i).pts (m + 2) = E)
+    (hEy : (E - V) 1 = 0) (hEx : 0 < (E - V) 0)
+    (hne0 : (D.tile i').localAngle E ≠ 0)
+    (hne2pi : (D.tile i').localAngle E ≠ 2 * Real.pi)
+    (habovei' : ∀ q : Plane, q ∈ (D.tile i').carrier → 0 ≤ (q - E) 1)
+    (habovei : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - E) 1)
+    (hserve : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i').carrier ∧
+      0 < (q - E) 0 ∧ (q - E) 1 ≤ δ * ((q - E) 0))
+    (hEint : E ∈ interior D.target.carrier) (hVint : V ∈ interior D.target.carrier) :
+    ∃ m' : Fin 3, (D.tile i').pts m' = E ∧
+      ((((D.tile i').pts (m' + 1) - E) 1 = 0 ∧ 0 < ((D.tile i').pts (m' + 1) - E) 0) ∨
+       (((D.tile i').pts (m' + 2) - E) 1 = 0 ∧ 0 < ((D.tile i').pts (m' + 2) - E) 0)) := by
+  have hVy : (V - E) 1 = 0 := by
+    have h := hEy; simp only [PiLp.sub_apply] at h ⊢; linarith
+  have hVx : (V - E) 0 < 0 := by
+    have h := hEx; simp only [PiLp.sub_apply] at h ⊢; linarith
+  have hidx : ∀ x : Fin 3, (x + 2) + 1 = x ∧ (x + 2) + 2 = x + 1
+      ∧ (x + 1) + 1 = x + 2 ∧ (x + 1) + 2 = x := by decide
+  obtain ⟨a1, a2, b1, b2⟩ := hidx m
+  rcases hE with hE1 | hE2
+  · refine route_one_flank_from_configuration D i' i E V hii' hne0 hne2pi habovei' habovei hserve
+      (m + 2) ?_ hVy hVx hEint hVint
+    intro W hW
+    rw [a1, a2, hV, hE1, openSegment_symm]
+    exact hW
+  · refine route_one_flank_from_configuration D i' i E V hii' hne0 hne2pi habovei' habovei hserve
+      (m + 1) ?_ hVy hVx hEint hVint
+    intro W hW
+    rw [b1, b2, hV, hE2]
+    exact hW
 
 end Erdos634.RouteOne

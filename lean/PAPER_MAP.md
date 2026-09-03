@@ -2663,3 +2663,39 @@ else.** Specifically it does *not* touch:
 `Dissection` witness is constructed for the wall configuration, so the vacuity position is exactly
 `VacCheck`'s for `EscapeData.ofWall`: the through-edge block is witnessed
 (`through_edge_witness`, `midpoint_localAngle_pi`), the wall configuration is not.
+
+### RouteOneThroughEdge, fifth increment: the mechanism transfers to `E` — as propagation, not production
+
+**The probe, answered.** The obvious transfer fails. `two_through_excludes_mem` *excludes* straight
+angles; the descent's `fig n` input wants to *produce* one at the advanced point `E`. Opposite
+directions, no transfer.
+
+**What does transfer is the flank argument itself.** `route_one_flank_from_configuration` needs, at
+its point, some other tile laying a horizontal edge from that point **leftward**. At `V` that is the
+`α`-tile's edge `VA`. At `E` it is *the edge just produced*: the serving tile at `V` lays a
+horizontal edge from `V` rightward to `E`, and that same edge read from `E` runs horizontally
+leftward to `V`. So each step supplies its successor's hypothesis.
+
+`flank_propagates` is that statement, machine-checked: from the flank conclusion at `V` (tile `i`
+has `V` as a vertex, horizontal edge to `E`), the flank conclusion holds at `E` for the tile serving
+the approach there — **with no figure at `E` and no straight angle at `E`.** The generalisation
+needed was only orientational: `serving_ne_pi_of_side_edge` / the composites now take a
+segment-*subset* hypothesis instead of two vertex equations, so the previous step's edge can be read
+in either direction (`openSegment_symm`).
+
+**Where this lands.** `route_one_closes'` — the descent scheme *without* a `fig` argument — already
+exists and is VERIFIED. The reason it could not be used was that `htri`, the trichotomy step at the
+advanced point, needed the flank there, and the only route to that flank went through the figure,
+hence through a straight angle at `E`, hence through case (a) again. `flank_propagates` supplies
+that flank directly. **The descent's step no longer needs a figure at the advanced point.**
+
+**What this does not do.** (i) The attachment is untouched and has in fact acquired a *uniformity*
+obligation: `flank_propagates`' per-step hypotheses — an approach at each advanced point, each new
+serving tile weakly above the wall, interiority of each point — must be produced for every `n`, and
+that is not done. (ii) Composing `flank_propagates` with `overshoot_dichotomy` and
+`produced_edge_blocks` into an actual `htri` for a real configuration is likewise not done.
+(iii) Case (b), case (c), and all of `e ≥ 2` are untouched.
+
+**`conj:advance` remains CONJECTURE. `e = 1` is not closed. The prime case is not advanced.**
+
+| C `conj:advance` (descent step) | the flank at the advanced point propagates from the previous step; no figure, no straight angle at `E` | `RouteOne.flank_propagates`, `.route_one_flank_from_configuration`, `.serving_ne_pi_of_side_edge` | VERIFIED (the propagation; the uniform-in-`n` attachment is not done and `conj:advance` remains CONJECTURE) |
