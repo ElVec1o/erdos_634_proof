@@ -1149,4 +1149,42 @@ theorem congruentDissection_climber_mandatory {N : ℕ} (D : CongruentDissection
     hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr htarget
   omega
 
+/-! ## The base-`β` target's shape
+
+`lem:census` and the route-1 chain both take `htarget` — that each of the target's corners is `3α` or
+`β` — as a hypothesis.  It is not an independent assumption: it is the *isosceles* shape of the
+base-`β` target, namely that the two base corners carry `β`, together with the angle sum. -/
+
+/-- **The indexed corner angles sum to `π`.**  `cornerAngle_sum` in the `k`, `k+1`, `k+2` indexing,
+for any starting index. -/
+theorem cornerAngle_sum_indexed (T : Tri) (a : Fin 3) :
+    cornerAngle (T.pts (a + 1)) (T.pts a) (T.pts (a + 2))
+      + cornerAngle (T.pts (a + 1 + 1)) (T.pts (a + 1)) (T.pts (a + 1 + 2))
+      + cornerAngle (T.pts (a + 2 + 1)) (T.pts (a + 2)) (T.pts (a + 2 + 2)) = Real.pi := by
+  have hsum := Erdos634.Geometry.cornerAngle_sum T
+  have hall : ∀ x : Fin 3, x = 0 ∨ x = 1 ∨ x = 2 := by decide
+  rcases hall a with rfl | rfl | rfl <;>
+    simp only [show (0 : Fin 3) + 1 = 1 from rfl, show (0 : Fin 3) + 2 = 2 from rfl,
+      show (1 : Fin 3) + 1 = 2 from rfl, show (1 : Fin 3) + 2 = 0 from rfl,
+      show (2 : Fin 3) + 1 = 0 from rfl, show (2 : Fin 3) + 2 = 1 from rfl] <;>
+    linarith [hsum]
+
+/-- **`htarget` from the isosceles shape.**  If the two corners other than `a` carry `β`, then every
+corner carries `3α` or `β` — the apex `a` carrying `π - 2β = 3α`.  This replaces the `htarget`
+hypothesis of `congruentDissection_vertex_census` and of the route-1 chain by the base-`β` target's
+defining shape. -/
+theorem htarget_of_isosceles (T : Tri) {α β : ℝ} (hrel : 3 * α + 2 * β = Real.pi) (a : Fin 3)
+    (h₁ : cornerAngle (T.pts (a + 1 + 1)) (T.pts (a + 1)) (T.pts (a + 1 + 2)) = β)
+    (h₂ : cornerAngle (T.pts (a + 2 + 1)) (T.pts (a + 2)) (T.pts (a + 2 + 2)) = β) :
+    ∀ k : Fin 3, cornerAngle (T.pts (k + 1)) (T.pts k) (T.pts (k + 2)) = 3 * α ∨
+      cornerAngle (T.pts (k + 1)) (T.pts k) (T.pts (k + 2)) = β := by
+  have hsum := cornerAngle_sum_indexed T a
+  rw [h₁, h₂] at hsum
+  have hidx : ∀ x : Fin 3, ∀ k : Fin 3, k = x ∨ k = x + 1 ∨ k = x + 2 := by decide
+  intro k
+  rcases hidx a k with rfl | rfl | rfl
+  · exact Or.inl (by linarith)
+  · exact Or.inr h₁
+  · exact Or.inr h₂
+
 end Erdos634.Geometry

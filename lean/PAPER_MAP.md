@@ -3667,3 +3667,29 @@ derived, for want of a target object. That is the attachment gap, the same one b
 attachment blocker.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `htarget` is the target's isosceles shape, not an independent assumption
+
+`cornerAngle_sum_indexed`, `htarget_of_isosceles` (`CornerAnglePerm.lean`, thirty-five declarations,
+axiom-clean, `Erdos634.All` clean).
+
+The audit's remaining gap was `htarget` — that each of the target's corners is `3α` or `β` — assumed
+rather than derived. It is now derived from the base-`β` target's *defining shape*: if the two
+corners other than `a` carry `β`, the angle sum forces the third to be `π − 2β = 3α`, which with
+`hrel` is exactly `htarget`. `cornerAngle_sum_indexed` is `cornerAngle_sum` restated in the
+`k, k+1, k+2` indexing so the argument can start at any apex index.
+
+**What this does and does not settle.** It replaces a disjunctive-looking hypothesis by the single
+statement "the target is isosceles with base angles `β`" — which is what "the base-`β` target"
+*means*. That is a genuine improvement in faithfulness: the remaining assumption is now the paper's
+own description of the target rather than a consequence of it. It does **not** construct the target:
+exhibiting a `Tri` whose corner angles are provably `β, β, 3α` needs the member's numeric data
+(`cos β = (3f² − 1)/(2f³)` and the rest) and is member-specific work, not done here.
+
+So `lem:census`'s status is: the identity, the `v₁ ≥ 1` clause, and the rank clause are all proved
+for a real `CongruentDissection`; what remains is that the target is the base-`β` triangle, now
+stated as its isosceles shape. Whether that counts as "the paper statement, as written" is a
+judgement I am not making unilaterally after building the pieces — it is recorded here for the next
+audit pass rather than acted on. **Label stays PROVED.**
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
