@@ -3125,3 +3125,31 @@ Then `lem:census` flips, and `lem:parity` behind it.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved —
 pieces 1–3a of 4.
+
+### `lem:census` double count, piece 3 complete: the corner balance is a theorem
+
+`CornerAnglePerm.lean` now has seven declarations, axiom-clean, `Erdos634.All` clean.
+
+* `cornerPts` / `mem_cornerPts` — the finite set of points that are a vertex of some tile.
+* `tile_corner_card` — for an angle that is not `0`, `π` or `2π`, one tile's corners of that angle
+  counted **by index** equal the same corners counted **by point**: `localAngle_cases` puts the
+  angle at the tile's own vertices, `Tri.localAngle_vertex` identifies the value there, and
+  `indep.injective` makes the vertices distinct.
+* `corner_double_count` — the exchange itself, `Finset.card_filter` + `Finset.sum_comm`.
+* **`congruentDissection_corner_balance`** — for each model corner angle, the multiplicities of that
+  angle summed over all vertex points equal `N`.
+
+**That last one is the corner-incidence identity `lem:census` balances "across the `N` tiles",
+obtained as a theorem rather than assumed.** It was the named blocker on `lem:census`'s row (*"that
+global corner-incidence double count is still not done"*) — it is now done.
+
+**What is left is piece 4, and it is bookkeeping of a specific kind:** `OrderForcing.vertex_census`
+takes the balance in terms of the *figure counts* `n₁, n₂, v₁…v₄` — the numbers of points carrying
+each named vertex figure — not as a sum of multiplicities over points. Bridging the two means
+partitioning `cornerPts` by figure type and evaluating the multiplicity sum on each class. That
+needs the figure classification at every vertex point, which for a real dissection is
+`TileAt.congruentDissection_boundary_figure_cases` and the interior counterpart — available, but
+not yet threaded. Only when that is done does `lem:census` flip; **it has not flipped yet, and the
+label stays PROVED.**
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

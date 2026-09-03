@@ -1,4 +1,5 @@
 import Erdos634.Congruence
+import Erdos634.PinPlumbing
 import Mathlib.Analysis.Normed.Affine.MazurUlam
 
 /-!
@@ -93,5 +94,79 @@ theorem congruentDissection_corner_total {N : ℕ} (D : CongruentDissection N)
   classical
   rw [Finset.sum_congr rfl (fun i _ => ((D.tiles_congruent i).symm).corner_count_eq_one hdist k)]
   simp
+
+open Classical in
+/-- The finite set of all points that are a vertex of some tile. -/
+noncomputable def cornerPts {N : ℕ} (D : Dissection N) : Finset Plane :=
+  Finset.univ.biUnion (fun i : Fin N => Finset.univ.image (fun j : Fin 3 => (D.tile i).pts j))
+
+theorem mem_cornerPts {N : ℕ} (D : Dissection N) (i : Fin N) (j : Fin 3) :
+    (D.tile i).pts j ∈ cornerPts D := by
+  classical
+  refine Finset.mem_biUnion.mpr ⟨i, Finset.mem_univ i, ?_⟩
+  exact Finset.mem_image.mpr ⟨j, Finset.mem_univ j, rfl⟩
+
+/-- **One tile's corners of a given angle, counted at points instead of indices.**  For an angle
+that is not `0`, `π` or `2π`, a tile has local angle `θ` exactly at those of its own vertices whose
+corner angle is `θ`, and its vertices are distinct — so the two counts agree. -/
+theorem tile_corner_card {N : ℕ} (D : Dissection N) (i : Fin N) (θ : ℝ)
+    (h0 : θ ≠ 0) (hpi : θ ≠ Real.pi) (h2pi : θ ≠ 2 * Real.pi) :
+    ({j | cornerAngle ((D.tile i).pts (j + 1)) ((D.tile i).pts j) ((D.tile i).pts (j + 2)) = θ}
+        : Finset (Fin 3)).card
+      = ({v ∈ cornerPts D | (D.tile i).localAngle v = θ} : Finset Plane).card := by
+  classical
+  have himg : ({v ∈ cornerPts D | (D.tile i).localAngle v = θ} : Finset Plane)
+      = ({j | cornerAngle ((D.tile i).pts (j + 1)) ((D.tile i).pts j) ((D.tile i).pts (j + 2)) = θ}
+          : Finset (Fin 3)).image (D.tile i).pts := by
+    ext v
+    simp only [Finset.mem_filter, Finset.mem_image, Finset.mem_univ, true_and]
+    constructor
+    · rintro ⟨-, hang⟩
+      rcases Erdos634.PinPlumbing.localAngle_cases (D.tile i) v with
+        ⟨j, hj, hval⟩ | h | h | h
+      · exact ⟨j, by rw [← hval]; exact hang, hj.symm⟩
+      · exact absurd (h ▸ hang) (Ne.symm h2pi)
+      · exact absurd (h ▸ hang) (Ne.symm hpi)
+      · exact absurd (h ▸ hang) (Ne.symm h0)
+    · rintro ⟨j, hj, rfl⟩
+      exact ⟨mem_cornerPts D i j, by rw [Erdos634.Geometry.Tri.localAngle_vertex]; exact hj⟩
+  rw [himg, Finset.card_image_of_injective _ (D.tile i).indep.injective]
+
+/-- **The corner-incidence double count.**  The corners of angle `θ` counted tile-by-tile equal the
+same corners counted point-by-point.  This is the exchange `lem:census`'s corner balance rests on;
+with `congruentDissection_corner_total` the left side is `N`. -/
+theorem corner_double_count {N : ℕ} (D : Dissection N) (θ : ℝ)
+    (h0 : θ ≠ 0) (hpi : θ ≠ Real.pi) (h2pi : θ ≠ 2 * Real.pi) :
+    ∑ i : Fin N,
+        ({j | cornerAngle ((D.tile i).pts (j + 1)) ((D.tile i).pts j) ((D.tile i).pts (j + 2)) = θ}
+          : Finset (Fin 3)).card
+      = ∑ v ∈ cornerPts D, ({i | (D.tile i).localAngle v = θ} : Finset (Fin N)).card := by
+  classical
+  rw [Finset.sum_congr rfl (fun i _ => tile_corner_card D i θ h0 hpi h2pi)]
+  simp only [Finset.card_filter]
+  exact Finset.sum_comm
+
+/-- **The corner balance, for a real congruent dissection.**  For each of the model's three corner
+angles, the multiplicities of that angle summed over all vertex points of the dissection equal `N`.
+
+This is the corner-incidence identity `lem:census` balances "across the `N` tiles", obtained here as
+a theorem rather than assumed: the tile side is `congruentDissection_corner_total` (each tile has
+exactly one corner of each angle), the exchange is `corner_double_count`. -/
+theorem congruentDissection_corner_balance {N : ℕ} (D : CongruentDissection N)
+    (hdist : ∀ k l : Fin 3,
+      cornerAngle (D.model.pts (k + 1)) (D.model.pts k) (D.model.pts (k + 2))
+        = cornerAngle (D.model.pts (l + 1)) (D.model.pts l) (D.model.pts (l + 2)) → k = l)
+    (k : Fin 3)
+    (h0 : cornerAngle (D.model.pts (k + 1)) (D.model.pts k) (D.model.pts (k + 2)) ≠ 0)
+    (hpi : cornerAngle (D.model.pts (k + 1)) (D.model.pts k) (D.model.pts (k + 2)) ≠ Real.pi)
+    (h2pi : cornerAngle (D.model.pts (k + 1)) (D.model.pts k) (D.model.pts (k + 2))
+      ≠ 2 * Real.pi) :
+    ∑ v ∈ cornerPts D.toDissection,
+        ({i | (D.tile i).localAngle v
+          = cornerAngle (D.model.pts (k + 1)) (D.model.pts k) (D.model.pts (k + 2))}
+          : Finset (Fin N)).card = N := by
+  classical
+  rw [← corner_double_count D.toDissection _ h0 hpi h2pi]
+  exact congruentDissection_corner_total D hdist k
 
 end Erdos634.Geometry
