@@ -1552,6 +1552,23 @@ construction, not yet done — no new geometry, only combinatorics), (2) check t
 satisfies `wbtw_chain_bounded`'s hypotheses, (3) the `Finset.sum` induction combining
 `chord_decomposition_of_gap` with `straddle_total_eq_sum`.
 
+**The oriented-trace lemma, same session, later still (2026-09-03)**:
+`WbtwOrientedTrace.oriented_trace_of_wbtw` — `straddle_trace_isSegment` hands back a trace as
+`segment ℝ r s` with `r, s` in no particular order relative to the chord's own endpoints `p, q`;
+this reorders it into the canonical "near, far" form the chain assembly needs (`r'` weakly between
+`p` and `s'`), via `wbtw_trichotomy_of_wbtw` plus `segment_symm` to swap when the given order is
+backwards. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard
+three.
+
+With this, every straddling tile's trace can be canonically oriented, `WbtwChain`'s three order
+facts let those oriented traces be sorted, and `wbtw_chain_bounded` consumes the sorted sequence.
+What remains for the general induction is now purely the combinatorial assembly: build the sorted
+list from the `Finset` straddler set (via `Finset.sort` or an insertion-sort-style induction using
+`wbtw_trichotomy_of_wbtw`/`wbtw_antisymm_of_wbtw`/`wbtw_trans_of_wbtw` as the order), verify it
+satisfies `wbtw_chain_bounded`'s hypotheses, and run the `Finset.sum` induction combining
+`chord_decomposition_of_gap` with `straddle_total_eq_sum`. No further individual geometric facts
+are missing — every piece this session built is aimed at exactly this remaining assembly.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
