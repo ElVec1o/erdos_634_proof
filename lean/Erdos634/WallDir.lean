@@ -17,9 +17,16 @@ line parametrization, worked directly through vector algebra), and `dirFun`/`his
 calibrate that coordinate by the side's own length (`Mathlib`'s `dist_lineMap_lineMap`) to get
 real Euclidean distance — for *any* `Tri` and *any* side, no coordinates, no fixed target.
 
+`hker_wallFun` closes the last algebraic hypothesis the same way: `wallFun`'s and `dirFun`'s
+linear parts have trivial joint kernel, proved directly from the barycentric basis (a killed
+vector forces `v +ᵥ T.pts k` to share every barycentric coordinate with `T.pts k`, hence to equal
+it by `AffineBasis.ext_elem`).
+
 This directly unblocks `side_walk_of_dissection` (hence `SidePRange.side_p_range`,
 `lem:ccornerside`'s flank half, and `thm:walks`/`thm:walkstruct`/`cor:wallsf2e`'s own
 "bridge (c)" gaps) for *any* real `CongruentDissection`, not only a specific certified member.
+Still open: `hface` (general Tri-level "attains the wall's max ⟹ on the segment") and `hthird`
+(genuinely dissection-specific).
 
 Axiom-clean; no `sorry`.
 -/
@@ -107,3 +114,48 @@ theorem hiso_wallFun (T : Tri) (k : Fin 3) {p q : Plane}
   rw [show sideOpp T (k+2) * T.basis.coord (k+1) p - sideOpp T (k+2) * T.basis.coord (k+1) q
     = sideOpp T (k+2) * (T.basis.coord (k+1) p - T.basis.coord (k+1) q) from by ring,
     abs_mul, abs_of_pos hSpos, mul_comm]
+
+/-- **`side_walk_of_dissection`'s `hker` hypothesis, general for any `Tri` and side.** `wallFun`'s
+and `dirFun`'s linear parts jointly have trivial kernel — proved directly from the barycentric
+basis structure: a vector killed by both forces the point `v +ᵥ T.pts k` to share all three
+barycentric coordinates with `T.pts k` itself, hence (by `AffineBasis.ext_elem`) to equal it. -/
+theorem hker_wallFun (T : Tri) (k : Fin 3) :
+    ∀ v : Plane, (wallFun T k).linear v = 0 → (dirFun T k).linear v = 0 → v = 0 := by
+  intro v hv1 hv2
+  have hc2 : (T.basis.coord (k+2)).linear v = 0 := by
+    have heq : (wallFun T k).linear v = -(T.basis.coord (k+2)).linear v := rfl
+    rw [heq] at hv1
+    linarith
+  have hc1 : (T.basis.coord (k+1)).linear v = 0 := by
+    have heq : (dirFun T k).linear v = sideOpp T (k+2) * (T.basis.coord (k+1)).linear v := rfl
+    rw [heq] at hv2
+    have hSne : sideOpp T (k+2) ≠ 0 := by
+      unfold sideOpp
+      exact dist_ne_zero.mpr
+        (Erdos634.TilePlacement.pts_ne T (show (k+2+1:Fin 3) ≠ k+2+2 from by fin_cases k <;> decide))
+    exact (mul_eq_zero.mp hv2).resolve_left hSne
+  set p := v +ᵥ T.pts k with hpdef
+  have hbT : (T.basis : Fin 3 → Plane) k = T.pts k := rfl
+  have hk1 : T.basis.coord (k+1) (T.pts k) = 0 := by
+    rw [← hbT, AffineBasis.coord_apply_ne]; fin_cases k <;> decide
+  have hk2 : T.basis.coord (k+2) (T.pts k) = 0 := by
+    rw [← hbT, AffineBasis.coord_apply_ne]; fin_cases k <;> decide
+  have hkk : T.basis.coord k (T.pts k) = 1 := by rw [← hbT, AffineBasis.coord_apply_eq]
+  have hp1 : T.basis.coord (k+1) p = 0 := by
+    rw [hpdef, AffineMap.map_vadd, vadd_eq_add, hc1, hk1]; ring
+  have hp2 : T.basis.coord (k+2) p = 0 := by
+    rw [hpdef, AffineMap.map_vadd, vadd_eq_add, hc2, hk2]; ring
+  have hp0 : T.basis.coord k p = 1 := by
+    have hsum := T.basis.sum_coord_apply_eq_one (k := ℝ) p
+    rw [Fin.sum_univ_three] at hsum
+    fin_cases k <;> simp_all <;> linarith
+  have hpeq : p = T.pts k := by
+    apply T.basis.ext_elem
+    intro i
+    fin_cases i
+    · fin_cases k <;> [exact hp0.trans hkk.symm; exact hp2.trans hk2.symm; exact hp1.trans hk1.symm]
+    · fin_cases k <;> [exact hp1.trans hk1.symm; exact hp0.trans hkk.symm; exact hp2.trans hk2.symm]
+    · fin_cases k <;> [exact hp2.trans hk2.symm; exact hp1.trans hk1.symm; exact hp0.trans hkk.symm]
+  have hveq : v +ᵥ T.pts k = T.pts k := hpdef ▸ hpeq
+  rw [vadd_eq_add] at hveq
+  linear_combination (norm := module) hveq
