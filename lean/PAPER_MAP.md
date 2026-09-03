@@ -2628,3 +2628,38 @@ step from a crossing-question fact (where the edge below `V` lies) into a coveri
 *something* lies below the wall), which is a change of kind, not merely of wording.
 
 | C `conj:advance` (case (a), flank step) | Route 1's flank at `V` needs no straight angle below the line | `RouteOne.route_one_flank_no_straight`, `.serving_ne_pi_of_left_edge`, `.shared_edge_interior_excludes_third`, `.through_edge_data` | VERIFIED (the flank step, modulo the `hthird` covering hypothesis; `conj:advance` itself remains CONJECTURE) |
+
+### RouteOneThroughEdge, fourth increment: `hthird` discharged, case (a) gone from the flank step
+
+Six more declarations (`downVec` + three coordinate facts, `exists_tile_below`,
+`third_tile_of_interior`, `route_one_flank_from_configuration`). Twenty-three in the file, all
+axiom-clean, `Erdos634.All` clean, no `sorry`.
+
+**`hthird` is now a theorem.** `exists_tile_below`: a point interior to the target lies in a tile
+that also contains points strictly below it — proved from `D.covers` and the same
+`Finite.exists_infinite_fiber` pigeonhole the approach argument uses, with `mem_of_approach` closing
+the limit. `third_tile_of_interior` then supplies the third tile the exclusion needs, since a tile
+holding a point below the line is neither of the two tiles that keep to the upper side.
+
+**The composite.** `route_one_flank_from_configuration` gives Route 1's flank conclusion at `V` —
+the serving tile has `V` as a vertex with a horizontal rightward edge, the input
+`overshoot_dichotomy` consumes — from: the three standard serving-tile facts already discharged
+elsewhere (`hne0`, `hne2pi`, `hserve`); that tiles `i` and `j` keep to the upper side of the wall;
+that the `α`-tile `j` lays its horizontal edge from `V` leftward to `A`; and that `V`, `A` are
+interior to the target (interiority of the stretch follows by convexity of the interior). **No
+straight angle below the line, no `π`-count, no covering assumption.**
+
+**What this is not.** It removes `conj:advance`'s case (a) **at the flank step at `V`, and nowhere
+else.** Specifically it does *not* touch:
+* **the attachment** — every hypothesis above must still be exhibited in a hypothetical base-`β`
+  tiling; that is `rem:routeoneopen` (OPEN), untouched;
+* **the straight angle at `E`** — the descent's `fig n` input needs one at the *advanced* point (see
+  the `fig n` row above, "the outstanding fact is the straight angle at `E`"). That is a separate
+  instance of the same kind of fact and nothing here bears on it. Whether the same
+  two-horizontal-edges mechanism applies there is an open question, not a claim;
+* case (b), case (c), the rest of the descent, and all of `e ≥ 2`.
+
+**`conj:advance` remains CONJECTURE. `e = 1` is not closed. The prime case is not advanced.** No
+`Dissection` witness is constructed for the wall configuration, so the vacuity position is exactly
+`VacCheck`'s for `EscapeData.ofWall`: the through-edge block is witnessed
+(`through_edge_witness`, `midpoint_localAngle_pi`), the wall configuration is not.

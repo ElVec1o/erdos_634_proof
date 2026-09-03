@@ -41,14 +41,21 @@ stands in their place is (i) that the `α`-tile lays a horizontal edge from `V` 
 (`Frontier.route1_spacings`, `.side_tile_third_vertex`) — and (ii) `hthird`, that the open stretch
 is interior to the target and carries a tile other than the two.
 
-**Scope, stated exactly.** `hthird` is a *hypothesis here, not a theorem*: deriving it needs the
-routine covering argument (points just below the wall are covered, the covering tile is neither of
-the two upper tiles, and it contains the limit point) — standard dissection bookkeeping, but not
-done in this file. Nor is the configuration attached to a hypothetical tiling; that is
-`rem:routeoneopen`'s standing obligation and it is untouched. `conj:advance` remains a conjecture,
-`e = 1` is not closed, and the prime case is not advanced. What changed is the *kind* of the
-remaining obligation at this step: a crossing-question fact about where an edge lies has been
-replaced by a covering fact about what lies beneath the wall.
+**4. The covering hypothesis is discharged too.** `exists_tile_below` derives from `D.covers`
+alone that an interior point lies in a tile containing points strictly beneath it, so
+`third_tile_of_interior` supplies `hthird` outright. `route_one_flank_from_configuration` is then
+the flank conclusion from configuration data only: the two tiles keep to the upper side, the
+`α`-tile lays its horizontal edge `V`-to-`A`, and `V`, `A` are interior to the target.
+
+**Scope, stated exactly.** This removes `conj:advance`'s case (a) *at the flank step at `V`*, and
+nowhere else. It does **not** close `conj:advance`. Three things it does not touch. (i) The
+attachment: every hypothesis here — `habovei`, `habovej`, `hserve`, `hne0`, `hne2pi`, the `α`-tile's
+edge, interiority — must still be exhibited in a hypothetical base-`β` tiling, which is
+`rem:routeoneopen`'s standing obligation (OPEN). (ii) The descent's own figure input needs a
+straight angle at the *advanced* point `E`, a separate instance of the same kind of fact; this file
+says nothing about it. (iii) Case (b), case (c), and all of `e ≥ 2`. `e = 1` is not closed and the
+prime case is not advanced. What changed at this one step is the *kind* of obligation: a
+crossing-question fact about where an edge lies became a covering fact, and then no fact at all.
 
 Axiom-clean; no `sorry`.
 -/
@@ -646,5 +653,137 @@ theorem route_one_flank_no_straight {N : ℕ} (D : Dissection N) (i j : Fin N) (
   · exact absurd (serving_has_vertex D i V hne0 hne2pi
       (serving_ne_pi_of_left_edge D i j V A hij habove hnv mj hjV hjA hAy hAx hthird))
       (by rintro ⟨m, hm⟩; exact hnv ⟨m, hm.symm⟩)
+
+/-! ## Discharging `hthird`: something always lies beneath an interior point
+
+`serving_ne_pi_of_left_edge` assumes `hthird`, that the wall stretch carries a tile other than the
+two upper ones.  That is not a crossing-question fact — it only says the region below the wall is
+tiled — and it follows from `D.covers` by the same pigeonhole the approach argument already uses. -/
+
+/-- The downward unit vector. -/
+noncomputable def downVec : Plane := Erdos634.CertCoord.mkPt 0 (-1)
+
+theorem downVec_zero : downVec 0 = 0 := by
+  simp [downVec, Erdos634.CertCoord.mkPt_zero]
+
+theorem downVec_one : downVec 1 = -1 := by
+  simp [downVec, Erdos634.CertCoord.mkPt_one]
+
+theorem norm_downVec : ‖downVec‖ = 1 := by
+  rw [EuclideanSpace.norm_eq, Fin.sum_univ_two, downVec_zero, downVec_one]
+  norm_num
+
+/-- **Something lies beneath an interior point.**  A point interior to the target lies in a tile
+that also contains points strictly below it.  Hence that tile differs from every tile whose carrier
+lies weakly above the horizontal line through the point. -/
+theorem exists_tile_below {N : ℕ} (D : Dissection N) (W : Plane)
+    (hW : W ∈ interior D.target.carrier) :
+    ∃ k : Fin N, W ∈ (D.tile k).carrier ∧
+      ∃ q : Plane, q ∈ (D.tile k).carrier ∧ (q - W) 1 < 0 := by
+  classical
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp isOpen_interior W hW
+  set pick : ℕ → Plane := fun n => W + (r / (n + 2)) • downVec with hpickdef
+  have hrn : ∀ n : ℕ, 0 < r / (n + 2 : ℝ) := by
+    intro n; have : (0:ℝ) < (n : ℝ) + 2 := by positivity
+    exact div_pos hr this
+  have hsub : ∀ n, pick n - W = (r / (n + 2 : ℝ)) • downVec := by
+    intro n; rw [hpickdef]; simp
+  have hdist : ∀ n, dist (pick n) W = r / (n + 2 : ℝ) := by
+    intro n
+    rw [dist_eq_norm, hsub n, norm_smul, norm_downVec, mul_one,
+      Real.norm_eq_abs, abs_of_pos (hrn n)]
+  have hlt : ∀ n, dist (pick n) W < r := by
+    intro n
+    rw [hdist n]
+    have h2 : (0:ℝ) < (n : ℝ) + 2 := by positivity
+    rw [div_lt_iff₀ h2]
+    nlinarith [Nat.cast_nonneg (α := ℝ) n]
+  have hmem : ∀ n, pick n ∈ D.target.carrier := by
+    intro n
+    exact interior_subset (hball (Metric.mem_ball.mpr (hlt n)))
+  choose g hg using fun n => Set.mem_iUnion.mp (show pick n ∈ ⋃ i, (D.tile i).carrier by
+    rw [D.covers]; exact hmem n)
+  obtain ⟨k, hk⟩ := Finite.exists_infinite_fiber g
+  have hinf : (g ⁻¹' {k}).Infinite := Set.infinite_coe_iff.mp hk
+  have happ : ∀ ρ : ℝ, 0 < ρ → ∃ q : Plane, q ∈ (D.tile k).carrier ∧ dist q W < ρ := by
+    intro ρ hρ
+    obtain ⟨M, hM⟩ := exists_nat_gt (r / ρ)
+    obtain ⟨n, hn, hnM⟩ := hinf.exists_gt M
+    refine ⟨pick n, ?_, ?_⟩
+    · have hgn : g n = k := hn
+      rw [← hgn]; exact hg n
+    · rw [hdist n]
+      have h2 : (0:ℝ) < (n : ℝ) + 2 := by positivity
+      rw [div_lt_iff₀ h2]
+      have hMn : (M : ℝ) < n := by exact_mod_cast hnM
+      have hrρ : r / ρ < (n : ℝ) := lt_trans hM hMn
+      rw [div_lt_iff₀ hρ] at hrρ
+      nlinarith
+  refine ⟨k, mem_of_approach _ happ, ?_⟩
+  obtain ⟨n, hn⟩ := hinf.nonempty
+  refine ⟨pick n, ?_, ?_⟩
+  · have hgn : g n = k := hn
+    rw [← hgn]; exact hg n
+  · rw [hsub n]
+    simp only [PiLp.smul_apply, smul_eq_mul, downVec_one]
+    have := hrn n; nlinarith
+
+/-- **`hthird`, discharged.**  For a stretch whose points are interior to the target, the third
+tile the exclusion needs always exists, provided the two named tiles keep their carriers weakly
+above the line.  No crossing-question content: only `D.covers`. -/
+theorem third_tile_of_interior {N : ℕ} (D : Dissection N) (i j : Fin N) (V A : Plane)
+    (hAy : (A - V) 1 = 0)
+    (habovei : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - V) 1)
+    (habovej : ∀ q : Plane, q ∈ (D.tile j).carrier → 0 ≤ (q - V) 1)
+    (hint : ∀ W : Plane, W ∈ openSegment ℝ V A → W ∈ interior D.target.carrier) :
+    ∀ W : Plane, W ∈ openSegment ℝ V A →
+      W ∈ interior D.target.carrier ∧ ∃ k : Fin N, k ≠ i ∧ k ≠ j ∧ W ∈ (D.tile k).carrier := by
+  intro W hW
+  refine ⟨hint W hW, ?_⟩
+  obtain ⟨k, hWk, q, hqk, hq⟩ := exists_tile_below D W (hint W hW)
+  -- `W` sits at `V`'s height, so a point below `W` is below `V`
+  have hWy : (W - V) 1 = 0 := by
+    obtain ⟨c₁, c₂, hc₁, hc₂, hc, hWeq⟩ := hW
+    have : W - V = c₂ • (A - V) := by
+      rw [← hWeq, smul_sub, show c₁ = 1 - c₂ by linarith, sub_smul, one_smul]
+      abel
+    rw [this]; simp only [PiLp.smul_apply, smul_eq_mul, hAy]; ring
+  have hqV : (q - V) 1 < 0 := by
+    have hsplit : (q - V) 1 = (q - W) 1 + (W - V) 1 := by
+      simp only [PiLp.sub_apply]; ring
+    rw [hsplit, hWy]; linarith
+  refine ⟨k, ?_, ?_, hWk⟩
+  · intro hki; rw [hki] at hqk; linarith [habovei q hqk]
+  · intro hkj; rw [hkj] at hqk; linarith [habovej q hqk]
+
+/-- **Route 1's flank at `V`, from the configuration alone.**  Everything `conj:advance` lists as
+unproved for this step is gone: no straight angle below the line, no `π`-count, and no covering
+hypothesis either.  What remains are the standard serving-tile facts (`hne0`, `hne2pi`, `hserve`,
+already discharged by `serving_ne_zero` / `serving_ne_two_pi` / `pigeonhole_wall`) together with
+plain configuration data — the two tiles keep to the upper side of the wall, the `α`-tile lays its
+horizontal edge from `V` leftward to `A`, and `V`, `A` are interior to the target.
+
+The conclusion is `route_one_flank_composed`'s: the serving tile has `V` as a vertex and a
+horizontal rightward edge there, which is what `overshoot_dichotomy` consumes. -/
+theorem route_one_flank_from_configuration {N : ℕ} (D : Dissection N) (i j : Fin N) (V A : Plane)
+    (hij : i ≠ j)
+    (hne0 : (D.tile i).localAngle V ≠ 0)
+    (hne2pi : (D.tile i).localAngle V ≠ 2 * Real.pi)
+    (habovei : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - V) 1)
+    (habovej : ∀ q : Plane, q ∈ (D.tile j).carrier → 0 ≤ (q - V) 1)
+    (hserve : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i).carrier ∧
+      0 < (q - V) 0 ∧ (q - V) 1 ≤ δ * ((q - V) 0))
+    (mj : Fin 3) (hjV : (D.tile j).pts (mj + 1) = V) (hjA : (D.tile j).pts (mj + 2) = A)
+    (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
+    (hVint : V ∈ interior D.target.carrier) (hAint : A ∈ interior D.target.carrier) :
+    ∃ m : Fin 3, (D.tile i).pts m = V ∧
+      ((((D.tile i).pts (m + 1) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (m + 1) - V) 0) ∨
+       (((D.tile i).pts (m + 2) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (m + 2) - V) 0)) := by
+  have hint : ∀ W : Plane, W ∈ openSegment ℝ V A → W ∈ interior D.target.carrier := by
+    intro W hW
+    exact (D.target.convex.interior).segment_subset hVint hAint
+      (openSegment_subset_segment ℝ V A hW)
+  exact route_one_flank_no_straight D i j V A hij hne0 hne2pi habovei hserve mj hjV hjA hAy hAx
+    (third_tile_of_interior D i j V A hAy habovei habovej hint)
 
 end Erdos634.RouteOne
