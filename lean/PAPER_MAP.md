@@ -1381,6 +1381,25 @@ into the lemma's `(p,r)`/`[r,s]` shape) shows `y` can't lie in `m`'s own trace, 
 three. This closes out the one-straddler case completely from the natural hypothesis — no
 remaining gap between what's assumed and what a real dissection actually gives you.
 
+**The two-straddler instance, same session, later still (2026-09-03)**:
+`ChordDecompositionTwoStraddlers.chord_decomposition_two_straddlers` — the next concrete instance
+beyond one straddler, same style as `chord_decomposition_one_straddler`'s first pass (the three
+gap-freedom conditions taken directly as hypotheses, not yet derived from a single global
+"no other tile straddles anywhere" condition): given two straddlers' trace endpoints `r₁,s₁` and
+`r₂,s₂` occupying consecutive stretches of the chord in the order `p, r₁, s₁, r₂, s₂, q`, the
+near-side chain's total splits into three gap totals (`chord_decomposition_of_gap`, on `[p,r₁]`,
+`[s₁,r₂]`, `[s₂,q]`) plus the two straddlers' own trace lengths, glued via
+`hausdorff_segment_split` applied four times. `lake build Erdos634.All` clean, no `sorry`,
+`#print axioms` confirms only the standard three.
+
+Deriving this one's three gap-freedom conditions from a global `hunique` (as
+`ChordDecompositionOneStraddlerFinal` did for the one-straddler case) is strictly harder than that
+case: the *middle* gap `(s₁,r₂)` must be shown disjoint from *both* straddlers' own traces, not
+just one, which needs a transitive betweenness argument beyond what
+`openSegment_disjoint_segment_of_wbtw` gives directly (that lemma handles one adjacent pair; the
+middle gap sits between two). Not attempted this pass — recorded as the next piece rather than
+forced through.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
