@@ -2509,3 +2509,48 @@ chord machinery closes it. `GOAL_PRIMES.md`'s target 1 (cases (a)/(b)/(c)) remai
 This is genuine formalization-debt progress (a remark flips PROVED-by-prose → VERIFIED) but is
 **not** progress on the `/goal`: neither outcome (full proof, prime case) moved, and the crossing
 question that blocks `conj:advance` is exactly as far away as before.
+
+## RouteOneThroughEdge, session of 2026-09-03 (prime-case pivot, second pass)
+
+**A real narrowing of `conj:advance`'s open case (a).** New file `Erdos634/RouteOneThroughEdge.lean`,
+seven theorems, `lake build Erdos634.All` clean, all axiom-clean, no `sorry`.
+
+**Where case (a) actually enters.** `route_one_flank_composed` takes `hcard` (the `π`-count at `V` is
+one) and `hb` (the tile below the line carries the straight angle) — jointly, `conj:advance`'s
+unproved "a through-edge, rather than a junction, runs below the line at `V`". Tracing the proof,
+those two are consumed at exactly one place: `not_straight_of_unique`, to give `hnepi`, which
+excludes `localAngle (serving tile) V = π` so that `serving_has_vertex` can conclude `V` is a vertex.
+Nothing else in the chain uses them. (`serving_ne_two_pi`, by contrast, needs only that *some* other
+tile's carrier contains `V` — not that it carries a straight angle. So the below tile's *existence*
+is cheap; only its straight angle is the open fact.)
+
+**The `π` branch does not need excluding — it is pinned.** `through_edge_lays_rightward`: if `V` is
+not a vertex of `T`, `T.localAngle V = π`, and every point of `T` is weakly above `V` (`habove`,
+already a hypothesis of `route_one_flank_composed`), then `T` contains a point strictly to the right
+of `V` at exactly `V`'s height. Proof: `coords_of_localAngle_pi` puts one barycentric coordinate at
+`0` and the other two strictly positive; `sub_vertex_eq_combo` at each of the two flanking vertices
+writes the displacements to them as *opposite* positive multiples of a single vector `w`; `habove`
+makes both second components `≥ 0`, and antiparallel forces `w` horizontal; `w ≠ 0` since otherwise
+`V` is a vertex. Then `serving_lays_rightward` combines this with `escape_flank` for the vertex
+branch: **with only `localAngle ≠ 0` and `localAngle ≠ 2π` — both already discharged independently
+(`serving_ne_zero`, `serving_ne_two_pi`) — the serving tile lays a horizontal rightward segment at
+`V`. No `π`-count, no below tile, no straight angle.**
+
+**Non-vacuity, machine-checked** (the standing rule): `midpoint_localAngle_pi` proves that the
+midpoint of *any* edge of *any* triangle has local angle `π` (with `coord_midpoint`,
+`coord_midpoint_edge`, `midpoint_not_vertex` — reusable on their own); `through_edge_hyps_satisfiable`
+shows the three hypotheses follow from two elementary sign conditions on the vertices; and
+`through_edge_witness` exhibits a concrete triangle `(0,0), (2,0), (1,1)` with `V` the midpoint
+`(1,0)` of its bottom edge satisfying all three at once.
+
+**What this does NOT do — stated flatly.** It does not close case (a); it does not close
+`conj:advance`; it does not close `e = 1`; the prime case is untouched. In the vertex branch the
+rightward segment is a whole edge with `V` as endpoint, so its length is `a`, `b` or `c` and
+`overshoot_dichotomy` runs. In the `π` branch it is a *suffix* of an edge, of unconstrained length,
+and `overshoot_dichotomy` does **not** apply to it as it stands. What changed is the shape of the
+gap: case (a) is no longer needed to put a horizontal rightward segment at `V`, only to know that
+segment is a whole edge from `V`. The residual sub-question — the reach `t` of that suffix against
+`a`, in the three cases `t > a`, `t = a`, `t < a` — is new, is not formalized here, and nothing in
+this file bears on it. `GOAL_PRIMES.md` target 1 remains open.
+
+| C `conj:advance` (case (a) role) | the straight angle below the line is used only to exclude the serving tile's own `π`; the `π` branch is instead pinned horizontal | `RouteOne.through_edge_lays_rightward`, `.serving_lays_rightward`, `.coords_of_localAngle_pi`, `.midpoint_localAngle_pi`, `.through_edge_witness` | VERIFIED (the narrowing; the conjecture itself remains CONJECTURE) |
