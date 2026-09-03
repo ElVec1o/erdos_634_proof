@@ -239,3 +239,4 @@ import Erdos634.ChordDecompositionOneStraddlerFinal
 import Erdos634.ChordDecompositionTwoStraddlers
 import Erdos634.ChordBetweennessDisjointFar
 import Erdos634.ChordDecompositionTwoStraddlersFinal
+import Erdos634.ChordDecompositionThreeStraddlers

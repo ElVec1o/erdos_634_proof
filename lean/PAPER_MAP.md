@@ -1439,6 +1439,17 @@ straddlers (handled by the plain lemma) and reaches every *other* straddler only
 lemma chained across however many intervening trace-and-gap stretches lie between them — a genuine
 finite induction on the sorted list of trace endpoints, not yet built.
 
+**The three-straddler instance, same session, later still (2026-09-03)**:
+`ChordDecompositionThreeStraddlers.chord_decomposition_three_straddlers` — the next rung of the
+ladder, mechanically extending the two-straddler assembly: three straddlers' trace endpoints
+occupying consecutive stretches in the order `p, r₁, s₁, r₂, s₂, r₃, s₃, q`, the near-side chain's
+total splits into four gap totals plus the three straddlers' own trace lengths, glued via
+`hausdorff_segment_split` applied six times. Gap-freedom taken directly as hypotheses (not yet
+derived from `hunique` — the two *middle* gaps here each reach a non-adjacent straddler across one
+more intervening stretch than the two-straddler case ever needed, the next scaling-up of the
+`ChordDecompositionTwoStraddlersFinal` derivation). `lake build Erdos634.All` clean, no `sorry`,
+`#print axioms` confirms only the standard three.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
