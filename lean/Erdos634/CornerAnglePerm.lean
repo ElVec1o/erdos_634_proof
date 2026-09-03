@@ -552,4 +552,30 @@ theorem congruentDissection_boundary_figure_at_corner {N : ℕ} (D : CongruentDi
   · exact Or.inl h2
   · exact Or.inr h3
 
+/-- **Every tile vertex is a target corner, a frontier non-corner, or an interior point.**  The
+three cases the classification handles: `TileAt.congruentDissection_apex_counts` /
+`.congruentDissection_base_corner_counts` at the target's own corners,
+`congruentDissection_boundary_figure_at_corner` on the rest of the frontier, and
+`congruentDissection_interior_figure_at_corner` inside.  This is the coverage half of the partition
+`lem:census` needs. -/
+theorem cornerPts_trichotomy {N : ℕ} (D : Dissection N) {v : Plane} (hv : v ∈ cornerPts D) :
+    v ∈ Set.range D.target.pts ∨
+    (v ∈ frontier D.target.carrier ∧ v ∉ Set.range D.target.pts) ∨
+    v ∈ interior D.target.carrier := by
+  classical
+  -- a tile vertex lies in the target
+  have hvt : v ∈ D.target.carrier := by
+    obtain ⟨i, -, hi⟩ := Finset.mem_biUnion.mp hv
+    obtain ⟨m, -, hm⟩ := Finset.mem_image.mp hi
+    refine tile_subset_target D i ?_
+    rw [← hm, Erdos634.Geometry.Tri.carrier]; exact subset_convexHull ℝ _ ⟨m, rfl⟩
+  by_cases hint : v ∈ interior D.target.carrier
+  · exact Or.inr (Or.inr hint)
+  · have hfr : v ∈ frontier D.target.carrier := by
+      rw [(D.target.isCompact.isClosed).frontier_eq]
+      exact ⟨hvt, hint⟩
+    by_cases hcorner : v ∈ Set.range D.target.pts
+    · exact Or.inl hcorner
+    · exact Or.inr (Or.inl ⟨hfr, hcorner⟩)
+
 end Erdos634.Geometry

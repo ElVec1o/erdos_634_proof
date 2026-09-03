@@ -3345,3 +3345,28 @@ Also checked: no point outside `cornerPts` can contribute, since a tile with loc
 `cornerPts` and the per-class sum. `lem:census` has **not** flipped; label stays PROVED.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` piece 4c: classification complete at every point of `cornerPts`
+
+`cornerPts_trichotomy` (`CornerAnglePerm.lean`, nineteen declarations, axiom-clean,
+`Erdos634.All` clean): every tile vertex is a target corner, a frontier non-corner, or an interior
+point. Proof is short — a tile vertex lies in its tile, hence in the target
+(`tile_subset_target`), and a closed set is the union of its interior and frontier.
+
+**The third class needed no new work.** `TileAt.congruentDissection_apex_counts` and
+`.congruentDissection_base_corner_counts` already give the target-corner figures — apex `{3α}`
+(α-count 3, β 0, γ 0) and base corners `{β}` (α 0, β 1, γ 0, π 0) — for a real
+`CongruentDissection`. So with the two theorems of the previous entries, **the vertex figure is now
+classified at every point of `cornerPts`, in all three cases.**
+
+**What is left, stated without optimism.** The partition itself: define the eight classes as filters
+of `cornerPts` by their `(α,β,γ,π)`-multiplicity vector, prove they are pairwise disjoint (immediate
+— the vectors differ) and jointly exhaustive (`cornerPts_trichotomy` plus the three classification
+theorems), then split `congruentDissection_corner_balance`'s sum across them and evaluate each class
+at its constant α-multiplicity. That yields the α-identity `3 + n₁ + 3n₂ + 2v₂ + 4v₃ + 6v₄ = N`, and
+the β- and γ-identities the same way, which are `OrderForcing.vertex_census`'s three hypotheses.
+
+This is a bounded but non-trivial build — on the order of the last six ticks put together, not one.
+`lem:census` has **not** flipped; label stays PROVED, and I am not going to predict when it will.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
