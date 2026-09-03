@@ -1880,6 +1880,18 @@ by recursing down to a `T = ∅` base case handled the *first* way, not by askin
 under this fix, since a `tiles` function is only needed once a real straddler exists to place at
 index `0`.
 
+**Correction after re-checking**: this is *not* a bug in `chord_decomposition_of_chain` itself. Its
+`hne` hypothesis is supplied *once*, for the whole original `n`, by the caller — including
+`g (2n) ≠ g (2n+1)`, i.e. "the last straddler's far endpoint ≠ `Q`". The theorem's own internal
+recursion never needs to *re-derive* this; it only needs the caller to have been able to supply it
+up front. So the real remaining question is squarely a hypothesis-discharge one for the eventual
+top-level application: can the last straddler's far endpoint be shown to differ from `Q` in
+general? Plausibly yes — `Q` is one of the target's own extreme chord points, while trace endpoints
+come from `straddle_trace_isSegment`'s IVT construction on a tile's own vertices, and coincidence
+would need an actual dissection vertex to land exactly there — but this has not been checked and is
+exactly the kind of claim `/goal` forbids asserting without verification. Recorded as the concrete
+next question, not resolved.
+
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
