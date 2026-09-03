@@ -256,3 +256,4 @@ import Erdos634.ChordFinsetStepGap
 import Erdos634.ChordFinsetInvariant
 import Erdos634.ChordFinsetDegenerate
 import Erdos634.ChordFinsetStepCombined
+import Erdos634.ChordDecompositionGapGeneral
