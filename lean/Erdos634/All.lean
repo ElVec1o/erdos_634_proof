@@ -263,3 +263,4 @@ import Erdos634.ChordFinsetChainInj
 import Erdos634.ChordEndpointFrontierGeneral
 import Erdos634.ChordFinsetGeometricChainBase
 import Erdos634.WbtwGlobalBoundHelpers
+import Erdos634.ChordFinsetReachLemma

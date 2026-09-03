@@ -2329,3 +2329,20 @@ by 2 exactly as in `ChordDecompositionChain.lean`'s own succ case. `hpts`/`hmtra
 same shift pattern already proven there, index-for-index. This is genuine remaining work (roughly
 comparable in size to what's already written for this successor case) but no new mathematical
 content — every fact it needs is already an established lemma; it is pure assembly.
+
+## ChordFinsetReachLemma, session of 2026-09-03 continued
+
+**`reach_of_le_all` built** — the one new fact identified above as missing for
+`exists_geometric_chain`'s final assembly, now proved and verified standalone: given `g'`'s own
+shape (matching `L'`'s near/far endpoints) and that `bound'` weakly precedes every element's near
+endpoint, `bound'` weakly precedes every point of `g'`'s range up to `2 * L'.length` (not `2 *
+L'.length + 1` — that extra trailing index is `g'`'s own outer bound, not covered by any list
+element's near/far point, and correctly excluded rather than forced through). Proved by cases on
+the index's parity, reaching the far endpoint from the near one via `wbtw_of_wbtw_wbtw` when needed.
+`lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+With this, every individual fact `exists_geometric_chain`'s successor case needs is now built and
+independently verified. What remains is exactly the mechanical combination step described above
+(defining `g`, applying `wbtw_middle_of_wbtw_wbtw hgom (reach_of_le_all ... 1)` for the `hchain` case
+at `i = 1`, and the same index-shift pattern `ChordDecompositionChain.lean` already demonstrates for
+everything else) — no further lemma is missing.
