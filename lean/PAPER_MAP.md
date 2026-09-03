@@ -4233,3 +4233,34 @@ Noted in passing for the next collar tick: `CollarCongruentM4.delta4CongruentDis
 CongruentDissection 176` already exists in the corpus as a concrete `m = 4` collar witness. Whether
 it can be re-expressed through `unionCongruentRegion` — and whether doing so exposes a reusable
 collar-step shape rather than a one-off — is the obvious next probe, and is **not** yet checked.
+
+### Probe on `CollarCongruentM4`, as flagged last tick (2026-09-04) — negative, and precise
+
+Last tick asked whether `CollarCongruentM4.delta4CongruentDissection : CongruentDissection 176`
+(the concrete `m=2→4` collar step) factors through `unionCongruentRegion`, exposing a reusable
+collar-step shape. **Read in full. It does not, and the reason is worth recording precisely.**
+
+Its 176 pieces are `Fin.append` of **six** blocks, not two: `apexPieceAt` (a translated copy of all
+44 `Tiling44` pieces, at `v=(88,24√15)`), `cornerPieceAt` (a *second* translated copy of all 44
+`Tiling44` pieces, at `v=(176,0)`), and four `columnPieceAt` blocks (each all 22 `PgramTiling22`
+pieces, scaled `×2`). That is `44+44+22·4 = 176`. So the construction is **not** "one `Δ_2`-shaped
+dissection plus a collar" — it is two full copies of the `Δ_2` tile pattern plus four copies of a
+different, smaller pattern, all placed by hand-computed coordinates specific to `m=4`. There is no
+sub-decomposition here matching `P(m) ∪ collar = P(m+2)` for a *general* `m` — `apexPieceAt`,
+`cornerPieceAt` and `columnPieceAt` all take their coordinates from fixed numeric certificates
+(`Tiling44Bridge`, `PgramTiling22Bridge`), not from a parameter `m`.
+
+All bridging facts (`hsub`, `hdisj`) are proved by hand per pair of the six blocks
+(`CollarDisjointM4.lean`, `CollarDisjointColM4.lean`, `CollarPieceContainM4.lean`) via bespoke
+`Fin.append`/`Pairwise` combinators (`forall_fin_append`, `pairwise_fin_append`,
+`disjoint_of_subset`) built for exactly this six-way split — **before** `RegionDissection` existed,
+and not using it. `unionCongruentRegion` could re-express this specific instance as five successive
+binary unions (the same disjointness facts, regrouped), but that is bookkeeping, not new content,
+and would not make the construction general in `m`.
+
+**Conclusion, sharp: this witness answers "does `N=176` admit a `CongruentDissection`?" (yes, and it
+does — this is a real, complete, axiom-clean answer to one instance) but it does not exhibit, and
+cannot be mechanically generalized into, the `∀m≥2` induction step `Collar.two_step` needs.** The
+blocker on `thm:realize12`'s existence half is unchanged by this file: a *general-in-`m`* collar
+construction is still missing, and this concrete `m=4` instance — built entirely from fixed
+coordinates — gives no template for one. This closes the probe negatively; no label moves.
