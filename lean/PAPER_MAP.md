@@ -1233,10 +1233,34 @@ clean, no `sorry`, `#print axioms` confirms only the standard three.
 **What still isn't built**: turning the local fact into the full "`upperFlush` is never needed"
 covering theorem needs walking along a maximal run of same-side flush edges sharing collinear
 endpoints, to reach the genuine dissection vertex where a run must end — a chain-style induction
-comparable to `BaseChain`/`WallChain`'s existing wall development, not yet attempted. This is a
-real, well-scoped, but sizeable next target. Deprioritized this session in favor of hunting further
-PROVED→VERIFIED flips per the standing `/goal`, since this piece, even finished, is infrastructure
-toward `prop:chorddecomp` and not itself a flip.
+comparable to `BaseChain`/`WallChain`'s existing wall development, not yet attempted.
+
+**MAJOR FIND, same session, later still**: that chain-style induction is not "not yet attempted" —
+it already exists, general, in `WallChain.lean`, and does *far more* than what
+`upperFlush_edge_endpoints_eq_c` alone was reaching for. `Dissection.wall_cover`/`.wall_partition`
+prove, for **any line** `(f, c)` (not only a wall of the target!) and **any segment** `[u₁, u₂]` on
+that line: *if* no tile's interior meets the open segment (`hwall`), the near-side chain
+(`D.lineChain f c`, tile edges with both endpoints on the line and the whole tile on the `f ≤ c`
+side) covers the segment exactly, with lengths summing to the segment's own length —
+`wall_partition`'s proof *already* resolves the near/far-side ambiguity at every point via
+`leftDir_antiparallel`/`no_second_tile_same_side`, i.e. it already contains the chain-walking
+argument this row asked for, done once, generally.
+
+This reduces the remaining work for the *full* chord-decomposition theorem from "build a chain
+induction from scratch" to **assembly**: (1) get the chord's own endpoints `p, q` via
+`isSegment_of_convex_inter_hyperplane` applied to `D.target.carrier` itself; (2) get each
+straddler's trace as a segment the same way (already available per-tile); (3) order the finitely
+many straddler segments along the chord (via the `ℝ`-parametrization `isSegment_of_convex_inter_hyperplane`'s
+proof already builds); (4) the complementary gaps between consecutive straddler segments are
+exactly the pieces satisfying `wall_cover`'s `hwall` hypothesis (no straddler's interior meets
+them, by construction) — apply `wall_partition` to each; (5) total chord length = `straddle_total_eq_sum`'s
+straddle total + the sum of `wall_partition`'s gap totals. Every individual ingredient for this now
+exists; what remains is the finite-ordering/gluing argument, a real but now much smaller task than
+before this find. Not yet built — recorded precisely so the next pass assembles instead of
+reinventing `wall_cover`/`wall_partition`, which was the actual bulk of the missing content.
+Deprioritized further construction this session in favor of hunting further PROVED→VERIFIED flips
+per the standing `/goal`, since this piece, even finished, is infrastructure toward
+`prop:chorddecomp` and not itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
