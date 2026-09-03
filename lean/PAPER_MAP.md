@@ -2307,3 +2307,25 @@ committed with a `sorry`, per this project's standing rule.
 call; call `gap_free_of_finset_step'` (bridging its `Finset` parameter via `L'.toFinset` and
 `List.mem_toFinset`) for the leading gap; combine with the recursive `ih` call exactly as
 `exists_injective_chain`'s own successor case does for injectivity, in parallel.
+
+## exists_geometric_chain's successor case, precisely mapped (2026-09-03, later still)
+
+Wrote the full setup for the successor case and verified it compiles (all of: extracting `m`'s
+trace, `hle'` via `far_precedes_of_minimal` using the sortedness hypothesis at index `0` vs `j+1`,
+`hexcl'` via `excl_new_self`/`excl_carries_forward`, `hsorted'` by reindexing, and the recursive
+`ih` call itself) — the *only* missing hypothesis, `L.Nodup` (needed for `far_precedes_of_minimal`'s
+`m ≠ k`), is now added and threaded correctly via `List.nodup_cons`.
+
+What remains is exactly the final combination step, and it is now precisely specified: define
+`g := fun i => if i = 0 then bound else if i = 1 then R m else g' (i - 2)` (mirroring
+`exists_injective_chain`'s own construction) and discharge `hchain`/`hpts`/`hmtrace`/`hgap` for it.
+The one new fact needed beyond what `ChordDecompositionChain.lean`'s own index-shift lemmas already
+demonstrate the shape of: a "reach" lemma `∀ i, i ≤ 2 * L'.length + 1 → Wbtw ℝ P (S m) (g' i)`,
+proved by cases on `i` (`i = 0`: trivial, `g' 0 = S m`; `i = 2j+1`: `hle'` applied to `L'.get j` via
+`hg'match`; `i = 2j+2`: `hle'` at `L'.get j` composed with that element's own `Wbtw (R ·) (S ·)`
+via `wbtw_of_wbtw_wbtw`). With that reach lemma in hand, `hchain` at `i = 1` follows from
+`wbtw_middle_of_wbtw_wbtw hgom (reach 1)`, and `hchain` at `i ≥ 2` follows from `hg'chain` shifted
+by 2 exactly as in `ChordDecompositionChain.lean`'s own succ case. `hpts`/`hmtrace`/`hgap` follow the
+same shift pattern already proven there, index-for-index. This is genuine remaining work (roughly
+comparable in size to what's already written for this successor case) but no new mathematical
+content — every fact it needs is already an established lemma; it is pure assembly.
