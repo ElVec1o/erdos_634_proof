@@ -3911,3 +3911,34 @@ A future session wanting these four rows should budget accordingly and should no
 progress from it.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### Applying the admission test as a search: where else could the two-through-edges mechanism fire?
+
+The mechanism of `serving_ne_pi_of_side_edge` is a **contradiction detector**: it fires where a
+configuration would force two tiles on the *same* side of a line to have *overlapping* collinear
+edges, since their interiors would then meet. At `V` that happened because the serving tile's
+through-edge and the `α`-tile's edge both run leftward from `V`, both above the wall.
+
+Searched the papers for other configurations with collinear edges on one side:
+
+* **The doubled `b`-line** (`thm:walls14`'s proof, `rem:blockcascade`): "the doubled `b`-line is
+  edged on its east side", and `lem:jbline` splits a `jb`-line into `j` whole `b`-edges. These do put
+  several collinear edges on one side — but **abutting, not overlapping**. At the junction between
+  two abutting `b`-edges each tile has an *endpoint*, so neither presents a straight angle there and
+  the mechanism has nothing to bite on. **It does not fire.**
+* **The `hns` hypotheses** (`MarchRun.junction_dichotomy`, `JunctionWedge`, `MarchRun.lean:45`,
+  `:74`) want the `π`-count to be `0`. The mechanism gives at most `≤ 1`
+  (`pi_count_le_one`), and can exclude the straight angle only for tiles on the *same* side as the
+  cornered tile. A through-edge on the **far** side is untouched — and that is the crossing question
+  verbatim. **It does not fire.**
+
+**Result: negative.** The mechanism's reach is exactly the configuration it was built for. The
+sharper statement of why, worth keeping: it detects same-side *overlap*, and every other collinear
+configuration in the papers is same-side *abutment* or opposite-side, neither of which is a
+contradiction. That is a precise limit, not a difficulty — and it is consistent with
+`rem:n1gapexact`'s finding earlier in this run, where the same test failed at `e ≥ 2`'s `V_k` for the
+same reason (`T_k`'s edge *ends* at `V_k`).
+
+No Lean changes this tick.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
