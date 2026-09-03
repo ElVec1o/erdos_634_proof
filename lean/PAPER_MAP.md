@@ -2874,3 +2874,44 @@ collinear with the overrunning one, on the same side*. Route 1 had one for free;
 and nothing in the residue computation of `rem:n1gap` supplies one.
 
 `GOAL_PRIMES` target 3 is untouched. No label moves.
+
+### Scoping the attachment: the blocker is sharper than "no tile-placement layer"
+
+Route 1's chain is complete; what it needs is its hypotheses produced from a hypothetical tiling.
+Mapping them against what exists:
+
+| hypothesis | status |
+|---|---|
+| `V`, `A` interior to the target | routine (`approach_points_covered` works at interior points) |
+| tangential approach at each point | `pigeonhole_wall`, `approach_points_covered` — available |
+| vertex sign conditions (tiles above the wall) | `above_line_of_below_tile`, `no_downward_edge` give the mechanism |
+| `i ≠ j` | trivial once both tiles are named |
+| model sides `{f, f²−1, f²}` | member data |
+| **the `α`-tile: a named tile laying a horizontal edge from `V` leftward to `A`** | **missing** |
+
+So the attachment reduces to producing **one named object**: the second side tile of the corner
+cascade, the one `rem:route1uniform` describes as carrying its `a`-edge `AB` on the side, mirrored
+(`lem:firstrun`), with third vertex `V = c·u + (c,0)`. Its *coordinates* are already verified
+(`Frontier.side_tile_third_vertex`, `.route1_spacings`); what is missing is the tile as an object of
+a `Dissection`.
+
+**Two findings worth recording.**
+
+1. `TilePlacement.HasVertex` / `.PresentsAt` / `.LaysOn` — the placement vocabulary — exist but have
+   **zero consumers**: a grep across the corpus finds no theorem outside their own file that
+   mentions them. So they are names, not a layer, and `CLAUDE.md`'s "no tile-placement layer"
+   blocker is accurate in substance despite the definitions existing.
+2. `TileAt.lean` does have real structure for a `CongruentDissection`'s corner: `exists_corner_tile`,
+   `congruentDissection_base_corner_tile_unique`, `.base_corner_tile_vertex`,
+   `.congruentDissection_endpoints_of_chain`. That is the corner cascade's **first** tile. The
+   partner and the second side tile — `lem:firstrun`'s mirrored-orientation content — are not there;
+   `OrderForcing.first_run_kill` is only that lemma's *arithmetic* core (a vertex-figure count), not
+   its placement.
+
+**Named blocker, replacing the vague one for this route:** *the second side tile of the corner
+cascade does not exist as a `Dissection` object; producing it needs `lem:firstrun`'s orientation
+forcing at the placement level, on top of `TileAt.congruentDissection_base_corner_tile_vertex`.*
+That is one object, not a general layer — a materially smaller obligation than "build tile
+placement", and it is the whole of what stands between route 1's chain and `conj:advance` at `e = 1`.
+
+No label moves. `conj:advance` remains CONJECTURE; the prime case is not advanced.
