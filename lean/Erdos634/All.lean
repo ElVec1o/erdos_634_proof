@@ -247,3 +247,4 @@ import Erdos634.WbtwTracesSeparated
 import Erdos634.WbtwDistCoord
 import Erdos634.ChordDecompositionCons
 import Erdos634.WbtwGapFreeOfMinimal
+import Erdos634.WbtwMinimalPrecedesRest

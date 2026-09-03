@@ -1660,6 +1660,26 @@ individual fact this recursion needs now exists; assembling the induction itself
 verifying the recursive call's straddler set is exactly the right restriction) is real remaining
 work, sized like a standalone small project rather than one more lemma.
 
+**The recursive-restriction fact, same session, later still (2026-09-03)**:
+`WbtwMinimalPrecedesRest.far_precedes_of_minimal` — the fact needed to set up the recursive call
+correctly: given a minimal straddler `m` (near endpoint `r` first among all straddlers) with
+oriented trace `[r, s]`, and any *other* straddler's own nondegenerate oriented trace `[rk, sk]`
+meeting `m`'s in at most one point, `m`'s far endpoint `s` weakly precedes `rk`. Proved via
+`traces_separated_of_disjoint`: the other separation direction would force, via `wbtw_of_wbtw_wbtw`
+and `wbtw_antisymm_of_wbtw` applied twice, the other straddler's *entire* trace to collapse onto `r`
+itself — contradicting its nondegeneracy. `lake build Erdos634.All` clean, no `sorry`, `#print
+axioms` confirms only the standard three.
+
+This is exactly what guarantees the recursive sub-chord `[s, q]` in the induction contains *all* the
+remaining straddlers' traces (not just excludes `m`'s own) — the invariant the recursion needs to
+be well-founded. Every individual fact for the general N-straddler theorem is now built: the
+recursive step (`chord_decomposition_cons`), its gap-freedom (`gap_free_of_minimal`), its recursive
+restriction (`far_precedes_of_minimal`), and the sort order
+(`wbtw_trichotomy_of_wbtw`/`_antisymm_`/`_trans_`/`_iff_dist_le_`/`oriented_trace_of_wbtw`). What
+remains is exclusively the `Finset.card` strong-induction wrapper gluing these together with a
+choice-function packaging of each straddler's oriented trace — an engineering task, not a
+mathematical gap.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
