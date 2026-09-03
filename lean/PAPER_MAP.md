@@ -3826,3 +3826,27 @@ No Lean changes this tick — the finding is that the tractable-looking half nee
 other half needs a layer nobody has started.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:value`'s row cites `none`, but its arithmetic core exists — citation corrected
+
+`lem:value` states `C_{f_α}(t) = ±(c + a − b)` for every placement of the tile, and its `PAPER_MAP`
+row cites **`none`**. That is wrong: the lemma's arithmetic *is* in the corpus and has been for some
+time.
+
+`InvariantCore.tile_value_core (a b c j₀ : ℤ) : ε j₀ * c + ε (j₀+2) * a + ε (j₀+3) * b
+= ε j₀ * (c + a − b)` is precisely the paper's computation — the proof's three direction
+coefficients `j₀, j₀+2, j₀+3` against edge lengths `c, a, b`, with `sign_shift_two` and
+`sign_shift_three` doing the `π`-adds-3 / `γ`-adds-2 bookkeeping. The `±` form is the sibling lemma
+just below it, and `SixtyInvariant.cross_check_two_thirds` cites `tile_value_core` in its own
+docstring as "the published value". So three declarations sit exactly on this lemma while its row
+says nothing exists.
+
+**Citation added; the label does not move, and the blocker is unchanged and real.** What is missing
+is not the arithmetic but `C_{f_α}` itself: the flux functional evaluated on an oriented placement.
+No such object exists in the corpus, which is why `cor:int` (`M_α`, `M_β` integral and `≡ N mod 2`)
+also cites `none` and why `prop:eqspecint` inherits the block. The arithmetic being present does not
+shorten that — it means the *only* thing missing is the flux development, stated cleanly.
+
+| M `lem:value` | `C_{f_α}(t) = ±(c+a−b)` for every placement | `InvariantCore.tile_value_core`, `.tile_value_pm`, `SixtyInvariant.cross_check_two_thirds` | PROVED — the arithmetic is VERIFIED and cited here for the first time; the blocker is the flux functional on an oriented placement, which does not exist |
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
