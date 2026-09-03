@@ -3262,3 +3262,29 @@ identified `card = 0` hypotheses as exactly that. So `rem:marchobl`'s M-i row ke
 has been removed is one of its two unproved inputs, not both.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `hvals` now discharged at every call site that carried it
+
+Two more theorems (`CornerAnglePerm.lean`, fifteen declarations, axiom-clean, `Erdos634.All` clean).
+
+* `vertex_of_localAngle_corner` — a tile presenting a corner-sized angle (not `0`, `π`, `2π`) at a
+  point has that point among its vertices.
+* **`congruentDissection_march_junction_real`** — `JunctionWedge.march_junction_real` for a real
+  `CongruentDissection`, `hvals` derived. Here the discharge comes from the lemma's *own* `γ`-witness
+  rather than from a `π`-count: a tile presenting `γ` has the point as a vertex, and
+  `congruentDissection_localAngle_mem_at_corner` finishes.
+
+With this and the previous entry, **every corpus site that carried the `hvals` hypothesis now has a
+real-dissection version with it discharged**: `MarchRun.junction_dichotomy` (via
+`congruentDissection_junction_dichotomy`) and `JunctionWedge.march_junction_real` (via this one).
+That closes the gap `lem:anglecalc`'s row identified as a bug class in the 2026-08-30 audit — "every
+one of those takes `hvals` as a *hypothesis*; grepped the corpus, nothing had ever discharged it for
+a real dissection" — at general points, not only at target vertices.
+
+**Still no label moves, and the reason differs between the two.** `congruentDissection_junction_
+dichotomy` retains `hns` (no straight angle at the junction), which is the crossing question.
+`congruentDissection_march_junction_real` retains the `γ`-witness `hiγ` and the wedge data
+`hφ/hψ/hcorner`, which are configuration inputs about a march junction, not general facts. Neither
+is bookkeeping; both must come from the march construction.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

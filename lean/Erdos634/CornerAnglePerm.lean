@@ -4,6 +4,7 @@ import Erdos634.VertexFigureReal
 import Erdos634.RouteOne
 import Erdos634.TileAt
 import Erdos634.MarchRun
+import Erdos634.JunctionWedge
 import Mathlib.Analysis.Normed.Affine.MazurUlam
 
 /-!
@@ -362,5 +363,49 @@ theorem congruentDissection_junction_dichotomy {N : ℕ} (D : CongruentDissectio
   exact Erdos634.MarchRun.junction_dichotomy D.toDissection hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0
     hπ0 hγdef hrel hirr hv hnv
     (fun i => congruentDissection_localAngle_mem_at_corner D α β γ hmα hmβ hmγ j m hjm i) hns
+
+/-- **A tile presenting a corner-sized angle at a point has that point as a vertex.** -/
+theorem vertex_of_localAngle_corner (T : Tri) {v : Plane} {θ : ℝ} (h : T.localAngle v = θ)
+    (h0 : θ ≠ 0) (hpi : θ ≠ Real.pi) (h2pi : θ ≠ 2 * Real.pi) :
+    ∃ m : Fin 3, T.pts m = v := by
+  classical
+  rcases Erdos634.PinPlumbing.localAngle_cases T v with ⟨m, hm, -⟩ | hb | hb | hb
+  · exact ⟨m, hm.symm⟩
+  · exact absurd (h.symm.trans hb) h2pi
+  · exact absurd (h.symm.trans hb) hpi
+  · exact absurd (h.symm.trans hb) h0
+
+/-- **The march-junction figure for a real congruent dissection**, with `hvals` discharged.
+`JunctionWedge.march_junction_real` takes `hvals` as a hypothesis; here the `γ`-witness it already
+requires does the work — a tile presenting `γ` has the point as a vertex, and
+`congruentDissection_localAngle_mem_at_corner` then supplies the membership. -/
+theorem congruentDissection_march_junction_real {N : ℕ} (D : CongruentDissection N)
+    (o : Orientation ℝ Plane (Fin 2)) {α β γ : ℝ}
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hγ2π : γ ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (hβpos : 0 < β) (hαpos : 0 < α)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (iγ : Fin N) (hiγ : (D.tile iγ).localAngle v = γ)
+    {P Q u : Plane} {φ ψ : ℝ}
+    (hu : u ≠ 0) (hP : P - v ≠ 0) (hQ : Q - v ≠ 0)
+    (hφ : (o.oangle u (P - v)).toReal = φ) (hψ : (o.oangle u (Q - v)).toReal = ψ)
+    (hφm : φ ∈ Set.Icc (0:ℝ) α) (hψm : ψ ∈ Set.Icc (0:ℝ) α)
+    (hcorner : cornerAngle P v Q = α) :
+    (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 1 ∧
+     ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+     ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1 ∧
+     ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 0)
+    ∧ ((φ = 0 ∧ ψ = α) ∨ (φ = α ∧ ψ = 0)) := by
+  classical
+  obtain ⟨m, hm⟩ := vertex_of_localAngle_corner (D.tile iγ) hiγ hγ0 hγπ hγ2π
+  exact Erdos634.JunctionWedge.march_junction_real D.toDissection o hαβ hαγ hαπ hα0 hβγ hβπ hβ0
+    hγπ hγ0 hπ0 hγdef hrel hirr hβpos hαpos hv hnv
+    (fun i => congruentDissection_localAngle_mem_at_corner D α β γ hmα hmβ hmγ iγ m hm i)
+    iγ hiγ hu hP hQ hφ hψ hφm hψm hcorner
 
 end Erdos634.Geometry
