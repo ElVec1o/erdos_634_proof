@@ -801,4 +801,43 @@ theorem target_corner_counts {N : ℕ} (D : CongruentDissection N) {α β : ℝ}
            · rw [e1, e1'] at hk; rw [h1] at hk; exact absurd hk hne
            · rfl))
 
+/-- **Only the apex label has `β`-count zero.**  Among the eight census labels, `(3,0,0)` is the
+only one whose middle coordinate is `0`; so a tile vertex with no tile presenting `β` must be one of
+the target's own corners, and its corner angle is `3α`. -/
+theorem beta_free_is_apex {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    {v : Plane} (hv : v ∈ cornerPts D.toDissection)
+    (hβcount : ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 0) :
+    ∃ k : Fin 3, D.target.pts k = v ∧
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) ≠ β := by
+  classical
+  obtain ⟨j, -, hj⟩ := Finset.mem_biUnion.mp hv
+  obtain ⟨m, -, hm⟩ := Finset.mem_image.mp hj
+  rcases cornerPts_trichotomy D.toDissection hv with hc | ⟨hfr, hnv⟩ | hint
+  · obtain ⟨k, hk⟩ := hc
+    refine ⟨k, hk, ?_⟩
+    intro hβcorner
+    obtain ⟨-, hb, -, -⟩ := Erdos634.Geometry.Dissection.congruentDissection_base_corner_counts D
+      α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hmα hmβ hmγ k hβcorner
+    rw [hk] at hb
+    omega
+  · exfalso
+    rcases congruentDissection_boundary_figure_at_corner D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0
+      hγπ hγ0 hπ0 hγdef hrel hirr hmα hmβ hmγ hfr hnv j m hm with
+      ⟨-, hb, -⟩ | ⟨-, hb, -⟩ <;> omega
+  · exfalso
+    rcases congruentDissection_interior_figure_at_corner D α β γ hαβ hαγ hαπ hα2π hα0 hβγ hβπ
+      hβ2π hβ0 hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr hint j m hm with
+      ⟨-, hcase⟩ | ⟨-, hcase⟩
+    · rcases hcase with ⟨-, hb, -⟩ | ⟨-, hb, -⟩ <;> omega
+    · rcases hcase with ⟨-, hb, -⟩ | ⟨-, hb, -⟩ | ⟨-, hb, -⟩ | ⟨-, hb, -⟩ <;> omega
+
 end Erdos634.Geometry

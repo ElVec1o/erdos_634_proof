@@ -3480,3 +3480,25 @@ base corners, and the β- and γ-identities by the second and third coordinates.
 `lem:census` has **not** flipped; label stays PROVED.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` piece 4h: the apex discriminator
+
+`beta_free_is_apex` (`CornerAnglePerm.lean`, twenty-seven declarations, axiom-clean,
+`Erdos634.All` clean).
+
+A clean discriminator fell out of the label list: **among the eight census labels, `(3,0,0)` is the
+only one whose `β`-coordinate is `0`.** Every other label — `(0,1,0)`, `(1,1,1)`, `(3,2,0)`,
+`(0,1,3)`, `(2,2,2)`, `(4,3,1)`, `(6,4,0)` — has `β`-count at least one. So "no tile presents `β`
+here" identifies the apex outright, with no case analysis on the label itself.
+
+`beta_free_is_apex` is that: a tile vertex with `β`-count `0` is one of the target's own corners, and
+its corner angle is not `β` (hence, with `htarget`, it is `3α`). The proof runs the trichotomy and
+kills the two non-corner cases by `omega` against the `β`-counts the classification gives, and the
+base-corner case by `congruentDissection_base_corner_counts`' `β`-count of `1`.
+
+**Remaining:** combine this with `target_corner_counts` to get the fibre card `|(3,0,0)| = 1`, then
+the analogous `|(0,1,0)| = 2` for base corners, then the β- and γ-sums, then `vertex_census`.
+
+`lem:census` has **not** flipped; label stays PROVED.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
