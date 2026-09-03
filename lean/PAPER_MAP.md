@@ -2699,3 +2699,37 @@ that is not done. (ii) Composing `flank_propagates` with `overshoot_dichotomy` a
 **`conj:advance` remains CONJECTURE. `e = 1` is not closed. The prime case is not advanced.**
 
 | C `conj:advance` (descent step) | the flank at the advanced point propagates from the previous step; no figure, no straight angle at `E` | `RouteOne.flank_propagates`, `.route_one_flank_from_configuration`, `.serving_ne_pi_of_side_edge` | VERIFIED (the propagation; the uniform-in-`n` attachment is not done and `conj:advance` remains CONJECTURE) |
+
+### `conj:advance`'s "Unproved:" sentence is now stale in *both* clauses
+
+The conjecture's text names two facts as unproved for the `[V,E]` question: "(a) that a through-edge,
+rather than a junction, runs below the line at `V`, and (b) that the exactly-filled wedge's last
+flank lies along the line".
+
+* **(a) is removed** by this session's `route_one_flank_from_configuration` — the flank at `V` needs
+  no straight angle below the line (see the four increments above).
+* **(b) is superseded, and was already superseded before this session.** `RouteOne.escape_flank`
+  reaches the very conclusion (b) was meant to supply — some tile lays a horizontal rightward edge at
+  the point — from exactly two hypotheses: the tile lies weakly above the wall, and it contains
+  tangential approach points. It runs through `flank_along_line'` → `flank_along_line`, whose
+  non-degeneracy input is `not_both_horizontal` (the tile's own determinant), **not** a wedge. Its
+  own docstring says so: "no assumption about the figure, and none about the tile below beyond its
+  keeping `T` above the wall". The exactly-filled-wedge argument is a *route* to that conclusion; a
+  different route exists and is verified. Nothing new was needed for this — it was simply never
+  checked against the conjecture's own sentence, the same oversight as `rem:route1uniform` having no
+  row at all (fixed earlier today).
+
+**This does not prove `conj:advance`, and the distinction matters.** The two clauses were the named
+obstacles *to the `[V,E]` question*; the conjecture's other obligation — `rem:routeoneopen`'s
+attachment, exhibiting the configuration in a hypothetical base-`β` tiling — was always separate and
+is still OPEN. What has changed is that the `[V,E]` question's own stated obstacles are gone, and
+the remaining work is attachment and uniformity, both of a different kind.
+
+**Next obstacle, identified precisely.** Every per-step hypothesis of `flank_propagates` except one
+is routine at an interior wall point. The exception is `habove` — that each serving tile lies
+*weakly above the wall globally*, not merely near the point. In the corpus that is the consequence of
+the wall being **edged** (no tile's interior meets it): a tile with vertices on both sides of the
+line has interior meeting the line, which an edged wall forbids, so every tile lies on one side
+(`StraightEdgeSums`' prose; `Tri.carrier_subset_halfplane_affine` is the half of it that is proved).
+That is one hypothesis about the wall, uniform in `n`, not a per-step family — and it is not yet a
+theorem here.
