@@ -245,3 +245,4 @@ import Erdos634.WbtwChain
 import Erdos634.WbtwOrientedTrace
 import Erdos634.WbtwTracesSeparated
 import Erdos634.WbtwDistCoord
+import Erdos634.ChordDecompositionCons

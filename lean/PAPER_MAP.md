@@ -1618,6 +1618,26 @@ linear order (`Finset.sort`/`List.sort` on `dist p ·`) instead of building besp
 `LinearOrder` instances on `Plane` directly — the last piece of order-theoretic scaffolding; what
 remains is the actual sort-and-sum construction.
 
+**The recursive step itself, same session, later still (2026-09-03)**:
+`ChordDecompositionCons.chord_decomposition_cons` — the genuine recursive step of the general
+finite induction, stated once and reusable at any depth: given the leading gap `(p, r)`'s own total
+(via `chord_decomposition_of_gap`), the trace length `[r, s]`, and *whatever total already holds*
+for the rest of the chord `[s, q]` (taken as a hypothesis `hrest : hausdorff(segment s q) = Trest`,
+established however that sub-chord total was itself proved — directly by
+`chord_decomposition_of_no_straddlers`, or recursively by this same lemma), the whole chord's total
+splits as their sum. Proved by two `hausdorff_segment_split` applications plus substitution — no new
+geometry, exactly the "no new geometry left" bookkeeping this file's own header predicted. `lake
+build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+This one lemma, applied once per straddler, *is* the induction: `chord_decomposition_one_straddler`
+= `chord_decomposition_cons` applied once with `Trest` supplied by `chord_decomposition_of_gap`
+directly on `[s, q]`; `_two_straddlers` = applied twice, etc. What is genuinely still missing is not
+another geometric fact but the *packaging*: given a `Finset` straddler set, sort it (via
+`wbtw_trichotomy_of_wbtw`/`wbtw_iff_dist_le_of_wbtw`, `Finset.sort` or `List` induction) into the
+sequence `chord_decomposition_cons` consumes one straddler at a time, and prove by induction on that
+sorted list's length that repeated application closes the whole chord — a `List.rec`/`Finset.sum`
+argument over data this session's lemmas fully support, not yet written.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
