@@ -4502,3 +4502,17 @@ right-associated.
 three column blocks are the same construction with a different translation vector — repetition, not
 new content. `prop:orientmono` itself still needs the general "occurrence theory," not four
 instances; no label moves.
+
+### `rem:pingaps` had no row at all — added (2026-09-04)
+
+One of the corpus's only three OPEN-labeled statements, and it was untracked. Verified every named
+declaration exists exactly where the remark says (`OrientBridge.lean`: `no_two_gamma_at_boundary_junction`,
+`adjacent_admissible`, `tileOrient`, `orient_reading`, `endpoints_avoid_alpha`, `sides_strict`,
+`cos_gt_of_side_lt`, `smallest_angle_opposite_shortest_side`; `Contiguity.lean`:
+`closed_full_measure_eq`, `no_gap_between`, `distinct_left_endpoints`, `gap_forces_meet`,
+`sortedPositions`, `orderedChain`) — the remark's own claims check out.
+
+| C `rem:pingaps` | the three unbuilt obligations of the pin programme: (a) model identification (dissection corner angles ↦ `α,β,γ` of the `(f,f²-1,f²)` tile), (b) the units bridge (extended-real distances ↦ `ℕ`-semigroup equations), (c) the combinatorics-geometry functor | `OrientBridge.*`, `Contiguity.*` (bridge (c) only) | OPEN — **row added, none existed**. (c)'s *mathematics* is fully discharged per the remark's own text, confirmed against the corpus: the forbidden-transition theorem, the `BG`/`GB` reading-as-definition, the chain ordering (contiguity + injectivity + no-gap), and the side-angle correspondence are all real, cited theorems. What remains of (c) is *instantiation* against actual geometric objects (the remark's own words: "not trivial... stated as outstanding rather than as a formality") — the position key on a real line chain, its injectivity from real tile disjointness, the coverage hypothesis from a real wall partition. **(a) and (b) have no Lean development at all** — confirmed by grep, not merely absent from this row's prior citations, since the row never existed to check |
+
+`rem:pingaps` remains genuinely OPEN; nothing here changes that. The value is bookkeeping accuracy
+on one of only three OPEN statements in the whole corpus — it should not have been untracked.
