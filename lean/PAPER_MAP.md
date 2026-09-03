@@ -2346,3 +2346,32 @@ independently verified. What remains is exactly the mechanical combination step 
 (defining `g`, applying `wbtw_middle_of_wbtw_wbtw hgom (reach_of_le_all ... 1)` for the `hchain` case
 at `i = 1`, and the same index-shift pattern `ChordDecompositionChain.lean` already demonstrates for
 everything else) — no further lemma is missing.
+
+## Full-assembly attempt of exists_geometric_chain, session of 2026-09-03 continued
+
+Attempted the complete theorem, reusing every piece now built. Two hypotheses were found genuinely
+missing during the attempt and are worth recording precisely: (1) `bound ≠ R k` for every `k ∈ L`
+(needed by `gap_free_of_finset_step'`'s own `hpr`, which is not degeneracy-tolerant the way
+`chord_decomposition_cons'`/`chord_decomposition_of_gap'` are); (2) full pairwise point-distinctness
+across the list (`R k ≠ R l ∧ R k ≠ S l ∧ S k ≠ R l ∧ S k ≠ S l` for `k ≠ l` in `L`) rather than just
+the segment-disjointness `Pairwise` already present — needed to get `S m ≠ R k` for the recursive
+call's own `bound ≠ R k` obligation. Both are natural "general position" assumptions, added directly
+to the theorem statement (matching the project's established pattern for such facts) — this part of
+the attempt is settled, not open.
+
+The final combination step itself (constructing `g`, discharging `hchain`/`hpts`/`hmtrace`/`hgap` by
+index-shift case analysis) produced several genuine but small index-arithmetic mismatches — nested
+`match i, hi with | 0, _ | (n+1), hi` patterns combined with an inner `by_cases hn0 : n = 0` do not
+automatically simplify `2 * (n' + 1 + 1)`-shaped terms to match the `ring`-derived rewrite targets,
+requiring the case structure to be flattened (e.g. a single `match i with | 0 | 1 | (n+2)` rather
+than nesting), which was not completed this pass. `reach_of_le_all` was also invoked with the wrong
+argument (`hg'mtrace` needs to be adapted to match `hg'match`'s exact stated shape, not passed
+directly) — a naming/shape mismatch, not a mathematical one. The attempt file was discarded rather
+than committed with a `sorry`, per this project's standing rule.
+
+**Precise remaining task**: redo the final combination with the two hypotheses above added, using a
+flat (non-nested) `match i with | 0 | 1 | (n+2)` case split for each of `hchain`/`hpts`/`hmtrace`/
+`hgap`, mirroring `ChordDecompositionChain.lean`'s own (already-proven) index-shift style exactly
+rather than the more compact nested form attempted here. No further lemma is missing; this is
+finishing a mechanical case-by-case rewrite that this attempt got most, but not all, of the way
+through.
