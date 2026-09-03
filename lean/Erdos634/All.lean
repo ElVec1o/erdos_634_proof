@@ -29,6 +29,7 @@ import Erdos634.DirectionGroup
 import Erdos634.Dissection
 import Erdos634.TileAt
 import Erdos634.CongruentTileEdges
+import Erdos634.WallDir
 import Erdos634.EdgeType
 import Erdos634.AEdgeReading
 import Erdos634.SideWalk
