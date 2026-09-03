@@ -4364,3 +4364,23 @@ recommended ("Route 2 is the shorter path... more precisely scoped than Route 1"
 No label moves (`conj:advance` stays CONJECTURE; nothing here is a new theorem). The value is
 negative and sharp: one more local route is now confirmed dead, by the paper's own argument, not by
 running out of tricks.
+
+### File-length debt (U1, queued many ticks): first split of `RouteOneThroughEdge.lean`
+
+Lean-4_rules Rule 2.3 targets 50-100 lines per file; `RouteOneThroughEdge.lean` was 1053. Split off
+its two most self-contained trailing sections, each into its own file that imports the (now
+shorter) original:
+
+* `RouteOneFlankTransfer.lean` (128 lines) — `flank_propagates` (the flank conclusion transfers to
+  the advanced point `E` with no new figure and no straight angle) and the `habove`-reduces-to-
+  three-vertex-signs lemmas.
+* `RouteOneVE.lean` (153 lines) — the `[V,E]` dichotomy itself and the general straight-angle-count
+  consequence.
+
+`RouteOneThroughEdge.lean` is now 811 lines (down from 1053). Checked before splitting that
+`RouteOneVE.lean` has no code dependency on the section moved to `RouteOneFlankTransfer.lean` (only
+a comment mentions `flank_propagates`), so no import ordering issue. `lake build Erdos634.All` clean
+at 3696 jobs before and after. No theorem content changed — pure file reorganization, no label
+implications. Still above the 50-100 line target on all three files; further splitting is possible
+but the natural section boundaries are now exhausted at this granularity — the next cut would need
+to split within a single `/-! ## ... -/` block.
