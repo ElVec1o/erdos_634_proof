@@ -4001,3 +4001,39 @@ force `N` composite" — is a statement about the non-existence of proofs, not a
 own docstring already said. What is now VERIFIED is every part of it that is a mathematical claim.
 
 | O `prop:norm` | the area ratio cannot exclude primes | `NormForm.eq_neg_zsqrtd_norm`, `.norm_mul'`, `.prime_values`, `.area_ratio` | PROVED — norm identity, multiplicativity and prime values VERIFIED; the "no obstruction exists" clause is not a theorem |
+
+### `prop:globalsys`: prime solutions VERIFIED — and a **TENSION**: the `N = 47` count does not reproduce
+
+New `Erdos634/GlobalSystem.lean` (55 lines, axiom-clean, `Erdos634.All` clean) and
+`code/globalsys_count.py` (reproducible enumerator). Row previously cited `none`.
+
+**Formalized.** `prime_solution_exists` — `N = 11` is prime and `n₁ = n₂ = 0, v₁ = 1, v₂ = 4,
+v₃ = v₄ = 0` satisfies all three corner counts *and* the Euler relation. That is the proposition's
+conclusion: the global system admits prime solutions, so it cannot exclude a prime order.
+`euler_parity` — from `N = 2I + B + 1`, `N` odd iff `B` even, the system's only congruence.
+
+**Three independent confirmations from the enumeration** (`code/globalsys_count.py`):
+
+* `N = 11` → **17** solutions, matching the paper exactly;
+* `N = 23` → **172**, matching exactly;
+* dropping the Euler constraint changes *no* count, independently confirming the paper's own claim
+  that "the Euler count and the angle count give the same relation, no more";
+* and, separately, every solution at all three orders satisfies `v₁ = 1 + n₂ + v₃ + 2v₄` — a fourth
+  confirmation, this one of tonight's `OrderForcing.census_single_relation`.
+
+**TENSION — unresolved.** The paper states **1968** solutions at `N = 47`. The enumeration gives
+**2096**, a difference of 128. Checks run before reporting: the figure-to-coefficient reading was
+re-derived from the proposition's own text; including the three corners in `B` gives `0` solutions at
+every order, so `B` excluding corners is confirmed correct; and neither `v₁ ≥ 1` nor the census
+relation filters the count (both hold for all 2096). I could not find a variant of the system that
+returns `1968` while keeping `17` and `172`.
+
+I cannot tell from here whether the paper applied an unstated constraint or the figure is an error.
+**The proposition's conclusion is unaffected** — `2096 > 0` serves exactly as `1968 > 0` does — so
+this is a supporting-detail discrepancy, not a load-bearing one. Recorded as a TENSION row, which by
+Rule 19 is the first block of the next session at U5.
+
+**Label stays PROVED**: the enumeration counts are part of the stated proposition and one of them is
+now in dispute.
+
+| O `prop:globalsys` | the global angle–Euler system admits prime solutions | `GlobalSystem.prime_solution_exists`, `.euler_parity`, `code/globalsys_count.py` | PROVED — the prime solution and the congruence are VERIFIED; **TENSION: stated 1968 solutions at N=47, recomputed 2096** |
