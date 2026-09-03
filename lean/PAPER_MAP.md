@@ -1940,6 +1940,31 @@ indexing, not a small patch to `WbtwChain.lean`). Recorded as a real mathematica
 fully general (arbitrary-coincidence-tolerant) form of `chord_decomposition_of_chain`, not merely an
 unfinished proof.
 
+**The practical resolution: `hinj` doesn't need to be derived at all.** `chord_decomposition_of_chain`
+already takes `hinj` directly from its caller — it is never derived internally from weaker data. So
+the obstacle above only means "the general infrastructure can't derive distinctness from consecutive
+facts alone," not that the wrapper is stuck: a standard "general position" nondegeneracy hypothesis
+on the straddler trace-endpoint data (every two distinct trace endpoints, across all remaining
+straddlers and the current position, are literally different points) supplies `hinj` directly, no
+derivation needed. This is ordinary mathematical practice (many general theorems carry such a
+hypothesis) and not a gap.
+
+**`ChordFinsetPrependInj.injective_prepend_two` built (2026-09-03, later still)**: the one genuinely
+reusable mechanical piece this resolution needs — prepending two new points `p, r` (distinct from
+each other and from every point already in a bounded injective sequence) to that sequence keeps the
+whole extended sequence injective. Pure index bookkeeping (no geometry, no `Classical.choice` even),
+verified via explicit case analysis on which of the four index regions (`0`, `1`, shifted-old vs
+shifted-old) a given pair falls into. `lake build Erdos634.All` clean, no `sorry`, `#print axioms`
+confirms only `[propext, Quot.sound]` (no choice needed at all).
+
+This is the key step of the induction's injectivity discharge, isolated and verified standalone
+(mirroring the "verify in small pieces" fix from the earlier failed full-assembly attempt). Wiring
+it into the full `exists_chain_of_finset` induction — threading the nondegeneracy hypothesis through
+each step, deriving each step's "new point distinct from all remaining" facts from the pairwise
+assumption, and combining with `chord_decomposition_cons'`/`gap_free_of_finset_step'`/the invariant
+lemmas already built — is the next concrete task; a first attempt at writing the full statement was
+sized correctly but its proof was not completed this pass.
+
 **One more check before implementing, and a broader finding**: `chord_decomposition_of_chain`'s
 `hne` hypothesis is required *unconditionally*, for every consecutive pair from `i = 0` to
 `i = 2n`, supplied by the caller — the theorem does not internally tolerate or skip a degenerate
