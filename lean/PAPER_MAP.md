@@ -3766,3 +3766,39 @@ placement or certified-search kind, untouched by vertex-figure machinery.
 Forty declarations in `CornerAnglePerm.lean`, axiom-clean, `Erdos634.All` clean. No label moves.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### The consolidation claim, tested — and **it was wrong**
+
+The previous entry asserted that the debt "has consolidated onto two things", placement and certified
+search, and that the vertex-figure layer no longer blocks anything. I tested that against all
+`PROVED` rows rather than the handful I had scanned. It does not hold.
+
+Classifying the 126 `PROVED` rows that carry a label, by keyword on their blocker text:
+
+```
+ 48  placement / geometric configuration
+ 12  certified search / computation
+  8  scale or composition map
+  1  dual graph
+  1  untranscribed (no declaration)
+ 56  none of the above
+```
+
+So **44% of PROVED rows fall outside the two categories I named.** The claim was an artefact of the
+five or six rows the earlier scan happened to surface. Sampling the residue shows the blockers there
+are genuinely varied — "no Lean file treats the lower central series" (`rem:nilptower`), "verified per
+instance, not as a single Lean theorem" (`thm:pgram-e1`), "needs the chain as an object"
+(`rem:monochain`), "the integrality is what the tiling supplies, and it needs the area ratio and edge
+counts at `Dissection` level" (`prop:eqspecint`), and several that are label-inheritance bookkeeping
+(`cor:sidenoa-proved`, `rem:zhangsharp`).
+
+The keyword classifier is crude and the boundary between "placement" and several of the residue
+entries is fuzzy, so the exact split should not be over-read. What is solid is the negative: the
+debt is **not** concentrated on two blockers, and the previous entry overstated it. Corrected here.
+
+No Lean changes this tick; the work was the check that refuted my own claim.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+(The 126 above counts `PAPER_MAP` rows mentioning PROVED, which exceeds the 116 `\lab{}`-tagged
+statements — rows include untagged remarks and duplicate cross-references. The census figure is the
+`\lab{}` count and remains the authoritative one.)
