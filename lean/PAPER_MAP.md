@@ -1892,6 +1892,22 @@ would need an actual dissection vertex to land exactly there — but this has no
 exactly the kind of claim `/goal` forbids asserting without verification. Recorded as the concrete
 next question, not resolved.
 
+**The actual resolution, found by re-reading `chord_decomposition_of_chain`'s own statement**: it
+was a self-imposed constraint, not a real one. `chord_decomposition_of_chain` never requires its
+final point `g (2n+1)` to literally *be* `Q` — that naming was the wrapper's own choice, not
+something the theorem demands. The fix: run the chain over exactly the `n` straddlers, ending at
+`g (2n+1) := S (m_last)` (the *last* straddler's own far endpoint, not `Q`) — `g (2n) ≠ g (2n+1)` is
+then just `R (m_last) ≠ S (m_last)`, already guaranteed by trace nondegeneracy, no coincidence-with-`Q`
+question involved at all. Then add the final leftover bit `[S(m_last), Q]` as one *more* step
+*outside* `chord_decomposition_of_chain`, using exactly the already-verified `T = ∅` machinery
+(`gap_free_of_all_excluded` when `S(m_last) ≠ Q`, `chord_decomposition_of_trivial_gap` when
+`S(m_last) = Q`) — precisely the case split that machinery was already built to handle. This needs
+no modification to `chord_decomposition_of_chain`, no new geometric fact, and resolves the
+degenerate case in *both* the flat-sum and the existence-of-chain framings identically: the whole
+wrapper is `chain's total over the n straddlers` + `one final gap/trivial-gap total`, combined via a
+single `hausdorff_segment_split`-style addition at the very end. Not yet implemented, but the
+blocking question from every earlier entry above is now closed.
+
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
