@@ -1470,6 +1470,26 @@ of trace endpoints would formalize — the concrete instances now make that indu
 visible, though the induction itself (arbitrary `n`, not spelled out three times by hand) is still
 not built.
 
+**The reusable chain lemma, same session, later still (2026-09-03)**:
+`WbtwChain.wbtw_chain` — extracts the pattern repeated by hand three times (once per straddler
+count) in the `*Final` files above: given a sequence `g : ℕ → Plane` where every consecutive triple
+satisfies `Wbtw`, every consecutive pair is distinct, and `g` is injective, `Wbtw ℝ (g i) (g j)
+(g k)` holds for *every* `i ≤ j ≤ k`, not just indices a fixed small distance apart. Built via a
+genuine two-stage induction: `wbtw_chain_step` first shows the chain reaches one index further
+(`Wbtw (g i) (g j) (g (j+1))` for `i < j`, by `Nat.le_induction` composing `Wbtw.trans_expand_right`
+at each step), then `wbtw_chain` induces on the third index using `wbtw_chain_step` as its own step
+lemma (`Wbtw.trans_expand_left`), handling the index-collision at the base of each induction
+explicitly. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard
+three for both theorems.
+
+This is the reusable tool the one/two/three-straddler `*Final` files each re-derived by hand at
+their own fixed length (`hpr1r2`, `hpr1r3`, `hr1r2r3`, ... in `ChordDecompositionThreeStraddlersFinal`
+are all instances of `wbtw_chain` applied to the sequence `p, r₁, s₁, r₂, s₂, r₃, s₃, q`). Not yet
+retrofitted into those files (their hand derivations still stand, verified independently) — the
+value is unlocking the *general* induction over an arbitrary straddler count, which no longer needs
+a fresh by-hand betweenness argument at every new length once the straddler traces are packaged as
+such a sequence `g`.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
