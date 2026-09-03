@@ -1606,6 +1606,18 @@ oriented traces via `wbtw_trichotomy_of_wbtw` (now known total on this set, than
 `wbtw_chain_bounded`'s `g`, and close the `Finset.sum` induction against `chord_decomposition_of_gap`
 + `straddle_total_eq_sum`. No further per-pair geometric lemma is missing.
 
+**The distance-coordinate identification, same session, later still (2026-09-03)**:
+`WbtwDistCoord.wbtw_iff_dist_le_of_wbtw` — identifies `Wbtw p · ·` concretely as the order of
+`dist p ·`: for `x, y` both weakly between `p` and `q`, `Wbtw p x y ↔ dist p x ≤ dist p y`. Forward
+via `dist_add_dist_eq_iff` and nonnegativity; backward via `wbtw_trichotomy_of_wbtw`, ruling out the
+wrong branch through the same distance-collapse trick as the other companions. `lake build
+Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+This is what lets a `Finset` of straddler trace endpoints be sorted using `ℝ`'s own decidable
+linear order (`Finset.sort`/`List.sort` on `dist p ·`) instead of building bespoke `Preorder`/
+`LinearOrder` instances on `Plane` directly — the last piece of order-theoretic scaffolding; what
+remains is the actual sort-and-sum construction.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated

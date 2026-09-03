@@ -244,3 +244,4 @@ import Erdos634.ChordDecompositionThreeStraddlersFinal
 import Erdos634.WbtwChain
 import Erdos634.WbtwOrientedTrace
 import Erdos634.WbtwTracesSeparated
+import Erdos634.WbtwDistCoord
