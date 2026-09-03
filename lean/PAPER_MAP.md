@@ -1322,18 +1322,34 @@ gap with no straddler crossing strictly inside it), it gives that gap's own near
 ready to be summed against `straddle_total_eq_sum`. `lake build Erdos634.All` clean, no `sorry`,
 `#print axioms` confirms only the standard three.
 
-**Still not built, but the ordering question is now resolved, same session, later still**: the
-finite ordering of straddler segments along the chord doesn't need `isSegment_of_convex_inter_hyperplane`'s
-internal `ℝ`-parametrization (built from a `Classical.choice`d kernel generator, not exposed as a
-reusable function) — since every relevant point lies on the *same* segment `[p, q]`, plain
-Euclidean `dist p x` is already a faithful, monotonic real-valued position along it, and needs no
-new infrastructure to state or use. The remaining work is: order the (finitely many) straddler
-traces' endpoints by `dist p ·`, identify consecutive gaps, apply `chord_decomposition_of_gap` to
-each, and sum against `straddle_total_eq_sum` — genuine finite combinatorial/measure bookkeeping
-(a `Finset.sort`-style induction), no new geometry left to discover. Every individual geometric
-fact the *full* assembly could need now exists and is proved. Deprioritized further construction
-this session in favor of hunting further PROVED→VERIFIED flips per the standing `/goal`, since this
-piece, even finished, is infrastructure toward `prop:chorddecomp` and not itself a flip.
+**The ordering question resolved, same session, later still**: the finite ordering of straddler
+segments along the chord doesn't need `isSegment_of_convex_inter_hyperplane`'s internal
+`ℝ`-parametrization (built from a `Classical.choice`d kernel generator, not exposed as a reusable
+function) — since every relevant point lies on the *same* segment `[p, q]`, plain Euclidean
+`dist p x` is already a faithful, monotonic real-valued position along it, and needs no new
+infrastructure to state or use.
+
+**The gluing lemma landed too, same session, later still**: `ChordLengthAdditivity.hausdorff_segment_split`
+— if `y ∈ segment ℝ x z`, the segment's own `μH¹` length splits additively into the two
+sub-segments' lengths, via `MeasureTheory.hausdorffMeasure_segment` (length = `edist` of endpoints)
+and the classical "triangle inequality is equality along a segment"
+(`dist_add_dist_eq_iff`/`Wbtw`, needing `Plane`'s `StrictConvexSpace` instance, which
+`EuclideanSpace` supplies). Combined with `chord_decomposition_of_gap` (per-gap total) and
+`straddle_total_eq_sum` (straddle total), this is the last *general* ingredient: for exactly one
+straddler with its own trace `[r, s]`, splitting `[p, q]` at `r` then at `s` gives
+`length[p,q] = length[p,r] + length[r,s] + length[s,q]`, matching a gap total, the straddle total,
+and a second gap total. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only
+the standard three.
+
+**Still not assembled**: the concrete one-straddler theorem (gluing the pieces above into one
+statement) and the fully general finite induction over an arbitrary number of straddlers (order
+their trace endpoints by `dist p ·`, identify consecutive gaps, apply `chord_decomposition_of_gap`
+to each, sum against `straddle_total_eq_sum` via repeated `hausdorff_segment_split`) — genuine
+finite combinatorial bookkeeping (a `Finset.sort`-style induction), no new geometry left to
+discover anywhere in this chain. Every individual geometric and measure-theoretic fact the *full*
+assembly could need now exists and is proved. Deprioritized further construction this session in
+favor of hunting further PROVED→VERIFIED flips per the standing `/goal`, since this piece, even
+finished, is infrastructure toward `prop:chorddecomp` and not itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
