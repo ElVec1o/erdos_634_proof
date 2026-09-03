@@ -2477,3 +2477,35 @@ its match to each straddler's own trace, all fall out. `lake build Erdos634.All`
 the final `[S(last), Q]` trailing segment to bridge to the full chord `[P,Q]`; the flush total; the
 member-specific `(3,7)` numerics. None of those are started. This file is infrastructure — it does
 not move any paper statement's label.
+
+## rem:route1uniform, session of 2026-09-03 continued (prime-case pivot)
+
+**Found already machine-checked, never recorded.** `Frontier.route1_spacings` and
+`.side_tile_third_vertex` (both pre-existing, axiom-clean, no `sorry`) together are exactly
+`rem:route1uniform`'s stated content: `side_tile_third_vertex` fixes `V`'s position as the second
+side tile's third vertex (`|V-B|=b`, given the tile's own cosine identity and `cb²+sb²=1`); the
+companion `|V-A|=c` is definitional (`V-A` is horizontal of length `c`). `route1_spacings` gives the
+five spacings the remark names: consecutive gaps `a, c-a, a` along `A,R₁,V,E` and `|AV|=|R₁E|=c` —
+in particular `E_x - V_x = f` (the remark's headline: the chord's endpoint overshoots the blocking
+edge by exactly one `a`-length, identically in `f`, with no threshold in `f` where it stops). Adding
+`| C \`rem:route1uniform\` | Route 1 escapes by exactly \`a\`, uniformly in \`f\` |
+\`Frontier.route1_spacings\`, \`.side_tile_third_vertex\` | VERIFIED |` to the table (previously
+absent — this remark had no row at all).
+
+**What this does NOT touch**: the remark's own forward-looking sentence — "What route 1 needs is
+therefore a statement about what covers `[V,E]`... We do not prove that here" — names exactly the
+open content that `conj:advance`'s own text and `rem:routeoneopen` (OPEN) already carry: (a) that a
+through-edge, not a junction, runs below the line at `V` (the `iπ`/`hiπ` witness `RouteOne.
+alpha_wall_figure_real` still takes as a hypothesis, not derived), and (b) that the exactly-filled
+wedge's last flank lies along the line. Neither is touched by this entry. I looked for a way to
+derive (a) from the already-built chord-decomposition machinery (`ChordTraceReal.*`): the natural
+guess — that `V` is interior to some *other* tile's straddling chord `[R₁,E]` on this same line,
+giving the straight angle from that tile — is **wrong**: `R₁` is a wall-junction point from a
+different (`(1,3)`-style) chord construction, not the endpoint of a straddling tile's trace through
+`E`, so no chord-interior argument places `V` there. This is a real, checked negative finding, not a
+proof; the paper's own "we do not prove that here" stands, and no shortcut through the recently-built
+chord machinery closes it. `GOAL_PRIMES.md`'s target 1 (cases (a)/(b)/(c)) remains fully open.
+
+This is genuine formalization-debt progress (a remark flips PROVED-by-prose → VERIFIED) but is
+**not** progress on the `/goal`: neither outcome (full proof, prime case) moved, and the crossing
+question that blocks `conj:advance` is exactly as far away as before.
