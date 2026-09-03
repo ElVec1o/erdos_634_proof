@@ -221,3 +221,4 @@ import Erdos634.CollarDisjointColM4
 import Erdos634.CollarAssembleM4
 import Erdos634.CollarCongruentM4
 import Erdos634.TileAdjacency
+import Erdos634.ChordTraceReal
