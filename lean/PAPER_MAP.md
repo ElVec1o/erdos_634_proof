@@ -3976,3 +3976,28 @@ junction figures, not a counting identity, and it is not proved here.
 Citation corrected from `none`.
 
 | O `prop:nogocensus` | the census contributes one relation, and it is spent | `CensusSide.side_equations_dependent`, `.census_does_not_determine_x`, `.solution_family_x_seven` | PROVED — the dependency and both solution families are VERIFIED; `x ≥ 7` is the junction typing, geometric, not done |
+
+### `prop:norm`: row cited `none` while `NormForm.lean` existed — and the file was weaker than the claim
+
+Two faults, both fixed. `NormForm.lean` (56 lines, axiom-clean, `Erdos634.All` clean).
+
+1. **Citation.** The row reads `none`; `Erdos634/NormForm.lean` has existed and carries the area-ratio
+   identity. Corrected.
+2. **The file did not prove what the proposition says.** Its `norm_identity` was
+   `3f² − e² = −(e² − 3f²)` — a sign flip by `ring`, never mentioning `ℚ(√3)` or a norm. The
+   proposition's claim is that the form **is** a norm and that norms are multiplicative, which is why
+   nothing in the ratio can force `N` composite. Added:
+   * `eq_neg_zsqrtd_norm` — `3f² − e² = −Zsqrtd.norm ⟨e, f⟩` in `ℤ[√3]`, against Mathlib's norm;
+   * `norm_mul'` — multiplicativity, via `Zsqrtd.norm_mul`;
+   * `prime_values` — the form takes prime values, witnesses `11, 23, 47, 71` at `(e,f) =
+     (1,2), (2,3), (1,4), (2,5)`, by `norm_num`.
+
+**Numeric check run (Rule 7).** The paper states "144 primes of this form occur with `gcd(e,f) = 1`,
+`e < f < 40`". Recomputed independently: **144**, exact agreement, first four `(1,2)→11`,
+`(2,3)→23`, `(1,4)→47`, `(2,5)→71`.
+
+**Label stays PROVED.** The proposition's substance — "no Galois or Diophantine obstruction *can*
+force `N` composite" — is a statement about the non-existence of proofs, not a theorem, as the file's
+own docstring already said. What is now VERIFIED is every part of it that is a mathematical claim.
+
+| O `prop:norm` | the area ratio cannot exclude primes | `NormForm.eq_neg_zsqrtd_norm`, `.norm_mul'`, `.prime_values`, `.area_ratio` | PROVED — norm identity, multiplicativity and prime values VERIFIED; the "no obstruction exists" clause is not a theorem |
