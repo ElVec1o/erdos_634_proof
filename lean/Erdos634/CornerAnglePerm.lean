@@ -1200,4 +1200,48 @@ theorem third_corner_of_base_apex (T : Tri) {α β : ℝ} (hrel : 3 * α + 2 * �
   rw [hbase, hapex] at hsum
   linarith
 
+/-- **`lem:census`, stated over the base-`β` target's own shape.**  The same conclusion as
+`congruentDissection_vertex_census`, with the `htarget` disjunction replaced by what the paper
+actually says about the target: it is isosceles with base angles `β`, the apex being the remaining
+corner.  `htarget_of_isosceles` supplies the rest. -/
+theorem congruentDissection_vertex_census_isosceles {N : ℕ} (D : CongruentDissection N)
+    (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (a : Fin 3)
+    (hbase₁ : cornerAngle (D.target.pts (a + 1 + 1)) (D.target.pts (a + 1))
+      (D.target.pts (a + 1 + 2)) = β)
+    (hbase₂ : cornerAngle (D.target.pts (a + 2 + 1)) (D.target.pts (a + 2))
+      (D.target.pts (a + 2 + 2)) = β) :
+    ((cornerPts D.toDissection).filter (fun v =>
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ)
+        = (0, 1, 3))).card
+      = 1 + ((cornerPts D.toDissection).filter (fun v =>
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ)
+        = (3, 2, 0))).card
+        + ((cornerPts D.toDissection).filter (fun v =>
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ)
+        = (4, 3, 1))).card
+        + 2 * ((cornerPts D.toDissection).filter (fun v =>
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ)
+        = (6, 4, 0))).card :=
+  congruentDissection_vertex_census D α β γ hαβ hαγ hαπ hα2π hα0 hβγ hβπ hβ2π hβ0 hγπ hγ2π hγ0
+    hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr
+    (htarget_of_isosceles D.target hrel a hbase₁ hbase₂)
+
 end Erdos634.Geometry

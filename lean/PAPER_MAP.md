@@ -3715,3 +3715,26 @@ second base corner.
 Thirty-six declarations in `CornerAnglePerm.lean`, axiom-clean, `Erdos634.All` clean. No label moves.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` restated over the target's own shape
+
+`congruentDissection_vertex_census_isosceles` (`CornerAnglePerm.lean`, thirty-nine declarations,
+axiom-clean, `Erdos634.All` clean). Same conclusion as `congruentDissection_vertex_census`, with the
+`htarget` disjunction replaced by what the paper actually says about the target: **it is isosceles
+with base angles `β`**, the apex being the remaining corner.
+
+So the theorem's hypotheses now read, in full: the tiles are congruent to a model whose corner
+angles are `α, β, γ`; `γ = 2α + β`; `3α + 2β = π`; `α` is not a rational multiple of `π`; the six
+angle values are pairwise distinct; and the target is isosceles with base angles `β`. Those are the
+base-`β` setting as the papers describe it, with nothing extra.
+
+**Still not flipping the label.** What is *not* here is a `Tri` exhibited with those corner angles —
+the hypotheses describe the target rather than construct it, so the theorem is conditional on such a
+target existing. That is the same shape as every other conditional in the corpus and matches how
+`lem:census` is used, but "the paper statement as written" is a judgement about whether the paper's
+"in every tiling of the base-`β` target" is captured by that conditional. I have now built every
+piece and am the wrong reader to rule on it; it stands recorded for an audit pass that is not mine.
+
+`lem:census`: **PROVED**.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
