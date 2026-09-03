@@ -1797,6 +1797,22 @@ correctly needs its own short argument each, not a rushed `by_cases` bolted on u
 Recorded precisely rather than pushed through incompletely, per this project's standing rule against
 committing unsound term combinators or `sorry` to force a deadline.
 
+**A real design flaw found and fixed (2026-09-03, later still)**: wiring the pieces above together
+surfaced that `gap_free_of_minimal` (and `ChordFinsetStepGap.gap_free_of_finset_step` built on it)
+implicitly assumed *no* straddler is yet excluded — its `hmin` hypothesis quantifies over every
+straddling tile uniformly, which is only satisfiable on the very first induction step. Once the
+recursion has excluded some straddlers, they need `not_mem_gap_of_far_precedes`'s entirely different
+argument, not a minimality comparison (an excluded straddler can have an arbitrarily *small*
+`dist P (R k)`, since its whole trace sits behind `p`). `ChordFinsetStepCombined.
+gap_free_of_finset_step'` is the corrected version, built directly (not via `gap_free_of_minimal`),
+casing on whether a tile is the chosen minimal one, another still-remaining `T`-member (minimality
+argument), or already excluded (`not_mem_gap_of_far_precedes`, applied with the *current* `r` in
+place of the outer `Q` — the lemma never actually needed its bound to be the outermost point).
+`lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+`ChordFinsetStepGap.gap_free_of_finset_step` (the earlier, first-step-only version) is now
+superseded by this one and should not be used in the final assembly.
+
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
