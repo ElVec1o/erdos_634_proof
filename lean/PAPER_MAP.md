@@ -3942,3 +3942,37 @@ same reason (`T_k`'s edge *ends* at `V_k`).
 No Lean changes this tick.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `prop:nogocensus`: cited `none`, arithmetic now VERIFIED — and it is *not* the vertex census
+
+New file `Erdos634/CensusSideRelation.lean` (67 lines, five theorems, axiom-clean, `Erdos634.All`
+clean, compiled first attempt).
+
+**First, a misreading corrected before it did damage.** `prop:nogocensus` reads "the census
+contributes one relation, and it is already spent", which looks like the vertex census whose rank
+clause was proved earlier tonight (`OrderForcing.census_gamma_dependent`). **It is not.** It is a
+*side* junction count for a specific member — `7` `a`-edges and `4` `c`-edges giving `7γ, 11β, 4α`,
+the apex and base corner absorbing one each, the rest over `20` slots at `10` junctions. Checked
+against the paper before reusing anything; nothing transferred.
+
+**What is now formalized.** With `x` the number of `{γ,α,β}` junctions, `u` those whose `γ` sits on a
+side tile opposite a `β`, and `A, B` the `α`/`β` slot totals at the `10 − x` junctions of type
+`{3α,2β}`:
+
+* `side_equations_dependent` — given only `A + B = 2(10 − x)`, the two counting equations' left sides
+  sum to `13` for *every* `x` and `u`. That is the paper's "adding gives the identity `13 = 13`", so
+  the two equations are dependent.
+* `solution_x_ten`, `solution_x_seven`, `solution_family_x_seven` — both values occur, and at `x = 7`
+  the paper's whole family `u = 4 + A`, `B = 6 − A` for `0 ≤ A ≤ 3` is exhibited.
+* `census_does_not_determine_x` — two solutions with different `x`, which is the proposition's
+  conclusion.
+
+**What is not formalized, stated plainly.** The clause `x ≥ 7` is **not** arithmetic. Its content is
+the junction typing — a `{3α,2β}` junction holds no `γ` and a `{γ,α,β}` junction exactly one, so the
+seven `γ`s occupy seven distinct junctions of the latter kind. That is a geometric input about
+junction figures, not a counting identity, and it is not proved here.
+
+**Label stays PROVED**, for that reason: the proposition's own statement leads with `x ≥ 7`.
+Citation corrected from `none`.
+
+| O `prop:nogocensus` | the census contributes one relation, and it is spent | `CensusSide.side_equations_dependent`, `.census_does_not_determine_x`, `.solution_family_x_seven` | PROVED — the dependency and both solution families are VERIFIED; `x ≥ 7` is the junction typing, geometric, not done |
