@@ -4327,3 +4327,40 @@ found by hand beyond what was already checked (strict full-edge and T-junction-i
 both computed). Recording it as **unresolved** rather than continuing to search — the reproducible
 script stands, and finding the exact source of a hand-count slip in past work is not obviously worth
 further ticks against the `/goal`.
+
+### `hwhole`'s wall identified exactly: it is `rem:overrunshape`, and the paper already proves it survives local refutation
+
+Attempted this tick to attack `hwhole`'s interior-end overrun (the previous entry's "the wall
+again") directly. Before writing any Lean, read the paper remark that entry pointed at
+(`rem:n1gapexact`, itself only a forward pointer) and its neighbour `rem:overrunshape`. **That
+remark already settles what kind of attack can work here, and it is not this one.**
+
+`rem:overrunshape` derives the overrun configuration's exact shape: a `π`-figure count forces the
+only extra tile at `V_k` to present `α`; the angle wedge between the chord's extension and
+`P_{k-1}`'s `c`-edge is exactly `α`, so the configuration is **angularly consistent — "cannot be
+refuted by counting angles, which is why it has survived."** Checking the two ways to close the
+residual `c`-edge, one (`b`) fails by `gap_e_squared` (the shortfall `c−b=e²` is not a member sum);
+the other closes exactly, forcing either a second crossing further along, or an exact match with
+`lem:ccorner`'s own predicted column configuration. The paper's own conclusion: **"the overrun is
+geometrically coherent, not merely angularly so, and it will not be refuted locally."**
+
+**This is precisely the configuration Route 1's `hwhole` obstruction is asking to exclude**, and the
+paper has already proved, independently of anything built this session, that no local argument —
+angle-counting, direct edge-closure at the near endpoint, or (implicitly) any argument of the same
+shape as `RouteOneThroughEdge.lean`'s flank/`VE_dichotomy` mechanism — can rule it out. This is not
+a new discovery that the wall is hard; it is a precise identification of *which named remark* the
+wall already is, confirmed from the source rather than inferred.
+
+**Consequence, stated as a sharp negative, not a shrug.** Route 1, including this session's own
+flank-propagation result, **cannot be extended past `hwhole` by further local work** — the paper
+proves the surviving configuration is immune to exactly that class of argument. This also explains,
+retroactively, the project's 2026-08-29 standing directive to halt local boundary exhaustion and
+e-parameter edge tracing in favor of global/scale-dependent invariants: `rem:overrunshape` is why.
+No further tick should attempt to close `hwhole` by tracing edges or angles at `V_k` — that avenue
+is now closed, not merely unpromising. **Route 2 (`conj:advance` gap 2's walk enumeration) and
+genuinely global/scale-dependent arguments are what remain**, exactly as `GOAL_PRIMES.md` already
+recommended ("Route 2 is the shorter path... more precisely scoped than Route 1").
+
+No label moves (`conj:advance` stays CONJECTURE; nothing here is a new theorem). The value is
+negative and sharp: one more local route is now confirmed dead, by the paper's own argument, not by
+running out of tricks.
