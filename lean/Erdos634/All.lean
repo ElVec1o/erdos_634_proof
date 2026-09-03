@@ -235,3 +235,4 @@ import Erdos634.ChordDecompositionGap
 import Erdos634.ChordLengthAdditivity
 import Erdos634.ChordDecompositionOneStraddler
 import Erdos634.ChordBetweennessDisjoint
+import Erdos634.ChordDecompositionOneStraddlerFinal

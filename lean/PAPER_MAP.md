@@ -1364,6 +1364,23 @@ Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard thre
 derived from "no other tile straddles" plus the betweenness order in a follow-up pass — not yet
 wired together, but the blocking fact no longer needs deriving.
 
+**The wiring done, same session, later still (2026-09-03)**:
+`ChordDecompositionOneStraddlerFinal.chord_decomposition_one_straddler'` — the follow-up pass
+flagged above. Same conclusion as `chord_decomposition_one_straddler`, but its two `hgap`
+hypotheses are now *derived* rather than assumed: given only the natural global condition
+`hunique` ("no tile other than the one straddler `m` straddles anywhere," i.e.
+`∀ k ≠ m, ¬(tile k has a point strictly below and a point strictly above the line)`) plus the
+betweenness order and `m`'s own trace `= segment r s`, it proves both open gaps `(p, r)` and
+`(s, q)` are free of every tile's interior, then calls `chord_decomposition_one_straddler`
+directly. The derivation: for `y` in an open gap with `y` interior to some tile `k`,
+`interior_on_line_straddles` gives that `k` straddles; if `k ≠ m`, `hunique` contradicts that
+directly; if `k = m`, `openSegment_disjoint_segment_of_wbtw` (applied to the gap-side betweenness
+order, using `Wbtw.trans_right_left`/`Wbtw.symm`/`segment_symm`/`openSegment_symm` to put each gap
+into the lemma's `(p,r)`/`[r,s]` shape) shows `y` can't lie in `m`'s own trace, contradicting
+`hymem`. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard
+three. This closes out the one-straddler case completely from the natural hypothesis — no
+remaining gap between what's assumed and what a real dissection actually gives you.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
