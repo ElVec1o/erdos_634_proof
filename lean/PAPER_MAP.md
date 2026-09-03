@@ -1285,13 +1285,28 @@ its two frontier endpoints, is the only case this assembly needs — the degener
 "chord" coincides with a target edge is excluded by the target itself being required to straddle).
 `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three.
 
-**Still not built**: item (3) and (5) — the actual finite ordering of straddler segments along the
-chord's own `ℝ`-parametrization, and the final summation gluing `wall_partition`'s per-gap totals
-to `straddle_total_eq_sum`. Every geometric fact this needs now exists; what remains is a genuine
-but purely combinatorial/measure-theoretic bookkeeping task (sorting a finite set of segments on a
-line and summing over the resulting partition). Deprioritized further construction this session in
-favor of hunting further PROVED→VERIFIED flips per the standing `/goal`, since this piece, even
-finished, is infrastructure toward `prop:chorddecomp` and not itself a flip.
+**A first fully complete case landed, same session, later still**:
+`ChordDecompositionNoStraddle.chord_decomposition_of_no_straddlers` — a genuine, standalone,
+member-independent theorem: given the chord's own two distinct endpoints and a target that
+straddles the line, if **no tile at all** straddles it, the near-side chain covers the whole chord
+exactly, with lengths summing to the chord's own length. This is exactly `prop:chorddecomp`'s
+"flush total" in the case where it *is* the whole total — realistic whenever a chord lies entirely
+along tile boundaries. The generalized interior lemma this needed,
+`ChordOpenSegmentInterior.Tri.straddle_openSegment_interior` (any point strictly between two of a
+straddler's own chord points is interior — `straddle_midpoint_interior`'s argument with the fixed
+weight `1/2` replaced by a general `s ∈ (0, 1)`), supplies `wall_cover`'s `hint` for the *whole*
+open chord at once. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the
+standard three.
+
+**Still not built**: the fully general case with straddlers present, which needs the finite
+ordering of straddler segments along the chord and gluing `wall_partition`'s per-gap totals to
+`straddle_total_eq_sum` — genuine combinatorial/measure bookkeeping, no new geometry. Also not yet
+derived: `p ≠ q` for the chord's own endpoints from the straddle hypothesis alone (the current
+theorem takes it, and the segment membership facts, as hypotheses a caller supplies from
+`chord_isSegment` — deriving them internally needs identifying two *distinct* crossing edges from
+the three vertex signs, not attempted). Deprioritized further construction this session in favor of
+hunting further PROVED→VERIFIED flips per the standing `/goal`, since this piece, even finished, is
+infrastructure toward `prop:chorddecomp` and not itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
