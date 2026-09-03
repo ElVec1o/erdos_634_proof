@@ -3850,3 +3850,35 @@ shorten that — it means the *only* thing missing is the flux development, stat
 | M `lem:value` | `C_{f_α}(t) = ±(c+a−b)` for every placement | `InvariantCore.tile_value_core`, `.tile_value_pm`, `SixtyInvariant.cross_check_two_thirds` | PROVED — the arithmetic is VERIFIED and cited here for the first time; the blocker is the flux functional on an oriented placement, which does not exist |
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### The flux cluster: three rows cite `none`, all three have cores — one real blocker between them
+
+Following `lem:value`'s correction, checked the two rows that inherit from it. Same pattern, twice
+more.
+
+* **`lem:cancel`** — row: "`none` … needs the flux functional `Φ` on a dissection boundary, and the
+  grid-direction cancellation argument; **no Lean development exists**". But
+  `InvariantCore.cancellation_core` *is* the cancellation argument, in the form the lemma needs:
+  given an involution `neg` on a directed-edge index with `Lint (neg d) = Lint d` and
+  `f (neg d) = − f d`, the interior contributions cancel and `∑ (Lint + Lbd)·f = ∑ Lbd·f` — the tile
+  sum equals the boundary functional. `.cancellation_core_real` is the `ℝ` version. So "no Lean
+  development exists" is false; what does not exist is `Φ` itself and the instantiation of the index
+  type by a dissection's directed edges.
+* **`cor:int`** — row: `none`. Its parity clause `M_α ≡ M_β ≡ N (mod 2)` is
+  `SixtyInvariant.parity_obstruction`: from `n₊ + n₋ = N` and `n₊ − n₋ = q`, `q ≡ N (mod 2)`. The
+  integrality clause is what needs `lem:cancel`.
+
+**Three rows, one blocker.** `lem:value` (the tile's value), `lem:cancel` (the cancellation), and
+`cor:int` (integrality and parity) each have their arithmetic or combinatorial core in the corpus
+and each cite `none`. What is genuinely absent, and absent only once, is **the flux functional `Φ_f`
+evaluated on a dissection's oriented boundary, together with the identification of the abstract
+directed-edge index of `cancellation_core` with a real dissection's edges.** Every other ingredient
+of the three is present.
+
+Citations corrected for all three; **no labels move** — the blocker is real and none of the three
+statements is reached without it. `prop:eqspecint`, which inherits from `cor:int`, is unchanged.
+
+| M `lem:cancel` | tile values sum to the boundary flux | `InvariantCore.cancellation_core`, `.cancellation_core_real` | PROVED — the cancellation argument is VERIFIED and cited here for the first time; missing is `Φ` on a dissection boundary and the edge-index instantiation |
+| M `cor:int` | `M_α, M_β` integral and `≡ N (mod 2)` | `SixtyInvariant.parity_obstruction` (parity clause) | PROVED — parity clause's arithmetic is VERIFIED and cited here for the first time; integrality needs `lem:cancel`'s missing `Φ` |
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
