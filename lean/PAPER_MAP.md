@@ -1854,7 +1854,17 @@ order-theoretic piece already built this session (`gap_free_of_finset_step'`, `e
 collapse) transfers directly to this corrected target unchanged — what needs rebuilding is only the
 top-level induction's *conclusion* (an existence statement producing `g`, `tiles`, and a proof they
 satisfy `chord_decomposition_of_chain`'s hypotheses) and the final application, not the supporting
-lemmas. Not yet attempted under this corrected framing.
+lemmas. Attempted under this corrected framing: the base case (`T = ∅`) needs `g 0 = p`, `g 1 = Q`,
+`g 0 ≠ g 1` — i.e. `p ≠ Q` — exactly the same degenerate case (`p = Q`, nothing left over) that
+`ChordFinsetDegenerate` resolved for the flat-sum formulation, but here it breaks the *sequence*
+itself (`g` would need `g 0 = g 1`, violating the distinctness `wbtw_chain_bounded` needs), not
+just one summand. It needs its own resolution in this formulation — likely `chord_decomposition_of_
+chain` itself tolerating `n` such that the final gap is degenerate, or the existence statement
+returning `n = 0` with `g` collapsing to a single point when `p = Q`. Also needs `Fin N` nonempty
+(a `tiles : ℕ → Fin N` function must exist even when unused for `n = 0`) as a standing hypothesis —
+true for any genuine dissection but not otherwise available. Both are real, small, but unresolved;
+a second attempt file was discarded rather than committed with a `sorry` or a hand-waved
+`Classical.arbitrary` over a possibly-empty type.
 
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
