@@ -1254,13 +1254,26 @@ many straddler segments along the chord (via the `ℝ`-parametrization `isSegmen
 proof already builds); (4) the complementary gaps between consecutive straddler segments are
 exactly the pieces satisfying `wall_cover`'s `hwall` hypothesis (no straddler's interior meets
 them, by construction) — apply `wall_partition` to each; (5) total chord length = `straddle_total_eq_sum`'s
-straddle total + the sum of `wall_partition`'s gap totals. Every individual ingredient for this now
-exists; what remains is the finite-ordering/gluing argument, a real but now much smaller task than
-before this find. Not yet built — recorded precisely so the next pass assembles instead of
-reinventing `wall_cover`/`wall_partition`, which was the actual bulk of the missing content.
-Deprioritized further construction this session in favor of hunting further PROVED→VERIFIED flips
-per the standing `/goal`, since this piece, even finished, is infrastructure toward
-`prop:chorddecomp` and not itself a flip.
+straddle total + the sum of `wall_partition`'s gap totals.
+
+**Two assembly pieces landed, same session, later still**: `ChordAssembly.chord_isSegment` — item
+(1) above, applying `isSegment_of_convex_inter_hyperplane` to `D.target.carrier` itself (via
+`Tri.convex_inter_hyperplane`/`.isCompact_inter_hyperplane`, already built for tiles, reused
+verbatim for the target). `ChordInteriorStraddle.interior_on_line_straddles` — the precise link for
+item (4): a tile with an *interior* point on the chord line must straddle it (moving a small
+distance along a direction where `f` increases, resp. decreases, from that interior point stays in
+the tile while leaving `f ≤ c`, resp. `f ≥ c`, so `sign_trichotomy`'s two flush branches both fail).
+This makes "`wall_cover`'s `hwall`" and "no straddler's trace meets here" the same condition,
+exactly what item (4)'s gap construction needs. Both axiom-clean, no `sorry`,
+`lake build Erdos634.All` clean.
+
+**Still not built**: item (2) applied concretely (each straddler's own trace as a segment — a
+direct instantiation, not new content), and items (3) and (5) — the actual finite ordering of
+straddler segments along the chord's own `ℝ`-parametrization and the final summation. This is now
+squarely a finite combinatorial/measure bookkeeping task, not a geometry one; every geometric fact
+it needs exists. Deprioritized further construction this session in favor of hunting further
+PROVED→VERIFIED flips per the standing `/goal`, since this piece, even finished, is infrastructure
+toward `prop:chorddecomp` and not itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
