@@ -2399,3 +2399,40 @@ Two attempts at the full assembly now agree on every piece except this one struc
 attempt was discarded rather than committed with a `sorry`, per this project's standing rule.
 Restating `hmtrace` as the point-identity form is the concrete next step, before re-attempting the
 same flat-case-split proof.
+
+## exists_geometric_chain: COMPLETE, session of 2026-09-03 continued
+
+**`ChordFinsetGeometricChain.exists_geometric_chain` built and fully verified.** Third attempt at
+the full assembly, after two design gaps found and fixed:
+
+1. `gap_free_of_finset_step'`'s own `T` parameter must include `m` itself (`(m :: L').toFinset`, not
+   `L'.toFinset`) — its `hexcl` hypothesis is universally quantified over *all* `k ∉ T`, and if `T`
+   excludes `m`, the type checker demands a proof of `Wbtw P (S m) bound` (generally false — `S m`
+   comes *after* `bound`, not before) even though the theorem's own proof never actually invokes
+   `hexcl` at `k = m` internally. Fixed by including `m` in `T` (with `hmin` at `k = m` trivial via
+   `le_refl`), matching how `T` conceptually means "every candidate for minimality," `m` included.
+2. `hmtrace`'s conclusion needed restating as the specific point identity
+   (`g (2i+1) = R (L.get i) ∧ g (2i+2) = S (L.get i)`), not just segment equality — the weaker form
+   doesn't pin down orientation, which `reach_of_le_all` needs directly.
+3. `hchain`'s domain needed narrowing to `i + 2 ≤ 2 * L.length` (dropping chain's own `+1`): the
+   trailing index `2 * L.length + 1` is not determined by the recursion on `L` at all (it's `Q`,
+   supplied by whichever future top-level wrapper appends the final `[S(last), Q]` segment
+   separately, exactly as the "corrected plan" entry above already specifies) — trying to prove
+   anything about it here was asking for a fact with no content to prove it from.
+
+Every one of the ~15 remaining small mechanical issues (index arithmetic, `List.get` reduction,
+tuple-shape mismatches between `hglobal`'s 3-way and `gap_free_of_finset_step'`'s 2-way) was fixed
+by finding the actual root cause rather than patching symptoms. `lake build Erdos634.All` clean, no
+`sorry`, `#print axioms` confirms only the standard three.
+
+**What this closes**: the entire `Finset`/`List`-sort combinatorial core for the general straddler
+induction. Given a `List` of straddler indices in sorted order (nearest-to-`bound` first — assumed
+directly, matching `chord_decomposition_of_chain`'s own established pattern for `hinj`) satisfying
+the natural nondegeneracy/general-position hypotheses, `exists_geometric_chain` produces the point
+sequence with the exact properties needed to feed `chord_decomposition_of_chain` (up to the trailing
+segment, appended separately). What remains for the *complete* `prop:chorddecomp` skeleton is: (1)
+actually sorting a `Finset` straddler set into such a `List` (pure order-theoretic `Finset`/`List`
+API work — `wbtw_trichotomy_of_wbtw`/`wbtw_iff_dist_le_of_wbtw` already supply the order,
+`Finset.sort`/`List.insertionSort` do the rest), and (2) the small top-level wrapper appending the
+final `[S(last), Q]` segment via `chord_decomposition_of_gap'`. Neither needs any further geometric
+fact — every one is already built and verified in this corpus.
