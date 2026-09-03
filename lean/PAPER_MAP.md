@@ -2375,3 +2375,27 @@ flat (non-nested) `match i with | 0 | 1 | (n+2)` case split for each of `hchain`
 rather than the more compact nested form attempted here. No further lemma is missing; this is
 finishing a mechanical case-by-case rewrite that this attempt got most, but not all, of the way
 through.
+
+## Second full-assembly attempt, session of 2026-09-03 continued -- a real design gap found
+
+Rewrote with a flat (non-nested) case split as specified above. It surfaced a genuine design gap
+in `exists_geometric_chain`'s own statement, not an arithmetic slip: its `hmtrace` conclusion
+asserts `(D.tile (L.get i)).carrier ∩ line = segment ℝ (g (2i+1)) (g (2i+2))` — segment *equality*
+only. `reach_of_le_all` needs the *specific point identity* `g' (2i+1) = R (...) ∧ g' (2i+2) = S
+(...)`, which segment equality does not give (two point-pairs can define the same segment without
+being the same pair — swapped orientation is not excluded by the set equality alone). The fix is to
+state `exists_geometric_chain`'s `hmtrace` conclusion as the stronger point-identity form directly
+(which trivially implies the segment form the caller, `chord_decomposition_of_chain`, actually
+needs) — not a new mathematical fact, but a genuine restatement needed before the proof can close.
+
+Remaining smaller issues from this attempt, for completeness: two missing hypotheses in the `nil`
+case's `intro` line (undercounted after adding `hbne`/`hptdist` to the signature); a doubled
+`List.mem_cons_of_mem m h` application; `hglobal`'s 3-way tuple destructured inconsistently in one
+spot; and a couple of `rw` calls needing `show`/`change` instead, since rewriting under a dependent
+`⟨_a, h⟩` `Fin` index is not motive-correct the way a direct `rw` expects. All are small and
+mechanical once the `hmtrace` shape is fixed first — none reopen new mathematical content.
+
+Two attempts at the full assembly now agree on every piece except this one structural point. The
+attempt was discarded rather than committed with a `sorry`, per this project's standing rule.
+Restating `hmtrace` as the point-identity form is the concrete next step, before re-attempting the
+same flat-case-split proof.
