@@ -1813,6 +1813,27 @@ place of the outer `Q` — the lemma never actually needed its bound to be the o
 `ChordFinsetStepGap.gap_free_of_finset_step` (the earlier, first-step-only version) is now
 superseded by this one and should not be used in the final assembly.
 
+**The final assembly attempt, and the one piece it's actually missing (2026-09-03, later still)**:
+assembled `gap_free_of_all_excluded`, `gap_free_of_finset_step'`, `excl_new_self`/
+`excl_carries_forward`, `far_precedes_of_minimal`, and `chord_decomposition_of_trivial_gap` into one
+`Finset.strongInduction`. The degenerate branch (`p = R m`, reusing the IH directly) checks out on
+paper cleanly. The nondegenerate branch (via `chord_decomposition_cons`) reduces, after combining
+with the IH, to one remaining identity neither this session nor any earlier one has built: the
+*flush* sum itself splits the same way the raw length does —
+`∑ e ∈ lineChain, hausdorff(edge e ∩ segment p Q) = (∑ ... ∩ segment p r) + (∑ ... ∩ segment s Q)`
+for the straddler's own `r, s` — because no flush edge (belonging to a *non*-straddling tile) can
+touch a point interior to the straddling tile `m`, by interior-disjointness. This is very likely
+already true and probably provable from existing `Dissection` API (`tile_subset_target` plus
+whatever states disjoint tiles' interiors exclude each other's frontiers), but it has not been
+checked or built, and asserting it without checking would be exactly the kind of unverified claim
+`/goal` forbids. The attempt file was discarded (not committed) rather than left with a `sorry`.
+
+This is now the *only* missing piece for `chord_decomposition_of_finset`, precisely located: a
+flush-sum additivity lemma splitting `∑ e ∈ lineChain, hausdorff(edge e ∩ segment u v)` at any point
+known to lie in a straddler's open trace-interior gap. Every other piece — base case, step
+gap-freedom (both minimality and exclusion cases), both invariant-maintenance directions, the
+degenerate collapse, and the recursive restriction — is built and independently verified.
+
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
