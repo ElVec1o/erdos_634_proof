@@ -1490,6 +1490,21 @@ value is unlocking the *general* induction over an arbitrary straddler count, wh
 a fresh by-hand betweenness argument at every new length once the straddler traces are packaged as
 such a sequence `g`.
 
+**The bounded variant, same session, later still (2026-09-03)**:
+`WbtwChain.wbtw_chain_bounded` / `wbtw_chain_step_bounded` — `wbtw_chain` itself needs
+`Function.Injective g` on *all* of `ℕ`, which no genuinely finite chain of straddler trace
+endpoints can supply (any sensible packaging of a finite straddler list into `g : ℕ → Plane` is
+eventually constant or repeats, breaking global injectivity outright). This finite-range version
+threads a bound `K` through both theorems and their induction, needing `hchain`, `hne` and
+injectivity only for indices `≤ K`: `Wbtw ℝ (g i) (g j) (g k)` for every `i ≤ j ≤ k ≤ K`. `lake
+build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three for both.
+
+This is the form the general induction will actually call: a `Dissection`'s straddler set is a
+`Finset (Fin N)` (`ChordStraddleTotal.straddlers`), always finite, so packaging its sorted trace
+endpoints as `g : Fin (2n+2) → Plane` (or `g : ℕ → Plane` constant past `2n+1`) and invoking
+`wbtw_chain_bounded` with `K = 2n+1` is now a closed, checkable step — no infinite-injectivity
+obligation left to discharge first.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated

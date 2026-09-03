@@ -58,4 +58,45 @@ theorem wbtw_chain {g : ℕ → Plane}
       have hne' : g j ≠ g k := fun h => hjk_eq (hinj h)
       exact ih.trans_expand_left h2 hne'
 
+/-- **The one-step chain fact, bounded to a finite range.** As `wbtw_chain_step`, but `hchain` and
+`hne` need only hold below a bound `K` (what a genuinely finite chain of straddler traces actually
+supplies), rather than for every natural number. -/
+theorem wbtw_chain_step_bounded {g : ℕ → Plane} (K : ℕ)
+    (hchain : ∀ n, n + 2 ≤ K → Wbtw ℝ (g n) (g (n + 1)) (g (n + 2)))
+    (hne : ∀ n, n + 1 ≤ K → g n ≠ g (n + 1)) :
+    ∀ i j, i < j → j + 1 ≤ K → Wbtw ℝ (g i) (g j) (g (j + 1)) := by
+  intro i j hij
+  induction j, hij using Nat.le_induction with
+  | base => intro hjK; simpa using hchain i (by omega)
+  | succ j hij ih =>
+    intro hjK
+    have h2 := hchain j (by omega)
+    exact (ih (by omega)).trans_expand_right h2 (hne j (by omega))
+
+/-- **Betweenness along a finite ordered chain.** As `wbtw_chain`, but `hchain`, `hne` and
+injectivity need only hold within a finite range `≤ K` — exactly what a genuinely finite sequence
+of straddler trace endpoints supplies (an infinite injective extension is otherwise needed for
+nothing). Given every consecutive triple of `g` below `K` satisfies `Wbtw`, every consecutive pair
+below `K` is distinct, and `g` is injective on `{0, ..., K}`, `Wbtw ℝ (g i) (g j) (g k)` holds for
+every `i ≤ j ≤ k ≤ K`. -/
+theorem wbtw_chain_bounded {g : ℕ → Plane} (K : ℕ)
+    (hchain : ∀ n, n + 2 ≤ K → Wbtw ℝ (g n) (g (n + 1)) (g (n + 2)))
+    (hne : ∀ n, n + 1 ≤ K → g n ≠ g (n + 1))
+    (hinj : ∀ a b, a ≤ K → b ≤ K → a ≠ b → g a ≠ g b) :
+    ∀ i j k, i ≤ j → j ≤ k → k ≤ K → Wbtw ℝ (g i) (g j) (g k) := by
+  intro i j k hij hjk
+  rcases eq_or_lt_of_le hij with rfl | hij'
+  · intro _; exact wbtw_self_left ℝ (g i) (g k)
+  induction k, hjk using Nat.le_induction with
+  | base => intro _; exact wbtw_self_right ℝ (g i) (g j)
+  | succ k hjk ih =>
+    intro hkK
+    by_cases hjk_eq : j = k
+    · subst hjk_eq
+      exact wbtw_chain_step_bounded K hchain hne i j hij' (by omega)
+    · have hjltk : j < k := lt_of_le_of_ne hjk hjk_eq
+      have h2 := wbtw_chain_step_bounded K hchain hne j k hjltk (by omega)
+      have hne' : g j ≠ g k := hinj j k (by omega) (by omega) hjk_eq
+      exact (ih (by omega)).trans_expand_left h2 hne'
+
 end Erdos634.ChordTraceReal
