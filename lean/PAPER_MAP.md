@@ -1214,11 +1214,29 @@ a *pointwise* claim. It survives as a *measure-theoretic* one, though: such poin
 (vertices or edge-endpoints of the dissection, hence finitely many), and `length_sum_of_cover`
 already tolerates a finite exceptional set `F` in its own covering hypothesis
 (`σ \ F ⊆ ⋃ i, E i`) — so the fix is to fold these finitely many bad points into that `F`, not to
-strengthen the pointwise claim. This is a real, well-scoped next target, but the exact finite
-exceptional set (junction points where two same-side flush tiles meet end-to-end) needs to be
-identified and shown finite before the assembly can proceed — not yet attempted. Deprioritized
-this session in favor of hunting further PROVED→VERIFIED flips per the standing `/goal`, since this
-piece, even finished, is infrastructure toward `prop:chorddecomp` and not itself a flip.
+strengthen the pointwise claim.
+
+**Correction to the correction, same session, later still**: on rebuilding this carefully
+(`ChordFlushCover.lean`, new), the "T-junction" concern turns out to be a false alarm too, once the
+**standard non-vertex convention already used everywhere else in this project**
+(`Dissection.two_tiles_at_edge_point`/`chain_endpoints`'s own `hxv`) is applied consistently. If `x`
+is not a vertex of *any* tile and both tiles at `x` were `upperFlush`, each tile's edge through `x`
+is non-vertex-relative to that tile too, so `sameside_edges_subsingleton` would force the *two
+edges themselves* (not just the point `x`) to overlap in more than one point — which the lemma
+already rules out. The only way to actually reach an `upperFlush`-`upperFlush` junction is at a
+*vertex* of one of the tiles, and vertices are exactly the exceptional set already excluded.
+`upperFlush_edge_endpoints_eq_c` builds the key local fact this needs: a non-vertex point on an
+`upperFlush` tile's edge forces *both* of that edge's endpoints exactly onto the chord line (a
+strict convex combination of two values `≥ c` equals `c` only if both do). `lake build Erdos634.All`
+clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+**What still isn't built**: turning the local fact into the full "`upperFlush` is never needed"
+covering theorem needs walking along a maximal run of same-side flush edges sharing collinear
+endpoints, to reach the genuine dissection vertex where a run must end — a chain-style induction
+comparable to `BaseChain`/`WallChain`'s existing wall development, not yet attempted. This is a
+real, well-scoped, but sizeable next target. Deprioritized this session in favor of hunting further
+PROVED→VERIFIED flips per the standing `/goal`, since this piece, even finished, is infrastructure
+toward `prop:chorddecomp` and not itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
