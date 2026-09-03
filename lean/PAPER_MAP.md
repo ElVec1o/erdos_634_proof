@@ -1721,6 +1721,21 @@ need to construct it) but is not yet built. `prop:chorddecomp` itself further ne
 and the member-specific `(3,7)` numerics on top of this — this file is the general,
 member-independent skeleton, not the full proposition.
 
+**The global-bound simplification, same session, later still (2026-09-03, later still)**:
+`WbtwTraceInTarget.wbtw_of_mem_tile_trace` — the key simplification for the `Finset`-sort
+construction: fixing the target's own chord endpoints `P, Q` (`chord_isSegment`) once for the whole
+dissection, *any* point of *any* tile's trace satisfies `Wbtw ℝ P x Q` — via `tile_subset_target`
+(a tile's carrier ⊆ the target's) plus `mem_segment_iff_wbtw`. `lake build Erdos634.All` clean, no
+`sorry`, `#print axioms` confirms only the standard three.
+
+This removes the awkwardness that would otherwise recur throughout the sort construction: every
+`wbtw_trichotomy_of_wbtw`/`_antisymm_`/`_trans_` call needs a *common* upper bound between the two
+points compared, and without this lemma that bound would need to be re-derived (or re-threaded) for
+each shifting recursive sub-chord `[p, q]`. With it, `Q` (the target's own far endpoint) serves as
+that common bound throughout the whole construction unconditionally, for every straddler
+simultaneously — comparisons only ever need `Wbtw P p Q` (how far the current sub-chord start has
+advanced) tracked alongside the recursion, not a fresh bound per straddler.
+
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
