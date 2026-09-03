@@ -2011,10 +2011,14 @@ through the same `List` induction `exists_injective_chain` already demonstrates 
 `List` (as `exists_injective_chain` does, for good reason: `List.get`/index access is what
 `chord_decomposition_of_chain` itself consumes) means every per-step call to those two lemmas needs
 `T := (the tail of the list, as a Finset)`, and the membership/exclusion facts translated between
-"in the list's tail" and "in that Finset" at each step. This is real bridging work — mechanical, not
-new mathematics, but a genuine reconciliation between two representations that hasn't been written,
-not a direct plug-in of already-built lemmas. Recorded precisely as the next concrete task rather
-than attempted as a quick restatement that would risk quietly getting the translation wrong.
+"in the list's tail" and "in that Finset" at each step. **Checked, and it's smaller than that paragraph feared**: neither
+`gap_free_of_finset_step'` nor `far_precedes_of_minimal` ever uses any `Finset`-specific API
+(`Finset.sum`, `.card`, etc.) — `T : Finset (Fin N)` is used *only* via plain membership (`k ∈ T`,
+`k ∉ T`), which `List.toFinset` (`Fin N` has `DecidableEq`) plus the one-line simp lemma
+`List.mem_toFinset` (`a ∈ l.toFinset ↔ a ∈ l`) bridges directly — inserting `.toFinset` at each call
+site and rewriting membership through that lemma, not a genuine reconciliation of two different
+notions of "remaining." Retracting the previous entry's caution; this is a small, mechanical
+plug-in after all. Not yet written.
 
 **One more check before implementing, and a broader finding**: `chord_decomposition_of_chain`'s
 `hne` hypothesis is required *unconditionally*, for every consecutive pair from `i = 0` to
