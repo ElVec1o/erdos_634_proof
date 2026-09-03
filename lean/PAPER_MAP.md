@@ -3613,3 +3613,32 @@ separate, deliberate check of `lem:census`'s statement text against this theorem
 Until that check is done and written down, `lem:census` stays **PROVED**.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### Rule-5 audit of `lem:census`: **do not flip**, and the blocker has changed
+
+Read the lemma's statement text against the new theorem, clause by clause, as a separate pass.
+
+| clause | status |
+|---|---|
+| "write `n₁,n₂` for the numbers of straight figures `{γ,α,β}`, `{3α,2β}`; `v₁…v₄` for the interior figures" | matched — the four interior figures sum to `2π` and both straight figures to `π`, and each is determined by its `(α,β,γ)` multiplicity vector, which is what `figureVec` uses |
+| "The base corners fill uniquely as `{β}` and the apex as `{3α}`" | **partly assumed.** The "fill uniquely" half is `TileAt.congruentDissection_base_corner_counts`/`.apex_counts`. But *that the target's corners are `3α` and `β`* is my `htarget` **hypothesis**, not a derivation — there is no base-`β`-target object in the corpus to derive it from. This is the standing attachment gap, here in miniature |
+| "balancing the three corner types across the `N` tiles gives `v₁ = 1 + n₂ + v₃ + 2v₄`" | **proved** — `congruentDissection_vertex_census` |
+| "In particular `v₁ ≥ 1`" | **proved this tick** — `congruentDissection_climber_mandatory` |
+| "It is also the *entire* content of corner counting: the three balance equations admit exactly one relation, and it does not involve the side structure" | **not proved at all.** This is a rank claim about the linear system. Nothing in the corpus establishes it; `OrderForcing.vertex_census` derives *one* relation, which is not the same as showing there is only one |
+
+**Verdict: `lem:census` stays PROVED.** Two clauses are not covered — the rank claim outright, and the
+target's corner angles assumed rather than derived. Flipping on the strength of the identity alone
+would be precisely the ingredients-for-statement error the 2026-08-30 audit caught ten times.
+
+**But the recorded blocker changes, and that is the real result of this run.** The row's blocker was
+*"the three corner-balance equations are still hypotheses of `vertex_census`, and that global
+corner-incidence double count is still not done"*. **That is now done** — the double count is
+`corner_double_count`, the balance is `congruentDissection_corner_balance`, and the identity itself
+is derived. The blocker is replaced by two smaller and different ones:
+
+1. the rank-one claim about the three balance equations (pure linear algebra over `ℤ`, no geometry —
+   plausibly reachable);
+2. `htarget` — the base-`β` target's corner angles, which needs a target object, i.e. the same
+   attachment gap that blocks route 1.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
