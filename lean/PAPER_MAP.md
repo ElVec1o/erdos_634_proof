@@ -1965,6 +1965,24 @@ assumption, and combining with `chord_decomposition_cons'`/`gap_free_of_finset_s
 lemmas already built — is the next concrete task; a first attempt at writing the full statement was
 sized correctly but its proof was not completed this pass.
 
+**Correcting an error in that first attempt's design**: it tried to end the chain at the *last*
+straddler's own far endpoint `S(m_last)` instead of `Q`, to dodge the question of whether
+`S(m_last)` could coincide with `Q`. Re-checking `chord_decomposition_of_chain`'s actual indexing
+shows this doesn't typecheck: for `n` straddlers, the `n`-th trace occupies `g(2n-1), g(2n)`, and
+`g(2n+1)` is a *separate*, required trailing point with its own `hne` obligation
+(`g(2n) ≠ g(2n+1)`) — setting `g(2n+1) := S(m_last) = g(2n)` violates that directly, it does not
+sidestep it. The actually-correct fix is simpler and needs no special-casing of the last straddler
+at all: keep `g(2n+1) := Q` throughout, and fold "no trace endpoint coincides with `P` or `Q`" into
+the *same* general-position nondegeneracy hypothesis already being assumed for every other pair.
+Since `chord_decomposition_of_chain` takes `hinj` (hence `hne`) directly from the caller regardless
+of how it's discharged, this closes the question with no changes to `chord_decomposition_of_chain`,
+`chord_decomposition_cons`, or `chord_decomposition_of_gap` needed — `chord_decomposition_cons'`/
+`chord_decomposition_of_gap'` turn out not to be required for this particular fix either (they
+remain useful in their own right, for the *leading*-gap and `T = ∅` cases, which are genuinely
+different situations). The plan in `exists_chain_of_finset`'s statement above should use `Q` as
+written, with the nondegeneracy hypothesis list extended by `∀ k, straddles k → P ≠ R k ∧ P ≠ S k ∧
+Q ≠ R k ∧ Q ≠ S k`.
+
 **One more check before implementing, and a broader finding**: `chord_decomposition_of_chain`'s
 `hne` hypothesis is required *unconditionally*, for every consecutive pair from `i = 0` to
 `i = 2n`, supplied by the caller — the theorem does not internally tolerate or skip a degenerate
