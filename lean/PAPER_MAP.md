@@ -4466,3 +4466,39 @@ the natural next step for occurrence witnesses over parallelogram-shaped or othe
 and is not attempted this tick.
 
 `lake build Erdos634.All` clean at 3699 jobs; axiom-clean throughout. No label moves.
+
+### The column-block gap, closed this tick — a parallelogram occurrence witness, via `RegionDissection`
+
+Flagged one tick ago as needing a new primitive: the four `columnPieceAt` blocks of
+`delta4CongruentDissection` are `PgramTiling22`-shaped, and `PgramTiling22Bridge` has no
+`CongruentDissection` (its region is a parallelogram, not a `Tri`), so `SubDissection`'s `Tri`-typed
+restriction couldn't reach them. Built the missing pieces and closed the gap:
+
+* **`RegionDissection.lean`, extended**: `restrict`/`restrictCongruent` (the region-typed analog of
+  `SubDissection.restrict`/`.restrictCongruent`), `mapRegionDissection`/`mapCongruentRegionDissection`
+  (transport along an isometry, mirroring `DissectionMap.mapDissection`), and
+  `scaleCongruentRegionDissection` (transport along a homothety, applying it to *both* tiles and
+  model — an isometry-only transport would not preserve congruence against a fixed model, exactly
+  the reason `Realizable.scaleDissection` scales the model too).
+* **`PgramTiling22Region.lean`** (new): assembles `PgramTiling22Bridge`'s existing pieces
+  (`pgram22_covers`, `pieces_interiors_disjoint`, `pieceTri_congruent`) into a genuine
+  `CongruentRegionDissection 22` — the object that never existed before this tick.
+* **`OrientMonoWitness.lean`, extended**: `firstColumnOccurrenceWitness` — restricting
+  `delta4CongruentDissection.toRegion` to the first column block's 22 indices recovers a genuine
+  `CongruentRegionDissection` of the placed parallelogram, matching `columnPieceAt (colVec 0 0)`
+  piece for piece (`firstColumnPlaced_tile`, `rfl`).
+
+Lean snags along the way: `Tri.Congruent.map_left` needed its full root name
+(`Erdos634.Geometry.Tri.Congruent.map_left`) — dot notation resolved to the wrong namespace because
+`Tri.Congruent` unfolds to a bare existential; three missing imports (`DissectionMap`,
+`TranslateDissection`, `Realizable`) surfaced one at a time; and the aux-index arithmetic for the
+third `Fin.append` block needed nested `Fin.natAdd`, not `Fin.natAdd (44+44)` — the index type is
+right-associated.
+
+`lake build Erdos634.All` clean at 3700 jobs; axiom-clean throughout.
+
+**Now all three occurrence-type gaps this session found are closed with real instances**: apex
+(`Tri`), corner (`Tri`), and first column (parallelogram, via `RegionDissection`). The remaining
+three column blocks are the same construction with a different translation vector — repetition, not
+new content. `prop:orientmono` itself still needs the general "occurrence theory," not four
+instances; no label moves.

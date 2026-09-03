@@ -1,4 +1,7 @@
 import Erdos634.UnionDissection
+import Erdos634.DissectionMap
+import Erdos634.TranslateDissection
+import Erdos634.Realizable
 
 /-!
 # `RegionDissection`: dissections of an arbitrary region, not only of a triangle
@@ -179,5 +182,127 @@ theorem emptyRegion_disjoint (R : RegionDissection N) :
 @[simp] theorem unionRegion_empty (R : RegionDissection N) :
     (unionRegion R emptyRegion (emptyRegion_disjoint R)).region = R.region := by
   simp [emptyRegion]
+
+
+
+/-! ## Restricting a region dissection to a covering tile subset
+
+Symmetric to `SubDissection.restrict`/`.restrictCongruent`, but for a `RegionDissection` — needed
+where the region being restricted to is not a `Tri` at all (a parallelogram, e.g.
+`PgramTiling22Bridge`'s carrier), so `SubDissection`'s `Tri`-typed target cannot express it. Same
+bookkeeping-only content: given the covering-equality hypothesis, producing the restricted object is
+mechanical. -/
+
+variable {N : ℕ}
+
+/-- **A region dissection restricted to a tile subset**, given that the subset's tiles cover exactly
+some other region. -/
+noncomputable def restrict (R : RegionDissection N) (S : Finset (Fin N)) (region' : Set Plane)
+    (hcov : (⋃ i ∈ S, (R.tile i).carrier) = region') :
+    RegionDissection S.card where
+  region := region'
+  tile := fun j => R.tile (S.orderEmbOfFin rfl j)
+  covers := by
+    rw [← hcov]
+    apply le_antisymm
+    · intro x hx
+      simp only [Set.mem_iUnion] at hx
+      obtain ⟨j, hxj⟩ := hx
+      simp only [Set.mem_iUnion]
+      exact ⟨S.orderEmbOfFin rfl j, S.orderEmbOfFin_mem rfl j, hxj⟩
+    · intro x hx
+      simp only [Set.mem_iUnion] at hx
+      obtain ⟨i, hiS, hxi⟩ := hx
+      have hiS' : i ∈ Set.range (S.orderEmbOfFin rfl) := by
+        rw [Finset.range_orderEmbOfFin]; exact hiS
+      obtain ⟨j, hji⟩ := hiS'
+      simp only [Set.mem_iUnion]
+      exact ⟨j, hji ▸ hxi⟩
+  interiors_disjoint := by
+    intro j j' hjj'
+    exact R.interiors_disjoint (fun h => hjj' ((S.orderEmbOfFin rfl).injective h))
+
+theorem restrict_tile (R : RegionDissection N) (S : Finset (Fin N)) (region' : Set Plane)
+    (hcov : (⋃ i ∈ S, (R.tile i).carrier) = region') (j : Fin S.card) :
+    (restrict R S region' hcov).tile j = R.tile (S.orderEmbOfFin rfl j) := rfl
+
+theorem restrict_region (R : RegionDissection N) (S : Finset (Fin N)) (region' : Set Plane)
+    (hcov : (⋃ i ∈ S, (R.tile i).carrier) = region') :
+    (restrict R S region' hcov).region = region' := rfl
+
+/-- **A `CongruentRegionDissection` restricted to a tile subset**, preserving the model. -/
+noncomputable def restrictCongruent (C : CongruentRegionDissection N) (S : Finset (Fin N))
+    (region' : Set Plane) (hcov : (⋃ i ∈ S, (C.tile i).carrier) = region') :
+    CongruentRegionDissection S.card where
+  toRegionDissection := restrict C.toRegionDissection S region' hcov
+  model := C.model
+  tiles_congruent := fun j => C.tiles_congruent (S.orderEmbOfFin rfl j)
+
+theorem restrictCongruent_region (C : CongruentRegionDissection N) (S : Finset (Fin N))
+    (region' : Set Plane) (hcov : (⋃ i ∈ S, (C.tile i).carrier) = region') :
+    (restrictCongruent C S region' hcov).region = region' := rfl
+
+theorem restrictCongruent_model (C : CongruentRegionDissection N) (S : Finset (Fin N))
+    (region' : Set Plane) (hcov : (⋃ i ∈ S, (C.tile i).carrier) = region') :
+    (restrictCongruent C S region' hcov).model = C.model := rfl
+
+
+
+/-! ## Transporting a region dissection along an affine equivalence
+
+Mirrors `DissectionMap.mapDissection`, but simpler: a region is already a `Set Plane`, so no
+`mapTri`/carrier bridge is needed — only the tile images and the standard fact that an affine
+equivalence commutes with union and interior. -/
+
+/-- **A region dissection transports.** An affine equivalence carries a region dissection to a
+region dissection of the image region, with the same tile count. -/
+noncomputable def mapRegionDissection {N : ℕ} (e : Plane ≃ᵃ[ℝ] Plane) (R : RegionDissection N) :
+    RegionDissection N where
+  region := e '' R.region
+  tile := fun i => Erdos634.DissectionMap.mapTri e (R.tile i)
+  covers := by
+    simp only [Erdos634.DissectionMap.mapTri_carrier]
+    rw [← Set.image_iUnion, R.covers]
+  interiors_disjoint := by
+    intro i j hij
+    have h := R.interiors_disjoint hij
+    have hcont : Continuous e := AffineEquiv.continuous_of_finiteDimensional e
+    have hcont' : Continuous e.symm := AffineEquiv.continuous_of_finiteDimensional e.symm
+    let eh : Plane ≃ₜ Plane := ⟨e.toEquiv, hcont, hcont'⟩
+    have himg : ∀ S : Set Plane, interior (e '' S) = e '' interior S := fun S => (eh.image_interior S).symm
+    simp only [Erdos634.DissectionMap.mapTri_carrier, himg]
+    exact (Set.disjoint_image_iff e.injective).mpr h
+
+@[simp] theorem mapRegionDissection_region {N : ℕ} (e : Plane ≃ᵃ[ℝ] Plane) (R : RegionDissection N) :
+    (mapRegionDissection e R).region = e '' R.region := rfl
+
+@[simp] theorem mapRegionDissection_tile {N : ℕ} (e : Plane ≃ᵃ[ℝ] Plane) (R : RegionDissection N)
+    (i : Fin N) :
+    (mapRegionDissection e R).tile i = Erdos634.DissectionMap.mapTri e (R.tile i) := rfl
+
+/-- **A `CongruentRegionDissection` translated (or otherwise moved by an isometry)**, preserving
+the model via `Tri.Congruent.map_left` — valid because an isometry applied to one side of a
+congruence still gives a congruence against the *same*, unmoved, model. -/
+noncomputable def mapCongruentRegionDissection {N : ℕ} (e : Plane ≃ᵃⁱ[ℝ] Plane)
+    (C : CongruentRegionDissection N) : CongruentRegionDissection N where
+  toRegionDissection := mapRegionDissection e.toAffineEquiv C.toRegionDissection
+  model := C.model
+  tiles_congruent := fun i => by
+    show (Erdos634.DissectionMap.mapTri e.toAffineEquiv (C.tile i)).Congruent C.model
+    exact Erdos634.Geometry.Tri.Congruent.map_left (C.tiles_congruent i) e
+
+/-- **A `CongruentRegionDissection` scaled by a homothety.**  Unlike `mapCongruentRegionDissection`,
+the *model* moves too — a homothety is not an isometry, so congruence against a *fixed* model would
+not survive it; applying the *same* homothety to both the tiles and the model preserves congruence
+(`Realizable.mapTri_congruent`), exactly as `Realizable.scaleDissection` does for `Tri`-targeted
+dissections. Needed for `columnPieceAt`'s scale-then-translate placement, where
+`PgramTiling22Bridge`'s parallelogram carrier is not a `Tri`. -/
+noncomputable def scaleCongruentRegionDissection {N : ℕ} (p : Plane) (r : ℝ) (hr : r ≠ 0)
+    (C : CongruentRegionDissection N) : CongruentRegionDissection N where
+  toRegionDissection := mapRegionDissection (Erdos634.Realizable.homothetyEquiv p r hr)
+    C.toRegionDissection
+  model := Erdos634.DissectionMap.mapTri (Erdos634.Realizable.homothetyEquiv p r hr) C.model
+  tiles_congruent := fun i =>
+    Erdos634.Realizable.mapTri_congruent p r hr (C.tiles_congruent i)
 
 end Erdos634.RegionDissection

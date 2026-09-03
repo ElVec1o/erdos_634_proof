@@ -1,6 +1,7 @@
 import Erdos634.CollarCongruentM4
 import Erdos634.SubDissection
 import Erdos634.Tiling44Bridge
+import Erdos634.PgramTiling22Region
 
 /-!
 # `prop:orientmono`'s covering-equality witness: the apex block of `delta4CongruentDissection`
@@ -145,5 +146,80 @@ noncomputable def cornerOccurrenceWitness : CongruentDissection cornerIndices.ca
   restrictCongruent delta4CongruentDissection cornerIndices
     (mapTri (transEquiv (mkPt 176 0)).toAffineEquiv Erdos634.Tiling44Bridge.targetTri)
     corner_covers
+
+
+
+/-! ## The first column block: a genuine `Δ_2`-shaped occurrence too, now that regions can be restricted
+
+With `RegionDissection.restrictCongruent`, `PgramTiling22Region.dissection`, and
+`RegionDissection.scaleCongruentRegionDissection`/`.mapCongruentRegionDissection` all now in place,
+the column blocks admit exactly the same treatment as the apex and corner blocks — just landing in
+`CongruentRegionDissection` (parallelogram-shaped) rather than `CongruentDissection` (triangle-shaped). -/
+
+open Erdos634.RegionDissection in
+/-- `PgramTiling22Region.dissection`, scaled `×2` about the origin then translated by `colVec 0 0` —
+matching `columnPieceAt (colVec 0 0)` piece for piece. -/
+noncomputable def firstColumnPlaced : CongruentRegionDissection PgramTiling22.tiles.length :=
+  mapCongruentRegionDissection (transEquiv (colVec 0 0))
+    (scaleCongruentRegionDissection (mkPt 0 0) 2 (by norm_num) Erdos634.PgramTiling22Region.dissection)
+
+open Erdos634.RegionDissection in
+theorem firstColumnPlaced_tile (j : Fin PgramTiling22.tiles.length) :
+    firstColumnPlaced.tile j = columnPieceAt (colVec 0 0) j := rfl
+
+/-- The first column block's 22 indices, as a `Finset (Fin 176)`. -/
+noncomputable def firstColumnIndices : Finset (Fin 176) :=
+  Finset.univ.image (fun j : Fin PgramTiling22.tiles.length =>
+    (finCongr delta4PiecesAux_len)
+      (Fin.natAdd Tiling44.tiles.length (Fin.natAdd Tiling44.tiles.length (Fin.castAdd _ j))))
+
+theorem delta4Pieces_firstColumn (j : Fin PgramTiling22.tiles.length) :
+    delta4Pieces ((finCongr delta4PiecesAux_len)
+      (Fin.natAdd Tiling44.tiles.length (Fin.natAdd Tiling44.tiles.length (Fin.castAdd _ j))))
+      = columnPieceAt (colVec 0 0) j := by
+  show delta4PiecesAux ((finCongr delta4PiecesAux_len).symm
+    ((finCongr delta4PiecesAux_len)
+      (Fin.natAdd Tiling44.tiles.length (Fin.natAdd Tiling44.tiles.length (Fin.castAdd _ j)))))
+      = columnPieceAt (colVec 0 0) j
+  rw [Equiv.symm_apply_apply]
+  unfold delta4PiecesAux
+  rw [Fin.append_right, Fin.append_right, Fin.append_left]
+
+open Erdos634.RegionDissection in
+theorem firstColumn_union_eq_placed_region :
+    (⋃ j : Fin PgramTiling22.tiles.length, (columnPieceAt (colVec 0 0) j).carrier)
+      = firstColumnPlaced.region := by
+  have hcov := firstColumnPlaced.covers
+  rw [← hcov]
+  simp only [firstColumnPlaced_tile]
+
+open Erdos634.RegionDissection in
+theorem firstColumn_covers :
+    (⋃ i ∈ firstColumnIndices, (delta4CongruentDissection.tile i).carrier)
+      = firstColumnPlaced.region := by
+  rw [← firstColumn_union_eq_placed_region]
+  unfold firstColumnIndices
+  ext x
+  simp only [Set.mem_iUnion, Finset.mem_image, Finset.mem_univ, true_and]
+  constructor
+  · rintro ⟨i, ⟨j, hj⟩, hx⟩
+    refine ⟨j, ?_⟩
+    rw [← hj, show delta4CongruentDissection.tile = delta4Pieces from rfl,
+      delta4Pieces_firstColumn] at hx
+    exact hx
+  · rintro ⟨j, hx⟩
+    refine ⟨(finCongr delta4PiecesAux_len)
+      (Fin.natAdd Tiling44.tiles.length (Fin.natAdd Tiling44.tiles.length (Fin.castAdd _ j))), ⟨j, rfl⟩, ?_⟩
+    rw [show delta4CongruentDissection.tile = delta4Pieces from rfl, delta4Pieces_firstColumn]
+    exact hx
+
+open Erdos634.RegionDissection in
+/-- **The third occurrence witness — a `Δ_2`-shaped parallelogram occurrence, via
+`RegionDissection`.** Restricting `delta4CongruentDissection`'s underlying region dissection to the
+first column block's 22 indices recovers a genuine `CongruentRegionDissection` of the placed
+parallelogram — the case the `Tri`-typed `SubDissection.restrictCongruent` could not reach. -/
+noncomputable def firstColumnOccurrenceWitness : CongruentRegionDissection firstColumnIndices.card :=
+  restrictCongruent delta4CongruentDissection.toRegion firstColumnIndices firstColumnPlaced.region
+    firstColumn_covers
 
 end Erdos634.OrientMonoWitness
