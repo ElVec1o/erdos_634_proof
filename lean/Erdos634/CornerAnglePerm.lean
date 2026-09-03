@@ -51,4 +51,47 @@ theorem Tri.Congruent.cornerAngle_perm {T U : Tri} (h : T.Congruent U) :
     rw [Erdos634.Geometry.cornerAngle, EuclideanGeometry.angle_comm]
     exact hmap
 
+/-- **Each congruent tile has exactly one corner of each model angle.**  Given that the model's
+three corner angles are pairwise distinct, the count of a tile's corners carrying a given model
+angle is exactly `1`.  This is the per-tile input of the corner-incidence double count behind
+`lem:census`: summing it over the `N` tiles gives `N` corners of each type. -/
+theorem Tri.Congruent.corner_count_eq_one {T U : Tri} (h : T.Congruent U)
+    (hdist : ∀ k l : Fin 3,
+      cornerAngle (T.pts (k + 1)) (T.pts k) (T.pts (k + 2))
+        = cornerAngle (T.pts (l + 1)) (T.pts l) (T.pts (l + 2)) → k = l)
+    (k : Fin 3) :
+    ({j | cornerAngle (U.pts (j + 1)) (U.pts j) (U.pts (j + 2))
+        = cornerAngle (T.pts (k + 1)) (T.pts k) (T.pts (k + 2))} : Finset (Fin 3)).card = 1 := by
+  classical
+  obtain ⟨σ, hperm⟩ := h.cornerAngle_perm
+  refine Finset.card_eq_one.mpr ⟨σ k, ?_⟩
+  ext j
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+  constructor
+  · intro hj
+    have hm := hperm (σ.symm j)
+    rw [Equiv.apply_symm_apply] at hm
+    have : cornerAngle (T.pts (σ.symm j + 1)) (T.pts (σ.symm j)) (T.pts (σ.symm j + 2))
+        = cornerAngle (T.pts (k + 1)) (T.pts k) (T.pts (k + 2)) := by rw [← hm]; exact hj
+    have hk := hdist _ _ this
+    rw [← hk, Equiv.apply_symm_apply]
+  · intro hj; subst hj; exact hperm k
+
+/-- **`N` corners of each type.**  Summing the per-tile count over the dissection: in a
+`CongruentDissection` whose model has pairwise distinct corner angles, the tiles carry exactly `N`
+corners of each of the three angles.  This is the tile side of `lem:census`'s corner-incidence
+double count; the vertex side counts the same corners grouped by the point they sit at. -/
+theorem congruentDissection_corner_total {N : ℕ} (D : CongruentDissection N)
+    (hdist : ∀ k l : Fin 3,
+      cornerAngle (D.model.pts (k + 1)) (D.model.pts k) (D.model.pts (k + 2))
+        = cornerAngle (D.model.pts (l + 1)) (D.model.pts l) (D.model.pts (l + 2)) → k = l)
+    (k : Fin 3) :
+    ∑ i : Fin N, ({j | cornerAngle ((D.tile i).pts (j + 1)) ((D.tile i).pts j)
+          ((D.tile i).pts (j + 2))
+        = cornerAngle (D.model.pts (k + 1)) (D.model.pts k) (D.model.pts (k + 2))}
+        : Finset (Fin 3)).card = N := by
+  classical
+  rw [Finset.sum_congr rfl (fun i _ => ((D.tiles_congruent i).symm).corner_count_eq_one hdist k)]
+  simp
+
 end Erdos634.Geometry

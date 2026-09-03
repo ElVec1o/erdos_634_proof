@@ -3100,3 +3100,28 @@ and `lem:parity` behind it.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved —
 this is piece 1 of 4.
+
+### `lem:census` double count, pieces 2 and 3a: the tile side is done
+
+Two more theorems in `CornerAnglePerm.lean` (three total), axiom-clean, `Erdos634.All` clean.
+
+* `Tri.Congruent.corner_count_eq_one` — given the model's three corner angles pairwise distinct, a
+  congruent tile has **exactly one** corner carrying each model angle. From piece 1's permutation:
+  `σ k` witnesses existence, and uniqueness is distinctness pulled back through `σ`.
+* `congruentDissection_corner_total` — summing that over the dissection: the tiles carry exactly
+  **`N` corners of each of the three angles**.
+
+That is the **tile side** of the corner-incidence double count, complete. What remains is the
+*vertex* side — grouping the same corners by the point they sit at:
+
+* (3b) the finite vertex set `⋃ i, range (D.tile i).pts` as a `Finset`, and the double count
+  `∑_i #{j : corner j of tile i is θ} = ∑_v #{i : (D.tile i).localAngle v = θ}`. The bridge is
+  `PinPlumbing.localAngle_cases`, which puts a tile's local angle at a corner angle exactly at its
+  vertices; the sum exchange is `Finset.sum_comm` over the incidence pairs `(i, v)`.
+* (4) feed the resulting balance equations to `OrderForcing.vertex_census`, whose corner-balance
+  hypotheses they are.
+
+Then `lem:census` flips, and `lem:parity` behind it.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved —
+pieces 1–3a of 4.
