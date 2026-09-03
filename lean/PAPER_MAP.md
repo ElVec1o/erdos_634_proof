@@ -4167,3 +4167,40 @@ the arithmetic.
 empty.** Every one of the remaining 15 genuinely-uncited rows sits behind one of the four recurring
 blockers — tile placement, composition/scale on dissections, certified search, dual graph — with
 none behind mere absence of effort. The `none`-citation vein, opened three ticks ago, is worked out.
+
+### The `Tri`-target type gap closed (2026-09-04) — `Erdos634/RegionDissection.lean`
+
+Yesterday's audit found `UnionDissection`'s primitive real but `Tri`-targeted: every piece and every
+*intermediate union* had to be a triangle, so the collar step died on the trapezoid left by a cut
+parallel to the base. That was a type gap, and it is now closed.
+
+`Dissection` uses `target` only through `target.carrier`, so replacing the field by a bare
+`Set Plane` costs nothing and buys closure under union:
+
+* `RegionDissection` / `CongruentRegionDissection` — the same data over an arbitrary region.
+* `Dissection.toRegion`, `CongruentDissection.toRegion` — every triangle dissection is one.
+* `unionRegion`, `unionCongruentRegion` — **closed under gluing**, with no ambient triangle. The
+  only hypothesis is that the two regions' interiors are disjoint. Trapezoids, collars and their
+  partial unions are now legitimate intermediates.
+* `CongruentRegionDissection.toCongruentDissection` — the exit map: once the accumulated region *is*
+  a triangle's carrier, a genuine `CongruentDissection` comes back out.
+* `toRegion_toCongruentDissection` — the roundtrip is the identity, so the two maps are mutually
+  inverse on the triangle case and nothing is lost by working through regions.
+
+Axiom-clean; `lake build Erdos634.All` clean at 3693 jobs.
+
+**What this does and does not do.** It makes the collar induction *expressible*: pieces can be glued
+in any order through regions and exited to a `CongruentDissection` at the end, which the `Tri`-typed
+primitive could not do. It supplies **no collar**. The geometry — the parallelogram columns, the
+corner piece, and the proofs that their carriers have disjoint interiors and union to `Δ_{m+2}` —
+is untouched and remains the **tile-placement** blocker.
+
+**Vacuity, stated honestly.** `emptyRegion_disjoint` shows `unionRegion`'s hypothesis is satisfiable,
+but the witness is the *empty* region: it proves the hypothesis is not self-contradictory and
+nothing more. A non-degenerate witness (two positive-area pieces of a real collar) is exactly what
+the tile-placement layer would supply and is **not** here. Recording this explicitly because this
+project has twice reported a conditional whose hypotheses were unsatisfiable; this one is
+satisfiable but the satisfying instance is trivial, which is a different and weaker claim.
+
+Blocker on `thm:realize12`'s existence half updated: no longer "no union composer" (built) and no
+longer "`Dissection` is `Tri`-indexed" (closed) — it is now **the collar geometry itself**.
