@@ -3452,3 +3452,31 @@ slipped in. The β- and γ-identities are the same instantiation with the second
 `lem:census` has **not** flipped; label stays PROVED.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` piece 4g: the apex is unique, and it is derived not assumed
+
+`target_corner_counts` (`CornerAnglePerm.lean`, twenty-six declarations, axiom-clean,
+`Erdos634.All` clean).
+
+The previous entry flagged that matching the partition to `vertex_census` needs "exactly one apex,
+two base corners", and that `htarget` did not supply it. **It does not need to.** Given each target
+corner is `3α` or `β`, the angle sum `3α + 2β = π`, and `hirr`, the split is forced:
+
+* no apex — `3β = π`, so `β = π/3` and `3α = π/3`, giving `α = π/9`;
+* two apexes — `6α + β = π` against `3α + 2β = π` gives `9α = π`;
+* three apexes — `9α = π` directly.
+
+Each makes `α` a rational multiple of `π`, against `hirr`. So exactly one corner is the apex, and
+the uniqueness argument also needs `β ≠ 3α`, which is the same contradiction again. Recorded because
+the flagged gap turned out to be a theorem rather than a hypothesis change — the honest outcome was
+not the one predicted last tick.
+
+**Remaining to reach `vertex_census`'s `ha`:** the bridge from "exactly one target corner is `3α`" to
+"the fibre of the label `(3,0,0)` in `cornerPts` has one element" — the classification already says
+`(3,0,0)` occurs only at target corners with angle `3α`, so this is a re-run of
+`figureVec_mem_censusLabels`'s case split, not new mathematics. Then the same for `(0,1,0)` and two
+base corners, and the β- and γ-identities by the second and third coordinates.
+
+`lem:census` has **not** flipped; label stays PROVED.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

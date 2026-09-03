@@ -733,4 +733,72 @@ theorem census_alpha_sum {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
   rw [show (0 : Fin 3) + 1 = 1 from rfl, show (0 : Fin 3) + 2 = 2 from rfl, hmα] at hbal
   exact hbal
 
+/-- **The base-`β` target has exactly one apex corner.**  Given that each of the target's corners is
+`3α` or `β`, the angle sum `3α + 2β = π` and the irrationality of `α/π` force the split to be one
+apex and two base corners — the counts `lem:census` writes as the constants `3` and `0` in its
+identities.  Not an extra assumption: two apexes, three apexes, or none each force `α = π/9`. -/
+theorem target_corner_counts {N : ℕ} (D : CongruentDissection N) {α β : ℝ}
+    (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (htarget : ∀ k : Fin 3,
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = 3 * α ∨
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β) :
+    ({k | cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = 3 * α}
+      : Finset (Fin 3)).card = 1 := by
+  classical
+  have hne : β ≠ 3 * α := by
+    intro h
+    exact hirr ⟨1/9, by rw [h] at hrel; push_cast; linarith⟩
+  have hnine : α ≠ (1/9 : ℝ) * Real.pi := by
+    intro h; exact hirr ⟨1/9, by push_cast; exact h⟩
+  have hsum := Erdos634.Geometry.cornerAngle_sum D.target
+  have e0 : (0 : Fin 3) + 1 = 1 := rfl
+  have e0' : (0 : Fin 3) + 2 = 2 := rfl
+  have e1 : (1 : Fin 3) + 1 = 2 := rfl
+  have e1' : (1 : Fin 3) + 2 = 0 := rfl
+  have e2 : (2 : Fin 3) + 1 = 0 := rfl
+  have e2' : (2 : Fin 3) + 2 = 1 := rfl
+  have h0 := htarget 0
+  have h1 := htarget 1
+  have h2 := htarget 2
+  simp only [e0, e0', e1, e1', e2, e2'] at h0 h1 h2
+  rcases h0 with h0 | h0 <;> rcases h1 with h1 | h1 <;> rcases h2 with h2 | h2 <;>
+    rw [h0, h1, h2] at hsum
+  all_goals (
+    first
+      | (exfalso; apply hnine; linarith)
+      | (rw [Finset.card_eq_one]
+         refine ⟨0, Finset.eq_singleton_iff_unique_mem.mpr ⟨?_, ?_⟩⟩
+         · simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+           rw [e0, e0']; exact h0
+         · intro k hk
+           simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk
+           have hall : ∀ x : Fin 3, x = 0 ∨ x = 1 ∨ x = 2 := by decide
+           rcases hall k with rfl | rfl | rfl
+           · rfl
+           · rw [e1, e1'] at hk; rw [h1] at hk; exact absurd hk hne
+           · rw [e2, e2'] at hk; rw [h2] at hk; exact absurd hk hne)
+      | (rw [Finset.card_eq_one]
+         refine ⟨1, Finset.eq_singleton_iff_unique_mem.mpr ⟨?_, ?_⟩⟩
+         · simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+           rw [e1, e1']; exact h1
+         · intro k hk
+           simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk
+           have hall : ∀ x : Fin 3, x = 0 ∨ x = 1 ∨ x = 2 := by decide
+           rcases hall k with rfl | rfl | rfl
+           · rw [e0, e0'] at hk; rw [h0] at hk; exact absurd hk hne
+           · rfl
+           · rw [e2, e2'] at hk; rw [h2] at hk; exact absurd hk hne)
+      | (rw [Finset.card_eq_one]
+         refine ⟨2, Finset.eq_singleton_iff_unique_mem.mpr ⟨?_, ?_⟩⟩
+         · simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+           rw [e2, e2']; exact h2
+         · intro k hk
+           simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk
+           have hall : ∀ x : Fin 3, x = 0 ∨ x = 1 ∨ x = 2 := by decide
+           rcases hall k with rfl | rfl | rfl
+           · rw [e0, e0'] at hk; rw [h0] at hk; exact absurd hk hne
+           · rw [e1, e1'] at hk; rw [h1] at hk; exact absurd hk hne
+           · rfl))
+
 end Erdos634.Geometry
