@@ -230,3 +230,4 @@ import Erdos634.ChordStraddlerSegment
 import Erdos634.ChordEndpointFrontier
 import Erdos634.ChordOpenSegmentInterior
 import Erdos634.ChordDecompositionNoStraddle
+import Erdos634.ChordEndpointsDistinct

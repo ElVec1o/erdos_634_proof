@@ -1298,15 +1298,26 @@ weight `1/2` replaced by a general `s ∈ (0, 1)`), supplies `wall_cover`'s `hin
 open chord at once. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the
 standard three.
 
+**`p ≠ q` also closed, same session, later still**: `ChordEndpointsDistinct.straddle_two_distinct_points`
+derives the chord's two distinct points directly from the straddle hypothesis, closing the one
+remaining input `chord_decomposition_of_no_straddlers` took as a caller-supplied hypothesis. Among
+the three vertices, straddling gives `i` below and `j` above `c`; the third vertex `k` has some
+sign too, and pairing it with whichever of `i, j` has the opposite sign gives a *second* crossing
+edge (via IVT along `AffineMap.lineMap`, same construction as `straddle_trace_nonempty`). Two
+crossings on different vertex-pairs are automatically distinct: a point `lineMap a b r`
+(`r ∈ (0,1)`, `a ≠ b`) has the excluded third vertex's barycentric coordinate exactly `0` and its
+own two coordinates `1 - r` and `r` (both positive) — so a point shared between crossings built
+from different pairs would need to be simultaneously zero and strictly positive at the same
+coordinate. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard
+three.
+
 **Still not built**: the fully general case with straddlers present, which needs the finite
 ordering of straddler segments along the chord and gluing `wall_partition`'s per-gap totals to
-`straddle_total_eq_sum` — genuine combinatorial/measure bookkeeping, no new geometry. Also not yet
-derived: `p ≠ q` for the chord's own endpoints from the straddle hypothesis alone (the current
-theorem takes it, and the segment membership facts, as hypotheses a caller supplies from
-`chord_isSegment` — deriving them internally needs identifying two *distinct* crossing edges from
-the three vertex signs, not attempted). Deprioritized further construction this session in favor of
-hunting further PROVED→VERIFIED flips per the standing `/goal`, since this piece, even finished, is
-infrastructure toward `prop:chorddecomp` and not itself a flip.
+`straddle_total_eq_sum` — genuine combinatorial/measure bookkeeping, no new geometry left to
+discover. Every individual geometric fact the *full* assembly could need now exists and is proved.
+Deprioritized further construction this session in favor of hunting further PROVED→VERIFIED flips
+per the standing `/goal`, since this piece, even finished, is infrastructure toward
+`prop:chorddecomp` and not itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
