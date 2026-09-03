@@ -3075,3 +3075,28 @@ incidentally). So this is new but bounded work — a `Finset` double count over 
 build target.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` double count, piece 1: corner angles match under one permutation
+
+New file `Erdos634/CornerAnglePerm.lean`, one theorem, axiom-clean, `Erdos634.All` clean.
+
+`Tri.Congruent.cornerAngle_perm`: congruent triangles match **all three** corner angles under a
+*single* permutation of vertex indices. This is the uniform form the double count needs;
+`Congruence.Tri.Congruent.dist_eq` gives the uniform permutation for *distances* only, and
+`CongruentAngles.congruent_corner_angles` gives corner angles only one vertex at a time,
+existentially — neither suffices to say "each tile has exactly one `α`-corner".
+
+The route is the isometry, not the distances: a `Tri.Congruent` carries an `IsometryEquiv` of the
+plane; **Mazur–Ulam** (`IsometryEquiv.toRealAffineIsometryEquiv`, Mathlib) makes it affine, and
+`AffineIsometry.angle_map` transports corner angles directly. The residual combinatorics — that `σ`
+carries the two vertices other than `k` to the two other than `σ k`, in one order or the other — is a
+`Fin 3` fact settled by `decide`, with `EuclideanGeometry.angle_comm` absorbing the swap.
+
+**Remaining for the double count:** (2) from distinct model angles, exactly one corner of each tile
+carries each angle — a counting consequence of piece 1; (3) the finite vertex set
+`⋃ i, range (D.tile i).pts` and the `Finset` double count against `localAngle`; (4) discharging
+`OrderForcing.vertex_census`'s corner-balance hypotheses with the result. Then `lem:census` flips,
+and `lem:parity` behind it.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved —
+this is piece 1 of 4.
