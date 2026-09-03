@@ -4089,3 +4089,28 @@ and **`thm:decidable`**.
 real and general, but the paper says "the counts *admissible for the base-α isosceles target*",
 which quantifies over tilings through `thm:admissible`; the Lean theorem is about the two arithmetic
 clauses. Blocker named: the tile-placement layer. Not flipped.
+
+### `prop:eqspecint`: the arithmetic core built (2026-09-04) — `Erdos634/EqSpecInt.lean`
+
+The `none`-citation scan's most tractable hit. `EquilateralConic.*` (VERIFIED) *assumes* the two
+relations `t·s = 3N` and `(t-s)² + 16N = q²`; `prop:eqspecint` is the proposition that **produces**
+them. Nothing in the corpus did — the upstream was the gap, not the conic algebra.
+
+Now proved over `ℤ`, axiom-clean:
+
+* `st_eq_three_N` — from `XY = 3ab` (the tile relation), `sX = 3S`, `tY = 3S` and the area identity
+  `S² = N·ab`, derive `s·t = 3N`. Quotients are given by equations, not by `ℤ` division.
+* `sq_identity` — `(2N(a+b))² = S²·[(t-s)² + 16N]`, from the area identity and `2N(a-b) = S(t-s)`.
+* `conic_of_sides` — with `q` pinned by `S·q = 2N(a+b)` and `S ≠ 0`, cancelling `S²` gives
+  `(t-s)² + 16N = q²`. This is the paper's step "`q` is a rational with integer square, hence an
+  integer", done as an exact cancellation rather than a rationality argument.
+
+These are exactly the two hypotheses `EquilateralConic.factor_2pi3` consumes, so the equilateral
+chain is now joined from the side relations onward.
+
+**Label stays PROVED, not VERIFIED.** The paper's statement begins "if moreover an equilateral
+triangle of side `S` is `N`-tiled by that tile" and concludes `s, t` are *positive* integers with
+`s ≡ t ≡ N (mod 2)`. Two clauses are untouched here and are named as the blocker: the divisibilities
+`X ∣ 3S`, `Y ∣ 3S` and the area identity come from a tiling (**tile-placement layer**), and the
+parity `s ≡ t ≡ N (mod 2)` routes through `cor:int`'s identification `s = M_α`, `t = M_β`, which is
+again about a real dissection. Citation changes from `none` to `EqSpecInt.*`.
