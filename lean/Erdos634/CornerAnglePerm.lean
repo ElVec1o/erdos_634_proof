@@ -489,4 +489,67 @@ theorem congruentDissection_interior_figure_at_corner {N : ℕ} (D : CongruentDi
   · exact Or.inl ⟨hs1, hcase⟩
   · exact Or.inr ⟨hs0, hcase⟩
 
+/-- **The corner angle a tile presents at its own vertex is one of the model's three.** -/
+theorem localAngle_at_own_vertex_mem {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (j : Fin N) (m : Fin 3) :
+    (D.tile j).localAngle ((D.tile j).pts m) = α ∨
+    (D.tile j).localAngle ((D.tile j).pts m) = β ∨
+    (D.tile j).localAngle ((D.tile j).pts m) = γ := by
+  rw [Erdos634.Geometry.Tri.localAngle_vertex]
+  obtain ⟨k, hk⟩ := congruent_corner_angles (D.tiles_congruent j).symm m
+  rw [hk]
+  have hall : ∀ x : Fin 3, x = 0 ∨ x = 1 ∨ x = 2 := by decide
+  rcases hall k with rfl | rfl | rfl
+  · left
+    rw [show (0 : Fin 3) + 1 = 1 from rfl, show (0 : Fin 3) + 2 = 2 from rfl]
+    exact hmα
+  · right; left
+    rw [show (1 : Fin 3) + 1 = 2 from rfl, show (1 : Fin 3) + 2 = 0 from rfl]
+    exact hmβ
+  · right; right
+    rw [show (2 : Fin 3) + 1 = 0 from rfl, show (2 : Fin 3) + 2 = 1 from rfl]
+    exact hmγ
+
+/-- **The boundary figure at a tile vertex.**  At a frontier point that is a tile vertex but not a
+target corner, the degenerate branch of `TileAt.congruentDissection_boundary_figure_cases` — a lone
+straight angle with no corner angles at all — is impossible, because the tile owning the vertex
+presents `α`, `β` or `γ` there.  The figure is `{3α,2β}` or `{α,β,γ}`: the census's `n₂` and `n₁`. -/
+theorem congruentDissection_boundary_figure_at_corner {N : ℕ} (D : CongruentDissection N)
+    (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (j : Fin N) (m : Fin 3) (hjm : (D.tile j).pts m = v) :
+    (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 3 ∧
+      ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 2 ∧
+      ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0) ∨
+    (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 1 ∧
+      ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+      ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1) := by
+  classical
+  rcases Erdos634.Geometry.Dissection.congruentDissection_boundary_figure_cases D α β γ
+    hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hmα hmβ hmγ hv hnv with
+    ⟨-, hα0', hβ0', hγ0'⟩ | h2 | h3
+  · exfalso
+    have hj := localAngle_at_own_vertex_mem D α β γ hmα hmβ hmγ j m
+    rw [hjm] at hj
+    rcases hj with h | h | h
+    · have : j ∈ ({i | (D.tile i).localAngle v = α} : Finset (Fin N)) := by simp [h]
+      rw [Finset.card_eq_zero] at hα0'; simp [hα0'] at this
+    · have : j ∈ ({i | (D.tile i).localAngle v = β} : Finset (Fin N)) := by simp [h]
+      rw [Finset.card_eq_zero] at hβ0'; simp [hβ0'] at this
+    · have : j ∈ ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)) := by simp [h]
+      rw [Finset.card_eq_zero] at hγ0'; simp [hγ0'] at this
+  · exact Or.inl h2
+  · exact Or.inr h3
+
 end Erdos634.Geometry

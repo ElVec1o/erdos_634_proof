@@ -3314,3 +3314,34 @@ then the partition of `cornerPts` into the eight classes and evaluation of the m
 each. `lem:census` has **not** flipped; label stays PROVED.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` piece 4b: the frontier side, and the class correspondence pinned down
+
+Two theorems (`CornerAnglePerm.lean`, eighteen declarations, axiom-clean, `Erdos634.All` clean).
+
+* `localAngle_at_own_vertex_mem` — a tile's angle at its *own* vertex is one of the model's `α, β, γ`
+  (`Tri.localAngle_vertex` + `congruent_corner_angles`).
+* `congruentDissection_boundary_figure_at_corner` — at a frontier point that is a tile vertex but not
+  a target corner, the degenerate branch of `TileAt.congruentDissection_boundary_figure_cases` (a
+  lone straight angle, no corner angles at all) is impossible, because the owning tile presents a
+  corner angle. The figure is `{3α,2β}` or `{α,β,γ}`.
+
+**A correspondence question had to be settled first, and it was not obvious.** The census's `n₁, n₂`
+count "straight figures" — and it was not clear whether those are *frontier* points (where the tiles
+fill a half-disc, total `π`) or *interior* points lying on a tile edge (where one side is a single
+through-edge tile and the other side's corner angles sum to `π`). Getting this wrong would make the
+partition — and any theorem built on it — false. Checked against `rem:parity`'s own proof, which
+writes `S = n₁ + n₂` for "the total number of straight (`π`) figures": the criterion is *a fan of
+corner angles summing to `π`*, which covers **both** kinds. Both then contribute `α`-multiplicity `3`
+(`n₂`) or `1` (`n₁`), so the α-identity is insensitive to the distinction — which is why the paper
+does not draw it. The interior `s = 1` branch of `congruentDissection_interior_figure_at_corner` and
+the two branches here are therefore the *same* two classes.
+
+Also checked: no point outside `cornerPts` can contribute, since a tile with local angle `α`, `β` or
+`γ` at a point has that point as a vertex. So the double count's sum is over the right set.
+
+**Remaining for piece 4:** the target's own three corners (apex `{3α}`, base corners `{β}` — via
+`congruentDissection_apex_counts` / `.base_corner_counts`), then the eight-way partition of
+`cornerPts` and the per-class sum. `lem:census` has **not** flipped; label stays PROVED.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
