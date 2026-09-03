@@ -126,4 +126,25 @@ theorem wbtw_antisymm_of_wbtw {p x y : Plane} (h1 : Wbtw ℝ p x y) (h2 : Wbtw �
   have h0 : dist x y = 0 := by linarith
   exact dist_eq_zero.mp h0
 
+/-- **The order from `p` is transitive.** If `x, y, z` all lie weakly between `p` and `q`, `x` lies
+weakly between `p` and `y`, and `y` lies weakly between `p` and `z`, then `x` lies weakly between
+`p` and `z` — the last order axiom needed to sort a chord's points by `wbtw_trichotomy_of_wbtw`.
+Proved by combining the trichotomy for `x, z` with the same distance-additivity trick: the
+"wrong" branch `Wbtw p z x` forces, via all three distance-additivity equations at once, `z = x`,
+collapsing to the trivial case. -/
+theorem wbtw_trans_of_wbtw {p q x y z : Plane}
+    (hx : Wbtw ℝ p x q) (hz : Wbtw ℝ p z q)
+    (hxy : Wbtw ℝ p x y) (hyz : Wbtw ℝ p y z) : Wbtw ℝ p x z := by
+  rcases wbtw_trichotomy_of_wbtw hx hz with h | h
+  · exact h
+  · have hsum1 : dist p x + dist x y = dist p y := dist_add_dist_eq_iff.mpr hxy
+    have hsum2 : dist p y + dist y z = dist p z := dist_add_dist_eq_iff.mpr hyz
+    have hsum3 : dist p z + dist z x = dist p x := dist_add_dist_eq_iff.mpr h
+    have h0 : dist z x = 0 := by
+      linarith [dist_nonneg (x := x) (y := y), dist_nonneg (x := y) (y := z),
+        dist_nonneg (x := z) (y := x)]
+    have heq : z = x := dist_eq_zero.mp h0
+    rw [heq]
+    exact wbtw_self_right ℝ p x
+
 end Erdos634.ChordTraceReal

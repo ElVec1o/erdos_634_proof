@@ -1534,6 +1534,24 @@ trick used throughout this session's chain lemmas (`dist p x + dist x y = dist p
 image, and `dist x y = dist y x` force `dist x y = 0`). `lake build Erdos634.All` clean, no `sorry`,
 `#print axioms` confirms only the standard three.
 
+**The transitivity companion, same session, later still (2026-09-03)**:
+`WbtwChain.wbtw_trans_of_wbtw` — the last order axiom (after trichotomy and antisymmetry) needed to
+sort a chord's points by `wbtw_trichotomy_of_wbtw`: if `x, y, z` all lie weakly between `p` and `q`,
+`Wbtw p x y`, and `Wbtw p y z`, then `Wbtw p x z`. Proved by taking the trichotomy for `x, z`
+directly and ruling out its "wrong" branch (`Wbtw p z x`) via the same three-equation
+distance-additivity trick as the other two companions — that branch forces `z = x`, collapsing to
+the trivial case. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the
+standard three.
+
+`WbtwChain.lean` now has all three order axioms (`wbtw_trichotomy_of_wbtw`, `_antisymm_`,
+`_trans_`) that a real sort of a straddler set's trace endpoints needs, plus the chain-of-Wbtw
+consumer (`wbtw_chain_bounded`) that sorted sequence must satisfy. What remains for the general
+induction is purely mechanical at this point: (1) build the sorted `List`/`Fin`-indexed sequence
+from a `Finset` straddler set using these three facts (a `List.Sorted` / insertion-sort-style
+construction, not yet done — no new geometry, only combinatorics), (2) check that construction
+satisfies `wbtw_chain_bounded`'s hypotheses, (3) the `Finset.sum` induction combining
+`chord_decomposition_of_gap` with `straddle_total_eq_sum`.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
