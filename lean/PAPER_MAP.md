@@ -2733,3 +2733,38 @@ line has interior meeting the line, which an edged wall forbids, so every tile l
 (`StraightEdgeSums`' prose; `Tri.carrier_subset_halfplane_affine` is the half of it that is proved).
 That is one hypothesis about the wall, uniform in `n`, not a per-step family — and it is not yet a
 theorem here.
+
+### RouteOneThroughEdge, sixth increment: the uniformity worry dissolves
+
+Three more theorems (`height_eq_coord_combo`, `carrier_above_of_vertices`,
+`route_one_flank_of_vertices`); 31 declarations in the file, all axiom-clean, `Erdos634.All` clean.
+
+The obstacle flagged in the fifth increment was `habove` — that each serving tile lies weakly above
+the wall *globally*, which looked like it needed the wall to be edged (an unproved straddle theorem).
+It does not. The second coordinate is affine and the barycentric coordinates are nonnegative on the
+carrier, so `height_eq_coord_combo` writes a carrier point's height as the barycentric average of the
+vertices' heights, and `carrier_above_of_vertices` concludes: **a tile whose three vertices lie
+weakly above the wall lies weakly above it.** `habove` is therefore three sign conditions on
+vertices, not a global assumption — and three sign conditions on vertices is exactly what the
+corpus's own `no_downward_edge` / `edge_dir_nonneg_of_local` produce from local containment.
+`route_one_flank_of_vertices` restates the flank theorem in that form.
+
+So the edged-wall straddle theorem is **not needed** for this purpose. That was a false alarm in the
+previous entry, corrected here rather than left standing.
+
+**Position after six increments.** For the `[V,E]` question at `e = 1`:
+* case (a) — removed (`route_one_flank_from_configuration`);
+* case (b) — superseded, and already was (`escape_flank`);
+* case (c) — its step is `flank_propagates`, its terminus is `terminus_of_run_length` (VERIFIED),
+  its `inWall` is VERIFIED, and the figure-free descent scheme `route_one_closes'` is VERIFIED;
+* the per-step `habove` is now three vertex sign conditions, not a global or uniform assumption.
+
+**What is still not done, and is now the whole of it: the attachment.** Every hypothesis of
+`route_one_flank_of_vertices` and `flank_propagates` — the vertex sign conditions, the tangential
+approach at each point, interiority, the `α`-tile's horizontal edge, and `i ≠ j` — must be exhibited
+in a hypothetical base-`β` tiling, and composed with `overshoot_dichotomy` and
+`produced_edge_blocks` into an `htri` for `route_one_closes'`. That is `rem:routeoneopen`, still
+OPEN, and nothing in this session touches it. Case (b)'s and case (a)'s removal does not shrink it.
+
+**`conj:advance` remains CONJECTURE. `e = 1` is not closed. `e ≥ 2` is untouched. The prime case is
+not advanced.**
