@@ -1834,6 +1834,28 @@ known to lie in a straddler's open trace-interior gap. Every other piece — bas
 gap-freedom (both minimality and exclusion cases), both invariant-maintenance directions, the
 degenerate collapse, and the recursive restriction — is built and independently verified.
 
+**The corrected target, found by checking whether the missing piece is actually easy (2026-09-03,
+later still)**: checked whether `Dissection.wall_partition` (the machinery underlying
+`chord_decomposition_of_gap`) already gives the missing flush-sum split. It cannot: `wall_partition`
+itself requires `hwall` — no tile's interior meets the *whole* open range — which is false by
+construction across a range containing a straddler. Proving the flush-sum split directly would need
+a comparably-sized proof to `wall_partition` itself (a fresh `sum_hausdorff_of_partition` argument
+with the range pre-split into three pieces), not a quick corollary.
+
+This means the flat single-sum statement `chord_decomposition_of_finset` was aimed at was the
+**wrong target** — a convenience simplification that turned out to need real new machinery. The
+correct fix is to avoid it entirely: build the `Finset.strongInduction` to *produce* the point
+sequence `g : ℕ → Plane` and `tiles : ℕ → Fin N` that `chord_decomposition_of_chain` already
+consumes (existence, by induction, rather than a flat equality) — its own conclusion is stated
+gap-by-gap and never needs a flush-sum splitting fact, since `chord_decomposition_cons`'s recursive
+structure keeps each gap's flush contribution separate throughout. Every geometric and
+order-theoretic piece already built this session (`gap_free_of_finset_step'`, `excl_new_self`/
+`excl_carries_forward`, `far_precedes_of_minimal`, `not_mem_gap_of_far_precedes`, the degenerate
+collapse) transfers directly to this corrected target unchanged — what needs rebuilding is only the
+top-level induction's *conclusion* (an existence statement producing `g`, `tiles`, and a proof they
+satisfy `chord_decomposition_of_chain`'s hypotheses) and the final application, not the supporting
+lemmas. Not yet attempted under this corrected framing.
+
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
