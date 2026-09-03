@@ -1091,27 +1091,29 @@ should reach for these first, not rebuild from scratch. They do NOT by themselve
 `Dissection`/`CongruentDissection` (covering N tiles, wall/chain data) — that remains the deeper
 placement-layer gap (structural blocker 1) for rows like `thm:walkstruct`, `thm:44`, `cor:elevenm`.
 
-## The tile-placement layer, first piece: `otherTile` (2026-09-03)
+## The tile-placement layer: what already exists, corrected (2026-09-03)
 
-`prop:cornerpara`, `cor:noTP`, `thm:secondc`, `cor:pbound`, `lem:ccorner` and several others share
-a missing primitive nobody had built: given a point on one tile's edge, "the tile on the other
-side" — a dual-graph edge map. The fact it needs was already VERIFIED and sitting unused:
-`Dissection.two_tiles_at_edge_point` (G4) already proves that at a non-vertex point interior to the
-target, meeting some tile's edge, *exactly* two tiles meet it. `TileAdjacency.lean` (new) extracts
-the second tile as a genuine function: `otherTile D hN hxv hR hRt i hi : Fin N`, with
-`otherTile_ne` (`≠ i`), `otherTile_onEdge` (itself `OnEdge` at the same point), and
-`otherTile_otherTile` (applying it twice returns the original tile — the dual-graph edge map is an
-involution). `lake build Erdos634.All` clean, no `sorry`.
+**Correction, same day, after building `TileAdjacency.lean`**: on closer reading, most of what
+this section originally claimed as new was already in `Dissection.lean`, just never cross-
+referenced from any of the blocked rows' notes. `Dissection.second_tile_at_edge_point` already
+gives existence of the other tile at an edge point (my `otherTile` adds only the `∃!`/function
+packaging and the involution fact — real, but a much smaller increment than first stated).
+More importantly, `Dissection.leftDir_antiparallel` (with `.leftUnit_neg`) already proves the
+*direction* fact I had scoped as "not yet attempted": at a shared edge point, the two tiles' edge
+directions are exact negative scalar multiples of each other — i.e. the edges *are* collinear
+there, proved from `proportional_of_disjoint_pos` on the two tiles' `crossL` functionals. This
+machinery is already assembled into a full theorem, `Dissection.g4_final` (checked to depend only
+on the standard axioms, no `sorry`).
 
-**This is infrastructure, not a flip.** `thm:secondc`'s proof (the nearest target) needs much more
-than "the other tile exists": the specific vertex `P` where the two tiles' edges align, the
-adjacent tile's edge length being exactly `a` (not just "some edge"), and angle bookkeeping at the
-junction `J`. `otherTile` supplies the existence step only. **Next concrete sub-step**: show that
-when `x` lies on tile `i`'s edge `k` at a point strictly between the two endpoints (not a shared
-vertex), `otherTile`'s edge at `x` is collinear with tile `i`'s edge `k` near `x` — the fact
-`thm:secondc`'s proof calls "`Y`'s edge from `P` runs along `C`" — since two convex sets sharing an
-open segment around `x` in their boundary must share the supporting line there. This is the next
-bounded piece, not yet attempted.
+So the direction/collinearity step some of these rows need is **not** the blocker — it already
+exists, general, for any dissection. What actually still blocks `cor:noTP`/`thm:secondc`/
+`prop:cornerpara` is more specific: a **chord trace** object (line 878's own note: "chord trace /
+pierce configuration / placement figure"), i.e. tracking a *specific* boundary segment's full
+cover by possibly many tile edges in sequence (not just the immediate neighbor at one point), plus
+matching an edge's *length* to a named value (`a`, `b`, or `c`), which needs `hausdorff_edge`-style
+length bookkeeping combined with the direction fact above. `otherTile`/`leftDir_antiparallel`
+together are the true first two bricks; the chord-trace object is the next, larger one, and is not
+yet scoped precisely enough to attempt as a bounded step.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
