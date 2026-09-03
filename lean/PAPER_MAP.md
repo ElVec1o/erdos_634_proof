@@ -1416,6 +1416,29 @@ the reversed gap `(r₂, s₁)`; applied the other way it rules out `m₂`'s tra
 Not yet wired into a `chord_decomposition_two_straddlers'` (the two-straddler analogue of
 `chord_decomposition_one_straddler'`) — the lemma exists, the assembly doesn't.
 
+**The two-straddler wiring done, same session, later still (2026-09-03)**:
+`ChordDecompositionTwoStraddlersFinal.chord_decomposition_two_straddlers'` — closes the two-straddler
+case the same way `ChordDecompositionOneStraddlerFinal` closed the one-straddler case: all three
+`hgap` hypotheses are now derived from the natural `hunique` condition ("no tile other than `m₁` or
+`m₂` straddles anywhere") plus the betweenness order, instead of assumed directly. The key
+observation that made this tractable: the *middle* gap `(s₁, r₂)` is actually adjacent to **both**
+straddlers' traces (it shares `s₁` with `m₁`'s trace `[r₁, s₁]` and `r₂` with `m₂`'s trace
+`[r₂, s₂]`), so `openSegment_disjoint_segment_of_wbtw` (the plain adjacent lemma) handles it on both
+sides — the initial plan to reach for the "far" lemma here was wrong; `ChordBetweennessDisjointFar`
+is needed only for the two *outer* gaps reaching the *non-adjacent* straddler (gap `(p, r₁)` vs
+`m₂`'s trace, and gap `(s₂, q)` vs `m₁`'s trace). One extra hypothesis beyond
+`chord_decomposition_two_straddlers`'s own was needed to make the betweenness chain derivable:
+`hw_r1s1r2 : Wbtw ℝ r₁ s₁ r₂` (the two traces occupy their stretches in the stated order, not just
+each individually between `p` and `q`), plus two nondegeneracy hypotheses `r₁ ≠ s₁`, `s₁ ≠ s₂`
+ruling out collapsed traces. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms
+only the standard three.
+
+Two straddlers are now closed from the natural hypothesis exactly as one straddler is. The pattern
+for arbitrary many straddlers is now visible: each interior gap sits adjacent to its two flanking
+straddlers (handled by the plain lemma) and reaches every *other* straddler only through the "far"
+lemma chained across however many intervening trace-and-gap stretches lie between them — a genuine
+finite induction on the sorted list of trace endpoints, not yet built.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
