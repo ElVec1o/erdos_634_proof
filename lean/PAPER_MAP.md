@@ -2945,3 +2945,37 @@ form is unformalised.* The docstring at `OrderForcing.lean:127` overstates what 
 be read with this correction.
 
 Recorded as a negative structural finding. No label moves; `conj:advance` remains CONJECTURE.
+
+### Correction: the partner's geometric half is **not** blocked — `edge_two_sided` discharges it
+
+The previous entry concluded that forcing the corner cascade's partner needs a boundary-anchored
+no-straddle theorem that "is not in the corpus". **That is wrong, and this entry corrects it.**
+
+`Dissection.edge_two_sided` (VERIFIED, axiom-clean) already does the work, and its own docstring says
+so: *"All wall hypotheses are discharged: `edge_point_not_interior` makes any tile edge a wall."* For
+a tile edge the no-straddle premise is free — an edge point lies in that tile's carrier, so it is in
+no tile's interior (`not_mem_interior_of_mem`) — and the theorem returns that **both** the near- and
+far-side line chains cover the edge exactly once in `μH¹`. Its only hypothesis is `hint`: the edge's
+open segment lies in the target's interior. It even notes that composite chords of several collinear
+tile edges follow the same way.
+
+My error was conflating two different segments. `rem:straddle` refutes no-straddle for an *arbitrary*
+segment carrying whole `b`-edges at its two ends — a segment nobody owns. The corner cascade's chord
+is the corner tile's **own `b`-edge**, and for a tile's own edge the straddle question does not arise
+at all. The refutation does not apply to it.
+
+**So the partner is reachable, and the assembly is now named:**
+1. `edge_two_sided` on the corner tile's `b`-edge → the far side is covered exactly once by a chain
+   of whole tile edges, total `μH¹`-length `b`;
+2. `RouteOne.edge_length_mem_model` (built this session) → every chain edge's length is `a`, `b` or
+   `c`;
+3. `PentagonLemma.partner_unique` → the only `ℕ`-combination summing to `b` is a single `b`;
+4. hence exactly one tile lays a whole `b`-edge there: **the partner, as an object.**
+
+What genuinely remains: discharging `hint` for the corner tile's `b`-edge (its open segment interior
+to the target — real but modest, and specific to the corner geometry), and turning the `μH¹` measure
+equation of (1) into the edge *count* of (3) — `PinPlumbing.wall_run_equation` is the existing tool
+for that step. Neither is a crossing question.
+
+This is the first genuine crack in the attachment. `conj:advance` remains CONJECTURE and no label
+moves — but the blocker named two entries ago was overstated and is retracted here.
