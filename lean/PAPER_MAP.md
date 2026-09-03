@@ -1203,10 +1203,21 @@ VERIFIED, general) gives pairwise disjointness *within* `lowerFlush`, `trace_dis
 gives disjointness between any `lowerFlush` tile and any straddler, so
 `MeasureTheory.measure_biUnion_finset₀` applies to `lowerFlush ∪ straddlers` directly, and
 `length_sum_of_cover`'s covering half (already general) finishes it against the chord's own length.
-**This is a real, well-scoped next target** — every individual fact above already exists or is
-proved; what's missing is only the assembly connecting `tile_contact_face`'s edge characterization
-to `OnEdge`'s hypothesis shape and the flush-vs-straddle case bookkeeping. Deprioritized this
-session in favor of hunting further PROVED→VERIFIED flips per the standing `/goal`, since this
+**Correction, same session, later**: the sketch above has a real gap, caught before building
+anything on top of it. The "leftDir_antiparallel forces `j'` off `upperFlush`" step is not quite
+right: `sameside_edges_subsingleton` only forbids two same-side tiles' edges from overlapping in
+*more than one point* — it does not forbid two different `upperFlush` tiles from meeting at exactly
+one shared point (e.g. two adjacent `upperFlush` tiles whose flush edges are collinear extensions
+of each other, meeting end-to-end at a T-junction-style point). At such an isolated point, `x`
+genuinely can be covered only by `upperFlush` tiles, so "`upperFlush` is never needed" is false as
+a *pointwise* claim. It survives as a *measure-theoretic* one, though: such points are isolated
+(vertices or edge-endpoints of the dissection, hence finitely many), and `length_sum_of_cover`
+already tolerates a finite exceptional set `F` in its own covering hypothesis
+(`σ \ F ⊆ ⋃ i, E i`) — so the fix is to fold these finitely many bad points into that `F`, not to
+strengthen the pointwise claim. This is a real, well-scoped next target, but the exact finite
+exceptional set (junction points where two same-side flush tiles meet end-to-end) needs to be
+identified and shown finite before the assembly can proceed — not yet attempted. Deprioritized
+this session in favor of hunting further PROVED→VERIFIED flips per the standing `/goal`, since this
 piece, even finished, is infrastructure toward `prop:chorddecomp` and not itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
