@@ -4149,3 +4149,21 @@ triangle-targeted dissections exists; a union over **non-triangular regions** do
 what `thm:realize12`'s induction step actually needs. Recording the sharper blocker in its place:
 **`Dissection` is indexed by a `Tri` target, so no polygonal-region dissection type exists to glue
 through.** This is a type-level gap, not a missing proof.
+
+### Triage correction: `thm:decidable` is not tractable (2026-09-04)
+
+In the scan entry above I listed `thm:decidable` alongside `prop:eqspecint` and `lem:offsets` as
+"the tractable arithmetic remainder". **That was wrong, on reading the statement.** It asserts that
+it is decidable, given `N`, whether some triangle cuts into `N` congruent triangles — *"under the
+same cited inputs as `thm:main`"*. A Lean rendering needs a `Decidable` instance on
+`∃ D : CongruentDissection N, True`, and the decision procedure runs through Beeson's equilateral
+decidability, Zhang's families and Laczkovich's elliptic-curve analysis. Encoding those is the
+**certified-search-format** blocker, one of the four recurring ones. It belongs with the
+meta-statements (`prop:ninetools`, `prop:threecostumes`, `rem:spectral`, `prop:nogoauto`), not with
+the arithmetic.
+
+**Consequence, and it is the useful part of this tick.** With `prop:eqspecint` built and
+`lem:offsets` correctly cited, **the tractable arithmetic remainder among the uncited rows is now
+empty.** Every one of the remaining 15 genuinely-uncited rows sits behind one of the four recurring
+blockers — tile placement, composition/scale on dissections, certified search, dual graph — with
+none behind mere absence of effort. The `none`-citation vein, opened three ticks ago, is worked out.
