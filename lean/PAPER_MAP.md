@@ -1091,6 +1091,28 @@ should reach for these first, not rebuild from scratch. They do NOT by themselve
 `Dissection`/`CongruentDissection` (covering N tiles, wall/chain data) — that remains the deeper
 placement-layer gap (structural blocker 1) for rows like `thm:walkstruct`, `thm:44`, `cor:elevenm`.
 
+## The tile-placement layer, first piece: `otherTile` (2026-09-03)
+
+`prop:cornerpara`, `cor:noTP`, `thm:secondc`, `cor:pbound`, `lem:ccorner` and several others share
+a missing primitive nobody had built: given a point on one tile's edge, "the tile on the other
+side" — a dual-graph edge map. The fact it needs was already VERIFIED and sitting unused:
+`Dissection.two_tiles_at_edge_point` (G4) already proves that at a non-vertex point interior to the
+target, meeting some tile's edge, *exactly* two tiles meet it. `TileAdjacency.lean` (new) extracts
+the second tile as a genuine function: `otherTile D hN hxv hR hRt i hi : Fin N`, with
+`otherTile_ne` (`≠ i`), `otherTile_onEdge` (itself `OnEdge` at the same point), and
+`otherTile_otherTile` (applying it twice returns the original tile — the dual-graph edge map is an
+involution). `lake build Erdos634.All` clean, no `sorry`.
+
+**This is infrastructure, not a flip.** `thm:secondc`'s proof (the nearest target) needs much more
+than "the other tile exists": the specific vertex `P` where the two tiles' edges align, the
+adjacent tile's edge length being exactly `a` (not just "some edge"), and angle bookkeeping at the
+junction `J`. `otherTile` supplies the existence step only. **Next concrete sub-step**: show that
+when `x` lies on tile `i`'s edge `k` at a point strictly between the two endpoints (not a shared
+vertex), `otherTile`'s edge at `x` is collinear with tile `i`'s edge `k` near `x` — the fact
+`thm:secondc`'s proof calls "`Y`'s edge from `P` runs along `C`" — since two convex sets sharing an
+open segment around `x` in their boundary must share the supporting line there. This is the next
+bounded piece, not yet attempted.
+
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
 | Atom | Statement | Lean | Label |
