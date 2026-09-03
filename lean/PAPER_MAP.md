@@ -1587,6 +1587,25 @@ must be entirely separated (one trace's far endpoint precedes the other's near e
 the combinatorial fact the sorted-gap construction needs. Not yet assembled into that separation
 theorem — this is its key ingredient, not the theorem itself.
 
+**The separation theorem, same session, later still (2026-09-03)**:
+`WbtwTracesSeparated.traces_separated_of_disjoint` — the combinatorial fact the sorted assembly
+needs, now proved: two straddlers' oriented traces (near endpoint first, both on the chord `[p,q]`)
+that meet in at most one point (`trace_disjoint_of_straddle`) are *entirely* separated — one
+trace's far endpoint weakly precedes the other's near endpoint. Proved by contradiction: assuming
+neither separation, a 2×2 case split comparing `r₁` vs `r₂` and `s₁` vs `s₂` (via
+`wbtw_trichotomy_of_wbtw`) always produces, via `wbtw_middle_of_wbtw_wbtw`, two points landing in
+*both* traces; the disjointness hypothesis forces them equal, contradicting either the assumed
+non-separation directly (that point would trivially satisfy `Wbtw`'s reflexivity) or the traces'
+own nondegeneracy. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the
+standard three.
+
+This is the last individual combinatorial fact the sorted multi-straddler assembly needs. What
+remains is now genuinely just the induction/bookkeeping itself: order a `Finset` straddler set's
+oriented traces via `wbtw_trichotomy_of_wbtw` (now known total on this set, thanks to
+`traces_separated_of_disjoint` ruling out interleaving), package the sorted list into
+`wbtw_chain_bounded`'s `g`, and close the `Finset.sum` induction against `chord_decomposition_of_gap`
++ `straddle_total_eq_sum`. No further per-pair geometric lemma is missing.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
