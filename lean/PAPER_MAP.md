@@ -2833,3 +2833,20 @@ can now cite `pi_count_le_one` instead.
 
 **No label moves. `conj:advance` remains CONJECTURE; the prime case is not advanced.** The
 attachment (`rem:routeoneopen`, OPEN, blocked on the tile-placement layer) is untouched.
+
+### Scan result: `pi_count_le_one` makes **no** named target fall — previous entry overstated it
+
+Applied `CLAUDE.md`'s own test to the eighth increment. Every π-count hypothesis actually assumed in
+the corpus is `card = 0` (`MarchRun.lean:45`, `.74`; `JunctionWedge.lean:157`) — *no* tile has a
+straight angle at the point — which is strictly stronger than `pi_count_le_one`'s `≤ 1` and is the
+crossing question at that point, untouched by it. The `card = 1` occurrences
+(`RouteOne.alpha_wall_figure_real`) are **conclusions**, not hypotheses, so there is nothing there to
+discharge either.
+
+So the previous entry's line — "any vertex-figure argument in the corpus that assumes `s ≤ 1` at a
+junction can now cite `pi_count_le_one`" — is **wrong as written**: there are no such call sites.
+Corrected here rather than left standing. `pi_count_le_one` remains a correct and cheap geometric
+derivation of a fact the figure route gets from the classification, and it is used inside this
+file's own chain; it is not, on the evidence of the scan, a lever on anything else.
+
+No label moves. Recorded as a tool, not as progress.
