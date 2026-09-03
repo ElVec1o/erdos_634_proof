@@ -3153,3 +3153,33 @@ not yet threaded. Only when that is done does `lem:census` flip; **it has not fl
 label stays PROVED.**
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `hvals` discharged at every point — and piece 4 re-scoped honestly
+
+`congruentDissection_localAngle_mem_all` (`CornerAnglePerm.lean`, eight declarations now,
+axiom-clean, `Erdos634.All` clean): for a `CongruentDissection`, **any** tile's local angle at
+**any** point is one of `α, β, γ, π, 2π, 0`.
+
+This matters beyond `lem:census`. `TileAt.congruentDissection_localAngle_mem` proves it only at the
+*target's own vertices*, and the `lem:anglecalc` row above records that the `hvals` hypothesis — every
+tile's local angle here is one of those six — is carried unproved at general points by essentially
+every vertex-figure lemma in `VertexFigureReal`. It needed nothing new: `localAngle_cases` splits
+four ways, and in the corner branch `congruent_corner_angles` sends the tile's own corner angle to
+one of the model's three. **It had simply never been stated in general.**
+
+**Correction to the previous entry.** I called piece 4 "bookkeeping of a specific kind". That
+understates it. Piece 4 needs `cornerPts` partitioned into the *eight* figure classes
+`vertex_census` names (apex, two base corners, `n₁`, `n₂`, `v₁…v₄`) with the per-class multiplicity
+evaluated — and the interior classification for a real dissection does not exist:
+`VertexFigureReal.interior_figure_cases` takes the multiplicity data `p q r s u` and `hsum` as
+*hypotheses*, and the corpus has no real-dissection instantiation at an arbitrary interior point.
+`congruentDissection_localAngle_mem_all` supplies the first missing ingredient (`hvals`); the second
+— the angle sum at an arbitrary interior point, feeding `hsum` — is `PinPlumbing
+.pin_angle_sum_interior`, which exists. So the classification is now assemblable, but assembling it
+and then the eight-way partition is a substantial build, **not** a tick's bookkeeping.
+
+`lem:census` has **not** flipped; its label stays PROVED. What has changed is that its named
+blocker (the double count) is a theorem, and `hvals` — a blocker for a much wider set of rows — is
+now discharged in general.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

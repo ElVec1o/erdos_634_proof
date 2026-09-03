@@ -169,4 +169,34 @@ theorem congruentDissection_corner_balance {N : ℕ} (D : CongruentDissection N)
   rw [← corner_double_count D.toDissection _ h0 hpi h2pi]
   exact congruentDissection_corner_total D hdist k
 
+/-- **`hvals` at every point.**  For a `CongruentDissection`, *any* tile's local angle at *any*
+point of the plane is one of `α`, `β`, `γ`, `π`, `2π`, `0`.
+
+`TileAt.congruentDissection_localAngle_mem` proves this only at the target's own vertices, and the
+`hvals` hypothesis it discharges there is carried unproved at general points throughout the corpus
+(the vertex-figure lemmas of `VertexFigureReal` all take it). The general statement needs nothing
+more: `PinPlumbing.localAngle_cases` splits four ways, and in the corner branch
+`CongruentAngles.congruent_corner_angles` sends the tile's own corner angle to one of the model's
+three. -/
+theorem congruentDissection_localAngle_mem_all {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
+    (hα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (v : Plane) (i : Fin N) :
+    (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 2 * Real.pi, 0} : Finset ℝ) := by
+  classical
+  rcases Erdos634.PinPlumbing.localAngle_cases (D.tile i) v with
+    ⟨j, -, hval⟩ | h2pi | hpi | h0
+  · obtain ⟨k, hk⟩ := congruent_corner_angles (D.tiles_congruent i).symm j
+    rw [hval, hk]
+    have hall : ∀ m : Fin 3, m = 0 ∨ m = 1 ∨ m = 2 := by decide
+    have hk3 := hall k
+    rcases hk3 with rfl | rfl | rfl
+    · rw [show (0 : Fin 3) + 1 = 1 from rfl, show (0 : Fin 3) + 2 = 2 from rfl, hα]; simp
+    · rw [show (1 : Fin 3) + 1 = 2 from rfl, show (1 : Fin 3) + 2 = 0 from rfl, hβ]; simp
+    · rw [show (2 : Fin 3) + 1 = 0 from rfl, show (2 : Fin 3) + 2 = 1 from rfl, hγ]; simp
+  · rw [h2pi]; simp
+  · rw [hpi]; simp
+  · rw [h0]; simp
+
 end Erdos634.Geometry
