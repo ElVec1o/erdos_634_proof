@@ -3013,3 +3013,29 @@ confirmed, not refuted, by this work.
 
 That is the honest terminal position for this line. `conj:advance` remains CONJECTURE, `e = 1` is not
 closed, and the prime case is not advanced.
+
+### Census reconciled — and it is now reproducible
+
+Flagged three times this session as unreliable; fixed. The authoritative source is the `\lab{...}`
+tags in `paper/*.tex`, one per tracked statement, with the **leading word** being the label (tags may
+carry a qualifier: `\lab{PROVED: the walk arithmetic VERIFIED}` is a PROVED statement, not a VERIFIED
+one — counting the word "VERIFIED" anywhere in the tag is what inflates naive greps).
+
+`code/census.sh` now computes it. Current, checked:
+
+```
+PROVED 116   VERIFIED 57   CONJECTURE 30   HEURISTIC 4   OPEN 3      (210 tagged statements)
+```
+
+**The discrepancy is explained.** `private/RESEARCH_LOG.md` carried `119/54/30/4/3` while this thread
+carried `116/57/30/4/3`. Both total 210 and both agree on CONJECTURE/HEURISTIC/OPEN; they differ only
+in three statements counted PROVED by one and VERIFIED by the other. The `\lab{}` tags — the thing
+Rule 0 actually labels — say 57 VERIFIED. So the `.tex` figure is correct and the log's is three
+short; the log was evidently counting `PAPER_MAP.md` rows, which lag the papers. Future ticks should
+run `code/census.sh` rather than quote either.
+
+**This session's Route-1 work does not move the census**, and it is worth being explicit about why:
+`rem:route1uniform` carries no `\lab{}` tag at all (remarks frequently don't), so the VERIFIED row
+added for it earlier today is a `PAPER_MAP` record, not a census entry. Same for the
+`conj:advance` sub-claim rows. `conj:advance` itself remains CONJECTURE, tagged as such in the
+companion.
