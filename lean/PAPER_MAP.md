@@ -1505,6 +1505,27 @@ endpoints as `g : Fin (2n+2) → Plane` (or `g : ℕ → Plane` constant past `2
 `wbtw_chain_bounded` with `K = 2n+1` is now a closed, checkable step — no infinite-injectivity
 obligation left to discharge first.
 
+**The sorting tool, same session, later still (2026-09-03)**:
+`WbtwChain.wbtw_trichotomy_of_wbtw` — the piece still missing after `wbtw_chain_bounded`: given a
+straddler set (a `Finset (Fin N)`, always finite, `ChordStraddleTotal.straddlers`), packaging its
+traces into a sequence `g` in the *correct order* first needs a total order on the chord's own
+points to sort by. This theorem supplies exactly that: any two points `x, y` both weakly between
+`p` and `q` are comparable from `p` (`Wbtw p x y ∨ Wbtw p y x`) — proved via
+`wbtw_total_of_sameRay_vsub_left` (an existing Mathlib total-order-from-a-ray fact) applied to the
+same-ray facts `Wbtw.sameRay_vsub_left` gives from `hx`, `hy`, transitively composed through the
+common direction `q -ᵥ p` (with the degenerate `p = q` case handled via `wbtw_self_iff`). `lake
+build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+With `wbtw_trichotomy_of_wbtw` (sorting) and `wbtw_chain_bounded` (the ordered chain's betweenness
+facts) both in hand, the three missing pieces for the general induction are down to: (1) actually
+building the sorted `List`/`Fin`-indexed sequence of straddler trace endpoints from a `Finset`
+straddler set via this order (a `Finset.sort`/`List.Sorted` construction, not yet done), (2)
+checking that construction's output satisfies `wbtw_chain_bounded`'s three hypotheses (mechanical
+given the sorting is genuinely by this order), and (3) the sum-over-Finset bookkeeping combining
+`chord_decomposition_of_gap` on each gap with `straddle_total_eq_sum` on the straddler traces
+themselves (this piece has no new geometry left, per `ChordDecompositionGap.lean`'s own docstring —
+it is `Finset.sum` induction over a sorted list, order-theory not geometry).
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated

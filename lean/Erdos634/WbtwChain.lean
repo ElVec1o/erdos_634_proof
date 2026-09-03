@@ -99,4 +99,19 @@ theorem wbtw_chain_bounded {g : ℕ → Plane} (K : ℕ)
       have hne' : g j ≠ g k := hinj j k (by omega) (by omega) hjk_eq
       exact (ih (by omega)).trans_expand_left h2 hne'
 
+/-- **Two points between `p` and `q` are comparable from `p`.** If `x` and `y` both lie weakly
+between `p` and `q`, then `x` lies weakly between `p` and `y`, or `y` lies weakly between `p` and
+`x` — the total order (from `p`) that lets any finite set of points on a chord be *sorted*, the
+missing step in packaging a straddler set into the `g : ℕ → Plane` `wbtw_chain_bounded` needs. -/
+theorem wbtw_trichotomy_of_wbtw {p q x y : Plane} (hx : Wbtw ℝ p x q) (hy : Wbtw ℝ p y q) :
+    Wbtw ℝ p x y ∨ Wbtw ℝ p y x := by
+  apply wbtw_total_of_sameRay_vsub_left
+  have hrx : SameRay ℝ (x -ᵥ p) (q -ᵥ p) := hx.sameRay_vsub_left
+  have hry : SameRay ℝ (y -ᵥ p) (q -ᵥ p) := hy.sameRay_vsub_left
+  refine hrx.trans hry.symm (fun hq0 => Or.inl ?_)
+  have hqp : q = p := vsub_eq_zero_iff_eq.mp hq0
+  have hx' : Wbtw ℝ p x p := hqp ▸ hx
+  have hxp : x = p := (wbtw_self_iff (R := ℝ)).mp hx'
+  simp [hxp]
+
 end Erdos634.ChordTraceReal
