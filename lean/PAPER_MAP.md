@@ -1774,6 +1774,29 @@ induction is the deliberate fix for the previous attempt's failure mode. The ind
 `chord_decomposition_cons`, and maintaining the invariant via `far_precedes_of_minimal` and
 `wbtw_global_of_local`) is the next piece, not yet assembled.
 
+**All four induction pieces built and independently verified (2026-09-03, later still)**: rebuilt
+the `Finset` wrapper attempt in small, separately-checked pieces (the deliberate fix from the
+earlier failed attempt): `ChordFinsetBaseCase.not_mem_gap_of_far_precedes` and
+`ChordFinsetBaseCaseGap.gap_free_of_all_excluded` (base case: `T` empty), `ChordFinsetStepGap.
+gap_free_of_finset_step` (induction step's leading-gap-freedom, converting the *global* minimality
+comparison `Finset.exists_min_image` actually produces into what `gap_free_of_minimal` needs), and
+`ChordFinsetInvariant.excl_new_self` / `excl_carries_forward` (the exclusion invariant survives one
+step, for the newly- and previously-excluded straddlers respectively). All four `lake build
+Erdos634.All` clean, no `sorry`.
+
+**What stopped the final assembly**: wiring these four into one `Finset.strongInduction` surfaced
+two genuine degenerate edge cases neither previous pass had accounted for: (1) the base case's own
+`p ≠ Q` side condition (needed to invoke `chord_decomposition_of_gap`) can fail exactly when the
+whole remaining chord has been consumed with nothing left over — a legitimate, not vacuous,
+terminating state that needs its own trivial (both totals `0`) branch, not a bare hypothesis; (2)
+the induction step's `p ≠ R m` side condition (needed to invoke `chord_decomposition_cons`) can
+similarly fail when a straddler's near endpoint exactly coincides with the current position — two
+tiles' traces genuinely touching at a shared vertex is not excludable by the hypotheses already in
+hand. Both are real, checkable geometric edge cases (not proof-technique gaps), and handling them
+correctly needs its own short argument each, not a rushed `by_cases` bolted on under time pressure.
+Recorded precisely rather than pushed through incompletely, per this project's standing rule against
+committing unsound term combinators or `sorry` to force a deadline.
+
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
