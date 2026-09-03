@@ -614,4 +614,55 @@ def censusLabels : Finset (ℕ × ℕ × ℕ) :=
 
 theorem censusLabels_card : censusLabels.card = 8 := by decide
 
+/-- **Every tile vertex carries one of the eight census labels.**  The maps-to obligation of the
+partition: `cornerPts_trichotomy` splits the point three ways, and the three classification
+theorems — `TileAt.congruentDissection_apex_counts` / `.congruentDissection_base_corner_counts` at
+the target's corners, `congruentDissection_boundary_figure_at_corner` on the rest of the frontier,
+`congruentDissection_interior_figure_at_corner` inside — land each case on one of the eight labels.
+
+`htarget` is the base-`β` target's own shape: each of its corners is the apex `3α` or a base `β`. -/
+theorem figureVec_mem_censusLabels {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (htarget : ∀ k : Fin 3,
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = 3 * α ∨
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β)
+    {v : Plane} (hv : v ∈ cornerPts D.toDissection) :
+    ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+      ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+      ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ)
+      ∈ censusLabels := by
+  classical
+  obtain ⟨j, -, hj⟩ := Finset.mem_biUnion.mp hv
+  obtain ⟨m, -, hm⟩ := Finset.mem_image.mp hj
+  rcases cornerPts_trichotomy D.toDissection hv with hc | ⟨hfr, hnv⟩ | hint
+  · obtain ⟨k, hk⟩ := hc
+    subst hk
+    rcases htarget k with h3 | hb
+    · obtain ⟨ha, hb', hc', -⟩ := Erdos634.Geometry.Dissection.congruentDissection_apex_counts D
+        α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hmα hmβ hmγ k h3
+      simp [censusLabels, ha, hb', hc']
+    · obtain ⟨ha, hb', hc', -⟩ :=
+        Erdos634.Geometry.Dissection.congruentDissection_base_corner_counts D
+        α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hmα hmβ hmγ k hb
+      simp [censusLabels, ha, hb', hc']
+  · rcases congruentDissection_boundary_figure_at_corner D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0
+      hγπ hγ0 hπ0 hγdef hrel hirr hmα hmβ hmγ hfr hnv j m hm with
+      ⟨ha, hb, hc⟩ | ⟨ha, hb, hc⟩
+    · simp [censusLabels, ha, hb, hc]
+    · simp [censusLabels, ha, hb, hc]
+  · rcases congruentDissection_interior_figure_at_corner D α β γ hαβ hαγ hαπ hα2π hα0 hβγ hβπ
+      hβ2π hβ0 hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr hint j m hm with
+      ⟨-, hcase⟩ | ⟨-, hcase⟩
+    · rcases hcase with ⟨ha, hb, hc⟩ | ⟨ha, hb, hc⟩ <;> simp [censusLabels, ha, hb, hc]
+    · rcases hcase with ⟨ha, hb, hc⟩ | ⟨ha, hb, hc⟩ | ⟨ha, hb, hc⟩ | ⟨ha, hb, hc⟩ <;>
+        simp [censusLabels, ha, hb, hc]
+
 end Erdos634.Geometry

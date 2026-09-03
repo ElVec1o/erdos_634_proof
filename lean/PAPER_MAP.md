@@ -3396,3 +3396,32 @@ the three classification theorems and `cornerPts_trichotomy` get consumed — an
 `lem:census` has **not** flipped; label stays PROVED.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` piece 4e: the maps-to obligation, done
+
+`figureVec_mem_censusLabels` (`CornerAnglePerm.lean`, twenty-three declarations, axiom-clean,
+`Erdos634.All` clean). Compiled first attempt.
+
+Every point of `cornerPts` carries one of the eight census labels. `cornerPts_trichotomy` splits the
+point three ways and the three classification theorems land each case:
+
+* target corners — `TileAt.congruentDissection_apex_counts` gives `(3,0,0)` at the apex,
+  `.congruentDissection_base_corner_counts` gives `(0,1,0)` at a base corner;
+* other frontier points — `congruentDissection_boundary_figure_at_corner` gives `(3,2,0)` or
+  `(1,1,1)`;
+* interior points — `congruentDissection_interior_figure_at_corner` gives those same two in its
+  `s = 1` branch, and `(6,4,0)`, `(4,3,1)`, `(2,2,2)`, `(0,1,3)` in its `s = 0` branch.
+
+The one new hypothesis is `htarget`: each of the target's own corners is the apex `3α` or a base `β`.
+That is the base-`β` target's shape, supplied at the point of use, not a hidden assumption about
+tilings.
+
+**This was the substantial half of the partition.** What remains is arithmetic assembly:
+instantiate `sum_over_fibers_const` three times — with weight `α`-multiplicity, then `β`, then `γ` —
+using this as the maps-to and the label's own coordinate as the constant, and read off
+`3 + n₁ + 3n₂ + 2v₂ + 4v₃ + 6v₄ = N` and its two siblings. Those are exactly
+`OrderForcing.vertex_census`'s three hypotheses.
+
+`lem:census` has **not** flipped; label stays PROVED, and I am still not predicting when.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
