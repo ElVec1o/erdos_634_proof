@@ -3738,3 +3738,31 @@ piece and am the wrong reader to rule on it; it stands recorded for an audit pas
 `lem:census`: **PROVED**.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### Scan with the new vertex-figure machinery: `lem:apex` clauses 1–2 reached, 3–5 not
+
+Ran the falls-a-target test over the PROVED rows whose blockers mention vertex figures, junctions or
+angles, now that the classification exists for a real dissection. `lem:apex` is the one it touches.
+
+Its clauses, checked against the paper text:
+
+1. "The target's apex angle is `π − 2β = 3α`" — **now derived**, `target_apex_angle` (new): from the
+   target's isosceles shape and the angle sum. Previously this was a stated property of the target.
+2. "the only vertex figure filling it is three `α`-corners" — **already real**,
+   `TileAt.congruentDissection_apex_counts`, for a genuine `CongruentDissection`.
+3. "the two outer apex tiles lay `c`-edges on the sides — the top letters of both side words are `c`"
+   — placement-level; needs the side-word layer. Not reached.
+4. "the three wedges' rays sit at labels `−3,−1,+1,+3`" — placement-level. Not reached.
+5. "The apex admits exactly two configurations, distinguished by the middle tile's chirality" —
+   **this is the row's recorded blocker and it stands**: the two-configuration conclusion is
+   geometric and is not formalized.
+
+So the row's blocker is unchanged and `lem:apex` stays **PROVED**. What changed is smaller and worth
+recording anyway: clause 1 moved from a property of the target to a consequence of its shape, which
+is the same reduction `htarget` underwent for `lem:census`. The other PROVED rows the scan surfaced
+(`prop:straddle`, `lem:rowp0`, `lem:rowq0`, `prop:selfsim`, `prop:nogoauto`) all have blockers of the
+placement or certified-search kind, untouched by vertex-figure machinery.
+
+Forty declarations in `CornerAnglePerm.lean`, axiom-clean, `Erdos634.All` clean. No label moves.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

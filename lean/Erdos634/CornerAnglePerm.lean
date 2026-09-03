@@ -1244,4 +1244,15 @@ theorem congruentDissection_vertex_census_isosceles {N : ℕ} (D : CongruentDiss
     hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr
     (htarget_of_isosceles D.target hrel a hbase₁ hbase₂)
 
+/-- **`lem:apex`'s first clause: the apex angle is `π − 2β = 3α`.**  Immediate from the target's
+isosceles shape and the angle sum.  The paper states this as a fact about the base-`β` target; here
+it is derived from the target being isosceles with base angles `β`, rather than assumed. -/
+theorem target_apex_angle (T : Tri) {α β : ℝ} (hrel : 3 * α + 2 * β = Real.pi) (a : Fin 3)
+    (h₁ : cornerAngle (T.pts (a + 1 + 1)) (T.pts (a + 1)) (T.pts (a + 1 + 2)) = β)
+    (h₂ : cornerAngle (T.pts (a + 2 + 1)) (T.pts (a + 2)) (T.pts (a + 2 + 2)) = β) :
+    cornerAngle (T.pts (a + 1)) (T.pts a) (T.pts (a + 2)) = 3 * α := by
+  have hsum := cornerAngle_sum_indexed T a
+  rw [h₁, h₂] at hsum
+  linarith
+
 end Erdos634.Geometry
