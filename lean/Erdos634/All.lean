@@ -224,3 +224,4 @@ import Erdos634.TileAdjacency
 import Erdos634.ChordTraceReal
 import Erdos634.ChordStraddleTotal
 import Erdos634.ChordFlushCover
+import Erdos634.ChordAssembly
