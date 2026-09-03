@@ -3524,3 +3524,12 @@ separated from them by its `α`-count), then the `β`- and `γ`-sums, then `vert
 `lem:census` has **not** flipped; label stays PROVED.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### Correction to the previous entry's discriminator claim
+
+The `apex_fibre_card` entry above states that `(0,1,0)` and `(3,0,0)` are "the only labels with
+`γ`-count `0`". **That is false.** `(3,2,0)` and `(6,4,0)` also have `γ`-count `0`. The correct
+discriminator for the base corners is `α`-count `0` **and** `γ`-count `0`: the labels with `α`-count
+`0` are `(0,1,0)` and `(0,1,3)`, and those two differ in their `γ`-count. Corrected here rather than
+left standing; the `apex_fibre_card` theorem itself is unaffected, since it uses the `β`-count
+discriminator, which is correct — only the parenthetical about the *next* step was wrong.
