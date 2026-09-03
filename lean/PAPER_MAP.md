@@ -3693,3 +3693,25 @@ judgement I am not making unilaterally after building the pieces — it is recor
 audit pass rather than acted on. **Label stays PROVED.**
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### Falls-a-target test on `htarget_of_isosceles`: negative as stated, but it found a free derivation
+
+**Negative first.** Six files — `BaseDecomposition`, `BaseWalkGeneral`, `GammaTrap`, `Realizable`,
+`TileAt`, `SideWalk` — carry `hcornerbase` (corner `k` is `β`) and `hcornerapex` (corner `k+1` is
+`3α`) as separate hypotheses. `htarget_of_isosceles` derives the apex from the *two* base corners, so
+using it there would trade `hcornerapex` for "corner `k+2` is `β`". That is a lateral move, not a
+reduction: one target hypothesis for another. **No named target falls.**
+
+**But the same angle sum runs the other way, and that direction is free.**
+`third_corner_of_base_apex`: given `hcornerbase` and `hcornerapex` — exactly what those six files
+already assume — the *third* corner is `β` too, since `π − β − 3α = β` by `hrel`. So the target's
+full isosceles shape is available at every one of those call sites **without assuming anything
+further**, where before only one base corner was known.
+
+Whether that unblocks anything is not established here and I am not claiming it does; it is recorded
+as an available fact, since the reason it was never noticed is that no theorem ever asked for the
+second base corner.
+
+Thirty-six declarations in `CornerAnglePerm.lean`, axiom-clean, `Erdos634.All` clean. No label moves.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

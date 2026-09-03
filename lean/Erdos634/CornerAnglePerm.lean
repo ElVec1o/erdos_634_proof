@@ -1187,4 +1187,17 @@ theorem htarget_of_isosceles (T : Tri) {α β : ℝ} (hrel : 3 * α + 2 * β = R
   · exact Or.inr h₁
   · exact Or.inr h₂
 
+/-- **The second base corner is free.**  Six files (`BaseDecomposition`, `BaseWalkGeneral`,
+`GammaTrap`, `Realizable`, `TileAt`, `SideWalk`) carry `hcornerbase` at one corner and `hcornerapex`
+at the next as separate hypotheses.  Given those two, the *third* corner is `β` as well: the angle
+sum gives `π − β − 3α = β` by `hrel`.  So the target's isosceles shape is available at every one of
+those call sites without assuming it. -/
+theorem third_corner_of_base_apex (T : Tri) {α β : ℝ} (hrel : 3 * α + 2 * β = Real.pi) (k : Fin 3)
+    (hbase : cornerAngle (T.pts (k + 1)) (T.pts k) (T.pts (k + 2)) = β)
+    (hapex : cornerAngle (T.pts (k + 1 + 1)) (T.pts (k + 1)) (T.pts (k + 1 + 2)) = 3 * α) :
+    cornerAngle (T.pts (k + 2 + 1)) (T.pts (k + 2)) (T.pts (k + 2 + 2)) = β := by
+  have hsum := cornerAngle_sum_indexed T k
+  rw [hbase, hapex] at hsum
+  linarith
+
 end Erdos634.Geometry
