@@ -1983,6 +1983,28 @@ different situations). The plan in `exists_chain_of_finset`'s statement above sh
 written, with the nondegeneracy hypothesis list extended by `∀ k, straddles k → P ≠ R k ∧ P ≠ S k ∧
 Q ≠ R k ∧ Q ≠ S k`.
 
+**`ChordFinsetChainInj.exists_injective_chain` built (2026-09-03, later still)**: the pure
+combinatorial fact `exists_chain_of_finset` needs beyond `injective_prepend_two` itself: given a
+`List` of point-pairs (each internally nondegenerate, pairwise cross-distinct, and distinct from a
+fixed bound point), the sequence built by concatenating `bound :: pair₁.1 :: pair₁.2 :: pair₂.1 ::
+⋯` is injective on its own range — by induction on the list, applying `injective_prepend_two` once
+per element. Generalized `injective_prepend_two` itself along the way: its bound was hardcoded to
+the `2m+1` shape `chord_decomposition_of_chain` uses, which didn't match this lemma's own natural
+`2·length` convention (no trailing point); it now takes an arbitrary bound `B` (with conclusion
+bound `B + 2`), matching either convention. `lake build Erdos634.All` clean, no `sorry`,
+`#print axioms` confirms only the standard three (`exists_injective_chain`) / `[propext,
+Quot.sound]` (the still-choice-free `injective_prepend_two`).
+
+With this, the *entire* combinatorial core of `exists_chain_of_finset` is done: given the straddler
+data as a `List` (sorted, via `wbtw_trichotomy_of_wbtw`/`Finset.sort`/`List.insertionSort` — not yet
+built) satisfying the nondegeneracy hypotheses, `exists_injective_chain` produces the injective `g`
+directly. What remains is: (1) actually sorting the `Finset` into such a `List` (order-theoretic
+`Finset`/`List` API work, not geometry), and (2) proving that `List`'s consecutive elements satisfy
+`chord_decomposition_of_chain`'s `hchain` (`Wbtw` between consecutive triples) and `hgap`
+(gap-freedom) — exactly what `gap_free_of_finset_step'` / `far_precedes_of_minimal` /
+`excl_new_self` / `excl_carries_forward` already supply per-step, needing only to be threaded
+through the same `List` induction `exists_injective_chain` already demonstrates the shape of.
+
 **One more check before implementing, and a broader finding**: `chord_decomposition_of_chain`'s
 `hne` hypothesis is required *unconditionally*, for every consecutive pair from `i = 0` to
 `i = 2n`, supplied by the caller — the theorem does not internally tolerate or skip a degenerate

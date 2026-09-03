@@ -16,12 +16,12 @@ namespace Erdos634.ChordTraceReal
 variable {Plane : Type*}
 
 /-- **Injectivity survives prepending two new points.** -/
-theorem injective_prepend_two {g_old : ℕ → Plane} {m : ℕ} {p r : Plane}
-    (hinj_old : ∀ a b, a ≤ 2 * m + 1 → b ≤ 2 * m + 1 → a ≠ b → g_old a ≠ g_old b)
+theorem injective_prepend_two {g_old : ℕ → Plane} {B : ℕ} {p r : Plane}
+    (hinj_old : ∀ a b, a ≤ B → b ≤ B → a ≠ b → g_old a ≠ g_old b)
     (hpr : p ≠ r)
-    (hp_old : ∀ i, i ≤ 2 * m + 1 → p ≠ g_old i)
-    (hr_old : ∀ i, i ≤ 2 * m + 1 → r ≠ g_old i) :
-    ∀ a b, a ≤ 2 * (m + 1) + 1 → b ≤ 2 * (m + 1) + 1 → a ≠ b →
+    (hp_old : ∀ i, i ≤ B → p ≠ g_old i)
+    (hr_old : ∀ i, i ≤ B → r ≠ g_old i) :
+    ∀ a b, a ≤ B + 2 → b ≤ B + 2 → a ≠ b →
       (fun i => if i = 0 then p else if i = 1 then r else g_old (i - 2)) a
         ≠ (fun i => if i = 0 then p else if i = 1 then r else g_old (i - 2)) b := by
   intro a b _ _ hab

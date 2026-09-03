@@ -259,3 +259,4 @@ import Erdos634.ChordFinsetStepCombined
 import Erdos634.ChordDecompositionGapGeneral
 import Erdos634.ChordDecompositionConsGeneral
 import Erdos634.ChordFinsetPrependInj
+import Erdos634.ChordFinsetChainInj
