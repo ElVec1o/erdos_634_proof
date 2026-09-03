@@ -1907,6 +1907,24 @@ degenerate case in *both* the flat-sum and the existence-of-chain framings ident
 wrapper is `chain's total over the n straddlers` + `one final gap/trivial-gap total`, combined via a
 single `hausdorff_segment_split`-style addition at the very end. Not yet implemented.
 
+**`chord_decomposition_of_gap'` / `chord_decomposition_cons'` built (2026-09-03, later still)**:
+implementing the fix directly — `ChordDecompositionGapGeneral.chord_decomposition_of_gap'` unifies
+`chord_decomposition_of_gap` and `chord_decomposition_of_trivial_gap` into one lemma needing no
+`u₁ ≠ u₂` hypothesis at all (the degenerate case contributes `0` automatically), and
+`ChordDecompositionConsGeneral.chord_decomposition_cons'` rebuilds `chord_decomposition_cons` on top
+of it, needing no `p ≠ r` hypothesis either. Both `lake build Erdos634.All` clean, no `sorry`,
+`#print axioms` confirms only the standard three for both.
+
+**But this does not fully resolve `chord_decomposition_of_chain`'s `hne` requirement**: re-reading
+its own proof shows `hne` is *also* required directly by `wbtw_chain_bounded` (the betweenness-chain
+composition tool from `WbtwChain.lean`), independently of `chord_decomposition_cons`'s own former
+need for it — `Wbtw.trans_expand_left`/`_right`, which `wbtw_chain_bounded`'s induction is built
+from, fundamentally require consecutive distinctness to compose. So `chord_decomposition_cons'`
+removes *one* of the two places degenerate consecutive points caused trouble, but not the other;
+fully generalizing `chord_decomposition_of_chain` for arbitrary degenerate coincidences would also
+need a degenerate-tolerant variant of `wbtw_chain_bounded` itself — core betweenness-chain
+infrastructure, not a small follow-up. This is now the precisely-located remaining obstacle.
+
 **One more check before implementing, and a broader finding**: `chord_decomposition_of_chain`'s
 `hne` hypothesis is required *unconditionally*, for every consecutive pair from `i = 0` to
 `i = 2n`, supplied by the caller — the theorem does not internally tolerate or skip a degenerate
