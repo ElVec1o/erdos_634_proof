@@ -3533,3 +3533,26 @@ discriminator for the base corners is `α`-count `0` **and** `γ`-count `0`: the
 `0` are `(0,1,0)` and `(0,1,3)`, and those two differ in their `γ`-count. Corrected here rather than
 left standing; the `apex_fibre_card` theorem itself is unaffected, since it uses the `β`-count
 discriminator, which is correct — only the parenthetical about the *next* step was wrong.
+
+### `lem:census` piece 4j: the base-corner class has exactly two points
+
+`base_fibre_card` (`CornerAnglePerm.lean`, twenty-nine declarations, axiom-clean,
+`Erdos634.All` clean). Compiled first attempt, using the *corrected* discriminator from the entry
+above — `α`-count `0` together with `γ`-count `0`, which among the eight labels holds only for
+`(0,1,0)`.
+
+`target_corner_counts` gives one apex, so by `htarget` the other two target corners carry `β`;
+`Finset.filter_card_add_filter_neg_card_eq_card` turns that into a two-element `Finset (Fin 3)`, and
+the target's vertices are distinct (`Tri.indep.injective`), so its image has two points. The fibre
+equals that image: the forward inclusion runs the trichotomy and kills the two non-corner cases by
+`omega` on the `α`- and `γ`-counts, and the apex case by its `α`-count of `3`; the reverse uses
+`congruentDissection_base_corner_counts` for the label and its `β`-count of `1` to see that a base
+corner is a tile vertex.
+
+That is the constant `2` in `lem:census`'s `β`-identity.
+
+**Remaining:** the `β`- and `γ`-sums (the same `sum_over_fibers_const` instantiation with the second
+and third coordinates), then feeding all three, with `apex_fibre_card` and `base_fibre_card`, to
+`OrderForcing.vertex_census`. `lem:census` has **not** flipped; label stays PROVED.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

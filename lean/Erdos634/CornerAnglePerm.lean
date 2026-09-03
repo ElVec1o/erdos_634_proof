@@ -897,4 +897,99 @@ theorem apex_fibre_card {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
     rw [hk₀, Finset.mem_singleton] at this
     rw [← hk, this]
 
+/-- **The base-corner class has exactly two points.**  The discriminator is `α`-count `0` together
+with `γ`-count `0`: among the eight labels those two conditions hold only for `(0,1,0)`.  With
+`target_corner_counts` giving one apex, the other two target corners carry `β`, and the target's
+vertices are distinct — so the fibre has two points.  This is the constant `2` in `lem:census`'s
+`β`-identity. -/
+theorem base_fibre_card {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (htarget : ∀ k : Fin 3,
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = 3 * α ∨
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β) :
+    ((cornerPts D.toDissection).filter (fun v =>
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ)
+        = (0, 1, 0))).card = 2 := by
+  classical
+  have hne : β ≠ 3 * α := fun h => hirr ⟨1/9, by rw [h] at hrel; push_cast; linarith⟩
+  -- the two base corners, as a `Finset (Fin 3)` of size two
+  have hsplit : ({k | cornerAngle (D.target.pts (k + 1)) (D.target.pts k)
+      (D.target.pts (k + 2)) = β} : Finset (Fin 3)).card = 2 := by
+    have hfil : ({k | cornerAngle (D.target.pts (k + 1)) (D.target.pts k)
+        (D.target.pts (k + 2)) = β} : Finset (Fin 3))
+        = Finset.univ.filter (fun k => ¬ (cornerAngle (D.target.pts (k + 1)) (D.target.pts k)
+          (D.target.pts (k + 2)) = 3 * α)) := by
+      ext k
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      constructor
+      · intro h h3; exact hne (h ▸ h3)
+      · intro h; exact (htarget k).resolve_left h
+    have hcard := Finset.filter_card_add_filter_neg_card_eq_card
+      (s := (Finset.univ : Finset (Fin 3)))
+      (p := fun k => cornerAngle (D.target.pts (k + 1)) (D.target.pts k)
+        (D.target.pts (k + 2)) = 3 * α)
+    rw [hfil]
+    have h1 := target_corner_counts D hrel hirr htarget
+    simp only [Finset.card_univ, Fintype.card_fin] at hcard
+    omega
+  -- the fibre is the image of those two corners
+  have himg : ((cornerPts D.toDissection).filter (fun v =>
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ) = (0, 1, 0)))
+      = ({k | cornerAngle (D.target.pts (k + 1)) (D.target.pts k)
+          (D.target.pts (k + 2)) = β} : Finset (Fin 3)).image D.target.pts := by
+    ext v
+    simp only [Finset.mem_filter, Finset.mem_image, Finset.mem_univ, true_and]
+    constructor
+    · rintro ⟨hvmem, hvlab⟩
+      have hαc : ({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 0 := by
+        have := congrArg (fun p : ℕ × ℕ × ℕ => p.1) hvlab; simpa using this
+      have hγc : ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0 := by
+        have := congrArg (fun p : ℕ × ℕ × ℕ => p.2.2) hvlab; simpa using this
+      obtain ⟨j, -, hj⟩ := Finset.mem_biUnion.mp hvmem
+      obtain ⟨m, -, hm⟩ := Finset.mem_image.mp hj
+      rcases cornerPts_trichotomy D.toDissection hvmem with hc | ⟨hfr, hnv⟩ | hint
+      · obtain ⟨k, hk⟩ := hc
+        refine ⟨k, ?_, hk⟩
+        rcases htarget k with h3 | hb
+        · exfalso
+          obtain ⟨ha, -, -, -⟩ := Erdos634.Geometry.Dissection.congruentDissection_apex_counts D
+            α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hmα hmβ hmγ k h3
+          rw [hk] at ha; omega
+        · exact hb
+      · exfalso
+        rcases congruentDissection_boundary_figure_at_corner D α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0
+          hγπ hγ0 hπ0 hγdef hrel hirr hmα hmβ hmγ hfr hnv j m hm with
+          ⟨ha, -, -⟩ | ⟨ha, -, -⟩ <;> omega
+      · exfalso
+        rcases congruentDissection_interior_figure_at_corner D α β γ hαβ hαγ hαπ hα2π hα0 hβγ hβπ
+          hβ2π hβ0 hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr hint j m hm with
+          ⟨-, hcase⟩ | ⟨-, hcase⟩
+        · rcases hcase with ⟨ha, -, -⟩ | ⟨ha, -, -⟩ <;> omega
+        · rcases hcase with ⟨ha, -, hc⟩ | ⟨ha, -, hc⟩ | ⟨ha, -, hc⟩ | ⟨ha, -, hc⟩ <;> omega
+    · rintro ⟨k, hkβ, rfl⟩
+      obtain ⟨ha, hb, hc, -⟩ :=
+        Erdos634.Geometry.Dissection.congruentDissection_base_corner_counts D
+        α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hmα hmβ hmγ k
+        (by simpa using hkβ)
+      refine ⟨?_, by rw [ha, hb, hc]⟩
+      have hpos : 0 < ({i | (D.tile i).localAngle (D.target.pts k) = β} : Finset (Fin N)).card := by
+        rw [hb]; norm_num
+      obtain ⟨i, hi⟩ := Finset.card_pos.mp hpos
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi
+      obtain ⟨m', hm'⟩ := vertex_of_localAngle_corner (D.tile i) hi hβ0 hβπ hβ2π
+      rw [← hm']; exact mem_cornerPts D.toDissection i m'
+  rw [himg, Finset.card_image_of_injective _ D.target.indep.injective, hsplit]
+
 end Erdos634.Geometry
