@@ -2554,3 +2554,33 @@ segment is a whole edge from `V`. The residual sub-question — the reach `t` of
 this file bears on it. `GOAL_PRIMES.md` target 1 remains open.
 
 | C `conj:advance` (case (a) role) | the straight angle below the line is used only to exclude the serving tile's own `π`; the `π` branch is instead pinned horizontal | `RouteOne.through_edge_lays_rightward`, `.serving_lays_rightward`, `.coords_of_localAngle_pi`, `.midpoint_localAngle_pi`, `.through_edge_witness` | VERIFIED (the narrowing; the conjecture itself remains CONJECTURE) |
+
+### RouteOneThroughEdge, second increment (same session)
+
+Five more theorems in the same file, all axiom-clean, `Erdos634.All` clean.
+
+**The sharper exclusion.** `PinPlumbing.at_most_two_through` says three straight angles at an
+interior point are impossible. `two_through_excludes_third` sharpens it to what the wall argument
+needs: **two** straight angles already exhaust the `2π`, so any third tile has local angle `0` there;
+`two_through_excludes_mem` restates it as "no third tile may even *contain* the point"
+(via `MarchFlank.localAngle_ne_zero_of_mem`).
+
+**Edge interiors.** `openSegment_localAngle_pi`: *every* point of an open edge has local angle `π`,
+not just the midpoint — with `localAngle_pi_of_coords` and `not_vertex_of_coord_zero` factored out,
+and the earlier `midpoint_localAngle_pi` now a special case. `through_edge_data` upgrades
+`through_edge_lays_rightward`'s output from "a point to the right" to the edge itself: it names `k`
+with `V ∈ openSegment ℝ (pts (k+1)) (pts (k+2))` and that edge horizontal (the coefficients sum to
+`1` by adding the two displacements and cancelling the nonzero edge vector).
+
+**The mechanism, stated.** `shared_edge_interior_excludes_third`: two distinct tiles cannot share a
+point in the relative interior of an edge of each while a third tile contains it. This is the
+location-sensitive statement the configuration wants — the serving tile's through-edge at `V` is
+horizontal, so it runs *along the wall line* and overlaps the `α`-tile's own horizontal edge `VA`
+on a whole stretch left of `V`, and the tiles below the wall contain that stretch.
+
+**Still not closed, precisely.** The overlap point is *hypothesised*, not constructed: turning
+`shared_edge_interior_excludes_third` into an unconditional exclusion of the `π` branch needs a
+point `W` exhibited in both open edges (elementary horizontal-coordinate bookkeeping, not new
+mathematics — the two segments share a leftward stretch from `V`), plus the configuration facts
+that the `α`-tile has its horizontal edge from `V` and that wall points carry a tile below. None of
+that is done here. `conj:advance` remains CONJECTURE; `GOAL_PRIMES.md` target 1 remains open.

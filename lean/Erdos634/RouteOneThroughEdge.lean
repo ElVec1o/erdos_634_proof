@@ -285,4 +285,198 @@ theorem through_edge_witness :
   · rw [h1]
     simp [Erdos634.CertCoord.mkTri_pts, Erdos634.CertCoord.mkPt_one]
 
+/-! ## Sharpening: the `π` branch dies outright once a second tile shares the line
+
+`at_most_two_through` (PinPlumbing) says three straight angles at an interior point are impossible.
+The sharper statement below is what the route-1 configuration actually needs: **two** straight
+angles at an interior point already exhaust the `2π`, so no third tile may so much as *contain* the
+point.  Combined with `through_edge_lays_rightward` this is the mechanism that kills the `π` branch
+without any appeal to case (a) — the serving tile's through-edge would have to share the wall line
+with the `α`-tile's own horizontal edge, and the tiles below the wall contain the shared points. -/
+
+/-- **Two through-edges leave no room for a third tile.**  At an interior point two distinct tiles
+with local angle `π` already sum to `2π`, so any further tile has local angle `0` there — it does
+not touch the point at all. -/
+theorem two_through_excludes_third {N : ℕ} (D : Dissection N) {p : Plane}
+    (hp : p ∈ interior D.target.carrier) (i j k : Fin N)
+    (hij : i ≠ j) (hik : i ≠ k) (hjk : j ≠ k)
+    (hi : (D.tile i).localAngle p = Real.pi)
+    (hj : (D.tile j).localAngle p = Real.pi)
+    (hk : (D.tile k).localAngle p ≠ 0) : False := by
+  classical
+  have hsum := Erdos634.PinPlumbing.pin_angle_sum_interior D hp
+  have hkpos : 0 < (D.tile k).localAngle p :=
+    lt_of_le_of_ne ((D.tile k).localAngle_nonneg p) (Ne.symm hk)
+  have hle : (D.tile i).localAngle p + (D.tile j).localAngle p + (D.tile k).localAngle p
+      ≤ ∑ m, (D.tile m).localAngle p := by
+    have h1 : ({i, j, k} : Finset (Fin N)) ⊆ Finset.univ := Finset.subset_univ _
+    have h2 : ∑ m ∈ ({i, j, k} : Finset (Fin N)), (D.tile m).localAngle p
+        ≤ ∑ m, (D.tile m).localAngle p :=
+      Finset.sum_le_sum_of_subset_of_nonneg h1
+        (fun m _ _ => (D.tile m).localAngle_nonneg p)
+    rw [Finset.sum_insert (by simp [hij, hik]),
+        Finset.sum_insert (by simp [hjk]), Finset.sum_singleton] at h2
+    linarith
+  rw [hsum, hi, hj] at hle
+  linarith
+
+/-- **The same, with the third tile given by mere containment.**  A tile whose carrier contains the
+point has nonzero local angle there, so two through-edges at an interior point forbid any third
+tile from containing it. -/
+theorem two_through_excludes_mem {N : ℕ} (D : Dissection N) {p : Plane}
+    (hp : p ∈ interior D.target.carrier) (i j k : Fin N)
+    (hij : i ≠ j) (hik : i ≠ k) (hjk : j ≠ k)
+    (hi : (D.tile i).localAngle p = Real.pi)
+    (hj : (D.tile j).localAngle p = Real.pi)
+    (hk : p ∈ (D.tile k).carrier) : False :=
+  two_through_excludes_third D hp i j k hij hik hjk hi hj
+    (Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ hk)
+
+/-! ## Every interior point of an edge carries `π`, not just the midpoint -/
+
+/-- **Not a vertex**, from the coordinate signature of an edge-interior point. -/
+theorem not_vertex_of_coord_zero (T : Tri) (W : Plane) (k : Fin 3)
+    (h0 : T.basis.coord k W = 0) (hpos : ∀ j, j ≠ k → 0 < T.basis.coord j W) :
+    ¬ ∃ j, W = T.pts j := by
+  have hthird : ∀ u v : Fin 3, u ≠ v → ∃ w : Fin 3, w ≠ u ∧ w ≠ v := by decide
+  have hcne : ∀ (i j : Fin 3), i ≠ j → T.basis.coord i (T.pts j) = 0 :=
+    fun i j h => T.basis.coord_apply_ne h
+  have hceq : ∀ i : Fin 3, T.basis.coord i (T.pts i) = 1 := fun i => T.basis.coord_apply_eq i
+  rintro ⟨j, rfl⟩
+  by_cases hjk : j = k
+  · subst hjk
+    rw [hceq j] at h0
+    norm_num at h0
+  · obtain ⟨w, hwj, hwk⟩ := hthird j k (Ne.symm (Ne.symm hjk))
+    have := hpos w hwk
+    rw [hcne w j hwj] at this
+    exact absurd this (lt_irrefl 0)
+
+/-- **The local angle is `π` at any point with one vanishing and two positive coordinates.** -/
+theorem localAngle_pi_of_coords (T : Tri) (W : Plane) (k : Fin 3)
+    (h0 : T.basis.coord k W = 0) (hpos : ∀ j, j ≠ k → 0 < T.basis.coord j W) :
+    T.localAngle W = Real.pi := by
+  classical
+  rw [Erdos634.Geometry.Tri.localAngle, dif_neg (not_vertex_of_coord_zero T W k h0 hpos),
+    if_neg (by intro hall; exact absurd h0 (ne_of_gt (hall k))), if_pos ⟨k, h0, hpos⟩]
+
+/-- **Every interior point of an edge has local angle `π`** — the midpoint statement, generalised to
+the whole open edge.  This is what lets the route-1 argument move slightly along the wall line from
+`V` to a point the two upper tiles share. -/
+theorem openSegment_localAngle_pi (T : Tri) (k : Fin 3) {W : Plane}
+    (hW : W ∈ openSegment ℝ (T.pts (k + 1)) (T.pts (k + 2))) :
+    T.localAngle W = Real.pi := by
+  classical
+  obtain ⟨a, b, ha, hb, hab, heq⟩ := hW
+  have hidx : ∀ x : Fin 3, (x ≠ x + 1) ∧ (x ≠ x + 2) ∧ (x + 1 ≠ x + 2)
+      ∧ (∀ j : Fin 3, j ≠ x → j = x + 1 ∨ j = x + 2) := by decide
+  obtain ⟨h1, h2, h12, hcases⟩ := hidx k
+  have hcne : ∀ (i j : Fin 3), i ≠ j → T.basis.coord i (T.pts j) = 0 :=
+    fun i j h => T.basis.coord_apply_ne h
+  have hceq : ∀ i : Fin 3, T.basis.coord i (T.pts i) = 1 := fun i => T.basis.coord_apply_eq i
+  have hlm : W = AffineMap.lineMap (T.pts (k + 1)) (T.pts (k + 2)) b := by
+    rw [AffineMap.lineMap_apply, ← heq]
+    have ha' : a = 1 - b := by linarith
+    rw [ha']
+    simp only [vsub_eq_sub, vadd_eq_add, smul_sub, sub_smul, one_smul]
+    abel
+  have hcoord : ∀ j : Fin 3, T.basis.coord j W
+      = (T.basis.coord j (T.pts (k + 2)) - T.basis.coord j (T.pts (k + 1))) * b
+        + T.basis.coord j (T.pts (k + 1)) := by
+    intro j
+    rw [hlm, AffineMap.apply_lineMap, AffineMap.lineMap_apply_ring]
+    ring
+  refine localAngle_pi_of_coords T W k ?_ ?_
+  · rw [hcoord k, hcne k (k + 1) h1, hcne k (k + 2) h2]; ring
+  · intro j hj
+    rcases hcases j hj with rfl | rfl
+    · rw [hcoord (k + 1), hcne (k + 1) (k + 2) h12, hceq (k + 1)]
+      have hb1 : (0 : ℝ) - 1 = -1 := by norm_num
+      rw [hb1]; linarith
+    · rw [hcoord (k + 2), hcne (k + 2) (k + 1) (Ne.symm h12), hceq (k + 2)]
+      linarith
+
+/-! ## The through-edge exhibited, and the exclusion it feeds -/
+
+/-- **The through-edge, exhibited.**  Under the hypotheses of `through_edge_lays_rightward`, `V`
+lies in the *open* edge joining two vertices of `T`, and that edge is horizontal.  This is the form
+the wall argument consumes: it names the edge, not just a point on one side of `V`. -/
+theorem through_edge_data (T : Tri) (V : Plane)
+    (hnv : ¬ ∃ j, V = T.pts j) (hpi : T.localAngle V = Real.pi)
+    (habove : ∀ q : Plane, q ∈ T.carrier → 0 ≤ (q - V) 1) :
+    ∃ k : Fin 3, V ∈ openSegment ℝ (T.pts (k + 1)) (T.pts (k + 2)) ∧
+      (T.pts (k + 2) - T.pts (k + 1)) 1 = 0 := by
+  classical
+  obtain ⟨k, hk0, hkpos⟩ := coords_of_localAngle_pi T V hnv hpi
+  have hidx : ∀ x : Fin 3, (x + 1) + 1 = x + 2 ∧ (x + 1) + 2 = x
+      ∧ (x + 2) + 1 = x ∧ (x + 2) + 2 = x + 1 ∧ (x + 1 ≠ x) ∧ (x + 2 ≠ x) := by decide
+  obtain ⟨i11, i12, i21, i22, hne1, hne2⟩ := hidx k
+  have hc1 : 0 < T.basis.coord (k + 1) V := hkpos _ hne1
+  have hc2 : 0 < T.basis.coord (k + 2) V := hkpos _ hne2
+  have e1 := sub_vertex_eq_combo T (k + 1) V
+  have e2 := sub_vertex_eq_combo T (k + 2) V
+  rw [i11, i12, hk0, zero_smul, add_zero] at e1
+  rw [i21, i22, hk0, zero_smul, zero_add] at e2
+  have hmem1 : T.pts (k + 1) ∈ T.carrier := by
+    rw [Erdos634.Geometry.Tri.carrier]; exact subset_convexHull ℝ _ ⟨k + 1, rfl⟩
+  have hmem2 : T.pts (k + 2) ∈ T.carrier := by
+    rw [Erdos634.Geometry.Tri.carrier]; exact subset_convexHull ℝ _ ⟨k + 2, rfl⟩
+  have d1 : T.pts (k + 1) - V
+      = -(T.basis.coord (k + 2) V • (T.pts (k + 2) - T.pts (k + 1))) := by
+    rw [← e1]; abel
+  have d2 : T.pts (k + 2) - V
+      = T.basis.coord (k + 1) V • (T.pts (k + 2) - T.pts (k + 1)) := by
+    rw [show T.pts (k + 2) - V = -(V - T.pts (k + 2)) by abel, e2]
+    rw [show T.pts (k + 1) - T.pts (k + 2) = -(T.pts (k + 2) - T.pts (k + 1)) by abel]
+    rw [smul_neg, neg_neg]
+  have c1y := congrArg (fun v : Plane => v 1) d1
+  have c2y := congrArg (fun v : Plane => v 1) d2
+  simp only [PiLp.neg_apply, PiLp.smul_apply, smul_eq_mul] at c1y c2y
+  have hab1 : 0 ≤ (T.pts (k + 1) - V) 1 := habove _ hmem1
+  have hab2 : 0 ≤ (T.pts (k + 2) - V) 1 := habove _ hmem2
+  rw [c1y] at hab1
+  rw [c2y] at hab2
+  have hwy : (T.pts (k + 2) - T.pts (k + 1)) 1 = 0 := by nlinarith
+  -- `w ≠ 0`, else `V` is a vertex
+  have hwne : T.pts (k + 2) - T.pts (k + 1) ≠ 0 := by
+    intro hw
+    rw [hw, smul_zero] at e1
+    exact hnv ⟨k + 1, sub_eq_zero.mp e1⟩
+  -- the two coefficients sum to `1`, by adding the two displacements
+  have hsum1 : T.basis.coord (k + 1) V + T.basis.coord (k + 2) V = 1 := by
+    have hadd : (T.basis.coord (k + 1) V + T.basis.coord (k + 2) V)
+        • (T.pts (k + 2) - T.pts (k + 1)) = T.pts (k + 2) - T.pts (k + 1) := by
+      rw [add_smul, ← d2, ← e1]; abel
+    by_contra hne
+    have : (T.basis.coord (k + 1) V + T.basis.coord (k + 2) V - 1)
+        • (T.pts (k + 2) - T.pts (k + 1)) = 0 := by
+      rw [sub_smul, hadd, one_smul, sub_self]
+    rcases smul_eq_zero.mp this with h | h
+    · exact hne (by linarith [sub_eq_zero.mp h])
+    · exact hwne h
+  refine ⟨k, ⟨T.basis.coord (k + 1) V, T.basis.coord (k + 2) V, hc1, hc2, hsum1, ?_⟩, hwy⟩
+  have : T.basis.coord (k + 1) V • T.pts (k + 1) + T.basis.coord (k + 2) V • T.pts (k + 2)
+      = T.pts (k + 1) + T.basis.coord (k + 2) V • (T.pts (k + 2) - T.pts (k + 1)) := by
+    rw [smul_sub, show T.basis.coord (k + 1) V = 1 - T.basis.coord (k + 2) V by linarith,
+      sub_smul, one_smul]
+    abel
+  rw [this, ← e1]; abel
+
+/-- **Two tiles cannot share an edge-interior point while a third tile touches it.**  At an interior
+point of the target, a point lying in the relative interior of an edge of each of two distinct tiles
+already accounts for the whole `2π`; any third tile containing it is impossible.
+
+This is the location-sensitive exclusion the route-1 configuration needs: the serving tile's
+through-edge at `V` is horizontal (`through_edge_data`), so it runs along the wall line and overlaps
+the `α`-tile's own horizontal edge there — and the tiles below the wall contain the overlap. -/
+theorem shared_edge_interior_excludes_third {N : ℕ} (D : Dissection N) (i j k : Fin N) (W : Plane)
+    (hij : i ≠ j) (hik : i ≠ k) (hjk : j ≠ k)
+    (hWint : W ∈ interior D.target.carrier)
+    (mi : Fin 3) (hWi : W ∈ openSegment ℝ ((D.tile i).pts (mi + 1)) ((D.tile i).pts (mi + 2)))
+    (mj : Fin 3) (hWj : W ∈ openSegment ℝ ((D.tile j).pts (mj + 1)) ((D.tile j).pts (mj + 2)))
+    (hWk : W ∈ (D.tile k).carrier) : False :=
+  two_through_excludes_mem D hWint i j k hij hik hjk
+    (openSegment_localAngle_pi (D.tile i) mi hWi)
+    (openSegment_localAngle_pi (D.tile j) mj hWj) hWk
+
 end Erdos634.RouteOne
