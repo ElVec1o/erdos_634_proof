@@ -341,6 +341,113 @@ theorem base_dichotomy_thick {e f x y z : ℕ} (he : 1 ≤ e) (hef : e < f)
   · exact Or.inr h1
   · exfalso; omega
 
+/-! ## The base trichotomy and dichotomy without separation (`cor:basedi2e`)
+
+Separation entered `base_trichotomy` only to rule out `y > e`. The weaker hypothesis `f > 2e`
+still suffices, by a harder argument (`f ∣ y − e` is unconditional; the new content is excluding
+`y = e + k·f` for `k ≥ 1`, via a second `mod f` reduction pinning `x = k·e + c·f`, then a bounding
+chain on `c` that forces `k < 1`). Ported directly from the paper's own proof
+(`erdos-634-companion.tex`, `cor:basedi2e`), worked over `ℤ` to keep the signed integer `c`
+honest, then cast back to `ℕ`. -/
+
+/-- **Step 1 of `cor:basedi2e`, over `ℤ`.** `f > 2e` (weaker than `base_trichotomy`'s separation)
+still forces the same trichotomy: `mod f` gives `f ∣ y − e` unconditionally, and the case
+`y = e + k·f`, `k ≥ 1` is excluded by a second `mod f` reduction (`x ≡ k·e`, write
+`x = k·e + c·f`) followed by the bounding chain `−2c < k` and `2k < 2 − c`, which are jointly
+unsatisfiable with `k ≥ 1`. -/
+theorem base_trichotomy_2e {e f x y z : ℤ} (he : 1 ≤ e) (hef2 : 2 * e < f)
+    (hco : IsCoprime e f) (hx : 0 ≤ x) (hy : 0 ≤ y) (hz : 0 ≤ z)
+    (h : x * (e * f) + y * (f * f - e * e) + z * (f * f) = e * (3 * (f * f) - e * e)) :
+    (x = 0 ∧ y = e ∧ z = 2 * e) ∨ (x = f ∧ y = e ∧ z = e) ∨ (x = 2 * f ∧ y = e ∧ z = 0) := by
+  have hf : 0 < f := by linarith
+  have hef : e < f := by linarith
+  have hdvdraw : f ∣ e ^ 2 * (y - e) := by
+    refine ⟨x * e + y * f + z * f - 3 * e * f, ?_⟩
+    nlinarith [h]
+  have hcoe2 : IsCoprime f (e ^ 2) := (hco.symm.pow_right)
+  have hdvdy : f ∣ (y - e) := hcoe2.dvd_of_dvd_mul_left hdvdraw
+  obtain ⟨k, hk⟩ := hdvdy
+  have hyk : y = e + f * k := by linarith [hk]
+  have hkpos : 0 ≤ k := by
+    by_contra hcon
+    push Not at hcon
+    have hcon2 : k ≤ -1 := by omega
+    have hprod : f * k ≤ f * (-1) := mul_le_mul_of_nonneg_left hcon2 hf.le
+    nlinarith [hy, he, hef2, hyk, hprod]
+  rcases eq_or_lt_of_le hkpos with hk0 | hk1
+  · have hye : y = e := by rw [hyk, ← hk0]; ring
+    have hxz : x * e + z * f = 2 * e * f := by nlinarith [h, hye]
+    have hdvdxraw : f ∣ e * x := by
+      refine ⟨2 * e - z, ?_⟩
+      nlinarith [hxz]
+    have hdvdx : f ∣ x := (hco.symm).dvd_of_dvd_mul_left hdvdxraw
+    obtain ⟨j, hj⟩ := hdvdx
+    have hj0 : 0 ≤ j := by
+      by_contra hcon
+      push Not at hcon
+      nlinarith [hx, hj, hf, hcon]
+    have hjez : j * e + z = 2 * e := by
+      have hcancel : f * (j * e + z) = f * (2 * e) := by nlinarith [hxz, hj]
+      exact mul_left_cancel₀ (ne_of_gt hf) hcancel
+    have hj2 : j ≤ 2 := by nlinarith [hz, hjez, he]
+    interval_cases j
+    · left; refine ⟨by omega, hye, by omega⟩
+    · right; left; refine ⟨by omega, hye, by omega⟩
+    · right; right; refine ⟨by omega, hye, by omega⟩
+  · exfalso
+    have hxz2 : x * e + z * f = 2 * e * f - k * (f * f - e * e) := by nlinarith [h, hyk]
+    have hdvdxraw : f ∣ e * (x - k * e) := by
+      refine ⟨2 * e - z - k * f, ?_⟩
+      nlinarith [hxz2]
+    have hdvdx : f ∣ (x - k * e) := (hco.symm).dvd_of_dvd_mul_left hdvdxraw
+    obtain ⟨c, hc⟩ := hdvdx
+    have hxc : x = k * e + f * c := by linarith [hc]
+    have hzc : z = (2 - c) * e - k * f := by
+      have heq : f * z = f * ((2 - c) * e - k * f) := by nlinarith [hxz2, hxc]
+      exact mul_left_cancel₀ (ne_of_gt hf) heq
+    have hcbound1 : -c * f ≤ k * e := by nlinarith [hx, hxc]
+    have hcbound2 : k * f ≤ (2 - c) * e := by nlinarith [hz, hzc]
+    have hmid : -2 * c < k := by
+      by_cases hcneg : c ≤ 0
+      · nlinarith [hk1]
+      · have hcpos : 0 < c := not_le.mp hcneg
+        nlinarith [hef2, hcbound1, he, hcpos]
+    have hfinal : 2 * k < 2 - c := by nlinarith [hef2, hcbound2, he, hk1]
+    omega
+
+/-- `base_trichotomy_2e`, cast to `ℕ`. -/
+theorem base_trichotomy_2e_nat {e f x y z : ℕ} (he : 1 ≤ e) (hef2 : 2 * e < f)
+    (hco : Nat.Coprime e f)
+    (h : x * (e * f) + y * (f * f - e * e) + z * (f * f) = e * (3 * (f * f) - e * e)) :
+    (x = 0 ∧ y = e ∧ z = 2 * e) ∨ (x = f ∧ y = e ∧ z = e) ∨ (x = 2 * f ∧ y = e ∧ z = 0) := by
+  have hcoz : IsCoprime (e:ℤ) (f:ℤ) := Nat.isCoprime_iff_coprime.mpr hco
+  have hcast : (x:ℤ) * ((e:ℤ) * (f:ℤ)) + (y:ℤ) * ((f:ℤ) * (f:ℤ) - (e:ℤ) * (e:ℤ)) +
+      (z:ℤ) * ((f:ℤ) * (f:ℤ)) = (e:ℤ) * (3 * ((f:ℤ) * (f:ℤ)) - (e:ℤ) * (e:ℤ)) := by
+    have hee : e * e ≤ f * f := by nlinarith
+    have h3ee : e * e ≤ 3 * (f * f) := by nlinarith
+    have hcast' := congrArg (fun n : ℕ => (n:ℤ)) h
+    push_cast [Nat.cast_sub hee, Nat.cast_sub h3ee] at hcast'
+    linarith [hcast']
+  have := base_trichotomy_2e (e := (e:ℤ)) (f := (f:ℤ)) (x := (x:ℤ)) (y := (y:ℤ)) (z := (z:ℤ))
+    (by exact_mod_cast he) (by exact_mod_cast hef2) hcoz (by positivity) (by positivity)
+    (by positivity) hcast
+  rcases this with ⟨h1,h2,h3⟩ | ⟨h1,h2,h3⟩ | ⟨h1,h2,h3⟩
+  · left; exact ⟨by exact_mod_cast h1, by exact_mod_cast h2, by exact_mod_cast h3⟩
+  · right; left; exact ⟨by exact_mod_cast h1, by exact_mod_cast h2, by exact_mod_cast h3⟩
+  · right; right; exact ⟨by exact_mod_cast h1, by exact_mod_cast h2, by exact_mod_cast h3⟩
+
+/-- **The base dichotomy without separation (`cor:basedi2e`).** With `f > 2e` in place of
+separation, the γ-trap's `z ≥ 1` still deletes the `(2f,e,0)` column, leaving exactly the same two
+survivors as `base_dichotomy_thick`. -/
+theorem base_dichotomy_2e {e f x y z : ℕ} (he : 1 ≤ e) (hef2 : 2 * e < f)
+    (hco : Nat.Coprime e f) (hz : 1 ≤ z)
+    (h : x * (e * f) + y * (f * f - e * e) + z * (f * f) = e * (3 * (f * f) - e * e)) :
+    (x = 0 ∧ y = e ∧ z = 2 * e) ∨ (x = f ∧ y = e ∧ z = e) := by
+  rcases base_trichotomy_2e_nat he hef2 hco h with h1 | h1 | h1
+  · exact Or.inl h1
+  · exact Or.inr h1
+  · exfalso; omega
+
 
 /-! ## The thick `c`-corner chain
 
