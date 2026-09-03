@@ -25,8 +25,12 @@ it by `AffineBasis.ext_elem`).
 This directly unblocks `side_walk_of_dissection` (hence `SidePRange.side_p_range`,
 `lem:ccornerside`'s flank half, and `thm:walks`/`thm:walkstruct`/`cor:wallsf2e`'s own
 "bridge (c)" gaps) for *any* real `CongruentDissection`, not only a specific certified member.
-Still open: `hface` (general Tri-level "attains the wall's max ⟹ on the segment") and `hthird`
-(genuinely dissection-specific).
+`hface` closes too: `mem_convexHull_max_affine` extends the pre-existing `SupportFace
+.mem_convexHull_max` (which only handles *linear* functionals) to affine ones, via the standard
+`f(y) = f(0) + f.linear(y)` decomposition on a module; `hface_wallFun` applies it to `wallFun T k`
+over `T`'s three vertices.
+
+Still open: `hthird` (genuinely dissection-specific, needs the actual tiling's combinatorics).
 
 Axiom-clean; no `sorry`.
 -/
@@ -159,3 +163,118 @@ theorem hker_wallFun (T : Tri) (k : Fin 3) :
   have hveq : v +ᵥ T.pts k = T.pts k := hpdef ▸ hpeq
   rw [vadd_eq_add] at hveq
   linear_combination (norm := module) hveq
+
+/-- **`SupportFace.mem_convexHull_max`, generalized from linear to affine functionals.** Points of
+a convex hull attaining the maximum of an *affine* functional come from the vertices that attain
+it — the same fact `SupportFace.mem_convexHull_max` proves for linear `f`, via the standard
+`f(y) = f(0) + f.linear(y)` decomposition on a module. -/
+theorem mem_convexHull_max_affine (f : Plane →ᵃ[ℝ] ℝ) (c : ℝ) (s : Finset Plane)
+    (hle : ∀ v ∈ s, f v ≤ c) {x : Plane} (hx : x ∈ convexHull ℝ (s : Set Plane)) (hfx : f x = c) :
+    x ∈ convexHull ℝ ((s.filter (fun v => f v = c) : Finset Plane) : Set Plane) := by
+  classical
+  rw [Finset.convexHull_eq] at hx
+  obtain ⟨w, hw0, hw1, hcm⟩ := hx
+  have hcomb : ∑ v ∈ s, w v • v = x := by
+    rw [← hcm, Finset.centerMass_eq_of_sum_1 _ _ hw1]; rfl
+  have hfaff : ∀ y : Plane, f y = f 0 + f.linear y := by
+    intro y
+    have h1 : f (y +ᵥ (0:Plane)) = f.linear y +ᵥ f 0 := AffineMap.map_vadd f 0 y
+    rw [add_comm]; simpa using h1
+  have hdef : ∑ v ∈ s, w v * (c - f v) = 0 := by
+    have hfsum : ∑ v ∈ s, w v * f v = c := by
+      have hkey : f (∑ v ∈ s, w v • v) = ∑ v ∈ s, w v * f v := by
+        rw [hfaff (∑ v ∈ s, w v • v), map_sum]
+        simp only [map_smul, smul_eq_mul]
+        have heq2 : ∑ v ∈ s, w v * f.linear v = ∑ v ∈ s, w v * (f v - f 0) := by
+          apply Finset.sum_congr rfl
+          intro v _
+          rw [hfaff v]; ring
+        rw [heq2]
+        have heq3 : ∑ v ∈ s, w v * (f v - f 0) = ∑ v ∈ s, w v * f v - (∑ v ∈ s, w v) * f 0 := by
+          rw [Finset.sum_mul]
+          rw [← Finset.sum_sub_distrib]
+          exact Finset.sum_congr rfl (fun v _ => by ring)
+        rw [heq3, hw1]; ring
+      rw [hcomb] at hkey
+      rw [← hkey, hfx]
+    calc ∑ v ∈ s, w v * (c - f v)
+        = (∑ v ∈ s, w v) * c - ∑ v ∈ s, w v * f v := by
+          rw [Finset.sum_mul, ← Finset.sum_sub_distrib]
+          exact Finset.sum_congr rfl (fun v _ => by ring)
+      _ = 0 := by rw [hw1, hfsum]; ring
+  have hterm : ∀ v ∈ s, w v * (c - f v) = 0 := by
+    refine (Finset.sum_eq_zero_iff_of_nonneg ?_).mp hdef
+    intro v hv
+    exact mul_nonneg (hw0 v hv) (by linarith [hle v hv])
+  have hsupp : ∀ v ∈ s, w v ≠ 0 → f v = c := by
+    intro v hv hne
+    rcases mul_eq_zero.mp (hterm v hv) with h | h
+    · exact absurd h hne
+    · linarith
+  have hzero : ∀ v ∈ s, v ∉ s.filter (fun v => f v = c) → w v = 0 := by
+    intro v hv hnot
+    by_contra hne
+    exact hnot (Finset.mem_filter.mpr ⟨hv, hsupp v hv hne⟩)
+  have hsub : s.filter (fun v => f v = c) ⊆ s := Finset.filter_subset _ _
+  have hsum1 : ∑ v ∈ s.filter (fun v => f v = c), w v = 1 := by
+    rw [Finset.sum_subset hsub hzero]; exact hw1
+  rw [Finset.convexHull_eq]
+  refine ⟨w, ?_, hsum1, ?_⟩
+  · intro v hv; exact hw0 v (Finset.mem_filter.mp hv).1
+  · rw [Finset.centerMass_eq_of_sum_1 _ _ hsum1]
+    have hlast : ∑ v ∈ s.filter (fun v => f v = c), w v • id v = ∑ v ∈ s, w v • v := by
+      refine Finset.sum_subset hsub ?_
+      intro v hv hnot; simp [hzero v hv hnot]
+    rw [hlast]; exact hcomb
+
+/-- **`side_walk_of_dissection`'s `hface` hypothesis, general for any `Tri` and side.** Any target
+point attaining the wall's own maximum lies on the side's own segment. -/
+theorem hface_wallFun (T : Tri) (k : Fin 3) :
+    ∀ y ∈ T.carrier, wallFun T k y = 0 → y ∈ segment ℝ (T.pts k) (T.pts (k+1)) := by
+  intro y hy hgy
+  set s : Finset Plane := {T.pts 0, T.pts 1, T.pts 2} with hs
+  have hrange : Set.range T.pts = (s : Set Plane) := by
+    rw [hs]
+    ext x
+    simp only [Set.mem_range, Finset.coe_insert, Finset.coe_singleton, Set.mem_insert_iff,
+      Set.mem_singleton_iff]
+    constructor
+    · rintro ⟨i, rfl⟩; fin_cases i <;> simp
+    · rintro (rfl | rfl | rfl)
+      · exact ⟨0, rfl⟩
+      · exact ⟨1, rfl⟩
+      · exact ⟨2, rfl⟩
+  have hxs : y ∈ convexHull ℝ (s : Set Plane) := by
+    rw [← hrange]; exact hy
+  have hle : ∀ v ∈ s, wallFun T k v ≤ 0 := by
+    intro v hv
+    have hvmem : v ∈ Set.range T.pts := by rw [hrange]; exact hv
+    obtain ⟨i, rfl⟩ := hvmem
+    exact wallFun_le T k (subset_convexHull ℝ _ (Set.mem_range_self i))
+  have hmax := mem_convexHull_max_affine (wallFun T k) 0 s hle hxs hgy
+  have hbT : ∀ i : Fin 3, (T.basis : Fin 3 → Plane) i = T.pts i := fun i => rfl
+  have hcoord_eq0 : ∀ i : Fin 3, T.basis.coord i (T.pts i) = 1 := fun i => by
+    rw [← hbT i, AffineBasis.coord_apply_eq]
+  have hwall_ne : ∀ i : Fin 3, wallFun T i (T.pts (i+2)) ≠ 0 := by
+    intro i
+    show -(T.basis.coord (i+2)) (T.pts (i+2)) ≠ 0
+    rw [hcoord_eq0]
+    norm_num
+  have hfilter : s.filter (fun v => wallFun T k v = 0) = {T.pts k, T.pts (k+1)} := by
+    rw [hs]
+    ext v
+    simp only [Finset.mem_filter, Finset.mem_insert, Finset.mem_singleton]
+    constructor
+    · rintro ⟨hv, hgv⟩
+      rcases hv with rfl | rfl | rfl <;> fin_cases k <;>
+        first
+          | (left; rfl) | (right; rfl)
+          | (exact absurd hgv (hwall_ne _))
+    · rintro (rfl | rfl)
+      · refine ⟨?_, wallFun_eq_zero T k (left_mem_segment ℝ _ _)⟩
+        fin_cases k <;> simp
+      · refine ⟨?_, wallFun_eq_zero T k (right_mem_segment ℝ _ _)⟩
+        fin_cases k <;> simp
+  rw [hfilter] at hmax
+  rw [Finset.coe_insert, Finset.coe_singleton, convexHull_pair] at hmax
+  exact hmax
