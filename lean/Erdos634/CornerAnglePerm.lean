@@ -578,4 +578,40 @@ theorem cornerPts_trichotomy {N : ℕ} (D : Dissection N) {v : Plane} (hv : v �
     · exact Or.inl hcorner
     · exact Or.inr (Or.inl ⟨hfr, hcorner⟩)
 
+/-! ## The summation engine for the census partition
+
+The census identities all have the shape "sum a per-point weight over all tile vertices, and it
+equals a linear combination of the class counts".  With the classes being the fibres of the
+multiplicity vector, that is a general fact about summing a fibre-constant function. -/
+
+/-- **Summing a fibre-constant weight.**  If `g` depends on `x` only through `f x`, the sum of `g`
+over `s` is the class-count combination `∑ y, c y * |fibre y|`. -/
+theorem sum_over_fibers_const {ι κ : Type*} [DecidableEq κ] (s : Finset ι) (t : Finset κ)
+    (f : ι → κ) (hmaps : ∀ x ∈ s, f x ∈ t) (g : ι → ℕ) (c : κ → ℕ)
+    (hconst : ∀ x ∈ s, g x = c (f x)) :
+    ∑ x ∈ s, g x = ∑ y ∈ t, c y * (s.filter (fun x => f x = y)).card := by
+  classical
+  rw [← Finset.sum_fiberwise_of_maps_to hmaps g]
+  refine Finset.sum_congr rfl (fun y _ => ?_)
+  have : ∀ x ∈ s.filter (fun x => f x = y), g x = c y := by
+    intro x hx
+    obtain ⟨hxs, hxy⟩ := Finset.mem_filter.mp hx
+    rw [hconst x hxs, hxy]
+  rw [Finset.sum_congr rfl this, Finset.sum_const, smul_eq_mul, Nat.mul_comm]
+
+/-- The `(α, β, γ)`-multiplicity vector at a point: the census's class label. -/
+noncomputable def figureVec {N : ℕ} (D : Dissection N) (α β γ : ℝ) (v : Plane) : ℕ × ℕ × ℕ := by
+  classical
+  exact (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+    ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+    ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card)
+
+/-- The eight class labels of `lem:census`: apex `{3α}`, base corner `{β}`, the two straight figures
+`{α,β,γ}` and `{3α,2β}`, and the four interior figures `{β,3γ}`, `{2α,2β,2γ}`, `{4α,3β,γ}`,
+`{6α,4β}`.  All eight vectors are distinct, so the classes are automatically disjoint. -/
+def censusLabels : Finset (ℕ × ℕ × ℕ) :=
+  {(3, 0, 0), (0, 1, 0), (1, 1, 1), (3, 2, 0), (0, 1, 3), (2, 2, 2), (4, 3, 1), (6, 4, 0)}
+
+theorem censusLabels_card : censusLabels.card = 8 := by decide
+
 end Erdos634.Geometry

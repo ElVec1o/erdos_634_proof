@@ -3370,3 +3370,29 @@ This is a bounded but non-trivial build — on the order of the last six ticks p
 `lem:census` has **not** flipped; label stays PROVED, and I am not going to predict when it will.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` piece 4d: the summation engine, and the class labels
+
+Three declarations (`CornerAnglePerm.lean`, twenty-two now, axiom-clean, `Erdos634.All` clean).
+
+* `sum_over_fibers_const` — the general fact the partition runs on: if a weight `g` depends on `x`
+  only through `f x`, then `∑_{x ∈ s} g x = ∑_y c y * |fibre y|`. Built on
+  `Finset.sum_fiberwise_of_maps_to`; no geometry.
+* `figureVec` — the `(α, β, γ)`-multiplicity vector at a point, which *is* the census's class label.
+* `censusLabels` — the eight labels, `(3,0,0)` apex, `(0,1,0)` base corner, `(1,1,1)` and `(3,2,0)`
+  the straight figures `n₁`, `n₂`, and `(0,1,3)`, `(2,2,2)`, `(4,3,1)`, `(6,4,0)` the interior
+  figures `v₁…v₄`; `censusLabels_card` confirms there are eight, by `decide`.
+
+**Design note worth recording.** Using the multiplicity *vector* as the class label rather than eight
+hand-built Finsets removes the disjointness obligation entirely — the eight vectors are visibly
+distinct, so the classes are fibres of a function and cannot overlap. It also makes the apex
+distinguishable from `n₂` (both have `α`-count 3, but `(3,0,0) ≠ (3,2,0)`), which a coarser label
+would have conflated. That conflation would have produced a *false* identity, so the choice is not
+cosmetic.
+
+**Remaining:** the maps-to obligation `∀ v ∈ cornerPts, figureVec v ∈ censusLabels` — this is where
+the three classification theorems and `cornerPts_trichotomy` get consumed — and then instantiating
+`sum_over_fibers_const` three times, once per angle, to produce `vertex_census`'s three hypotheses.
+`lem:census` has **not** flipped; label stays PROVED.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
