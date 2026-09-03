@@ -1,6 +1,8 @@
 import Erdos634.Congruence
 import Erdos634.PinPlumbing
 import Erdos634.VertexFigureReal
+import Erdos634.RouteOne
+import Erdos634.TileAt
 import Mathlib.Analysis.Normed.Affine.MazurUlam
 
 /-!
@@ -259,5 +261,37 @@ theorem congruentDissection_interior_figure_cases {N : ℕ} (D : CongruentDissec
   have hsum := Erdos634.VertexFigureReal.interior_multiplicities_cards D.toDissection α β γ
     hαβ hαγ hαπ hα2π hα0 hβγ hβπ hβ2π hβ0 hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hv hvals
   exact Erdos634.VertexFigureReal.interior_figure_cases_gen hγdef hrel hirr _ _ _ _ _ hsum
+
+/-- **`hvals` in the `2π`-free form, at any tile vertex.**  At a point that is a vertex of some
+tile, no tile can cover the point, so every tile's local angle there lies in `{α, β, γ, π, 0}`.
+
+This is the exact shape carried as an unproved hypothesis by `MarchRun.junction_dichotomy`,
+`JunctionWedge`, and the other junction lemmas — the wider set of
+`congruentDissection_localAngle_mem_all` does not fit them, because they need `2π` excluded. -/
+theorem congruentDissection_localAngle_mem_at_corner {N : ℕ} (D : CongruentDissection N)
+    (α β γ : ℝ)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    {v : Plane} (j : Fin N) (m : Fin 3) (hvj : (D.tile j).pts m = v) (i : Fin N) :
+    (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 0} : Finset ℝ) := by
+  classical
+  have hmemj : v ∈ (D.tile j).carrier := by
+    rw [← hvj, Erdos634.Geometry.Tri.carrier]; exact subset_convexHull ℝ _ ⟨m, rfl⟩
+  have hnotint : v ∉ interior (D.tile i).carrier := by
+    by_cases hij : i = j
+    · subst hij; rw [← hvj]; exact _root_.Erdos634.Geometry.Dissection.target_vertex_not_interior _ m
+    · exact fun hint =>
+        Erdos634.RouteOne.Dissection.not_mem_interior_of_mem D.toDissection (Ne.symm hij) hmemj hint
+  have h2pi := _root_.Erdos634.Geometry.Dissection.localAngle_ne_two_pi_of_not_mem_interior hnotint
+  have hmem := congruentDissection_localAngle_mem_all D α β γ hmα hmβ hmγ v i
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hmem ⊢
+  rcases hmem with h | h | h | h | h | h
+  · exact Or.inl h
+  · exact Or.inr (Or.inl h)
+  · exact Or.inr (Or.inr (Or.inl h))
+  · exact Or.inr (Or.inr (Or.inr (Or.inl h)))
+  · exact absurd h h2pi
+  · exact Or.inr (Or.inr (Or.inr (Or.inr h)))
 
 end Erdos634.Geometry

@@ -3210,3 +3210,31 @@ frontier points (`boundary_figure_cases`), and interior points (this).
 not flipped; label stays PROVED.**
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### The falls-a-target test on the new classification: one real gap closed, and it is *not* the one I expected
+
+Applied `CLAUDE.md`'s test to `congruentDissection_interior_figure_cases`. The scan turned up
+something the previous entry had wrong.
+
+**The junction lemmas do not take the `hvals` I proved.** `MarchRun.junction_dichotomy`
+(`MarchRun.lean:44`, `:74`) and `JunctionWedge` (`:147`) carry
+`hvals : ∀ i, localAngle v ∈ ({α, β, γ, π, 0} : Finset ℝ)` — **without `2π`**.
+`congruentDissection_localAngle_mem_all` gives the *larger* set `{α, β, γ, π, 2π, 0}`, which does not
+fit them. So the previous entry's implication that it discharges those call sites was wrong.
+
+**Closed properly now.** `congruentDissection_localAngle_mem_at_corner`: at a point that is a vertex
+of *some* tile, no tile covers the point, so every tile's local angle is in `{α, β, γ, π, 0}` — the
+`2π`-free form those lemmas actually want. `2π` is excluded by
+`Dissection.target_vertex_not_interior` (a vertex is not interior to its own triangle) for the tile
+owning the vertex, and by `not_mem_interior_of_mem` for every other tile, then
+`localAngle_ne_two_pi_of_not_mem_interior`.
+
+**Does a named target fall? Not yet, and I am not going to claim one.** The `rem:marchobl` M-i /
+M-vertex rows note this `hvals` is "suppliable for a real dissection though not yet threaded into
+those call sites". It is now suppliable *in the right shape*, but threading it — instantiating
+`junction_dichotomy` and the `JunctionWedge` lemmas at real march junctions — is a separate step and
+is not done. Until it is, no row moves.
+
+Ten declarations in `CornerAnglePerm.lean`, axiom-clean, `Erdos634.All` clean.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
