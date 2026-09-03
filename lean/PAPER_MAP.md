@@ -1183,6 +1183,32 @@ convention (`Dissection.dirSet`/`horient`-style) to avoid double-counting a shar
 opposite-side flush neighbors, plus showing flush ∪ straddle actually exhausts the chord (via
 `contacts_cover_side`) to get the *total* chord length as flush total + straddle total.
 
+**The flush-total argument, worked out precisely but NOT built, 2026-09-03**: sketched here so it
+doesn't need re-deriving. Partition tiles into `lowerFlush` (all `≤ c`), `upperFlush` (all `≥ c`),
+`straddlers` — exclusive by `sign_trichotomy` (a tile can't be both flush types: that would force
+`f` constant on a 2D set, contradicting `f.linear ≠ 0`). Claim: `lowerFlush ∪ straddlers` alone
+already covers the chord (minus the finite vertex set) — `upperFlush` tiles are never *needed*.
+Proof sketch: take a chord point `x`, non-vertex, covered by tile `j` (via the already-general
+`contacts_cover_side`). If `j` straddles or is `lowerFlush`, done. If `j` is `upperFlush`, then (a
+nonconstant affine function can't attain its max at an interior point) `x` is on `j`'s boundary,
+i.e. `OnEdge D x j` via `tile_contact_face`'s edge characterization, on an edge lying entirely on
+the chord line. `Dissection.two_tiles_at_edge_point` then gives exactly one *other* tile `j'` at
+`x`, and `Dissection.leftDir_antiparallel`/`.leftUnit_neg` (already general, already VERIFIED)
+force `j'`'s local edge orientation *opposite* to `j`'s — meaning `j'` extends to the side with
+`f < c` near `x`, so `j'` cannot itself be `upperFlush` (that would put it on the same side as
+`j`, contradicting the antiparallel fact). Hence `j'` is `lowerFlush` or straddles, and `x` is
+covered by `lowerFlush ∪ straddlers` via `j'` instead. Once this covering fact is built, the flush
+total follows the same shape as `straddle_total_eq_sum`: `sameside_edges_subsingleton` (already
+VERIFIED, general) gives pairwise disjointness *within* `lowerFlush`, `trace_disjoint_of_straddle`
+gives disjointness between any `lowerFlush` tile and any straddler, so
+`MeasureTheory.measure_biUnion_finset₀` applies to `lowerFlush ∪ straddlers` directly, and
+`length_sum_of_cover`'s covering half (already general) finishes it against the chord's own length.
+**This is a real, well-scoped next target** — every individual fact above already exists or is
+proved; what's missing is only the assembly connecting `tile_contact_face`'s edge characterization
+to `OnEdge`'s hypothesis shape and the flush-vs-straddle case bookkeeping. Deprioritized this
+session in favor of hunting further PROVED→VERIFIED flips per the standing `/goal`, since this
+piece, even finished, is infrastructure toward `prop:chorddecomp` and not itself a flip.
+
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
 | Atom | Statement | Lean | Label |
