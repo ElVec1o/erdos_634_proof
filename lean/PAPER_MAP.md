@@ -1341,15 +1341,32 @@ straddler with its own trace `[r, s]`, splitting `[p, q]` at `r` then at `s` giv
 and a second gap total. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only
 the standard three.
 
-**Still not assembled**: the concrete one-straddler theorem (gluing the pieces above into one
-statement) and the fully general finite induction over an arbitrary number of straddlers (order
-their trace endpoints by `dist p ·`, identify consecutive gaps, apply `chord_decomposition_of_gap`
-to each, sum against `straddle_total_eq_sum` via repeated `hausdorff_segment_split`) — genuine
-finite combinatorial bookkeeping (a `Finset.sort`-style induction), no new geometry left to
-discover anywhere in this chain. Every individual geometric and measure-theoretic fact the *full*
-assembly could need now exists and is proved. Deprioritized further construction this session in
-favor of hunting further PROVED→VERIFIED flips per the standing `/goal`, since this piece, even
-finished, is infrastructure toward `prop:chorddecomp` and not itself a flip.
+**The concrete one-straddler theorem assembled, same session, later still**:
+`ChordDecompositionOneStraddler.chord_decomposition_one_straddler` — a real, complete, assembled
+result: given the chord's endpoints `p, q`, the one straddler's own trace endpoints `r, s`, the
+betweenness order (`Wbtw p r q`, `Wbtw r s q`), and that no tile's interior meets either open gap
+`(p, r)` or `(s, q)`, the near-side chain's total over the whole chord splits exactly into the two
+gap totals (`chord_decomposition_of_gap`, applied twice) plus the straddler's own trace length —
+glued via `hausdorff_segment_split` applied twice and `ring`. `lake build Erdos634.All` clean, no
+`sorry`, `#print axioms` confirms only the standard three.
+
+The two gaps' "no tile straddles inside" conditions are taken directly as hypotheses here (matching
+`chord_decomposition_of_gap`'s own style) rather than derived from "no *other* tile straddles
+anywhere" — that reduction needs a genuine small lemma not yet built: distance from `p` is monotone
+along the ordered chain `p → r → s → q` (a consequence of collinearity plus the two `Wbtw` facts),
+which would let a point of an open gap's interior membership be excluded from `[r, s]` (the only
+straddler's own trace) automatically. Recorded precisely as the next concrete sub-step.
+
+**Still not built**: the fully general finite induction over an arbitrary number of straddlers
+(order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
+`chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
+`hausdorff_segment_split`) — the one-straddler case above is the concrete instance it generalizes.
+Every individual geometric and measure-theoretic fact the *full* assembly could need now exists and
+is proved; what remains is genuine finite combinatorial bookkeeping (a `Finset.sort`-style
+induction), no new geometry left to discover anywhere in this chain. Deprioritized further
+construction this session in favor of hunting further PROVED→VERIFIED flips per the standing
+`/goal`, since this piece, even finished, is infrastructure toward `prop:chorddecomp` and not
+itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 

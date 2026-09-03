@@ -233,3 +233,4 @@ import Erdos634.ChordDecompositionNoStraddle
 import Erdos634.ChordEndpointsDistinct
 import Erdos634.ChordDecompositionGap
 import Erdos634.ChordLengthAdditivity
+import Erdos634.ChordDecompositionOneStraddler
