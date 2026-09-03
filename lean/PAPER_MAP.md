@@ -1311,13 +1311,24 @@ from different pairs would need to be simultaneously zero and strictly positive 
 coordinate. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard
 three.
 
+**Generalized to any gap, same session, later still**: `ChordDecompositionGap.chord_decomposition_of_gap`
+— the same theorem for *any* two distinct points of the chord, not only its own extreme points
+`p, q`. Nothing in `chord_decomposition_of_no_straddlers`'s proof actually needed `p, q` specifically:
+`Tri.straddle_openSegment_interior` works for any two points of `D.target.carrier ∩ {f = c}`
+(the target still straddles regardless of which two chord points are chosen), and `wall_cover`'s
+`hwall` only ever needs to hold on the particular segment in question. This *is* the exact building
+block the multi-straddler induction needs: applied to two consecutive straddler-trace endpoints (a
+gap with no straddler crossing strictly inside it), it gives that gap's own near-side-chain total,
+ready to be summed against `straddle_total_eq_sum`. `lake build Erdos634.All` clean, no `sorry`,
+`#print axioms` confirms only the standard three.
+
 **Still not built**: the fully general case with straddlers present, which needs the finite
-ordering of straddler segments along the chord and gluing `wall_partition`'s per-gap totals to
-`straddle_total_eq_sum` — genuine combinatorial/measure bookkeeping, no new geometry left to
-discover. Every individual geometric fact the *full* assembly could need now exists and is proved.
-Deprioritized further construction this session in favor of hunting further PROVED→VERIFIED flips
-per the standing `/goal`, since this piece, even finished, is infrastructure toward
-`prop:chorddecomp` and not itself a flip.
+ordering of straddler segments along the chord (to identify the gaps `chord_decomposition_of_gap`
+applies to) and gluing all the resulting gap totals to `straddle_total_eq_sum` — genuine
+combinatorial/measure bookkeeping, no new geometry left to discover. Every individual geometric
+fact the *full* assembly could need now exists and is proved. Deprioritized further construction
+this session in favor of hunting further PROVED→VERIFIED flips per the standing `/goal`, since this
+piece, even finished, is infrastructure toward `prop:chorddecomp` and not itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
