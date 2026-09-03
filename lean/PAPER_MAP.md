@@ -3502,3 +3502,25 @@ the analogous `|(0,1,0)| = 2` for base corners, then the β- and γ-sums, then `
 `lem:census` has **not** flipped; label stays PROVED.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` piece 4i: the apex class has exactly one point
+
+`apex_fibre_card` (`CornerAnglePerm.lean`, twenty-eight declarations, axiom-clean,
+`Erdos634.All` clean). Compiled first attempt.
+
+The fibre of the label `(3,0,0)` in `cornerPts` is a single point. Three ingredients, each landed
+earlier in this run: `target_corner_counts` (exactly one target corner carries `3α`),
+`beta_free_is_apex` (a tile vertex with `β`-count `0` is a target corner not carrying `β`), and
+`TileAt.congruentDissection_apex_counts` (the apex carries `(3,0,0)`). One small extra step: the apex
+*is* a tile vertex, because its `α`-count is `3 > 0`, so some tile presents `α` there and
+`vertex_of_localAngle_corner` makes the point that tile's vertex.
+
+This is the constant `3` in `lem:census`'s `α`-identity — `3 · 1`, now with the `1` proved.
+
+**Remaining:** `|fibre (0,1,0)| = 2` for the base corners (the same argument with the `γ`-count as
+discriminator — `(0,1,0)` and `(3,0,0)` are the only labels with `γ`-count `0`, and the apex is
+separated from them by its `α`-count), then the `β`- and `γ`-sums, then `vertex_census`.
+
+`lem:census` has **not** flipped; label stays PROVED.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

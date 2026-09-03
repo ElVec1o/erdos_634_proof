@@ -840,4 +840,61 @@ theorem beta_free_is_apex {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
     · rcases hcase with ⟨-, hb, -⟩ | ⟨-, hb, -⟩ <;> omega
     · rcases hcase with ⟨-, hb, -⟩ | ⟨-, hb, -⟩ | ⟨-, hb, -⟩ | ⟨-, hb, -⟩ <;> omega
 
+/-- **The apex class has exactly one point.**  Combining `target_corner_counts` (one target corner
+carries `3α`) with `beta_free_is_apex` (only the apex label has `β`-count `0`) and
+`TileAt.congruentDissection_apex_counts` (the apex carries `(3,0,0)`): the fibre of the label
+`(3,0,0)` in `cornerPts` is the single apex point.  This is the constant `3` in `lem:census`'s
+`α`-identity. -/
+theorem apex_fibre_card {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (htarget : ∀ k : Fin 3,
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = 3 * α ∨
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β) :
+    ((cornerPts D.toDissection).filter (fun v =>
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ)
+        = (3, 0, 0))).card = 1 := by
+  classical
+  obtain ⟨k₀, hk₀⟩ := Finset.card_eq_one.mp (target_corner_counts D hrel hirr htarget)
+  have hmem₀ : cornerAngle (D.target.pts (k₀ + 1)) (D.target.pts k₀) (D.target.pts (k₀ + 2))
+      = 3 * α := by
+    have : k₀ ∈ ({k | cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2))
+        = 3 * α} : Finset (Fin 3)) := by rw [hk₀]; exact Finset.mem_singleton_self k₀
+    simpa using this
+  obtain ⟨ha, hb, hc, -⟩ := Erdos634.Geometry.Dissection.congruentDissection_apex_counts D
+    α β γ hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hmα hmβ hmγ k₀ hmem₀
+  -- the apex is a tile vertex, since some tile presents `α` there
+  have hapexmem : D.target.pts k₀ ∈ cornerPts D.toDissection := by
+    have hpos : 0 < ({i | (D.tile i).localAngle (D.target.pts k₀) = α} : Finset (Fin N)).card := by
+      rw [ha]; norm_num
+    obtain ⟨i, hi⟩ := Finset.card_pos.mp hpos
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi
+    obtain ⟨m, hm⟩ := vertex_of_localAngle_corner (D.tile i) hi hα0 hαπ hα2π
+    rw [← hm]; exact mem_cornerPts D.toDissection i m
+  refine Finset.card_eq_one.mpr ⟨D.target.pts k₀, Finset.eq_singleton_iff_unique_mem.mpr ⟨?_, ?_⟩⟩
+  · simp only [Finset.mem_filter]
+    exact ⟨hapexmem, by rw [ha, hb, hc]⟩
+  · intro v hv
+    obtain ⟨hvmem, hvlab⟩ := Finset.mem_filter.mp hv
+    have hβ0' : ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 0 := by
+      have := congrArg (fun p : ℕ × ℕ × ℕ => p.2.1) hvlab
+      simpa using this
+    obtain ⟨k, hk, hkne⟩ := beta_free_is_apex D α β γ hαβ hαγ hαπ hα2π hα0 hβγ hβπ hβ2π hβ0
+      hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr hvmem hβ0'
+    have hk3 : cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = 3 * α :=
+      (htarget k).resolve_right hkne
+    have : k ∈ ({k | cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2))
+        = 3 * α} : Finset (Fin 3)) := by simpa using hk3
+    rw [hk₀, Finset.mem_singleton] at this
+    rw [← hk, this]
+
 end Erdos634.Geometry
