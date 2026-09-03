@@ -1680,6 +1680,26 @@ remains is exclusively the `Finset.card` strong-induction wrapper gluing these t
 choice-function packaging of each straddler's oriented trace — an engineering task, not a
 mathematical gap.
 
+**The exact remaining specification, worked out precisely (2026-09-03, late)**: attempting the
+wrapper induction directly (rather than continuing to describe it abstractly) surfaced the real
+obstacle: a clean statement over a `Finset (Fin N)` of straddlers needs an *exclusion invariant*
+("every straddler not in the current set has its whole trace outside the current sub-chord") that
+is exactly as hard to maintain correctly through the recursion as the induction itself — restating
+it does not shrink it. The tractable split is the one `straddle_total_eq_sum`'s own docstring
+already pointed at: separate "prove the sum splits *given* a sorted chain" from "sort a `Finset`
+into that chain." The first half is what `wbtw_chain_bounded` was built for: package the straddler
+data as `pts : List Plane` (`p :: r₁ :: s₁ :: ⋯ :: rₙ :: sₙ :: [q]`, length `2n+2`) with `tiles :
+List (Fin N)` (length `n`), hypotheses `hchain : ∀ i, i + 2 ≤ 2n+1 → Wbtw ℝ (pts.get i) (pts.get
+(i+1)) (pts.get (i+2))` (exactly `wbtw_chain_bounded`'s own shape, `K = 2n+1`), `hmtrace : ∀ i < n,
+(D.tile (tiles.get i)).carrier ∩ line = segment ℝ (pts.get (2i+1)) (pts.get (2i+2))`, and `hgap : ∀
+i ≤ n, gap_free_of_minimal`'s conclusion on `(pts.get (2i), pts.get (2i+1))` — then prove by
+induction on `n` (peeling the front pair off `pts` and `tiles`, one call to `chord_decomposition_cons`
+per step) that the total splits. This is genuinely just index bookkeeping over `List.get`/`Fin`
+arithmetic now — no further geometric fact is missing, and it does not need the exclusion invariant
+at all (that invariant is only needed to justify a sort *exists* with the right shape, the second,
+separate half). Not written this session: the index arithmetic alone is real work, and forcing it
+through under time pressure risks exactly the kind of rushed, unchecked claim `/goal` forbids.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
