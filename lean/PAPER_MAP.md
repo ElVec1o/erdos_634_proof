@@ -1400,6 +1400,22 @@ just one, which needs a transitive betweenness argument beyond what
 middle gap sits between two). Not attempted this pass — recorded as the next piece rather than
 forced through.
 
+**The far-gap disjointness lemma, same session, later still (2026-09-03)**:
+`ChordBetweennessDisjointFar.openSegment_disjoint_segment_of_wbtw_far` — generalizes
+`openSegment_disjoint_segment_of_wbtw` from a far segment `[r, s]` sharing its endpoint with the
+gap's own right endpoint `r`, to a far segment `[u, v]` merely starting at or beyond a point `r`
+weakly between `p` and `u` (`r ≠ u`): the open gap `(p, r)` and `[u, v]` are still disjoint. Same
+distance-additivity proof shape, with `Wbtw.trans_expand_left` folding the extra `r → u` hop into
+a single `Wbtw p r y` fact. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms
+only the standard three.
+
+This is exactly the fact `chord_decomposition_two_straddlers`'s middle gap `(s₁, r₂)` needs to rule
+out *both* straddlers' traces from a global `hunique` condition (not just the adjacent one, as the
+one-straddler case only needed): applied one way it rules out `m₁`'s trace `[r₁, s₁]` reached via
+the reversed gap `(r₂, s₁)`; applied the other way it rules out `m₂`'s trace `[r₂, s₂]` directly.
+Not yet wired into a `chord_decomposition_two_straddlers'` (the two-straddler analogue of
+`chord_decomposition_one_straddler'`) — the lemma exists, the assembly doesn't.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
