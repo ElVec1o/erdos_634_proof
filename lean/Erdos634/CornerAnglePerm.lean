@@ -5,6 +5,7 @@ import Erdos634.RouteOne
 import Erdos634.TileAt
 import Erdos634.MarchRun
 import Erdos634.JunctionWedge
+import Erdos634.RouteOneThroughEdge
 import Mathlib.Analysis.Normed.Affine.MazurUlam
 
 /-!
@@ -407,5 +408,85 @@ theorem congruentDissection_march_junction_real {N : ℕ} (D : CongruentDissecti
     hγπ hγ0 hπ0 hγdef hrel hirr hβpos hαpos hv hnv
     (fun i => congruentDissection_localAngle_mem_at_corner D α β γ hmα hmβ hmγ iγ m hm i)
     iγ hiγ hu hP hQ hφ hψ hφm hψm hcorner
+
+/-- **The interior figure at a tile vertex.**  At an interior point that is a vertex of some tile,
+two of the four branches of `congruentDissection_interior_figure_cases` are impossible: no tile can
+cover the point (`u = 1`), and two straight angles would exhaust the `2π` and leave no room for the
+tile owning the vertex (`s = 2`).  What remains is exactly the census's classification — a straight
+figure `{3α,2β}` or `{α,β,γ}`, or one of the four interior figures. -/
+theorem congruentDissection_interior_figure_at_corner {N : ℕ} (D : CongruentDissection N)
+    (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    {v : Plane} (hv : v ∈ interior D.target.carrier)
+    (j : Fin N) (m : Fin 3) (hjm : (D.tile j).pts m = v) :
+    (({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 1 ∧
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 3 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 2 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0) ∨
+       (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 1 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1))) ∨
+    (({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 0 ∧
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 6 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 4 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0) ∨
+       (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 4 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 3 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1) ∨
+       (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 2 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 2 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 2) ∨
+       (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 0 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 3))) := by
+  classical
+  -- the tile owning the vertex presents a corner angle, so it is not a straight-angle tile
+  have hjne : (D.tile j).localAngle v ≠ Real.pi := by
+    rw [← hjm, Erdos634.Geometry.Tri.localAngle_vertex]
+    obtain ⟨k, hk⟩ := congruent_corner_angles (D.tiles_congruent j).symm m
+    rw [hk]
+    have hall : ∀ x : Fin 3, x = 0 ∨ x = 1 ∨ x = 2 := by decide
+    rcases hall k with rfl | rfl | rfl
+    · rw [show (0 : Fin 3) + 1 = 1 from rfl, show (0 : Fin 3) + 2 = 2 from rfl, hmα]; exact hαπ
+    · rw [show (1 : Fin 3) + 1 = 2 from rfl, show (1 : Fin 3) + 2 = 0 from rfl, hmβ]; exact hβπ
+    · rw [show (2 : Fin 3) + 1 = 0 from rfl, show (2 : Fin 3) + 2 = 1 from rfl, hmγ]; exact hγπ
+  rcases congruentDissection_interior_figure_cases D α β γ hαβ hαγ hαπ hα2π hα0 hβγ hβπ hβ2π hβ0
+    hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr hv with
+    ⟨hu, -, -, -, -⟩ | ⟨-, hs2, -, -, -⟩ | ⟨-, hs1, hcase⟩ | ⟨-, hs0, hcase⟩
+  · -- `u = 1`: some tile covers the point, impossible at a tile vertex
+    exfalso
+    have hpos : 0 < ({i | (D.tile i).localAngle v = 2 * Real.pi} : Finset (Fin N)).card := by
+      rw [hu]; norm_num
+    obtain ⟨i, hi⟩ := Finset.card_pos.mp hpos
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi
+    have hmem := congruentDissection_localAngle_mem_at_corner D α β γ hmα hmβ hmγ j m hjm i
+    rw [hi] at hmem
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hmem
+    rcases hmem with h | h | h | h | h
+    · exact hα2π h.symm
+    · exact hβ2π h.symm
+    · exact hγ2π h.symm
+    · exact hπ2π h.symm
+    · exact h2π0 h
+  · -- `s = 2`: two straight angles leave no room for the tile owning the vertex
+    exfalso
+    have hlt : 1 < ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card := by
+      rw [hs2]; norm_num
+    obtain ⟨i, hi, i', hi', hii'⟩ := Finset.one_lt_card.mp hlt
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi hi'
+    have hmemj : v ∈ (D.tile j).carrier := by
+      rw [← hjm, Erdos634.Geometry.Tri.carrier]; exact subset_convexHull ℝ _ ⟨m, rfl⟩
+    exact Erdos634.RouteOne.two_through_excludes_mem D.toDissection hv i i' j hii'
+      (fun h => hjne (h ▸ hi)) (fun h => hjne (h ▸ hi')) hi hi' hmemj
+  · exact Or.inl ⟨hs1, hcase⟩
+  · exact Or.inr ⟨hs0, hcase⟩
 
 end Erdos634.Geometry

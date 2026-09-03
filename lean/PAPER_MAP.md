@@ -3288,3 +3288,29 @@ dichotomy` retains `hns` (no straight angle at the junction), which is the cross
 is bookkeeping; both must come from the march construction.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` piece 4a: the interior figure at a tile vertex is exactly the census's classification
+
+`congruentDissection_interior_figure_at_corner` (`CornerAnglePerm.lean`, sixteen declarations,
+axiom-clean, `Erdos634.All` clean).
+
+At an interior point that is a vertex of some tile, **two of the four branches** of
+`congruentDissection_interior_figure_cases` are impossible, and both are killed by tools built
+earlier in this session:
+
+* `u = 1` (a tile covers the point) — excluded by `congruentDissection_localAngle_mem_at_corner`:
+  every tile's angle there lies in `{α, β, γ, π, 0}`, and `2π` is none of those.
+* `s = 2` (two straight angles) — excluded by `RouteOne.two_through_excludes_mem`: two straight
+  angles exhaust the `2π`, leaving no room for the tile that owns the vertex — and that tile is not
+  itself a straight-angle tile, since `Tri.localAngle_vertex` and `congruent_corner_angles` make its
+  angle there one of `α, β, γ`, each `≠ π`.
+
+What survives is exactly the census's own list: a straight figure `{3α,2β}` or `{α,β,γ}` (`n₂`, `n₁`),
+or one of the four interior figures `{6α,4β}`, `{4α,3β,γ}`, `{2α,2β,2γ}`, `{β,3γ}` (`v₄, v₃, v₂, v₁`).
+
+**Remaining for piece 4:** the same classification at the *frontier* points of `cornerPts` (target
+corners via `base_corner_counts`/`apex_counts`, other frontier points via `boundary_figure_cases`),
+then the partition of `cornerPts` into the eight classes and evaluation of the multiplicity sum on
+each. `lem:census` has **not** flipped; label stays PROVED.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
