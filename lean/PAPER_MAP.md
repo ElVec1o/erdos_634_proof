@@ -1700,7 +1700,29 @@ at all (that invariant is only needed to justify a sort *exists* with the right 
 separate half). Not written this session: the index arithmetic alone is real work, and forcing it
 through under time pressure risks exactly the kind of rushed, unchecked claim `/goal` forbids.
 
-**Still not built**: the fully general finite induction over an arbitrary number of straddlers
+**The general induction, built (2026-09-03, later still)**: `ChordDecompositionChain.
+chord_decomposition_of_chain` — the "sum splits given a sorted chain" half specified precisely
+above, now proved by genuine induction on `n` (arbitrary straddler count), not spelled out by hand
+at any fixed length. Packaged exactly as specified: `g : ℕ → Plane` (`g 0 = p`, `g(2i+1), g(2i+2)`
+the `i`-th straddler's oriented trace, `g(2n+1) = q`), consecutive-triple `Wbtw` facts
+(`wbtw_chain_bounded`'s own hypothesis shape), and gap-freedom for each of the `n+1` gaps. The
+`succ` step: shift `g`/`tiles` by one pair to get the induction hypothesis's own hypotheses (pure
+index arithmetic, `ring`/`omega`), invoke `wbtw_chain_bounded` once for the single non-consecutive
+fact needed (`Wbtw (g 0) (g 2) (g (2(n+1)+1))`, i.e. `Wbtw p s q`), apply `chord_decomposition_cons`
+with the shifted IH as `Trest`, then reindex both `Finset.sum`s via `Finset.sum_range_succ'` to
+match. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard
+three.
+
+This closes the "given a sorted chain" half completely for arbitrary `n`. The remaining half — given
+a `Finset` straddler set, produce such a chain (`g`, `tiles`) satisfying `chord_decomposition_of_chain`'s
+own hypotheses — needs the exclusion invariant flagged above (`gap_free_of_minimal` and
+`far_precedes_of_minimal` supply exactly the per-step facts a `Finset.card` strong induction would
+need to construct it) but is not yet built. `prop:chorddecomp` itself further needs the flush total
+and the member-specific `(3,7)` numerics on top of this — this file is the general,
+member-independent skeleton, not the full proposition.
+
+**Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
+now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
 `hausdorff_segment_split`) — the one-straddler case above is the concrete instance it generalizes.
