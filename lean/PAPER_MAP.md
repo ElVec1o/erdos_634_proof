@@ -3183,3 +3183,30 @@ blocker (the double count) is a theorem, and `hvals` — a blocker for a much wi
 now discharged in general.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### The interior vertex figure, for a real dissection at last
+
+`congruentDissection_interior_figure_cases` (`CornerAnglePerm.lean`, nine declarations,
+axiom-clean, `Erdos634.All` clean): at **any** interior point of the target of a
+`CongruentDissection`, the multiplicities of `α, β, γ, π, 2π` are one of the classified
+solutions — a single covering tile, two straight angles, one straight angle with a boundary figure
+`{3α,2β}`/`{α,β,γ}`, or one of the four interior figures `{6α,4β}`, `{4α,3β,γ}`, `{2α,2β,2γ}`,
+`{β,3γ}`.
+
+Both halves already existed and had never been joined: `VertexFigureReal.interior_figure_cases_gen`
+proves the classification *from* the multiplicity equation, and `.interior_multiplicities_cards`
+proves that equation *from* `hvals`. Nothing had ever supplied `hvals` at a general interior point —
+which is why the classification had never been instantiated for a real dissection anywhere in the
+corpus. The previous entry's `congruentDissection_localAngle_mem_all` supplies it; this is the
+composition, three lines.
+
+This is the interior counterpart of `TileAt.congruentDissection_boundary_figure_cases` (which does
+the frontier), so the vertex-figure classification is now available for a real dissection at
+*every* point: target corners (`congruentDissection_base_corner_counts`/`.apex_counts`), other
+frontier points (`boundary_figure_cases`), and interior points (this).
+
+**For `lem:census` piece 4** that is the classification input; what remains is partitioning
+`cornerPts` by which case holds and evaluating the multiplicity sum per class. **`lem:census` has
+not flipped; label stays PROVED.**
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

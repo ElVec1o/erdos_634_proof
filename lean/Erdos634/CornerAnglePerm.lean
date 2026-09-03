@@ -1,5 +1,6 @@
 import Erdos634.Congruence
 import Erdos634.PinPlumbing
+import Erdos634.VertexFigureReal
 import Mathlib.Analysis.Normed.Affine.MazurUlam
 
 /-!
@@ -198,5 +199,65 @@ theorem congruentDissection_localAngle_mem_all {N : ℕ} (D : CongruentDissectio
   · rw [h2pi]; simp
   · rw [hpi]; simp
   · rw [h0]; simp
+
+/-- **The interior vertex figure of a real congruent dissection.**  At any interior point of the
+target, the multiplicities of `α, β, γ, π, 2π` among the tiles are one of the listed solutions: a
+single covering tile, two straight angles, one straight angle with a boundary figure, or one of the
+four interior figures.
+
+`VertexFigureReal.interior_figure_cases_gen` proves the classification from the multiplicity
+equation, and `.interior_multiplicities_cards` proves that equation from `hvals` — but nothing in
+the corpus had ever supplied `hvals` at a general interior point, so the classification had never
+been instantiated for a real dissection. `congruentDissection_localAngle_mem_all` supplies it, and
+this is the composition. -/
+theorem congruentDissection_interior_figure_cases {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    {v : Plane} (hv : v ∈ interior D.target.carrier) :
+    (({i | (D.tile i).localAngle v = 2 * Real.pi} : Finset (Fin N)).card = 1 ∧
+      ({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 0 ∧
+      ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 0 ∧
+      ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0 ∧
+      ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 0) ∨
+    (({i | (D.tile i).localAngle v = 2 * Real.pi} : Finset (Fin N)).card = 0 ∧
+      ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 2 ∧
+      ({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 0 ∧
+      ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 0 ∧
+      ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0) ∨
+    (({i | (D.tile i).localAngle v = 2 * Real.pi} : Finset (Fin N)).card = 0 ∧
+      ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 1 ∧
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 3 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 2 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0) ∨
+       (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 1 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1))) ∨
+    (({i | (D.tile i).localAngle v = 2 * Real.pi} : Finset (Fin N)).card = 0 ∧
+      ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 0 ∧
+      ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 6 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 4 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0) ∨
+       (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 4 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 3 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1) ∨
+       (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 2 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 2 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 2) ∨
+       (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 0 ∧
+        ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+        ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 3))) := by
+  classical
+  have hvals : ∀ i, (D.tile i).localAngle v ∈ ({α, β, γ, Real.pi, 2 * Real.pi, 0} : Finset ℝ) :=
+    fun i => congruentDissection_localAngle_mem_all D α β γ hmα hmβ hmγ v i
+  have hsum := Erdos634.VertexFigureReal.interior_multiplicities_cards D.toDissection α β γ
+    hαβ hαγ hαπ hα2π hα0 hβγ hβπ hβ2π hβ0 hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hv hvals
+  exact Erdos634.VertexFigureReal.interior_figure_cases_gen hγdef hrel hirr _ _ _ _ _ hsum
 
 end Erdos634.Geometry
