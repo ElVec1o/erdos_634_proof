@@ -3882,3 +3882,32 @@ statements is reached without it. `prop:eqspecint`, which inherits from `cor:int
 | M `cor:int` | `M_α, M_β` integral and `≡ N (mod 2)` | `SixtyInvariant.parity_obstruction` (parity clause) | PROVED — parity clause's arithmetic is VERIFIED and cited here for the first time; integrality needs `lem:cancel`'s missing `Φ` |
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### Scoping the flux functional `Φ`: buildable, large — and by the papers' own no-go, **no `/goal` payoff**
+
+`Φ_f` on a dissection's oriented boundary is the single blocker shared by `lem:value`, `lem:cancel`,
+`cor:int` and (inheriting) `prop:eqspecint`. Scoping what building it would take:
+
+* **The index and the involution.** `InvariantCore.cancellation_core` wants a directed-edge index
+  with an involution `neg`, `Lint` invariant and `f` antisymmetric. The involution is *not* a literal
+  edge pairing — the tilings are not edge-to-edge (`rem:noedgetoedge`), and the lemma's own docstring
+  says so: "the two sides may subdivide the segment differently, but each covers it exactly once".
+  So the pairing is the two-sided covering, which is `Geometry.Dissection.edge_two_sided` /
+  `.wall_two_sided` — present, and used earlier in this session.
+* **The directions.** `DirectionGroup` supplies the `L p q` lattice functional, and
+  `InvariantCore.ε` the `π/3`-coefficient sign. What is missing is the map from a tile's directed
+  edge to its `π/3` coefficient, i.e. that every edge direction lies in the grid at all.
+* **Size.** Assembling those into `Φ` and a signed cancellation is comparable to this session's
+  chord-decomposition development — a multi-session build, not a tick.
+
+**And it would not serve the `/goal`.** `prop:ninetools` closes nine tool classes against the
+crossing question, and the Conway–Lagarias tiling group — the home of exactly this flux invariant —
+is one of them, "which collapses to its rank-two abelianisation". So building `Φ` buys the four debt
+rows above and nothing on the prime case. The four rows are also all in the equilateral / other
+branches, not base-`β`.
+
+Recorded as a scoping result: **buildable, expensive, and off the `/goal` by the papers' own no-go.**
+A future session wanting these four rows should budget accordingly and should not expect prime-case
+progress from it.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
