@@ -2283,3 +2283,27 @@ closes the base case of `exists_geometric_chain`. What remains is the `cons` (su
 mirroring `exists_injective_chain`'s own successor case but threading the `Wbtw`/gap-freedom
 payload via `gap_free_of_finset_step'` (bridged to the list's tail through `List.toFinset`) and
 `far_precedes_of_minimal`/`excl_new_self`/`excl_carries_forward` for the invariant's continuation.
+
+## exists_geometric_chain's cons case, session of 2026-09-03 continued
+
+Attempted the successor case directly. It needs `L.Nodup` as an additional hypothesis (not
+previously listed) — `far_precedes_of_minimal` needs `m ≠ k` for `k` in the tail `L'`, which only
+follows from `m ∉ L'`, itself only guaranteed if the list has no duplicate straddler indices.
+Reasonable (a straddler is placed once), but must be threaded through the whole induction
+(preserved into the recursive call on `L'` via `List.nodup_cons`), not assumed silently.
+
+Separately, `far_precedes_of_minimal`'s own hypotheses (`hr, hs, hrk, hsk : Wbtw P · Q`) need the
+outer chord endpoint `Q`, not `bound` — requiring the same `hglobalWQ`/`hglobalSQ` helper functions
+(`Wbtw P (R k) Q` / `Wbtw P (S k) Q` for every straddling `k`, via `wbtw_of_mem_tile_trace`) built
+inline in the discarded full-assembly attempts earlier in this file. These are small, mechanical,
+and already known to work (verified in isolation there) — the remaining task is assembling them
+correctly inside this induction, not discovering new content. A second attempt at writing the
+successor case was discarded (unsound tactic combinators under time pressure) rather than
+committed with a `sorry`, per this project's standing rule.
+
+**Precise remaining task**: add `L.Nodup` to `exists_geometric_chain`'s hypothesis list; inline the
+`hglobalWQ`/`hglobalSQ` helpers; derive `m ∉ L'` from `List.nodup_cons`; call
+`far_precedes_of_minimal` with `Q` (not `bound`) as the outer bound to get `hle'` for the recursive
+call; call `gap_free_of_finset_step'` (bridging its `Finset` parameter via `L'.toFinset` and
+`List.mem_toFinset`) for the leading gap; combine with the recursive `ih` call exactly as
+`exists_injective_chain`'s own successor case does for injectivity, in parallel.
