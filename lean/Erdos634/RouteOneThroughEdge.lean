@@ -3,39 +3,52 @@ import Erdos634.CertCoord
 import Mathlib.LinearAlgebra.AffineSpace.MidpointZero
 
 /-!
-# The `π` branch at `V`, pinned — Route 1's flank without the straight-angle assumption
+# Route 1's flank at `V` without `conj:advance`'s case (a)
 
 Erdős #634, `conj:advance` / `rem:route1uniform`.
 
-`route_one_flank_composed` reaches its conclusion — the tile serving the tangential approach at `V`
-lays a horizontal rightward edge there — only after excluding `localAngle = π` for that tile, and it
-excludes it with `hcard`/`hb`: the `π`-count at `V` is one and the tile *below the line* carries it.
-That pair is exactly the fact `conj:advance` lists as unproved ("that a through-edge, rather than a
-junction, runs below the line at `V`"), so the chain's dependence on the open case runs through this
-one step.
+`route_one_flank_composed` reaches Route 1's flank conclusion at `V` only after excluding
+`localAngle = π` for the tile serving the tangential approach, and it excludes it with `hcard`/`hb`:
+the `π`-count at `V` is one and the tile *below the line* carries the straight angle. That pair is
+exactly what `conj:advance` lists as unproved — "that a through-edge, rather than a junction, runs
+below the line at `V`" — and tracing the proof shows it is consumed at that one place and nowhere
+else.
 
-This file removes that dependence from the step. The observation is that the `π` branch does not
-need excluding: it is *pinned* by the same `habove` the vertex branch already assumes.
+This file removes it, in three steps.
 
-If `V` is not a vertex of `T` and `T.localAngle V = π`, then `V` has one barycentric coordinate `0`
-and the other two strictly positive, so `V` lies strictly between two vertices of `T` — and
-`sub_vertex_eq_combo`, applied at each of them, writes the two displacements as opposite positive
-multiples of one vector `w`. With every carrier point weakly above `V`, both displacements have
-nonnegative second component; being antiparallel, both components vanish, so `w` is *horizontal*.
-`w ≠ 0` because otherwise `V` would be a vertex. Hence one of the two vertices lies strictly to the
-right of `V` at exactly `V`'s height.
+**1. The `π` branch is pinned, not excluded.** If `V` is not a vertex of `T` and `T.localAngle V = π`
+then `V` has one barycentric coordinate `0` and two positive, so it lies in an open edge;
+`sub_vertex_eq_combo` at each flanking vertex writes the two displacements as *opposite* positive
+multiples of one vector `w`, and `habove` — already a hypothesis of the vertex branch — makes both
+second components nonnegative. Antiparallel then forces `w` horizontal (`through_edge_data`,
+`through_edge_lays_rightward`). So the alternative branch does not add cases: it puts a *horizontal*
+edge through `V`, running along the wall line.
 
-Combining with `escape_flank` for the vertex branch gives `serving_lays_rightward`: with only the
-two exclusions that are already discharged independently (`serving_ne_zero` from the approach,
-`serving_ne_two_pi` from `V` lying in another tile's carrier), the serving tile lays a horizontal
-rightward segment at `V` — **no `π`-count, no below-tile, no straight angle**.
+**2. Two through-edges leave no room.** At an interior point two straight angles already exhaust the
+`2π`, so no third tile may even contain the point (`two_through_excludes_third`,
+`two_through_excludes_mem`, sharpening `PinPlumbing.at_most_two_through`). Since every point of an
+open edge carries `π` (`openSegment_localAngle_pi`), two tiles cannot share an edge-interior point
+while a third tile touches it (`shared_edge_interior_excludes_third`).
 
-**Scope, exactly.** This does *not* close `conj:advance`'s case (a). In the vertex branch the
-rightward segment is a whole edge with `V` as its endpoint, so its length is `a`, `b` or `c` and
-`overshoot_dichotomy` applies; in the `π` branch it is a *suffix* of an edge, of unconstrained
-length, and the dichotomy does not apply to it as it stands. What the file changes is the shape of
-the remaining gap: case (a) is not needed to put a horizontal rightward segment at `V`, only to know
-that segment is a whole edge from `V`.
+**3. The overlap exists.** The serving tile's through-edge and the `α`-tile's own horizontal edge
+`VA` both run left from `V` along the wall, so they share a stretch; `mem_openSegment_of_horizontal`
+builds a point of it explicitly. The tiles below the wall contain that point, and step 2 fires:
+`serving_ne_pi_of_left_edge` kills the `π` branch outright.
+
+`route_one_flank_no_straight` is then `route_one_flank_composed` with `hcard` and `hb` gone. What
+stands in their place is (i) that the `α`-tile lays a horizontal edge from `V` leftward — this is
+`rem:route1uniform`'s own geometry, whose algebra is already verified
+(`Frontier.route1_spacings`, `.side_tile_third_vertex`) — and (ii) `hthird`, that the open stretch
+is interior to the target and carries a tile other than the two.
+
+**Scope, stated exactly.** `hthird` is a *hypothesis here, not a theorem*: deriving it needs the
+routine covering argument (points just below the wall are covered, the covering tile is neither of
+the two upper tiles, and it contains the limit point) — standard dissection bookkeeping, but not
+done in this file. Nor is the configuration attached to a hypothetical tiling; that is
+`rem:routeoneopen`'s standing obligation and it is untouched. `conj:advance` remains a conjecture,
+`e = 1` is not closed, and the prime case is not advanced. What changed is the *kind* of the
+remaining obligation at this step: a crossing-question fact about where an edge lies has been
+replaced by a covering fact about what lies beneath the wall.
 
 Axiom-clean; no `sorry`.
 -/
@@ -478,5 +491,160 @@ theorem shared_edge_interior_excludes_third {N : ℕ} (D : Dissection N) (i j k 
   two_through_excludes_mem D hWint i j k hij hik hjk
     (openSegment_localAngle_pi (D.tile i) mi hWi)
     (openSegment_localAngle_pi (D.tile j) mj hWj) hWk
+
+/-! ## Constructing the overlap point: the `π` branch excluded outright
+
+The two open edges — the serving tile's through-edge at `V` and the `α`-tile's horizontal edge from
+`V` to `A` — both run along the wall line and both extend to the left of `V`, so they share a whole
+stretch.  Exhibiting one point of it turns `shared_edge_interior_excludes_third` into an outright
+exclusion of the `π` branch. -/
+
+/-- **Horizontal points and open segments.**  For `X, Y, Z` on a common horizontal line, an
+`x`-coordinate strictly between puts `Z` in the open segment. -/
+theorem mem_openSegment_of_horizontal {X Y Z : Plane}
+    (hY : (Y - X) 1 = 0) (hZ : (Z - X) 1 = 0)
+    {t : ℝ} (ht0 : 0 < t) (ht1 : t < 1) (hx : (Z - X) 0 = t * ((Y - X) 0)) :
+    Z ∈ openSegment ℝ X Y := by
+  refine ⟨1 - t, t, by linarith, ht0, by ring, ?_⟩
+  have hzero : (1 - t) • X + t • Y - Z = 0 := by
+    have hxc : Z 0 - X 0 = t * (Y 0 - X 0) := by simpa only [PiLp.sub_apply] using hx
+    have hyc : Y 1 - X 1 = 0 := by simpa only [PiLp.sub_apply] using hY
+    have hzc : Z 1 - X 1 = 0 := by simpa only [PiLp.sub_apply] using hZ
+    have hn : ‖(1 - t) • X + t • Y - Z‖ = 0 := by
+      rw [EuclideanSpace.norm_eq, Fin.sum_univ_two]
+      have h0 : ((1 - t) • X + t • Y - Z) 0 = 0 := by
+        simp only [PiLp.sub_apply, PiLp.add_apply, PiLp.smul_apply, smul_eq_mul]
+        linear_combination -hxc
+      have h1 : ((1 - t) • X + t • Y - Z) 1 = 0 := by
+        simp only [PiLp.sub_apply, PiLp.add_apply, PiLp.smul_apply, smul_eq_mul]
+        linear_combination t * hyc - hzc
+      rw [h0, h1]; simp
+    exact norm_eq_zero.mp hn
+  exact sub_eq_zero.mp hzero
+
+/-- **The `π` branch is impossible.**  If the serving tile `i` lies weakly above `V`, a second tile
+`j` lays a horizontal edge from `V` leftward to `A`, and every point of that open stretch is interior
+to the target and lies in some third tile (the tiles below the wall), then `i` cannot have `V`
+interior to one of its edges.
+
+This is `conj:advance`'s case (a) discharged *for this step*: the straight angle below the line is
+never invoked. What replaces it is the `α`-tile's own horizontal edge, together with the fact that
+the wall carries tiles beneath it. -/
+theorem serving_ne_pi_of_left_edge {N : ℕ} (D : Dissection N) (i j : Fin N) (V A : Plane)
+    (hij : i ≠ j)
+    (habove : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - V) 1)
+    (hnv : ¬ ∃ m, V = (D.tile i).pts m)
+    (mj : Fin 3) (hjV : (D.tile j).pts (mj + 1) = V) (hjA : (D.tile j).pts (mj + 2) = A)
+    (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
+    (hthird : ∀ W : Plane, W ∈ openSegment ℝ V A →
+      W ∈ interior D.target.carrier ∧ ∃ k : Fin N, k ≠ i ∧ k ≠ j ∧ W ∈ (D.tile k).carrier) :
+    (D.tile i).localAngle V ≠ Real.pi := by
+  classical
+  intro hpi
+  obtain ⟨k, hVseg, hedge⟩ := through_edge_data (D.tile i) V hnv hpi habove
+  obtain ⟨a, b, ha, hb, hab, hVeq⟩ := hVseg
+  have hb1 : b < 1 := by linarith
+  have hVP : V - (D.tile i).pts (k + 1)
+      = b • ((D.tile i).pts (k + 2) - (D.tile i).pts (k + 1)) := by
+    rw [← hVeq, smul_sub, show a = 1 - b by linarith, sub_smul, one_smul]
+    abel
+  have hVPy : (V - (D.tile i).pts (k + 1)) 1 = 0 := by
+    rw [hVP]; simp only [PiLp.smul_apply, smul_eq_mul, hedge]; ring
+  have hVPx : (V - (D.tile i).pts (k + 1)) 0
+      = b * (((D.tile i).pts (k + 2) - (D.tile i).pts (k + 1)) 0) := by
+    rw [hVP]; simp only [PiLp.smul_apply, smul_eq_mul]
+  have hd : ((D.tile i).pts (k + 2) - (D.tile i).pts (k + 1)) 0 ≠ 0 := by
+    intro hd0
+    have hw : (D.tile i).pts (k + 2) - (D.tile i).pts (k + 1) = 0 := by
+      have hn : ‖(D.tile i).pts (k + 2) - (D.tile i).pts (k + 1)‖ = 0 := by
+        rw [EuclideanSpace.norm_eq, Fin.sum_univ_two, hd0, hedge]; simp
+      exact norm_eq_zero.mp hn
+    rw [hw, smul_zero] at hVP
+    exact hnv ⟨k + 1, (sub_eq_zero.mp hVP)⟩
+  set d := ((D.tile i).pts (k + 2) - (D.tile i).pts (k + 1)) 0 with hddef
+  set v := (A - V) 0 with hvdef
+  set r := v / d with hrdef
+  have hrne : r ≠ 0 := div_ne_zero (ne_of_lt hAx) hd
+  have hrpos : 0 < |r| := abs_pos.mpr hrne
+  have hmpos : 0 < min b (1 - b) := lt_min hb (by linarith)
+  set t := min (1 / 2 : ℝ) (min b (1 - b) / (2 * |r|)) with htdef
+  have ht0 : 0 < t := lt_min (by norm_num) (by positivity)
+  have ht1 : t < 1 := lt_of_le_of_lt (min_le_left _ _) (by norm_num)
+  have htr : t * |r| ≤ min b (1 - b) / 2 := by
+    have h := min_le_right (1 / 2 : ℝ) (min b (1 - b) / (2 * |r|))
+    calc t * |r| ≤ (min b (1 - b) / (2 * |r|)) * |r| :=
+          mul_le_mul_of_nonneg_right h (le_of_lt hrpos)
+      _ = min b (1 - b) / 2 := by field_simp
+  have habs : |t * r| ≤ min b (1 - b) / 2 := by
+    rw [abs_mul, abs_of_pos ht0]; exact htr
+  have hlo : -(min b (1 - b) / 2) ≤ t * r := (abs_le.mp habs).1
+  have hhi : t * r ≤ min b (1 - b) / 2 := (abs_le.mp habs).2
+  have hminb : min b (1 - b) ≤ b := min_le_left _ _
+  have hmin1b : min b (1 - b) ≤ 1 - b := min_le_right _ _
+  set W := t • (A - V) + V with hWdef
+  have hWV : W - V = t • (A - V) := by rw [hWdef]; abel
+  have hWVy : (W - V) 1 = 0 := by
+    rw [hWV]; simp only [PiLp.smul_apply, smul_eq_mul, hAy]; ring
+  have hWVx : (W - V) 0 = t * v := by
+    rw [hWV]; simp only [PiLp.smul_apply, smul_eq_mul]; rw [← hvdef]
+  have hW1 : W ∈ openSegment ℝ V A :=
+    mem_openSegment_of_horizontal hAy hWVy ht0 ht1 (by rw [hWVx])
+  have hW2 : W ∈ openSegment ℝ ((D.tile i).pts (k + 1)) ((D.tile i).pts (k + 2)) := by
+    refine mem_openSegment_of_horizontal (t := b + t * r) hedge ?_ ?_ ?_ ?_
+    · have hs : (W - (D.tile i).pts (k + 1)) 1 = (W - V) 1 + (V - (D.tile i).pts (k + 1)) 1 := by
+        simp only [PiLp.sub_apply]; ring
+      rw [hs, hWVy, hVPy]; ring
+    · have hh : min b (1 - b) / 2 ≤ b / 2 := by linarith
+      linarith
+    · have hh : min b (1 - b) / 2 ≤ (1 - b) / 2 := by linarith
+      linarith
+    · have hsplit : (W - (D.tile i).pts (k + 1)) 0
+          = (W - V) 0 + (V - (D.tile i).pts (k + 1)) 0 := by
+        simp only [PiLp.sub_apply]; ring
+      rw [hsplit, hWVx, hVPx, ← hddef, hrdef]
+      field_simp
+      ring
+  obtain ⟨hWint, kk, hki, hkj, hWk⟩ := hthird W hW1
+  exact shared_edge_interior_excludes_third D i j kk W hij (Ne.symm hki) (Ne.symm hkj)
+    hWint k hW2 mj (by rw [hjV, hjA]; exact hW1) hWk
+
+/-- **Route 1's flank at `V`, with the straight-angle hypothesis removed.**  This is
+`route_one_flank_composed` with `hcard` (the `π`-count is one) and `hb` (the tile below carries the
+straight angle) — jointly `conj:advance`'s case (a) — replaced by two facts about the configuration
+that carry no open content: the `α`-tile `j` lays a horizontal edge from `V` leftward to `A`, and the
+wall stretch `VA` is interior to the target with a tile beneath it.
+
+The serving tile then has `V` as a vertex and a horizontal rightward edge there — the input the
+overshoot dichotomy consumes. -/
+theorem route_one_flank_no_straight {N : ℕ} (D : Dissection N) (i j : Fin N) (V A : Plane)
+    (hij : i ≠ j)
+    (hne0 : (D.tile i).localAngle V ≠ 0)
+    (hne2pi : (D.tile i).localAngle V ≠ 2 * Real.pi)
+    (habove : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - V) 1)
+    (hserve : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i).carrier ∧
+      0 < (q - V) 0 ∧ (q - V) 1 ≤ δ * ((q - V) 0))
+    (mj : Fin 3) (hjV : (D.tile j).pts (mj + 1) = V) (hjA : (D.tile j).pts (mj + 2) = A)
+    (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
+    (hthird : ∀ W : Plane, W ∈ openSegment ℝ V A →
+      W ∈ interior D.target.carrier ∧ ∃ k : Fin N, k ≠ i ∧ k ≠ j ∧ W ∈ (D.tile k).carrier) :
+    ∃ m : Fin 3, (D.tile i).pts m = V ∧
+      ((((D.tile i).pts (m + 1) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (m + 1) - V) 0) ∨
+       (((D.tile i).pts (m + 2) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (m + 2) - V) 0)) := by
+  classical
+  by_cases hnv : ∃ m, V = (D.tile i).pts m
+  · obtain ⟨m, hm⟩ := hnv
+    have hab' : ∀ q : Plane, q ∈ (D.tile i).carrier → 0 ≤ (q - (D.tile i).pts m) 1 := by
+      intro q hq; rw [← hm]; exact habove q hq
+    have hse' : ∀ δ : ℝ, 0 < δ → ∃ q : Plane, q ∈ (D.tile i).carrier ∧
+        0 < (q - (D.tile i).pts m) 0 ∧
+        (q - (D.tile i).pts m) 1 ≤ δ * ((q - (D.tile i).pts m) 0) := by
+      intro δ hδ; rw [← hm]; exact hserve δ hδ
+    refine ⟨m, hm.symm, ?_⟩
+    rcases escape_flank (D.tile i) m hab' hse' with ⟨hy, hx⟩ | ⟨hy, hx⟩
+    · exact Or.inl ⟨by rw [hm]; exact hy, by rw [hm]; exact hx⟩
+    · exact Or.inr ⟨by rw [hm]; exact hy, by rw [hm]; exact hx⟩
+  · exact absurd (serving_has_vertex D i V hne0 hne2pi
+      (serving_ne_pi_of_left_edge D i j V A hij habove hnv mj hjV hjA hAy hAx hthird))
+      (by rintro ⟨m, hm⟩; exact hnv ⟨m, hm.symm⟩)
 
 end Erdos634.RouteOne

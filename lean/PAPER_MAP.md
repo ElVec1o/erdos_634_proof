@@ -2584,3 +2584,47 @@ point `W` exhibited in both open edges (elementary horizontal-coordinate bookkee
 mathematics — the two segments share a leftward stretch from `V`), plus the configuration facts
 that the `α`-tile has its horizontal edge from `V` and that wall points carry a tile below. None of
 that is done here. `conj:advance` remains CONJECTURE; `GOAL_PRIMES.md` target 1 remains open.
+
+### RouteOneThroughEdge, third increment: case (a) removed from the flank step
+
+Three more theorems (`mem_openSegment_of_horizontal`, `serving_ne_pi_of_left_edge`,
+`route_one_flank_no_straight`), all axiom-clean, `Erdos634.All` clean, no `sorry`. Sixteen theorems
+in the file now.
+
+**The result.** `route_one_flank_no_straight` is `route_one_flank_composed` with `hcard` (the
+`π`-count is one) and `hb` (the tile below the line carries the straight angle) **deleted** — the two
+that are jointly `conj:advance`'s case (a). The serving tile still comes out with `V` as a vertex and
+a horizontal rightward edge there, which is what `overshoot_dichotomy` consumes.
+
+**How.** The `π` branch is not excluded but *pinned*: `through_edge_data` makes the through-edge
+horizontal (from `habove` alone), so it runs along the wall line and overlaps the `α`-tile's own
+horizontal edge `VA` on a stretch left of `V`. `mem_openSegment_of_horizontal` exhibits a point of
+that overlap explicitly. At that point two distinct tiles each have local angle `π`, which exhausts
+the `2π`, so no third tile may contain it (`two_through_excludes_mem`) — but the tiles below the wall
+do. `serving_ne_pi_of_left_edge` is that contradiction.
+
+**What replaced case (a).** (i) The `α`-tile lays a horizontal edge from `V` leftward to `A` — this
+is `rem:route1uniform`'s own geometry, algebra already VERIFIED (`Frontier.route1_spacings`,
+`.side_tile_third_vertex`). (ii) `hthird`: the open stretch `VA` is interior to the target and every
+point of it lies in a tile other than the two.
+
+**What is still open, precisely.**
+* `hthird` is a **hypothesis, not a theorem**. Deriving it is the routine covering argument (points
+  just below the wall are covered by `D.covers`; the covering tile is neither upper tile, by
+  `habove`; it contains the limit point by closedness, `mem_of_approach`). Standard dissection
+  bookkeeping — but **not done here**, and it must not be counted as done.
+* No `Dissection` witness is constructed for the configuration, so the vacuity check stands where
+  `VacCheck` leaves `EscapeData.ofWall`: the through-edge block is witnessed
+  (`through_edge_witness`), the wall configuration is not.
+* The attachment obligation of `rem:routeoneopen` (OPEN) is untouched; so are case (b), case (c),
+  the descent's remaining inputs, and all of `e ≥ 2`.
+* **`conj:advance` remains CONJECTURE. `e = 1` is not closed. The prime case is not advanced.**
+
+**Why it is nevertheless worth recording.** `prop:ninetools`' admission test is location-sensitivity:
+the crossing question asks *where* an edge lies, and every closed tool class computes something
+invariant under relocating edges. This step meets that test — the mechanism is that two horizontal
+edges through the same wall point exhaust the angle there — and it converts the obligation at this
+step from a crossing-question fact (where the edge below `V` lies) into a covering fact (that
+*something* lies below the wall), which is a change of kind, not merely of wording.
+
+| C `conj:advance` (case (a), flank step) | Route 1's flank at `V` needs no straight angle below the line | `RouteOne.route_one_flank_no_straight`, `.serving_ne_pi_of_left_edge`, `.shared_edge_interior_excludes_third`, `.through_edge_data` | VERIFIED (the flank step, modulo the `hthird` covering hypothesis; `conj:advance` itself remains CONJECTURE) |
