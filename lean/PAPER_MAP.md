@@ -3039,3 +3039,39 @@ run `code/census.sh` rather than quote either.
 added for it earlier today is a `PAPER_MAP` record, not a census entry. Same for the
 `conj:advance` sub-claim rows. `conj:advance` itself remains CONJECTURE, tagged as such in the
 companion.
+
+### Debt triage: the PROVED rows are already triaged; one buildable blocker identified
+
+Scanned the `\lab{PROVED}` statements whose subject matter this session's tools touch (straight
+angles, through-edges, walls, junctions) for the "unassembled bridge" pattern that produced earlier
+flips. **The pattern is exhausted at this depth** — the rows are already triaged with named
+blockers by previous sessions, and the triage is correct:
+
+* `lem:parity` — blocked on `lem:census`'s α-identity; the row already warns that upgrading without
+  it would repeat the ingredient-for-statement error.
+* `lem:census` — blocked on *the global corner-incidence double count*.
+* `lem:anglecalc` — clause (5) blocked on the deferred strip-and-column exposition; the row's own
+  conclusion, "no further attempt is worthwhile until the strip-and-column exposition itself is
+  built", stands.
+
+**One of these is buildable, and it is the only one.** `lem:census`'s blocker is a *finite* double
+count, not deferred content:
+
+> Every tile of a `CongruentDissection` has exactly one `α`-corner, one `β`-corner and one
+> `γ`-corner (the model's three angles being distinct). Summing over tiles gives `N` corners of each
+> type. Summing instead over the finitely many points that are vertices of some tile — the set
+> `⋃ i, range (D.tile i).pts`, finite because `N` is — gives `∑_v #{i : (D.tile i).localAngle v = α}`.
+> The two totals are equal. Those are the corner-balance equations that `OrderForcing.vertex_census`
+> (`OrderForcing.lean:765`) currently takes as **hypotheses**.
+
+Feasibility, checked: `PinPlumbing.localAngle_cases` already gives that a tile's local angle at a
+point is a corner angle exactly at its vertices; `CongruentAngles.congruent_corner_angles` gives that
+a congruent tile's corner angles are the model's three. No vertex-set or double-count infrastructure
+exists yet (grep: nothing named `vertexSet`/`allVertices`; `Finset.sum_comm` appears only
+incidentally). So this is new but bounded work — a `Finset` double count over `⋃ i, range pts`.
+
+**Closing it would flip `lem:census`, and `lem:parity` behind it — two census moves.** That meets
+`CLAUDE.md`'s test that machinery only counts when a named target falls. Recorded as the next
+build target.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
