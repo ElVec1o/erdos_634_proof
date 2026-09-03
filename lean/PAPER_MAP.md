@@ -1759,6 +1759,21 @@ exclusion invariant above is the real, usable output of the attempt and is recor
 next attempt does not re-derive it. What remains unbuilt: the actual `Finset.strongInduction`
 assembly, redone carefully with the corrected invariant.
 
+**The base-case contradiction, isolated and verified (2026-09-03, later still)**:
+`ChordFinsetBaseCase.not_mem_gap_of_far_precedes` — rebuilding the `Finset` wrapper attempt in small
+individually-verified pieces this time (per the previous attempt's own lesson): with the corrected
+exclusion invariant (`Wbtw P (S_k) p`, far endpoint), no point of an excluded straddler's own trace
+can lie in the current open gap `(p, Q)`. Proved via the same distance-additivity "sandwich" plus
+two antisymmetry collapses used throughout this session's chain lemmas. `lake build Erdos634.All`
+clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+This is exactly the base case (`T` empty) of the `Finset.strongInduction` the full wrapper needs.
+Verifying it standalone, in isolation from the rest of the construction, before assembling the
+induction is the deliberate fix for the previous attempt's failure mode. The induction step itself
+(extracting a minimal element via `Finset.exists_min_image`, applying `gap_free_of_minimal` and
+`chord_decomposition_cons`, and maintaining the invariant via `far_precedes_of_minimal` and
+`wbtw_global_of_local`) is the next piece, not yet assembled.
+
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
