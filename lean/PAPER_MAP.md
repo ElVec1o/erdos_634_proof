@@ -1866,6 +1866,20 @@ true for any genuine dissection but not otherwise available. Both are real, smal
 a second attempt file was discarded rather than committed with a `sorry` or a hand-waved
 `Classical.arbitrary` over a possibly-empty type.
 
+**The actual root cause, traced precisely**: `chord_decomposition_of_chain`'s own `hne` hypothesis
+(`∀i, i+1≤2n+1 → g i ≠ g(i+1)`) is *unconditionally* required, including at `i=0` when `n=0` — so it
+can never be invoked with `p = Q` (`g 0 = g 1`) regardless of how the wrapper is phrased; this isn't
+an artifact of the flat-sum or the existence framing, it's a real limitation of the already-committed
+general theorem. The correct fix is at the *use site*, not `chord_decomposition_of_chain` itself:
+when `T = ∅`, never call it at all — `chord_decomposition_of_gap` / `chord_decomposition_of_trivial_gap`
+already directly handle *both* `p ≠ Q` and `p = Q` without needing any chain machinery (this is
+exactly what `gap_free_of_all_excluded` plus `ChordFinsetDegenerate` were built for). Only the
+`T` nonempty branch should ever reach for `chord_decomposition_of_chain`, and it should build `g`
+by recursing down to a `T = ∅` base case handled the *first* way, not by asking
+`chord_decomposition_of_chain` to also cover it. The `Fin N` nonemptiness need disappears entirely
+under this fix, since a `tiles` function is only needed once a real straddler exists to place at
+index `0`.
+
 **Still not built**: sorting a `Finset` straddler set into the chain `chord_decomposition_of_chain`
 now consumes
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
