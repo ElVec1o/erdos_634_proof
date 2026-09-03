@@ -4204,3 +4204,32 @@ satisfiable but the satisfying instance is trivial, which is a different and wea
 
 Blocker on `thm:realize12`'s existence half updated: no longer "no union composer" (built) and no
 longer "`Dissection` is `Tri`-indexed" (closed) — it is now **the collar geometry itself**.
+
+### Non-degenerate witness for `unionRegion` (2026-09-04) — `Erdos634/RegionWitness.lean`
+
+The previous entry recorded, honestly, that `unionRegion`'s hypothesis was only shown satisfiable by
+the **empty** region. That gap is now closed with a real instance, built on an actual corpus
+dissection rather than a hand-made configuration:
+
+* `singleTile` — one triangle as a one-tile `RegionDissection`.
+* `tiles_disjoint` — **any** two distinct tiles of **any** `Dissection` satisfy `unionRegion`'s
+  hypothesis, straight from that dissection's own `interiors_disjoint`.
+* `tiles_interior_nonempty` — and both pieces have nonempty interior (`Tri.interior_nonempty`),
+  which is what makes the instance non-degenerate rather than a repeat of the `∅` check.
+* `glueTiles` — the resulting two-tile region dissection of the union.
+* `witness` — the concrete instance: tiles `0` and `1` of `Tiling44Bridge.dissection`, the real
+  `N = 44` congruent dissection, glued through `unionRegion`; `witness_pieces_nonempty` records
+  that both pieces have positive-area interior.
+
+Axiom-clean; `lake build Erdos634.All` clean at 3694 jobs.
+
+**What this settles and what it does not.** It settles that the region primitive operates on real
+geometry with two positive-area pieces — the `emptyRegion` caveat is discharged. It settles nothing
+about `thm:realize12`: the union of two tiles of a 44-tiling is not `Δ_{m+2}`, and no claim about
+the collar induction follows. The collar geometry — the parallelogram columns, the corner piece, and
+the disjointness and covering proofs — is still the **tile-placement** blocker, unchanged.
+
+Noted in passing for the next collar tick: `CollarCongruentM4.delta4CongruentDissection :
+CongruentDissection 176` already exists in the corpus as a concrete `m = 4` collar witness. Whether
+it can be re-expressed through `unionCongruentRegion` — and whether doing so exposes a reusable
+collar-step shape rather than a one-off — is the obvious next probe, and is **not** yet checked.

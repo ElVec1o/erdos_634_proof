@@ -1,3 +1,4 @@
+import Erdos634.RegionWitness
 import Erdos634.RegionDissection
 import Erdos634.EqSpecInt
 import Erdos634.VacCheck
