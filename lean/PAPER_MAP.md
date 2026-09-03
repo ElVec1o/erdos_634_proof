@@ -1132,11 +1132,28 @@ hypotheses (`Convex`, `IsCompact`) for a tile's own trace specifically. `lake bu
 clean, no `sorry`, `#print axioms` confirms only the standard three.
 
 This is real progress on the chord-trace bridge: any tile's intersection with any chord line is now
-provably a single honest segment (not merely assumed as a `ChordTrace` field). **Still needed for a
-real `ChordTrace`, not yet attempted**: the multi-tile bookkeeping across a *whole* chord — showing
-the tiles meeting it, in order, partition it with pairwise-disjoint interiors and lengths summing
-to the chord's own length (the "G3-style" exhaustion argument `HasEdgeChains`/`length_sum_of_cover`
-already do for wall segments, not yet redone for an internal chord where straddling is possible).
+provably a single honest segment (not merely assumed as a `ChordTrace` field).
+
+**Straddle-disjointness closed, 2026-09-03, later**: `straddle_trace_disjoint` — two *different*
+straddling tiles' traces on the same chord line meet in at most one point. This is the piece
+`Dissection.sameside_edges_subsingleton` (pre-existing) could not supply: that lemma needs *both*
+tiles to lie weakly on one side of the line, exactly false for a straddler. The new proof avoids
+any case-split on which pair of edges the line crosses: `Tri.straddle_midpoint_interior` shows that
+if `x ≠ y` were both common to two straddlers' traces, their midpoint would be interior to *both*
+tiles (a barycentric coordinate averages `x`'s and `y`'s values, both `≥ 0`, and can only average to
+`0` if it vanishes at both — forcing `x, y` onto the same edge line, which `Tri.straddle_no_edge_on_line`
+shows can't coincide with the chord line for a genuine straddler, so `eq_of_mem_line_of_agree`
+— two distinct lines meet in one point — forces `x = y`), contradicting `interiors_disjoint`
+directly. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard
+three for both new theorems.
+
+**What's left for a real `ChordTrace`, not yet attempted**: the multi-tile bookkeeping — showing
+the *sequence* of tiles meeting a chord, in order, partitions it with lengths summing exactly to the
+chord's own length. `contacts_cover_side`/`length_sum_of_cover` already supply the fully general
+covering and summation machinery (confirmed general-purpose, not restricted to supporting lines);
+what remains is assembling them with the segment (`isSegment_of_convex_inter_hyperplane`) and
+disjointness (`straddle_trace_disjoint` for straddle-straddle, `sameside_edges_subsingleton` for
+flush-flush) facts now in hand, for the *mixed* flush-straddle case a single chord can present.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 

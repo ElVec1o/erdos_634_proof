@@ -25,10 +25,22 @@ never a more complicated shape. Proved by parametrizing the line through a nonze
 and compactness back along `t ↦ x0 + t•v` to a convex compact — hence closed-interval — subset of
 `ℝ`, and pushing the interval's endpoints back through the parametrization.
 
-Still needed for a real `ChordTrace`: applying `sign_trichotomy` to get the straddling tile's trace
-*as* a convex compact subset of the line (its intersection with `{f=c}`, itself compact and convex
-by the same argument `ChordTraceReal`'s namesake convexity lemma below gives, for any tile), then
-the multi-tile covering/length-additivity bookkeeping across a whole chord — not yet attempted.
+`straddle_trace_disjoint` is the third piece: two *different* straddling tiles' traces on the same
+line meet in at most one point. This was the genuinely open half of the disjointness question —
+`Dissection.sameside_edges_subsingleton` (pre-existing) already handles flush-flush disjointness,
+but only when both tiles lie weakly on one side of the line, which is false for a straddler. The
+proof needs no case-split on which pair of edges the line crosses: if `x ≠ y` were both common to
+two straddlers' traces, `Tri.straddle_midpoint_interior` shows their midpoint is interior to *both*
+tiles (every barycentric coordinate is the average of its values at `x` and `y`, both `≥ 0`, and a
+coordinate can only average to `0` if it vanishes at both — which would put `x, y` on the same edge
+line, and `Tri.straddle_no_edge_on_line` rules out that edge lying on the chord line, so the two
+lines meet in the single point forced by `eq_of_mem_line_of_agree`, giving `x = y`, contradiction).
+This directly contradicts `Dissection.interiors_disjoint`.
+
+Still needed for a real `ChordTrace`: the multi-tile covering/length-additivity bookkeeping across
+a whole chord (`contacts_cover_side`/`length_sum_of_cover` already supply the fully general
+covering and summation machinery; what remains is combining them with the segment/disjointness
+facts here for the mixed flush-straddle case) — not yet attempted.
 
 Axiom-clean; no `sorry`.
 -/
@@ -231,5 +243,154 @@ theorem isSegment_of_convex_inter_hyperplane
       have hgoal : a • (x0 + sInf S' • v) + b • (x0 + sSup S' • v)
           = (a + b) • x0 + (a * sInf S' + b * sSup S') • v := by module
       rw [hgoal, hab1, one_smul]
+
+theorem Tri.straddle_no_edge_on_line (T : Tri) (f : Plane →ₗ[ℝ] ℝ) (c : ℝ)
+    (hlo : ∃ i, f (T.pts i) < c) (hhi : ∃ j, c < f (T.pts j)) (k : Fin 3) :
+    f (T.pts (k + 1)) ≠ c ∨ f (T.pts (k + 2)) ≠ c := by
+  by_contra h
+  push Not at h
+  obtain ⟨h1, h2⟩ := h
+  obtain ⟨i, hi⟩ := hlo
+  obtain ⟨j, hj⟩ := hhi
+  have hcases : ∀ k m : Fin 3, m = k ∨ m = k + 1 ∨ m = k + 2 := by decide
+  have hcases' := hcases k
+  rcases lt_trichotomy (f (T.pts k)) c with hk | hk | hk
+  · have hall : ∀ m, f (T.pts m) ≤ c := by
+      intro m; rcases hcases' m with rfl | rfl | rfl
+      · exact hk.le
+      · exact h1.le
+      · exact h2.le
+    exact absurd (hall j) (not_le.mpr hj)
+  · have hall : ∀ m, f (T.pts m) ≤ c := by
+      intro m; rcases hcases' m with rfl | rfl | rfl
+      · exact hk.le
+      · exact h1.le
+      · exact h2.le
+    exact absurd (hall j) (not_le.mpr hj)
+  · have hall : ∀ m, c ≤ f (T.pts m) := by
+      intro m; rcases hcases' m with rfl | rfl | rfl
+      · exact hk.le
+      · exact h1.ge
+      · exact h2.ge
+    exact absurd (hall i) (not_le.mpr hi)
+
+/-- Positive barycentric coordinates put a point in the interior. -/
+theorem Tri.mem_interior_of_pos (T : Tri) {x : Plane} (hpos : ∀ i, 0 < T.basis.coord i x) :
+    x ∈ interior T.carrier := by
+  obtain ⟨r, hr, hsub⟩ := T.ball_subset_of_pos hpos
+  have hxball : x ∈ Metric.ball x r := Metric.mem_ball_self hr
+  have hballopen : IsOpen (Metric.ball x r) := Metric.isOpen_ball
+  exact interior_mono hsub (hballopen.interior_eq.symm ▸ hxball)
+
+/-- **A vanishing affine functional at two distinct points is constant on their whole line.**
+`ker f` is `1`-dimensional whenever `f.linear ≠ 0`; any point sharing `f`'s value with two distinct
+points `x, y` on that level set lies on the line through them (parametrized via `ker f`'s
+generator), and an affine map is determined on a line by two of its values. -/
+theorem eq_of_mem_line_of_agree {g : Plane →ᵃ[ℝ] ℝ} (hg : g.linear ≠ 0)
+    {x y z : Plane} (hxy : x ≠ y) (hgx : g x = g y) (hgz : g z = g x)
+    {f : Plane →ᵃ[ℝ] ℝ} (hfx : f x = f y) : f z = f x := by
+  have hker1 := ChordTraceReal.ker_finrank_one g.linear hg
+  have hpos : 0 < Module.finrank ℝ (LinearMap.ker g.linear) := by omega
+  obtain ⟨v0, hv0⟩ := Module.finrank_pos_iff_exists_ne_zero.mp hpos
+  set v : Plane := v0.1 with hvdef
+  have hspan : ∀ w : LinearMap.ker g.linear, ∃ t : ℝ, t • v0 = w :=
+    (finrank_eq_one_iff_of_nonzero' v0 hv0).mp hker1
+  have hyxker : y -ᵥ x ∈ LinearMap.ker g.linear := by
+    show g.linear (y -ᵥ x) = 0
+    rw [AffineMap.linearMap_vsub]
+    simp [hgx]
+  have hzxker : z -ᵥ x ∈ LinearMap.ker g.linear := by
+    show g.linear (z -ᵥ x) = 0
+    rw [AffineMap.linearMap_vsub]
+    simp [hgz]
+  obtain ⟨ty, hty⟩ := hspan ⟨y -ᵥ x, hyxker⟩
+  obtain ⟨tz, htz⟩ := hspan ⟨z -ᵥ x, hzxker⟩
+  have hty' : y -ᵥ x = ty • v := congrArg Subtype.val hty |>.symm
+  have htz' : z -ᵥ x = tz • v := congrArg Subtype.val htz |>.symm
+  have htyne : ty ≠ 0 := by
+    intro h; apply hxy
+    have : y -ᵥ x = 0 := by rw [hty', h, zero_smul]
+    exact (vsub_eq_zero_iff_eq.mp this).symm ▸ rfl
+  have hz_eq : z = AffineMap.lineMap x y (tz / ty) := by
+    rw [AffineMap.lineMap_apply]
+    have : (tz / ty) • (y -ᵥ x) = z -ᵥ x := by
+      rw [hty', htz', smul_smul]
+      congr 1
+      field_simp
+    rw [this]
+    exact (vsub_vadd z x).symm
+  rw [hz_eq, f.apply_lineMap, hfx]
+  simp
+
+/-- **The midpoint of two distinct points on a straddler's chord trace is interior.** -/
+theorem Tri.straddle_midpoint_interior (T : Tri) (f : Plane →ₗ[ℝ] ℝ) (c : ℝ)
+    (hlo : ∃ i, f (T.pts i) < c) (hhi : ∃ j, c < f (T.pts j))
+    {x y : Plane} (hx : x ∈ T.carrier) (hfx : f x = c) (hy : y ∈ T.carrier) (hfy : f y = c)
+    (hxy : x ≠ y) :
+    midpoint ℝ x y ∈ interior T.carrier := by
+  apply Tri.mem_interior_of_pos T
+  intro k
+  have hxk : 0 ≤ T.basis.coord k x := by
+    have h := hx; rw [T.carrier_eq_nonneg_coord] at h; exact h k
+  have hyk : 0 ≤ T.basis.coord k y := by
+    have h := hy; rw [T.carrier_eq_nonneg_coord] at h; exact h k
+  have havg : (T.basis.coord k) (midpoint ℝ x y)
+      = midpoint ℝ (T.basis.coord k x) (T.basis.coord k y) := AffineMap.map_midpoint _ x y
+  rw [havg]
+  rcases eq_or_lt_of_le hxk with hxk0 | hxk0
+  · rcases eq_or_lt_of_le hyk with hyk0 | hyk0
+    · exfalso
+      have hfline : (T.basis.coord k : Plane →ᵃ[ℝ] ℝ).linear ≠ 0 := T.coord_linear_ne_zero k
+      have hgx : (T.basis.coord k) x = (T.basis.coord k) y := by rw [← hxk0, ← hyk0]
+      have hffx : f.toAffineMap x = f.toAffineMap y := hfx.trans hfy.symm
+      have h1 := Tri.straddle_no_edge_on_line T f c hlo hhi k
+      have hk1ne : (k : Fin 3) ≠ k + 1 := by fin_cases k <;> decide
+      have hk2ne : (k : Fin 3) ≠ k + 2 := by fin_cases k <;> decide
+      have hpts : ∀ m : Fin 3, T.pts m = (T.basis : Fin 3 → Plane) m := fun _ => rfl
+      have hz1 : (T.basis.coord k) (T.pts (k + 1)) = (T.basis.coord k) x := by
+        rw [hpts, ← hxk0]
+        exact T.basis.coord_apply_ne hk1ne
+      have hz2 : (T.basis.coord k) (T.pts (k + 2)) = (T.basis.coord k) x := by
+        rw [hpts, ← hxk0]
+        exact T.basis.coord_apply_ne hk2ne
+      have hres1 : f.toAffineMap (T.pts (k + 1)) = f.toAffineMap x :=
+        eq_of_mem_line_of_agree hfline hxy hgx hz1 (f := f.toAffineMap) hffx
+      have hres2 : f.toAffineMap (T.pts (k + 2)) = f.toAffineMap x :=
+        eq_of_mem_line_of_agree hfline hxy hgx hz2 (f := f.toAffineMap) hffx
+      simp only [LinearMap.coe_toAffineMap] at hres1 hres2
+      rw [hfx] at hres1 hres2
+      rcases h1 with h | h
+      · exact h hres1
+      · exact h hres2
+    · rw [midpoint_eq_smul_add, smul_eq_mul]
+      have hsum : 0 < T.basis.coord k x + T.basis.coord k y := by linarith
+      have h2 : (0:ℝ) < ⅟(2:ℝ) := by norm_num
+      exact mul_pos h2 hsum
+  · rw [midpoint_eq_smul_add, smul_eq_mul]
+    have hsum : 0 < T.basis.coord k x + T.basis.coord k y := by linarith
+    have h2 : (0:ℝ) < ⅟(2:ℝ) := by norm_num
+    exact mul_pos h2 hsum
+
+/-- **Two straddling tiles' traces on the same line meet in at most one point.** If `x ≠ y` were
+both common to two different straddlers' traces, their midpoint would be interior to *both* tiles
+(`straddle_midpoint_interior`, applied to each), contradicting `D.interiors_disjoint`. -/
+theorem straddle_trace_disjoint {N : ℕ} (D : Erdos634.Geometry.Dissection N)
+    (f : Plane →ₗ[ℝ] ℝ) (c : ℝ) {i j : Fin N} (hij : i ≠ j)
+    (hloi : ∃ a, f ((D.tile i).pts a) < c) (hhii : ∃ b, c < f ((D.tile i).pts b))
+    (hloj : ∃ a, f ((D.tile j).pts a) < c) (hhij : ∃ b, c < f ((D.tile j).pts b)) :
+    (((D.tile i).carrier ∩ {x | f x = c}) ∩ ((D.tile j).carrier ∩ {x | f x = c})).Subsingleton := by
+  intro x hx y hy
+  by_contra hxy
+  have hxi : x ∈ (D.tile i).carrier := hx.1.1
+  have hfxi : f x = c := hx.1.2
+  have hyi : y ∈ (D.tile i).carrier := hy.1.1
+  have hfyi : f y = c := hy.1.2
+  have hmi := Tri.straddle_midpoint_interior (D.tile i) f c hloi hhii hxi hfxi hyi hfyi hxy
+  have hxj : x ∈ (D.tile j).carrier := hx.2.1
+  have hfxj : f x = c := hx.2.2
+  have hyj : y ∈ (D.tile j).carrier := hy.2.1
+  have hfyj : f y = c := hy.2.2
+  have hmj := Tri.straddle_midpoint_interior (D.tile j) f c hloj hhij hxj hfxj hyj hfyj hxy
+  exact (D.interiors_disjoint hij).le_bot ⟨hmi, hmj⟩
 
 end Erdos634.ChordTraceReal
