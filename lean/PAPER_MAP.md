@@ -3802,3 +3802,27 @@ Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, 
 (The 126 above counts `PAPER_MAP` rows mentioning PROVED, which exceeds the 116 `\lab{}`-tagged
 statements — rows include untagged remarks and duplicate cross-references. The census figure is the
 `\lab{}` count and remains the authoritative one.)
+
+### `prop:eqspecint`'s blocker split: one half already present, the other has no Lean at all
+
+The row's blocker reads "the integrality is what the tiling supplies, and it needs the area ratio and
+edge counts at `Dissection` level". Checking the two halves against the corpus:
+
+* **area ratio — already available.** `CongruentArea.congruentDissection_volume_target` and
+  `Dissection.volume_target_of_congruent` give `|T| = N · |t|` for a real dissection by congruent
+  tiles. The proof's `st = 9S²/(XY) = 9Nab/(3ab) = 3N` and `4ab = 4S²/N` steps consume exactly that.
+  This half of the blocker is stale.
+* **edge counts — blocked, and harder than the row suggests.** The proof needs `s = M_α`,
+  `t = M_β` to *be* the two invariant counts, and `s ≡ t ≡ N (mod 2)` from `cor:int`. That row cites
+  **`none`** — no Lean declaration exists — and is itself blocked on `lem:cancel`/`lem:value`, the
+  Conway–Lagarias flux development, which is unbuilt.
+
+So `prop:eqspecint` is not "needs two things at `Dissection` level"; it is "needs one thing that
+already exists, and one that requires an entire unbuilt invariant layer". Recorded so the row is not
+re-picked as tractable. Note also that this proposition lives in the **equilateral** branch, not the
+base-`β` one, so it is debt-clearing rather than `/goal` work either way.
+
+No Lean changes this tick — the finding is that the tractable-looking half needed nothing and the
+other half needs a layer nobody has started.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
