@@ -1165,6 +1165,24 @@ the one-sidedness above, with the segment (`isSegment_of_convex_inter_hyperplane
 (`trace_disjoint_of_straddle` for any straddle pair, `sameside_edges_subsingleton` for same-side
 flush pairs) facts now in hand.
 
+**The straddle-total half closed, 2026-09-03, later still (`ChordStraddleTotal.lean`, new)**: the
+one-sided-convention subtlety above is specifically a *flush-flush* problem — it never arises among
+straddling tiles, since `trace_disjoint_of_straddle` already makes any two tiles pairwise disjoint
+(in the measure sense) the moment *either* one straddles, with no side convention needed at all.
+`straddle_total_eq_sum` makes this precise and general, for *any* `Dissection` and *any* line: the
+one-dimensional Hausdorff measure of the union of every straddling tile's trace equals the sum of
+their individual lengths — via `MeasureTheory.measure_biUnion_finset₀` fed by
+`hausdorffMeasure_one_subsingleton_eq_zero` (a subsingleton set has measure zero, since `NoAtoms`
+holds for `μH[d]` at `d > 0`) applied pairwise. This is the general, member-independent form of
+exactly the "straddle total" half of `prop:chorddecomp`'s own bookkeeping (that proposition's other
+half, the flush total, is where the one-sided convention is actually needed — still open).
+`lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+**Not yet attempted, and now the last piece**: the flush total, which needs the one-sided
+convention (`Dissection.dirSet`/`horient`-style) to avoid double-counting a shared edge between
+opposite-side flush neighbors, plus showing flush ∪ straddle actually exhausts the chord (via
+`contacts_cover_side`) to get the *total* chord length as flush total + straddle total.
+
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
 | Atom | Statement | Lean | Label |
