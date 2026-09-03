@@ -1350,12 +1350,19 @@ gap totals (`chord_decomposition_of_gap`, applied twice) plus the straddler's ow
 glued via `hausdorff_segment_split` applied twice and `ring`. `lake build Erdos634.All` clean, no
 `sorry`, `#print axioms` confirms only the standard three.
 
-The two gaps' "no tile straddles inside" conditions are taken directly as hypotheses here (matching
-`chord_decomposition_of_gap`'s own style) rather than derived from "no *other* tile straddles
-anywhere" — that reduction needs a genuine small lemma not yet built: distance from `p` is monotone
-along the ordered chain `p → r → s → q` (a consequence of collinearity plus the two `Wbtw` facts),
-which would let a point of an open gap's interior membership be excluded from `[r, s]` (the only
-straddler's own trace) automatically. Recorded precisely as the next concrete sub-step.
+The two gaps' "no tile straddles inside" conditions were taken directly as hypotheses there
+(matching `chord_decomposition_of_gap`'s own style) rather than derived from "no *other* tile
+straddles anywhere" — that reduction needed one small lemma, now built:
+`ChordBetweennessDisjoint.openSegment_disjoint_segment_of_wbtw` — if `r` is weakly between `p` and
+`s` (`p ≠ r`), the open segment `(p, r)` and the closed segment `[r, s]` are disjoint. Proved via
+distance additivity along betweenness chains (`dist_add_dist_eq_iff`, the same fact
+`hausdorff_segment_split` uses, plus `Wbtw.trans_right_left` for the transitivity step): a point of
+`(p, r)` is strictly closer to `p` than `r` is, while a point of `[r, s]` is weakly farther from `p`
+than `r` is (since `r` lies between `p` and that point too, by transitivity). `lake build
+Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three. With this,
+`chord_decomposition_one_straddler`'s two `hgap` hypotheses (currently taken directly) can be
+derived from "no other tile straddles" plus the betweenness order in a follow-up pass — not yet
+wired together, but the blocking fact no longer needs deriving.
 
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
