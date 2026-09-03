@@ -2809,3 +2809,27 @@ recorded in `CLAUDE.md`. Nothing in this session touches it.
 not advanced.**
 
 | C `rem:route1uniform` (the `[V,E]` question) | what covers `[V,E]`: length `a` (junction, march advances) or longer (`E` interior, branch dies) | `RouteOne.VE_dichotomy_of_flank`, `.VE_dichotomy`, `.edge_length_mem_model` | VERIFIED (given the flank and the model's sides; the attachment remains OPEN) |
+
+### RouteOneThroughEdge, eighth increment: the straight-angle count is a theorem, not an assumption
+
+`pi_count_le_one`, `pi_count_eq_one`; 38 declarations in the file, all axiom-clean, `Erdos634.All`
+clean.
+
+`two_through_excludes_mem` is not route-1-specific. Read as a bound it says: **at an interior point
+where some tile sits without a straight angle, at most one tile has one** — two would already exhaust
+the `2π` and leave no room for that tile. `pi_count_eq_one` adds a tile that does carry one and gets
+the count exactly.
+
+This is the `hcard` hypothesis of `route_one_flank_composed` and the `s = 1` conclusion of
+`alpha_wall_figure` — obtained here **geometrically from the angle sum, with no appeal to the
+irrationality of `α` and no vertex-figure classification**. Consequence for the record: of the pair
+`hcard`/`hb` that together made up `conj:advance`'s case (a) in the old chain, only `hb` — a tile
+below actually carrying the straight angle — was ever an independent assumption; `hcard` follows
+from it plus any tile at the point without a straight angle, which in the configuration is the
+`α`-tile. (The new chain needs neither, so this is a statement about the old one.)
+
+Reusable beyond route 1: any vertex-figure argument in the corpus that assumes `s ≤ 1` at a junction
+can now cite `pi_count_le_one` instead.
+
+**No label moves. `conj:advance` remains CONJECTURE; the prime case is not advanced.** The
+attachment (`rem:routeoneopen`, OPEN, blocked on the tile-placement layer) is untouched.

@@ -1012,4 +1012,42 @@ theorem VE_dichotomy_of_flank {N : ℕ} (D : CongruentDissection N) (i : Fin N) 
     rw [hmodel, hV, hW2, hd] at hmem
     exact overshoot_dichotomy f ((W - V) 0) hf (by simpa using hmem)
 
+/-! ## A general consequence: the straight-angle count at a junction
+
+`two_through_excludes_mem` is not route-1-specific.  Read as a bound it says: at an interior point
+where some tile sits *without* a straight angle, at most one tile can have one.  The figure
+arguments in the corpus assume that bound (`route_one_flank_composed`'s `hcard`, the `s = 1` of
+`alpha_wall_figure`); here it is a theorem, proved geometrically from the angle sum, with no appeal
+to the irrationality of `α` and no vertex-figure classification. -/
+
+/-- **At most one straight angle at a junction.**  If some tile contains the interior point `p` and
+does *not* have a straight angle there, then at most one tile has a straight angle at `p`: two would
+already exhaust the `2π` and leave no room for that tile. -/
+theorem pi_count_le_one {N : ℕ} (D : Dissection N) {p : Plane}
+    (hp : p ∈ interior D.target.carrier) (k : Fin N) (hk : p ∈ (D.tile k).carrier)
+    (hknot : (D.tile k).localAngle p ≠ Real.pi) :
+    ({i | (D.tile i).localAngle p = Real.pi} : Finset (Fin N)).card ≤ 1 := by
+  classical
+  by_contra hc
+  push_neg at hc
+  obtain ⟨i, hi, j, hj, hij⟩ := Finset.one_lt_card.mp hc
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi hj
+  have hik : i ≠ k := fun h => hknot (h ▸ hi)
+  have hjk : j ≠ k := fun h => hknot (h ▸ hj)
+  exact two_through_excludes_mem D hp i j k hij hik hjk hi hj hk
+
+/-- **The `π`-count is exactly one**, given a tile that carries the straight angle and a tile that
+does not.  This is `route_one_flank_composed`'s `hcard` — so of the pair `hcard`/`hb` that made up
+`conj:advance`'s case (a) in the old chain, only `hb` was ever an independent assumption. -/
+theorem pi_count_eq_one {N : ℕ} (D : Dissection N) {p : Plane}
+    (hp : p ∈ interior D.target.carrier) (b k : Fin N)
+    (hb : (D.tile b).localAngle p = Real.pi)
+    (hk : p ∈ (D.tile k).carrier) (hknot : (D.tile k).localAngle p ≠ Real.pi) :
+    ({i | (D.tile i).localAngle p = Real.pi} : Finset (Fin N)).card = 1 := by
+  classical
+  have hle := pi_count_le_one D hp k hk hknot
+  have hpos : 1 ≤ ({i | (D.tile i).localAngle p = Real.pi} : Finset (Fin N)).card :=
+    Finset.card_pos.mpr ⟨b, by simp [hb]⟩
+  omega
+
 end Erdos634.RouteOne
