@@ -2979,3 +2979,37 @@ for that step. Neither is a crossing question.
 
 This is the first genuine crack in the attachment. `conj:advance` remains CONJECTURE and no label
 moves — but the blocker named two entries ago was overstated and is retracted here.
+
+### The partner assembly hits the wall again — at `hwhole`. "Three routes, one wall" confirmed.
+
+Checked `PinPlumbing.wall_run_equation`, the measure-to-count step named in the previous entry. It
+does exactly what is wanted — `∃ x y z : ℕ, x·A + y·B + z·C = edist u₁ u₂` in the model's three edge
+lengths — but it carries a hypothesis the previous entry did not account for:
+
+> `hwhole : ∀ e ∈ D.lineChain f c, (D.tile e.1).edge e.2 ⊆ segment ℝ u₁ u₂`
+
+**every chain edge lies wholly inside the wall segment.** Without it the summands in
+`edge_two_sided`'s conclusion are partial intersections, not whole edge lengths, and no semigroup
+identity follows.
+
+For the corner tile's `b`-edge, `hwhole` says: no chain edge overruns either endpoint. One endpoint
+lies on the target's boundary, where an overrunning edge would leave the target — killable by
+containment, the mechanism `prop:doublec`(iv) uses. **The other endpoint is interior, and excluding
+an overrun there is the crossing question**, verbatim.
+
+**So the previous entry was too optimistic, and this corrects it.** `edge_two_sided` genuinely
+discharges `hwall` for a tile's own edge — that part stands. But the step from its measure identity
+to an edge *count* needs `hwhole`, and `hwhole` at the interior end is exactly what
+`rem:n1gapexact` calls the one-end-anchored pinning question: *the base end cannot be overrun,
+because the continuation would leave the target, while the interior end is not blocked by anything
+already forced.*
+
+**Honest consequence for this session's work.** Route 1's chain now answers the `[V,E]` instance of
+the crossing question without assuming a straight angle. Attaching it requires answering a
+*different* instance — no overrun at the interior end of the corner tile's `b`-edge. The session did
+not get around the wall; it **moved which instance you must answer**, from the one at `V` to the one
+at the cascade's first `b`-edge. `rem:n1gapexact`'s summary — "Three routes, one wall" — is
+confirmed, not refuted, by this work.
+
+That is the honest terminal position for this line. `conj:advance` remains CONJECTURE, `e = 1` is not
+closed, and the prime case is not advanced.
