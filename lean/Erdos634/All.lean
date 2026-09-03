@@ -32,6 +32,7 @@ import Erdos634.CongruentTileEdges
 import Erdos634.WallDir
 import Erdos634.WallThird
 import Erdos634.BaseWalkGeneral
+import Erdos634.BaseDecomposition
 import Erdos634.EdgeType
 import Erdos634.AEdgeReading
 import Erdos634.SideWalk
