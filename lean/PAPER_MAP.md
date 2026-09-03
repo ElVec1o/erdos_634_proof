@@ -4310,3 +4310,20 @@ Recording as a second open TENSION alongside `N=47`'s (which was resolved in fav
 computation, 2026-09-03). This one has **not** been resolved either way — the paper's numbers might
 be a hand-computation slip, or my adjacency definition might still miss something paper-side that
 neither test above found; both remain open.
+
+### Bounded re-scan for stale blockers on cited PROVED rows (2026-09-04) — one checked, confirmed accurate
+
+Following up on `lem:offsets`'s stale-blocker find, grepped cited PROVED rows for the same failure
+shape ("no Lean file treats X" / "no Lean development"). Two hits were already accounted for in the
+`none`-citation scan (`rem:nilptower`, `rem:spectral`). The one new candidate, **`lem:solitary`**
+("the crossing kill and solitude of branches", cites `crossing_tangency`, blocker "no Lean
+development of the ladder geometry") — **checked and confirmed accurate**, not stale. Its statement
+is about ladders, T-junctions, transversal-edge crossings and branch-mate counting — the march
+combinatorics' own vocabulary, not tile placement — and nothing built this session (`RegionDissection`,
+`EqSpecInt`, `OffsetForcing`'s citation fix) touches that machinery. No flip.
+
+Bounded effort spent on the `rem:spectral` dual-graph mismatch from last tick: no missing/extra edge
+found by hand beyond what was already checked (strict full-edge and T-junction-inclusive adjacency,
+both computed). Recording it as **unresolved** rather than continuing to search — the reproducible
+script stands, and finding the exact source of a hand-count slip in past work is not obviously worth
+further ticks against the `/goal`.
