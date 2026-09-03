@@ -3238,3 +3238,27 @@ is not done. Until it is, no row moves.
 Ten declarations in `CornerAnglePerm.lean`, axiom-clean, `Erdos634.All` clean.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### The threading done: `junction_dichotomy` for a real dissection, `hvals` discharged
+
+Two theorems (`CornerAnglePerm.lean`, twelve declarations, axiom-clean, `Erdos634.All` clean).
+
+* `frontier_junction_is_vertex` — a frontier point carrying **no** straight angle is a vertex of some
+  tile. A tile containing it has nonzero local angle there (`MarchFlank.localAngle_ne_zero_of_mem`);
+  the `π` branch is excluded by hypothesis, the `0` branch by containment, and the `2π` branch
+  because a tile's interior lies in the target's interior, which misses the frontier.
+* **`congruentDissection_junction_dichotomy`** — `MarchRun.junction_dichotomy` for a real
+  `CongruentDissection`, with `hvals` **derived rather than assumed**: the point is a tile vertex by
+  the above, and `congruentDissection_localAngle_mem_at_corner` then gives the `2π`-free membership
+  in the exact shape the lemma takes.
+
+The `rem:marchobl` M-i row records this `hvals` as "suppliable for a real dissection though not yet
+threaded into those call sites". **It is now threaded** for `junction_dichotomy`.
+
+**What has not changed, and why no label moves.** The dichotomy still carries `hns` — that the
+`π`-count at the junction is `0`, i.e. *no tile has a straight angle there*. That is not
+bookkeeping: it is the crossing question at that point, and the earlier scan in this session already
+identified `card = 0` hypotheses as exactly that. So `rem:marchobl`'s M-i row keeps its status; what
+has been removed is one of its two unproved inputs, not both.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.

@@ -3,6 +3,7 @@ import Erdos634.PinPlumbing
 import Erdos634.VertexFigureReal
 import Erdos634.RouteOne
 import Erdos634.TileAt
+import Erdos634.MarchRun
 import Mathlib.Analysis.Normed.Affine.MazurUlam
 
 /-!
@@ -293,5 +294,73 @@ theorem congruentDissection_localAngle_mem_at_corner {N : ℕ} (D : CongruentDis
   · exact Or.inr (Or.inr (Or.inr (Or.inl h)))
   · exact absurd h h2pi
   · exact Or.inr (Or.inr (Or.inr (Or.inr h)))
+
+/-- **A frontier junction with no straight angle is a tile vertex.**  If no tile presents `π` at a
+frontier point, then some tile has that point as one of its own vertices: a tile containing it has
+nonzero local angle there, and the `2π` and `π` branches are excluded — `2π` because a tile's
+interior lies in the target's interior, which misses the frontier. -/
+theorem frontier_junction_is_vertex {N : ℕ} (D : Dissection N) {v : Plane}
+    (hv : v ∈ frontier D.target.carrier)
+    (hns : ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 0) :
+    ∃ (j : Fin N) (m : Fin 3), (D.tile j).pts m = v := by
+  classical
+  have hvt : v ∈ D.target.carrier := (D.target.isCompact.isClosed.closure_eq ▸ hv.1)
+  obtain ⟨j, hj⟩ := Set.mem_iUnion.mp (show v ∈ ⋃ i, (D.tile i).carrier by rw [D.covers]; exact hvt)
+  rcases Erdos634.PinPlumbing.localAngle_cases (D.tile j) v with
+    ⟨m, hm, -⟩ | h2pi | hpi | h0
+  · exact ⟨j, m, hm.symm⟩
+  · exfalso
+    have hint : v ∈ interior (D.tile j).carrier := by
+      rw [Erdos634.Geometry.Tri.localAngle] at h2pi
+      split at h2pi
+      · rename_i hvx
+        have hle := EuclideanGeometry.angle_le_pi ((D.tile j).pts (hvx.choose + 1))
+          ((D.tile j).pts hvx.choose) ((D.tile j).pts (hvx.choose + 2))
+        rw [Erdos634.Geometry.cornerAngle] at h2pi
+        rw [h2pi] at hle; linarith [Real.pi_pos]
+      · split at h2pi
+        · rename_i hpos
+          exact (D.tile j).mem_interior_iff_coord_pos v |>.mpr hpos
+        · split at h2pi
+          · have := Real.pi_pos; linarith
+          · have := Real.pi_pos; linarith
+    exact hv.2 (interior_mono (tile_subset_target D j) hint)
+  · exfalso
+    have : j ∈ ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)) := by simp [hpi]
+    rw [Finset.card_eq_zero] at hns
+    simp [hns] at this
+  · exact absurd h0 (Erdos634.MarchFlank.localAngle_ne_zero_of_mem _ hj)
+
+/-- **The junction dichotomy for a real congruent dissection**, with `hvals` discharged.  At a
+frontier point that is not a target corner and carries no straight angle, the figure is exactly
+`{3α, 2β}` or `{α, β, γ}`.
+
+`MarchRun.junction_dichotomy` proves this from `hvals`, which no caller had ever supplied for a real
+dissection (the `rem:marchobl` M-i row records it as still carried). Here it is supplied:
+`frontier_junction_is_vertex` makes the point a tile vertex, and
+`congruentDissection_localAngle_mem_at_corner` then gives the `2π`-free membership. -/
+theorem congruentDissection_junction_dichotomy {N : ℕ} (D : CongruentDissection N) {α β γ : ℝ}
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    {v : Plane} (hv : v ∈ frontier D.target.carrier) (hnv : v ∉ Set.range D.target.pts)
+    (hns : ({i | (D.tile i).localAngle v = Real.pi} : Finset (Fin N)).card = 0) :
+    (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 3 ∧
+     ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 2 ∧
+     ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 0)
+    ∨
+    (({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card = 1 ∧
+     ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card = 1 ∧
+     ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card = 1) := by
+  classical
+  obtain ⟨j, m, hjm⟩ := frontier_junction_is_vertex D.toDissection hv hns
+  exact Erdos634.MarchRun.junction_dichotomy D.toDissection hαβ hαγ hαπ hα0 hβγ hβπ hβ0 hγπ hγ0
+    hπ0 hγdef hrel hirr hv hnv
+    (fun i => congruentDissection_localAngle_mem_at_corner D α β γ hmα hmβ hmγ j m hjm i) hns
 
 end Erdos634.Geometry
