@@ -2850,3 +2850,27 @@ derivation of a fact the figure route gets from the classification, and it is us
 file's own chain; it is not, on the evidence of the scan, a lever on anything else.
 
 No label moves. Recorded as a tool, not as progress.
+
+### Probe: does this session's mechanism reach `e ≥ 2`'s `V_k`?  **No — and the reason is sharp**
+
+`rem:n1gapexact` reduces `thm:n1`'s induction at `e ≥ 2` to: nothing overruns `V_k`. The tile `Q`
+across `T_k`'s `b`-edge lays `a`, `b` or `c` from the anchored base end; `b` is the wanted match,
+`a` fails because `b − a` is unrepresentable (`gap_b_sub_a`), and `c` overruns by `e²` — which means
+exactly that **`Q` has a straight angle at `V_k`**. So the gap is "exclude one straight angle", the
+same shape this session's `serving_ne_pi_of_side_edge` handles at `V`.
+
+**It does not transfer, and the obstruction is structural.** The leverage at `V` was never "a tile
+has a through-edge"; it was that a *second* tile — the `α`-tile — lays an edge **collinear with it and
+on the same side**, so two upper half-discs would overlap and `two_through_excludes_mem` fires. At
+`V_k` no second such tile exists: `T_k`'s `b`-edge *ends* at `V_k`, so `T_k` contributes a corner
+angle there, not a straight angle. Taking a point `W` strictly between the base end and `V_k` does
+give two straight angles (`T_k`'s and `Q`'s) — but those are the two tiles adjacent along that edge,
+the ordinary situation, and `two_through_excludes_mem` correctly yields nothing. And `pi_count_le_one`
+permits exactly one straight angle at `V_k`, which is precisely what `Q` would use.
+
+**So: this session's machinery is silent on `e ≥ 2`.** Recorded as a closed-off route, not a
+difficulty. The precise admission test it suggests for future attempts on `V_k`: find a *second edge
+collinear with the overrunning one, on the same side*. Route 1 had one for free; `e ≥ 2` does not,
+and nothing in the residue computation of `rem:n1gap` supplies one.
+
+`GOAL_PRIMES` target 3 is untouched. No label moves.
