@@ -2915,3 +2915,33 @@ That is one object, not a general layer — a materially smaller obligation than
 placement", and it is the whole of what stands between route 1's chain and `conj:advance` at `e = 1`.
 
 No label moves. `conj:advance` remains CONJECTURE; the prime case is not advanced.
+
+### `partner_unique` is arithmetic, not placement — and the geometric half is *known false* in general
+
+Checked `OrderForcing.lean:127`'s claim that the corner tile's `b`-partner is "forced onto the far
+side of the corner tile's `b`-edge by `PentagonLemma.partner_unique`".
+
+`PentagonLemma.partner_unique` is a real theorem and it is **pure semigroup arithmetic**: the only
+way to write `b` as `x·a + y·b + z·c` in `ℕ` is `y = 1`. It says nothing about tiles, sides, or
+placement. Forcing the partner needs that *plus* the geometric premise that the chord is covered by
+**whole edges** — and that premise is exactly what `lem:jbline`'s own parenthetical defers
+("Whether a given line is so covered is a separate question: see Remark `rem:straddle`").
+
+`rem:straddle` then says something stronger than "open": the no-straddle hypothesis
+(DL) — *if a segment carries a whole `b`-edge at each end, no tile straddles it* — **is false**,
+tested against the three exhibited base-`β` tilings with tile `(2,3,4)`, all verified exactly. Tiles
+do straddle.
+
+**Consequence for the attachment.** The corner cascade's second tile cannot be produced by
+`partner_unique` plus a general no-straddle fact, because no such fact holds. What can rescue the
+specific case is that the cascade's chord is *boundary-anchored at both ends* — a straddling tile
+there would have to leave the target — which is the mechanism `prop:doublec`(iv) and the overshoot
+tests use. That boundary-anchored argument is a different piece of machinery from `partner_unique`,
+and **it is not in the corpus**.
+
+So the named blocker sharpens once more: *producing the corner cascade's partner needs a
+boundary-anchored no-straddle theorem; the general form is refuted (`rem:straddle`), and the anchored
+form is unformalised.* The docstring at `OrderForcing.lean:127` overstates what it cites and should
+be read with this correction.
+
+Recorded as a negative structural finding. No label moves; `conj:advance` remains CONJECTURE.
