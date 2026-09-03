@@ -4443,3 +4443,26 @@ is needed "row by row." What this changes: the covering-equality hypothesis is n
 next occurrence (or the general pattern, if one exists across all four `PgramTiling22`-shaped column
 occurrences already sitting in the same `delta4CongruentDissection`) is now a matter of repeating
 this same argument, not inventing it. No label moves.
+
+### `prop:orientmono`'s second occurrence witness, and precisely where the pattern stops
+
+Tested this tick whether the apex-block occurrence-witness pattern generalizes. It does, to the
+**corner** block (`cornerOccurrenceWitness`, same file) — also a full translated copy of
+`Tiling44Bridge.dissection`, at `v=(176,0)` instead of `(88,24√15)`; the argument is identical up to
+the translation vector and one extra `Fin.append_right` step in the index unfolding. Two independent
+occurrence witnesses now exist for the same `delta4CongruentDissection` object.
+
+**It does not generalize to the four `columnPieceAt` blocks, and the reason is sharp, not
+incidental.** `PgramTiling22Bridge` has no `CongruentDissection` object at all: `pieceAt`/
+`pgram22_covers` are stated over a **parallelogram** carrier (`convexHull ℝ {v1,v2,v3,v4}`), not a
+`Tri`. There is therefore no `Tri` target for `SubDissection.restrictCongruent` to restrict onto —
+the primitive's type signature itself excludes this case, not a missing lemma. This is exactly the
+kind of non-triangular region `RegionDissection` (built two ticks ago) was built for, but
+`RegionDissection` currently supplies only **union** operations, no restriction-to-a-covering-subset
+primitive symmetric to `SubDissection.restrictCongruent`. Building that (a real, well-scoped
+addition — take a `RegionDissection`, a covering `Finset` of its tile indices, and a target region
+whose carrier that subset's union equals, producing a `RegionDissection` of the smaller region) is
+the natural next step for occurrence witnesses over parallelogram-shaped or other non-`Tri` regions,
+and is not attempted this tick.
+
+`lake build Erdos634.All` clean at 3699 jobs; axiom-clean throughout. No label moves.

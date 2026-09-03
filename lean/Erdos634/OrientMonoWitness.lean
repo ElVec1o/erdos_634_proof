@@ -82,4 +82,68 @@ noncomputable def occurrenceWitness : CongruentDissection apexIndices.card :=
       Erdos634.Tiling44Bridge.targetTri)
     apex_covers
 
+
+
+/-! ## The corner block: a second occurrence, same type — and where the pattern stops
+
+`cornerPieceAt` is likewise a full translated copy of `Tiling44Bridge.dissection` (at
+`v = (176, 0)`), so the same argument gives a second, independent occurrence witness. The four
+`columnPieceAt` blocks do **not** admit the same treatment: `PgramTiling22Bridge` has no
+`CongruentDissection` object at all — its `pieceAt`/`covers` are stated over a **parallelogram**
+carrier (`convexHull ℝ {v1,v2,v3,v4}`), not a `Tri`, so there is no `Tri` target to restrict to and
+`SubDissection.restrictCongruent` does not apply. That gap is exactly what `RegionDissection`
+(built two ticks ago) was designed for, but `RegionDissection` currently has union operations only,
+no restriction-to-a-covering-subregion primitive — building that is separate, real work, not
+attempted here. -/
+
+/-- The corner block's 44 indices, as a `Finset (Fin 176)`. -/
+noncomputable def cornerIndices : Finset (Fin 176) :=
+  Finset.univ.image (fun j : Fin Tiling44.tiles.length =>
+    (finCongr delta4PiecesAux_len)
+      (Fin.natAdd Tiling44.tiles.length (Fin.castAdd _ j)))
+
+theorem delta4Pieces_corner (j : Fin Tiling44.tiles.length) :
+    delta4Pieces ((finCongr delta4PiecesAux_len)
+      (Fin.natAdd Tiling44.tiles.length (Fin.castAdd _ j))) = cornerPieceAt j := by
+  show delta4PiecesAux ((finCongr delta4PiecesAux_len).symm
+    ((finCongr delta4PiecesAux_len) (Fin.natAdd Tiling44.tiles.length (Fin.castAdd _ j))))
+    = cornerPieceAt j
+  rw [Equiv.symm_apply_apply]
+  unfold delta4PiecesAux
+  rw [Fin.append_right, Fin.append_left]
+
+theorem corner_union_eq_translated_target :
+    (⋃ j : Fin Tiling44.tiles.length, (cornerPieceAt j).carrier)
+      = (mapTri (transEquiv (mkPt 176 0)).toAffineEquiv
+          Erdos634.Tiling44Bridge.targetTri).carrier := by
+  have hcov := (translateCongruentDissection (mkPt 176 0)
+    Erdos634.Tiling44Bridge.dissection).covers
+  rw [translateCongruentDissection_target] at hcov
+  convert hcov using 2
+
+theorem corner_covers :
+    (⋃ i ∈ cornerIndices, (delta4CongruentDissection.tile i).carrier)
+      = (mapTri (transEquiv (mkPt 176 0)).toAffineEquiv
+          Erdos634.Tiling44Bridge.targetTri).carrier := by
+  rw [← corner_union_eq_translated_target]
+  unfold cornerIndices
+  ext x
+  simp only [Set.mem_iUnion, Finset.mem_image, Finset.mem_univ, true_and]
+  constructor
+  · rintro ⟨i, ⟨j, hj⟩, hx⟩
+    refine ⟨j, ?_⟩
+    rw [← hj, show delta4CongruentDissection.tile = delta4Pieces from rfl, delta4Pieces_corner] at hx
+    exact hx
+  · rintro ⟨j, hx⟩
+    refine ⟨(finCongr delta4PiecesAux_len) (Fin.natAdd Tiling44.tiles.length (Fin.castAdd _ j)),
+      ⟨j, rfl⟩, ?_⟩
+    rw [show delta4CongruentDissection.tile = delta4Pieces from rfl, delta4Pieces_corner]
+    exact hx
+
+/-- **The second occurrence witness**, at the corner block. -/
+noncomputable def cornerOccurrenceWitness : CongruentDissection cornerIndices.card :=
+  restrictCongruent delta4CongruentDissection cornerIndices
+    (mapTri (transEquiv (mkPt 176 0)).toAffineEquiv Erdos634.Tiling44Bridge.targetTri)
+    corner_covers
+
 end Erdos634.OrientMonoWitness
