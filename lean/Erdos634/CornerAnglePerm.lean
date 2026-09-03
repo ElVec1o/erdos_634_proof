@@ -665,4 +665,72 @@ theorem figureVec_mem_censusLabels {N : ℕ} (D : CongruentDissection N) (α β 
     · rcases hcase with ⟨ha, hb, hc⟩ | ⟨ha, hb, hc⟩ | ⟨ha, hb, hc⟩ | ⟨ha, hb, hc⟩ <;>
         simp [censusLabels, ha, hb, hc]
 
+/-- The model's three corner angles are pairwise distinct, indexed. -/
+theorem model_corner_dist {N : ℕ} (D : CongruentDissection N) {α β γ : ℝ}
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hβγ : β ≠ γ) :
+    ∀ k l : Fin 3,
+      cornerAngle (D.model.pts (k + 1)) (D.model.pts k) (D.model.pts (k + 2))
+        = cornerAngle (D.model.pts (l + 1)) (D.model.pts l) (D.model.pts (l + 2)) → k = l := by
+  have e0 : (0 : Fin 3) + 1 = 1 := rfl
+  have e0' : (0 : Fin 3) + 2 = 2 := rfl
+  have e1 : (1 : Fin 3) + 1 = 2 := rfl
+  have e1' : (1 : Fin 3) + 2 = 0 := rfl
+  have e2 : (2 : Fin 3) + 1 = 0 := rfl
+  have e2' : (2 : Fin 3) + 2 = 1 := rfl
+  have hall : ∀ x : Fin 3, x = 0 ∨ x = 1 ∨ x = 2 := by decide
+  intro k l h
+  rcases hall k with rfl | rfl | rfl <;> rcases hall l with rfl | rfl | rfl <;>
+    simp only [e0, e0', e1, e1', e2, e2', hmα, hmβ, hmγ] at h <;>
+    first
+      | rfl
+      | exact absurd h hαβ
+      | exact absurd h hαγ
+      | exact absurd h hβγ
+      | exact absurd h.symm hαβ
+      | exact absurd h.symm hαγ
+      | exact absurd h.symm hβγ
+
+/-- **The `α`-identity of the census, as a sum over the eight classes.**  Instantiating
+`sum_over_fibers_const` with the `α`-multiplicity as weight and the label's own first coordinate as
+the class constant, against `congruentDissection_corner_balance`'s total of `N`.
+
+This is `lem:census`'s `α`-identity in the form the partition produces it; matching it to
+`OrderForcing.vertex_census`'s `ha` needs only the target's corner counts (one apex, two base
+corners). -/
+theorem census_alpha_sum {N : ℕ} (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ2π : γ ≠ 2 * Real.pi) (hγ0 : γ ≠ 0)
+    (hπ2π : Real.pi ≠ 2 * Real.pi) (hπ0 : Real.pi ≠ 0) (h2π0 : 2 * Real.pi ≠ 0)
+    (hmα : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hmβ : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hmγ : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (htarget : ∀ k : Fin 3,
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = 3 * α ∨
+      cornerAngle (D.target.pts (k + 1)) (D.target.pts k) (D.target.pts (k + 2)) = β) :
+    ∑ y ∈ censusLabels, y.1 *
+        ((cornerPts D.toDissection).filter (fun v =>
+          ((({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card,
+            ({i | (D.tile i).localAngle v = β} : Finset (Fin N)).card,
+            ({i | (D.tile i).localAngle v = γ} : Finset (Fin N)).card) : ℕ × ℕ × ℕ) = y)).card
+      = N := by
+  classical
+  rw [← sum_over_fibers_const (cornerPts D.toDissection) censusLabels _
+    (fun v hv => figureVec_mem_censusLabels D α β γ hαβ hαγ hαπ hα2π hα0 hβγ hβπ hβ2π hβ0
+      hγπ hγ2π hγ0 hπ2π hπ0 h2π0 hmα hmβ hmγ hγdef hrel hirr htarget hv)
+    (fun v => ({i | (D.tile i).localAngle v = α} : Finset (Fin N)).card)
+    (fun y => y.1) (fun _ _ => rfl)]
+  have hbal := congruentDissection_corner_balance D
+    (model_corner_dist D hmα hmβ hmγ hαβ hαγ hβγ) 0
+    (by rw [show (0 : Fin 3) + 1 = 1 from rfl, show (0 : Fin 3) + 2 = 2 from rfl, hmα]; exact hα0)
+    (by rw [show (0 : Fin 3) + 1 = 1 from rfl, show (0 : Fin 3) + 2 = 2 from rfl, hmα]; exact hαπ)
+    (by rw [show (0 : Fin 3) + 1 = 1 from rfl, show (0 : Fin 3) + 2 = 2 from rfl, hmα]; exact hα2π)
+  rw [show (0 : Fin 3) + 1 = 1 from rfl, show (0 : Fin 3) + 2 = 2 from rfl, hmα] at hbal
+  exact hbal
+
 end Erdos634.Geometry

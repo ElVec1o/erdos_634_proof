@@ -3425,3 +3425,30 @@ using this as the maps-to and the label's own coordinate as the constant, and re
 `lem:census` has **not** flipped; label stays PROVED, and I am still not predicting when.
 
 Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
+
+### `lem:census` piece 4f: the α-identity, assembled
+
+`model_corner_dist` and `census_alpha_sum` (`CornerAnglePerm.lean`, twenty-five declarations,
+axiom-clean, `Erdos634.All` clean).
+
+`census_alpha_sum` is `lem:census`'s α-identity in the form the partition produces it:
+
+> `∑_{y ∈ censusLabels} y.1 * |{v ∈ cornerPts : figureVec v = y}| = N`
+
+— the α-multiplicity summed over all tile vertices, regrouped by class. It is
+`sum_over_fibers_const` instantiated with the α-multiplicity as weight and the label's own first
+coordinate as the class constant (`hconst` is `rfl`, the point of choosing the multiplicity vector as
+the label), against `congruentDissection_corner_balance`'s total of `N`. `model_corner_dist`
+supplies the balance's index-distinctness from the three angles being distinct.
+
+**What is not yet done, precisely.** Matching this to `OrderForcing.vertex_census`'s
+`ha : 3 + n₁ + 3n₂ + 2v₂ + 4v₃ + 6v₄ = N` needs the two class counts the paper writes as constants:
+`|{v : figureVec v = (3,0,0)}| = 1` (exactly one apex) and `|{v : figureVec v = (0,1,0)}| = 2` (two
+base corners). Those are facts about the *target's* corners, not about the tiling, and `htarget` as
+currently stated only says each corner is one or the other — not how many of each. Strengthening it
+to name the apex is straightforward but is a change to the hypothesis, so it is flagged rather than
+slipped in. The β- and γ-identities are the same instantiation with the second and third coordinates.
+
+`lem:census` has **not** flipped; label stays PROVED.
+
+Census (`code/census.sh`): PROVED 116, VERIFIED 57, CONJECTURE 30, HEURISTIC 4, OPEN 3. Unmoved.
