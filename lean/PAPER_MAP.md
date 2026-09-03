@@ -4384,3 +4384,26 @@ at 3696 jobs before and after. No theorem content changed — pure file reorgani
 implications. Still above the 50-100 line target on all three files; further splitting is possible
 but the natural section boundaries are now exhausted at this granularity — the next cut would need
 to split within a single `/-! ## ... -/` block.
+
+### File-length debt: `CornerAnglePerm.lean` split (2026-09-04)
+
+Same treatment as `RouteOneThroughEdge.lean` last tick. `CornerAnglePerm.lean` was 1258 lines with
+only two internal section markers; split at both:
+
+* `CornerAnglePermCensus.lean` (587 lines) — the summation engine for the census partition.
+* `CornerAnglePermTarget.lean` (122 lines) — the base-`β` target's isosceles shape (`htarget`).
+* `CornerAnglePerm.lean` itself: 580 lines (down from 1258).
+
+**One real bug caught before it shipped**: the file's actual namespace is `Erdos634.Geometry`, not
+`Erdos634.CornerAnglePerm` as the filename suggests — my first pass wrapped the split sections in a
+namespace that doesn't exist in this file, and left the main file's `namespace Erdos634.Geometry`
+unclosed after the cut. Caught by inspecting `namespace`/`end` lines before building, not by a build
+failure; fixed before the first build attempt. `lake build Erdos634.All` clean at 3698 jobs.
+
+Both this file and `RouteOneThroughEdge.lean`'s split are still above the 50-100 line target —
+`CornerAnglePermCensus.lean` at 587 lines has no internal section markers to cut at without splitting
+mid-argument. That would be a real editorial judgment call, not a mechanical extraction, and is left
+for a dedicated pass rather than rushed this tick.
+
+**Debt-file-split queue is now empty of previously-flagged items** — both files named in the
+standing next-steps list are done.
