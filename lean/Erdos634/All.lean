@@ -254,3 +254,4 @@ import Erdos634.ChordFinsetBaseCase
 import Erdos634.ChordFinsetBaseCaseGap
 import Erdos634.ChordFinsetStepGap
 import Erdos634.ChordFinsetInvariant
+import Erdos634.ChordFinsetDegenerate
