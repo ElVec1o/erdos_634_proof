@@ -1450,6 +1450,26 @@ more intervening stretch than the two-straddler case ever needed, the next scali
 `ChordDecompositionTwoStraddlersFinal` derivation). `lake build Erdos634.All` clean, no `sorry`,
 `#print axioms` confirms only the standard three.
 
+**The three-straddler wiring done, same session, later still (2026-09-03)**:
+`ChordDecompositionThreeStraddlersFinal.chord_decomposition_three_straddlers'` — closes the
+three-straddler case the same way the two-straddler case closed, confirming the pattern
+generalizes without changing the far lemma itself: `openSegment_disjoint_segment_of_wbtw_far`
+needed no modification to reach two hops away (gap `(p,r₁)` vs `m₃`'s trace, and gap `(s₃,q)` vs
+`m₁`'s trace) — only the betweenness-chain bookkeeping grows, built via repeated
+`Wbtw.trans_expand_left`/`Wbtw.trans_right` composition and three `dist`-additivity nondegeneracy
+arguments (`r₁≠r₂`, `r₂≠r₃`, `r₁≠r₃`, `s₁≠s₃` derived, not assumed). Two extra linking hypotheses
+(`hw_r1s1r2`, `hw_r2s2r3`) and `hwr3q : Wbtw r₃ s₃ q` (mirroring `hwr2`'s reach to `q`) round out
+what `chord_decomposition_three_straddlers`'s own hypotheses didn't supply. `lake build
+Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+Three straddlers now closed from the natural hypothesis exactly as one and two are. The scaling
+pattern is now confirmed across N=1,2,3: each gap is adjacent to its immediate neighbor(s) (plain
+lemma) and reaches every other straddler through the far lemma with betweenness facts chained one
+hop per intervening stretch. This is exactly the recursive step a real induction on the sorted list
+of trace endpoints would formalize — the concrete instances now make that induction's shape fully
+visible, though the induction itself (arbitrary `n`, not spelled out three times by hand) is still
+not built.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
