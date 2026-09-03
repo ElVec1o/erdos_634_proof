@@ -25,22 +25,26 @@ never a more complicated shape. Proved by parametrizing the line through a nonze
 and compactness back along `t ↦ x0 + t•v` to a convex compact — hence closed-interval — subset of
 `ℝ`, and pushing the interval's endpoints back through the parametrization.
 
-`straddle_trace_disjoint` is the third piece: two *different* straddling tiles' traces on the same
-line meet in at most one point. This was the genuinely open half of the disjointness question —
-`Dissection.sameside_edges_subsingleton` (pre-existing) already handles flush-flush disjointness,
-but only when both tiles lie weakly on one side of the line, which is false for a straddler. The
-proof needs no case-split on which pair of edges the line crosses: if `x ≠ y` were both common to
-two straddlers' traces, `Tri.straddle_midpoint_interior` shows their midpoint is interior to *both*
-tiles (every barycentric coordinate is the average of its values at `x` and `y`, both `≥ 0`, and a
-coordinate can only average to `0` if it vanishes at both — which would put `x, y` on the same edge
-line, and `Tri.straddle_no_edge_on_line` rules out that edge lying on the chord line, so the two
-lines meet in the single point forced by `eq_of_mem_line_of_agree`, giving `x = y`, contradiction).
-This directly contradicts `Dissection.interiors_disjoint`.
+`trace_disjoint_of_straddle` is the third piece: if *either* of two different tiles straddles the
+line, their traces meet in at most one point — regardless of the other tile's type. This was the
+genuinely open half of the disjointness question: `Dissection.sameside_edges_subsingleton`
+(pre-existing) handles flush-flush disjointness, but only when *both* tiles lie weakly on one side
+of the line, false whenever a straddler is involved. The proof needs no case-split on which pair of
+edges the line crosses: `Tri.straddle_midpoint_interior` puts a shared pair's midpoint `m` in the
+straddler's interior; `m` is also in the other tile's carrier (convexity), and density of a convex
+body's interior near any of its own points (`Convex.combo_interior_self_mem_interior`, sliding from
+one of the other tile's own interior points towards `m`) produces a point interior to *both*,
+contradicting `Dissection.interiors_disjoint`.
 
-Still needed for a real `ChordTrace`: the multi-tile covering/length-additivity bookkeeping across
-a whole chord (`contacts_cover_side`/`length_sum_of_cover` already supply the fully general
-covering and summation machinery; what remains is combining them with the segment/disjointness
-facts here for the mixed flush-straddle case) — not yet attempted.
+**A genuine subtlety found while scoping the final assembly**: two *opposite*-side flush tiles
+(one weakly below the chord, one weakly above) *can* legitimately share a full edge lying on the
+chord — that is just ordinary adjacency, not a violation of `interiors_disjoint`. So summing every
+touching tile's trace length naively would double-count that shared edge; a correct chord-length
+theorem needs a one-sided convention (matching the one `Dissection.dirSet`/`horient` already use
+for wall segments), not naive summation over all touching tiles. `contacts_cover_side`/
+`length_sum_of_cover` already supply the fully general covering and summation machinery; what
+remains is assembling them, respecting this one-sidedness, with the segment and disjointness facts
+above — not yet attempted.
 
 Axiom-clean; no `sorry`.
 -/
@@ -371,26 +375,53 @@ theorem Tri.straddle_midpoint_interior (T : Tri) (f : Plane →ₗ[ℝ] ℝ) (c 
     have h2 : (0:ℝ) < ⅟(2:ℝ) := by norm_num
     exact mul_pos h2 hsum
 
-/-- **Two straddling tiles' traces on the same line meet in at most one point.** If `x ≠ y` were
-both common to two different straddlers' traces, their midpoint would be interior to *both* tiles
-(`straddle_midpoint_interior`, applied to each), contradicting `D.interiors_disjoint`. -/
-theorem straddle_trace_disjoint {N : ℕ} (D : Erdos634.Geometry.Dissection N)
+/-- **A trace overlap involving a straddler is at most one point — regardless of the other tile's
+type.** Only `tile j` needs to straddle. If `x ≠ y` were both common to `tile i`'s trace and
+straddling `tile j`'s trace, `straddle_midpoint_interior` puts their midpoint `m` in
+`interior (tile j).carrier`; `m` is also in `tile i`'s carrier (convexity), and density of a
+convex body's interior near any of its own points (`Convex.combo_interior_self_mem_interior`,
+sliding from an interior point of `tile i` towards `m`) produces a point interior to *both* tiles,
+contradicting `interiors_disjoint`. Applying this with either tile playing the role of `j` also
+covers the case where both straddle. -/
+theorem trace_disjoint_of_straddle {N : ℕ} (D : Erdos634.Geometry.Dissection N)
     (f : Plane →ₗ[ℝ] ℝ) (c : ℝ) {i j : Fin N} (hij : i ≠ j)
-    (hloi : ∃ a, f ((D.tile i).pts a) < c) (hhii : ∃ b, c < f ((D.tile i).pts b))
     (hloj : ∃ a, f ((D.tile j).pts a) < c) (hhij : ∃ b, c < f ((D.tile j).pts b)) :
     (((D.tile i).carrier ∩ {x | f x = c}) ∩ ((D.tile j).carrier ∩ {x | f x = c})).Subsingleton := by
   intro x hx y hy
   by_contra hxy
   have hxi : x ∈ (D.tile i).carrier := hx.1.1
-  have hfxi : f x = c := hx.1.2
   have hyi : y ∈ (D.tile i).carrier := hy.1.1
-  have hfyi : f y = c := hy.1.2
-  have hmi := Tri.straddle_midpoint_interior (D.tile i) f c hloi hhii hxi hfxi hyi hfyi hxy
   have hxj : x ∈ (D.tile j).carrier := hx.2.1
   have hfxj : f x = c := hx.2.2
   have hyj : y ∈ (D.tile j).carrier := hy.2.1
   have hfyj : f y = c := hy.2.2
-  have hmj := Tri.straddle_midpoint_interior (D.tile j) f c hloj hhij hxj hfxj hyj hfyj hxy
-  exact (D.interiors_disjoint hij).le_bot ⟨hmi, hmj⟩
+  set m := midpoint ℝ x y with hmdef
+  have hmj : m ∈ interior (D.tile j).carrier :=
+    Tri.straddle_midpoint_interior (D.tile j) f c hloj hhij hxj hfxj hyj hfyj hxy
+  have hiconv : Convex ℝ (D.tile i).carrier := convex_convexHull ℝ _
+  have hmi : m ∈ (D.tile i).carrier := hiconv.midpoint_mem hxi hyi
+  obtain ⟨z0, hz0⟩ := (D.tile i).interior_nonempty
+  obtain ⟨ε, hε, hεsub⟩ := Metric.isOpen_iff.mp isOpen_interior m hmj
+  have hcont : Continuous (fun a : ℝ => a • z0 + (1 - a) • m) := by fun_prop
+  have hdcont : Continuous (fun a : ℝ => dist (a • z0 + (1 - a) • m) m) := by fun_prop
+  obtain ⟨δ, hδ, hδsub⟩ := Metric.isOpen_iff.mp
+    (isOpen_lt hdcont continuous_const) 0
+    (by simp only [Set.mem_setOf_eq, zero_smul, sub_zero, one_smul, zero_add, dist_self]; exact hε)
+  set a : ℝ := δ / 2 ⊓ (1/2 : ℝ) with hadef
+  have ha0 : 0 < a := by positivity
+  have ha1 : a ≤ 1 := by
+    have : a ≤ (1/2:ℝ) := min_le_right _ _
+    linarith
+  have hqi : a • z0 + (1 - a) • m ∈ interior (D.tile i).carrier :=
+    hiconv.combo_interior_self_mem_interior hz0 hmi ha0 (by linarith) (by ring)
+  have hqdist : dist (a • z0 + (1 - a) • m) m < ε := by
+    have hmem : a ∈ Metric.ball (0:ℝ) δ := by
+      rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_pos ha0]
+      calc a ≤ δ / 2 := min_le_left _ _
+        _ < δ := by linarith
+    exact hδsub hmem
+  have hqj : a • z0 + (1 - a) • m ∈ interior (D.tile j).carrier :=
+    hεsub (Metric.mem_ball.mpr hqdist)
+  exact (D.interiors_disjoint hij).le_bot ⟨hqi, hqj⟩
 
 end Erdos634.ChordTraceReal

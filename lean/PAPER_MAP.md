@@ -1134,26 +1134,36 @@ clean, no `sorry`, `#print axioms` confirms only the standard three.
 This is real progress on the chord-trace bridge: any tile's intersection with any chord line is now
 provably a single honest segment (not merely assumed as a `ChordTrace` field).
 
-**Straddle-disjointness closed, 2026-09-03, later**: `straddle_trace_disjoint` — two *different*
-straddling tiles' traces on the same chord line meet in at most one point. This is the piece
-`Dissection.sameside_edges_subsingleton` (pre-existing) could not supply: that lemma needs *both*
-tiles to lie weakly on one side of the line, exactly false for a straddler. The new proof avoids
-any case-split on which pair of edges the line crosses: `Tri.straddle_midpoint_interior` shows that
-if `x ≠ y` were both common to two straddlers' traces, their midpoint would be interior to *both*
-tiles (a barycentric coordinate averages `x`'s and `y`'s values, both `≥ 0`, and can only average to
-`0` if it vanishes at both — forcing `x, y` onto the same edge line, which `Tri.straddle_no_edge_on_line`
-shows can't coincide with the chord line for a genuine straddler, so `eq_of_mem_line_of_agree`
-— two distinct lines meet in one point — forces `x = y`), contradicting `interiors_disjoint`
-directly. `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard
-three for both new theorems.
+**Straddle-disjointness closed, 2026-09-03, later**: `trace_disjoint_of_straddle` — if *either* of
+two different tiles straddles the chord line, their traces meet in at most one point, regardless of
+the other tile's type. This is the piece `Dissection.sameside_edges_subsingleton` (pre-existing)
+could not supply: that lemma needs *both* tiles to lie weakly on one side of the line, false
+whenever a straddler is involved. `Tri.straddle_midpoint_interior` puts a shared pair's midpoint in
+the straddler's interior; density of a convex body's interior near any of its own points
+(`Convex.combo_interior_self_mem_interior`, sliding from an interior point of the *other* tile
+towards that midpoint) produces a point interior to both, contradicting `interiors_disjoint` — no
+case-split on which edge the line crosses, and no need for the other tile to straddle too (the
+lemma first built this session, `straddle_trace_disjoint`, needed both; this one subsumes it and
+replaced it). `lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the
+standard three.
 
-**What's left for a real `ChordTrace`, not yet attempted**: the multi-tile bookkeeping — showing
-the *sequence* of tiles meeting a chord, in order, partitions it with lengths summing exactly to the
-chord's own length. `contacts_cover_side`/`length_sum_of_cover` already supply the fully general
-covering and summation machinery (confirmed general-purpose, not restricted to supporting lines);
-what remains is assembling them with the segment (`isSegment_of_convex_inter_hyperplane`) and
-disjointness (`straddle_trace_disjoint` for straddle-straddle, `sameside_edges_subsingleton` for
-flush-flush) facts now in hand, for the *mixed* flush-straddle case a single chord can present.
+**A genuine subtlety found while scoping the final assembly, same pass**: two *opposite*-side
+flush tiles (one weakly below the chord, one weakly above) *can* legitimately share a full edge
+lying on the chord — ordinary adjacency, not a violation of `interiors_disjoint`. So summing every
+touching tile's trace length naively would double-count that shared edge. A correct chord-length
+theorem needs a one-sided convention — matching the one `Dissection.dirSet`/`horient` already use
+for wall segments (only counting a direction's edges from one canonical side) — not naive
+summation over all touching tiles. This is why `ChordDecomp.lean`'s own paper statement
+(`prop:chorddecomp`) tracks "flush total" and "straddle total" as separate combinatorial
+quantities rather than one undifferentiated sum: that structure is necessary, not an artifact of
+the `(3,7)`-specific proof.
+
+**What's left for a real `ChordTrace`, not yet attempted**: `contacts_cover_side`/
+`length_sum_of_cover` already supply the fully general covering and summation machinery (confirmed
+general-purpose, not restricted to supporting lines); what remains is assembling them, respecting
+the one-sidedness above, with the segment (`isSegment_of_convex_inter_hyperplane`) and disjointness
+(`trace_disjoint_of_straddle` for any straddle pair, `sameside_edges_subsingleton` for same-side
+flush pairs) facts now in hand.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
