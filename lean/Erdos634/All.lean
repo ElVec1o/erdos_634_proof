@@ -251,3 +251,4 @@ import Erdos634.WbtwMinimalPrecedesRest
 import Erdos634.ChordDecompositionChain
 import Erdos634.WbtwTraceInTarget
 import Erdos634.ChordFinsetBaseCase
+import Erdos634.ChordFinsetBaseCaseGap
