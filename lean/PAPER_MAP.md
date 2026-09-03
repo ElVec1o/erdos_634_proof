@@ -1273,14 +1273,25 @@ value theorem along the segment between a below-`c` and an above-`c` vertex give
 on the line) feeding `isSegment_of_convex_inter_hyperplane`. Axiom-clean, no `sorry`,
 `lake build Erdos634.All` clean.
 
-**Still not built**: items (3) and (5) — the actual finite ordering of straddler segments along the
-chord's own `ℝ`-parametrization and the final summation, plus the one remaining geometric fact a
-full assembly needs (a gap's open interval lies in the target's interior, needed to invoke
-`wall_partition` on it). This is now squarely a finite combinatorial/measure bookkeeping task for
-the ordering, plus one boundary lemma; every other geometric fact it needs exists. Deprioritized
-further construction this session in favor of hunting further PROVED→VERIFIED flips per the
-standing `/goal`, since this piece, even finished, is infrastructure toward `prop:chorddecomp` and
-not itself a flip.
+**The boundary lemma landed too, same session, later still**: `ChordEndpointFrontier.chord_endpoint_not_interior`
+— a chord's own extreme point is never interior to the target. If it were, a small ball around it
+would contain a point of the line strictly past it (away from the other endpoint), which the ball
+puts in the target and the chord identity then forces into `segment ℝ p q` — but that point's own
+`AffineMap.lineMap` parameter is negative, while every point of the segment has parameter in
+`[0, 1]`, contradicting `AffineMap.lineMap_injective`. Together with `chord_isSegment`, this gives
+exactly the boundary control `wall_cover`'s `hint` hypothesis needs for the *outer* two points of
+the chord (the target-straddling case, where the chord genuinely cuts through the interior between
+its two frontier endpoints, is the only case this assembly needs — the degenerate case where the
+"chord" coincides with a target edge is excluded by the target itself being required to straddle).
+`lake build Erdos634.All` clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+**Still not built**: item (3) and (5) — the actual finite ordering of straddler segments along the
+chord's own `ℝ`-parametrization, and the final summation gluing `wall_partition`'s per-gap totals
+to `straddle_total_eq_sum`. Every geometric fact this needs now exists; what remains is a genuine
+but purely combinatorial/measure-theoretic bookkeeping task (sorting a finite set of segments on a
+line and summing over the resulting partition). Deprioritized further construction this session in
+favor of hunting further PROVED→VERIFIED flips per the standing `/goal`, since this piece, even
+finished, is infrastructure toward `prop:chorddecomp` and not itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
