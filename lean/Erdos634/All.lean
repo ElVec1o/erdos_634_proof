@@ -226,3 +226,4 @@ import Erdos634.ChordStraddleTotal
 import Erdos634.ChordFlushCover
 import Erdos634.ChordAssembly
 import Erdos634.ChordInteriorStraddle
+import Erdos634.ChordStraddlerSegment

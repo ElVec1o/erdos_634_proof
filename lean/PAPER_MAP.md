@@ -1267,13 +1267,20 @@ This makes "`wall_cover`'s `hwall`" and "no straddler's trace meets here" the sa
 exactly what item (4)'s gap construction needs. Both axiom-clean, no `sorry`,
 `lake build Erdos634.All` clean.
 
-**Still not built**: item (2) applied concretely (each straddler's own trace as a segment — a
-direct instantiation, not new content), and items (3) and (5) — the actual finite ordering of
-straddler segments along the chord's own `ℝ`-parametrization and the final summation. This is now
-squarely a finite combinatorial/measure bookkeeping task, not a geometry one; every geometric fact
-it needs exists. Deprioritized further construction this session in favor of hunting further
-PROVED→VERIFIED flips per the standing `/goal`, since this piece, even finished, is infrastructure
-toward `prop:chorddecomp` and not itself a flip.
+**Item (2) landed, same session, later still**: `ChordStraddlerSegment.straddle_trace_isSegment` —
+a straddling tile's own trace is a genuine segment, via `straddle_trace_nonempty` (the intermediate
+value theorem along the segment between a below-`c` and an above-`c` vertex gives a witness point
+on the line) feeding `isSegment_of_convex_inter_hyperplane`. Axiom-clean, no `sorry`,
+`lake build Erdos634.All` clean.
+
+**Still not built**: items (3) and (5) — the actual finite ordering of straddler segments along the
+chord's own `ℝ`-parametrization and the final summation, plus the one remaining geometric fact a
+full assembly needs (a gap's open interval lies in the target's interior, needed to invoke
+`wall_partition` on it). This is now squarely a finite combinatorial/measure bookkeeping task for
+the ordering, plus one boundary lemma; every other geometric fact it needs exists. Deprioritized
+further construction this session in favor of hunting further PROVED→VERIFIED flips per the
+standing `/goal`, since this piece, even finished, is infrastructure toward `prop:chorddecomp` and
+not itself a flip.
 
 ## The certified-search bridge and the area equation (2026-09-02, late)
 
