@@ -4037,3 +4037,31 @@ Rule 19 is the first block of the next session at U5.
 now in dispute.
 
 | O `prop:globalsys` | the global angle–Euler system admits prime solutions | `GlobalSystem.prime_solution_exists`, `.euler_parity`, `code/globalsys_count.py` | PROVED — the prime solution and the congruence are VERIFIED; **TENSION: stated 1968 solutions at N=47, recomputed 2096** |
+
+### TENSION resolved (as far as computation can): `prop:globalsys`'s `N = 47` count should be **2096**
+
+Three tests, all negative for `1968`:
+
+1. **The system is pinned by the paper's own numbers.** Searching every corner-fill constant
+   `(c_α, c_β, c_γ)` over `0..6 × 0..6 × 0..3`, **exactly one** reproduces both stated counts
+   `17` at `N = 11` and `172` at `N = 23`: the constant `(3, 2, 0)` — one apex `{3α}` and two base
+   corners `{β}`, which is what the proposition says. That system gives **2096** at `N = 47`. So the
+   reading is not a guess; the paper's first two figures determine it, and the third then follows.
+2. **No simple side condition produces 1968.** Every single-variable constraint `var ≥ k` or
+   `var ≤ k` (`k ≤ 5`, all six unknowns) that preserves `17` and `172` was enumerated. The `N = 47`
+   counts reachable are `1924`, `2032`, `2079`, `2096` — `1968` is not among them, and `1924` and
+   `2032` bracket it.
+3. **It is not a transcription slip to a neighbouring order.** Counts at
+   `N = 35, 43, 45, 46, 47, 48, 49, 51, 59, 71` are `729, 1520, 1792, 1926, 2096, 2250, 2440, 2825,
+   4825, 9612`. `1968` is attained nowhere; `N = 46` gives `1926` and `N = 47` gives `2096`.
+
+**Conclusion: `1968` is very probably an error and the correct count is `2096`.** What would
+overturn this: an unstated constraint applied at `N = 47` only, or a different figure list at that
+order — neither of which the proposition mentions. The proposition's **conclusion is unaffected**
+either way (`2096 > 0` does the same work), so nothing downstream moves.
+
+**Not editing the paper unilaterally.** Changing a stated result in `erdos-634-obstructions.tex` is
+a larger action than a Lean commit and is put to the user as a next step rather than taken. The
+enumerator `code/globalsys_count.py` is committed so the number is reproducible by anyone.
+
+TENSION row status: **resolved computationally, awaiting a decision on the paper text.**
