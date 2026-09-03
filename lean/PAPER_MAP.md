@@ -2436,3 +2436,20 @@ API work — `wbtw_trichotomy_of_wbtw`/`wbtw_iff_dist_le_of_wbtw` already supply
 `Finset.sort`/`List.insertionSort` do the rest), and (2) the small top-level wrapper appending the
 final `[S(last), Q]` segment via `chord_decomposition_of_gap'`. Neither needs any further geometric
 fact — every one is already built and verified in this corpus.
+
+## FinsetSortedList, session of 2026-09-03 continued
+
+**`exists_sorted_list_of_finset` built** — the "sorting a `Finset` straddler set into a `List`"
+task flagged above as the last remaining bookkeeping piece, now done for the general (key-based)
+case: any `Finset (Fin N)` can be sorted into a `List` (matching it as a set via `toFinset`, `Nodup`,
+same `length`) non-decreasing in an arbitrary real-valued key. Proved by strong induction on the
+`Finset`, extracting the minimal remaining element via `Finset.exists_min_image` and prepending —
+pure order-theoretic bookkeeping, no geometry, exactly as anticipated. `lake build Erdos634.All`
+clean, no `sorry`, `#print axioms` confirms only the standard three.
+
+Instantiating this with `key := fun k => dist P (R k)` and combining with `exists_geometric_chain`
+(supplying its own `hle`/`hsorted`/`hbne`/etc. hypotheses from the sort's own guarantees plus the
+straddler set's own general-position facts) is the remaining top-level wiring — the very last piece
+before a complete, fully general `prop:chorddecomp` skeleton (still needing the flush total and the
+member-specific `(3,7)` numerics on top, as always noted). Not yet done, but every fact either side
+needs is now built and independently verified.

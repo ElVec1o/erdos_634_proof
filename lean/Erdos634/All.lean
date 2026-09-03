@@ -265,3 +265,4 @@ import Erdos634.ChordFinsetGeometricChainBase
 import Erdos634.WbtwGlobalBoundHelpers
 import Erdos634.ChordFinsetReachLemma
 import Erdos634.ChordFinsetGeometricChain
+import Erdos634.FinsetSortedList
