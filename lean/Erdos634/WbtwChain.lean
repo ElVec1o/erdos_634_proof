@@ -114,4 +114,16 @@ theorem wbtw_trichotomy_of_wbtw {p q x y : Plane} (hx : Wbtw ℝ p x q) (hy : Wb
   have hxp : x = p := (wbtw_self_iff (R := ℝ)).mp hx'
   simp [hxp]
 
+/-- **The order from `p` is antisymmetric.** If `x` lies weakly between `p` and `y` *and* `y` lies
+weakly between `p` and `x`, then `x = y` — so `wbtw_trichotomy_of_wbtw` gives an honest comparator
+(not just a total *pre*order) for sorting distinct points on a chord. Proved by distance
+additivity: each hypothesis gives `dist p x + dist x y = dist p y` and its mirror image, and
+`dist x y = dist y x` forces `dist x y = 0`. -/
+theorem wbtw_antisymm_of_wbtw {p x y : Plane} (h1 : Wbtw ℝ p x y) (h2 : Wbtw ℝ p y x) : x = y := by
+  have hsum1 : dist p x + dist x y = dist p y := dist_add_dist_eq_iff.mpr h1
+  have hsum2 : dist p y + dist y x = dist p x := dist_add_dist_eq_iff.mpr h2
+  have hcomm : dist y x = dist x y := dist_comm y x
+  have h0 : dist x y = 0 := by linarith
+  exact dist_eq_zero.mp h0
+
 end Erdos634.ChordTraceReal

@@ -1526,6 +1526,14 @@ given the sorting is genuinely by this order), and (3) the sum-over-Finset bookk
 themselves (this piece has no new geometry left, per `ChordDecompositionGap.lean`'s own docstring —
 it is `Finset.sum` induction over a sorted list, order-theory not geometry).
 
+**The antisymmetry companion, same session, later still (2026-09-03)**:
+`WbtwChain.wbtw_antisymm_of_wbtw` — `wbtw_trichotomy_of_wbtw` alone gives only a total *preorder*
+(both disjuncts can hold at once, e.g. trivially when `x = y`); this closes it into an honest
+comparator: `Wbtw p x y` and `Wbtw p y x` together force `x = y`, by the same distance-additivity
+trick used throughout this session's chain lemmas (`dist p x + dist x y = dist p y`, its mirror
+image, and `dist x y = dist y x` force `dist x y = 0`). `lake build Erdos634.All` clean, no `sorry`,
+`#print axioms` confirms only the standard three.
+
 **Still not built**: the fully general finite induction over an arbitrary number of straddlers
 (order their trace endpoints by `dist p ·`, identify consecutive gaps, apply
 `chord_decomposition_of_gap` to each, sum against `straddle_total_eq_sum` via repeated
