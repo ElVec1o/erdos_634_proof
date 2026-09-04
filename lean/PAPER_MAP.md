@@ -4869,3 +4869,31 @@ orientation off — that final step (turning the covering fact into the actual s
 been attempted, and is the honest remaining gap; `rem:pingaps` stays OPEN. But the geometric content
 of "does bridge (c) instantiate on a real wall" is now answered: yes, unconditionally, for any wall
 of any `Dissection`.
+
+### `rem:pingaps` bridge (c): a genuine subtlety found in the `sortedPositions` composition
+
+Attempted the final composition into `Contiguity.sortedPositions`/`orderedChain` and found a real
+gap, not a bookkeeping one. `sortedPositions_length`/`orderedChain_length` (one list entry per chain
+edge) need `Set.InjOn pos (D.lineChain f c)` — but `edgeParam`'s empty-trace default (`lo = hi = 0`
+for every chain edge not touching this particular wall segment) makes `lo` **not injective on the
+whole `lineChain`**: any two edges that both miss the wall segment collide at position `0`. This is
+not a proof gap, it's a genuine design fact — `D.lineChain f c` is defined over the *whole line*
+`{f=c}`, not restricted to the finite wall segment `[u,v]`, so most of its edges are irrelevant to
+this particular wall and correctly collapse to the same default.
+
+**The fix, not yet built**: restrict to the sub-`Finset` of edges with nonempty trace before
+claiming one-entry-per-edge, and prove injectivity *there* — which itself needs care, since even two
+genuinely-touching edges could in principle both degenerate to the same single point (a geometric
+edge case not yet ruled out).
+
+Built what composes unconditionally in the meantime: `lineChain_sortedPositions_valid` —
+`sortedPositions`/`mem_sortedPositions`/`sortedPositions_sorted` apply directly to a real wall's
+`lineChain` and `lo`, no injectivity needed, giving a genuine sorted-list-exists-and-is-sorted fact.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry`.
+
+Sixteen ticks into this bridge. The honest state: the covering-union theorem (`lineChain_covers_Icc`)
+is complete and real; the ordered-word construction needs one more genuine step (the nonempty-trace
+restriction and its injectivity) before it reads as an actual boundary word. `rem:pingaps` stays
+OPEN — correctly, since this last step is real content, not bookkeeping, contrary to what I said
+two ticks ago.

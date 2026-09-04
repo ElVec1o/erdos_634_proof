@@ -503,4 +503,30 @@ theorem lineChain_covers_Icc {N : ℕ} (D : Dissection N) (f : Plane →ₗ[ℝ]
   · intro x hx
     exact ⟨(le_min hb1.1 hb2.1).trans hx.1, hx.2.trans (max_le hb1.2 hb2.2)⟩
 
+
+
+/-! ## Composing into `sortedPositions`/`orderedChain` — and a genuine subtlety found
+
+`sortedPositions`/`mem_sortedPositions`/`sortedPositions_sorted` are unconditional (no injectivity
+needed) — they apply directly to `D.lineChain f c` with `lo := fun e => min (edgeParam ...).1
+(edgeParam ...).2`. What is **not** automatic is `sortedPositions_length`/`orderedChain_length`
+(one list entry per chain edge): that needs `Set.InjOn lo (D.lineChain f c)`, which **fails in
+general** — every chain edge whose trace is empty (it doesn't touch this particular wall segment)
+defaults to `lo = 0` under `edgeParam`'s convention, so any two such edges collide. The right fix is
+restricting to the sub-`Finset` of edges with nonempty trace before asking for one-entry-per-edge;
+that restriction, and its own injectivity proof, is not attempted here. -/
+
+/-- **The sorted list of a real wall's chain positions exists, is sorted, and contains every chain
+edge's position** — unconditionally, no injectivity needed. This is as far as `sortedPositions`
+composes without addressing the empty-trace collision above. -/
+theorem lineChain_sortedPositions_valid {N : ℕ} (D : Dissection N) (f : Plane →ₗ[ℝ] ℝ)
+    (c : ℝ) (u v : Plane) {e : Fin N × Fin 3} (he : e ∈ D.lineChain f c) :
+    (min (edgeParam D f c u v e).1 (edgeParam D f c u v e).2) ∈
+      Erdos634.Contiguity.sortedPositions (D.lineChain f c)
+        (fun e => min (edgeParam D f c u v e).1 (edgeParam D f c u v e).2) ∧
+    (Erdos634.Contiguity.sortedPositions (D.lineChain f c)
+      (fun e => min (edgeParam D f c u v e).1 (edgeParam D f c u v e).2)).SortedLT :=
+  ⟨Erdos634.Contiguity.mem_sortedPositions (D.lineChain f c) _ he,
+    Erdos634.Contiguity.sortedPositions_sorted (D.lineChain f c) _⟩
+
 end Erdos634.LineParam
