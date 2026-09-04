@@ -311,4 +311,22 @@ theorem lineChain_trace_convex_compact_online {N : ℕ} (D : Dissection N)
       ∀ x ∈ (D.tile e.1).edge e.2, f x = c :=
   ⟨convex_segment _ _, isCompact_segment _ _, D.lineChain_edge_subset he⟩
 
+
+
+open scoped Classical in
+/-- **The `lo`/`hi` parameters of a chain edge's trace**, extracted from
+`wall_trace_param_or_empty`: `0, 0` if the trace is empty, else the sorted parameters of the
+segment it equals. Well-defined for any `e`; only meaningful for `e ∈ D.lineChain f c`. -/
+noncomputable def edgeParam {N : ℕ} (D : Dissection N) (f : Plane →ₗ[ℝ] ℝ) (c : ℝ)
+    (u v : Plane) (e : Fin N × Fin 3) : ℝ × ℝ :=
+  open Classical in
+  if h : ∃ tp ∈ Icc (0:ℝ) 1, ∃ tq ∈ Icc (0:ℝ) 1,
+      (D.tile e.1).edge e.2 ∩ segment ℝ u v =
+        segment ℝ (AffineMap.lineMap u v tp) (AffineMap.lineMap u v tq) ∧
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)
+          ((D.tile e.1).edge e.2 ∩ segment ℝ u v)
+        = ENNReal.ofReal (|tp - tq| * dist u v)
+  then (min h.choose (h.choose_spec.2.choose), max h.choose (h.choose_spec.2.choose))
+  else (0, 0)
+
 end Erdos634.LineParam

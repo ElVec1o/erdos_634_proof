@@ -4749,3 +4749,15 @@ convert `wall_partition`'s `ENNReal` sum into the real `hsum` `iUnion_Icc_eq_of_
 discharge `hdisj` via `Icc_subsingleton_of_subsingleton_inter` composed with
 `sameside_edges_subsingleton`. This is real remaining work — not yet attempted — but every
 ingredient now exists and is verified; nothing new needs to be invented.
+
+### `rem:pingaps` final assembly: `edgeParam` extraction built
+
+`edgeParam` extracts the `lo`/`hi` sorted parameters for any edge's trace via `Classical.choice`,
+defaulting to `(0,0)` when the trace is empty (a safe default: two degenerate `{0}` points meet in
+at most one point, so `iUnion_Icc_eq_of_sum_eq_length`'s disjointness hypothesis is unaffected by
+every empty-trace edge collapsing to the same point). This is a definition, not yet a theorem about
+it — next: prove the two facts `edgeParam` needs to satisfy (`Icc (lo e) (hi e)` matches the trace
+up to the sorted order, and the length `hi e - lo e` gives the right measure), then the sum identity
+and disjointness composition.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry`.
