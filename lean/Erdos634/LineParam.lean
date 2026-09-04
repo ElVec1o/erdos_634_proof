@@ -47,4 +47,18 @@ theorem lineMap_injective_of_ne {u v : Plane} (huv : u ≠ v) :
   have := abs_eq_zero.mp this
   linarith
 
+
+
+/-! ## Piece (2b): Hausdorff measure of a sub-segment, in parameter units -/
+
+/-- **A parametrized sub-segment's Hausdorff measure is its parameter-gap length.** Combines
+`hausdorffMeasure_segment` with `dist_lineMap_lineMap`: the segment between two points of the line
+`u v`, given by parameters `p`, `q`, has `μH¹` equal to `|p - q| * dist u v` (as an `ENNReal`, via
+`ENNReal.ofReal`). -/
+theorem hausdorffMeasure_segment_lineMap (u v : Plane) (p q : ℝ) :
+    (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)
+        (segment ℝ (AffineMap.lineMap u v p) (AffineMap.lineMap u v q))
+      = ENNReal.ofReal (|p - q| * dist u v) := by
+  rw [MeasureTheory.hausdorffMeasure_segment, edist_dist, dist_lineMap_lineMap]
+
 end Erdos634.LineParam
