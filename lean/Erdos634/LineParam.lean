@@ -127,4 +127,45 @@ theorem wall_trace_param_or_empty {E : Set Plane} (hEconv : Convex ℝ E) (hEcpt
   · left
     exact Set.not_nonempty_iff_eq_empty.mp hne
 
+
+
+/-! ## Composing two `lineMap`s: a sub-parametrization is itself a `lineMap`
+
+Needed for the final assembly: two chain edges' parameter *sub*-intervals, each itself given by a
+`lineMap u v`, must be compared as plain real intervals (`Ioo`/`Icc`) to invoke `Contiguity`'s
+1-D lemmas. This identity converts between the two pictures. -/
+
+/-- **`lineMap` composed with a sub-parametrization stays on the same line.** Reparametrizing
+`lineMap (lineMap u v p) (lineMap u v q)` — the `lineMap` between two points of the `u v` line —
+by `t` lands on `lineMap u v (p + t*(q-p))`, the point at the corresponding combined parameter. -/
+theorem lineMap_lineMap_comb (u v : Plane) (p q t : ℝ) :
+    AffineMap.lineMap (AffineMap.lineMap u v p) (AffineMap.lineMap u v q) t
+      = AffineMap.lineMap u v (p + t * (q - p)) := by
+  simp only [AffineMap.lineMap_apply, vadd_eq_add, vsub_eq_sub, smul_eq_mul]
+  have : v - u = v - u := rfl
+  match u, v with
+  | u, v => module
+
+/-- **The open segment between two `lineMap` points is the image of the open real interval.** -/
+theorem openSegment_lineMap_eq_image_Ioo (u v : Plane) {p q : ℝ} (hpq : p < q) :
+    openSegment ℝ (AffineMap.lineMap u v p) (AffineMap.lineMap u v q)
+      = (AffineMap.lineMap u v) '' Ioo p q := by
+  rw [openSegment_eq_image_lineMap]
+  ext y
+  simp only [Set.mem_image, Set.mem_Ioo]
+  constructor
+  · rintro ⟨t, ⟨ht0, ht1⟩, hty⟩
+    refine ⟨p + t * (q - p), ⟨by nlinarith, by nlinarith⟩, ?_⟩
+    rw [← lineMap_lineMap_comb, hty]
+  · rintro ⟨s, ⟨hsp, hsq⟩, hsy⟩
+    refine ⟨(s - p) / (q - p), ⟨by
+      apply div_pos <;> linarith, by
+      rw [div_lt_one (by linarith)]; linarith⟩, ?_⟩
+    rw [lineMap_lineMap_comb]
+    have hne : q - p ≠ 0 := by linarith
+    have hst : p + (s - p) / (q - p) * (q - p) = s := by
+      rw [div_mul_cancel₀ _ hne]; ring
+    rw [hst]
+    exact hsy
+
 end Erdos634.LineParam

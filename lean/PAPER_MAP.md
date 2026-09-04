@@ -4611,3 +4611,24 @@ specifically (using `Tri.edge`'s convexity/compactness and `lineChain_edge_subse
 `Dissection.wall_partition`'s measure sum (`Contiguity.no_gap_between`) — then feed all three into
 `sortedPositions`/`orderedChain`. Four solid ticks into this bridge; the remaining assembly is
 bookkeeping over what's now built, not new mathematics. No label moves yet.
+
+### `rem:pingaps` bridge: the interval-comparison identity — `openSegment_lineMap_eq_image_Ioo`
+
+The last piece needed before injectivity/coverage can be stated in `Contiguity.lean`'s own terms
+(`Ioo p q`, real intervals) rather than `openSegment`/Plane points: `lineMap_lineMap_comb` (composing
+a `lineMap` with a sub-`lineMap` along the same line lands on the combined parameter) and
+`openSegment_lineMap_eq_image_Ioo` (the open segment between two `lineMap` points is exactly the
+image of the open real interval between their parameters). This converts `D.sameside_edges_subsingleton`
+(already existing, used inside `wall_partition`'s own proof — two distinct chain edges' traces meet
+in at most a point) into the `Ioo p q ∩ Ioo r s = ∅`-shaped hypothesis `Contiguity.distinct_left_endpoints`
+needs.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry`.
+
+**Bridge status, five ticks in**: parametrization, the measure identity, the trace-to-subsegment
+theorem (found reusing existing `ChordTraceReal` machinery), the empty/nonempty dichotomy, and now
+the interval-comparison identity are all built. What remains is pure assembly: instantiate against
+`D.lineChain f c`'s actual edges, invoke `distinct_left_endpoints`/`gap_forces_meet`/`no_gap_between`
+with these pieces, and feed the result into `Contiguity.sortedPositions`/`orderedChain`. No new
+mathematical content is expected in that step — it is bookkeeping over what now exists. No label
+moves; `rem:pingaps` remains OPEN.
