@@ -4761,3 +4761,25 @@ up to the sorted order, and the length `hi e - lo e` gives the right measure), t
 and disjointness composition.
 
 `lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry`.
+
+### `rem:pingaps` final assembly: `edgeParam_spec` hit a real tactic-loop, aborted per Rule 4.1
+
+Attempted `edgeParam`'s correctness lemma (that its `Classical.choice`-extracted `lo`/`hi` satisfy
+the trace/measure properties). Failed three times reconstructing the exact chosen value as an
+equation usable by `rw`/`set`: the pair `(min h.choose (h.choose_spec.2.choose), max ...)` does not
+generalize cleanly under further `.1`/`.2` projection once a `set` is introduced on one of the two
+nested `choose` terms but not both, producing "motive is not type correct" errors. Aborted per
+Lean-4_rules Rule 4.1 rather than keep patching — reverted the in-progress file to its last clean,
+committed state (`git checkout`), so no `sorry` and no broken code landed.
+
+**The architectural fix, for the next attempt**: `edgeParam` should not embed the sort
+(`min`/`max`) inside the same `if` that does the `Classical.choose` extraction. Cleaner design:
+extract the *raw* unsorted pair `(tp, tq)` via one `Classical.choose` (or an unsorted existence
+statement), state `edgeParam_spec` in terms of that raw pair with `|tp - tq|` directly (no min/max
+needed at the definition level at all — `Icc (min tp tq) (max tp tq)` can be built at each *call
+site* instead), and keep the correctness lemma to a single `unfold; split_ifs` with no further
+value-reconstruction needed. This avoids the exact failure mode hit here.
+
+Eleven ticks into this bridge; the toolkit itself (all general lemmas) remains solid and untouched
+by this abort. Only the final instantiation's `edgeParam` design needs revisiting. No label moves;
+`rem:pingaps` remains OPEN.
