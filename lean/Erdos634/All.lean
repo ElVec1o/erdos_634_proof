@@ -20,6 +20,8 @@ import Erdos634.BaseAlphaBetaPrime
 import Erdos634.BaseBetaCorners
 import Erdos634.BaseBetaE1
 import Erdos634.BaseBetaMod12
+import Erdos634.BaseBetaQuadCoord
+import Erdos634.BaseBetaQuadField
 import Erdos634.BaseBetaWalkArith
 import Erdos634.BaseBetaWalks
 import Erdos634.Beeson3NotPrime
