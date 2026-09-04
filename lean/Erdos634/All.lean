@@ -1,3 +1,4 @@
+import Erdos634.FlushJoin
 import Erdos634.FlushSide
 import Erdos634.MidTriangleE1
 import Erdos634.BeesonThm2Graph
