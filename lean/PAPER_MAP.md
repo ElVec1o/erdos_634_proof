@@ -4825,3 +4825,25 @@ the disjointness composition are all built. What remains is exactly one thing: c
 `Dissection.wall_partition`'s `ENNReal` sum into the real-number `hsum` hypothesis
 `iUnion_Icc_eq_of_sum_eq_length` needs, using `edgeParam_spec`'s per-edge measure identity — then
 the whole chain composes into the actual instantiation. No label moves; `rem:pingaps` remains OPEN.
+
+### `rem:pingaps` final assembly: `lineChain_param_sum` built — the last piece
+
+The `ENNReal`-to-real sum conversion, the last named remaining step. `lineChain_param_sum`:
+`∑ e ∈ D.lineChain f c, (max − min of edgeParam e) = 1`, derived from `Dissection.wall_partition`'s
+measure sum via `edgeParam_spec`'s per-edge identity, `ENNReal.ofReal_sum_of_nonneg`, and
+`mul_right_cancel₀` (dividing out `dist u v ≠ 0`).
+
+One real fix needed: the empty-trace case discarded the "trace = ∅" fact with `-` in the `rcases`
+pattern, keeping only `edgeParam = (0,0)` — but `μH¹(edge ∩ segment) = 0` needs the trace-emptiness
+fact itself, not just the parameter default. Kept both components once diagnosed; one-line fix.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry`.
+
+**Fourteen ticks into this bridge, every piece named by `rem:pingaps` bridge (c) now exists and is
+verified**: `edgeParam`, its spec, the disjointness composition, and now the sum identity. What
+remains is pure assembly — instantiate `iUnion_Icc_eq_of_sum_eq_length` with
+`lo e := min (edgeParam e).1 (edgeParam e).2`, `hi e := max ...`, `hsum` from
+`lineChain_param_sum`, `hdisj` from `edgeParam_Icc_subsingleton`, to get the actual covering-union
+theorem, then compose with `Contiguity.sortedPositions`/`orderedChain`. No new mathematics is
+expected in that last step. No label moves; `rem:pingaps` remains OPEN, but the mathematical content
+of bridge (c)'s instantiation is now, for the first time, fully in hand.

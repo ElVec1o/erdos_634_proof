@@ -420,4 +420,56 @@ theorem edgeParam_Icc_subsingleton {N : ℕ} (D : Dissection N) (f : Plane →�
       rw [hsymm1, hsymm2] at htracesub
       exact Icc_subsingleton_of_subsingleton_inter u v huv min_le_max min_le_max htracesub
 
+
+
+/-- **The final sum identity**: converting `Dissection.wall_partition`'s `ENNReal` measure sum into
+the real-number `hsum` `iUnion_Icc_eq_of_sum_eq_length` needs, via `edgeParam_spec`'s per-edge
+measure identity. -/
+theorem lineChain_param_sum {N : ℕ} (D : Dissection N) (f : Plane →ₗ[ℝ] ℝ) (hf : f ≠ 0)
+    (c : ℝ) (u v : Plane) (huv : u ≠ v)
+    (hS : segment ℝ u v ⊆ {y | f y = c})
+    (hint : openSegment ℝ u v ⊆ interior D.target.carrier)
+    (hwall : ∀ y ∈ openSegment ℝ u v, ∀ i, y ∉ interior (D.tile i).carrier) :
+    ∑ e ∈ D.lineChain f c,
+        (max (edgeParam D f c u v e).1 (edgeParam D f c u v e).2
+          - min (edgeParam D f c u v e).1 (edgeParam D f c u v e).2)
+      = 1 := by
+  have hu : f u = c := hS (left_mem_segment ℝ u v)
+  have hv : f v = c := hS (right_mem_segment ℝ u v)
+  have hpart := D.wall_partition f c hf huv hS hint hwall
+  have hstep : ∀ e ∈ D.lineChain f c,
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)
+          ((D.tile e.1).edge e.2 ∩ segment ℝ u v)
+        = ENNReal.ofReal
+          ((max (edgeParam D f c u v e).1 (edgeParam D f c u v e).2
+            - min (edgeParam D f c u v e).1 (edgeParam D f c u v e).2) * dist u v) := by
+    intro e he
+    rcases edgeParam_spec D f hf c u v huv he hu hv with ⟨hempty', hz⟩ | ⟨-, -, -, hmeas⟩
+    · rw [hz, hempty']
+      simp
+    · rw [hmeas]
+      congr 2
+      rcases le_total (edgeParam D f c u v e).1 (edgeParam D f c u v e).2 with h | h
+      · rw [min_eq_left h, max_eq_right h, abs_of_nonpos (by linarith), neg_sub]
+      · rw [min_eq_right h, max_eq_left h, abs_of_nonneg (by linarith)]
+  rw [Finset.sum_congr rfl hstep] at hpart
+  rw [← ENNReal.ofReal_sum_of_nonneg (fun e _ => by
+    have := min_le_max (a := (edgeParam D f c u v e).1) (b := (edgeParam D f c u v e).2)
+    positivity)] at hpart
+  rw [MeasureTheory.hausdorffMeasure_segment, edist_dist] at hpart
+  rw [← Finset.sum_mul] at hpart
+  have hdpos : 0 < dist u v := dist_pos.mpr huv
+  have hkey : (∑ e ∈ D.lineChain f c,
+      (max (edgeParam D f c u v e).1 (edgeParam D f c u v e).2
+        - min (edgeParam D f c u v e).1 (edgeParam D f c u v e).2)) * dist u v
+      = 1 * dist u v := by
+    have hnn : (0:ℝ) ≤ ∑ e ∈ D.lineChain f c,
+        (max (edgeParam D f c u v e).1 (edgeParam D f c u v e).2
+          - min (edgeParam D f c u v e).1 (edgeParam D f c u v e).2) :=
+      Finset.sum_nonneg (fun e _ => sub_nonneg.mpr min_le_max)
+    have := (ENNReal.ofReal_eq_ofReal_iff (by positivity) (by positivity)).mp hpart
+    simpa using this
+  have hfin := mul_right_cancel₀ hdpos.ne' hkey
+  linarith [hfin]
+
 end Erdos634.LineParam
