@@ -472,4 +472,35 @@ theorem lineChain_param_sum {N : ℕ} (D : Dissection N) (f : Plane →ₗ[ℝ] 
   have hfin := mul_right_cancel₀ hdpos.ne' hkey
   linarith [hfin]
 
+
+
+/-- **The wall segment's parametrization is covered exactly by the chain's sorted parameter
+intervals.** Composes `lineChain_param_sum`, `edgeParam_spec`'s bounds, and
+`edgeParam_Icc_subsingleton` into `iUnion_Icc_eq_of_sum_eq_length`. -/
+theorem lineChain_covers_Icc {N : ℕ} (D : Dissection N) (f : Plane →ₗ[ℝ] ℝ) (hf : f ≠ 0)
+    (c : ℝ) (u v : Plane) (huv : u ≠ v)
+    (hS : segment ℝ u v ⊆ {y | f y = c})
+    (hint : openSegment ℝ u v ⊆ interior D.target.carrier)
+    (hwall : ∀ y ∈ openSegment ℝ u v, ∀ i, y ∉ interior (D.tile i).carrier)
+    (hle : ∀ e ∈ D.lineChain f c, ∀ y ∈ (D.tile e.1).carrier, f y ≤ c) :
+    (⋃ e ∈ D.lineChain f c,
+        Icc (min (edgeParam D f c u v e).1 (edgeParam D f c u v e).2)
+          (max (edgeParam D f c u v e).1 (edgeParam D f c u v e).2))
+      = Icc (0:ℝ) 1 := by
+  have hu : f u = c := hS (left_mem_segment ℝ u v)
+  have hv : f v = c := hS (right_mem_segment ℝ u v)
+  refine iUnion_Icc_eq_of_sum_eq_length 0 1 zero_lt_one (D.lineChain f c)
+    (fun e => min (edgeParam D f c u v e).1 (edgeParam D f c u v e).2)
+    (fun e => max (edgeParam D f c u v e).1 (edgeParam D f c u v e).2)
+    (fun e _ => min_le_max) (fun e he => ?_) (fun e₁ he₁ e₂ he₂ hne =>
+      edgeParam_Icc_subsingleton D f hf c u v huv he₁ he₂ hne hu hv
+        (hle e₁ he₁) (hle e₂ he₂))
+    (by rw [sub_zero]; exact lineChain_param_sum D f hf c u v huv hS hint hwall)
+  dsimp only
+  rcases edgeParam_spec D f hf c u v huv he hu hv with ⟨-, hz⟩ | ⟨hb1, hb2, -, -⟩
+  · rw [hz]; intro x hx; simp only [min_self, max_self, Icc_self, Set.mem_singleton_iff] at hx
+    subst hx; exact ⟨le_refl 0, zero_le_one⟩
+  · intro x hx
+    exact ⟨(le_min hb1.1 hb2.1).trans hx.1, hx.2.trans (max_le hb1.2 hb2.2)⟩
+
 end Erdos634.LineParam

@@ -4847,3 +4847,25 @@ remains is pure assembly — instantiate `iUnion_Icc_eq_of_sum_eq_length` with
 theorem, then compose with `Contiguity.sortedPositions`/`orderedChain`. No new mathematics is
 expected in that last step. No label moves; `rem:pingaps` remains OPEN, but the mathematical content
 of bridge (c)'s instantiation is now, for the first time, fully in hand.
+
+### `rem:pingaps` bridge (c): full instantiation composed — `lineChain_covers_Icc`
+
+Formalized (not just scoped): composes `lineChain_param_sum`, `edgeParam_spec`'s bounds, and
+`edgeParam_Icc_subsingleton` into `iUnion_Icc_eq_of_sum_eq_length`, giving the actual theorem —
+`⋃ e ∈ D.lineChain f c, Icc (min ..) (max ..) = Icc 0 1` — for a **real** dissection's wall segment,
+not an abstract schema. This is `Contiguity.sortedPositions`/`orderedChain`'s coverage input,
+instantiated.
+
+Two fixes: `one_pos.lt` doesn't exist (`zero_lt_one` does); the `hsum` argument needed `sub_zero` to
+match `b - a` against the bare `1` `lineChain_param_sum` proves; and the empty-trace membership case
+needed `subst hx` after simplifying `Icc_self` to a singleton, not a direct `▸`.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry`.
+
+**This is the actual instantiation bridge (c) asked for, built end to end**: fifteen ticks from
+parametrization to this covering-union theorem for a real `Dissection.lineChain`. What composing
+this with `sortedPositions`/`orderedChain` gives is the ordered word `bridge (c)` needs to read an
+orientation off — that final step (turning the covering fact into the actual sorted list) has not
+been attempted, and is the honest remaining gap; `rem:pingaps` stays OPEN. But the geometric content
+of "does bridge (c) instantiate on a real wall" is now answered: yes, unconditionally, for any wall
+of any `Dissection`.
