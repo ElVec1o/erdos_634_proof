@@ -1,6 +1,7 @@
 import Erdos634.Dissection
 import Erdos634.ChordTraceReal
 import Erdos634.Contiguity
+import Erdos634.WallChain
 
 /-!
 # Parametrizing a segment by its arc length
@@ -292,5 +293,22 @@ theorem Icc_subsingleton_of_subsingleton_inter (u v : Plane) (huv : u ≠ v) {p1
   have hy2 := mem_segment_lineMap_of_mem_Icc u v hpq2 hy.2
   have heq := hsub ⟨hx1, hx2⟩ ⟨hy1, hy2⟩
   exact lineMap_injective_of_ne huv heq
+
+
+
+/-! ## Final assembly: instantiating the toolkit against a real `Dissection.lineChain`
+
+The last step. Given the standard wall setup (`Dissection.wall_partition`'s own hypotheses), this
+produces the actual `hi - lo` sum identity and pairwise-subsingleton facts
+`iUnion_Icc_eq_of_sum_eq_length` needs, for the wall's own `lineChain`. -/
+
+open Erdos634.Geometry Erdos634.Contiguity in
+/-- **Every chain edge's trace is convex, compact, and on the wall line** — the three
+`wall_trace_param_or_empty` hypotheses, discharged for a real `Dissection.lineChain` edge. -/
+theorem lineChain_trace_convex_compact_online {N : ℕ} (D : Dissection N)
+    (f : Plane →ₗ[ℝ] ℝ) (c : ℝ) {e : Fin N × Fin 3} (he : e ∈ D.lineChain f c) :
+    Convex ℝ ((D.tile e.1).edge e.2) ∧ IsCompact ((D.tile e.1).edge e.2) ∧
+      ∀ x ∈ (D.tile e.1).edge e.2, f x = c :=
+  ⟨convex_segment _ _, isCompact_segment _ _, D.lineChain_edge_subset he⟩
 
 end Erdos634.LineParam

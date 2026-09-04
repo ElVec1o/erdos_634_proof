@@ -4731,3 +4731,21 @@ One Lean snag, same pattern as twice before this session: `field_simp` alone lef
 **Bridge toolkit is now fully closed on both interval shapes** (`Ioo` for the general dichotomy
 argument, `Icc` for the coverage theorem) — the only remaining step is instantiating all of this
 against a real `D.lineChain f c`. Eight ticks of new mathematics into this bridge.
+
+### `rem:pingaps` final assembly, started: trace hypotheses discharged for a real chain edge
+
+First piece of the actual instantiation: `lineChain_trace_convex_compact_online` — for a real
+`e ∈ D.lineChain f c`, its edge is convex (a segment), compact (`isCompact_segment`, built earlier),
+and lies on the wall line (`D.lineChain_edge_subset`, pre-existing). These are exactly
+`wall_trace_param_or_empty`'s three hypotheses on `E`, now discharged for the real object rather
+than assumed abstractly.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry`.
+
+**What remains, concretely**: define `lo`, `hi` on `D.lineChain f c` by extracting the parameters
+from `wall_trace_param_or_empty` (via `Classical.choice`, since it's a disjunction — an existence
+statement, not a computable value) for each edge, defaulting to `lo = hi` on the empty-trace branch;
+convert `wall_partition`'s `ENNReal` sum into the real `hsum` `iUnion_Icc_eq_of_sum_eq_length` needs;
+discharge `hdisj` via `Icc_subsingleton_of_subsingleton_inter` composed with
+`sameside_edges_subsingleton`. This is real remaining work — not yet attempted — but every
+ingredient now exists and is verified; nothing new needs to be invented.
