@@ -4516,3 +4516,36 @@ declaration exists exactly where the remark says (`OrientBridge.lean`: `no_two_g
 
 `rem:pingaps` remains genuinely OPEN; nothing here changes that. The value is bookkeeping accuracy
 on one of only three OPEN statements in the whole corpus — it should not have been untracked.
+
+### `rem:pingaps` bridge (c): instantiation scoped, not attempted — a real blueprint, not a guess
+
+Traced the instantiation precisely before writing Lean, per Lean-4_rules' own Phase-1 practice.
+`Contiguity.lean`'s abstract tools (`sortedPositions`, `orderedChain`, `distinct_left_endpoints`,
+`gap_forces_meet`, `no_gap_between`) all work over a bare `pos : ι → ℝ` and `S : Set ℝ` — 1-D
+interval facts, deliberately decoupled from any dissection. The real object to instantiate against
+is `Dissection.lineChain` (`WallChain.lean:194`, found — an earlier grep for `def lineChain` missed
+it because it's declared `def Dissection.lineChain` at root level, not inside `namespace
+Dissection`), and `Dissection.wall_partition` (`WallChain.lean:363`), which gives the covering
+identity `∑ e ∈ lineChain, μH¹(edge e ∩ segment u₁u₂) = μH¹(segment u₁u₂)` — **in Hausdorff
+measure on the plane**, not the real-line Lebesgue measure `Contiguity`'s lemmas use.
+
+**What the instantiation needs, precisely, in three pieces**:
+1. **A parametrization** of `segment u₁ u₂` by `[0, L]` (`L = dist u₁ u₂`), e.g. via
+   `AffineMap.lineMap u₁ u₂` restricted to `[0,1]` and rescaled — giving the `pos` key
+   `Contiguity` needs as each chain edge's trace's left endpoint parameter.
+2. **The measure bridge**: `μH¹(edge e ∩ segment u₁u₂)` (already known to equal a sub-segment's
+   Hausdorff measure, hence its Euclidean length via Mathlib's `hausdorffMeasure_segment`, already
+   used project-wide — `ChordLengthAdditivity.lean`, `PinPlumbing.lean`) must convert to the
+   **parameter-interval length** `q_e - p_e` under the parametrization in (1) — an isometry
+   argument on the line, not yet written.
+3. **Injectivity and coverage**, assembling (1)+(2) into `Contiguity.distinct_left_endpoints`'s and
+   `.no_gap_between`'s exact hypotheses: injectivity from `D.interiors_disjoint` transported through
+   the parametrization (two chain edges with the same left parameter would have overlapping
+   interiors), and coverage from `wall_partition`'s measure identity via (2).
+
+**None of this is built yet.** This is a real scoping, not a discovery that it's easy: (2) in
+particular is a genuine geometric lemma (Hausdorff measure of a sub-segment equals its parameter
+length under an affine reparametrization) that doesn't obviously exist in the corpus yet, and is the
+"not trivial" step the paper's own remark warns about. Recorded here so the next attempt starts from
+this blueprint rather than re-deriving it — this is worth a dedicated multi-step session, not a
+single tick continuation right now.
