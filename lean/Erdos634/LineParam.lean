@@ -1,5 +1,6 @@
 import Erdos634.Dissection
 import Erdos634.ChordTraceReal
+import Erdos634.Contiguity
 
 /-!
 # Parametrizing a segment by its arc length
@@ -72,7 +73,7 @@ is a segment) with `segment_eq_image_lineMap` (a segment's own points are `lineM
 with the wall segment — in particular a chain edge's trace — is itself `segment (lineMap u v tp)
 (lineMap u v tq)` for parameters `tp, tq ∈ [0,1]`, with Hausdorff measure `|tp - tq| * dist u v`. -/
 
-open Erdos634.ChordTraceReal in
+open Erdos634.ChordTraceReal Erdos634.Contiguity in
 /-- **A wall-segment trace is a parametrized sub-segment.** If `S` is convex, compact, and lies on
 the line `{f = c}` through `u ≠ v` (with `S` nonempty, witnessed by `x0`), then `S = segment
 (lineMap u v tp) (lineMap u v tq)` for some `tp, tq ∈ [0,1]`, and its Hausdorff measure is
@@ -215,5 +216,44 @@ theorem Ioo_disjoint_of_subsingleton_inter (u v : Plane) (huv : u ≠ v) {p1 q1 
     fun h => hxy (lineMap_injective_of_ne huv h)
   exact hxy' (hsub ⟨hxseg1, hxseg2⟩ ⟨hyseg1, hyseg2⟩)
 
-end Erdos634.LineParam
 
+
+
+/-! ## The coverage step: essentially-disjoint intervals summing to the whole cover it exactly
+
+The last piece of `rem:pingaps` bridge (c)'s instantiation, scoped last tick. `wall_partition` gives
+the sum identity; `Ioo_disjoint_of_subsingleton_inter` gives essential disjointness. What was
+missing is the general 1-D fact connecting them: essentially-disjoint closed sub-intervals of
+`[a,b]` whose lengths sum to `b-a` cover `[a,b]` exactly — no separate "coverage hypothesis" is
+needed, since `MeasureTheory.measure_biUnion_finset₀` computes the union's measure from the sum
+*unconditionally*, given only essential disjointness. -/
+
+open MeasureTheory in
+/-- **Essentially-disjoint closed sub-intervals summing to the whole length cover it exactly.**
+Given `lo i ≤ hi i ⊆ [a,b]` for each `i` in a finite index set, pairwise essentially disjoint
+(`Subsingleton` overlap), and `∑ i, (hi i - lo i) = b - a`, the union of the closed intervals is
+all of `Icc a b`. -/
+theorem iUnion_Icc_eq_of_sum_eq_length {ι : Type*} (a b : ℝ) (hab : a < b) (s : Finset ι)
+    (lo hi : ι → ℝ) (hle : ∀ i ∈ s, lo i ≤ hi i)
+    (hsub : ∀ i ∈ s, Icc (lo i) (hi i) ⊆ Icc a b)
+    (hdisj : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → (Icc (lo i) (hi i) ∩ Icc (lo j) (hi j)).Subsingleton)
+    (hsum : ∑ i ∈ s, (hi i - lo i) = b - a) :
+    (⋃ i ∈ s, Icc (lo i) (hi i)) = Icc a b := by
+  classical
+  have hmeas : ∀ i ∈ s, volume (Icc (lo i) (hi i)) = ENNReal.ofReal (hi i - lo i) := fun i hi' => by
+    rw [Real.volume_Icc]
+  have hadd : volume (⋃ i ∈ s, Icc (lo i) (hi i)) = ∑ i ∈ s, volume (Icc (lo i) (hi i)) :=
+    measure_biUnion_finset₀
+      (fun i h1 j h2 hij => (hdisj i h1 j h2 hij).finite.measure_zero volume)
+      (fun i _ => measurableSet_Icc.nullMeasurableSet)
+  have hsum' : ∑ i ∈ s, volume (Icc (lo i) (hi i)) = ENNReal.ofReal (b - a) := by
+    rw [Finset.sum_congr rfl hmeas, ← ENNReal.ofReal_sum_of_nonneg (fun i hi' => by linarith [hle i hi']),
+      hsum]
+  have hvol : volume (⋃ i ∈ s, Icc (lo i) (hi i)) = volume (Icc a b) := by
+    rw [hadd, hsum', Real.volume_Icc]
+  have hclosed : IsClosed (⋃ i ∈ s, Icc (lo i) (hi i)) :=
+    Set.Finite.isClosed_biUnion s.finite_toSet (fun i _ => isClosed_Icc)
+  have hsub' : (⋃ i ∈ s, Icc (lo i) (hi i)) ⊆ Icc a b := Set.iUnion₂_subset hsub
+  exact Erdos634.Contiguity.closed_full_measure_eq hab _ hclosed hsub' hvol
+
+end Erdos634.LineParam

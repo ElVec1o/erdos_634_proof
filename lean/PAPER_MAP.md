@@ -4687,3 +4687,29 @@ pattern at higher cost. Recording the precise chain now so the next attempt has 
 Lean-4_rules' own Phase-1 practice — this is deliberate pacing, not the search stalling.
 
 Seven ticks into this bridge; `rem:pingaps` remains OPEN, no label moves.
+
+### `rem:pingaps` bridge: coverage step built — `iUnion_Icc_eq_of_sum_eq_length`
+
+The scoped chain from moments ago turned out shorter than expected: `MeasureTheory.measure_biUnion_finset₀`
+computes a finite union's measure from the sum **unconditionally**, given only essential
+disjointness (subsingleton overlap ⟹ measure zero) — no separate "coverage hypothesis" needed, unlike
+`sum_hausdorff_of_partition`'s direction. So the three-step plan collapsed to one theorem:
+`iUnion_Icc_eq_of_sum_eq_length` — essentially-disjoint closed sub-intervals of `[a,b]` whose lengths
+sum to `b-a` cover `[a,b]` **exactly**, built directly from `measure_biUnion_finset₀` and
+`Contiguity.closed_full_measure_eq`. Built and verified in one pass, no failed attempts this time.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry` in code.
+
+**This closes the entire abstract bridge chain scoped over the last seven ticks**: parametrization,
+the measure identity, trace-to-subsegment, the empty/nonempty dichotomy, the interval-comparison
+identity, injectivity, and now coverage are all built as general, reusable, composable theorems.
+
+**What remains is exactly the "instantiation" the paper's own remark named**: applying this whole
+toolkit to an actual `D.lineChain f c` for a real dissection — converting `wall_partition`'s `ENNReal`
+sum into the real-number `hsum` hypothesis `iUnion_Icc_eq_of_sum_eq_length` needs (bookkeeping),
+supplying `hdisj` from `Ioo_disjoint_of_subsingleton_inter` composed with
+`Dissection.sameside_edges_subsingleton`, and feeding the result to
+`Contiguity.sortedPositions`/`orderedChain`. Seven ticks of genuinely new mathematics; what's left is
+real but is assembly, matching the paper's own words exactly. No label moves; `rem:pingaps` remains
+OPEN — this session did not close it, but every mathematical obstacle it names for bridge (c) is now
+either already-discharged (per the remark's own audit) or reduced to bookkeeping.
