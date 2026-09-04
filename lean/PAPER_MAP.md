@@ -4549,3 +4549,14 @@ length under an affine reparametrization) that doesn't obviously exist in the co
 "not trivial" step the paper's own remark warns about. Recorded here so the next attempt starts from
 this blueprint rather than re-deriving it — this is worth a dedicated multi-step session, not a
 single tick continuation right now.
+
+### `rem:pingaps` bridge (c), piece (2a) built — `LineParam.lean`
+
+First piece of the parametrization/measure bridge scoped last tick: `dist_lineMap_lineMap` (two
+points on the same affine line, via `AffineMap.lineMap`, are at distance `|s-t| · dist u v`) and
+`lineMap_injective_of_ne` (the parametrization is injective when `u ≠ v`). This is the "parametrize
+the wall segment by `[0,L]`" half of piece (1)/(2); still needed: connecting `hausdorffMeasure_segment`
+to this parametrization for a chain edge's *trace* on the wall segment specifically (not just two
+arbitrary points), and the injectivity/coverage assembly into `Contiguity`'s hypotheses.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean.
