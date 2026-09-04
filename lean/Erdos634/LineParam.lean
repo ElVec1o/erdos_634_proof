@@ -313,20 +313,67 @@ theorem lineChain_trace_convex_compact_online {N : ℕ} (D : Dissection N)
 
 
 
+
+
+
 open scoped Classical in
-/-- **The `lo`/`hi` parameters of a chain edge's trace**, extracted from
-`wall_trace_param_or_empty`: `0, 0` if the trace is empty, else the sorted parameters of the
-segment it equals. Well-defined for any `e`; only meaningful for `e ∈ D.lineChain f c`. -/
+/-- **The raw (unsorted) parameters of a chain edge's trace**, extracted from
+`wall_trace_param_or_empty` via `Classical.choice`: `(0, 0)` if the trace is empty, else `(tp, tq)`
+with `tp`, `tq` **not** sorted — sorting is done at call sites via `min`/`max`, kept out of the
+definition itself to keep this lemma's own proof a plain `unfold`/`dif_pos` (a redesign after last
+tick's tactic loop trying to reconstruct a sorted pair). -/
 noncomputable def edgeParam {N : ℕ} (D : Dissection N) (f : Plane →ₗ[ℝ] ℝ) (c : ℝ)
     (u v : Plane) (e : Fin N × Fin 3) : ℝ × ℝ :=
-  open Classical in
   if h : ∃ tp ∈ Icc (0:ℝ) 1, ∃ tq ∈ Icc (0:ℝ) 1,
       (D.tile e.1).edge e.2 ∩ segment ℝ u v =
         segment ℝ (AffineMap.lineMap u v tp) (AffineMap.lineMap u v tq) ∧
       (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)
           ((D.tile e.1).edge e.2 ∩ segment ℝ u v)
         = ENNReal.ofReal (|tp - tq| * dist u v)
-  then (min h.choose (h.choose_spec.2.choose), max h.choose (h.choose_spec.2.choose))
+  then (h.choose, h.choose_spec.2.choose)
   else (0, 0)
+
+open Erdos634.Geometry in
+/-- **`edgeParam`'s correctness**, raw and unsorted. Either the trace is empty and `edgeParam = (0,0)`,
+or `edgeParam = (tp, tq)` with `tp, tq ∈ [0,1]`, trace `= segment (lineMap tp) (lineMap tq)`, and
+measure `= ofReal (|tp - tq| * dist u v)`. -/
+theorem edgeParam_spec {N : ℕ} (D : Dissection N) (f : Plane →ₗ[ℝ] ℝ) (hf : f ≠ 0) (c : ℝ)
+    (u v : Plane) (huv : u ≠ v) {e : Fin N × Fin 3} (he : e ∈ D.lineChain f c)
+    (hu : f u = c) (hv : f v = c) :
+    (D.tile e.1).edge e.2 ∩ segment ℝ u v = ∅ ∧ edgeParam D f c u v e = (0, 0) ∨
+    (edgeParam D f c u v e).1 ∈ Icc (0:ℝ) 1 ∧ (edgeParam D f c u v e).2 ∈ Icc (0:ℝ) 1 ∧
+      (D.tile e.1).edge e.2 ∩ segment ℝ u v =
+        segment ℝ (AffineMap.lineMap u v (edgeParam D f c u v e).1)
+          (AffineMap.lineMap u v (edgeParam D f c u v e).2) ∧
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)
+          ((D.tile e.1).edge e.2 ∩ segment ℝ u v)
+        = ENNReal.ofReal (|(edgeParam D f c u v e).1 - (edgeParam D f c u v e).2| * dist u v) := by
+  obtain ⟨hconv, hcpt, hline⟩ := lineChain_trace_convex_compact_online D f c he
+  rcases wall_trace_param_or_empty hconv hcpt f hf c hline u v huv hu hv
+    with hempty | ⟨tp, htp, tq, htq, heq, hmeas⟩
+  · left
+    have hnex : ¬ ∃ tp ∈ Icc (0:ℝ) 1, ∃ tq ∈ Icc (0:ℝ) 1,
+        (D.tile e.1).edge e.2 ∩ segment ℝ u v =
+          segment ℝ (AffineMap.lineMap u v tp) (AffineMap.lineMap u v tq) ∧
+        (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)
+            ((D.tile e.1).edge e.2 ∩ segment ℝ u v)
+          = ENNReal.ofReal (|tp - tq| * dist u v) := by
+      rintro ⟨tp, -, tq, -, heq', -⟩
+      rw [hempty] at heq'
+      exact Set.notMem_empty (AffineMap.lineMap u v tp)
+        (heq' ▸ left_mem_segment ℝ (AffineMap.lineMap u v tp) (AffineMap.lineMap u v tq))
+    exact ⟨hempty, by unfold edgeParam; rw [dif_neg hnex]⟩
+  · right
+    have hex : ∃ tp' ∈ Icc (0:ℝ) 1, ∃ tq' ∈ Icc (0:ℝ) 1,
+        (D.tile e.1).edge e.2 ∩ segment ℝ u v =
+          segment ℝ (AffineMap.lineMap u v tp') (AffineMap.lineMap u v tq') ∧
+        (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane)
+            ((D.tile e.1).edge e.2 ∩ segment ℝ u v)
+          = ENNReal.ofReal (|tp' - tq'| * dist u v) := ⟨tp, htp, tq, htq, heq, hmeas⟩
+    have hparam : edgeParam D f c u v e = (hex.choose, hex.choose_spec.2.choose) := by
+      unfold edgeParam; rw [dif_pos hex]
+    rw [hparam]
+    exact ⟨hex.choose_spec.1, hex.choose_spec.2.choose_spec.1,
+      hex.choose_spec.2.choose_spec.2.1, hex.choose_spec.2.choose_spec.2.2⟩
 
 end Erdos634.LineParam

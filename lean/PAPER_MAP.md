@@ -4783,3 +4783,20 @@ value-reconstruction needed. This avoids the exact failure mode hit here.
 Eleven ticks into this bridge; the toolkit itself (all general lemmas) remains solid and untouched
 by this abort. Only the final instantiation's `edgeParam` design needs revisiting. No label moves;
 `rem:pingaps` remains OPEN.
+
+### `rem:pingaps` final assembly: `edgeParam_spec` built, after the redesign
+
+The diagnosed fix worked. Redefined `edgeParam` to extract the **unsorted** raw pair `(h.choose,
+h.choose_spec.2.choose)` directly — no `min`/`max` inside the definition — and restated
+`edgeParam_spec` in terms of that raw pair (`|tp - tq|` in the measure fact, not a pre-sorted
+length). The correctness proof is now a plain `unfold edgeParam; rw [dif_pos/dif_neg]` followed by
+direct field projection — no value-reconstruction, no `set`/`rw` motive issues. Landed in one clean
+pass, confirming the diagnosis from last tick's abort was correct.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry`.
+
+**What remains**: at the call site, define `lo e := min (edgeParam e).1 (edgeParam e).2`,
+`hi e := max ...`, derive `iUnion_Icc_eq_of_sum_eq_length`'s `hle`/`hsub` from `edgeParam_spec`'s
+bounds, `hdisj` from `Icc_subsingleton_of_subsingleton_inter` composed with
+`sameside_edges_subsingleton`, and `hsum` from converting `wall_partition`'s `ENNReal` sum via
+`edgeParam_spec`'s per-edge measure identity. Twelve ticks into this bridge.
