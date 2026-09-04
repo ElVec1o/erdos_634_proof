@@ -4654,3 +4654,36 @@ empty/nonempty dichotomy, the interval-comparison identity, and now injectivity 
 composable. What remains: the coverage half (`Contiguity.no_gap_between`, from
 `Dissection.wall_partition`'s measure sum) and the final assembly into `sortedPositions`/`orderedChain`
 for an actual `D.lineChain f c`. No label moves; `rem:pingaps` remains OPEN.
+
+### `rem:pingaps` bridge: the coverage step, scoped precisely (Phase 1, not attempted)
+
+Checked Mathlib for a shortcut (`measure_biUnion_finset₀` et al.) before writing anything — it needs
+true `Disjoint`, not the corpus's "subsingleton overlap" shape, which is exactly why
+`EdgeChain.sum_hausdorff_of_partition` exists as a bespoke wrapper. That theorem's *hypothesis*
+direction (coverage `⟹` the sum identity) is the wrong direction for what remains here — the sum
+identity is already in hand from `Dissection.wall_partition`; what's needed is the **reverse**
+inference: sum identity `⟹` coverage.
+
+**The precise remaining chain, in three steps, none built yet**:
+1. Convert `wall_partition`'s `ENNReal`-valued sum (via `hausdorffMeasure_segment_lineMap` applied
+   per chain edge) into a real-number identity: `∑ e ∈ lineChain, |tp_e - tq_e| = 1` (`[0,1]`-normalized
+   parameter lengths sum to the whole), dividing through by `dist u v ≠ 0`. Routine `ENNReal.ofReal`
+   bookkeeping, not new mathematics.
+2. From that sum identity plus `Ioo_disjoint_of_subsingleton_inter` (pairwise essential
+   disjointness), conclude the **real-line** Lebesgue measure identity `volume (⋃ e, Icc (min tp_e
+   tq_e) (max tp_e tq_e)) = volume (Icc 0 1)` — additivity of interval lengths under
+   essentially-disjoint overlap, the same shape as `sum_hausdorff_of_partition` but on `ℝ` with
+   ordinary `volume`, not `μH¹` on `Plane`. Not yet checked whether Mathlib's own
+   `measure_biUnion_finset₀` pattern transfers directly or needs its own wrapper.
+3. Feed that into `Contiguity.closed_full_measure_eq`/`no_gap_between` to get the actual coverage:
+   every point of `[0,1]` lies in some chain edge's parameter interval — the input
+   `sortedPositions`/`orderedChain` need.
+
+**Why scoped rather than attempted this tick**: last tick's `Ioo_disjoint_of_subsingleton_inter`
+took several real Lean strikes (a namespace-structure bug, then three failed derivation attempts)
+even for a comparatively contained lemma. Step 2 above is a genuinely new measure-additivity
+argument, not a restatement of something already proved, and rushing it risks the same failure
+pattern at higher cost. Recording the precise chain now so the next attempt has a blueprint, per
+Lean-4_rules' own Phase-1 practice — this is deliberate pacing, not the search stalling.
+
+Seven ticks into this bridge; `rem:pingaps` remains OPEN, no label moves.
