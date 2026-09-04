@@ -168,4 +168,52 @@ theorem openSegment_lineMap_eq_image_Ioo (u v : Plane) {p q : ℝ} (hpq : p < q)
     rw [hst]
     exact hsy
 
+
+/-! ## Final assembly piece: subsingleton trace-intersection gives disjoint parameter intervals
+
+`Dissection.sameside_edges_subsingleton` gives, for two distinct chain edges, that their (full)
+edges meet in at most one point — hence so do their traces on the wall segment. Converted through
+`openSegment_lineMap_eq_image_Ioo` and `lineMap_injective_of_ne`, this is exactly
+`Contiguity.distinct_left_endpoints`'s hypothesis. -/
+
+/-- **A subsingleton segment-intersection forces disjoint open parameter intervals.** If the
+segments `[lineMap u v p1, lineMap u v q1]` and `[lineMap u v p2, lineMap u v q2]` meet in at most
+one point, then `Ioo p1 q1` and `Ioo p2 q2` are disjoint. -/
+theorem Ioo_disjoint_of_subsingleton_inter (u v : Plane) (huv : u ≠ v) {p1 q1 p2 q2 : ℝ}
+    (hsub : (segment ℝ (AffineMap.lineMap u v p1) (AffineMap.lineMap u v q1) ∩
+        segment ℝ (AffineMap.lineMap u v p2) (AffineMap.lineMap u v q2)).Subsingleton) :
+    Ioo p1 q1 ∩ Ioo p2 q2 = ∅ := by
+  by_contra hne
+  have hne' : (Ioo p1 q1 ∩ Ioo p2 q2).Nonempty := Set.nonempty_iff_ne_empty.mpr hne
+  rw [Set.Ioo_inter_Ioo, Set.nonempty_Ioo] at hne'
+  obtain ⟨x, hx1, hx2⟩ := exists_between hne'
+  obtain ⟨y, hy1, hy2⟩ := exists_between hx2
+  have hxy : x ≠ y := hy1.ne
+  have hxmem : x ∈ Ioo p1 q1 ∩ Ioo p2 q2 := by
+    rw [Set.Ioo_inter_Ioo]; exact ⟨hx1, hx2⟩
+  have hymem : y ∈ Ioo p1 q1 ∩ Ioo p2 q2 := by
+    rw [Set.Ioo_inter_Ioo]; exact ⟨hx1.trans hy1, hy2⟩
+  have hp1q1 : p1 < q1 := hxmem.1.1.trans hxmem.1.2
+  have hp2q2 : p2 < q2 := hxmem.2.1.trans hxmem.2.2
+  have hxseg1 : AffineMap.lineMap u v x ∈
+      segment ℝ (AffineMap.lineMap u v p1) (AffineMap.lineMap u v q1) :=
+    openSegment_subset_segment ℝ _ _
+      ((openSegment_lineMap_eq_image_Ioo u v hp1q1).symm ▸ ⟨x, hxmem.1, rfl⟩)
+  have hyseg1 : AffineMap.lineMap u v y ∈
+      segment ℝ (AffineMap.lineMap u v p1) (AffineMap.lineMap u v q1) :=
+    openSegment_subset_segment ℝ _ _
+      ((openSegment_lineMap_eq_image_Ioo u v hp1q1).symm ▸ ⟨y, hymem.1, rfl⟩)
+  have hxseg2 : AffineMap.lineMap u v x ∈
+      segment ℝ (AffineMap.lineMap u v p2) (AffineMap.lineMap u v q2) :=
+    openSegment_subset_segment ℝ _ _
+      ((openSegment_lineMap_eq_image_Ioo u v hp2q2).symm ▸ ⟨x, hxmem.2, rfl⟩)
+  have hyseg2 : AffineMap.lineMap u v y ∈
+      segment ℝ (AffineMap.lineMap u v p2) (AffineMap.lineMap u v q2) :=
+    openSegment_subset_segment ℝ _ _
+      ((openSegment_lineMap_eq_image_Ioo u v hp2q2).symm ▸ ⟨y, hymem.2, rfl⟩)
+  have hxy' : AffineMap.lineMap u v x ≠ AffineMap.lineMap u v y :=
+    fun h => hxy (lineMap_injective_of_ne huv h)
+  exact hxy' (hsub ⟨hxseg1, hxseg2⟩ ⟨hyseg1, hyseg2⟩)
+
 end Erdos634.LineParam
+

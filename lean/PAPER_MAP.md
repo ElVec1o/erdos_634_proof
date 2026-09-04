@@ -4632,3 +4632,25 @@ the interval-comparison identity are all built. What remains is pure assembly: i
 with these pieces, and feed the result into `Contiguity.sortedPositions`/`orderedChain`. No new
 mathematical content is expected in that step — it is bookkeeping over what now exists. No label
 moves; `rem:pingaps` remains OPEN.
+
+### `rem:pingaps` bridge: injectivity piece done — `Ioo_disjoint_of_subsingleton_inter`
+
+This tick hit real friction (Rule 4.1 territory: a stray duplicated `end`/docstring block from an
+earlier edit briefly pushed a theorem outside its namespace, producing a misleading cascade of
+"unknown identifier" errors; then three failed attempts at deriving `u ≠ v` from the segment
+membership rather than taking it as a hypothesis). Resolved by rewriting the theorem body cleanly
+once, and by **not deriving `u ≠ v`** — every call site already knows it, so it is a hypothesis, not
+a proof obligation.
+
+`Ioo_disjoint_of_subsingleton_inter`: converts `Dissection.sameside_edges_subsingleton`'s conclusion
+(two distinct chain edges' full edges meet in at most one point) into
+`Contiguity.distinct_left_endpoints`'s exact hypothesis shape (`Ioo p₁ q₁ ∩ Ioo p₂ q₂ = ∅`), via
+`openSegment_lineMap_eq_image_Ioo` and `lineMap_injective_of_ne` (both built earlier this session).
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry` in code (checked directly).
+
+**Bridge status, six ticks in**: parametrization, the measure identity, trace-to-subsegment, the
+empty/nonempty dichotomy, the interval-comparison identity, and now injectivity are all built and
+composable. What remains: the coverage half (`Contiguity.no_gap_between`, from
+`Dissection.wall_partition`'s measure sum) and the final assembly into `sortedPositions`/`orderedChain`
+for an actual `D.lineChain f c`. No label moves; `rem:pingaps` remains OPEN.
