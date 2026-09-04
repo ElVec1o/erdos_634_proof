@@ -4713,3 +4713,21 @@ supplying `hdisj` from `Ioo_disjoint_of_subsingleton_inter` composed with
 real but is assembly, matching the paper's own words exactly. No label moves; `rem:pingaps` remains
 OPEN — this session did not close it, but every mathematical obstacle it names for bridge (c) is now
 either already-discharged (per the remark's own audit) or reduced to bookkeeping.
+
+### `rem:pingaps` bridge: `Icc` form of injectivity built — `Icc_subsingleton_of_subsingleton_inter`
+
+`iUnion_Icc_eq_of_sum_eq_length`'s `hdisj` hypothesis needs `Icc`-intersection subsingleton, not
+`Ioo`-disjoint (the form `Ioo_disjoint_of_subsingleton_inter` gives) — a distinct, closed-interval
+statement needed to actually invoke the coverage theorem. Built via a new helper,
+`mem_segment_lineMap_of_mem_Icc` (a point of `Icc p q` maps into `segment (lineMap p) (lineMap q)`,
+proved with the same `lineMap_lineMap_comb` technique as the open case, case-splitting on `p = q` vs
+`p < q`), then the direct injectivity argument.
+
+One Lean snag, same pattern as twice before this session: `field_simp` alone left a residual goal;
+`div_mul_cancel₀` explicitly plus `ring` closed it.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry`.
+
+**Bridge toolkit is now fully closed on both interval shapes** (`Ioo` for the general dichotomy
+argument, `Icc` for the coverage theorem) — the only remaining step is instantiating all of this
+against a real `D.lineChain f c`. Eight ticks of new mathematics into this bridge.

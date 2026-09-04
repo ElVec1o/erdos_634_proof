@@ -256,4 +256,41 @@ theorem iUnion_Icc_eq_of_sum_eq_length {ι : Type*} (a b : ℝ) (hab : a < b) (s
   have hsub' : (⋃ i ∈ s, Icc (lo i) (hi i)) ⊆ Icc a b := Set.iUnion₂_subset hsub
   exact Erdos634.Contiguity.closed_full_measure_eq hab _ hclosed hsub' hvol
 
+
+
+/-! ## The `Icc` form of the injectivity step, matching `iUnion_Icc_eq_of_sum_eq_length`'s hypothesis -/
+
+/-- **A subsingleton segment-intersection forces a subsingleton `Icc`-intersection.** The closed
+form of `Ioo_disjoint_of_subsingleton_inter`, matching `iUnion_Icc_eq_of_sum_eq_length`'s `hdisj`
+directly. -/
+theorem mem_segment_lineMap_of_mem_Icc (u v : Plane) {p q x : ℝ} (hpq : p ≤ q)
+    (hx : x ∈ Icc p q) :
+    AffineMap.lineMap u v x ∈ segment ℝ (AffineMap.lineMap u v p) (AffineMap.lineMap u v q) := by
+  rcases eq_or_lt_of_le hpq with heq | hlt
+  · have : x = p := le_antisymm (heq ▸ hx.2) hx.1
+    rw [this, heq]; exact left_mem_segment ℝ _ _
+  · set t := (x - p) / (q - p) with htdef
+    have ht0 : 0 ≤ t := div_nonneg (by linarith [hx.1]) (by linarith)
+    have ht1 : t ≤ 1 := by
+      rw [htdef, div_le_one (by linarith)]; linarith [hx.2]
+    have hne : q - p ≠ 0 := by linarith
+    have htx : p + t * (q - p) = x := by
+      rw [htdef, div_mul_cancel₀ _ hne]; ring
+    rw [segment_eq_image_lineMap]
+    refine ⟨t, ⟨ht0, ht1⟩, ?_⟩
+    rw [lineMap_lineMap_comb, htx]
+
+theorem Icc_subsingleton_of_subsingleton_inter (u v : Plane) (huv : u ≠ v) {p1 q1 p2 q2 : ℝ}
+    (hpq1 : p1 ≤ q1) (hpq2 : p2 ≤ q2)
+    (hsub : (segment ℝ (AffineMap.lineMap u v p1) (AffineMap.lineMap u v q1) ∩
+        segment ℝ (AffineMap.lineMap u v p2) (AffineMap.lineMap u v q2)).Subsingleton) :
+    (Icc p1 q1 ∩ Icc p2 q2).Subsingleton := by
+  intro x hx y hy
+  have hx1 := mem_segment_lineMap_of_mem_Icc u v hpq1 hx.1
+  have hx2 := mem_segment_lineMap_of_mem_Icc u v hpq2 hx.2
+  have hy1 := mem_segment_lineMap_of_mem_Icc u v hpq1 hy.1
+  have hy2 := mem_segment_lineMap_of_mem_Icc u v hpq2 hy.2
+  have heq := hsub ⟨hx1, hx2⟩ ⟨hy1, hy2⟩
+  exact lineMap_injective_of_ne huv heq
+
 end Erdos634.LineParam
