@@ -376,4 +376,48 @@ theorem edgeParam_spec {N : ℕ} (D : Dissection N) (f : Plane →ₗ[ℝ] ℝ) 
     exact ⟨hex.choose_spec.1, hex.choose_spec.2.choose_spec.1,
       hex.choose_spec.2.choose_spec.2.1, hex.choose_spec.2.choose_spec.2.2⟩
 
+
+
+/-- **Two distinct chain edges' sorted parameter intervals meet in at most one point.** Assembles
+`edgeParam_spec` (either edge could have an empty trace, in which case its interval is the
+degenerate `{0}`, trivially subsingleton against anything) with `Dissection.sameside_edges_subsingleton`
+and `Icc_subsingleton_of_subsingleton_inter` for the case both traces are real segments. -/
+theorem edgeParam_Icc_subsingleton {N : ℕ} (D : Dissection N) (f : Plane →ₗ[ℝ] ℝ) (hf : f ≠ 0)
+    (c : ℝ) (u v : Plane) (huv : u ≠ v) {e₁ e₂ : Fin N × Fin 3}
+    (he₁ : e₁ ∈ D.lineChain f c) (he₂ : e₂ ∈ D.lineChain f c) (hne : e₁ ≠ e₂)
+    (hu : f u = c) (hv : f v = c)
+    (hle₁ : ∀ y ∈ (D.tile e₁.1).carrier, f y ≤ c) (hle₂ : ∀ y ∈ (D.tile e₂.1).carrier, f y ≤ c) :
+    (Icc (min (edgeParam D f c u v e₁).1 (edgeParam D f c u v e₁).2)
+        (max (edgeParam D f c u v e₁).1 (edgeParam D f c u v e₁).2) ∩
+      Icc (min (edgeParam D f c u v e₂).1 (edgeParam D f c u v e₂).2)
+        (max (edgeParam D f c u v e₂).1 (edgeParam D f c u v e₂).2)).Subsingleton := by
+  rcases edgeParam_spec D f hf c u v huv he₁ hu hv with ⟨-, hz₁⟩ | ⟨hb1, hb2, heq1, -⟩
+  · rw [hz₁]; simp only [min_self, max_self]
+    exact fun x hx y hy => (le_antisymm hx.1.2 hx.1.1).trans (le_antisymm hy.1.2 hy.1.1).symm
+  · rcases edgeParam_spec D f hf c u v huv he₂ hu hv with ⟨-, hz₂⟩ | ⟨hc1, hc2, heq2, -⟩
+    · rw [hz₂]; simp only [min_self, max_self]
+      exact fun x hx y hy => (le_antisymm hx.2.2 hx.2.1).trans (le_antisymm hy.2.2 hy.2.1).symm
+    · have hedgesub := D.sameside_edges_subsingleton f c hf hne hle₁ hle₂
+        (D.lineChain_edge_subset he₁) (D.lineChain_edge_subset he₂)
+      have htracesub : ((D.tile e₁.1).edge e₁.2 ∩ segment ℝ u v ∩
+          ((D.tile e₂.1).edge e₂.2 ∩ segment ℝ u v)).Subsingleton :=
+        hedgesub.anti (by intro x hx; exact ⟨hx.1.1, hx.2.1⟩)
+      rw [heq1, heq2] at htracesub
+      have hsymm1 : segment ℝ (AffineMap.lineMap u v (edgeParam D f c u v e₁).1)
+          (AffineMap.lineMap u v (edgeParam D f c u v e₁).2) =
+          segment ℝ (AffineMap.lineMap u v (min (edgeParam D f c u v e₁).1 (edgeParam D f c u v e₁).2))
+            (AffineMap.lineMap u v (max (edgeParam D f c u v e₁).1 (edgeParam D f c u v e₁).2)) := by
+        rcases le_total (edgeParam D f c u v e₁).1 (edgeParam D f c u v e₁).2 with h1 | h1
+        · rw [min_eq_left h1, max_eq_right h1]
+        · rw [min_eq_right h1, max_eq_left h1]; exact _root_.segment_symm (𝕜 := ℝ) _ _
+      have hsymm2 : segment ℝ (AffineMap.lineMap u v (edgeParam D f c u v e₂).1)
+          (AffineMap.lineMap u v (edgeParam D f c u v e₂).2) =
+          segment ℝ (AffineMap.lineMap u v (min (edgeParam D f c u v e₂).1 (edgeParam D f c u v e₂).2))
+            (AffineMap.lineMap u v (max (edgeParam D f c u v e₂).1 (edgeParam D f c u v e₂).2)) := by
+        rcases le_total (edgeParam D f c u v e₂).1 (edgeParam D f c u v e₂).2 with h2 | h2
+        · rw [min_eq_left h2, max_eq_right h2]
+        · rw [min_eq_right h2, max_eq_left h2]; exact _root_.segment_symm (𝕜 := ℝ) _ _
+      rw [hsymm1, hsymm2] at htracesub
+      exact Icc_subsingleton_of_subsingleton_inter u v huv min_le_max min_le_max htracesub
+
 end Erdos634.LineParam

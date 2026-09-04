@@ -4800,3 +4800,28 @@ pass, confirming the diagnosis from last tick's abort was correct.
 bounds, `hdisj` from `Icc_subsingleton_of_subsingleton_inter` composed with
 `sameside_edges_subsingleton`, and `hsum` from converting `wall_partition`'s `ENNReal` sum via
 `edgeParam_spec`'s per-edge measure identity. Twelve ticks into this bridge.
+
+### `rem:pingaps` final assembly: `edgeParam_Icc_subsingleton` built — the `hdisj` piece for real edges
+
+Composes `edgeParam_spec`, `Dissection.sameside_edges_subsingleton`, and
+`Icc_subsingleton_of_subsingleton_inter` into the actual `hdisj` fact
+`iUnion_Icc_eq_of_sum_eq_length` needs, for two distinct real chain edges — handling both the
+degenerate case (either edge's trace empty, giving `Icc 0 0`, trivially subsingleton against
+anything) and the genuine case (both segments real, needing a `min`/`max`-vs-raw-parameter symmetry
+argument via `segment_symm`).
+
+Caught two small issues on the first build attempt (both fixed, not counted as an abort since each
+was diagnosed and fixed in one step, not repeated guessing): a wrong `hx`/`hy` accessor after
+`simp only [min_self, max_self]` only simplified one side of the intersection, not both; and
+`segment_symm` resolving to the wrong 3-argument overload from an ambient namespace collision,
+needing `_root_.segment_symm (𝕜 := ℝ)` to disambiguate. First check with a broken `timeout`
+invocation (not installed on this machine) silently reported false negatives as clean builds —
+caught and corrected before committing.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry`.
+
+**Bridge status, thirteen ticks in**: every abstract lemma, `edgeParam` and its correctness, and now
+the disjointness composition are all built. What remains is exactly one thing: converting
+`Dissection.wall_partition`'s `ENNReal` sum into the real-number `hsum` hypothesis
+`iUnion_Icc_eq_of_sum_eq_length` needs, using `edgeParam_spec`'s per-edge measure identity — then
+the whole chain composes into the actual instantiation. No label moves; `rem:pingaps` remains OPEN.
