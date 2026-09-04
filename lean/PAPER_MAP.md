@@ -4590,3 +4590,24 @@ edge (checking its trace really is convex/compact/on-the-line, which should be i
 (`Contiguity.no_gap_between`, from `Dissection.wall_partition`'s measure identity) into the actual
 `sortedPositions`/`orderedChain` construction for a real dissection. Getting close to a genuine
 instantiation, but not there — no label moves.
+
+### `rem:pingaps` bridge (c): applied to a real wall-segment trace — `wall_trace_param_or_empty`
+
+Handled the case last tick's `trace_eq_param_segment` skipped: a chain edge's trace on the wall
+segment can be **empty** (the edge might not touch the wall segment at all), so the applied version
+case-splits on nonemptiness. `wall_trace_param_or_empty`: for any convex, compact `E` on the wall
+line, `E ∩ segment u v` is either empty or a genuine parametrized sub-segment with known Hausdorff
+measure — exactly the dichotomy `sortedPositions`/`no_gap_between` need to be built against a real
+`Dissection.lineChain`. `isCompact_segment` (a small general helper, same proof pattern as
+`Tri.isClosed_edge`) supplies the wall segment's own compactness.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; no `sorry` in code.
+
+**Bridge status**: pieces (2a), (2b), (3), and now the empty/nonempty dichotomy are all built and
+composable. What remains is the **last assembly step**: instantiate this against `D.lineChain f c`
+specifically (using `Tri.edge`'s convexity/compactness and `lineChain_edge_subset` to supply
+`hEconv`/`hEcpt`/`hEf`), derive injectivity of the resulting position key from `D.interiors_disjoint`
+(`Contiguity.distinct_left_endpoints`), and derive the coverage hypothesis from
+`Dissection.wall_partition`'s measure sum (`Contiguity.no_gap_between`) — then feed all three into
+`sortedPositions`/`orderedChain`. Four solid ticks into this bridge; the remaining assembly is
+bookkeeping over what's now built, not new mathematics. No label moves yet.

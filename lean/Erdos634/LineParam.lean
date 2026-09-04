@@ -96,4 +96,35 @@ theorem trace_eq_param_segment {S : Set Plane} (hconv : Convex ℝ S) (hcpt : Is
   · rw [hSpq, ← hptp, ← hqtq]
   · rw [hSpq, ← hptp, ← hqtq, hausdorffMeasure_segment_lineMap]
 
+
+
+/-! ## Applying the bridge to a real wall-segment trace -/
+
+/-- **A segment is compact.** Same pattern as `Tri.isClosed_edge`'s proof. -/
+theorem isCompact_segment (x y : Plane) : IsCompact (segment ℝ x y) := by
+  rw [segment_eq_image]
+  exact isCompact_Icc.image (by fun_prop)
+
+/-- **The trace of any set on the wall line, intersected with the wall segment, is a parametrized
+sub-segment or empty.** Applies `trace_eq_param_segment` to `S = E ∩ segment u v`, given only that
+`E` is convex, compact, and lies on the line `{f = c}` (true in particular for a tile edge, via
+`Tri.edge`'s own convexity/compactness and `Dissection.lineChain_edge_subset`). -/
+theorem wall_trace_param_or_empty {E : Set Plane} (hEconv : Convex ℝ E) (hEcpt : IsCompact E)
+    (f : Plane →ₗ[ℝ] ℝ) (hf : f ≠ 0) (c : ℝ) (hEf : ∀ x ∈ E, f x = c)
+    (u v : Plane) (huv : u ≠ v) (hu : f u = c) (hv : f v = c) :
+    E ∩ segment ℝ u v = ∅ ∨
+    ∃ tp ∈ Icc (0:ℝ) 1, ∃ tq ∈ Icc (0:ℝ) 1,
+      E ∩ segment ℝ u v = segment ℝ (AffineMap.lineMap u v tp) (AffineMap.lineMap u v tq) ∧
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) (E ∩ segment ℝ u v)
+        = ENNReal.ofReal (|tp - tq| * dist u v) := by
+  by_cases hne : (E ∩ segment ℝ u v).Nonempty
+  · right
+    obtain ⟨x0, hx0⟩ := hne
+    have hconv : Convex ℝ (E ∩ segment ℝ u v) := hEconv.inter (convex_segment u v)
+    have hcpt : IsCompact (E ∩ segment ℝ u v) := hEcpt.inter_right (isCompact_segment u v).isClosed
+    have hSf : ∀ x ∈ E ∩ segment ℝ u v, f x = c := fun x hx => hEf x hx.1
+    exact trace_eq_param_segment hconv hcpt f hf c hSf x0 hx0 u v huv Set.inter_subset_right
+  · left
+    exact Set.not_nonempty_iff_eq_empty.mp hne
+
 end Erdos634.LineParam
