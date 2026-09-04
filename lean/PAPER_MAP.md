@@ -4560,3 +4560,33 @@ to this parametrization for a chain edge's *trace* on the wall segment specifica
 arbitrary points), and the injectivity/coverage assembly into `Contiguity`'s hypotheses.
 
 `lake build Erdos634.All` clean at 3701 jobs; axiom-clean.
+
+### `rem:pingaps` bridge (c), piece (3) built — `trace_eq_param_segment`
+
+The big remaining piece from the last two ticks' bridge work: showing a wall-segment trace (in
+particular a chain edge's trace) is itself a parametrized sub-segment with known measure. Found
+`ChordTraceReal.isSegment_of_convex_inter_hyperplane` **already existed** in the corpus — any convex
+compact subset of the line `{f=c}` equals `segment ℝ p q` for two of its own points. Composed it
+with Mathlib's `segment_eq_image_lineMap` (a segment's points are literally `lineMap`-images) and
+`LineParam.hausdorffMeasure_segment_lineMap` (built two ticks ago): `trace_eq_param_segment` — for
+`S` convex, compact, on line `{f=c}`, and `S ⊆ segment ℝ u v`, `S` equals
+`segment (lineMap u v tp) (lineMap u v tq)` for `tp, tq ∈ [0,1]`, with Hausdorff measure
+`|tp-tq| · dist u v`. This is exactly the "position key" `Contiguity.lean`'s abstract tools need,
+now connected to real Hausdorff-measure data.
+
+Two Lean snags: `ChordTraceReal` needed an explicit import and `open` (wrong namespace error), and
+`Set.Icc` needed `open Set` (bare `Icc` was being auto-bound as an implicit variable, producing a
+cascading "Function expected" error far from the real cause). The final proof direction bug: the
+`Set.image` membership destructuring gives `lineMap u v tp = p`, not `p = lineMap u v tp` — needed
+`rw [← hptp]`, not `rw [hptp]`.
+
+`lake build Erdos634.All` clean at 3701 jobs; axiom-clean; **no `sorry`** (grep hit was only the
+docstring's own words, checked directly).
+
+**What remains of the bridge**: applying `trace_eq_param_segment` to an *actual* `Dissection.lineChain`
+edge (checking its trace really is convex/compact/on-the-line, which should be immediate from
+`Tri.edge` being a segment and `lineChain_edge_subset`), then assembling injectivity
+(`Contiguity.distinct_left_endpoints`, from `D.interiors_disjoint`) and coverage
+(`Contiguity.no_gap_between`, from `Dissection.wall_partition`'s measure identity) into the actual
+`sortedPositions`/`orderedChain` construction for a real dissection. Getting close to a genuine
+instantiation, but not there — no label moves.

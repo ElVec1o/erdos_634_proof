@@ -1,4 +1,5 @@
 import Erdos634.Dissection
+import Erdos634.ChordTraceReal
 
 /-!
 # Parametrizing a segment by its arc length
@@ -18,7 +19,7 @@ Axiom-clean; no `sorry`.
 
 namespace Erdos634.LineParam
 
-open Erdos634.Geometry
+open Erdos634.Geometry Set
 
 /-- **Distance scales with the parameter gap along a line.** For any two parameters `s`, `t`,
 the points `lineMap u v s` and `lineMap u v t` are at distance `|s - t| * dist u v`. -/
@@ -60,5 +61,39 @@ theorem hausdorffMeasure_segment_lineMap (u v : Plane) (p q : ℝ) :
         (segment ℝ (AffineMap.lineMap u v p) (AffineMap.lineMap u v q))
       = ENNReal.ofReal (|p - q| * dist u v) := by
   rw [MeasureTheory.hausdorffMeasure_segment, edist_dist, dist_lineMap_lineMap]
+
+
+
+/-! ## Piece (3): a wall-segment trace is a parametrized sub-segment, with known measure
+
+Composes `ChordTraceReal.isSegment_of_convex_inter_hyperplane` (any convex compact subset of a line
+is a segment) with `segment_eq_image_lineMap` (a segment's own points are `lineMap`-images) and
+`hausdorffMeasure_segment_lineMap`: the trace of *any* set lying on the wall line and intersected
+with the wall segment — in particular a chain edge's trace — is itself `segment (lineMap u v tp)
+(lineMap u v tq)` for parameters `tp, tq ∈ [0,1]`, with Hausdorff measure `|tp - tq| * dist u v`. -/
+
+open Erdos634.ChordTraceReal in
+/-- **A wall-segment trace is a parametrized sub-segment.** If `S` is convex, compact, and lies on
+the line `{f = c}` through `u ≠ v` (with `S` nonempty, witnessed by `x0`), then `S = segment
+(lineMap u v tp) (lineMap u v tq)` for some `tp, tq ∈ [0,1]`, and its Hausdorff measure is
+`|tp - tq| * dist u v`. -/
+theorem trace_eq_param_segment {S : Set Plane} (hconv : Convex ℝ S) (hcpt : IsCompact S)
+    (f : Plane →ₗ[ℝ] ℝ) (hf : f ≠ 0) (c : ℝ) (hSf : ∀ x ∈ S, f x = c)
+    (x0 : Plane) (hx0 : x0 ∈ S) (u v : Plane) (huv : u ≠ v)
+    (hSsub : S ⊆ segment ℝ u v) :
+    ∃ tp ∈ Icc (0:ℝ) 1, ∃ tq ∈ Icc (0:ℝ) 1,
+      S = segment ℝ (AffineMap.lineMap u v tp) (AffineMap.lineMap u v tq) ∧
+      (MeasureTheory.Measure.hausdorffMeasure 1 : MeasureTheory.Measure Plane) S
+        = ENNReal.ofReal (|tp - tq| * dist u v) := by
+  obtain ⟨p, q, hpS, hqS, hSpq⟩ :=
+    isSegment_of_convex_inter_hyperplane hconv hcpt f hf c hSf x0 hx0
+  have hpseg : p ∈ segment ℝ u v := hSsub hpS
+  have hqseg : q ∈ segment ℝ u v := hSsub hqS
+  rw [segment_eq_image_lineMap] at hpseg hqseg
+  obtain ⟨tp, htp, hptp⟩ := hpseg
+  obtain ⟨tq, htq, hqtq⟩ := hqseg
+  refine ⟨tp, htp, tq, htq, ?_, ?_⟩
+  · rw [hSpq, ← hptp, ← hqtq]
+  · rw [hSpq, ← hptp, ← hqtq, hausdorffMeasure_segment_lineMap]
 
 end Erdos634.LineParam
