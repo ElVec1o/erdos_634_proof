@@ -23,9 +23,18 @@ The four consequences, each an exact area ratio:
 | apex cevian to the base at `BP` | `BP / e` | **`e ∣ BP`** |
 
 So at `m = 1` with `N₀` squarefree (in particular `N₀` prime) there is **no** complete cut parallel to
-a side, **none** from a base vertex to the opposite leg, and **none** cutting off the apex; the only
-survivors are apex cevians with `e ∣ BP` — and Lemma C's cevian has `BP = ef²`, giving exactly `f²`
-tiles, consistent.
+a side, **none** from a base vertex to the opposite leg, and **none** cutting off the apex.
+
+**CORRECTION (room, verified).**  An earlier version of this paragraph concluded "the only survivors
+are apex cevians with `e ∣ BP`".  **That over-claims** — the four rows above are the four cut types
+this file's theorems address, not an exhaustive classification.  A **fifth** type survives all of
+them: the **corner cut at a base vertex**, running from a base *point* (not a vertex) to the adjacent
+*leg*, of length `k·b` with `p = k·a, t = k·c` (orientation A, direction `π−γ`) or `p = k·c, t = k·a`
+(orientation B, direction `π−α`), carrying `k²` tiles.  Its area condition `e f³ ∣ p·t` is solved for
+every `k ≤ f`, so it is not excluded here.  At `k = f` orientation A *is* Lemma C's cevian (since
+`f·c = f³` is the leg), while orientation B is a genuine **rival** of the same length `K·b` — see
+`CevianUnique`.  **The four theorems below are unaffected and remain correct**; only this prose was
+wrong.
 
 **These are `m`-separating by construction**, which is what the standing directive asks for: at
 `m ≥ 2` the tile count carries an extra `m²` and each obstruction relaxes.  That is why the certified
