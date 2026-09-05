@@ -74,8 +74,19 @@ seat's own family grows at `w ≈ ½ log₂ N + 7`, and every measured tiling si
 
 > **CONJECTURE (repaired crux): `w = O(log N)`.**  At `N = 83` a bound `w ≲ 10` gives `6⁹ ≈ 10⁷`, a
 > finite check.  No proof, and evidence is six points.  Offered as a replacement *target*, not as
-> progress.  What is established is the *shape*: logarithmic in `N`, not constant.  Bounds in hand:
-`w ≥ ½ log₂(N/44) + 7` from the family, against the known upper bound `w ≤ 4·depth + 3 = O(√N)`.
+> progress.  What is established is the *shape*: logarithmic in `N`, not constant.
+
+**Sharpened by a second family (audited).**  All 75 tilings of the `5`-scaled tile `(10,15,20)` by 25
+copies pass an independent five-part checker, and **31 of the 75 spin** — so spinning is *generic* at
+scale 5, and scale 4 is merely the **minimal** spinning scale, not a curiosity.  The widest gives
+`+3` width per level against `N × 25`, i.e. rate `3/log₂25 = 0.646` per `log₂N`, versus `0.500` for
+the scale-4 family (✅ both rates re-checked).  It is better absolutely too: `k = 3` arrives at
+`N = 27 500` rather than `N = 180 224`, a factor of 6.6 sooner.  Windows `[−3,3] → [−4,5] → [−6,6]` at
+`m = 2, 10, 50`, audited at every level.
+
+So the extremal lower bound is **`w ≥ 0.646·log₂(N/44) + 7`**, against the known upper bound
+`w ≤ 4·depth + 3 = O(√N)`.  The constant any proof must beat is now larger, and `k ≥ 6` was never
+searched — there is no reason to believe `0.646` is the end.
 
 **And the disqualification is now exhaustive.**  Scaling by 4 preserves the tile, the member, the
 field `K`, the label calculus, every vertex figure, all local adjacency, the target's side-labels
