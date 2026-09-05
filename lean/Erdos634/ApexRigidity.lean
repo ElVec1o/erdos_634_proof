@@ -183,7 +183,11 @@ theorem figure_at_P {al be ga : ℝ} (hsum : 3 * al + 2 * be = Real.pi) (hga : g
 
 /-! ## The vertex figures adjacent to the apex, and the placements of `U` -/
 
-/-- **The figure at `P'` on the mirrored side is `{β,3γ}`.**  Three `γ`'s and a `β` total `2π`. -/
+/-- **`{β,3γ}` is a legal figure at `P'`**: three `γ`'s and a `β` total `2π`.  Stated as existence,
+not uniqueness — this is an arithmetic identity and does **not** rule out other fills of `2π`.  (A
+room seat flagged the earlier wording "*the* figure at `P'` **is** `{β,3γ}`" as over-strong: e.g.
+`2π − 2γ = 2α+2β` admits both `{α,α,β,β}` and `{β,γ}`.  Nothing downstream may read uniqueness out
+of this lemma.) -/
 theorem figure_at_Pprime {al be ga : ℝ} (hsum : 3 * al + 2 * be = Real.pi) (hga : ga = 2 * al + be) :
     3 * ga + be = 2 * Real.pi := by
   subst hga
