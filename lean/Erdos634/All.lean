@@ -1,3 +1,4 @@
+import Erdos634.BeesonBoundary
 import Erdos634.BeesonOmega
 import Erdos634.TargetShapeDissection
 import Erdos634.TargetShape
