@@ -1,3 +1,4 @@
+import Erdos634.MidTriangleComposed
 import Erdos634.RunForcing
 import Erdos634.MidTriangleGeneral
 import Erdos634.BeesonBoundary
