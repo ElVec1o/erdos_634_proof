@@ -8,18 +8,35 @@ named this as the one location-sensitive device in the literature not yet tried 
 project's admission test, which the degree-balance argument of Theorem 2 does not.  This file ports
 its core.
 
-**Why it is a different animal from Theorem 2.**  `BeesonThm2Graph` formalized Theorem 2's engine:
-in a finite digraph where every node has `indeg ≤ outdeg`, finiteness forces equality everywhere.
-That is a *counting* argument — bounded, hence by the project's bounded-or-locational dilemma it can
-only ever produce a census.  §8.5 runs on a different engine entirely:
+**CORRECTION (round 2 of the room, verified — read this before using the file).**  An earlier
+version of this header claimed §8.5 "runs on a different engine entirely" from Theorem 2's degree
+balance, driven by a strictly monotone functional.  **Both halves of that were wrong.**
 
-> **Lemma 34.** *"All the links in `Γ′` are in one of the four directions `A` or `C` west, `AB` or
-> `BC` north.  Each of those directions **moves away from the line `AQ`**.  Hence `R` is farther from
-> `AQ` than `P` is."*
+* **§8.5's engine is the same count.**  Theorem 6's proof says, verbatim (`b1206.txt:2735`):
+  *"As in the proof of Theorem 2, we argue that by Lemma 35, the in-degree of every node `P` in the
+  graph `Γ′` is less than or equal to its out-degree; and therefore, since it is a finite graph, the
+  in-degree is equal to the out-degree."*  Acyclicity and terminal nodes — the content of
+  `delta_traversal_contradiction` below — are never used.  So §8.5 does **not** clear the project's
+  admission test the way it was advertised.
+* **Beeson's `φ` is not strictly advancing.**  Lemma 34's `φ` is the distance from line `AQ`, and
+  `AQ` is itself a Direction-A segment (Lemma 31), so a *Direction-A-west* link is exactly parallel
+  to it: `dφ/ds = 0`.  `StrictlyAdvancing` is therefore **not** satisfied by his own functional;
+  every other candidate line (`AB`, `BC`, `AC`) is neutral on a different one of the four directions.
+* **And §8.5's conclusion is FALSE.**  Beeson's Theorem 6 ("`K ∣ M²`") is refuted by this repository's
+  own zero-axiom certificate `CevianTiling63.ceviantiling63_certificate` (`#print axioms`: *no*
+  axioms): 63 copies of the tile `(2,3,4)` tile the target `(21,18,24)`, whose angles are exactly
+  `(2α, β, α+β)`; `a/c = 2/4 = M/K` with `(M,K) = (3,6)` and `N = 2K² − M² = 63`, yet `6 ∤ 9`.
+  Theorem 7 and Corollary 1 fall with it (Beeson's Table 1 omits 63).  Root cause: **Lemma 21**
+  asserts "`M²/d` is relatively prime to `K`" for `d = gcd(M²,K)`, false at `(M,K) = (3,6)` where
+  `d = 3`, `M²/d = 3`, `gcd(3,6) = 3`.  Its proof is valid exactly when `gcd(M,K) = 1`.
 
-That is a **strictly monotone functional along links** — a locational quantity, not a count.  Its
-consequence is not degree balance but **acyclicity and the existence of a terminal node**, which is
-what contradicts Lemma 35 ("the next boundary segment `qr` is also a link").
+**Our own floor is unaffected**: the base-β family has `(M,K) = (e,f)` with `gcd(e,f) = 1`, and the
+corpus proves `f ∣ j` independently (`RunForcing`, `SideNoB`).  Nothing here inherits the error.
+
+**What the file still is.**  The theorems below are correct abstract graph theory — a strictly
+advancing functional does give acyclicity and a terminal node — and `InDelta`'s *directedness*
+(against `Ω`'s symmetry) is a real and correctly recorded contrast.  What they are not is a
+faithful model of Beeson's §8.5 argument.  Kept as a tool, not as a port.
 
 Two further structural contrasts with `Ω`, both formalized below:
 
