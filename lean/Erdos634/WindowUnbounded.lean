@@ -43,6 +43,25 @@ so every one of those is disqualified as the source of a bound.  This is the pro
 standing directive — *work only on global/scale-dependent invariants* — is **necessary**, not merely
 prudent.
 
+**Scope, sharpened by an independent replication.**  A second seat re-derived the seed
+byte-identically, *verified the iteration* the first seat left unchecked (`N = 704` at `m = 8` by two
+independent checkers; `N = 11264` at `m = 32` audited), and ran the controls: all seven *non*-spinning
+scale-4 rules hold the window at exactly `[−3,3]` out to `N = 288 684`, so the growth is the spin and
+not an artefact.  It also bounds the claim: **the refutation is established only at `(e,f) = (1,2)`.**
+At `(1,3)` neither the 4- nor the 5-scaled tile spins, and at `(3,4)` the unique 4-scaling does not.
+So "not even within the single member `(1,2)`" is correct as stated — the unboundedness occurs inside
+one member — but must **not** be read as member-general.
+
+**Two corrections to the crux's own framing**, from the same seat:
+* the window is **not anchored at `−3`**: in this family the lower end moves too (`[−(3+n), 3+n]`), so
+  `k` must be measured on *both* sides.  The earlier belief that every window starts at `−3` was an
+  artefact of the sample;
+* **no previously-known tiling climbs at all** — in `N44B`, `N44C`, `99`, `T28`, `T77` the extreme-label
+  tiles sit at adjacency-graph depth `0`, i.e. they touch the boundary.  The flat evidence base was
+  flat because those tilings have no interior hierarchy; substitution supplies the first examples
+  where high labels come from *scale*.  (Relatedly: the unit parallelogram `P₁` has exactly 36
+  tilings and **all 36** have window `[−3,2]`, which is why the collar family is flat for every `m`.)
+
 **Does not close.**  The family lives at `m ≥ 2`.  **The `m = 1` case, which is what the prime case
 needs, is untouched by this refutation.**  Two independent facts already recorded make `m = 1`
 peculiar: every decided `m = 1` base-β member is `EXHAUSTED_NO_TILING`, and `NoRightAngleTile` shows
@@ -55,7 +74,16 @@ seat's own family grows at `w ≈ ½ log₂ N + 7`, and every measured tiling si
 
 > **CONJECTURE (repaired crux): `w = O(log N)`.**  At `N = 83` a bound `w ≲ 10` gives `6⁹ ≈ 10⁷`, a
 > finite check.  No proof, and evidence is six points.  Offered as a replacement *target*, not as
-> progress.  What is established is the *shape*: logarithmic in `N`, not constant.
+> progress.  What is established is the *shape*: logarithmic in `N`, not constant.  Bounds in hand:
+`w ≥ ½ log₂(N/44) + 7` from the family, against the known upper bound `w ≤ 4·depth + 3 = O(√N)`.
+
+**And the disqualification is now exhaustive.**  Scaling by 4 preserves the tile, the member, the
+field `K`, the label calculus, every vertex figure, all local adjacency, the target's side-labels
+`{−3,0,3}`, and the boundary-word alphabet, while raising `k` by 1.  So the label calculus, the
+`|ΔL| ≤ 4` adjacency bound, vertex figures (D13), the γ-trap, boundary words, and semigroup/length
+arithmetic are **each individually incapable** of bounding the window.  A counting argument in `N` is
+the only surviving *class* — and its one known instantiation, the covolume/packing lever, is dead
+(`WindowLever`, three independent proofs).
 
 Axiom-clean; no `sorry`.
 -/
