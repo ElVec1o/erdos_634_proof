@@ -1,3 +1,4 @@
+import Erdos634.TargetShape
 import Erdos634.CevianRealization
 import Erdos634.ScaleMap
 import Erdos634.BeesonGraphH
