@@ -1,3 +1,5 @@
+import Erdos634.BeesonGraphH
+import Erdos634.BeesonDef5
 import Erdos634.BeesonDirections
 import Erdos634.BeesonThm2Hyp
 import Erdos634.FlushContain
