@@ -57,7 +57,7 @@ theorem angle_lineMap_eq (A B C : Plane) {t : ℝ} (ht : 0 < t) :
 theorem dist_lineMap_base (B C : Plane) {t : ℝ} (ht : 0 ≤ t) :
     dist B (AffineMap.lineMap B C t) = t * dist B C := by
   have h := dist_lineMap_lineMap B C (0 : ℝ) t
-  simp only [AffineMap.lineMap_apply_zero] at h
+  simp only [AffineMap.lineMap_apply_zero, Real.dist_eq, zero_sub, abs_neg] at h
   rw [h, abs_of_nonneg ht]
 
 /-- **Lemma C, realized.**  For an isosceles triangle with `dist A B = dist A C ≠ 0` and `D` on ray
