@@ -1,3 +1,4 @@
+import Erdos634.ClearanceLemma
 import Erdos634.NoCompleteCut
 import Erdos634.ExclusionCriterion
 import Erdos634.RegimeSplit
