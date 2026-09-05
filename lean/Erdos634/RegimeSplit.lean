@@ -18,11 +18,25 @@ Among the 13 base-β primes below 250 this fails for exactly
 > **`N = 23 (2,3)`, `59 (4,5)`, `83 (5,6)`, `167 (5,8)`, `179 (8,9)`** — all `e ≥ 2`,
 > **including `N = 83`, the smallest open one.**
 
-**Consequence, and it is the point of this file:** no amount of work on Beeson's Theorem 2 can reach
-those targets.  A Theorem-2-free route is not preferable, it is *mandatory*.  `BeesonThm2Hyp.lean`
-is not wrong — it carries `α ≤ β` as a hypothesis — but its reach is far narrower than the surrounding
-notes implied, and `ROUTE_L23/theoremR.md` discharges (i) with "true at `e = 1` for `f ≥ 2`" without
-flagging the `e ≥ 2` failure.
+**CORRECTION (round 2 of the room, verified).**  An earlier version of this file concluded from the
+above that "no amount of work on Beeson's Theorem 2 can reach those targets".  **That was wrong.**
+Hypothesis (i) as *written* does fail for them — the arithmetic below is correct — but Theorem 2's
+*proof* never uses it.  A line-by-line reading (`b1206.txt:1281, :1290, :1294, :1358`) finds a bound
+on a target angle in exactly four places, all four at the vertex the proof itself **defines** to be
+the smaller of the two non-`B` vertices (:1246 "rename `A` and `C` … so that angle `A` is less than
+or equal to angle `C`"); "angle at C" occurs only in that renaming sentence.  And the fact those uses
+need is **free**:
+
+> `gamma_clause_redundant`: given `∠B = β` and the angle sum, the two non-`B` angles cannot *both*
+> be `≥ γ` — otherwise `π − β ≥ 2γ`, i.e. `0 ≥ α + β`.
+
+So Theorem 2 holds with (i) weakened to **"`ABC` is not similar to the tile"**, with no angle clause
+at all, and it **does** apply to all 13 base-β primes, thick members included.
+
+What survives of the original finding: the arithmetic (`fails_83` etc. are correct as stated), and
+the audit warning below.  What does not: the conclusion that a Theorem-2-free route is *mandatory*.
+It is not.  (This does not by itself advance any target — Theorem 2 supplies only the *existence* of
+an essential segment, and at `(5,6)` all four directions survive the length bound by ≥20%.)
 
 **Audit warning.** Corpus lemmas that assume `a < b` (the `MarchFlank`/`TilePlacement` side–angle
 orderings) are inapplicable to these five members.  `c` is longest in every regime, so bounds resting
@@ -43,6 +57,16 @@ theorem a_le_b_iff (e f : ℤ) : e * f ≤ f ^ 2 - e ^ 2 ↔ 0 ≤ f ^ 2 - e * f
 /-- **Below the golden ratio the side order inverts: `b < a`.** -/
 theorem b_lt_a_of_golden_fails {e f : ℤ} (h : f ^ 2 - e * f - e ^ 2 < 0) :
     f ^ 2 - e ^ 2 < e * f := by linarith
+
+/-- **The angle clause of hypothesis (i) is redundant.**  If the two non-`B` angles were both `≥ γ`,
+then `π − β = ∠A + ∠C ≥ 2γ`, which with `γ = 2α+β` and `3α+2β = π` gives `0 ≥ α + β`.  So the smaller
+of them is always `< γ` — which is all Theorem 2's proof ever uses. -/
+theorem gamma_clause_redundant {α β γ x y : ℝ} (hα : 0 < α) (hβ : 0 < β)
+    (hγ : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hsum : x + y = Real.pi - β) : ¬ (γ ≤ x ∧ γ ≤ y) := by
+  rintro ⟨hx, hy⟩
+  rw [hγ] at hx hy
+  linarith
 
 /-- **`c` is the longest side in every regime** (`0 < e < f`), so bounds resting only on `c` being
 maximal are safe on both sides of the split. -/
