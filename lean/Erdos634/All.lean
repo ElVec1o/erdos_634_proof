@@ -1,3 +1,4 @@
+import Erdos634.ExclusionCriterion
 import Erdos634.RegimeSplit
 import Erdos634.MidTriangleComposed
 import Erdos634.RunForcing
