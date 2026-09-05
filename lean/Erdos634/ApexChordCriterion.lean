@@ -95,4 +95,28 @@ theorem reach_e_ge_two {e f : ℤ} (he : 2 ≤ e) (h : 2 * e ^ 2 ≤ f) :
   nlinarith [hsq, mul_nonneg (show (0:ℤ) ≤ e ^ 2 - 4 by linarith)
     (show (0:ℤ) ≤ 12 * e ^ 2 + 47 by positivity)]
 
+/-! ## The `π−α` direction can never be closed by a clearance argument -/
+
+/-- **Vertex-fan clearance on `π−α` never bites.**  `π−α` is the one direction not parallel to a
+target side, so the strip `ClearanceLemma` never applied to it; its extremal chord passes through a
+*vertex*, where the fill is forced (apex `3α = α+α+α`, three tiles each showing `α`; each base corner
+one tile).  Clearing those known tile interiors gives, on the apex branch, the maximum free chord
+`b(f³ − b)/(ef)`.  It falls below the floor `f·b` iff `f³ − f²(1+e) + e² < 0`, i.e.
+`f²(f − 1 − e) + e² < 0` — **impossible**, since `f ≥ e+1` makes the first term `≥ 0` and `e² > 0`.
+
+So no clearance or vertex-fan argument can ever exclude `π−α`.  The excess is minimised exactly on
+the family `f = e + 1`, where it equals `e²` — and that family contains `N = 83` (`(5,6)`), `11`,
+`23`, `59`, `179`.  The direction approaches the floor at rate `1/f` and never reaches it. -/
+theorem pi_alpha_fan_never_bites {e f : ℤ} (he : 0 < e) (hef : e < f) :
+    0 < f ^ 3 - f ^ 2 * (1 + e) + e ^ 2 := by
+  have h1 : 0 ≤ f ^ 2 * (f - 1 - e) := by
+    have : 0 ≤ f - 1 - e := by omega
+    positivity
+  nlinarith [h1, mul_pos he he]
+
+/-- **The excess is exactly `e²` on the family `f = e + 1`** — the tightest it ever gets, and that
+family contains `N = 83`. -/
+theorem fan_excess_at_f_eq_e_succ (e : ℤ) :
+    (e + 1) ^ 3 - (e + 1) ^ 2 * (1 + e) + e ^ 2 = e ^ 2 := by ring
+
 end Erdos634.ApexChordCriterion
