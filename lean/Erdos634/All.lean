@@ -62,6 +62,7 @@ import Erdos634.BaseBetaQuadField
 import Erdos634.BaseBetaWalkArith
 import Erdos634.BaseBetaWalks
 import Erdos634.Beeson3NotPrime
+import Erdos634.FourCompCongruence
 import Erdos634.CChord
 import Erdos634.CevianSplit
 import Erdos634.CevianTiling28
