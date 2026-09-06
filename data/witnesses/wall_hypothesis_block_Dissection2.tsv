@@ -1,0 +1,65 @@
+# WITNESS: the wall hypothesis block of WallChain/LineParam is SATISFIABLE.
+# Date: 2026-09-07.  Provenance: room `tileplace`, ERDOS seat, Task 1.
+# Field: Q (exact rationals; no irrationality needed).
+# Verified: Lean 4 / Mathlib v4.30.0, lean/Erdos634/TP_erdos.lean,
+#   `lake build Erdos634.TP_erdos` clean, zero sorry,
+#   #print axioms = [propext, Classical.choice, Quot.sound].
+#
+# The hypothesis block, shared by Dissection.wall_cover, Dissection.wall_partition,
+# Dissection.wall_two_sided and LineParam.lineChain_covers_Icc:
+#   hf    : f <> 0
+#   huv   : u <> v
+#   hS    : segment u v subset {y | f y = c}
+#   hint  : openSegment u v subset interior D.target.carrier
+#   hwall : forall y in openSegment u v, forall i, y not in interior (D.tile i).carrier
+# had NO witness anywhere in lean/, paper/, private/ before this entry.
+#
+# THE WITNESS  (Dissection 2: a right isoceles triangle cut by one median)
+role	x	y
+target_v0	0	0
+target_v1	2	0
+target_v2	0	2
+tileA_v0	0	0
+tileA_v1	1	1
+tileA_v2	2	0
+tileB_v0	0	0
+tileB_v1	0	2
+tileB_v2	1	1
+wall_u	0	0
+wall_v	1	1
+# f(x) = x_0 - x_1 ;  c = 0.  det(target)=4, det(tileA)=-2, det(tileB)=-2, |sum|=4.
+# tileA lies in {f >= 0} (far side), tileB in {f <= 0} (near side); they are separated
+# by the median line, which is exactly the wall.
+#
+# Lean names (Erdos634.TPErdos):
+#   wallDissection : Dissection 2
+#   wallWitness                  -- all five hypotheses at once
+#   lineChain_covers_Icc_witness -- LineParam.lineChain_covers_Icc instantiated
+#   wall_partition_witness       -- Dissection.wall_partition instantiated
+#   wall_two_sided_witness       -- Dissection.wall_two_sided instantiated
+#   lineChain_nonempty           -- the chain is nonempty, so the instantiation is not degenerate
+#
+# CONSUMERS THAT ARE THEREFORE NON-VACUOUS: WallChain.lean, LineParam.lean, PinPlumbing.lean,
+#   IntervalChain.lean, ChordDecomposition*, RogueChord, RogueMirror, ForcedRow, InvariantCore,
+#   StraightEdgeSums, CorridorLowStop, FlushSide, ChordAssembly, ChordInterface.
+#
+# SIDE FINDING (same file): lineChain_covers_Icc's hypothesis `hle` is REDUNDANT --
+#   Erdos634.TPErdos.hle_redundant derives it from Dissection.mem_lineChain's third field
+#   plus Tri.carrier_subset_halfplane; lineChain_covers_Icc' restates without it.
+#
+# ADDENDUM (same session): the same wallDissection also witnesses the hypotheses of the
+# anti-straddle lemma added in TP_erdos.lean section 7:
+#   edge_dir_parallel_of_boundary_relint  -- witness: edge_dir_parallel_witness
+#     g(v) = -v_1 supports the target along its base y=0; x = (1,0) is in the relative
+#     interior of tileA's edge 2 = [(2,0),(0,0)]; conclusion g(direction) = 0 holds.
+#   no_straddle_of_transversal            -- witness: no_straddle_witness
+#     same g, w = (1,1) (transversal to the base), tileA edge 0 = [(0,0),(1,1)] is parallel
+#     to w; conclusion: (0,0) is not in that edge's relative interior.
+#
+# ADDENDUM 2 (same session): the same wallDissection is a genuine TWO-SIDED CLAMPED CHORD,
+# witnessing TP_erdos.lean section 9 (the chord clamp and the chain length equation):
+#   P = (0,0) clamped by the base  g(v) = -v_1 <= 0,      g(P)=0, g(Q)=-1 < 0
+#   Q = (1,1) clamped by the hypot h(v) = v_0+v_1 <= 2,   h(Q)=2, h(P)=0 < 2
+#   chord_clamp, chain_edge_subset_chord, chain_edge_lengths_sum all instantiate;
+#   witnesses: chain_edge_lengths_sum_witness, chain_edge_subset_chord_witness.
+#   Conclusion on the witness: the near-side chain's OWN edge lengths sum to dist((0,0),(1,1)).
