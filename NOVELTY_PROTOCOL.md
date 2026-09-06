@@ -120,3 +120,23 @@ verdict, which is correct, and `N=71` cevian is genuinely open. Backfilling olde
 
 **The one genuinely open base-β row below 110 is `N=83 (5,6)`.** Everything else in that table is
 settled. Any base-β run below `N=110` that is not `N=83` is, by construction, a rediscovery.
+
+---
+
+## 5. Verified witnesses must be persisted (added 2026-09-07)
+
+`guard_record.sh` records **search verdicts**. Nothing recorded **verified geometric witnesses**, and
+that gap cost a real object: F1 — a 17-of-23 partial dissection of the `(2,3)` base-β target,
+verified in exact `ℚ(√32)` on 2026-09-06 — was written to the log as a *verdict* while its 17 triangles'
+coordinates were never saved. A later session searched `private/`, `data/` and `lean/` and found
+nothing; the one concrete deliverable in an entire room brief could not be built, from a witness this
+project had already verified.
+
+**Rule.** Any geometric object that has been verified — a tiling, a partial dissection, a
+counterexample configuration — is written to `data/witnesses/<name>.tsv` **in the same session that
+verifies it**, with: the exact field (`ℚ(√D)`), exact coordinates, the verification performed, the
+date, the provenance, and the consumer that depends on it. A verdict is not a witness. "It is in the
+transcript" is not persistence — transcripts are not greppable by a future session and are not in the
+repository.
+
+F1 is now at `data/witnesses/F1_basebeta_2_3_partial17.tsv`, re-verified from disk after writing.

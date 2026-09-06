@@ -106,8 +106,7 @@ exact count every iteration. Rules:
 * **Build `Erdos634.All` before every commit** that touches Lean.
 * **A statement that cannot be formalized keeps its blocker in `PAPER_MAP.md`**, named precisely.
   A named blocker is a discharged obligation; "not yet attempted" is not.
-* The four recurring blockers are: no tile-placement layer, no scale or composition map on
-  dissections, no certified-search format, no dual-graph development. A fifth — no passage from a
+* The blocker list is **STALE and has caused repeated category errors** — corrected 2026-09-07 by room `tileplace`: (i) *no scale or composition map* is **CLOSED** (`thm:ladder` VERIFIED 2026-09-02, `Subdivision.ladderDissection`, `Compose.compose`); (ii) *no dual-graph development* is a **dead route**, not a gap (`rem:spectral`, PROVED); (iii) *no tile-placement layer* is **partly built** (`TilePlacement` 25 decls, `TileAt` 26, `SubDissection`, `DissectionMap`, `Placement`) — what remains is specifically **edge-level placement** ("matched by exactly one tile", "the corner tile's base edge"); (iv) *no certified-search format* stands. **A blocker being listed is not evidence the mathematics is open — check `paper/` and `lean/` before believing one.** And note the hard lesson of F-4: closing an infrastructure gap does **not** unblock its consumers — `thm:ladder` closed and 0 of its 5 consumers moved, because each carried a second, unnamed blocker. Never promise that one build unlocks N atoms. A fifth — no passage from a
   real vertex figure to multiplicities — was removed on 2026-08-30.
 
 This goal does not replace the /goal above. Debt work is not progress on 634; report them apart.

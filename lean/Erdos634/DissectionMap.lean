@@ -9,8 +9,14 @@ Erdős #634, the scale map.  Five PROVED statements — `thm:ladder`, `cor:ladde
 The general step is here: an affine equivalence carries a dissection to a dissection, because it
 carries triangles to triangles, unions to unions, and interiors to interiors.
 
-What this does *not* yet give is `thm:ladder` itself, which needs the subdivision of `kT` into `k²`
-copies of `T` — a construction, not a transport.
+**STALE HEADER, CORRECTED 2026-09-07.**  This file once said it did "not yet give `thm:ladder`
+itself, which needs the subdivision of `kT` into `k²` copies of `T` — a construction, not a
+transport."  That construction **exists**: `Subdivision.ladderDissection` (`CellCoord.lean:527`)
+with `ladderDissection_congruent`, and `Ladder.ladder` is `thm:ladder`, **VERIFIED 2026-09-02**;
+`Compose.compose` closed the composition-map blocker at the same time.  Two independent room
+`tileplace` sessions (Hilbert, Gonthier), blind to each other, both flagged this header as the
+reason they nearly rebuilt closed work.  **A stale "what is missing" note is a rediscovery trap;
+delete or date them.**
 
 Axiom-clean; no `sorry`.
 -/
