@@ -13,7 +13,22 @@ verified and formalized here.
 **triviality given its hypothesis**: the hypothesis already hands you the factorization.  It is
 reached only through Beeson III Theorem 11, whose statement says `ℓ = lcm(a,c)` while its proof uses
 `lcm(a,b,c)` — and only `lcm(a,c)` reproduces Beeson's own Figures 12/13/14.  So the existing route
-to that shape rests on a misprinted theorem.
+to that shape passes through a garbled recap sentence in Theorem 11's proof.
+
+**Corrected 2026-09-06 by the room's adversarial audit.**  An earlier version of this header said
+the existing route "rests on a misprinted theorem".  That inference is **wrong** and is withdrawn.
+The misprints are real — `b1206.txt:3514` writes `M = ℓ(s − s² − 2)` with `ℓ = lcm(a,b,c)`, against
+the statement's `M = ℓ(2 − s² − s)` with `ℓ = lcm(a,c)` at `:3500`, so that one sentence carries
+*two* errors, the `lcm` and a sign flip.  But Theorem 10 (`:3324`, `:3333`) says `lcm(a,c)` in both
+its statement and its proof, Theorem 11's *statement* says `lcm(a,c)`, and Theorem 12 uses
+`ℓ = lcm(a,c) = ac/g` at `:3586`.  The route Thm 10 → Thm 11 statement → Thm 12 is therefore
+internally consistent; the defect is confined to a recap sentence.  The `lcm(a,c)` reading is the
+correct one and reproduces Beeson's own Figures 12/13/14 (`N = 77, 442, 1288`, checked).
+
+**The real defect in Theorem 12 is elsewhere, and this file repairs it.**  At `b1206.txt:3563-3572`
+the step giving `M ∣ (c−a)(2c+a)` argues "`p ∤ N` since `N` is prime" — a non sequitur: `p` prime and
+`N` prime do not give `p ≠ N`.  `FCStep2.mul_eq_prime_mul_sq_of_raw` reaches the same conclusion by
+a `gcd(M,R)` extraction that never needs `p ≠ N`.
 
 The tiling equation *before* Theorem 11 is applied is
 
@@ -25,7 +40,8 @@ file proves the two congruence obstructions that kill both branches, and they ar
 argument unconditional:
 
 * `B_never_square`  — `3f² − e² = v²` is impossible for coprime `e, f`  (mod 3).  Kills branch one.
-* `A_square_forces` — if `2f² − e² = u²` then `3f² − e² ≡ 2 (mod 4)`     (mod 8 in truth).
+* `A_square_forces` — if `2f² − e² = u²` then `3f² − e² ≡ 2 (mod 4)`.  (It is `≡ 2 (mod 8)` in
+  truth; that sharper form is discharged in `FCAudit.A_square_forces_mod8`, not asserted here.)
 * `fourcomp_prime_eq_two` — combining, branch two forces `N = 2`.
 
 So no **odd** prime survives, with Theorem 11 nowhere in the chain.
@@ -132,7 +148,10 @@ theorem fourcomp_prime_eq_two {e f u v : ℤ} {N : ℕ} (hc : IsCoprime e f) (hN
   have hd2n : (2 : ℕ) ∣ N := by exact_mod_cast hd2
   exact ((Nat.prime_dvd_prime_iff_eq Nat.prime_two hN).mp hd2n).symm
 
-/-- **No odd prime**, in the form the branch analysis delivers it: whichever of the two coprime
+/-- **No odd prime**, in the form the branch analysis delivers it.  Note the disjunction is
+formal only: `FCAudit.hsplit_left_branch_is_empty` proves the LEFT branch is unsatisfiable for every
+coprime `e, f` — killing it *is* step (4).  So this is a one-branch theorem wearing a disjunction,
+and no witness for the left branch should be sought.  Whichever of the two coprime
 splittings holds, `N` prime forces `N = 2`.  Theorem 11 is not used. -/
 theorem fourcomp_no_odd_prime {e f : ℤ} {N : ℕ} (hc : IsCoprime e f) (hN : Nat.Prime N)
     (hsplit : (∃ u v : ℤ, 2 * f ^ 2 - e ^ 2 = (N : ℤ) * u ^ 2 ∧ 3 * f ^ 2 - e ^ 2 = v ^ 2) ∨
