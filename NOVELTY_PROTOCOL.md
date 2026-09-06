@@ -140,3 +140,18 @@ transcript" is not persistence — transcripts are not greppable by a future ses
 repository.
 
 F1 is now at `data/witnesses/F1_basebeta_2_3_partial17.tsv`, re-verified from disk after writing.
+
+## 6. Stale headers are a rediscovery trap (added 2026-09-07)
+
+Room `tileplace` produced **four** corrections traceable to a single cause: Lean file headers saying
+"what this does *not* yet give", written when true and never revised. `DissectionMap.lean` claimed
+the `kT → k²` subdivision was unbuilt five days after `thm:ladder` went VERIFIED; `TileAt.lean`
+claimed two items were "still untouched" when they were `prop:cornerpara`, not the item named. Two
+sessions nearly rebuilt closed work from those headers, and **the moderator repeated the error twice
+in the room's own brief**.
+
+**Rule.** A "what is missing" note carries a date. Before believing one, verify against
+`lean/PAPER_MAP.md` and the actual declarations — `grep` for the definition, not the prose. When you
+close a gap, **delete or date every header that claimed it was open**; a stale note costs more than
+no note. A blocker's presence in `CLAUDE.md` is evidence the *Lean* is missing and evidence of
+nothing else.
