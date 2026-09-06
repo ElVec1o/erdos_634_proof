@@ -1,0 +1,29 @@
+# Registry of SETTLED instances for Erdos #634.  Consulted by code/guard_run.sh.
+# An instance listed here with verdict != SEARCHING MUST NOT be recomputed.
+family	e	f	m	N	tile	verdict	nodes	source
+basebeta	1	2	1	11	2 3 4	NO_TILING	135	paper/erdos-634.tex tab:basebeta
+basebeta	2	3	1	23	6 5 9	NO_TILING	19677	paper/erdos-634.tex tab:basebeta
+basebeta	1	3	1	26	3 8 9	NO_TILING	2025	paper/erdos-634.tex tab:basebeta
+basebeta	3	4	1	39	12 7 16	NO_TILING	825724	paper/erdos-634.tex tab:basebeta
+basebeta	1	2	2	44	2 3 4	TILING_EXISTS		lean/Erdos634/Tiling44.lean
+basebeta	1	4	1	47	4 15 16	NO_TILING	12440	paper/erdos-634.tex tab:basebeta
+basebeta	4	5	1	59	20 9 25	NO_TILING	1838175	paper/erdos-634.tex tab:basebeta
+basebeta	3	5	1	66	15 16 25	NO_TILING	7232464	paper/erdos-634.tex tab:basebeta
+basebeta	2	5	1	71	10 21 25	NO_TILING	553417	paper/erdos-634.tex tab:basebeta
+basebeta	1	5	1	74	5 24 25	NO_TILING	132519	paper/erdos-634.tex tab:basebeta
+basebeta	5	6	1	83	30 11 36	SEARCHING		paper/erdos-634.tex tab:basebeta
+basebeta	1	2	3	99	2 3 4	TILING_EXISTS		lean/Erdos634/Tiling99.lean
+basebeta	1	3	2	104	3 8 9	NO_TILING		paper/erdos-634.tex abstract
+basebeta	1	6	1	107	6 35 36	NO_TILING	1251382	paper/erdos-634.tex tab:basebeta
+basebeta	1	2	4	176	2 3 4	TILING_EXISTS		paper/erdos-634.tex
+cevian	1	2	1	7	2 3 4	NO_TILING	33	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	2	3	1	14	6 5 9	NO_TILING	678	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	1	3	1	17	3 8 9	NO_TILING	191	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	3	4	1	23	12 7 16	NO_TILING	4624	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	1	4	1	31	4 15 16	NO_TILING	550	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	4	5	1	34	20 9 25	NO_TILING	52345	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	3	5	1	41	15 16 25	NO_TILING	44134	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	2	5	1	46	10 21 25	NO_TILING	4685	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	5	6	1	47	30 11 36	NO_TILING	896455	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	1	5	1	49	5 24 25	NO_TILING	2974	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	2	3	3	63	2 3 4	TILING_EXISTS	9125	lean/Erdos634/CevianTiling63.lean

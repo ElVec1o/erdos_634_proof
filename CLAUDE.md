@@ -48,6 +48,45 @@ Standing honesty requirement for this goal: the march work is real and small rel
 report march progress as prime-case progress without saying which of the 186 orbit-families it
 touches.
 
+## STANDING RULE 0.5 — NO REDISCOVERIES (user, 2026-09-06, after six in one day)
+
+**Read `NOVELTY_PROTOCOL.md` before any computation or novelty claim.** It is binding.
+
+The single most expensive recurring failure on this project is recomputing settled results. On
+2026-09-06 alone: `N=66` (11h, published at `erdos-634.tex:825`), then `N=59`, `N=107`, `N=66`
+again and `N=62` (~9 core-hours, all rows of `tab:basebeta`), plus the Euler/dual-graph negative
+re-deriving `rem:spectral`. In the worst case the agent **quoted the settled-instances table
+verbatim in its own audit block and launched three of its rows anyway.**
+
+The lesson, which supersedes every earlier phrasing of Rule 4:
+
+> **A control that must be invoked is not a control. A control sits on the path to the action and
+> returns non-zero.** Reciting the audit is not performing it.
+
+Therefore, without exception:
+
+* **Never invoke an engine binary directly.** The only sanctioned launch is
+  `code/guard_run.sh <engine> FILE:<instance> [args]`. It refuses settled instances (exit 3) against
+  `data/SETTLED.tsv`. A bare `./private/bin/cengine_* FILE:...` — in a command, a script, or a
+  driver loop — is a violation regardless of what it finds. **Driver loops are checked per
+  iteration, not once at the top**; that is exactly how Mode B cost 9 core-hours.
+* **Record every terminated search immediately** with `code/guard_record.sh`. An unrecorded result
+  will be recomputed.
+* **Grep the CONCLUSION, not the topic**, via `code/novelty_check.sh`, and search `paper/` as well as
+  `lean/`.
+* **A `CLAUDE.md` blocker is formalization debt, not an open route.** The four blockers below mean
+  *no Lean exists*. The mathematics may be published and PROVED. Check `paper/` before calling a
+  route unexplored.
+* **Run `code/guard_selftest.sh` after any edit to the guard or registry** — it asserts 10 refusals and 1 allowance. Every guard carries a negative control that must pass. For `guard_run.sh` it is `N=83 (5,6)`,
+  the one genuinely open row below `N=110` — it must be *allowed*. A guard that refuses everything
+  is broken, and a broken guard already cost four rediscoveries once (`novelty_check.sh`, exit-status
+  bug).
+* **If a result reproduces a known one, that is the headline, not a footnote.** Presenting a
+  reproduction as a fresh measurement is the error that makes this expensive.
+
+**`N = 83 (5,6)` is the only unsettled base-β row below `N = 110`.** Any base-β run below 110 that
+is not `N=83` is a rediscovery by construction.
+
 ## Second standing goal (user, 2026-08-30): clear the formalization debt
 
 **Every PROVED statement in the three papers is debt** (Rule 5): it must reach VERIFIED, or carry a
