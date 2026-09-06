@@ -39,8 +39,16 @@ So R4 as usually stated ("the essential segment is the cevian `AD`") is **incomp
 direction `π−α` has been killed.  Where `ApexChordCriterion` applies (`f ≥ 2e²`) it is killed and R4
 stands; where it does not, the rival is live.
 
-**Among the 13 base-β primes below 250 the rival is absent — so R4's uniqueness half is
-unconditional, with no appeal to the direction elimination — for exactly**
+**CORRECTION (room `advance`, Kenyon seat, verified).**  The claim below was **over-stated**.  The
+chain "rival absent ⟹ uniqueness unconditional" routes through *essential segment ⟹ complete cut*,
+which is `R4bSeparation.sep_core` — and that theorem supplies the arrow **only in direction `π−γ`**,
+where the floor/maximum tie holds (and, scanned over all 63 coprime pairs `f ≤ 14`, nowhere else).
+So the *direction* must still come from R3, whose domain is `f ≥ 2e²`.  R3 does **not** bite at
+`71 (2,5)` (`5 < 8`) or `227 (4,9)` (`9 < 32`).  **The six-prime claim is really a four-prime claim:
+`47, 107, 191, 239`.**  The rival-absence computation below is correct as arithmetic; only its
+consequence was too strong.
+
+**Among the 13 base-β primes below 250 the rival is absent for exactly**
 
 > `N = 47 (1,4)`, `71 (2,5)`, `107 (1,6)`, `191 (1,8)`, `227 (4,9)`, `239 (2,9)`
 
