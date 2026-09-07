@@ -67,6 +67,7 @@ import Erdos634.LocalCriterionBound
 import Erdos634.SpectrumZhang
 import Erdos634.AdmissibleSpectrum
 import Erdos634.Eq105Rational
+import Erdos634.CornerParaLink
 import Erdos634.FCStep1
 import Erdos634.FCStep2
 import Erdos634.FCAudit
