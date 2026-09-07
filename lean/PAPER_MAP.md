@@ -314,7 +314,7 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | M `thm:ladder` | Scaling ladder |
 | M `thm:lattice` | Spectrum lattice |
 | M `thm:primefull` | The prime case |
-| M `thm:spectrum` | Spectrum theorem |
+| M `thm:spectrum` | Spectrum theorem | `SpectrumZhang.zhang_admissible`, `.XY_eq_three_mul`, `.c_parity` | **PROVED — forward half VERIFIED 2026-09-07, label NOT moved.** `zhang_admissible` proves every member of Zhang's family `N = m²b(a+2b)` satisfies all four invariant conditions (`X ∣ 3ak`, `Y ∣ 3ak`, and both parity clauses), resting on `XY_eq_three_mul` (`XY = 3ab`) and `c_parity` (`c ≡ a+b+ab mod 2`). Zero axioms beyond the standard three. **The converse — admissible ⟹ `e ∣ w` — is NOT formalized**: it is a `p`-adic valuation argument (`ω ≥ ε − min(x,y)`; `min(x,y)=0` at odd `p` since a common prime of `X`,`Y` divides `X+Y=2c` and `Y−X=2(b−a)`, forcing `3∣c` or `p∣gcd(a,b)`; at `p=2`, `v₂(b) ≥ 3` and the parity clause excludes `ω=ε−1`). Estimated 300–500 lines. Since the paper statement is an **exactly**, the label stays PROVED until the converse lands. Numerically re-verified first (`private/rs/spectrum2.rs`): over all **138** primitive non-equilateral triples with `a,b<400` — the exact range `rem:zhang` cites — the conditions hold **iff** `e ∣ w`, zero failures either way; `(11,24,31)` at `N=354` reproduces the paper's stated behaviour (integrality passes, parity fails). |
 
 ### Added 2026-08-12 (inflation)
 
