@@ -1,6 +1,7 @@
 import Mathlib.Tactic
 import Erdos634.TP_erdos
 import Erdos634.CongruentAngles
+import Erdos634.SssCongruent
 
 /-!
 # The ℕ-length-word conversion (outcome-2 debt)
@@ -107,7 +108,54 @@ theorem word_of_chain_sum (D : CongruentDissection N)
     Finset.sum_congr rfl (fun i _ => (hconst i).symm)
   rw [hgoal, hfiber, hreal]
 
-end Erdos634.EdgeWordConversion
 
 #print axioms Erdos634.EdgeWordConversion.chain_edge_length_mem_model
 #print axioms Erdos634.EdgeWordConversion.word_of_chain_sum
+
+/-! ## Non-vacuity: a real `CongruentDissection` instantiating `word_of_chain_sum`'s hypotheses
+
+`TP_erdos.wallDissection : Dissection 2` (median cut of `(0,0),(2,0),(0,2)`) is a bare `Dissection`;
+`word_of_chain_sum` needs a `CongruentDissection`.  The two tiles `wallTileA = (0,0),(1,1),(2,0)`
+and `wallTileB = (0,0),(0,2),(1,1)` are congruent (reflection across the tile's own median, i.e.
+the SSS witness swapping vertices `1,2`), so `wallDissection` extends to one, with model
+`wallTileA`.  Wired in below and typechecked against `word_of_chain_sum` directly. -/
+
+open Erdos634.SssCongruent Erdos634.CertCoord Erdos634.TPErdos in
+theorem wallTileB_congruent_wallTileA : wallTileB.Congruent wallTileA := by
+  apply congruent_of_sq_dist_perm (Equiv.swap (1 : Fin 3) 2)
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [wallTileA, wallTileB, dist_sq_mkPt, Equiv.swap_apply_def] <;> norm_num
+
+open Erdos634.TPErdos in
+noncomputable def wallCongruentDissection : CongruentDissection 2 where
+  toDissection := wallDissection
+  model := wallTileA
+  tiles_congruent := by
+    intro i
+    fin_cases i
+    · show wallTileA.Congruent wallTileA; exact Erdos634.Geometry.Tri.Congruent.refl _
+    · show wallTileB.Congruent wallTileA; exact wallTileB_congruent_wallTileA
+
+open Erdos634.TPErdos in
+/-- **`word_of_chain_sum` is not vacuous.**  Applied in full to `wallCongruentDissection`, with
+the Erdős seat's own separating data (`gBase`, `hHyp`) reused verbatim from
+`chain_edge_lengths_sum_witness` — every one of `word_of_chain_sum`'s twelve hypotheses is
+discharged by an existing, previously-verified lemma; nothing new is assumed here. -/
+theorem word_of_chain_sum_witness :
+    ∃ n : Fin 3 → ℕ,
+      ∑ i : Fin 3, (n i : ℝ) * sideLen wallCongruentDissection i = dist wallU wallV :=
+  word_of_chain_sum wallCongruentDissection wallF wallF_ne 0 wallU_ne_wallV wallF_u wallF_v
+    gBase 0 gBase_bound_target (by rw [wallU, gBase_pt]; norm_num)
+    (by rw [wallV, gBase_pt]; norm_num)
+    hHyp 2 hHyp_bound (by rw [wallV, hHyp_pt]; norm_num)
+    (by rw [wallU, hHyp_pt]; norm_num)
+    wall_hS wall_hint wall_hwall
+
+#print axioms Erdos634.EdgeWordConversion.word_of_chain_sum_witness
+
+#print axioms Erdos634.EdgeWordConversion.wallTileB_congruent_wallTileA
+#print axioms Erdos634.EdgeWordConversion.wallCongruentDissection
+
+
+end Erdos634.EdgeWordConversion
