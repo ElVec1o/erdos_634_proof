@@ -4175,8 +4175,14 @@ $T$-junction at $W$ is \emph{forced}, and the figure there is determined:
 Placement (i), by contrast, shares $W$ with $Y$ edge-to-edge and forces no such $T$-junction. So the
 two placements are distinguished by exactly the phenomenon Corollary~\ref{cor:walls-from-T} is about.
 This is consistent, not contradictory: $p=1$ requires a $T$-junction somewhere, and placement (ii)
-supplies one. The argument for $e^{2}$ being a gap needs $e^{2}<\min(a,b)$, which holds at $(3,7)$ but
-fails at several members with $f$ close to $e$, so it is not family-wide.
+supplies one. **Correction, 2026-09-07**: the argument for $e^{2}$ being a gap does not need
+$e^{2}<\min(a,b)$ at all --- \texttt{gap\_e\_squared} (\texttt{Frontier.lean}, zero-`sorry`,
+axiom-clean) proves $e^2\notin\langle ef,f^2{-}e^2,f^2\rangle$ unconditionally, for every coprime
+$1\le e<f$, by a divisibility argument ($f\mid(1{+}y)\Rightarrow y\ge f{-}1\ge e\Rightarrow
+y\cdot b>e^2$) that never uses the size bound $e^2<\min(a,b)$. This paragraph's earlier text
+undersold the corpus's own result, contradicting \S\ref{rem:overrunshape}, which already states
+the gap holds for no member.'' The fact IS family-wide; what remains open, unaffected by this
+correction, is that placement (ii)'s T-junction is forced but not yet shown contradictory.
 
 One structural fact about the boundary of the forced region is worth recording, since it says where an
 argument has to engage. Every tile forced so far uses one of only \emph{two} edge directions: the side
