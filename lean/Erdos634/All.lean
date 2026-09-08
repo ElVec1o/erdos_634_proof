@@ -91,6 +91,7 @@ import Erdos634.DirectionGroup
 import Erdos634.Dissection
 import Erdos634.TileAt
 import Erdos634.CongruentTileEdges
+import Erdos634.CornerBaseEdgesReal
 import Erdos634.WallDir
 import Erdos634.WallThird
 import Erdos634.BaseWalkGeneral
