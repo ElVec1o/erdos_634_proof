@@ -66,6 +66,7 @@ import Erdos634.FourCompCongruence
 import Erdos634.LocalCriterionBound
 import Erdos634.LocalMarchRun
 import Erdos634.LocalMarchRunWitness
+import Erdos634.RouteOneStepBridge
 import Erdos634.SpectrumZhang
 import Erdos634.AdmissibleSpectrum
 import Erdos634.Eq105Rational
