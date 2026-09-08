@@ -1,3 +1,4 @@
+import Mathlib.Data.List.Defs
 import Erdos634.Tiling44
 
 /-!
@@ -94,7 +95,68 @@ graph), checked directly rather than assumed. -/
 theorem sharesEdge_symm (i j : Fin 44) : sharesEdge i j = sharesEdge j i := by
   revert i j; decide
 
+/-! ## Connected components
+
+`rem:spectral` also claims four components of sizes `4, 8, 16, 16`. `code/dualgraph44_count.py`
+computed `5` components of sizes `2, 4, 8, 14, 16` and flagged this as a second, separate
+discrepancy from the same 2026-09-04 TENSION row — unresolved until now. This settles it the same
+way as the degree distribution: by a decidable BFS-reachability closure over `sharesEdge`, kernel
+`decide`d directly against `Tiling44.tiles`. -/
+
+/-- One step of BFS closure: add every neighbor (under `sharesEdge`) of everything already in `s`. -/
+def stepClosure (s : List (Fin 44)) : List (Fin 44) :=
+  (s ++ s.flatMap fun i => (List.finRange 44).filter (sharesEdge i)).dedup
+
+/-- Insertion into a `Fin 44`-list sorted by underlying value — used only to normalize a
+component's vertex list to a canonical order, so that two BFS traversals reaching the same vertex
+set (in different orders) produce syntactically equal lists for `List.dedup` to merge. -/
+def insertFin (x : Fin 44) : List (Fin 44) → List (Fin 44)
+  | [] => [x]
+  | y :: ys => if x.1 ≤ y.1 then x :: y :: ys else y :: insertFin x ys
+
+def isortFin : List (Fin 44) → List (Fin 44)
+  | [] => []
+  | x :: xs => insertFin x (isortFin xs)
+
+/-- The connected component containing `i`, as a canonically-sorted vertex list. Iterating
+`stepClosure` 44 times from `[i]` always suffices: the graph has 44 vertices, so a BFS frontier
+that keeps growing must stabilize within 44 steps. -/
+def componentOf (i : Fin 44) : List (Fin 44) :=
+  isortFin (((List.range 44).foldl (fun s _ => stepClosure s) [i]).dedup)
+
+def insertNat (x : Nat) : List Nat → List Nat
+  | [] => [x]
+  | y :: ys => if x ≤ y then x :: y :: ys else y :: insertNat x ys
+
+def isortNat : List Nat → List Nat
+  | [] => []
+  | x :: xs => insertNat x (isortNat xs)
+
+set_option maxRecDepth 4000 in
+set_option maxHeartbeats 4000000 in
+/-- **The component count and sizes — kernel-verified, and it corrects the paper's own worked
+example a second time.** `rem:spectral` claims `4` components of sizes `4, 8, 16, 16`.
+`code/dualgraph44_count.py` found `5` components of sizes `2, 4, 8, 14, 16` (2026-09-04 TENSION
+row), left unresolved against the paper's hand computation. This theorem settles it: `[2,4,8,14,16]`
+is what the kernel proves from `Tiling44.tiles`' certified coordinates via `componentOf`'s BFS
+closure — `List.dedup` on the (canonically-sorted) component lists correctly merges components
+reached by different starting vertices, since sorting first makes set-equal components
+list-equal. -/
+theorem component_sizes :
+    isortNat ((List.finRange 44).map componentOf |>.dedup |>.map (fun l => l.length))
+      = [2, 4, 8, 14, 16] := by
+  decide
+
+/-- The paper's own claimed component count/sizes does **not** match. -/
+theorem paper_component_sizes_wrong :
+    isortNat ((List.finRange 44).map componentOf |>.dedup |>.map (fun l => l.length))
+      ≠ [4, 8, 16, 16] := by
+  rw [component_sizes]; decide
+
 end Erdos634.DualGraph44
+
+#print axioms Erdos634.DualGraph44.component_sizes
+#print axioms Erdos634.DualGraph44.paper_component_sizes_wrong
 
 #print axioms Erdos634.DualGraph44.totalSharedEdges_eq_45
 #print axioms Erdos634.DualGraph44.degree_distribution
