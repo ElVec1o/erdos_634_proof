@@ -71,6 +71,7 @@ import Erdos634.CornerParaLink
 import Erdos634.EdgeWordConversion
 import Erdos634.NilpotentTower
 import Erdos634.JunctionAutomaton
+import Erdos634.DualGraph44
 import Erdos634.FCStep1
 import Erdos634.FCStep2
 import Erdos634.FCAudit
