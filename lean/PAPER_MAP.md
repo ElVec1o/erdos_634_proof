@@ -4019,9 +4019,9 @@ Rule 19 is the first block of the next session at U5.
 **Label stays PROVED**: the enumeration counts are part of the stated proposition and one of them is
 now in dispute.
 
-| O `prop:globalsys` | the global angle–Euler system admits prime solutions | `GlobalSystem.prime_solution_exists`, `.euler_parity`, `code/globalsys_count.py` | PROVED — the prime solution and the congruence are VERIFIED; **TENSION: stated 1968 solutions at N=47, recomputed 2096** |
+| O `prop:globalsys` | the global angle–Euler system admits prime solutions | `GlobalSystem.prime_solution_exists`, `.euler_parity`, `.solCount_11/23/47`, `.system_iff_reduced` | PROVED — the prime solution and the congruence are VERIFIED. **UPDATE 2026-09-08**: the `N=47` TENSION below is now RESOLVED and KERNEL-VERIFIED, not just computed: `system_iff_reduced` proves the 4-equation system collapses to one linear equation (`v1` pinned by the others), and `solCount_47` decides that equation's solution count is `2096`, not the paper's stated `1968`. `paper/erdos-634-obstructions.tex` corrected in place. The proposition's actual conclusion is untouched — it rests on `prime_solution_exists` alone. |
 
-### TENSION resolved (as far as computation can): `prop:globalsys`'s `N = 47` count should be **2096**
+### TENSION resolved (as far as computation can, then KERNEL-VERIFIED 2026-09-08): `prop:globalsys`'s `N = 47` count is **2096**
 
 Three tests, all negative for `1968`:
 
