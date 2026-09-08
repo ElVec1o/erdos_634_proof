@@ -40,8 +40,12 @@ tiling needs, at *every* position of the march and not just at `V`:
   serving tile keeps weakly above the wall line, is not derivable from the corpus.  It is the
   statement that no tile crosses the wall, and the wall here is a line **interior** to the target
   (`EscapeData.hV`), where nothing forbids a tile from straddling it.
-* the exclusion of the overshoot branch `f < length`, which is tile-interior blocking and is not a
-  theorem anywhere in `lean/`.
+* the exclusion of the overshoot branch `f < length`, which is tile-interior blocking. (Since
+  2026-09-09 this *is* a theorem: `OvershootBlocking.blocked_of_overshoot`, and
+  `.escape_flank_advance_of_deviation` is `escape_flank_advance` with `hno` discharged. It is
+  conditional on `hdev` — a tile other than the serving one with points strictly above the wall
+  arbitrarily near `E`, i.e. the escape word's own deviating chord there — which is *not* derived
+  and stays part of the attachment obligation.)
 
 Neither is supplied here, and no theorem below assumes either.
 
