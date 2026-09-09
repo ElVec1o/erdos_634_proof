@@ -17,7 +17,8 @@ off which end carries the larger flanking angle.
 What this file gives is the **indexing**: a run of length `L`, its tiles as a function
 `Fin L → Fin N`, its orientation word as `ℕ → Bool`, and the junction bound in the form the chain
 consumes.  What it does *not* give is that the sublist is contiguous along the line — that is
-`BaseChain.base_chain_consecutive_meet`'s job and enters as a hypothesis.
+`BaseChain.base_chain_reach`'s job and enters as a hypothesis.  (Corrected 2026-09-10: the
+citation used to name `base_chain_consecutive_meet`, which is vacuous as stated.)
 
 Axiom-clean; no `sorry`.
 -/

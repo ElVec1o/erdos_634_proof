@@ -6,8 +6,10 @@ import Erdos634.BridgeC
 /-!
 # The wall chain's first edge starts exactly at the named corner
 
-Erdős #634, bridge (c), the last piece.  `BaseChain.base_chain_consecutive_meet` gives the
-internal incidences of the sorted wall-edge enumeration; nothing so far says the *enumeration
+Erdős #634, bridge (c), the last piece.  `BaseChain.base_chain_reach` gives the
+internal incidences of the sorted wall-edge enumeration (which is what this file's proofs actually
+call, at `base_chain_reach … E hmono hmem hsurj`; the packed wrapper
+`BaseChain.base_chain_consecutive_meet` is vacuous as stated — citation corrected 2026-09-10); nothing so far says the *enumeration
 itself* begins at `a` — the segment's own named endpoint, which is what `lem:endpoints` and the
 inductive step of `prop:gammatrap` both actually need.
 

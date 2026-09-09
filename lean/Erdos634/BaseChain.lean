@@ -100,7 +100,25 @@ theorem base_chain_reach {N : ℕ} (D : Dissection N) (g : Plane →ᵃ[ℝ] ℝ
     rwa [uIcc] at this
 
 /-- **The base chain's consecutive edges meet.**  With the wall edges enumerated in order of
-`edgePos`, one of the first `k+1` reaches the next edge's key. -/
+`edgePos`, one of the first `k+1` reaches the next edge's key.
+
+**WARNING — VACUOUS AS STATED (Rule 6, found 2026-09-10).**  The phrase "with the wall edges
+enumerated in order of `edgePos`" describes the `E` this proof happens to build; it is nowhere in
+the statement.  The conclusion existentially quantifies `E : ℕ → Fin N × Fin 3` while dropping the
+three properties (`hmono`, `hmem`, `hsurj`) that tie `E` to `wallList D g c`, and what is left is
+satisfied by the **constant** enumeration `fun _ => (⟨0, hN⟩, 0)` with `j := 0`, because
+`edgePos e = min … ≤ max … = edgeEnd e` for one and the same edge `e`.  `D`, `g`, `c`, `dir`, the
+base `a b` and all five geometric hypotheses (`hwall`, `hab`, `hbase`, `hline`, `hface`) are then
+unused: `Erdos634.VacuityProbe.base_chain_consecutive_meet_vacuous`.  This theorem therefore carries
+**no information** and must not be cited as closing contiguity of the wall chain, for the filtered
+run or the unfiltered `wallList`.
+
+Use `base_chain_reach` instead: it takes the enumeration as a parameter *together with* `hmono`,
+`hmem`, `hsurj`, and is the statement that actually has content.  Its callers
+(`BridgeC.chain_junctions`, `WallEndpoints`) already do this correctly — they obtain `E` from
+`ChainEnum.exists_sorted_enum` themselves and pass it to `base_chain_reach`, bypassing this
+wrapper.  This is the same defect as `SideWalk.lean:371` (batch 8): real, `D`-derived data computed
+inside a proof and then discarded by packing it into an existential. -/
 theorem base_chain_consecutive_meet {N : ℕ} (hN : 0 < N) (D : Dissection N)
     (g : Plane →ᵃ[ℝ] ℝ) (c : ℝ) (dir : Plane →ₗ[ℝ] ℝ)
     (hwall : ∀ y ∈ D.target.carrier, g y ≤ c) (a b : Plane) (hab : a ≠ b)

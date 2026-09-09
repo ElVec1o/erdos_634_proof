@@ -4,8 +4,9 @@ import Erdos634.RunOrientation
 /-!
 # The orientation word of the base chain
 
-Erdős #634, bridge (c), the last piece.  `BaseChain.base_chain_consecutive_meet` orders the base
-chain; `OrientBridge.adjacent_admissible` forbids two `γ`s at a shared junction of a real
+Erdős #634, bridge (c), the last piece.  `BaseChain.base_chain_reach` orders the base
+chain (citation corrected 2026-09-10: the packed wrapper `base_chain_consecutive_meet` is vacuous
+as stated); `OrientBridge.adjacent_admissible` forbids two `γ`s at a shared junction of a real
 dissection; `RunOrientation.corner_anchored_run_all_BG` consumes a *word* — a list of orientations
 whose adjacent pairs are admissible.
 

@@ -5,7 +5,7 @@ import Erdos634.BaseSelection
 /-!
 # The wall line meets the target exactly in its base
 
-Erdős #634, bridge (c).  `BaseChain.base_chain_consecutive_meet` carries one hypothesis introduced
+Erdős #634, bridge (c).  `BaseChain.base_chain_reach` carries one hypothesis introduced
 without proof: that the wall line meets the target only in the base.  This file proves it, from the
 barycentric expansion and one strictness — that the target's third vertex is strictly off the wall.
 

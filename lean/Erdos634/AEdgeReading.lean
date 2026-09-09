@@ -22,7 +22,9 @@ indexed); this file moves them to the `edgeWest`/`edgeEast` (direction-indexed) 
 need, via `EdgeType.localAngle_edgeWest_edgeEast`, and discharges the readings unconditionally for
 any real `a`-edge — then assembles a real `MarchRunObject.aRun`'s word into
 `OrientWord.word_isChain`, given its junction incidence (still a hypothesis: the run's contiguity
-along the line is `BaseChain.base_chain_consecutive_meet`'s unclosed business).
+along the line is `BaseChain.base_chain_reach`'s unclosed business).  (Corrected 2026-09-10: the
+citation used to name `base_chain_consecutive_meet`, which is vacuous as stated — see its
+docstring.)
 
 Axiom-clean; no `sorry`.
 -/
@@ -94,7 +96,9 @@ theorem tile_orient_GB_west_gamma (D : CongruentDissection N) (α β γ : ℝ)
 `MarchRunObject.aRun` selects the `a`-edges of the wall; given an enumeration `E` of its members
 (any enumeration — `ChainEnum.exists_sorted_enum` supplies a canonical one for any list) and the
 run's junction incidence (`edgeEast (E k) = edgeWest (E (k+1))`, still unproved for the *filtered*
-run — `BaseChain.base_chain_consecutive_meet` closes it only for the unfiltered `wallList`), the
+run — `BaseChain.base_chain_reach` closes it only for the unfiltered `wallList`, and only for an
+enumeration the caller supplies with `hmono`/`hmem`/`hsurj`; the packed wrapper
+`base_chain_consecutive_meet` closes **nothing**, being vacuous as stated), the
 word read off the tiles via `OrientBridge.tileOrient` at each edge's west end is an admissible
 chain, hence (`Inflation.orient_monotone`) of the form `GB^j BG^(L-j)`. This is `prop:orientmono`'s
 statement, for a real run, conditional on the still-missing junction incidence. -/

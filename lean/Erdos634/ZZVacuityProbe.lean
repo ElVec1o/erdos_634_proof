@@ -1,5 +1,6 @@
 import Erdos634.BaseDecomposition
 import Erdos634.SideWalk
+import Erdos634.BaseChain
 
 namespace Erdos634.VacuityProbe
 
@@ -47,5 +48,23 @@ theorem interior_multiplicities_real_vacuous (α β γ : ℝ) :
       (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi + (u : ℝ) * (2 * Real.pi)
         = 2 * Real.pi :=
   ⟨0, 0, 0, 0, 1, by push_cast; ring⟩
+
+/-! ### Batch 10 (2026-09-10): the base-chain enumeration existential
+
+`BaseChain.base_chain_consecutive_meet` packs the enumeration `E` into the conclusion while
+dropping the three properties (`hmono`, `hmem`, `hsurj`) that tie `E` to `wallList D g c`.  What is
+left is satisfied by the *constant* enumeration, since `edgePos e = min … ≤ max … = edgeEnd e` for
+one and the same edge `e`.  The dissection, the wall functional `g`, the base `a b` and all five
+geometric hypotheses are unused. -/
+
+/-- Conclusion of `BaseChain.base_chain_consecutive_meet`, verbatim, with **no wall hypotheses, no
+base segment, and no relation between `E` and `wallList`**: take `E` constant. -/
+theorem base_chain_consecutive_meet_vacuous {N : ℕ} (hN : 0 < N) (D : Erdos634.Geometry.Dissection N)
+    (g : Erdos634.Geometry.Plane →ᵃ[ℝ] ℝ) (c : ℝ) (dir : Erdos634.Geometry.Plane →ₗ[ℝ] ℝ) :
+    ∃ E : ℕ → Fin N × Fin 3, ∀ k, k + 1 < (Erdos634.BaseChain.wallList D g c).length →
+      ∃ j ≤ k, Erdos634.OrientBridge.edgePos D dir (E (k + 1))
+        ≤ Erdos634.ChainInstance.edgeEnd D dir (E j) :=
+  ⟨fun _ => (⟨0, hN⟩, 0), fun k _ => ⟨0, Nat.zero_le k,
+    min_le_max⟩⟩
 
 end Erdos634.VacuityProbe
