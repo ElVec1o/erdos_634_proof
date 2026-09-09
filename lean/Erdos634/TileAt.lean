@@ -564,12 +564,20 @@ theorem congruentDissection_endpoints (hN : 0 < N) (D : CongruentDissection N) (
     (hcornerapex : cornerAngle (D.target.pts (kapex + 1)) (D.target.pts kapex)
       (D.target.pts (kapex + 2)) = 3 * α) :
     ∃ E : ℕ → Fin N × Fin 3, ∃ n : ℕ, n = (wallList D.toDissection g c).length ∧ 0 < n ∧
+      -- `E` is the wall chain itself, not an arbitrary function: it enumerates `wallList`
+      -- injectively and surjectively, and its first/last edges are the two named corners.
+      (∀ m, m < n → E m ∈ wallList D.toDissection g c) ∧
+      (∀ m1 m2, m1 < n → m2 < n → E m1 = E m2 → m1 = m2) ∧
+      (∀ x ∈ wallList D.toDissection g c, ∃ i < n, E i = x) ∧
+      edgeWest D.toDissection dir (E 0) = D.target.pts kbase ∧
+      edgeEast D.toDissection dir (E (n - 1)) = D.target.pts kapex ∧
       (D.tile (E 0).1).localAngle (D.target.pts kbase) = β ∧
       (D.tile (E (n - 1)).1).localAngle (D.target.pts kapex) = α := by
-  obtain ⟨E, n, hneq, hn0, hwest, heast, hinternal, hmem, hEinj⟩ :=
+  obtain ⟨E, n, hneq, hn0, hwest, heast, hinternal, hmem, hEinj, -, -, -, hsurj⟩ :=
     chain_endpoints hN D.toDissection g c dir hker hwall (D.target.pts kbase)
       (D.target.pts kapex) hab hdirab hbase hline hface hthird
-  exact ⟨E, n, hneq, hn0, congruentDissection_endpoints_of_chain D α β γ hαβ hαγ hαπ hα0 hβγ hβπ
+  exact ⟨E, n, hneq, hn0, hmem, hEinj, hsurj, hwest, heast,
+    congruentDissection_endpoints_of_chain D α β γ hαβ hαγ hαπ hα0 hβγ hβπ
     hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hα' hβ' hγ' kbase kapex dir hcornerbase hcornerapex E n
     hwest heast⟩
 

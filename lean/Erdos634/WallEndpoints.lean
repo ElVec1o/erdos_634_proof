@@ -70,7 +70,11 @@ theorem chain_starts_at_a {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane �
     (hline : ∀ y ∈ segment ℝ a b, g y = c)
     (hface : ∀ y ∈ D.target.carrier, g y = c → y ∈ segment ℝ a b)
     (hthird : ∀ p ∈ wallList D g c, g ((D.tile p.1).pts (p.2 + 2)) < c) :
-    ∃ E : ℕ → Fin N × Fin 3, 0 < (wallList D g c).length ∧ edgeWest D dir (E 0) = a := by
+    ∃ E : ℕ → Fin N × Fin 3, 0 < (wallList D g c).length ∧ edgeWest D dir (E 0) = a ∧
+      (∀ m, m < (wallList D g c).length → E m ∈ wallList D g c) ∧
+      (∀ m1 m2, m1 ≤ m2 → m2 < (wallList D g c).length →
+        edgePos D dir (E m1) ≤ edgePos D dir (E m2)) ∧
+      (∀ x ∈ wallList D g c, ∃ i < (wallList D g c).length, E i = x) := by
   classical
   haveI : Inhabited (Fin N × Fin 3) := ⟨(⟨0, hN⟩, 0)⟩
   obtain ⟨E, hmono, hmem, hsurj, hinj⟩ :=
@@ -83,7 +87,7 @@ theorem chain_starts_at_a {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane �
   obtain ⟨p, hp, hap⟩ := hacov
   obtain ⟨i, hilt, rfl⟩ := hsurj p ((mem_wallList D g c p).mpr hp)
   have hn0 : 0 < (wallList D g c).length := lt_of_le_of_lt (Nat.zero_le i) hilt
-  refine ⟨E, hn0, ?_⟩
+  refine ⟨E, hn0, ?_, hmem, hmono, hsurj⟩
   have hwi := (mem_wallList D g c (E i)).mp (hmem i hilt)
   have hndi : edgePos D dir (E i) < edgeEnd D dir (E i) :=
     shadow_nondegenerate D g dir c hker (E i).1 (E i).2 hwi.1 hwi.2
@@ -151,7 +155,10 @@ theorem chain_ends_at_b {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
     (hface : ∀ y ∈ D.target.carrier, g y = c → y ∈ segment ℝ a b)
     (hthird : ∀ p ∈ wallList D g c, g ((D.tile p.1).pts (p.2 + 2)) < c) :
     ∃ E : ℕ → Fin N × Fin 3, ∃ n : ℕ, n = (wallList D g c).length ∧ 0 < n ∧
-      edgeEast D dir (E (n - 1)) = b := by
+      edgeEast D dir (E (n - 1)) = b ∧
+      (∀ m, m < n → E m ∈ wallList D g c) ∧
+      (∀ m1 m2, m1 ≤ m2 → m2 < n → edgePos D dir (E m1) ≤ edgePos D dir (E m2)) ∧
+      (∀ x ∈ wallList D g c, ∃ i < n, E i = x) := by
   classical
   haveI : Inhabited (Fin N × Fin 3) := ⟨(⟨0, hN⟩, 0)⟩
   obtain ⟨E, hmono, hmem, hsurj, hinj⟩ :=
@@ -164,7 +171,7 @@ theorem chain_ends_at_b {N : ℕ} (hN : 0 < N) (D : Dissection N) (g : Plane →
   obtain ⟨p, hp, hbp⟩ := hbcov
   obtain ⟨i, hilt, rfl⟩ := hsurj p ((mem_wallList D g c p).mpr hp)
   have hn0 : 0 < n := lt_of_le_of_lt (Nat.zero_le i) hilt
-  refine ⟨E, n, rfl, hn0, ?_⟩
+  refine ⟨E, n, rfl, hn0, ?_, hmem, hmono, hsurj⟩
   have hwi := (mem_wallList D g c (E i)).mp (hmem i hilt)
   have hndi : edgePos D dir (E i) < edgeEnd D dir (E i) :=
     shadow_nondegenerate D g dir c hker (E i).1 (E i).2 hwi.1 hwi.2
