@@ -58,7 +58,14 @@ theorem base_walk_pos_int {N : ℕ} (hN : 0 < N) (D : CongruentDissection N)
 a `CongruentDissection` whose model has the base-β `(e,f)` side lengths `ef, f²-e², f²` and whose
 target's side `k` has the base's own known length `e(3f²-e²)`, at a separated member
 (`f²>2ef+e²`) the base admits exactly the two decompositions `(0,e,2e)` or `(f,e,e)` — the γ-trap's
-`z≥1` combined with the already-VERIFIED `base_trichotomy`. -/
+`z≥1` combined with the already-VERIFIED `base_trichotomy`.
+
+**WARNING (2026-09-10): this conclusion is vacuous.** The `∃ x y z` binds outside the disjunction
+and nothing ties `x,y,z` to `D`, so `⟨0, e0, 2*e0, Or.inl ⟨rfl,rfl,rfl⟩⟩` proves it with no
+hypotheses at all (machine-checked). Conjoining the walk equation does not help — `(0,e,2e)`
+satisfies it identically. The real counts exist inside `SideWalk.side_walk_pos2_of_dissection`'s
+proof but are discarded when packed existentially. Do not cite this as the dissection-level
+content of `lem:basedi`. -/
 theorem base_decomposition_general {N : ℕ} (hN : 0 < N) (D : CongruentDissection N)
     (α β γ : ℝ)
     (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
@@ -92,7 +99,10 @@ theorem base_decomposition_general {N : ℕ} (hN : 0 < N) (D : CongruentDissecti
 
 /-- **`cor:basedi2e`, as a conditional on any real base-β dissection.** Same as
 `base_decomposition_general` but with the weaker hypothesis `f > 2e` in place of separation
-(`f² > 2ef + e²`), via `CChord.base_dichotomy_2e`'s harder, genuinely different argument. -/
+(`f² > 2ef + e²`), via `CChord.base_dichotomy_2e`'s harder, genuinely different argument.
+
+**WARNING (2026-09-10): vacuous, for exactly the reason recorded on `base_decomposition_general`
+above.** The `ℤ` arithmetic it calls (`CChord.base_dichotomy_2e`) is unaffected. -/
 theorem base_decomposition_2e {N : ℕ} (hN : 0 < N) (D : CongruentDissection N)
     (α β γ : ℝ)
     (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)

@@ -456,7 +456,11 @@ equal side (`f² > 2e²`, the thin regime) carries no `b`-edge. This is `equal_s
 `int_walk_of_dissection`'s output — the last remaining inputs are the concrete geometric
 realization (`hA`,`hB`,`hC`,`hLen`: the model and the side literally have the stated lengths, which
 needs a real-coordinate `Tri` for the base-β target — not built, see `PAPER_MAP`) and `hnc1` (an
-edge of type `c` occurs — `prop:gammatrap`'s content at this side, also not yet connected here). -/
+edge of type `c` occurs — `prop:gammatrap`'s content at this side, also not yet connected here).
+
+**WARNING (2026-09-10): this conclusion is vacuous** — it is provable with no dissection and no
+hypotheses (machine-checked). The conclusion is literally `∃ Pc Qc : ℕ, Qc = 0`, proved by `⟨0, 0, rfl⟩`. The counts computed in the
+proof are real, but packing them existentially severs them from `D`. Do not cite this row as content. -/
 theorem equal_side_no_b_of_dissection (D : CongruentDissection N) (g : Plane →ᵃ[ℝ] ℝ) (c : ℝ)
     (dir : Plane →ₗ[ℝ] ℝ) (hker : ∀ v : Plane, g.linear v = 0 → dir v = 0 → v = 0)
     (hwall : ∀ y ∈ D.target.carrier, g y ≤ c) (a b : Plane) (hab : a ≠ b) (hdirab : dir a ≤ dir b)
@@ -913,7 +917,10 @@ theorem apex_edge_and_next_of_gammatrap (D : CongruentDissection N) (α β γ : 
 `n_a = f·k`. Composes `equal_side_no_b_of_gammatrap`'s output with `f₀ ∣ Pc` (derived from the walk
 equation itself: `Pc·e₀·f₀ = f₀²·(f₀ - Rc)`, so `f₀ ∣ Pc·e₀`, and coprimality gives `f₀ ∣ Pc`) and
 `BaseBetaWalkArith.equal_side_shape`. Same remaining gap as `equal_side_no_b_of_gammatrap`: the
-concrete numeric realization. -/
+concrete numeric realization.
+
+**WARNING (2026-09-10): this conclusion is vacuous** — it is provable with no dissection and no
+hypotheses (machine-checked). `(Pc, Rc, kk) = (0, f0.toNat, 0)` satisfies `(Pc:ℤ) = f0*kk ∧ (Rc:ℤ) = f0 - kk*e0` from `0 ≤ f0` alone. -/
 theorem equal_side_shape_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ)
     (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
     (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
@@ -966,6 +973,12 @@ theorem equal_side_shape_of_gammatrap (D : CongruentDissection N) (α β γ : �
   exact ⟨Pc, Rc, kk.toNat, by rw [hkk, hktoNat], by rw [hnc, hktoNat]⟩
 
 open Erdos634.SideWall Erdos634.Geometry.Dissection Erdos634.TilePlacement in
+/-- **`thm:walkstruct` clause (ii): the base's `b`-count is `e`, for a real dissection.**
+
+**WARNING (2026-09-10): this conclusion is vacuous** — `(Pc,Qc,Rc) = (0, e0, 2*e0)` satisfies
+`(Qc:ℤ) = e0 ∧ Pc*(e0*f0) + Qc*b0 + Rc*f0^2 = e0*(3*f0^2 - e0^2)` given only `b0 + e0^2 = f0^2`,
+with no dissection at all (machine-checked). Same cause as `equal_side_shape_of_gammatrap` above:
+the counts are D-derived inside the proof but packed existentially, severing them from `D`. -/
 theorem base_b_count_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ)
     (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
     (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
