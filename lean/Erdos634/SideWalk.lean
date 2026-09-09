@@ -535,6 +535,10 @@ theorem equal_side_no_b_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ
     (hLen : dist (D.target.pts k) (D.target.pts (k + 1)) = ((f0 ^ 3 : ℤ) : ℝ)) :
     ∃ Pc Qc Rc : ℕ, Qc = 0 ∧
       (Pc : ℤ) * (e0 * f0) + (Rc : ℤ) * f0 ^ 2 = f0 ^ 3 ∧
+      (∀ q ∈ Erdos634.BaseChain.wallList D.toDissection (wallFun D.target k) 0,
+        dist (edgeWest D.toDissection dir q) (edgeEast D.toDissection dir q) = sideOpp D.model 0 ∨
+        dist (edgeWest D.toDissection dir q) (edgeEast D.toDissection dir q)
+          = sideOpp D.model 2) ∧
       ∃ p ∈ Erdos634.BaseChain.wallList D.toDissection (wallFun D.target k) 0,
         edgeEast D.toDissection dir p = D.target.pts (k + 1) ∧
         dist (edgeWest D.toDissection dir p) (edgeEast D.toDissection dir p) = sideOpp D.model 2 := by
@@ -788,14 +792,55 @@ theorem equal_side_no_b_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ
     · rw [min_eq_right h, max_eq_left h, abs_of_nonneg (by linarith)]
   have hlastRL := hRL (n - 1) hn1
   rw [← hdist_last] at hlastRL
-  refine ⟨PcL, QcL, RcL, hQc0, hcast2, plast, hlast_mem, heastlast, ?_⟩
-  have hWE_dist : dist (edgeWest D.toDissection dir plast) (edgeEast D.toDissection dir plast)
-      = dist ((D.tile plast.1).pts plast.2) ((D.tile plast.1).pts (plast.2 + 1)) := by
+  -- **Every edge of the side is an `a` or a `c`.**  The index-free form of `Qc = 0`: the
+  -- `b`-exclusion read off edge by edge instead of as a count.  Combined with `chain_endpoints`'s
+  -- contiguity (which names "the edge immediately after" a given one along the real side) this is
+  -- exactly the interface `thm:secondc` consumes, minus the `a`-exclusion.
+  have hWEgen : ∀ q : Fin N × Fin 3,
+      dist (edgeWest D.toDissection dir q) (edgeEast D.toDissection dir q)
+        = dist ((D.tile q.1).pts q.2) ((D.tile q.1).pts (q.2 + 1)) := by
+    intro q
     unfold edgeWest edgeEast
     classical
     split
     · rfl
     · exact dist_comm _ _
+  have hdistE : ∀ m, m < n →
+      dist ((D.tile (E m).1).pts (E m).2) ((D.tile (E m).1).pts ((E m).2 + 1)) = R m - L m := by
+    intro m hm
+    have hwm := (Erdos634.BaseChain.mem_wallList D.toDissection g 0 (E m)).mp (hmem m hm)
+    rw [hiso _ _ hwm.1 hwm.2]
+    show |dir ((D.tile (E m).1).pts (E m).2) - dir ((D.tile (E m).1).pts ((E m).2 + 1))|
+      = Erdos634.ChainInstance.edgeEnd D.toDissection dir (E m)
+        - Erdos634.OrientBridge.edgePos D.toDissection dir (E m)
+    rw [show Erdos634.OrientBridge.edgePos D.toDissection dir (E m)
+          = min (dir ((D.tile (E m).1).pts (E m).2)) (dir ((D.tile (E m).1).pts ((E m).2 + 1)))
+        from rfl,
+      show Erdos634.ChainInstance.edgeEnd D.toDissection dir (E m)
+          = max (dir ((D.tile (E m).1).pts (E m).2)) (dir ((D.tile (E m).1).pts ((E m).2 + 1)))
+        from rfl]
+    rcases le_total (dir ((D.tile (E m).1).pts (E m).2))
+        (dir ((D.tile (E m).1).pts ((E m).2 + 1))) with h | h
+    · rw [min_eq_left h, max_eq_right h, abs_of_nonpos (by linarith)]; ring
+    · rw [min_eq_right h, max_eq_left h, abs_of_nonneg (by linarith)]
+  have hac : ∀ q ∈ Erdos634.BaseChain.wallList D.toDissection g 0,
+      dist (edgeWest D.toDissection dir q) (edgeEast D.toDissection dir q) = sideOpp D.model 0 ∨
+      dist (edgeWest D.toDissection dir q) (edgeEast D.toDissection dir q)
+        = sideOpp D.model 2 := by
+    intro q hq
+    obtain ⟨i, hi, rfl⟩ := hsurj q hq
+    rw [hWEgen, hdistE i hi]
+    rcases hRL i hi with h | h | h
+    · exact Or.inl h
+    · exfalso
+      have hmemQ : i ∈ (Finset.range n).filter (fun j => R j - L j = sideOpp D.model 1) :=
+        Finset.mem_filter.mpr ⟨Finset.mem_range.mpr hi, h⟩
+      have : (0:ℕ) < QcL := hQcdef ▸ Finset.card_pos.mpr ⟨i, hmemQ⟩
+      omega
+    · exact Or.inr h
+  refine ⟨PcL, QcL, RcL, hQc0, hcast2, hac, plast, hlast_mem, heastlast, ?_⟩
+  have hWE_dist : dist (edgeWest D.toDissection dir plast) (edgeEast D.toDissection dir plast)
+      = dist ((D.tile plast.1).pts plast.2) ((D.tile plast.1).pts (plast.2 + 1)) := hWEgen plast
   rw [hWE_dist]
   rcases hlastRL with h0 | h1 | h2
   · exact absurd h0 hnota
@@ -806,6 +851,63 @@ theorem equal_side_no_b_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ
     have : (0:ℕ) < QcL := hQcdef ▸ Finset.card_pos.mpr ⟨n - 1, hmemQc⟩
     omega
   · exact h2
+
+open Erdos634.SideWall Erdos634.Geometry.Dissection Erdos634.TilePlacement in
+/-- **The apex edge of a real equal side, and the edge immediately below it.**  `thm:secondc`'s
+geometric interface, as far as the corpus reaches.
+
+`chain_endpoints` gives the side's ordered chain with `edgeEast (E m) = edgeWest (E (m+1))`, so
+"the edge immediately below `p`" is index-free: it is any wall edge `q` whose east endpoint is `p`'s
+west endpoint.  This theorem says the apex-end edge `p` is a `c` (that part was already inside
+`equal_side_no_b_of_gammatrap`) and that the edge below it is an `a` or a `c` — the `b` being
+excluded by the real `lem:sidenob`, `Qc = 0`, read off edge by edge.
+
+**What is NOT proved here**, and is exactly `thm:secondc`'s remaining content: the exclusion of the
+`a`.  That needs the vertex figure at the junction `J = edgeWest p` to be straight and
+`cor:noTP`'s tile identification, neither of which exists for a real dissection; the abstract
+exhaustion over the two straight figures is `SecondEdge.admissible_ends_alpha`, whose hypotheses are
+precisely those missing facts.  So this theorem reduces `thm:secondc` to a single named exclusion,
+and does not prove it. -/
+theorem apex_edge_and_next_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ)
+    (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
+    (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
+    (hγπ : γ ≠ Real.pi) (hγ0 : γ ≠ 0) (hπ0 : Real.pi ≠ 0)
+    (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
+    (hscalenef : ∀ m m' : Fin 3, m ≠ m' → sideOpp D.model m ≠ sideOpp D.model m')
+    (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
+    (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
+    (hγ' : cornerAngle (D.model.pts 0) (D.model.pts 2) (D.model.pts 1) = γ)
+    (k : Fin 3) (dir : Plane →ₗ[ℝ] ℝ)
+    (hker : ∀ v : Plane, (wallFun D.target k).linear v = 0 → dir v = 0 → v = 0)
+    (hdirab : dir (D.target.pts k) ≤ dir (D.target.pts (k + 1)))
+    (hthird : ∀ p ∈ Erdos634.BaseChain.wallList D.toDissection (wallFun D.target k) 0,
+      wallFun D.target k ((D.tile p.1).pts (p.2 + 2)) < 0)
+    (hcornerbase : cornerAngle (D.target.pts (k + 1)) (D.target.pts k)
+      (D.target.pts (k + 2)) = β)
+    (hcornerapex : cornerAngle (D.target.pts (k + 1 + 1)) (D.target.pts (k + 1))
+      (D.target.pts (k + 1 + 2)) = 3 * α)
+    (hiso : ∀ p q : Plane, (wallFun D.target k) p = 0 → (wallFun D.target k) q = 0 →
+      dist p q = |dir p - dir q|)
+    (hN : 0 < N) (e0 f0 b0 : ℤ) (he0 : 1 ≤ e0) (hef0 : e0 < f0) (hcop : IsCoprime e0 f0)
+    (hb0 : b0 + e0 ^ 2 = f0 ^ 2) (hthin : 2 * e0 ^ 2 < f0 ^ 2)
+    (hA : sideOpp D.model 0 = ((e0 * f0 : ℤ) : ℝ))
+    (hB : sideOpp D.model 1 = (b0 : ℝ))
+    (hC : sideOpp D.model 2 = ((f0 ^ 2 : ℤ) : ℝ))
+    (hLen : dist (D.target.pts k) (D.target.pts (k + 1)) = ((f0 ^ 3 : ℤ) : ℝ)) :
+    ∃ p ∈ Erdos634.BaseChain.wallList D.toDissection (wallFun D.target k) 0,
+      edgeEast D.toDissection dir p = D.target.pts (k + 1) ∧
+      dist (edgeWest D.toDissection dir p) (edgeEast D.toDissection dir p) = sideOpp D.model 2 ∧
+      ∀ q ∈ Erdos634.BaseChain.wallList D.toDissection (wallFun D.target k) 0,
+        edgeEast D.toDissection dir q = edgeWest D.toDissection dir p →
+        dist (edgeWest D.toDissection dir q) (edgeEast D.toDissection dir q) = sideOpp D.model 0 ∨
+        dist (edgeWest D.toDissection dir q) (edgeEast D.toDissection dir q)
+          = sideOpp D.model 2 := by
+  obtain ⟨-, -, -, -, -, hac, p, hpmem, hpeast, hpc⟩ :=
+    equal_side_no_b_of_gammatrap D α β γ hαβ hαγ hαπ hα0 hβγ
+      hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hscalenef hα' hβ' hγ' k dir hker hdirab hthird
+      hcornerbase hcornerapex hiso hN e0 f0 b0 he0 hef0 hcop hb0 hthin hA hB hC hLen
+  exact ⟨p, hpmem, hpeast, hpc, fun q hq _ => hac q hq⟩
 
 /-- **`thm:walkstruct` clause (i)'s shape, for a real dissection's side**: `n_c = f - k·e` where
 `n_a = f·k`. Composes `equal_side_no_b_of_gammatrap`'s output with `f₀ ∣ Pc` (derived from the walk
@@ -841,7 +943,7 @@ theorem equal_side_shape_of_gammatrap (D : CongruentDissection N) (α β γ : �
     (hC : sideOpp D.model 2 = ((f0 ^ 2 : ℤ) : ℝ))
     (hLen : dist (D.target.pts k) (D.target.pts (k + 1)) = ((f0 ^ 3 : ℤ) : ℝ)) :
     ∃ Pc Rc kk : ℕ, (Pc : ℤ) = f0 * kk ∧ (Rc : ℤ) = f0 - kk * e0 := by
-  obtain ⟨Pc, Qc, Rc, hQc0, hcast2, _⟩ := equal_side_no_b_of_gammatrap D α β γ hαβ hαγ hαπ hα0 hβγ
+  obtain ⟨Pc, Qc, Rc, hQc0, hcast2, _, _⟩ := equal_side_no_b_of_gammatrap D α β γ hαβ hαγ hαπ hα0 hβγ
     hβπ hβ0 hγπ hγ0 hπ0 hγdef hrel hirr hscalenef hα' hβ' hγ' k dir hker hdirab hthird
     hcornerbase hcornerapex hiso hN e0 f0 b0 he0 hef0 hcop hb0 hthin hA hB hC hLen
   have hf0 : (0 : ℤ) < f0 := by linarith
@@ -1071,3 +1173,5 @@ theorem base_shape_of_gammatrap (D : CongruentDissection N) (α β γ : ℝ)
   exact ⟨Pc, kk.toNat, Rc, by rw [hkk, hktoNat], by rw [hRc, hktoNat]⟩
 
 end Erdos634.SideWalk
+
+#print axioms Erdos634.SideWalk.apex_edge_and_next_of_gammatrap
