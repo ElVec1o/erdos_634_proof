@@ -346,3 +346,9 @@ import Erdos634.FCTwoTiles
 import Erdos634.OrientationGauge
 import Erdos634.OverlapAsymmetry
 import Erdos634.MirrorGauge
+import Erdos634.Crux1
+import Erdos634.ZZVacuityProbe
+import Erdos634.PincerLadder
+import Erdos634.SixtyInvariant
+import Erdos634.ThinHole
+import Erdos634.TP_hales

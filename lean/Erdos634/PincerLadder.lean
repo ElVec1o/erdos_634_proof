@@ -158,7 +158,7 @@ sharpness claim survives, since new escapes appear after the gain — but the st
 configuration**, not two families, and it is the same configuration `(4,2)` at every level.  For the
 prime hole this is the difference between a vague programme and a single named target: `N = 191`
 needs the reach ladder driven from `R = 4` to `R = 7`, and each of those three steps is a proof that
-the base word `a\,c\,a\,b\,a^{f-3}` — the word `(bp, cp) = (4, 2)` names — cannot occur. -/
+the base word `a\,c\,a\,b\,a^{f-2}` — the word `(bp, cp) = (4, 2)` names — cannot occur. -/
 
 /-- **At the first failing level the escapes are exactly the mirror orbit of `(4,2)`.** -/
 theorem first_failure_escapes {R bp cp : ℕ} (hR : 4 ≤ R)

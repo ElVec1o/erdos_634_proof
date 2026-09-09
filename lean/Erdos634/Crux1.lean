@@ -106,8 +106,11 @@ number of tiles: with `N` coprime to `f` and `1 ≤ m < f²`, `f⁴ ∤ N·m²`.
 horizontal **level line**.  The line at level `j` has height fraction `(f-j)/f`, i.e. `m = f(f-j)`,
 and `1 ≤ f(f-j) < f²` exactly when `1 ≤ j ≤ f-1`.  So
 
-  **every interior level line has non-integral area above it, and is therefore straddled**
-  (`interior_level_straddled`).
+  **every interior level line has non-integral area above it** (`interior_level_area_not_integral`).
+  The further inference to "and is therefore straddled" is not this theorem's content: it needs
+  `ChordTrace`'s carried covering obligation (`ChordDecomp.lean`'s header names this unproved
+  geometry explicitly), which exists in this corpus only for the single `(3,7)` chord, not for a
+  general interior level line.
 
 Only `j = 0` (the base) and `j = f` (the apex) are clean.  That is a boundary-like constraint at an
 interior line, which is what `P` asked for, and it costs nothing -- it is a corollary of a theorem
@@ -199,7 +202,7 @@ theorem four_two_is_the_level {R bp cp : ℕ} (hR : 4 ≤ R)
 /-- **Every interior level line is straddled.**  The level-`j` line has height fraction `(f-j)/f`,
 so the area above it is the `m = f(f-j)` case of `ChordDecomp.area_never_integral`, and `m` lies in
 `[1, f²)` exactly for `1 ≤ j ≤ f-1`.  Only the base and the apex are clean. -/
-theorem interior_level_straddled {N f u : ℕ} (hf : 0 < f) (hcop : Nat.Coprime N f)
+theorem interior_level_area_not_integral {N f u : ℕ} (hf : 0 < f) (hcop : Nat.Coprime N f)
     (h1 : 1 ≤ u) (h2 : u < f) : ¬ (f ^ 4 ∣ N * (f * u) ^ 2) := by
   refine ChordDecomp.area_never_integral hf hcop ?_ ?_
   · exact Nat.one_le_iff_ne_zero.mpr (by positivity)
