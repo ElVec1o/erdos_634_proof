@@ -21,8 +21,22 @@ corner', 'matched by exactly one tile', 'the corner tile's base edge') is a furt
 this one; this file does not attempt them. **Correction, 2026-09-01**: 'the tile at a corner' *is*
 now attempted, and closed, for a base corner specifically —
 `congruentDissection_base_corner_tile_unique` below — by an argument that does not go through
-`tileAt` at all (a target vertex is always on the bad set, so `tileAt` itself never reaches one);
-the remaining two items are still untouched.
+`tileAt` at all (a target vertex is always on the bad set, so `tileAt` itself never reaches one).
+
+**Status of the other two items, re-checked 2026-09-10** (the sentence here previously said both
+were "still untouched"; that was written 2026-09-01 and is stale for one of them):
+
+* 'the corner tile's base edge' — **built**, elsewhere, 2026-09-09.
+  `CornerBaseEdgesReal.congruentDissection_base_corner_edges` gives the base-corner tile's two
+  corner-incident edge lengths as the unordered pair `{a,c}` for a real `CongruentDissection`
+  (it consumes `congruentDissection_base_corner_tile_vertex` from this file), and
+  `ApexEdgesReal.congruentDissection_apex_edges` gives the apex half. See `prop:cornerfig`'s row
+  in `PAPER_MAP.md`.
+* 'matched by exactly one tile' — **still open, and its obvious route is a recorded dead end.**
+  `WallChain.wall_two_sided`/`.edge_two_sided` cover an interior tile edge by a *chain* on each
+  side but do not make the chain a singleton, and `BaseBetaWalks.lean:797-808` withdraws the
+  unsplittability⟹matched argument outright (unsplittability forbids an exact partition, not a
+  straddle). See `prop:cornerpara`'s row in `PAPER_MAP.md`.
 
 Axiom-clean; no `sorry`.
 -/
