@@ -343,3 +343,4 @@ import Erdos634.GlobalSystem
 import Erdos634.FCTwoTiles
 import Erdos634.OrientationGauge
 import Erdos634.OverlapAsymmetry
+import Erdos634.MirrorGauge
