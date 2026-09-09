@@ -36,7 +36,7 @@ WHAT IS PROVED HERE (axiom-free, general in (e,f) — no per-member appeal):
 The positivity of the stub is exactly b ∤ e², which follows from gcd(e,f) = 1 (any common divisor
 of b = f²−e² and e² divides f² and e², hence 1, while b ≥ 3); the gcd step needs library lemmas
 unavailable in the core toolchain, so it is recorded in prose and kernel-checked per member below
-(`stub_ok_*`, which verify 0 < r < a and r < b outright by computation).
+(`stub_ok_*`, which verify 0 < r, r < a and r < b outright by computation).
 -/
 
 namespace Erdos634.Pentagon
@@ -121,20 +121,34 @@ theorem pentagon_stub_kills (e f x y z : Nat) (he : 1 ≤ e) (hef : e < f)
 
 /-! ## Per-member stub positivity (`0 < r`, plus the bounds re-checked by computation).
 The general positivity is `b ∤ e²`, from `gcd(e,f) = 1`; here it is verified outright for every
-member in play. Format: `0 < r ∧ r < a ∧ r < b` with `r = e² mod b`. -/
+member in play. Format: `0 < r ∧ r < a ∧ r < b` with `r = e² mod b`.  (The `r < b` conjunct was
+named in this header but absent from the statements until 2026-09-10; it is now present.) -/
 
-theorem stub_ok_1_2 : 0 < (1*1) % (2*2 - 1*1) ∧ (1*1) % (2*2 - 1*1) < 1*2 := by decide
-theorem stub_ok_1_3 : 0 < (1*1) % (3*3 - 1*1) ∧ (1*1) % (3*3 - 1*1) < 1*3 := by decide
-theorem stub_ok_1_4 : 0 < (1*1) % (4*4 - 1*1) ∧ (1*1) % (4*4 - 1*1) < 1*4 := by decide
-theorem stub_ok_1_6 : 0 < (1*1) % (6*6 - 1*1) ∧ (1*1) % (6*6 - 1*1) < 1*6 := by decide
-theorem stub_ok_1_8 : 0 < (1*1) % (8*8 - 1*1) ∧ (1*1) % (8*8 - 1*1) < 1*8 := by decide
-theorem stub_ok_1_9 : 0 < (1*1) % (9*9 - 1*1) ∧ (1*1) % (9*9 - 1*1) < 1*9 := by decide
-theorem stub_ok_1_12 : 0 < (1*1) % (12*12 - 1*1) ∧ (1*1) % (12*12 - 1*1) < 1*12 := by decide
-theorem stub_ok_2_3 : 0 < (2*2) % (3*3 - 2*2) ∧ (2*2) % (3*3 - 2*2) < 2*3 := by decide
-theorem stub_ok_2_5 : 0 < (2*2) % (5*5 - 2*2) ∧ (2*2) % (5*5 - 2*2) < 2*5 := by decide
-theorem stub_ok_3_4 : 0 < (3*3) % (4*4 - 3*3) ∧ (3*3) % (4*4 - 3*3) < 3*4 := by decide
-theorem stub_ok_3_5 : 0 < (3*3) % (5*5 - 3*3) ∧ (3*3) % (5*5 - 3*3) < 3*5 := by decide
-theorem stub_ok_4_5 : 0 < (4*4) % (5*5 - 4*4) ∧ (4*4) % (5*5 - 4*4) < 4*5 := by decide
-theorem stub_ok_5_6 : 0 < (5*5) % (6*6 - 5*5) ∧ (5*5) % (6*6 - 5*5) < 5*6 := by decide
+theorem stub_ok_1_2 :
+    0 < (1*1) % (2*2 - 1*1) ∧ (1*1) % (2*2 - 1*1) < 1*2 ∧ (1*1) % (2*2 - 1*1) < 2*2 - 1*1 := by decide
+theorem stub_ok_1_3 :
+    0 < (1*1) % (3*3 - 1*1) ∧ (1*1) % (3*3 - 1*1) < 1*3 ∧ (1*1) % (3*3 - 1*1) < 3*3 - 1*1 := by decide
+theorem stub_ok_1_4 :
+    0 < (1*1) % (4*4 - 1*1) ∧ (1*1) % (4*4 - 1*1) < 1*4 ∧ (1*1) % (4*4 - 1*1) < 4*4 - 1*1 := by decide
+theorem stub_ok_1_6 :
+    0 < (1*1) % (6*6 - 1*1) ∧ (1*1) % (6*6 - 1*1) < 1*6 ∧ (1*1) % (6*6 - 1*1) < 6*6 - 1*1 := by decide
+theorem stub_ok_1_8 :
+    0 < (1*1) % (8*8 - 1*1) ∧ (1*1) % (8*8 - 1*1) < 1*8 ∧ (1*1) % (8*8 - 1*1) < 8*8 - 1*1 := by decide
+theorem stub_ok_1_9 :
+    0 < (1*1) % (9*9 - 1*1) ∧ (1*1) % (9*9 - 1*1) < 1*9 ∧ (1*1) % (9*9 - 1*1) < 9*9 - 1*1 := by decide
+theorem stub_ok_1_12 :
+    0 < (1*1) % (12*12 - 1*1) ∧ (1*1) % (12*12 - 1*1) < 1*12 ∧ (1*1) % (12*12 - 1*1) < 12*12 - 1*1 := by decide
+theorem stub_ok_2_3 :
+    0 < (2*2) % (3*3 - 2*2) ∧ (2*2) % (3*3 - 2*2) < 2*3 ∧ (2*2) % (3*3 - 2*2) < 3*3 - 2*2 := by decide
+theorem stub_ok_2_5 :
+    0 < (2*2) % (5*5 - 2*2) ∧ (2*2) % (5*5 - 2*2) < 2*5 ∧ (2*2) % (5*5 - 2*2) < 5*5 - 2*2 := by decide
+theorem stub_ok_3_4 :
+    0 < (3*3) % (4*4 - 3*3) ∧ (3*3) % (4*4 - 3*3) < 3*4 ∧ (3*3) % (4*4 - 3*3) < 4*4 - 3*3 := by decide
+theorem stub_ok_3_5 :
+    0 < (3*3) % (5*5 - 3*3) ∧ (3*3) % (5*5 - 3*3) < 3*5 ∧ (3*3) % (5*5 - 3*3) < 5*5 - 3*3 := by decide
+theorem stub_ok_4_5 :
+    0 < (4*4) % (5*5 - 4*4) ∧ (4*4) % (5*5 - 4*4) < 4*5 ∧ (4*4) % (5*5 - 4*4) < 5*5 - 4*4 := by decide
+theorem stub_ok_5_6 :
+    0 < (5*5) % (6*6 - 5*5) ∧ (5*5) % (6*6 - 5*5) < 5*6 ∧ (5*5) % (6*6 - 5*5) < 6*6 - 5*5 := by decide
 
 end Erdos634.Pentagon

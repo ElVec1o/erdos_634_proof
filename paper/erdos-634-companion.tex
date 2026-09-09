@@ -778,7 +778,10 @@ and \texttt{SurplusLattice.lean} (all kernel-only, axiom-clean).
 The $e=1$ machinery of Section~\ref{sec:compe1} extends to every coprime pair. Four pillars are
 identities in $(e,f)$: the column reach $b\sin\gamma=c\sin\beta$ (law of sines); the filler-mesh
 identity (the column's junction fillers are exactly the triangles on consecutive apexes, sides
-$c,b,a$; \texttt{lean/GeneralPillars.lean}); the sector inequalities $\gamma-(\alpha+\beta)=\alpha$
+$c,b,a$; \texttt{lean/GeneralPillars.lean} per member, and general in $(e,f)$ over any
+commutative ring as \texttt{FillerGeneral.filler\_b\_general\_ef},
+\texttt{.filler\_c\_general\_ef}, \texttt{.filler\_consistent\_ef}, of which those
+per-member checks are instances); the sector inequalities $\gamma-(\alpha+\beta)=\alpha$
 and $\cos\gamma=-e/2f<0$; and the interior-multiple bounds. Two master lemmas complete the frame
 (\texttt{lean/MasterLemmas.lean}): a base segment of length $a$ between forced junctions
 decomposes only as a single $a$ (two applications of $\gcd(e,f)=1$), and the two corner-block

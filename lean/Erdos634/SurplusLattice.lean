@@ -5,7 +5,7 @@ No imports, no axioms: kernel-checked with the core toolchain only (`omega`, `de
 Along any maximal straight segment of a tiling by the base-`β` tile
 `(a,b,c) = (ef, f²−e², f²)`, both sides are partitioned into whole tile edges of equal total
 length, so the multiset surplus `(dP,dQ,dR)` (a-, b-, c-count differences) satisfies
-`a·dP + b·dQ + c·dR = 0`.  The surplus lattice theorem (A13.1) states that the solution set is
+`a·dP + b·dQ + c·dR = 0`.  The surplus lattice theorem states that the solution set is
 exactly the rank-2 lattice
     Λ = ℤ·R_c ⊕ ℤ·R_b2,   R_c = (f, 0, −e),   R_b2 = (f−e, −f, f−e).
 `R_c` encodes the relation `e·c = f·a` and `R_b2` the relation `f·b = (f−e)(a+c)`; these are the
@@ -20,15 +20,19 @@ The statement is uniform; the general `(e,f)` proof (three lines: reduce mod `f`
 `gcd(e,f) = 1` twice) is in the research notes, and each instance below is that proof with the
 Bézout data inlined, discharged by `omega`.  Membership of the two generators, and the identities
 `R_b3 = f·R_b2 − (f−e)·R_c` and (for `e = 1` only) `R_b1 = −R_b2 − (f−1)·R_c`, are checked as
-well; the impossibility of `j·b = p·a` with `0 < j < f` at `e ≥ 2` — the `e = 1`/`e ≥ 2`
-mismatch dichotomy — is checked for `(2,3)` and `(5,6)`.
+well.  The `b`-vs-`a`-only mismatch `j·b = p·a` needs `a = ef ∣ j` at **every** member (from
+`gcd(a,b) = 1`), so the honest statement of the `e = 1`/`e ≥ 2` dichotomy is the *threshold*:
+the least admissible `j` is `ef`, which equals `f` exactly when `e = 1`.  Checked at `(1,2)`
+(threshold `2 = f`, attained), `(2,3)` (threshold `6 = 2f`) and `(5,6)` (threshold `30 = 5f`).
+Corrected 2026-09-10: the conclusions previously read `3 ∣ j` and `6 ∣ j`, weaker than what
+their own proofs gave, and at that strength they did not separate `e = 1` from `e ≥ 2` at all.
 -/
 
 namespace Erdos634.SurplusLattice
 
 /-! ## (e,f) = (1,2): tile (2,3,4) -/
 
-/-- A13.1 at `(e,f) = (1,2)`: every length-balanced surplus decomposes over
+/-- The surplus lattice at `(e,f) = (1,2)`: every length-balanced surplus decomposes over
 `R_c = (2,0,−1)`, `R_b2 = (1,−2,1)`. -/
 theorem lattice_12 (dP dQ dR : Int) (h : 2*dP + 3*dQ + 4*dR = 0) :
     ∃ k s : Int, dP = 2*k + s ∧ dQ = -2*s ∧ dR = -k + s := by
@@ -90,16 +94,22 @@ theorem rb3_composite_12 :
 /-- `e = 1` species: `(f²−1)·a = f·b` holds at `(1,2)` (`3·2 = 2·3`). -/
 theorem rb1_exists_12 : (2*2 - 1*1)*2 = 2*3 := by decide
 
-/-- Dichotomy at `(2,3)`: no relation `j·b = p·a` with `0 < j < 3` — indeed `3 ∣ j` always
-(`5j = 6p ⟹ 6 ∣ 5j ⟹ 6 ∣ j` since `gcd(5,6)=1`; a fortiori `3 ∣ j`). -/
-theorem no_short_ba_23 (j p : Int) (h : 5*j = 6*p) : (3 : Int) ∣ j := by
-  obtain ⟨t, ht⟩ : ∃ t, j = 6*t := ⟨j/6, by omega⟩
-  exact ⟨2*t, by omega⟩
+/-- Dichotomy at `(2,3)`: `j·b = p·a` forces `ef = 6 ∣ j` (`5j = 6p ⟹ 6 ∣ 5j ⟹ 6 ∣ j` since
+`gcd(5,6) = 1`).  The threshold is `ef = 6`, twice `f`, not `f` itself: that is the content of the
+`e ≥ 2` side of the dichotomy. -/
+theorem no_short_ba_23 (j p : Int) (h : 5*j = 6*p) : (6 : Int) ∣ j := by
+  exact ⟨j/6, by omega⟩
 
-/-- Dichotomy at `(5,6)`: `11j = 30p ⟹ 30 ∣ j`; a fortiori `6 ∣ j` — no b-vs-a-only mismatch
-below `f` surplus b-edges. -/
-theorem no_short_ba_56 (j p : Int) (h : 11*j = 30*p) : (6 : Int) ∣ j := by
-  obtain ⟨t, ht⟩ : ∃ t, j = 30*t := ⟨j/30, by omega⟩
-  exact ⟨5*t, by omega⟩
+/-- Dichotomy at `(5,6)`: `11j = 30p ⟹ ef = 30 ∣ j` — five times `f`. -/
+theorem no_short_ba_56 (j p : Int) (h : 11*j = 30*p) : (30 : Int) ∣ j := by
+  exact ⟨j/30, by omega⟩
+
+/-- The `e = 1` side, for contrast: at `(1,2)` the same relation `j·b = p·a` forces only
+`ef = 2 ∣ j`, and `j = f = 2` is *attained* (`rb1_exists_12`).  So the bound `0 < j < f` being
+impossible is **not** what separates `e = 1` from `e ≥ 2` — it holds at every member, since
+`gcd(a,b) = 1` always gives `a = ef ∣ j`.  The separation is that the least admissible `j` is
+`ef`, which equals `f` exactly when `e = 1`. -/
+theorem no_short_ba_12 (j p : Int) (h : 3*j = 2*p) : (2 : Int) ∣ j := by
+  exact ⟨j/2, by omega⟩
 
 end Erdos634.SurplusLattice

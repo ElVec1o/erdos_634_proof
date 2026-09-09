@@ -4,17 +4,25 @@ No imports, no axioms: kernel-checked with the core toolchain only (`decide`, `o
 
 The four pillars that carry over from the e = 1 proof to every coprime (e, f), 1 ≤ e < f:
   P1 column reach: b·sinγ = c·sinβ (law of sines — no formalization needed beyond the identity);
-  P2 THE FILLER IDENTITY, denominators cleared by 4f²:
-       (2ef² + e(f²−e²))² = e²(3f²−e²)²  [c-side, trivially]
-       and the b-side: e²(f²−e²)² + 4f²·(c²sin²β·4f⁴/…) — cleared form kernel-checked per member:
-       e²(f²−e²)² + 4f⁶ − e²(3f²−e²)²·(1/f²-normalized) … stated concretely below as
-       E(e,f):  e²(f²−e²)² + 4f⁴(f²−e²)·? — we check the DIRECT numeric form:
-       (e(f²−e²))² + (4f⁶ − e²(3f²−e²)²)/f²·f² = (2f(f²−e²))² is equivalent to
-       e²(f²−e²)² + 4f⁶ − e²(3f²−e²)² = 4f²(f²−e²)²,   checked per frontier member.
+  P2 THE FILLER IDENTITY, denominators cleared by 4f². The two filler triangles share one value
+       of c²sin²β; eliminating it between
+         (e(3f²−e²)/(2f))² + c²sin²β = f⁴      (c-side)
+         (e(f²−e²)/(2f))²  + c²sin²β = (f²−e²)² (b-side)
+       leaves, after clearing by 4f², the single identity
+         e²(f²−e²)² + 4f⁶ − e²(3f²−e²)² = 4f²(f²−e²)².
+       Checked per frontier member below. NOTE (2026-09-10): this is a polynomial identity in
+       (e,f) over any commutative ring, and is now proved as such in
+       `FillerGeneral.filler_b_general_ef` (with `.filler_c_general_ef`, `.filler_consistent_ef`);
+       every `filler_b_*` below is an instance of it. They are kept here only to preserve this
+       file's no-import property.
   P3 sector kills: γ − (α+β) = α > 0 and cosγ = −e/(2f) < 0 (identities; no arithmetic content);
   P4 interior multiples: b = (f−e)(f+e) > f and c = f² > f: any sub-f² placement of b or c
      contains an interior multiple of f (witness p/f + 1), per member.
-Certificates: the (2,3) j=1 side-break refutation (251 nodes, all dead) joins (1,3), (1,4)×2.
+Certificates: the (2,3) side-break refutation joins (1,3), (1,4)×2 (companion §"Scope,
+certificates, verification"). NOTE 2026-09-10: this header previously gave "251 nodes" for the
+(2,3) run; that figure is corroborated nowhere in `paper/`, `data/SETTLED.tsv` or the log, so it
+is removed rather than repeated. The companion records node counts only for (1,2), (1,3), (1,4)
+(267, 1809, 1728).
 -/
 
 namespace Erdos634.GeneralPillars
