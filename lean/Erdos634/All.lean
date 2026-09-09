@@ -236,6 +236,7 @@ import Erdos634.NormForm
 import Erdos634.FibExtremal
 import Erdos634.SolvCore
 import Erdos634.TilePlacement
+import Erdos634.TriLawSin
 import Erdos634.SideWall
 import Erdos634.DissectionMap
 import Erdos634.Subdivision

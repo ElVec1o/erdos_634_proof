@@ -987,3 +987,39 @@ theorem census_single_relation {N n1 n2 v1 v2 v3 v4 : ℕ}
     v1 = 1 + n2 + v3 + 2 * v4 := by omega
 
 end Erdos634.OrderForcing
+
+/-! ## `lem:avgen`'s foot offset, the identity the lemma opens with (added 2026-09-10)
+
+`alpha_vertex_gap_gen` above proves the two *exclusions* of companion `lem:avgen`
+(`paper/erdos-634-obstructions.tex:995`) — `¬ f² ∣ e²` and `¬ f ∣ e³` under coprimality.  What the
+lemma states before them is the arithmetic that produces the number `e³/f` in the first place:
+
+> the mirrored foot is at `(k+3)a − e³/f`, since `2 c uₓ − 3a = −e³/f`.
+
+Here `uₓ = cos β = e(3f²−e²)/(2f³)`, `c = f²`, `a = ef`, the general-member closed forms
+(`NoRightAngleTile`'s header records all three).  That step was the one arithmetic link of
+`lem:avgen` with no Lean counterpart; it is a one-line field identity, and both forms are below.
+The lemma's remaining content — that this number *is* a cover piece's foot — is a placement
+statement about a row structure with no Lean definition, and is untouched.
+-/
+
+namespace Erdos634.OrderForcing
+
+/-- **`lem:avgen`'s offset identity, cleared of denominators.**  `f·(2 c cos β − 3a) = −e³` with
+`a = ef`, `c = f²`, `cos β = e(3f²−e²)/(2f³)`: over `ℤ` the whole statement is `e(3f²−e²) − 3ef·f
+= −e³`. -/
+theorem mirrored_foot_offset_cleared (e f : ℤ) :
+    e * (3 * f ^ 2 - e ^ 2) - 3 * (e * f) * f = -(e ^ 3) := by ring
+
+/-- **`lem:avgen`'s offset identity, in the form the lemma writes it.**  For the general member's
+`cos β`, the mirrored cover piece's foot sits `e³/f` short of `(k+3)a`, i.e. `2 c cos β − 3a =
+−e³/f`.  This is the source of the `e³` that `alpha_vertex_gap_gen` then kills by coprimality; at
+`e = 1` it degenerates to `−1/f`, the offset the `e = 1` argument (`alpha_vertex_gap`) uses. -/
+theorem mirrored_foot_offset (e f cb : ℝ) (hf : f ≠ 0)
+    (hcb : cb = e * (3 * f ^ 2 - e ^ 2) / (2 * f ^ 3)) :
+    2 * f ^ 2 * cb - 3 * (e * f) = -(e ^ 3) / f := by
+  subst hcb
+  field_simp
+  ring
+
+end Erdos634.OrderForcing
