@@ -51,10 +51,21 @@ interior rigidity reduces to a **pure induction with no mast**
 (`interior_rigidity_of_predecessor`), whose base case is that the run's leftmost tile has an
 unreflected predecessor.
 
-That base case is **not** established here.  It is now the single named gap in the iteration, and
-it is a local statement about one tile rather than a global one about tilings — a strictly better
-position than "the argument does not iterate", but it is a gap and the iteration does not follow
-without it.
+That base case is not established *in this file*.
+
+**CLOSED 2026-09-09 by `OrientationGauge.lean`, and it was never geometry.**  `Tri.Reflected`
+compares a tile against `D.model`, and `D.model` is pinned only up to congruence — `Tri.Congruent`
+admits orientation-reversing isometries — so `Reflected … D.model` is not a property of the
+dissection at all (`Tri.reflected_flips_under_mirror_model`).  The model's orientation is a gauge,
+and `CongruentDissection.atModel` fixes it at the run's leftmost tile, making `base` true by
+construction (`CongruentDissection.atModel_not_reflected`).  `interior_rigidity_base_free` is this
+theorem with `base` deleted, and `interior_rigidity_of_adjacent` is the model-free form: if no two
+adjacent tiles of the run are oppositely oriented, all of them carry the leftmost tile's
+orientation, with no base case.
+
+The gap that remains is therefore **not** `base` but `step`, which must now be supplied in the
+pairwise form "adjacent tiles of the run are never oppositely oriented".  The iteration does not
+follow without it.
 -/
 
 namespace Erdos634.StripIteration

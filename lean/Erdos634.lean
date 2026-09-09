@@ -127,6 +127,7 @@ import Erdos634.StraddleBound
 import Erdos634.StraddlerApex
 import Erdos634.StraightEdgeSums
 import Erdos634.StripIteration
+import Erdos634.OrientationGauge
 import Erdos634.StripRigid
 import Erdos634.SupportFace
 import Erdos634.SurplusLattice
