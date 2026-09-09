@@ -352,3 +352,4 @@ import Erdos634.PincerLadder
 import Erdos634.SixtyInvariant
 import Erdos634.ThinHole
 import Erdos634.TP_hales
+import Erdos634.MirrorKill

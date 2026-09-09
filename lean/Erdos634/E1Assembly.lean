@@ -79,8 +79,9 @@ theorem integral_forces_p_eq_q (f p q j : ℤ) (hp : 0 ≤ p) (hq : 0 ≤ q) (hj
   · have hge : f ≤ f * k := by nlinarith
     omega
 
-/-- **The apex lands on a multiple of `f`.**  With `p = q`, `Σε = 2pf²`, so
-`Σε/(2f) + kf = (p+k)f`. -/
+/-- **The apex lands on a multiple of `f`.**  With `p = q`, `Σε = 2pf²`, i.e. `Σε/(2f) = pf`.
+(The `+ kf` half of the header's `Σε/(2f) + kf = (p+k)f` is `apex_plus_edges`; the argument `k`
+here is vestigial and unused.) -/
 theorem apex_multiple_of_f (f p k : ℤ) :
     p * (3 * f ^ 2 - 1) - p * (f ^ 2 - 1) = 2 * f * (p * f) := by ring
 
@@ -102,8 +103,11 @@ theorem left_index_lt_f (f p q : ℕ) (hf : 2 ≤ f) (hq3 : 3 ≤ q) (hqf : q �
     (p < q → p - 1 < f) ∧ (q < p → q - 1 < f) := by
   exact ⟨fun _ => by omega, fun _ => by omega⟩
 
-/-- **The assembly.**  `lem:interior` forbids an odd edge starting below `f²`; one always does; so
-the walk `a^f b c` admits no tiling. -/
+/-- **Schema only — proves nothing about the walk.**  This is the propositional shape of the
+assembly (`A`, `A → ¬B`, `B` are contradictory), with both `A` ("an odd edge starts below `f²`")
+and `B` (`lem:interior`) as free `Prop`s.  Neither is supplied: `lem:interior` is exactly the
+column's existence, which the header records as **not proved here**.  The name previously read as
+if the walk had been killed.  (Noted 2026-09-10.) -/
 theorem walk_dies (startsLow interiorForbids : Prop)
     (h1 : startsLow) (h2 : startsLow → ¬ interiorForbids) (h3 : interiorForbids) : False :=
   h2 h1 h3

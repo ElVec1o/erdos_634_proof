@@ -76,28 +76,60 @@ theorem rev_b_position {f : ℕ} (w : Word f) : 3 ≤ w.k + 1 ∧ w.k + 1 ≤ f 
   have := w.hsum; have := w.hi; have := w.hj
   exact ⟨by omega, by omega⟩
 
-/-- **Every letter before the `b` of the reversed word is an `a`.**  `W^R = a^{k'} b a^j c a^i`, so
-the prefix before the `b` has length exactly `k'` and consists of `a`-letters. -/
+/-- The word itself, `W = a^i c a^j b a^{k'}`, as a list of letters. -/
+def letters {f : ℕ} (w : Word f) : List Char :=
+  List.replicate w.i 'a' ++ ['c'] ++ List.replicate w.j 'a' ++ ['b'] ++ List.replicate w.k 'a'
+
+/-- The mirrored word, `W^R`. -/
+def revLetters {f : ℕ} (w : Word f) : List Char := (letters w).reverse
+
+/-- **`W^R = a^{k'} b a^j c a^i`.**  The reversal computed, not asserted. -/
+theorem revLetters_eq {f : ℕ} (w : Word f) :
+    revLetters w =
+      List.replicate w.k 'a' ++ ['b'] ++ List.replicate w.j 'a' ++ ['c'] ++
+        List.replicate w.i 'a' := by
+  simp [revLetters, letters, List.reverse_append, List.append_assoc]
+
+/-- **Every letter before the `b` of the reversed word is an `a`.**  Stated about `revLetters`
+itself: its first `k'` letters are `a`-letters. -/
 theorem rev_prefix_all_a {f : ℕ} (w : Word f) :
-    (List.replicate w.k 'a' ++ ['b']).take w.k = List.replicate w.k 'a' := by
-  simp
+    (revLetters w).take w.k = List.replicate w.k 'a' := by
+  rw [revLetters_eq]
+  simp [List.append_assoc]
+
+/-- **The `b` of `W^R` sits at index `k'`** (position `k' + 1`, one-based). -/
+theorem rev_b_index {f : ℕ} (w : Word f) : (revLetters w)[w.k]? = some 'b' := by
+  rw [revLetters_eq]
+  simp [List.append_assoc]
 
 /-- The reversed word contains no `c` before its `b`: the prefix is `a`-letters only. -/
 theorem rev_no_c_before_b {f : ℕ} (w : Word f) :
-    'c' ∉ (List.replicate w.k 'a' : List Char) := by
+    'c' ∉ (revLetters w).take w.k := by
+  rw [rev_prefix_all_a]
   simp
 
 /-- **The reduction.**  Given the cascade — `rem:walls14`'s kill for base words whose `b` is
 preceded only by `a`-letters — and the mirror, no route-1 word admits a tiling.
 
-`cascade_kills` is indexed by the number of `a`-letters preceding the `b`; the mirror supplies
-exactly `k'` of them, and `k' ≥ 2` puts it in range. -/
+The two hypotheses are about **different** predicates, and that is the whole content of the
+reduction: `tiles` is "this route-1 word `W` admits a tiling", `cascadeWord pre` is "a base word
+whose `b` is preceded by exactly `pre` `a`-letters and nothing else admits a tiling" — the shape
+`rem:walls14`'s cascade kills.  `mirror` is the transport `tiles W → cascadeWord k'` (reflection in
+the isosceles axis, reversing the base word), supplied by `rev_prefix_all_a`/`rev_b_index` at the
+combinatorial level and by the reflection at the geometric level.  `k' ≥ 2` (`k_ge_two`) puts the
+image in the cascade's range.
+
+**Corrected 2026-09-10.**  The previous statement took `cascade_kills : ∀ v : Word f, 2 ≤ v.k →
+¬ tiles v` — about `tiles` itself, on a condition every `Word f` satisfies by `k_ge_two`.  That
+hypothesis is *equivalent* to the conclusion universally quantified, so the theorem was
+`H → H`; and the old `mirror` hypothesis (`∃ pre, pre = v.k ∧ 3 ≤ pre+1 ∧ pre+1 ≤ f-1`) is
+provable outright from `rev_b_position`, hence constrained nothing and was unused in the proof. -/
 theorem mirror_reduces_route1 {f : ℕ} (w : Word f)
-    (tiles : Word f → Prop)
-    (mirror : ∀ v : Word f, tiles v → ∃ pre, pre = v.k ∧ 3 ≤ pre + 1 ∧ pre + 1 ≤ f - 1)
-    (cascade_kills : ∀ v : Word f, 2 ≤ v.k → ¬ tiles v) :
-    ¬ tiles w := by
-  exact cascade_kills w (k_ge_two w)
+    (tiles : Word f → Prop) (cascadeWord : ℕ → Prop)
+    (mirror : ∀ v : Word f, tiles v → cascadeWord v.k)
+    (cascade_kills : ∀ pre : ℕ, 2 ≤ pre → ¬ cascadeWord pre) :
+    ¬ tiles w :=
+  fun h => cascade_kills w.k (k_ge_two w) (mirror w h)
 
 /-- At `f = 4` the single route-1 word is `a c a b a a`, with `(i,j,k') = (1,1,2)`; its reverse is
 `a a b a c a`, the word `thm:walls14` names.  `k' = 2 ≥ 2`, as the general fact requires. -/
@@ -109,7 +141,9 @@ end Erdos634.MirrorKill
 
 #print axioms Erdos634.MirrorKill.k_ge_two
 #print axioms Erdos634.MirrorKill.rev_b_position
+#print axioms Erdos634.MirrorKill.revLetters_eq
 #print axioms Erdos634.MirrorKill.rev_prefix_all_a
+#print axioms Erdos634.MirrorKill.rev_b_index
 #print axioms Erdos634.MirrorKill.rev_no_c_before_b
 #print axioms Erdos634.MirrorKill.mirror_reduces_route1
 #print axioms Erdos634.MirrorKill.f_four_witness
