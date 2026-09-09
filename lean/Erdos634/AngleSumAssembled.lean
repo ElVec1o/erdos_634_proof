@@ -13,16 +13,18 @@ The three components are proved elsewhere in this development:
   · `ConeScaling.angle_sum_of_cones` — almost-disjoint pieces of `B(p,1)` that cover it and have
     areas `θᵢ/2` have `∑ θᵢ = 2π`.
 
-This file wires them together. The two remaining links are identifications, not geometry, and they
-appear here as explicit hypotheses so that what is assumed is visible:
+This file assembles the LAST of them only. Correction, 2026-09-10: an earlier version of this note
+claimed the file "wires them together" via two explicit hypotheses `htile` and `hsector`. There is
+no `htile` hypothesis in either theorem below, and neither theorem mentions a tangent cone or a
+tile; component (A) is therefore not used here at all. What the theorems below actually say is
+measure additivity: given measurable sets that are almost disjoint, cover `B(p,1)`, and have areas
+`θ i / 2`, the `θ i` sum to `2π`. That is the same content as `ConeScaling.angle_sum_of_cones`,
+proved twice.
 
-  `htile` — each tile, intersected with the small ball, is its tangent cone intersected with it
-            (this is (A), instantiated at the tile's three half-plane constraints);
-  `hsector` — each cone, intersected with the unit ball, has the area of a sector of its angle
-            (this is (B), after identifying the cone of a triangle at one of its points with the
-            sector of the corresponding angle).
-
-Given those, the interior angle sum is a consequence of measure additivity alone.
+Neither theorem in this file has a consumer. The live chain to the interior angle sum runs
+`E2Join.volume_wedge → VertexSector → AngleSumDissection.Dissection.sum_localAngle_eq →
+Geometry.Dissection.hasAngleSums → PinPlumbing.pin_angle_sum_interior`; see the STATUS note in
+`AngleSumScope.lean`.
 -/
 
 open MeasureTheory Set Metric

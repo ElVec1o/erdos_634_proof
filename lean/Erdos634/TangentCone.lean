@@ -57,13 +57,43 @@ theorem poly_inter_ball_eq_coneAt {n : ℕ} (f : Fin n → E →L[ℝ] ℝ) (c :
       linarith
 
 /-- **A valid radius exists.** Finitely many inactive constraints each have positive slack, so some
-`ρ > 0` satisfies the hypothesis of `poly_inter_ball_eq_coneAt`; take the minimum of the slacks
-divided by the norms (a constraint with `‖f i‖ = 0` imposes no condition). Stated as: for any `ρ`
-below every ratio, the hypothesis holds. -/
-theorem slack_of_lt_ratios {n : ℕ} (f : Fin n → E →L[ℝ] ℝ) (c : Fin n → ℝ) (p : E)
-    {ρ : ℝ} (hρ : 0 ≤ ρ)
-    (hle : ∀ i, f i p < c i → ‖f i‖ * ρ ≤ c i - f i p) :
-    ∀ i, f i p < c i → ‖f i‖ * ρ ≤ c i - f i p := hle
+`ρ > 0` satisfies the hypothesis of `poly_inter_ball_eq_coneAt`: take the minimum over `i` of
+`(c i - f i p) / (‖f i‖ + 1)` (the `+1` makes the quotient harmless when `‖f i‖ = 0`, where the
+constraint imposes no condition at all). -/
+theorem exists_radius {n : ℕ} (f : Fin n → E →L[ℝ] ℝ) (c : Fin n → ℝ) (p : E) :
+    ∃ ρ : ℝ, 0 < ρ ∧ ∀ i, f i p < c i → ‖f i‖ * ρ ≤ c i - f i p := by
+  classical
+  rcases isEmpty_or_nonempty (Fin n) with he | hne
+  · exact ⟨1, one_pos, fun i => (he.false i).elim⟩
+  set g : Fin n → ℝ := fun i => if f i p < c i then (c i - f i p) / (‖f i‖ + 1) else 1 with hgdef
+  have hgpos : ∀ i, 0 < g i := by
+    intro i
+    simp only [hgdef]
+    split
+    · next h => exact div_pos (by linarith) (by positivity)
+    · exact one_pos
+  refine ⟨Finset.univ.inf' Finset.univ_nonempty g, ?_, ?_⟩
+  · exact (Finset.lt_inf'_iff _).mpr fun i _ => hgpos i
+  · intro i hi
+    have hle : Finset.univ.inf' Finset.univ_nonempty g ≤ g i :=
+      Finset.inf'_le _ (Finset.mem_univ i)
+    have hgi : g i = (c i - f i p) / (‖f i‖ + 1) := by simp only [hgdef, if_pos hi]
+    have hpos : (0:ℝ) < ‖f i‖ + 1 := by positivity
+    have h0 : 0 < Finset.univ.inf' Finset.univ_nonempty g :=
+      (Finset.lt_inf'_iff _).mpr fun j _ => hgpos j
+    calc ‖f i‖ * Finset.univ.inf' Finset.univ_nonempty g
+        ≤ (‖f i‖ + 1) * Finset.univ.inf' Finset.univ_nonempty g := by nlinarith [h0]
+      _ ≤ (‖f i‖ + 1) * g i := by
+          exact mul_le_mul_of_nonneg_left hle hpos.le
+      _ = c i - f i p := by rw [hgi, mul_div_cancel₀ _ (ne_of_gt hpos)]
+
+/-- The polytope and its tangent cone agree on **some** ball of positive radius: `(A)` with the
+radius supplied rather than assumed. -/
+theorem exists_ball_poly_eq_coneAt {n : ℕ} (f : Fin n → E →L[ℝ] ℝ) (c : Fin n → ℝ) (p : E)
+    (hp : ∀ i, f i p ≤ c i) :
+    ∃ ρ : ℝ, 0 < ρ ∧ poly f c ∩ ball p ρ = coneAt f c p ∩ ball p ρ := by
+  obtain ⟨ρ, hρ, hslack⟩ := exists_radius f c p
+  exact ⟨ρ, hρ, poly_inter_ball_eq_coneAt f c p hp hslack⟩
 
 /-- For a single inactive constraint with nonzero functional, the admissible radii are exactly
 those below the slack ratio. -/

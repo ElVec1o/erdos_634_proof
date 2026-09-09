@@ -80,12 +80,26 @@ Current status: **exit 0, 53/53 files, 441 theorems, zero sorry.**
 
 | step | Lean witness |
 |---|---|
-| (A) polytope agrees with its tangent cone in a small ball | `TangentCone.poly_inter_ball_eq_coneAt` |
 | (B) unit sector of angle θ has area θ/2 | `SectorArea.volume_sector` |
 | polar sector = half-plane wedge | `Wedge.sector_eq_halfplanes` |
 | wedge volume, half-plane form (ℝ²) | `E2Join.volume_halfplane_wedge` |
-| same in `EuclideanSpace ℝ (Fin 2)` (`hsector`) | `E2Join.volume_wedge` |
-| angles around an interior point sum to 2π | `AngleSumAssembled.angle_sum_interior` |
+| same in `EuclideanSpace ℝ (Fin 2)` | `E2Join.volume_wedge` |
+| a tile's local angle at a point, as a measure | `VertexSector.*` |
+| tiles' local angles sum to the target's | `AngleSumDissection.Dissection.sum_localAngle_eq` |
+| `HasAngleSums` (interior / frontier / vertex) | `Geometry.Dissection.hasAngleSums` |
+| angles around an interior point sum to 2π | `PinPlumbing.pin_angle_sum_interior` |
+
+**Corrected 2026-09-10.** The rows above are the *dependency cone* of the downstream consumers.
+The earlier version of this table listed `TangentCone.poly_inter_ball_eq_coneAt` as step (A) and
+`AngleSumAssembled.angle_sum_interior` as the last step. Both compile, but neither is load-bearing:
+no file in the corpus imports `TangentCone`, and `angle_sum_interior` has no consumer. They are a
+second, parallel proof of the same reduction (`ConeScaling.angle_sum_of_cones` is a third copy of
+its final step). Two defects were found in that parallel route on 2026-09-10 and repaired:
+`TangentCone.slack_of_lt_ratios`, whose docstring claimed "a valid radius exists", was the identity
+function `hle → hle` and proved no such thing (replaced by `TangentCone.exists_radius` and
+`TangentCone.exists_ball_poly_eq_coneAt`, which do); and `AngleSumScope.CyclicSectorCover`, offered
+as "the debt, recorded as a predicate", had `∑ θᵢ = 2π` as a literal conjunct, so it restated its
+own conclusion (renamed `UnsignedAnglesSumToTwoPi`, with the circularity documented; it is unused).
 
 The earlier entry recording E2's blocker as "Mathlib has no dissection theory" is superseded: no
 dissection theory was needed. The route was measure-theoretic throughout.

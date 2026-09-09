@@ -14,11 +14,18 @@ ratio. The tangent cone of a tile at a point of it is such a set, and near `p` t
 it — that agreement is statement (A), the geometric input, and is the only thing left unproved.
 Everything downstream of it is here:
 
-  · `Cone.inter_ball_homothety` — for a cone at `p`, `C ∩ B(p,r)` is the image of `C ∩ B(p,1)` under
-    the homothety of ratio `r`;
-  · `Cone.volume_inter_ball` — hence `volume (C ∩ B(p,r)) = r² · volume (C ∩ B(p,1))` in the plane;
-  · `angle_sum_of_cones` — if finitely many cones at `p` have pairwise almost-disjoint intersections
+  · `angle_sum_of_cones` — if finitely many sets have pairwise almost-disjoint intersections
     with `B(p,1)`, together cover it, and the `i`-th has unit-ball area `θᵢ/2`, then `∑ θᵢ = 2π`.
+
+NOT supplied here, contrary to an earlier version of this note (corrected 2026-09-10, which listed
+`Cone.inter_ball_homothety` and `Cone.volume_inter_ball` as if they were in the file): the scaling
+half itself. `IsConeAt` is defined below but no theorem uses it, and `angle_sum_of_cones` carries no
+cone hypothesis at all — it works at radius 1 throughout, so it is a statement about arbitrary
+measurable pieces, strictly more general than its name suggests. The homothety identification
+`C ∩ B(p,r) = h_r '' (C ∩ B(p,1))` is stated in the comment below and is not proved anywhere.
+
+This file also has NO consumer: the live angle-sum chain runs through `VertexSector` and
+`AngleSumDissection` instead (see the STATUS note in `AngleSumScope.lean`).
 
 The last is the angle-sum statement, with the dissection-specific facts (disjointness, covering)
 appearing as hypotheses exactly as they are supplied by `Dissection.aedisjoint` and the covering

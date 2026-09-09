@@ -1839,13 +1839,15 @@ The \emph{geometric} layer is also machine-checked, end to end and with no prose
 angles of the tiles meeting an interior point sum to $2\pi$ --- the fact a dissection argument uses
 constantly and which has no counterpart in Mathlib --- is obtained without any theory of angular
 measure, by a chain that is purely measure-theoretic:
-\texttt{TangentCone.poly\_inter\_ball\_eq\_coneAt} (a polytope agrees with its tangent cone at a
-point inside a small ball), \texttt{SectorArea.volume\_sector} (the unit sector of angle $\theta$
+\texttt{SectorArea.volume\_sector} (the unit sector of angle $\theta$
 has area $\theta/2$, via polar coordinates), \texttt{Wedge.sector\_eq\_halfplanes} (that polar
 sector is exactly the intersection of two half-planes with the unit disc),
 \texttt{E2Join.volume\_halfplane\_wedge} and \texttt{E2Join.volume\_wedge} (the same area
-statement transported to \texttt{EuclideanSpace} $\R$ \texttt{(Fin 2)}), and finally
-\texttt{AngleSumAssembled.angle\_sum\_interior}. Every step is axiom-clean.
+statement transported to \texttt{EuclideanSpace} $\R$ \texttt{(Fin 2)}), then
+\texttt{VertexSector} and \texttt{AngleSumDissection.Dissection.sum\_localAngle\_eq} (the tiles'
+local angles at a point sum to the target's), and finally
+\texttt{Geometry.Dissection.hasAngleSums} with
+\texttt{PinPlumbing.pin\_angle\_sum\_interior}. Every step is axiom-clean.
 
 The entire \emph{arithmetic and combinatorial} layer of the proof is formalized and machine-checked
 in Lean~4 with Mathlib (\texttt{lean/Erdos634/PrimeArithmetic.lean}, twenty-three theorems); every theorem depends only

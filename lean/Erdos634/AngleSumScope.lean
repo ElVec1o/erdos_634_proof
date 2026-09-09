@@ -30,15 +30,25 @@ splits into two halves of very different difficulty:
        encodes.
 
 STATUS (superseded, kept for the record of how the reduction was found). The debt described below
-is now DISCHARGED, and no angular measure was ever built. The chain, all machine-checked:
-  (A) `TangentCone.poly_inter_ball_eq_coneAt`  — polytope = tangent cone in a small ball;
-  (B) `SectorArea.volume_sector`               — unit sector of angle θ has area θ/2;
-      `Wedge.sector_eq_halfplanes`             — polar sector = half-plane wedge;
-      `E2Join.volume_halfplane_wedge`          — wedge area θ/2 in ℝ²;
-      `E2Join.volume_wedge`                    — the same in `EuclideanSpace ℝ (Fin 2)` (`hsector`);
-  then `AngleSumAssembled.angle_sum_interior`  — the angles at an interior point sum to 2π.
-The route was measure theory throughout: areas of cones in a ball, never sectors or winding numbers.
-Verify with `code/build_lean.sh`.
+is now DISCHARGED, and no angular measure was ever built. The route was measure theory throughout:
+areas of cones in a ball, never sectors or winding numbers.
+
+The LOAD-BEARING chain — the one the rest of the corpus actually depends on — is
+
+      `SectorArea.volume_sector` / `Wedge.sector_eq_halfplanes`
+        → `E2Join.volume_halfplane_wedge`, `E2Join.volume_wedge`   (a wedge has area θ/2)
+        → `VertexSector.*`                                          (a tile's local angle at p)
+        → `AngleSumDissection.Dissection.sum_localAngle_eq`, `Tri.localAngle_interior`
+        → `Geometry.Dissection.hasAngleSums`, `PinPlumbing.pin_angle_sum_interior`.
+
+Recorded 2026-09-10, correcting an earlier version of this note (and of `PAPER_MAP.md`'s "E2 is
+VERIFIED end to end" table, and §sec:verif of the obstructions paper): the earlier note named
+`TangentCone.poly_inter_ball_eq_coneAt` as step (A) and `AngleSumAssembled.angle_sum_interior` as
+the last step. Both are proved, but NEITHER is in the dependency cone of anything downstream —
+no file imports `TangentCone`, and `angle_sum_interior` has no consumer. They are a parallel
+proof of the same reduction, not joints of the live chain. `TangentCone` in particular reaches the
+unconditional form only through `TangentCone.exists_ball_poly_eq_coneAt` (added 2026-09-10; before
+that the radius was a hypothesis and its existence was never proved).
 
 The original scoping note follows.
 
@@ -98,10 +108,14 @@ its points. This is a strictly smaller debt than the one recorded before, and it
 first. The same computation at a boundary point gives `π`, and at a corner the corner angle.
 -/
 
-/-- The lift that is NOT free, stated so the debt is explicit: that a finite family of rays at `p`
-is in cyclic order with pairwise disjoint sectors covering all directions, so that the unsigned
-angles sum to `2π` rather than merely to `0` modulo `2π`. Recorded as a predicate, not assumed. -/
-def CyclicSectorCover {n : ℕ} (p : P) (ray : Fin n → P) (unsigned : Fin n → ℝ) : Prop :=
+/-- **The CONCLUSION of the lift, not its hypothesis.** Warning, so that this is never used as an
+assumption: the second conjunct below *is* the statement `∑ θᵢ = 2π`. This predicate does not
+encode cyclic order, sector disjointness, or covering — no clause here mentions the rays at all.
+It is kept only as a record of the shape of the target; an earlier docstring described it as
+"the debt, recorded as a predicate", which was wrong, since anything conditional on it would be
+circular. The genuine unconditional statement is `Geometry.Dissection.hasAngleSums`
+(`AngleSumDissection.lean`). -/
+def UnsignedAnglesSumToTwoPi {n : ℕ} (unsigned : Fin n → ℝ) : Prop :=
   (∀ i, 0 < unsigned i ∧ unsigned i < Real.pi) ∧ (∑ i, unsigned i = 2 * Real.pi)
 
 end Erdos634.AngleSumScope
