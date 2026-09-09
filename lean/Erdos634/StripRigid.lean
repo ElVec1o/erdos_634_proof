@@ -173,15 +173,17 @@ induction against it, instantiated for this layer as `strip_layer_rigid` and for
 UPDATED again, same day.  `ChordChart` derives the first bridge outright: placing the tile's
 `a`-edge on the floor and subtracting the two distance equations gives the reflected apex at
 `(a²+b²-c²)/(2a)`, whose numerator is `e²(e²-f²) < 0` for every member.  The second bridge is
-reduced and then CLOSED: both apexes straddle the shared foot, and `ChordChart.upward_in_cone`
-together with `ChordChart.shared_segment_pos` prove that two triangles reaching across a common
-vertical at positive height do intersect — each corner cone contains the straight-up direction,
-so both contain a vertical segment of positive height from the shared foot.
+reduced and then CLOSED: both apexes straddle the shared foot, and two triangles reaching across a
+common vertical at positive height do intersect — each corner cone contains the straight-up
+direction, so both contain a vertical segment of positive height from the shared foot.
 
-**STATUS (corrected 2026-08-24).**  An earlier version of this paragraph named that planar step
-as the blocker; it was proved the same day and this note was not updated — exactly the
-append-don't-edit failure that `code/staleness_check.sh` now exists to catch.  BOTH bridges are
-theorems.  What remains for this file is only ASSEMBLY: turning `ChordChart`'s geometric
+**STATUS (corrected 2026-09-10).**  The 2026-08-24 version of this paragraph cited
+`ChordChart.upward_in_cone` and `ChordChart.shared_segment_pos` as proving that planar step.  They
+do not — the first is a statement about two vectors, the second is `lt_min` — so the claim "BOTH
+bridges are theorems" was, at that date, false.  It is true now: the planar step is
+`ChordChartPlanar.interiors_meet_at_shared_foot`, with the member instance
+`ChordChartPlanar.member_configuration_interiors_meet` and an explicit non-vacuity witness.  What
+remains for this file is only ASSEMBLY: turning `ChordChart`'s geometric
 conclusions into the inequality-shaped hypotheses `LayerLink.strip_layer_rigid` consumes, via
 `Dissection.covers` (an apex left of the mast lies outside the target) and
 `Dissection.interiors_disjoint` (overlapping bodies are impossible).  That is ordinary work with

@@ -141,7 +141,7 @@ in two new modules (`lean/EdgeChain.lean`, `lean/WallChain.lean`) compiled again
 |---|---|---|
 | the crux: two tiles on the same side of a line cannot share an edge-interior point | `Geometry.Dissection.no_second_tile_same_side` (via `Tri.edge_inward`) | VERIFIED |
 | each target side is partitioned exactly once by whole tile edges; lengths sum to the side | `Geometry.Dissection.side_partition`, `.side_walk` | VERIFIED |
-| the interface walk equation `P·a + Q·b + R·c = L` (geometric half of `walk_base`/`walk_side`) | `Geometry.Dissection.side_walk_abc`, `.side_walk_abc_nat` (ℕ form) | VERIFIED |
+| the interface walk equation `P·a + Q·b + R·c = L` (geometric half of `walk_base`/`walk_side`) | `Geometry.Dissection.side_walk_abc`, `.side_walk_abc_nat` (ℕ form) | VERIFIED. **STRENGTHENED 2026-09-10**: both now also conclude `P + Q + R ≤ 3N`. `EdgeChain.sum_three_values` had always proved `P + Q + R = part.card` and both walk theorems were discarding that conjunct with a `-` pattern; `part : Finset (Fin N × Fin 3)`, so `card ≤ 3N`. The bound is strictly more than the interface fields `Interface.BaseBeta.walk_base`/`walk_side` carry — they constrain the multiplicities only through the equation — so any instantiation may now also assume it. No label moves; the row was already VERIFIED |
 | chain breakpoints are tiling vertices | `Geometry.Dissection.chain_breakpoint_vertex` | VERIFIED |
 | tile edges are walls (no vertex exclusion) | `Geometry.Dissection.edge_point_not_interior` | VERIFIED |
 | each side of a wall segment is covered exactly once by whole tile edges | `Geometry.Dissection.wall_partition`, `.wall_cover` | VERIFIED |

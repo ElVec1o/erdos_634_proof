@@ -40,7 +40,11 @@ and subtracting the two distance equations puts the reflected apex at `(a²+b²-
 numerator is `e²(e²-f²) < 0` for every member, so it lies left of the mast
 (`ChordChart.reflected_apex_left_of_mast`); and the overlap follows because each corner cone
 contains the straight-up direction, so both bodies contain a vertical segment of positive height
-from the shared foot (`ChordChart.upward_in_cone`, `shared_segment_pos`).
+from the shared foot.  **Citation corrected 2026-09-10**: the second bridge was cited here to
+`ChordChart.upward_in_cone` and `shared_segment_pos`, which are respectively a two-vector
+statement and `lt_min` — neither mentions a triangle's interior.  The theorem that the two
+interiors meet is `ChordChartPlanar.interiors_meet_at_shared_foot`
+(member instance: `ChordChartPlanar.member_configuration_interiors_meet`).
 
 The earlier text here read "The two bridges are *not* proved ... proving them needs the fan
 machinery that `Dissection` lines 396–402 record as absent from Mathlib."  Both halves of that

@@ -101,7 +101,18 @@ through their shared foot. -/
 theorem straddle_of_opposite_signs (a xu xr : ℝ) (ha : 0 < a) (hu : a < xu) (hr : xr < 0) :
     xr < a ∧ a < xu := ⟨lt_trans hr ha, hu⟩
 
-/-! ## The planar step, proved
+/-! ## The planar step: the idea here, the theorem in `ChordChartPlanar`
+
+**CORRECTION 2026-09-10.**  This section previously read "The planar step, proved" and claimed
+that `upward_in_cone` together with `shared_segment_pos` discharge bridge (ii)'s residue.  They do
+not: `upward_in_cone` is a statement about two *vectors* (no triangle, no carrier, no membership),
+and `shared_segment_pos` is `lt_min` on two reals.  Neither mentions a triangle's interior.  The
+missing steps — that a positive combination of the corner's two edge directions, scaled small
+enough, lies in the triangle; that it lies in the *interior*; and that one scale serves both
+triangles — are proved in `Erdos634/ChordChartPlanar.lean`
+(`mem_interior_carrier_of_dets_pos`, `interiors_meet_at_shared_foot`,
+`member_configuration_interiors_meet`).  What follows is the *idea* of that argument; the
+theorem is there.
 
 Bridge (ii)'s residue was: two triangles reaching across a common vertical at positive height
 must intersect.  In this configuration they do, and the reason is elementary.
@@ -114,9 +125,10 @@ one horizontal direction and one direction into the open upper half-plane *on th
 and such a cone contains the straight-up direction `(0,1)` (`upward_in_cone`).
 
 So both triangles contain a vertical segment of positive height rising from `F`.  Two such
-segments on the same line from the same point overlap in a segment of positive length
-(`shared_segment_pos`), so the interiors meet.  That is the overlap, and bridge (ii) is
-complete. -/
+segments on the same line from the same point overlap in a segment of positive length, so the
+interiors meet.  `shared_segment_pos` below records only the trivial arithmetic of that last
+sentence (`0 < min h₁ h₂`); the geometric statement is
+`ChordChartPlanar.interiors_meet_at_shared_foot`. -/
 
 /-- **The upward direction lies in the corner cone.**  If one edge from the corner runs to
 `(xB, 0)` with `xB < 0` and the other to `(xA, yA)` with `xA > 0` and `yA > 0`, then `(0,1)` is a

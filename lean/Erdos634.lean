@@ -26,6 +26,7 @@ import Erdos634.CevianSplit
 import Erdos634.CevianTiling28
 import Erdos634.CevianTiling63
 import Erdos634.ChordChart
+import Erdos634.ChordChartPlanar
 import Erdos634.ChordDecomp
 import Erdos634.ChordInterface
 import Erdos634.Collar
