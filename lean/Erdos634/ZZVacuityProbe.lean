@@ -25,4 +25,27 @@ theorem base_b_count_vacuous (e0 f0 b0 : ℤ) (he0 : 0 ≤ e0) (hb0 : b0 + e0 ^ 
   push_cast [Int.toNat_of_nonneg he0]
   nlinarith [hb0]
 
+/-! ### Batch 9 (2026-09-10): the vertex-figure existentials
+
+Same bug class, found in `VertexFigureReal`. Both theorems take a real `Dissection N`, a real point
+`v`, and the hypothesis that every tile's local angle at `v` lies in `{α,β,γ,π,0}` — and then
+conclude only that *some* naturals `p q r s` satisfy an angle identity. The identity is satisfied by
+the constant tuple that ignores the dissection entirely, so the conclusion carries no information
+about `D`, `v`, or the angles at `v`. The docstrings' claim that `s` "counts the tiles meeting the
+point in the interior of one of their edges" is nowhere in the statement. -/
+
+/-- Conclusion of `VertexFigureReal.vertex_multiplicities_real`, verbatim, with **no dissection,
+no point, and no hypotheses**: take `(p,q,r,s) = (0,0,0,1)`. -/
+theorem vertex_multiplicities_real_vacuous (α β γ : ℝ) :
+    ∃ p q r s : ℕ, (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi = Real.pi :=
+  ⟨0, 0, 0, 1, by push_cast; ring⟩
+
+/-- Conclusion of `VertexFigureReal.interior_multiplicities_real`, verbatim, with **no dissection,
+no point, and no hypotheses**: take `(p,q,r,s,u) = (0,0,0,0,1)`. -/
+theorem interior_multiplicities_real_vacuous (α β γ : ℝ) :
+    ∃ p q r s u : ℕ,
+      (p : ℝ) * α + (q : ℝ) * β + (r : ℝ) * γ + (s : ℝ) * Real.pi + (u : ℝ) * (2 * Real.pi)
+        = 2 * Real.pi :=
+  ⟨0, 0, 0, 0, 1, by push_cast; ring⟩
+
 end Erdos634.VacuityProbe

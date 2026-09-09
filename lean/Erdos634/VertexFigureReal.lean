@@ -41,7 +41,17 @@ if every tile's local angle is one of `α, β, γ, π, 0`, there are natural mul
 `p·α + q·β + r·γ + s·π = π`.
 
 The five values are assumed distinct, which for a base-`β` tile they are.  `s` counts the tiles
-meeting the point in the interior of one of their edges. -/
+meeting the point in the interior of one of their edges.
+
+**WARNING — VACUOUS AS STATED (Rule 6, found 2026-09-10).**  The claim in the paragraph above that
+`s` *counts* anything is a fact about the proof, not about the statement.  The conclusion is a bare
+existential over `p q r s : ℕ`, and `(p,q,r,s) = (0,0,0,1)` satisfies it for *any* reals `α β γ`,
+with no dissection, no point `v`, and none of the hypotheses:
+`Erdos634.VacuityProbe.vertex_multiplicities_real_vacuous`.  Nothing in the conclusion ties the
+witnessed tuple to `D` or to the angles at `v`, so this theorem carries **no information** and must
+not be cited as the real-dissection content of `prop:vertexfigures`.
+Use `boundary_multiplicities_cards` instead: it names the multiplicities as the actual `Finset`
+cardinalities of the tiles presenting each angle at `v`, and is genuinely dissection-level. -/
 theorem vertex_multiplicities_real {N : ℕ} (D : Dissection N) (α β γ : ℝ)
     (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα0 : α ≠ 0)
     (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ0 : β ≠ 0)
@@ -147,7 +157,16 @@ theorem interior_localAngle_mem {N : ℕ} (D : Dissection N) (α β γ : ℝ)
   · simp [hpi]
   · simp [h0]
 
-/-- **The interior figure, with multiplicities.** -/
+/-- **The interior figure, with multiplicities.**
+
+**WARNING — VACUOUS AS STATED (Rule 6, found 2026-09-10).**  Exactly the defect of
+`vertex_multiplicities_real`: `(p,q,r,s,u) = (0,0,0,0,1)` satisfies the conclusion for any reals
+`α β γ`, with no dissection, no point, and no hypotheses
+(`Erdos634.VacuityProbe.interior_multiplicities_real_vacuous`).  The existential loses the link to
+the tiles, so the theorem says nothing about `D` or `v`.  Use `interior_multiplicities_cards`, which
+names the multiplicities as real tile counts.  (The `lem:onegamma` row of `PAPER_MAP.md` already
+recorded that this theorem "hides the counts behind an existential"; it is worse than that — the
+existential is satisfiable without the hypotheses at all.) -/
 theorem interior_multiplicities_real {N : ℕ} (D : Dissection N) (α β γ : ℝ)
     (hαβ : α ≠ β) (hαγ : α ≠ γ) (hαπ : α ≠ Real.pi) (hα2π : α ≠ 2 * Real.pi) (hα0 : α ≠ 0)
     (hβγ : β ≠ γ) (hβπ : β ≠ Real.pi) (hβ2π : β ≠ 2 * Real.pi) (hβ0 : β ≠ 0)
