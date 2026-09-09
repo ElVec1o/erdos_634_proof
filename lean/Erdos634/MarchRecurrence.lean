@@ -51,6 +51,10 @@ theorem fibonacci_to_shift (b : ℕ → ℤ)
     ∀ n, (b (n + 2) - 2) = (b (n + 1) - 2) + (b n - 2) + 2 := by
   intro n; rw [h n]; ring
 
+-- CONTENT-FREE (audit 2026-09-10): `march_counts`' hypothesis IS its conclusion rearranged, and
+-- `step_gives_recurrence` below is the identity function `hflush ↦ hflush n`.  Neither derives the
+-- recurrence from a branching fact: the branching is assumed, in the shape of the recurrence.
+-- The recurrence itself is measured (`prop:fib`, HEURISTIC); do not cite either as its proof.
 /-- **The march's branching, as a count.**  If each step of the march offers exactly two
 continuations — one advancing a single position and one advancing two — and consumes two spine
 nodes, the subtree sizes satisfy the recurrence. -/
@@ -87,6 +91,8 @@ The lengths make the dichotomy exact, and they are the same two numbers that gov
 buffer: `c - b = 1` is the offset, and it is the gap of `⟨a,b,c⟩` that kills the corresponding
 branch there. -/
 
+-- CONTENT-FREE (audit 2026-09-10): `flush_displacement` is `x - x = 0` on two free integers; it
+-- records the intended bookkeeping, not a geometric fact about the filler.
 /-- **The flush chirality is exact.**  Matching `b` against `b` and `c` against `c` leaves no
 displacement. -/
 theorem flush_displacement (b c : ℤ) : (b - b) = 0 ∧ (c - c) = 0 := by omega

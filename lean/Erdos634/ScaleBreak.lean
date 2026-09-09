@@ -44,9 +44,31 @@ theorem side_walk_m2 (e f : Nat) (h : e ≤ f) :
     omega
   omega
 
-/-- The same walk carries `f` b-edges, so it is a genuine counterexample to `side_no_b` at m = 2
-(that lemma asserts the b-count is 0). -/
+-- CONTENT-FREE (audit 2026-09-10): `side_walk_m2_has_b` is the identity function `h ↦ h`
+-- (`0 < f` and `1 ≤ f` are the same proposition on `Nat`).  It asserts nothing about walks,
+-- b-edges or `side_no_b`, and must not be cited as evidence that the counterexample exists.
+-- The real statement is `side_no_b_fails_m2` below, which is stated in the exact hypothesis
+-- shape of `BaseBetaWalks.side_no_b` and exhibits the witness.
 theorem side_walk_m2_has_b (f : Nat) (h : 1 ≤ f) : 0 < f := h
+
+/-- **`side_no_b` fails at `m = 2`, for every member.**  Stated in the exact hypothesis shape of
+`BaseBetaWalks.side_no_b` (`B` the `b`-edge length with `B + e² = f²`, walk equation on the equal
+side, γ-trap `1 ≤ R`), with the side length doubled to `2f³`: the witness `(P,Q,R) = (e,f,f)`
+satisfies the walk equation, respects the γ-trap, **and has `Q ≠ 0`** — the conclusion `Q = 0` that
+`side_no_b` proves at `m = 1`.  So the `m = 1` forcing chain's first structural step is genuinely
+unavailable at `m = 2`, and this is what the `ScaleBreak` row of `PAPER_MAP.md` claims. -/
+theorem side_no_b_fails_m2 (e f B : Nat) (he : 1 ≤ e) (hef : e < f) (hB : B + e ^ 2 = f ^ 2) :
+    ∃ P Q R : Nat, 1 ≤ R ∧ Q ≠ 0 ∧ P * (e * f) + Q * B + R * f ^ 2 = 2 * f ^ 3 := by
+  refine ⟨e, f, f, by omega, by omega, ?_⟩
+  have hse : e ^ 2 = e * e := by rw [Nat.pow_succ, Nat.pow_one]
+  have hsf : f ^ 2 = f * f := by rw [Nat.pow_succ, Nat.pow_one]
+  have hcf : f ^ 3 = f * f * f := by rw [Nat.pow_succ, hsf]
+  rw [hse] at hB
+  rw [hsf, hcf]
+  have hBv : B = f * f - e * e := by omega
+  subst hBv
+  have hwalk := side_walk_m2 e f (Nat.le_of_lt hef)
+  omega
 
 /-! ## The slot that closes at m = 1 and opens at m = 2.
 With Q = f·q, the walk equation is P·e + q·(f²−e²) + R·f = m·f². At q = 1: -/
