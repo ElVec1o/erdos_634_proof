@@ -4897,3 +4897,100 @@ is complete and real; the ordered-word construction needs one more genuine step 
 restriction and its injectivity) before it reads as an actual boundary word. `rem:pingaps` stays
 OPEN — correctly, since this last step is real content, not bookkeeping, contrary to what I said
 two ticks ago.
+
+---
+
+## Debt batch 6, 2026-09-10: label-keyed audit of the paper's `\lab{}` tags against this map
+
+Method: extract every `\label{...}\lab{...}` pair from `paper/*.tex` (212 tags, 211 distinct
+labels) and diff the label set against this file's row keys, then read the paper statement and the
+cited Lean for every mismatch. Three findings, plus two clean negative controls.
+
+### (1) Four route-1 propositions had no label-keyed row
+
+`prop:flankline`, `prop:descent`, `prop:serving`, `prop:servingvertex`
+(`erdos-634-companion.tex:1655,1676,1686,1695`, all `\lab{VERIFIED}`) appear nowhere in this file
+under their `\label` keys. Their *content* is tracked, but only under the internal atom names
+`R1-tang`, `R1-desc`, `C R1-ident`, `C R1-vertex` — so a `\lab`-keyed audit misses them and the
+census and the row list disagree. Rows added below; every cited declaration was checked to exist
+and to match the paper statement as written. **All four VERIFIED labels are correct — no flip.**
+
+| Paper | Statement | Lean declaration | Status |
+|---|---|---|---|
+| C `prop:flankline` | a tile with vertex `V`, both edges at `V` weakly upward, containing points approaching `V` tangentially from the right, has a horizontal rightward edge at `V` | `RouteOne.flank_along_line`, `.flank_along_line'`, `.sub_vertex_eq_combo`, `.cone_forces_horizontal`, `.not_both_horizontal` | VERIFIED — `flank_along_line'` is the statement as written; the non-degeneracy hypothesis is discharged, not assumed (`not_both_horizontal`, via `Tri.det_cyclic`/`det_ne_zero`). Same content as atom `R1-tang` |
+| C `prop:descent` | successive advances differ by `n·a` so each consumes a distinct wall `a`-edge; the count is bounded by the wall's `a`-edges; the escape at step `L+1` is unreachable | `RouteOne.advance_injective`, `.advance_count_le_run`, `.terminus_of_run_length`, `.wall_descent`, `.route_one_closes'` | VERIFIED — all five exist and match; `route_one_closes'` is the chaining, taking the trichotomy and the terminus as hypotheses exactly as the paper says. Same content as atoms `R1-desc` / `inWall n` |
+| C `prop:serving` | approach points strictly above the wall select a tile that is not the straight tile beneath it; the flank conclusion then holds for a named tile at a named vertex | `RouteOne.not_below_of_contains_above`, `.serving_tile_is_upper`, `.route_one_flank_identified` | VERIFIED — same content as atom `C R1-ident` |
+| C `prop:servingvertex` | the serving tile's local angle at `V` is a corner angle, the other three branches being excluded; hence `V` is one of its vertices | `PinPlumbing.localAngle_cases`, `RouteOne.serving_has_vertex`, `.not_straight_of_unique`, `.route_one_flank_composed` | VERIFIED — same content as atom `C R1-vertex` |
+
+`prop:fanlaw` and `prop:fib` are also label-keyed-absent; both were audited in earlier batches and
+are out of scope here.
+
+### (2) `lem:collar` was VERIFIED on an `omega` identity — moved DOWN to PROVED
+
+`erdos-634-companion.tex` (Collar decomposition) claimed VERIFIED with the map's index row citing
+`collar_cells`. Read directly:
+
+```
+theorem collar_cells (k : Nat) : (k+2)*(k+2) = k*k + 4*(k+1) := by ... omega
+```
+
+The paper statement is a *geometric decomposition*: the closure of `Δ_m \ Δ_{m-2}^apex` splits into
+`m-2` sheared parallelogram columns plus one scale-2 corner triangle, with named base/top segments
+and the claim that **every interface is a full straight segment, so the pieces tile independently**.
+None of that is in `Collar.lean`, which contains only `collar_cells`, `collar_assembly`
+(`4 + 4(m-3) + 4 = 4(m-1)`, `omega`) and `collar_count_12` (`11(k+2)² = 11k² + 44(k+1)`). This is
+exactly the defect the 2026-08-30 VERIFIED audit named: arithmetic wearing the label its statement
+did not earn.
+
+| Paper | Statement | Lean declaration | Status |
+|---|---|---|---|
+| C `lem:collar` | collar of `Δ_m` = `(m-2)` parallelogram columns + one scale-2 corner triangle, all interfaces full straight segments; `44(m-1)` tiles | `Collar.collar_cells`, `.collar_assembly`, `.collar_count_12` | **PROVED — moved down from VERIFIED, 2026-09-10.** The cell and tile counts are VERIFIED (`omega` identities). The decomposition itself and the flush-interface clause have no `Dissection`-level statement: this is the union-of-different-regions composition blocker. `UnionDissection.unionCongruentDissection` is the right primitive and exists, but is not applied to the collar. Paper `\lab{}` tag updated to match |
+
+### (3) `thm:frontier5` — no substantive row, and the statement overclaims
+
+`erdos-634.tex:2239`, `\lab{CONJECTURE}`. Unlike `thm:frontier`–`thm:frontier4` (rows above), it has
+only an index stub (`| M thm:frontier5 | theorem |`) and no status row anywhere. Worse, the
+statement is internally inconsistent as written:
+
+> In the range `81 ≤ N ≤ 90` the realizable values are exactly `81,82,85,89,90`; … and `84` and
+> `88` remain open, each awaiting the exhaustion of instances currently under search.
+
+"are exactly" decides `84` and `88` negatively; the same sentence then says they are open, and
+`erdos-634.tex:2307` says "Below 91 the spectrum is thus determined except at exactly 83, 84, 88".
+The clause appears to be copied from `thm:frontier4`, where the analogous "every `N ≤ 80` is thereby
+determined" *is* true. Minimal correction applied to the paper: `are exactly` → `include`.
+
+| Paper | Statement | Lean declaration | Status |
+|---|---|---|---|
+| M `thm:frontier5` | `86` and `87` are not tile counts; the `81 ≤ N ≤ 90` picture, with `83` conditional and `84`, `88` open | `Frontier.*` | CONJECTURE — the `86`/`87` half is the same branch sweep as `thm:frontier`–`thm:frontier4` (engine verdicts, blocked on the **certified-search format**); the `83` clause is conditional on `thm:fullprime`, and `84`, `88` are open, which is why the row cannot be PROVED even when the sweep format lands. **Statement corrected 2026-09-10** (the "are exactly" overclaim above) |
+
+### Negative controls (both clean)
+
+* **Citation resolution.** All 431 distinct `\texttt{…_…}` Lean names cited across the three papers
+  resolve to real declarations in `lean/` (the apparent misses — `Geometry.Dissection.side_partition`,
+  `.wall_two_sided`, `.edge_point_not_interior`, `sum_localAngle_eq` — are namespace-qualified forms
+  of `EdgeChain`/`WallChain`/`AngleSumDissection` theorems that do exist). No broken citations.
+* **Status agreement.** Comparing each paper `\lab{}` leading word with the status column of this
+  file's rows produced no genuine disagreement; every apparent one is a row whose status column
+  begins with prose (`Checked 2026-09-08`, `CONDITIONAL`, `NEWLY`) rather than a bare label.
+
+### Flagged, NOT changed — `thm:align` (`erdos-634-companion.tex`, `\lab{VERIFIED}`)
+
+Its three clauses are cited to `far_near_disjoint`, `far_is_bpow`, `b_not_dvd_fsq`, all of which
+exist and are genuine number theory over `ℕ`/`ℤ`. But the theorem as written also asserts the
+geometry: that the near side along the mismatch ray is `T2`'s single unsplittable `c`-edge covering
+`[0,f²]`, that every far-side junction is "a genuine T-junction, the near `c`-edge passing straight
+through it", that "the far side is exactly `b^f`", and that "a far `b`-edge straddles `T2`'s
+`β`-corner". None of that is in Lean, and the paper's own note concedes (ii) "uses `γ`-vertex
+induction … to fix the first far edge", which is not cited to a declaration. By the rule at the foot
+of this file this reads as PROVED-with-VERIFIED-arithmetic, like `thm:kbrep`'s sibling rows. Left as
+VERIFIED pending a decision, because the call is a judgement about how much geometric framing a
+`Then:`-clause carries, not a factual error.
+
+`thm:halfangle`, `thm:kbrep` and `lem:cchord` were checked the same way and their VERIFIED labels
+**stand**: in each, the operative content after the setup is exactly the cited arithmetic theorem
+(`halfpi_minus_alpha_unique`'s hypotheses `y+z=1`, `2x+z+1=3y` were re-derived by hand as the
+`π`- and `α`-coefficients of `xα+yβ+zγ = (π−α)/2` under `3α+2β=π`, `γ=2α+β` — the encoding is right).
+
+No Lean was written or changed in this batch. Census unchanged in totals; one label moves
+VERIFIED → PROVED (`lem:collar`).
