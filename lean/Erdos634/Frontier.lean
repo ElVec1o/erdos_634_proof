@@ -1338,8 +1338,83 @@ so the forcing stops after the first edge at each corner. -/
 theorem corner_step_branches :
     (3 + 2 * 0 = 3 ∧ 1 + 0 = 1) ∧ (1 + 2 * 1 = 3 ∧ 0 + 1 = 1) := by omega
 
+/-! ### The close-pair base decompositions: finiteness, and a member with none
+
+`rem:closepairbase` (companion) asserts that close pairs (`f² ≤ 2ef + e²`) "admit in addition
+finitely many decompositions with `y > e`, computable per member", with the finiteness "immediate
+from the walk equation". Both halves are settled here.
+
+*Finiteness* is `base_solutions_finite`: the base equation `x·a + y·b + z·c = e(3f² − e²)` has
+positive coefficients (`e < f` makes `b = f² − e² > 0`), so every solution is bounded coordinatewise
+by the right-hand side. No close-pair hypothesis is needed and the `y > e` restriction only shrinks
+the set.
+
+*Existence is false in general.* The remark's "admit" reads as an existence claim at every close
+pair; it fails. At `(e,f) = (3,7)` — a close pair, `49 ≤ 42 + 9` — the base equation
+`21x + 40y + 49z = 414` has **no** solution with `y > 3` at all
+(`close_pair_37_no_extra_column`), before any of the three unconditional filters of
+`rem:closepairs` (the `γ`-trap, `thm:n1`, the corner parallelogram) is applied. A brute enumeration
+of every coprime close pair with `e ≤ 25`, `f ≤ 59` finds 82 such members out of 282, `(3,7)` the
+smallest; this is consistent with `rem:columnreduction`'s own count of "198 members carrying
+survivors" and is why that phrase, not `rem:closepairbase`'s, is the accurate one. -/
+
+/-- **Every base decomposition is bounded by the base length.** For `0 < e < f` the three edge
+lengths `a = ef`, `b = f² − e²`, `c = f²` are positive, so the solution set of the base walk
+equation is contained in a box and is finite. This is `rem:closepairbase`'s "finiteness is immediate
+from the walk equation", with no close-pair hypothesis. -/
+theorem base_solutions_finite {e f : ℕ} (he : 0 < e) (hef : e < f) :
+    {p : ℕ × ℕ × ℕ |
+        p.1 * (e * f) + p.2.1 * (f * f - e * e) + p.2.2 * (f * f)
+          = e * (3 * (f * f) - e * e)}.Finite := by
+  set M : ℕ := e * (3 * (f * f) - e * e) with hM
+  have ha : 0 < e * f := Nat.mul_pos he (he.trans hef)
+  have hb : 0 < f * f - e * e := by
+    have : e * e < f * f := Nat.mul_lt_mul_of_lt_of_le hef (le_of_lt hef) (by omega)
+    omega
+  have hc : 0 < f * f := Nat.mul_pos (he.trans hef) (he.trans hef)
+  refine Set.Finite.subset
+    ((Set.finite_Iic M).prod ((Set.finite_Iic M).prod (Set.finite_Iic M))) ?_
+  rintro ⟨x, y, z⟩ hp
+  simp only [Set.mem_setOf_eq] at hp
+  have hx : x ≤ x * (e * f) := Nat.le_mul_of_pos_right x ha
+  have hy : y ≤ y * (f * f - e * e) := Nat.le_mul_of_pos_right y hb
+  have hz : z ≤ z * (f * f) := Nat.le_mul_of_pos_right z hc
+  have hpM : x * (e * f) + y * (f * f - e * e) + z * (f * f) = M := by rw [hM]; exact hp
+  exact ⟨Set.mem_Iic.2 (by linarith), Set.mem_Iic.2 (by linarith),
+    Set.mem_Iic.2 (by linarith)⟩
+
+/-- **Every base decomposition has `y ≡ e (mod f)`.** `rem:closepairs`'s opening clause — the extra
+columns "all have `y = e + kf` for some `k ≥ 1`" — is this congruence, and it is unconditional: no
+close-pair hypothesis, only `gcd(f, e²) = 1`. From the base equation,
+`e²(y − e) = f·(xe + yf + zf − 3ef)`, so `f ∣ e²(y − e)` and coprimality strips `e²`. -/
+theorem base_column_y_form (e f x y z : ℤ) (hco : IsCoprime f (e * e))
+    (h : x * (e * f) + y * (f * f - e * e) + z * (f * f) = e * (3 * (f * f) - e * e)) :
+    f ∣ y - e := by
+  have key : (e * e) * (y - e) = f * (x * e + y * f + z * f - 3 * (e * f)) := by
+    linear_combination -h
+  exact hco.dvd_of_dvd_mul_left ⟨x * e + y * f + z * f - 3 * (e * f), by linarith [key]⟩
+
+/-- **A close pair with no extra base decomposition at all.** `(e,f) = (3,7)` satisfies
+`f² ≤ 2ef + e²` (`49 ≤ 51`), and its base equation `21x + 40y + 49z = 414` has no solution in
+non-negative integers with `y > e = 3`. So the existence half of `rem:closepairbase` is false as
+stated: close pairs need not admit any decomposition with `y > e`. -/
+theorem close_pair_37_no_extra_column :
+    (7 * 7 ≤ 2 * 3 * 7 + 3 * 3) ∧
+      ¬ ∃ x y z : ℕ,
+          3 < y ∧
+            x * (3 * 7) + y * (7 * 7 - 3 * 3) + z * (7 * 7) = 3 * (3 * (7 * 7) - 3 * 3) := by
+  refine ⟨by norm_num, ?_⟩
+  rintro ⟨x, y, z, hy, h⟩
+  norm_num at h
+  have hy10 : y ≤ 10 := by omega
+  have hz8 : z ≤ 8 := by omega
+  interval_cases y <;> interval_cases z <;> omega
+
 end Erdos634.Frontier
 
+#print axioms Erdos634.Frontier.base_solutions_finite
+#print axioms Erdos634.Frontier.base_column_y_form
+#print axioms Erdos634.Frontier.close_pair_37_no_extra_column
 #print axioms Erdos634.Frontier.gamma_slack
 #print axioms Erdos634.Frontier.p_two_tight_iff
 #print axioms Erdos634.Frontier.pi_vertex_with_gamma

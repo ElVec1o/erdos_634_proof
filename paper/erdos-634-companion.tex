@@ -2734,10 +2734,16 @@ $(x,y,z)\in\{(0,e,2e),\,(f,e,e),\,(2f,e,0)\}$ (\texttt{base\_trichotomy}); the w
 middle one, $f$ $a$-feet, $e$ $b$-edges, $e$ $c$-feet.
 \end{lemma}
 
-\begin{remark}[Close pairs]\label{rem:closepairbase}\lab{HEURISTIC}
-Close pairs ($f^2\le2ef+e^2$) admit in addition finitely many decompositions with $y>e$, computable
-per member. Finiteness is immediate from the walk equation; the count itself is a computation and is
-not proved uniformly in $(e,f)$.
+\begin{remark}[Close pairs]\label{rem:closepairbase}\lab{PROVED}
+Close pairs ($f^2\le2ef+e^2$) admit in addition \emph{at most} finitely many decompositions with
+$y>e$, computable per member, and possibly none. Finiteness is immediate from the walk equation:
+all three edge lengths are positive, so the solutions lie in a box
+(\texttt{base\_solutions\_finite}); every such decomposition has $y\equiv e\pmod f$
+(\texttt{base\_column\_y\_form}). Existence, however, fails at some close pairs: at $(e,f)=(3,7)$
+the base equation $21x+40y+49z=414$ has no solution with $y>3$ at all
+(\texttt{close\_pair\_37\_no\_extra\_column}), before any of the filters of
+Remark~\ref{rem:closepairs}; over the coprime close pairs with $e\le25$, $f\le59$, $82$ of the $282$
+members admit none. The count itself is a computation and is not proved uniformly in $(e,f)$.
 \end{remark}
 
 \begin{lemma}[The shadow at a $c$-corner]\label{lem:shadow}\lab{PROVED}
@@ -4250,9 +4256,10 @@ The close-pair regime $f^2\le 2ef+e^2$ admits base decompositions the separated 
 This subsection puts them in closed form and gives the sharp criterion, which is Hall's condition
 rather than the counting bound.
 
-\begin{remark}[Close pairs: what the unconditional filters leave]\label{rem:closepairs}
-At a close pair ($f^2\le 2ef+e^2$) Lemma~\ref{lem:basetri} no longer applies and the base admits
-extra columns, all with $y=e+kf$ for some $k\ge1$. Three unconditional filters apply: the
+\begin{remark}[Close pairs: what the unconditional filters leave]\label{rem:closepairs}\lab{PROVED}
+At a close pair ($f^2\le 2ef+e^2$) Lemma~\ref{lem:basetri} no longer applies and the base may admit
+extra columns --- not every close pair does; see Remark~\ref{rem:closepairbase} --- and each of
+them has $y=e+kf$ for some $k\ge1$ (\texttt{base\_column\_y\_form}, unconditional). Three unconditional filters apply: the
 $\gamma$-trap removes $z=0$; Theorem~\ref{thm:n1} removes $x=0$; and the corner parallelogram,
 which keeps $b$-edges out of the first two and last two positions, removes any column with
 $x+z\le3$ in a word of at least four edges (\texttt{cornerpara\_filter}). Over the range
@@ -4268,7 +4275,7 @@ coprime pairs, and among the smallest are $(5,6)$ and $(4,7)$, that is $N=83$ an
 by member certification therefore cannot settle this family.
 \end{remark}
 
-\begin{remark}[The extra base columns, in closed form]\label{rem:columnreduction}
+\begin{remark}[The extra base columns, in closed form]\label{rem:columnreduction}\lab{PROVED}
 The extra columns at a close pair all have $y=e+kf$ with $k\ge1$
 (Remark~\ref{rem:closepairs}), and the obstruction is that no bound on $k$ follows from size.
 Substituting $y=e+kf$ into the base equation collapses it: the difference is $f$ times a relation in

@@ -59,4 +59,37 @@ theorem conic_of_sides (N S a b s t q : ℤ) (hS : S ≠ 0)
     rw [← sq_identity N S a b s t harea hdiff, ← hq]; ring
   exact mul_left_cancel₀ hS2 key
 
+/-- **The difference relation, derived rather than assumed.** `sq_identity` and `conic_of_sides`
+took `2N(a-b) = S(t-s)` as a hypothesis; the paper *derives* it, from `X - Y = 2(a-b)` and
+`a - b = (3S/2)(1/s - 1/t)`. Here that derivation is done without division: multiplying
+`X - Y = 2(a-b)` by `st` and using `sX = tY = 3S` together with `st = 3N` gives
+`3S(t-s) = 6N(a-b)`, and `3` cancels over `ℤ`. No nonvanishing hypothesis is needed. -/
+theorem diff_of_sides (N S a b s t X Y : ℤ)
+    (hs : s * X = 3 * S) (ht : t * Y = 3 * S) (hst : s * t = 3 * N)
+    (hXsubY : X - Y = 2 * (a - b)) :
+    2 * N * (a - b) = S * (t - s) := by
+  have h3 : (3 : ℤ) * (2 * N * (a - b)) = 3 * (S * (t - s)) := by
+    linear_combination (-2 * (a - b)) * hst + (-(s * t)) * hXsubY + t * hs + (-s) * ht
+  exact mul_left_cancel₀ (by norm_num : (3 : ℤ) ≠ 0) h3
+
+/-- **`prop:eqspecint`'s arithmetic, assembled.** From exactly the data a tiling is asked to supply
+— the tile relation `XY = 3ab`, the side relations `X - Y = 2(a-b)`, `sX = tY = 3S`, the area
+identity `S² = N·ab`, and `q` pinned by `Sq = 2N(a+b)` — both relations `EquilateralConic.*`
+consumes follow. The difference relation is no longer an input.
+
+Still **not** here, and still the row's blocker: that a tiling supplies `X ∣ 3S`, `Y ∣ 3S` and the
+area identity (tile-placement layer), and that `s`, `t` are *positive* with `s ≡ t ≡ N (mod 2)`,
+which routes through `cor:int`'s identification `s = M_α`, `t = M_β`. -/
+theorem eqspecint_core (N S a b s t q X Y : ℤ) (hab : a * b ≠ 0) (hS : S ≠ 0)
+    (hXY : X * Y = 3 * (a * b)) (hXsubY : X - Y = 2 * (a - b))
+    (hs : s * X = 3 * S) (ht : t * Y = 3 * S)
+    (harea : S ^ 2 = N * (a * b)) (hq : S * q = 2 * N * (a + b)) :
+    s * t = 3 * N ∧ (t - s) ^ 2 + 16 * N = q ^ 2 := by
+  have hst : s * t = 3 * N := st_eq_three_N N S a b s t X Y hab hXY hs ht harea
+  exact ⟨hst, conic_of_sides N S a b s t q hS harea
+    (diff_of_sides N S a b s t X Y hs ht hst hXsubY) hq⟩
+
 end Erdos634.EqSpecInt
+
+#print axioms Erdos634.EqSpecInt.diff_of_sides
+#print axioms Erdos634.EqSpecInt.eqspecint_core
