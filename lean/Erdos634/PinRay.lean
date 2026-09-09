@@ -54,4 +54,14 @@ theorem exit_not_integral (f p N₀ T : ℤ) (hco : IsCoprime N₀ f)
 theorem pin_index_small (f p : ℤ) (hf : 2 ≤ f) (hp1 : 1 ≤ p) (hp2 : p ≤ f - 1) :
     p < 3 * f ^ 2 - 1 := by nlinarith
 
+/-- **The statement the companion actually cites** (`erdos-634-companion.tex:2348`), with `N₀`
+instantiated and both side conditions discharged from the geometry's own data: at the pin `J = pf`
+with `1 ≤ p ≤ f - 1` and `f ≥ 2`, the exit distance `T = f³(N₀ - pf)/N₀`, `N₀ = 3f² - 1`, is never
+an integer.  This wires `coprime_f_N0` and `pin_index_small` into `exit_not_integral`, which the
+file previously left as three unjoined pieces. -/
+theorem exit_not_integral_member (f p T : ℤ) (hf : 2 ≤ f) (hp1 : 1 ≤ p) (hp2 : p ≤ f - 1)
+    (h : (3 * f ^ 2 - 1) * T = f ^ 3 * ((3 * f ^ 2 - 1) - p * f)) : False :=
+  exit_not_integral f p (3 * f ^ 2 - 1) T (coprime_f_N0 f).symm hp1
+    (pin_index_small f p hf hp1 hp2) h
+
 end Erdos634.PinRay

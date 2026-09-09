@@ -9,9 +9,9 @@ produces a cone as an intersection of half-planes. This file connects them:
 
   `sector θ = {p | ‖p‖ < 1} ∩ {p | 0 < p.2} ∩ {p | 0 < sin θ * p.1 - cos θ * p.2}`   (0 < θ < π)
 
-Only the `⊆` direction is attempted here; that is the direction the assembly needs, since it lets a
-cone-with-angle-θ be recognised as containing the sector, and the reverse follows from measure once
-both are known to be sectors. Development copy.
+Both directions are proved (`sector_subset_halfplanes`, `halfplanes_subset_sector`), and the
+equality is `sector_eq_halfplanes`; `E2Join.volume_wedge` consumes it. (This header previously said
+only `⊆` was attempted — stale.)
 -/
 
 open Set Real
