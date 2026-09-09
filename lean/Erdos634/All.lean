@@ -160,6 +160,7 @@ import Erdos634.ScaleBreak
 import Erdos634.ScaleRigidity
 import Erdos634.SecondEdge
 import Erdos634.SectorArea
+import Erdos634.SeedDegenerate
 import Erdos634.SegmentDense
 import Erdos634.SideNoB
 import Erdos634.SidePRange

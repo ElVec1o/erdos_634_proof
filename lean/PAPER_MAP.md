@@ -392,7 +392,7 @@ VERIFIED now means: the paper statement, as written, is the Lean theorem.
 
 | M `thm:fib` | `M² − N₀ = −2(f²−ef−e²)`, `|M²−N₀| ≥ 2`, equality iff consecutive Fibonacci, and `N₀ = M² ± 2` | `FibExtremal.sq_sub`, `.form_ne_zero`, `.two_le_gap`, `.gap_eq_two_iff`, `.fib_form`, `.fib_gap`, `.fib_count` | VERIFIED — everything except one direction: that `\|f²−ef−e²\| = 1` **forces** `(e,f)` consecutive Fibonacci. That needs the descent `(e,f) ↦ (f−e,e)` with the case `f ≥ 2e` handled separately; the other direction, and all four identities, are VERIFIED |
 
-| M `prop:solv` | `e ∣ (a+b−c)` iff a parametrisation by `j` with `d < j < 2d` | `SolvCore.core_identity`, `.j_identity`, `.j_gt_d`, `.no_j_at_d_one` | VERIFIED — the algebra is VERIFIED: the substituted equation, the `j`-form, and `j > d`. What remains is the bookkeeping around it — that `c ≡ a (mod e)` and `0 < c − a < b` give `c = a + et`, that `e ∣ 2t` follows from `gcd(a,e) = 1`, and the converse construction with its coprimality clause |
+| M `prop:solv` | `e ∣ (a+b−c)` iff a parametrisation by `j` with `d < j < 2d` | `SolvCore.core_identity`, `.j_identity`, `.j_gt_d`, `.no_j_at_d_one` | VERIFIED — the algebra is VERIFIED: the substituted equation, the `j`-form, and `j > d`. **STALE, corrected 2026-09-10**: superseded by this file's other `prop:solv` row (the `SolvCore.solv_iff` row above), which records both directions as VERIFIED; `solv_iff` and `no_j_at_d_one` postdate this note. Kept only for history. What the note claimed remained: the bookkeeping around it — that `c ≡ a (mod e)` and `0 < c − a < b` give `c = a + et`, that `e ∣ 2t` follows from `gcd(a,e) = 1`, and the converse construction with its coprimality clause |
 
 ## Blockers named on inspection (2026-08-30, debt pass 1)
 
@@ -2229,6 +2229,16 @@ Neither is flippable yet, but the blocker is now precisely scoped: build a `Cong
 of the W-connecting-parallelogram (reusing `PgramTiling22Bridge`'s certificate-bridge pattern for a
 new concrete shape), not a new composition primitive — that part already exists. No label change
 this iteration; this is a real re-scoping, not a proof.
+
+## Two more untracked rows, added 2026-09-10 (debt-tracking gap, not a proof)
+
+Found by diffing the papers' `\lab{}`-tagged statements against this file: two statements appeared
+in no row at all. Both are now tracked, with citations checked against the declarations.
+
+| Paper | Statement | Lean declaration | Status |
+|---|---|---|---|
+| C `thm:seeddegenerate` | the eight certified `(1,2)` seeds' interface relations all vanish exactly on `f = 2e` | `SeedDegenerate.factor_c_two_a`, `.factor_two_b_three_a`, `.factor_two_b_a_c`, `.factor_three_c_four_b`, `.factor_a_two_b_two_c`, `.cofactors_pos`, `.all_relations_iff`, `.relations_at_one_two`, `.relations_fail_at_one_three` | CONJECTURE — **arithmetic half formalized 2026-09-10** (`SeedDegenerate.lean`, new). The paper's own clause "each of these, evaluated at `(a,b,c) = (ef, f²−e², f²)`, factors as a unit times `(f−2e)` times a quantity positive on `0 < e < f`" is now five `ring` identities plus the positivity, and `all_relations_iff` is the consequence the theorem draws from them: on `0 < e < f`, any one of the five relations holds **iff** `f = 2e`. Non-vacuity checked both ways (`relations_at_one_two`: all five hold at `(1,2)`; `relations_fail_at_one_three`: none holds at `(1,3)`, the member of `thm:notuniform`). Axiom-clean, no `sorry`, `lake build Erdos634.All` clean. **Label stays CONJECTURE**: the theorem's leading clause is the *sweep* — that these five are the only relations occurring across the eight certified tilings (`code/interface_census.py`) — a computation over concrete tilings, not formalized. |
+| O `O-v1repair` | the `V₁` step is repairable; its three arithmetic kills | `V1Gaps.N1_overrun_stub_gap`, `.N3_c_rep_unique`, `.N2_master_through_kill` | CONJECTURE (paper's own tag: "complete proof sketch; the arithmetic cores VERIFIED") — **citation added 2026-09-10**, the row simply did not exist. `lean/Erdos634/V1Gaps.lean` (already in `Erdos634.All`) contains exactly the paper's three named facts, checked one by one against `erdos-634-obstructions.tex:139-152`: `f²−2e²` not representable in `⟨a,b,c⟩` for coprime `f > 2e` (`N1_overrun_stub_gap`); no whole-edge prefix `σ` and covering edge `L` with `σ+L = 2b−xa` and the overrun strictly inside `L` (`N2_master_through_kill`); and at `e ≥ 2` the unique representation of `c` is `(0,0,1)` (`N3_c_rep_unique`). No label move: the paper labels the geometric repair a proof sketch, and says so itself ("*formalized* describes the number theory alone"). |
 
 ## ChordEndpointFrontierGeneral, session of 2026-09-03 continued
 
