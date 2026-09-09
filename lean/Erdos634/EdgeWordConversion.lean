@@ -2,6 +2,7 @@ import Mathlib.Tactic
 import Erdos634.TP_erdos
 import Erdos634.CongruentAngles
 import Erdos634.SssCongruent
+import Erdos634.EdgeChain
 
 /-!
 # The ℕ-length-word conversion (outcome-2 debt)
@@ -111,6 +112,52 @@ theorem word_of_chain_sum (D : CongruentDissection N)
 
 #print axioms Erdos634.EdgeWordConversion.chain_edge_length_mem_model
 #print axioms Erdos634.EdgeWordConversion.word_of_chain_sum
+
+/-! ## Discharging `side_walk_abc`'s congruent-tile hypothesis
+
+`PAPER_MAP.md`'s G3 residual list says of `Dissection.side_walk_abc_nat` that "what an
+instantiation still supplies is its data — the congruent-tile hypothesis (every edge length lies
+in `{a,b,c}`) and the side's numeric length".  For a `CongruentDissection` the first half is
+exactly `chain_edge_length_mem_model`, so it need not be supplied at all: the two theorems below
+are the walk equation for a real congruent dissection, with no edge-length hypothesis. -/
+
+/-- Every tile edge of a `CongruentDissection` has length `sideLen D 0`, `sideLen D 1`
+or `sideLen D 2` — the three-way form of `chain_edge_length_mem_model`. -/
+theorem edge_length_trichotomy (D : CongruentDissection N) (j : Fin N) (k : Fin 3) :
+    dist ((D.tile j).pts k) ((D.tile j).pts (k + 1)) = sideLen D 0
+    ∨ dist ((D.tile j).pts k) ((D.tile j).pts (k + 1)) = sideLen D 1
+    ∨ dist ((D.tile j).pts k) ((D.tile j).pts (k + 1)) = sideLen D 2 := by
+  obtain ⟨i, hi⟩ := chain_edge_length_mem_model D (j, k)
+  fin_cases i
+  · exact Or.inl hi
+  · exact Or.inr (Or.inl hi)
+  · exact Or.inr (Or.inr hi)
+
+/-- **The walk equation for a real congruent dissection, unconditionally.**  Every side of the
+target of a `CongruentDissection` is `P·a + Q·b + R·c`, where `a, b, c` are the model tile's own
+side lengths — no `habc` hypothesis to discharge. -/
+theorem side_walk_congruent (D : CongruentDissection N) (i : Fin 3) :
+    ∃ P Q R : ℕ,
+      (P : ℝ) * sideLen D 0 + (Q : ℝ) * sideLen D 1 + (R : ℝ) * sideLen D 2
+        = dist (D.target.pts i) (D.target.pts (i + 1)) ∧ P + Q + R ≤ 3 * N :=
+  D.toDissection.side_walk_abc i _ _ _ (edge_length_trichotomy D)
+
+/-- The ℕ form: with natural model side lengths and a natural side length, the multiplicities
+satisfy `P·a + Q·b + R·c = L` in ℕ — the exact shape of `Interface.BaseBeta.walk_base` /
+`walk_side`, for a real congruent dissection. -/
+theorem side_walk_congruent_nat (D : CongruentDissection N) (i : Fin 3) (a b c L : ℕ)
+    (ha : sideLen D 0 = (a : ℝ)) (hb : sideLen D 1 = (b : ℝ)) (hc : sideLen D 2 = (c : ℝ))
+    (hL : dist (D.target.pts i) (D.target.pts (i + 1)) = (L : ℝ)) :
+    ∃ P Q R : ℕ, P * a + Q * b + R * c = L ∧ P + Q + R ≤ 3 * N := by
+  refine D.toDissection.side_walk_abc_nat i a b c L (fun j k => ?_) hL
+  rcases edge_length_trichotomy D j k with h | h | h
+  · exact Or.inl (h.trans ha)
+  · exact Or.inr (Or.inl (h.trans hb))
+  · exact Or.inr (Or.inr (h.trans hc))
+
+#print axioms Erdos634.EdgeWordConversion.edge_length_trichotomy
+#print axioms Erdos634.EdgeWordConversion.side_walk_congruent
+#print axioms Erdos634.EdgeWordConversion.side_walk_congruent_nat
 
 /-! ## Non-vacuity: a real `CongruentDissection` instantiating `word_of_chain_sum`'s hypotheses
 

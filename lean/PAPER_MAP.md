@@ -171,6 +171,15 @@ Residual of G3 after this layer — bookkeeping, not geometry:
 * instantiating `Interface.BaseBeta.walk_base`/`walk_side`: `side_walk_abc_nat` already delivers
   the ℕ-equation `P·a + Q·b + R·c = L`; what an instantiation still supplies is its data — the
   congruent-tile hypothesis (every edge length lies in `{a,b,c}`) and the side's numeric length.
+  **HALF CLOSED 2026-09-10**: the congruent-tile hypothesis need no longer be supplied at all.
+  `EdgeWordConversion.chain_edge_length_mem_model` (pre-existing, uncited in this map until now)
+  already proved that every tile edge of a `CongruentDissection` has one of the model's three side
+  lengths; it is now threaded into `EdgeChain`'s walk theorems, giving
+  `EdgeWordConversion.side_walk_congruent` (ℝ) and `.side_walk_congruent_nat` (ℕ) — the walk
+  equation `P·a + Q·b + R·c = L` with `P + Q + R ≤ 3N`, for a real `CongruentDissection`, with **no
+  edge-length hypothesis**. What an instantiation still supplies is only the numeric data: that the
+  model's three side lengths are the naturals `a, b, c` and that the side's length is `L`. No label
+  moves — the row was already VERIFIED, and this closes a residual, not a row.
 
 The remaining open geometric obligation of the corpus is `HasAngleSums` (G2) alone.
 

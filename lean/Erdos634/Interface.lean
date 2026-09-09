@@ -75,10 +75,17 @@ structure BaseBeta (e f m : Nat) where
 The written chain's first structural step is that no equal side carries a b-edge when m = 1. Against
 the interface this is arithmetic: reduce the side equation mod f, then use the γ-trap. -/
 
-/-- The side equation forces `f ∣ Q'`: reducing `P'ef + Q'(f²−e²) + R'f² = m f³` modulo `f` leaves
-`−Q'e² ≡ 0`, and `gcd(e,f) = 1`. Stated with the divisibility as a hypothesis, since the gcd step
-is number theory the core toolchain does not have. -/
-theorem side_q_multiple_of_f (e f m : Nat) (D : BaseBeta e f m) (q : Nat) (hq : D.Q' = f * q) :
+/-- **The side walk rewritten once `Q' = f·q` is known.**  This is a restatement of
+`walk_side`, nothing more: the divisibility `f ∣ Q'` is an *input* here, not a conclusion.
+
+HONESTY NOTE (2026-09-10). This declaration was previously named `side_q_multiple_of_f` and
+documented as "the side equation forces `f ∣ Q'`". It does not: the hypothesis `hq` assumes exactly
+the divisibility the name claimed, and the proof is `rw [← hq]; exact D.walk_side`. The mathematics
+of the claim is real — reducing `P'ef + Q'(f²−e²) + R'f² = m f³` mod `f` leaves `Q'e² ≡ 0`, and
+`gcd(e,f) = 1` — but it is *not proved here*, because the gcd cancellation is number theory this
+file's no-import discipline excludes. Nothing in the corpus cited this declaration, so no label was
+affected; the name and docstring are corrected so nothing ever does so by mistake. -/
+theorem side_walk_of_Q'_eq (e f m : Nat) (D : BaseBeta e f m) (q : Nat) (hq : D.Q' = f * q) :
     D.P' * (e * f) + (f * q) * (f * f - e * e) + D.R' * (f * f) = m * (f * f * f) := by
   rw [← hq]
   exact D.walk_side
@@ -243,16 +250,22 @@ coprimality; recorded here as the field consumed rather than reproved. -/
 
 /-- The pentagon consumer, in interface form: a positive stub shorter than both a and b admits no
 whole-edge partition. (The two bounds are `Pentagon.stub_lt_a_and_b`; the non-partition is
-`Pentagon.no_partition`.) -/
-theorem pentagon_consumer (a b s x y z : Nat) (hs : 0 < s) (ha : s < a) (hb : s < b)
-    (h : x * a + y * b + z * (a + b) = s) : False := by
+`Pentagon.no_partition`.)
+
+GENERALIZED 2026-09-10: the third generator was previously hard-wired as `a + b`, which is NOT the
+base-β `c`. With `(a,b,c) = (ef, f²−e², f²)` one has `a + b = ef + f² − e² = c` only when `e = f`,
+so as stated the lemma could not be applied to any member with `e < f` — i.e. to any member at all.
+Nothing cited it, so nothing was wrong downstream; it is now stated for an arbitrary third
+generator `c > s`, matching `Pentagon.no_partition`'s real triple. -/
+theorem pentagon_consumer (a b c s x y z : Nat) (hs : 0 < s) (ha : s < a) (hb : s < b) (hc : s < c)
+    (h : x * a + y * b + z * c = s) : False := by
   rcases Nat.eq_zero_or_pos x with hx | hx
   · subst hx
     rcases Nat.eq_zero_or_pos y with hy | hy
     · subst hy
       rcases Nat.eq_zero_or_pos z with hz | hz
       · subst hz; omega
-      · have : a + b ≤ z * (a + b) := Nat.le_mul_of_pos_left _ hz
+      · have : c ≤ z * c := Nat.le_mul_of_pos_left _ hz
         omega
     · have : b ≤ y * b := Nat.le_mul_of_pos_left _ hy
       omega
@@ -279,6 +292,11 @@ bookkeeping extraction (instantiating the fields against a concrete dissection),
 length `L` is the union of `P` a-edges, `Q` b-edges and `R` c-edges then `P·a + Q·b + R·c = L`.
 Stated as the identity it is, so that the geometric content sits entirely in the hypothesis that
 such a decomposition exists. -/
+-- CONTENT-FREE (flagged 2026-09-10, same class as `surplus_middle` above): the conclusion IS the
+-- hypothesis and the proof is `h`. Kept for its docstring's exposition; it carries no mathematical
+-- content and must not be cited as evidence that the walk equation is established. The real
+-- statement is `Geometry.Dissection.side_walk_abc_nat`, and for a congruent dissection with no
+-- edge-length hypothesis at all, `EdgeWordConversion.side_walk_congruent_nat`.
 theorem walk_from_chain (a b c L P Q R : Nat) (h : P * a + Q * b + R * c = L) :
     P * a + Q * b + R * c = L := h
 
