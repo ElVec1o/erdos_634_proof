@@ -291,9 +291,19 @@ the local analysis: it is what the barrier theorem predicts.
 
 That fixes the shape of any future attempt.  The theorem's own answer to "what survives" is
 `side_no_b_m1`: at `m = 1` every admissible equal-side walk is free of `b`-edges, while at `m = 2`
-the walk `(3,2,1)` carries two.  Any proof that the descent lands must consume that input, or some
-other walk condition separating the scales.  A purely local or purely metric argument cannot work,
-and that is now a theorem about the attempt rather than a tally of failed ones.
+the walk `(3,2,1)` carries two.  **Correction, 2026-09-09**: `side_no_b_m1` is proved only for the
+single instance `2P+3Q+4R=8` (`(e,f)=(1,2)`, outside this file's `f≥3` regime) — the general fact
+is `BaseBetaWalks.side_no_b`, same shape.  Either way, **this exact composition — a boundary-walk
+`m=1`-fact against the interior configuration — is already autopsied in `Crux1.lean`'s `P`/`P′`
+section and found insufficient**: "`side_no_b_m1` is scale-sensitive but boundary-bound; the
+`γ`-count is boundary-shaped but scale-blind. Nothing in the corpus is both, and CRUX-1 needs
+both." `BoundaryRigidInsufficient.boundary_rigid_iff` sharpens this further: at this row's own
+smallest instance (`f=8, N=191`) the boundary walk is already fully rigid and saturated, and
+`N=191` still survives — so a boundary-only argument provably contributes nothing there. Read
+`Crux1.lean` in full before attempting this composition again. Any proof that the descent lands
+must consume some genuinely new input, not this one, or some other walk condition separating the
+scales. A purely local or purely metric argument cannot work, and that is now a theorem about the
+attempt rather than a tally of failed ones.
 What is new is that the barrier is now a *single* configuration rather than a general claim about
 descents, and that the base case is settled: on the base the `c`-alternative dies outright, because
 there the interior feet would be vertices interior to a *boundary* edge. -/
