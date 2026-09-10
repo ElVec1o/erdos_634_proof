@@ -74,7 +74,21 @@ theorem quartic_at_3_7 : (0:ℤ) < 3^4 - 3^3*7 - 3*3^2*7^2 + 3*7^3 + 7^4 := by d
 /-- **The base `b`-count bound.**  From the same containment: the `b`-edges must fit in the part of
 the base outside both corner zones, `eN(1 − e/b)`, so `y·b ≤ eN(b−e)/b`. Cleared of denominators
 this is the statement below, and it is *strictly stronger* than the companion's `j(f−e) ≤ e−1`
-exactly on the close pairs — the instance at `(5,6)` below shows the gap. -/
+exactly on the close pairs — the instance at `(5,6)` below shows the gap.
+
+**CORRECTION, 2026-09-11 (`EpredWedgeClearance.lean`).  The bound stated in this docstring is
+FALSE — it is too strong.**  `eN/(2b)·2 = e²N/b` is the zone forbidden to the tile's far **vertex**;
+the `b`-**edge** itself sits at horizontal offset `(b²+c²−a²)/(2b)` from that vertex, and restoring
+it collapses the clearance to exactly `(a²−b²)/b`.  The correct bound is
+
+    `y·b² ≤ eN·b − 2(a² − b²)`,
+
+which at `(5,6)` reads `121y ≤ 3007`, i.e. `y ≤ 24` — not the `y ≤ 20` asserted by
+`b_count_at_5_6`/`b_count_at_5_6'` below.  `EpredWedgeClearance.witness_83_left_placement` exhibits
+a `b`-edge on `[71, 82]` clearing both corners, with `71 < 2075/22`, so the zone this docstring
+declares forbidden is not forbidden.  `b_count_bound` itself is a tautology (hypothesis = goal up to
+`ring`) and so is unaffected; the two `(5,6)` instances are true arithmetic statements about the
+wrong quantity.  Use `EpredWedgeClearance.b_count_bound_int` instead. -/
 theorem b_count_bound (y : ℤ) (hb : 0 < f^2 - e^2)
     (h : y * (f^2-e^2)^2 ≤ e * (3*f^2-e^2) * (f^2 - e^2 - e)) :
     y * (f^2-e^2) * (f^2-e^2) ≤ e * (3*f^2-e^2) * (f^2 - e^2 - e) := by
