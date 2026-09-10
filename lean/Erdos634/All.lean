@@ -357,3 +357,4 @@ import Erdos634.TP_hales
 import Erdos634.MirrorKill
 import Erdos634.EscapeNoLanding
 import Erdos634.N1GapSubcases
+import Erdos634.N1GapMastGap
