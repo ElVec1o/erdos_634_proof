@@ -347,6 +347,7 @@ import Erdos634.OrientationGauge
 import Erdos634.OverlapAsymmetry
 import Erdos634.MirrorGauge
 import Erdos634.GaloisMirror
+import Erdos634.BentWallCoupling
 import Erdos634.Crux1
 import Erdos634.ZZVacuityProbe
 import Erdos634.PincerLadder
