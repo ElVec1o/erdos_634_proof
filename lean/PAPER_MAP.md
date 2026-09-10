@@ -5019,3 +5019,36 @@ VERIFIED pending a decision, because the call is a judgement about how much geom
 
 No Lean was written or changed in this batch. Census unchanged in totals; one label moves
 VERIFIED → PROVED (`lem:collar`).
+
+### 2026-09-11 (late): `conj:advance` clause (a) is not an obligation of Route 1's flank at all — the below-tile leaves the statement
+
+New file `lean/Erdos634/RouteOneWallOnly.lean` (5 declarations, axiom-clean, in `Erdos634.All`,
+`lake build Erdos634.All` clean, no `sorry`, **not committed**).
+
+**Rule 0.5 first.** The mechanism is a rediscovery of this map's own 2026-09-09 entry: clause (a)
+was already recorded here as *removed* at the flank step by
+`RouteOne.route_one_flank_from_configuration`. `RouteOneApproach.lean` (2026-09-11, earlier the
+same day) nevertheless re-derived clause (a) as the residue, because it routes through
+`RouteOne.EscapeData`, whose *structure fields* are `b`, `hb`, `hcard` — the below-tile is built
+into the vehicle, not into the argument. That file's closing note is now dated and corrected in
+place.
+
+**What is new.** `flank_from_wall_only`: from `V`, `A` interior to the target, the `α`-tile `j` of
+`rem:route1uniform` laying its horizontal edge `V`→`A` leftward with carrier weakly above and
+weakly left of `V`, and the *local wall* `∃ ρ > 0, ∀ k, (k has a point strictly up-and-right of `V`
+within `ρ`) → k lies weakly above `V``, some tile has `V` as a vertex with a horizontal rightward
+edge there. This is Route 1's flank conclusion (what `overshoot_dichotomy` consumes) with **no
+below-tile at any position**: no `b`, no `hVb`, no `hb : localAngle = π`, no `hcard`, no `hbelow`.
+The `hwall` used is *verbatim* `RouteOneApproach.EscapeData.ofInterior_plain`'s, so the comparison
+is exact: the same conclusion from that theorem's hypotheses minus five.
+
+Supporting: `serving_ne_two_pi_of_above` (`localAngle V ≠ 2π` from the tile's own position — the
+last `EscapeData` field that needed a second tile; compare `RouteOne.serving_ne_two_pi`, which needs
+`b ≠ i` containing `V`); `abscissa_eq_coord_combo` / `carrier_left_of_vertices` (the first-coordinate
+twins of `height_eq_coord_combo` / `carrier_above_of_vertices`); `alpha_tile_witness` (the five
+`α`-tile hypotheses are simultaneously satisfiable, `Tri`-level).
+
+**No label moves.** `conj:advance` remains CONJECTURE, `rem:routeoneopen` remains OPEN. `hwall` is
+still assumed and is still the attachment's open part; the hypothesis bundle is still not witnessed
+at the `Dissection` level (same status as `route_one_flank_from_configuration`'s). What changed is
+the *content* of the residue: it no longer mentions the region below the line at `V`.

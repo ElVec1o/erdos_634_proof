@@ -328,6 +328,17 @@ The residue of `RouteOne.route_one_given_attachment` after this file is `hV`, th
 * `hV` is a finite check once the base-`β` target is presented as a `Dissection` with coordinates.
   That presentation does not exist in this corpus and is real work, but it is bounded work.
 
+**CORRECTED 2026-09-11 (later, same day) — read `RouteOneWallOnly.lean` before using the note
+below.**  The identification of `hbelow` with `conj:advance`'s clause (a) is an artefact of the
+vehicle: `RouteOne.EscapeData` carries the below-tile `b`, `hb` and `hcard` as *fields*, so every
+theorem routed through it inherits them.  `RouteOneWallOnly.flank_from_wall_only` reaches the same
+flank conclusion at `V` with **no below-tile at any position** — `b`, `hVb`, `hb`, `hcard` and
+`hbelow` are all absent — by composing `exists_approach_sequence` with
+`RouteOne.route_one_flank_from_configuration` (2026-09-09), which `lean/PAPER_MAP.md` already
+records as removing clause (a) at the flank step.  What survives of the residue is `hwall` alone,
+a statement about tiles *above* the line.  The paragraph below overstates the obligation and is
+kept only for the record.
+
 * `hbelow` **and** `hwall` are the same statement in two places, and it is the one `conj:advance`
   records as unproved: *a through-edge, rather than a junction, runs below the line at `V`.*  It is
   not a finite enumeration.  It is a statement about **which** tile occupies the region immediately
