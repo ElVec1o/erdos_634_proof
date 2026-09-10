@@ -365,3 +365,4 @@ import Erdos634.N1GapCRange
 import Erdos634.N1GapSubGolden
 import Erdos634.EpredBaseColumns
 import Erdos634.EpredWedgeClearance
+import Erdos634.BaseBetaTargetCoord
