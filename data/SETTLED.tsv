@@ -27,3 +27,4 @@ cevian	2	5	1	46	10 21 25	NO_TILING	4685	RESEARCH_LOG 2026-09-06 room advance/Ram
 cevian	5	6	1	47	30 11 36	NO_TILING	896455	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
 cevian	1	5	1	49	5 24 25	NO_TILING	2974	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
 cevian	2	3	3	63	2 3 4	TILING_EXISTS	9125	lean/Erdos634/CevianTiling63.lean
+basebeta	1	7	1	146	7 48 49	NO_TILING	13729561	paper/erdos-634-companion.tex cor:walls16 (instance w146)
