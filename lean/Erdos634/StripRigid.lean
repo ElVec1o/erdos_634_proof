@@ -38,7 +38,12 @@ Everything turns on one quantity.  With `(a,b,c) = (ef, f² - e², f²)` and `N�
 and therefore `2a < S < 3a` **for every member**, by nothing more than `0 < e < f`
 (`shift_gt_two_a`, `shift_lt_three_a`).  Two consequences:
 
-* `j ≤ 2`: the reflected apex has `s = j a - S < 0`, so the tile crosses the mast.  Excluded.
+* `j = 1`: the reflected apex has `s = j a - S/2 < 0`, so the tile crosses the mast.  Excluded.
+  (CORRECTED 2026-09-10: the apex is at `j a - S/2`, not `j a - S` — see "the mast's exact reach"
+  below — so the mast's reach is `j = 1` alone, not `j ≤ 2`.  `reflected_crosses_mast` stays a
+  true inequality but is weaker than the mast condition at `j = 2`.  Nothing downstream changes:
+  the mast is only the base case, and `LayerLink.strip_layer_rigid` already states it at `idx 0`
+  in the correct doubled form.)
 * `j ≥ 3`: the reflected tile's left edge descends with horizontal run `S - a > a`, while the
   predecessor's `b`-edge descends with run exactly `a`.  The reflected tile therefore passes
   strictly left of the predecessor's `b`-edge and overlaps it.  Excluded.
@@ -119,8 +124,12 @@ theorem shift_gt_two_a (e f : ℤ) (he : 0 < e) (hef : e < f) :
 theorem shift_lt_three_a (e f : ℤ) (he : 0 < e) :
     e * (3 * f ^ 2 - e ^ 2) < 3 * (e * f) * f := by nlinarith
 
-/-- **Exclusion 1 — the mast.**  For `j ≤ 2` the reflected apex sits at `s = j a - S < 0`, left of
-the mast.  Cleared by `f`: `j a f < e N₀` for `j ≤ 2`. -/
+/-- **Exclusion 1 — the mast.**  Cleared by `f`: `j a f < e N₀` for `j ≤ 2`.
+CORRECTED 2026-09-10: the geometric reading of this range was wrong by a factor of two.  The
+reflected apex is at `j a - S/2` (`ChordChart.reflected_apex_left_of_mast`, and
+`reflected_apex_abscissa` below), so "apex left of the mast" is `2 j a f < e N₀`, which holds
+*only at `j = 1`* (`mast_reach_exactly_one`).  The inequality below is true as stated, and its
+`j = 1` instance is the only one that is ever used — see `LayerLink.strip_layer_rigid`. -/
 theorem reflected_crosses_mast (e f j : ℤ) (he : 0 < e) (hef : e < f) (hj : 1 ≤ j) (hj2 : j ≤ 2) :
     j * (e * f) * f < e * (3 * f ^ 2 - e ^ 2) := by
   have hf : 0 < f := lt_trans he hef
@@ -190,6 +199,137 @@ conclusions into the inequality-shaped hypotheses `LayerLink.strip_layer_rigid` 
 every input proved, not an open obstruction.
 -/
 
+/-! ### The mast's exact reach (added 2026-09-10)
+
+`reflected_crosses_mast` is stated for `j ≤ 2`, and the header above reads that range as "the
+reflected apex has `s = j a - S < 0`".  **That reading is off by a factor of two, and the mast's
+true reach is `j = 1` alone.**  `ChordChart.reflected_apex_left_of_mast` pins the reflected apex
+*relative to the tile's own left foot* at `x_r = (a² + b² - c²)/(2a) = e(e² - f²)/(2f)`, and
+`x_u + x_r = a` gives `x_r = a - S/2`, not `a - S`.  So the reflected tile at position `j` has
+apex abscissa `X_j = (j-1)a + x_r = j a - S/2`, and `X_j < 0` is `2 j a f < e N₀`, not
+`j a f < e N₀`.
+
+In closed form, cleared by `2f`,
+
+  `2 f X_j = e ((2j - 3) f² + e²)`   (`reflected_apex_abscissa`),
+
+which is negative exactly when `(3 - 2j) f² > e²`, i.e. — since `0 < e < f` — exactly at `j = 1`.
+
+**The failure at `j ≥ 2` is not marginal and does not decay.**  `X_j` is arithmetic in `j` with
+common difference exactly `a` (`apex_step_is_one_edge`), starting from `X_1 = x_r ∈ (-a/2, 0)`.
+Hence `X_2 = a + x_r > a/2` (`reflected_apex_beyond_half_edge`): the apex clears the mast by more
+than half a full `a`-edge at the very first position where the exclusion fails, and by
+`(j - 3/2) a` thereafter.  There is therefore no weaker-but-nonzero mast bound at `j = 2`, `j = 3`
+or any later position for any member: the excluded quantity `-X_j` drops below zero in one step of
+size `a` from a starting value smaller than `a/2`, so it is never "barely" positive.  Numerically,
+`X_2 / a = (f² + e²)/(2f²) ∈ (1/2, 1)` — e.g. `0.5078` at `(e,f) = (1,8)`, `N = 191`.
+
+This costs nothing downstream.  `LayerLink.strip_layer_rigid` already takes its `mast` hypothesis
+at `idx 0` only and already states it in the correct doubled form `e N₀ ≤ 2 a f`; the mast is the
+*base case* of the layer induction and nothing else, with every `j ≥ 2` carried by
+`reflected_overlaps_predecessor`.  `reflected_crosses_mast` remains true as an inequality — it is
+just weaker than the mast condition for `j = 2`, where the mast condition is false.
+-/
+
+/-- **The reflected apex abscissa, in closed form.**  A tile whose `a`-edge is `[(j-1)a, ja]` on
+the floor and whose apex is at distance `b` from the left foot and `c` from the right foot (the
+*reflected* placement) has apex abscissa `x` with `2 f x = e ((2j-3) f² + e²)`.  Obtained by
+subtracting the two distance equations; no trigonometry, no case split. -/
+theorem reflected_apex_abscissa (e f j x y : ℝ) (he : 0 < e) (hf : 0 < f)
+    (h1 : (x - (j - 1) * (e * f)) ^ 2 + y ^ 2 = (f ^ 2 - e ^ 2) ^ 2)
+    (h2 : (x - j * (e * f)) ^ 2 + y ^ 2 = (f ^ 2) ^ 2) :
+    2 * f * x = e * ((2 * j - 3) * f ^ 2 + e ^ 2) := by
+  have hx : e * (2 * f * x) = e * (e * ((2 * j - 3) * f ^ 2 + e ^ 2)) := by
+    linear_combination h1 - h2
+  exact mul_left_cancel₀ (ne_of_gt he) hx
+
+/-- **The mast condition carries a factor of two.**  `X_j < 0` is `2 j a f < e N₀`, not the
+`j a f < e N₀` of `reflected_crosses_mast`. -/
+theorem mast_condition_doubled (e f j x : ℝ) (he : 0 < e) (hf : 0 < f)
+    (hx : 2 * f * x = e * ((2 * j - 3) * f ^ 2 + e ^ 2)) :
+    x < 0 ↔ 2 * j * (e * f) * f < e * (3 * f ^ 2 - e ^ 2) := by
+  constructor
+  · intro h
+    nlinarith [mul_pos (by linarith : (0:ℝ) < 2 * f) (neg_pos.mpr h)]
+  · intro h
+    nlinarith [mul_pos he hf]
+
+/-- **The mast excludes position 1.**  At `j = 1`, `2 f X_1 = e(e² - f²) < 0`. -/
+theorem mast_excludes_position_one (e f x y : ℝ) (he : 0 < e) (hef : e < f)
+    (h1 : (x - (1 - 1) * (e * f)) ^ 2 + y ^ 2 = (f ^ 2 - e ^ 2) ^ 2)
+    (h2 : (x - 1 * (e * f)) ^ 2 + y ^ 2 = (f ^ 2) ^ 2) :
+    x < 0 := by
+  have hf : 0 < f := lt_trans he hef
+  have hx := reflected_apex_abscissa e f 1 x y he hf h1 h2
+  nlinarith [mul_pos he he, mul_pos he hf]
+
+/-- **The mast is vacuous from position 2 on, by more than half an `a`-edge.**  For `j ≥ 2`,
+`2 f X_j ≥ e (f² + e²) > e f²`, so `X_j > ef/2 = a/2`.  This is the sharp statement: the mast's
+reach is exactly `j = 1`, and the first failure clears it by a margin bounded below by `a/2`
+uniformly over every member — not by a shrinking positive amount. -/
+theorem reflected_apex_beyond_half_edge (e f j x : ℝ) (he : 0 < e) (hef : e < f) (hj : 2 ≤ j)
+    (hx : 2 * f * x = e * ((2 * j - 3) * f ^ 2 + e ^ 2)) :
+    (e * f) / 2 < x := by
+  have hf : 0 < f := lt_trans he hef
+  have key : 2 * f * (x - e * f / 2) = e * (f ^ 2 * (2 * j - 4)) + e ^ 3 := by
+    linear_combination hx
+  have h1 : 0 ≤ e * (f ^ 2 * (2 * j - 4)) :=
+    mul_nonneg he.le (mul_nonneg (by positivity) (by linarith))
+  have h2 : (0:ℝ) < e ^ 3 := by positivity
+  by_contra hc
+  push_neg at hc
+  have : 2 * f * (x - e * f / 2) ≤ 0 :=
+    mul_nonpos_of_nonneg_of_nonpos (by positivity) (by linarith)
+  linarith
+
+/-- **No decay: the apex advances by exactly one `a`-edge per position.**  `X_{j+1} - X_j = a`,
+so the mast margin `-X_j` decreases by exactly `a` at every step.  Starting from
+`X_1 = x_r > -a/2`, it is therefore negative from `j = 2` onwards and can never be marginally
+positive at any position — the exclusion does not decay, it terminates. -/
+theorem apex_step_is_one_edge (e f j x x' : ℝ) (hf : 0 < f)
+    (hx : 2 * f * x = e * ((2 * j - 3) * f ^ 2 + e ^ 2))
+    (hx' : 2 * f * x' = e * ((2 * (j + 1) - 3) * f ^ 2 + e ^ 2)) :
+    x' - x = e * f := by
+  have h : 2 * f * (x' - x) = 2 * f * (e * f) := by ring_nf; ring_nf at hx hx'; linarith
+  exact mul_left_cancel₀ (by positivity : (2:ℝ) * f ≠ 0) h
+
+/-- **The reach, as an integer statement.**  For `1 ≤ j`, the mast condition `2 j a f < e N₀`
+holds if and only if `j = 1`. -/
+theorem mast_reach_exactly_one (e f j : ℤ) (he : 0 < e) (hef : e < f) (hj : 1 ≤ j) :
+    (2 * j * (e * f) * f < e * (3 * f ^ 2 - e ^ 2)) ↔ j = 1 := by
+  have hf : 0 < f := lt_trans he hef
+  constructor
+  · intro h
+    by_contra hne
+    have hj2 : 2 ≤ j := by omega
+    have h1 : (1:ℤ) ≤ 2 * j - 3 := by omega
+    have hff : (0:ℤ) < f ^ 2 := by positivity
+    have hle : f ^ 2 ≤ (2 * j - 3) * f ^ 2 := le_mul_of_one_le_left hff.le h1
+    have hee : (0:ℤ) < e ^ 2 := by positivity
+    have hpos : 0 < e * ((2 * j - 3) * f ^ 2 + e ^ 2) := mul_pos he (by linarith)
+    have heq : e * ((2 * j - 3) * f ^ 2 + e ^ 2)
+        = 2 * j * (e * f) * f - e * (3 * f ^ 2 - e ^ 2) := by ring
+    linarith [heq ▸ hpos]
+  · rintro rfl
+    have hsq : e ^ 2 < f ^ 2 := by nlinarith
+    nlinarith [mul_pos he (sub_pos.mpr hsq)]
+
+/-- **Non-vacuity witness (Rule 2).**  The distance hypotheses of `reflected_apex_abscissa` are
+simultaneously satisfiable at a real member: `(e,f) = (1,8)`, i.e. `N = 191`, the smallest
+unsettled prime, with tile `(a,b,c) = (8,63,64)`.  At `j = 1` the reflected apex is
+`x = -63/16 < 0` (mast crossed) with `y² = 63²·255/256 > 0`; at `j = 2` the same tile's apex is at
+`x = 8 - 63/16 = 65/16 > a/2 = 4`.  So neither `mast_excludes_position_one` nor
+`reflected_apex_beyond_half_edge` is vacuous. -/
+theorem member_witness_191 :
+    ∃ x y : ℝ,
+      (x - (1 - 1) * ((1:ℝ) * 8)) ^ 2 + y ^ 2 = ((8:ℝ) ^ 2 - 1 ^ 2) ^ 2
+      ∧ (x - 1 * ((1:ℝ) * 8)) ^ 2 + y ^ 2 = ((8:ℝ) ^ 2) ^ 2
+      ∧ x < 0 ∧ 0 < y := by
+  refine ⟨-63/16, Real.sqrt (3969 * 255 / 256), ?_, ?_, by norm_num, ?_⟩
+  · rw [Real.sq_sqrt (by norm_num)]; norm_num
+  · rw [Real.sq_sqrt (by norm_num)]; norm_num
+  · exact Real.sqrt_pos.mpr (by norm_num)
+
 /-- **Layer induction schema.**  If the first tile is unreflected and an unreflected tile forces
 its successor to be unreflected, every tile of the layer is unreflected.  Instantiated for
 `a`-layers by `reflected_crosses_mast` (base, via `j = 1`) and `reflected_overlaps_predecessor`
@@ -213,3 +353,10 @@ end Erdos634.StripRigid
 #print axioms Erdos634.StripRigid.strip_top_length
 #print axioms Erdos634.StripRigid.strip_count
 #print axioms Erdos634.StripRigid.layer_induction
+#print axioms Erdos634.StripRigid.reflected_apex_abscissa
+#print axioms Erdos634.StripRigid.mast_condition_doubled
+#print axioms Erdos634.StripRigid.mast_excludes_position_one
+#print axioms Erdos634.StripRigid.reflected_apex_beyond_half_edge
+#print axioms Erdos634.StripRigid.apex_step_is_one_edge
+#print axioms Erdos634.StripRigid.mast_reach_exactly_one
+#print axioms Erdos634.StripRigid.member_witness_191
