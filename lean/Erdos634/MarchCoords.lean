@@ -324,7 +324,10 @@ and is not a route to monotonicity.  This one is.
 
 What is proved here is the arithmetic that drives it — the four sign facts.  Turning "each wedge
 contains the vertical" into "the interiors of two `Dissection` tiles meet" is the placement layer's
-job and is not done here. -/
+job and is not done here.  *(Dated note, 2026-09-12: it is done since — `MarchKill.bg_gb_dies`
+assembles it from component hypotheses, and `MarchKills.no_bg_then_gb` discharges those for the
+coordinate tiles `MarchKills.aTileBG`/`aTileGB`.  What remains open is only that a real run's
+tiles are those tiles, i.e. `rem:marchobl` (i).)* -/
 
 /-- **`BG` then `GB`: the apexes straddle the junction.**  The left tile's apex is strictly right of
 it and the right tile's strictly left, both at height `h > 0`, so the vertical at the junction is

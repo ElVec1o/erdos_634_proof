@@ -824,6 +824,29 @@ not available. P1–P3 for `f = 24` (geometric-law predictions) remain frozen an
 
 | M-runstep | **`run_step_bg_gb_dies`: the `BG → GB` step dies from distances alone** | `MarchRunStep.circle_x`, `.bg_abscissa`, `.gb_abscissa`, `.heights_agree`, `.run_step_bg_gb_dies` | VERIFIED — the apex components are no longer hypotheses: they are **forced** by the four side-length distances (two-circle intersection, one point above the line). The final statement consumes only what tile congruence provides — consecutive base edges of components `(f,0)`, the four apex distances, apexes above the line — and concludes `False`. Obligation (i)'s remaining gap shrinks to: a run's consecutive tiles satisfy these distance hypotheses, which is the corner figure (`gamma_boundary_figure_real`, VERIFIED) plus congruence naming which corner sits at which end |
 
+### Target A's kills in coordinates (2026-09-12) — `MarchKills.lean`
+
+Room `data` (`private/ROOM/data/VERDICT.md` §5) restated the `e=1` refutation as a layer-1 march
+with kills at two sites. Ledger of those kills against the corpus, and what was added. Nothing here
+moves `rem:marchobl`'s label: **R** — that a hypothetical tiling's base layer *is* the march,
+obligations (i)–(iii) — is untouched and is the only open hypothesis of the far-corner kill.
+
+| Atom | Statement | Lean declaration | Label |
+|---|---|---|---|
+| K1 | second consecutive offset leaves a run of length `c−b = 1 ∉ ⟨a,b,c⟩` | `MarchCoords.defect_scales_to_one`, `FanKill.one_is_gap`, `MarchStep.offset_terminal_dies` | VERIFIED (pre-existing). **Correction to `VERDICT.md` §5**: it cites `MarchFrontier.noTwoZeros`, which is the *count* of surviving chirality strings, not the kill |
+| K2 | a run of length `b−a = f²−f−1` is not a sum of tile edges | `OrderForcing.east_cover_gap`, `Frontier.gap_b_sub_a`, `FanKill.two_gap_contract`; at the `c`-slot: `PinBuffer.buffer_overflow_b_is_gap`, `.buffer_dichotomy` | VERIFIED (pre-existing) |
+| K3 | the `c`-slot fan's residual angle is outside `{Xα+Yβ : X,Y ≥ 0}` | none for the angle itself; the arithmetic of such a test is `AngleArithmetic`/`BaseBetaE1.tile_alpha_irrational` | OPEN — the residual angle is **not determined by the reports** (kill type and site only; it depends on the fan's chirality bits, which only the trace carries). The one fan computable from the vertex figures, `{3α,2β}` at the far `c`-junction, leaves residue `4α+2β` with three admissible figures (`RESEARCH_LOG` 2026-08-29): no kill there. Not claimed |
+| K4 | the `a`-tile on the second-to-last base letter fits in neither orientation | `MarchKills.bg_apex_second_to_last_outside` (BG apex `(L−2f+dBG, h)` is outside the target: right-side functional `−((f²−1)/f)·H`), `MarchKills.no_bg_then_gb` (= `MarchKill.bg_gb_dies` with its eight component hypotheses discharged by the coordinate tiles), assembled as `MarchKills.far_corner_kill` | VERIFIED **conditional on R** (hypothesis `hiM : D.tile iM = aTileBG (L−3f) f`, the march's `BG` tile on letter `f`). Non-vacuity: `march_tile_apex_inside` (that tile's apex is inside, `1/f` short of the right side — the report's number), `gb_candidate_subset_target` (the `GB` candidate fits in the target; it dies only against the march tile). The last letter plays no role; `bg_apex_last_outside` records that the corner tile laying `a` is `GB` |
+| M-strip | layer-1 confinement: every march vertex is at height `≤ (c/b)·h = c²·sin β/b`, attained by the offset filler's overshoot vertex, and `(c/b)·h < h + 1` | `MarchKills.apexH_sq` (`h² = h2 f`), `.apexH_eq_c_sinβ`, `.overshootH_eq_c_sq_sinβ_div_b`, `.overshootH_lt_strip`, `.offsetFiller_sides` (the overshoot vertex is a vertex of a tile congruent to the model), `.march_confined` | VERIFIED as coordinate identities of the configuration (`aTileBG/GB`, `flushFiller`, `offsetFiller`, `cSlotTile(')`, `bSlotTile(')`). That a *tiling's* tiles are these is R |
+| M-slot | "flat slot tiles": the tile laying the `b`- (`c`-) letter has apex height `f·h/(f²−1)` (`h/f`), both `< h`, either reflection | `MarchKills.cSlotTile_sides`, `.bSlotTile_sides`, `.slot_apex_heights` | VERIFIED — but note "flat" is a tautology (laying the letter *is* having that edge on the base); the only freedom is the reflection, and which reflection a tiling admits is **not** decided |
+
+Also closed in passing: `MarchCoords`' header note that turning `bg_then_gb_straddles` into "two
+`Dissection` tiles' interiors meet" was "not done here" — done for tiles given in those coordinates
+(`no_bg_then_gb`); `MarchKill.bg_gb_dies` had the assembly, this supplies its component facts.
+
+Census after this pass: **no Rule 0 label moves** (K4/M-strip/M-slot are new sub-atoms of an OPEN
+remark, not paper statements). `lake build Erdos634.All` clean, `#print axioms` standard three.
+
 ### Re-check of the elliptical blockers, batch 2 (2026-09-01)
 
 | Paper | Verdict | Real blocker |
