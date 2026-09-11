@@ -23,4 +23,9 @@ for n in 11 59 66 107; do chk 3 "settled basebeta N=$n (packed)" "private/inst/f
 # must ALLOW (exit 0) -- the one open row.  If this fails the guard is over-refusing.
 chk 0 "OPEN basebeta N=83 (5,6)" "private/inst/i83.txt"
 chk 0 "OPEN basebeta N=83 (5,6) (packed)" "private/inst/fp83.txt"
+# must PASS THE ENGINE ARGS THROUGH -- on 2026-09-12 a parse edit clobbered "$@" and 21 sweep
+# words ran with a node cap of D=2303 instead of 50M, all returning INCONCLUSIVE in seconds.
+out="$(code/guard_run.sh /bin/echo "FILE:private/inst/i83.txt" 424242 2>/dev/null)"
+case "$out" in *" 424242") printf '  ok   %-34s\n' "engine args pass through" ;;
+  *) printf '  FAIL %-34s got: %s\n' "engine args pass through" "$out"; fail=1 ;; esac
 [ "$fail" = 0 ] && echo "guard self-test: PASS" || { echo "guard self-test: FAIL"; exit 1; }

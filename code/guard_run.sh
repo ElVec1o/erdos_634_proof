@@ -30,10 +30,14 @@ INST="${SPEC#FILE:}"
 #   D, a b c, 18 tile-vertex coords, 3 misc, N, ...   (N is token 26)
 # The old line-based parse read "WALKS" as the tile and "1" as N on packed files, so the
 # guard said NOVEL on fp59/fp66/fp107 (all settled) -- found by the 2026-09-12 data audit.
+# (Never `set -- $TOKS` here: "$@" still holds the engine's own arguments -- the node cap --
+# and clobbering them once sent 21 sweep words a cap of D=2303 nodes, 2026-09-12.)
 TOKS="$(awk 'BEGIN{RS="[ \t\r\n]+"} $0=="WALKS"||$0=="CORNERS"||$0=="CORNERS2"{exit} {print}' "$INST" | head -26 | tr '\n' ' ')"
-set -- $TOKS
-if [ $# -ge 26 ]; then
-  D="$1"; TILE="$2 $3 $4"; N="${26}"
+NTOK="$(echo "$TOKS" | awk '{print NF}')"
+if [ "$NTOK" -ge 26 ]; then
+  D="$(echo "$TOKS" | awk '{print $1}')"
+  TILE="$(echo "$TOKS" | awk '{print $2, $3, $4}')"
+  N="$(echo "$TOKS" | awk '{print $26}')"
 else
   TILE="$(sed -n '2p' "$INST" | tr -s ' ' | sed 's/^ *//; s/ *$//')"
   D="$(awk 'NF==1 && $1 ~ /^[0-9]+$/ {print $1; exit}' "$INST")"
