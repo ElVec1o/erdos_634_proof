@@ -369,3 +369,4 @@ import Erdos634.BaseBetaTargetCoord
 import Erdos634.RouteOneBoundaryA
 import Erdos634.NormalPosition
 import Erdos634.RouteOneCrossing
+import Erdos634.EpredColumnKill

@@ -58,6 +58,14 @@ For `e ≥ 2` nothing here applies: the base word there is `(a^f, b^e, c^e)` wit
 of the east block.  The collapse is specific to `e = 1`, where the east block shrinks to a single
 foot and the two corners compete for the same letters.
 
+**Correction (2026-09-12, `EpredColumnKill.lean`).**  The paragraph above is incomplete: on the
+whole family `e = f − 1` the same collapse recurs by a different mechanism.  There `thm:efminus1`
+(PROVED in the main paper, given `thm:secondc`) makes `p = 0` on *both* equal sides, so both corner
+tiles lay `a` on the base: the last letter is an `a` (no `c`-foot), and the `a^f` prefix again asks
+for `f + 1` letters `a` out of `f` (`EpredColumnKill.west_block_never_complete_epred`,
+`.east_block_never_complete_epred`, `.walls_refuted_epred`).  So `hyp:walls` is also unsatisfiable
+at `N = 83, 179, 263, …`, and `conditional_is_vacuous` below applies there too.
+
 Axiom-clean; no `sorry`.
 -/
 
