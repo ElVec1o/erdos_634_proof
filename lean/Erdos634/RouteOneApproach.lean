@@ -65,6 +65,15 @@ unproved:
 (`erdos-634-companion.tex`, `conj:advance`).  That is not a finite enumeration and this session's
 techniques do not touch it; see the file-end note for why.
 
+**Update (2026-09-11, `RouteOneCrossing.lean`).**  Item 3, `hwall`, has since been *identified*:
+`RouteOneCrossing.wall_iff_no_straddler` proves `hwall` equivalent — no hypotheses, both
+directions — to "none of the tiles its antecedent selects straddles the horizontal line through
+`V`", in the corpus's own crossing vocabulary (`ChordTraceReal.straddlers`).  So `hwall` **is** the
+crossing question of `erdos-634-obstructions.tex`'s `def:crossQ` at `V`, not a weaker local cousin
+of it, and `prop:ninetools` applies to it verbatim.  Do not attempt to prove `hwall` with
+vertex-figure, clearance, or counting machinery: that is a recorded dead end by theorem, not by
+effort.  Items 1 and 2 are gone (`BaseBetaTargetCoord`, `RouteOneWallOnly`).
+
 Axiom-clean; no `sorry`.
 -/
 
