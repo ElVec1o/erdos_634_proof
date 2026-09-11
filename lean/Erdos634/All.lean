@@ -367,3 +367,4 @@ import Erdos634.EpredBaseColumns
 import Erdos634.EpredWedgeClearance
 import Erdos634.BaseBetaTargetCoord
 import Erdos634.RouteOneBoundaryA
+import Erdos634.NormalPosition
