@@ -38,8 +38,10 @@ The structure it records, so it is not re-derived each session:
   **the prime case is the `m = 1` base-β family**. It splits `e = 1` / `e ≥ 2`, and both reduce to
   the crossing question (`prop:threecostumes`).
 * `e = 1` has two routes. Route 1 (exclude every escape word family) needs families, not
-  enumeration — orbits grow 24, 41, 87, 149, 186 at `f = 12…24` — and the march family the recent
-  work advances is **7 of 186 orbits at `f = 24`**. Route 2 is `conj:advance`, which if proved
+  enumeration — orbits grow 24, 41, 87, 149, 186 at `f = 12…24` *at reach 4, which is OPEN*; at
+  the **proved** reach 3 they are 33, 52, 102, 168, 207 (2026-09-12 audit: the sweeps' kill list
+  assumed reach 4; `f = 12…22` are exhausted at the proved reach too, `f = 24` is missing 21 orbits) —
+  and the march family the recent work advances is **7 of 186 orbits at `f = 24`**. Route 2 is `conj:advance`, which if proved
   closes `e = 1` outright and names exactly two gaps, the second general except for its walk
   enumeration. **Route 2 is shorter and better scoped; prefer it.**
 * `e ≥ 2` has no route that is not the crossing question itself.

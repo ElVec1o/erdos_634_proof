@@ -51,7 +51,8 @@ run_word() {
   local winst="$work/uni_f${wf}_b${wbp}c${wcp}.txt"
   [ -f "$winst" ] || python3 "$root/code/engine/gen_basebeta.py" 1 "$wf" "$wbp" "$wcp" > "$winst"
   local r
-  r=$(CENGINE_GEN=1 CENGINE_THREADS=1 "$engine" "FILE:$winst" "$cap" 2>&1 \
+  # Through the guard, per iteration (Rule 0.5: a driver loop is checked per word, not once).
+  r=$(CENGINE_GEN=1 CENGINE_THREADS=1 "$root/code/guard_run.sh" "$engine" "FILE:$winst" "$cap" 2>&1 \
         | grep -oE "RESULT [A-Z_]+ nodes=[0-9]+")
   [ -n "$r" ] && printf "f=%s (%s,%s): %s\n" "$wf" "$wbp" "$wcp" "$r" > "$wout"
 }
