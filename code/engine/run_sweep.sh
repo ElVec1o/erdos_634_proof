@@ -36,10 +36,13 @@ python3 "$root/code/analysis/sweep_configs.py" "$f" > "$work/configs_f$f.txt"
 
 
 # Race both representatives of each mirror orbit.  `sweep_configs.transversal` returns "the member
-# with the smaller bp", one fixed representative per orbit -- and search cost turns out to be
-# strongly direction-dependent.  On f=22 the two orbits {(12,20),(13,5)} and {(12,23),(13,2)} cost
-# 869 and 928 CPU-minutes through their bp=12 representatives without finishing, while their mirrors
-# exhausted in about seven minutes each: four orders of magnitude.  verify_sweep has always credited
+# with the smaller bp", one fixed representative per orbit -- and search cost was believed to be
+# strongly direction-dependent: on f=22 the two orbits {(12,20),(13,5)} and {(12,23),(13,2)} were
+# recorded as costing 869 and 928 CPU-minutes through their bp=12 representatives without finishing,
+# while their mirrors exhausted in about seven minutes each.  **That record was wrong** (2026-09-12):
+# re-run through the guard, (12,20) exhausts at 417,899 nodes and (12,23) at 380,027 -- exactly the
+# values the closed-form node-count formula (private/ROOM/data/report_experimental.md) predicts,
+# ~10 minutes each.  The old runs were hung or misconfigured.  The race is kept as cheap insurance.  verify_sweep has always credited
 # an orbit when the word OR its mirror is exhausted, so racing both costs at most 2x the cheaper one
 # instead of paying the dearer one in full.
 #
