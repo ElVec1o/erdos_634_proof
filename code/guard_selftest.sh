@@ -16,6 +16,11 @@ chk() { # chk <want> <label> <instance>
 echo "guard self-test:"
 # must REFUSE (exit 3) -- the instances actually burned on 2026-09-06
 for n in 11 23 26 39 47 59 66 71 74 107; do chk 3 "settled basebeta N=$n" "private/inst/i$n.txt"; done
+# must REFUSE (exit 3) -- the same instances in the PACKED one-line format (fp*.txt).  The
+# 2026-09-12 data audit found the guard said NOVEL on these: it parsed by line, and a packed
+# file has "WALKS" on line 2.  Every N=83/N=131 run used this format.
+for n in 11 59 66 107; do chk 3 "settled basebeta N=$n (packed)" "private/inst/fp$n.txt"; done
 # must ALLOW (exit 0) -- the one open row.  If this fails the guard is over-refusing.
 chk 0 "OPEN basebeta N=83 (5,6)" "private/inst/i83.txt"
+chk 0 "OPEN basebeta N=83 (5,6) (packed)" "private/inst/fp83.txt"
 [ "$fail" = 0 ] && echo "guard self-test: PASS" || { echo "guard self-test: FAIL"; exit 1; }

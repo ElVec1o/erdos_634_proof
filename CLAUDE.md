@@ -77,7 +77,7 @@ Therefore, without exception:
 * **A `CLAUDE.md` blocker is formalization debt, not an open route.** The four blockers below mean
   *no Lean exists*. The mathematics may be published and PROVED. Check `paper/` before calling a
   route unexplored.
-* **Run `code/guard_selftest.sh` after any edit to the guard or registry** — it asserts 10 refusals and 1 allowance. Every guard carries a negative control that must pass. For `guard_run.sh` it is `N=83 (5,6)`,
+* **Run `code/guard_selftest.sh` after any edit to the guard or registry** — it asserts 14 refusals (10 multi-line + 4 packed one-line instances) and 2 allowances. Every guard carries a negative control that must pass. For `guard_run.sh` it is `N=83 (5,6)`,
   the one genuinely open row below `N=110` — it must be *allowed*. A guard that refuses everything
   is broken, and a broken guard already cost four rediscoveries once (`novelty_check.sh`, exit-status
   bug).

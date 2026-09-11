@@ -22,7 +22,7 @@ The protocol is therefore built on one principle:
 | `code/guard_run.sh` | **Refuses** to launch an engine on an instance already settled in `data/SETTLED.tsv`. Exit 3. | **Every** engine launch. No exceptions. |
 | `code/guard_record.sh` | Appends a finished verdict to the registry. | The moment any search terminates. |
 | `code/guard_index.sh` | Rebuilds `data/INSTANCE_ALIASES.tsv`, the `(N,tile) → filenames` map. | After adding instance files. |
-| `code/guard_selftest.sh` | Both-direction regression: 10 refusals + 1 allowance. | After **any** edit to the guard or the registry. |
+| `code/guard_selftest.sh` | Both-direction regression: 14 refusals (multi-line and packed formats) + 2 allowances. | After **any** edit to the guard or the registry. |
 | `code/novelty_check.sh` | Text search of `lean/`, `paper/`, `private/` for a **conclusion**. | Before formalizing or claiming any statement. |
 | `data/SETTLED.tsv` | Registry of settled instances with verdict, node count, citation. | The ground truth. |
 
@@ -114,9 +114,13 @@ today with `(4,5)` — is the specific error that makes Mode B expensive.
 `SETTLED.tsv` covers **computational instances**. It does not cover theorems, lemmas, or
 constructions; those are `novelty_check.sh` territory and remain a text search, which is weaker.
 Modes C and D are therefore only *mitigated*, not closed. The registry is also only as complete as
-what has been recorded into it: `N=62` currently reads NOVEL because its run was killed before a
-verdict, which is correct, and `N=71` cevian is genuinely open. Backfilling older results from
-`RESEARCH_LOG.md` is unfinished work.
+what has been recorded into it. The 2026-09-12 data audit (`private/ROOM/data/report_audit.md`)
+backfilled the cevian `N=62` and `N=71` exhaustions (both NO_TILING), the `N=104/131/138/92`
+figures, the `basealpha N=70` and parallelogram `N=46/52` verdicts, and the two live `m ≥ 2`
+searches; it also corrected two wrong rows (cevian `(5,6) N=47` was never finished; `N=63` is
+member `(1,2)`, not `(2,3)`). Rows whose instance carries `WALKS`/`CORNERS` riders say so in the
+source column — their NO_TILING is conditional on the rider being complete. Backfilling from
+`RESEARCH_LOG.md` remains open for anything not listed there.
 
 **The one genuinely open base-β row below 110 is `N=83 (5,6)`.** Everything else in that table is
 settled. Any base-β run below `N=110` that is not `N=83` is, by construction, a rediscovery.

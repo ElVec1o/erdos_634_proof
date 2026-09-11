@@ -19,10 +19,16 @@ from sweep_configs import escapes, mirror, transversal
 
 def parse(f, paths):
     ok = set()
+    ftag = re.compile(r'(^|[^0-9])f%d([^0-9]|$)' % f)
     for p in paths:
         s = open(p, errors='ignore').read()
         for m in re.finditer(r'f=%d \((\d+),(\d+)\)[^\n]*RESULT EXHAUSTED' % f, s):
             ok.add((int(m.group(1)), int(m.group(2))))
+        # Bare "(bp,cp): RESULT" lines carry no f.  Credit them only when the log's own name
+        # names this f: the 2026-09-12 audit found private/inst/runorb8.log (an f=8 run) being
+        # credited to f=24, which masked 21 unsearched orbits.
+        if not ftag.search(p.rsplit('/', 1)[-1]):
+            continue
         cur = None
         for line in s.splitlines():
             m = re.match(r'=== \((\d+),(\d+)\) started', line)
@@ -39,9 +45,13 @@ def parse(f, paths):
 if __name__ == '__main__':
     f = int(sys.argv[1])
     ok = parse(f, sys.argv[2:])
-    for R in (4, 5):
+    # Reach 3 (R=4) is the PROVED pincer reach (erdos-634.tex "the proved reach 3",
+    # PincerLadder.lean: "reach 4 remains open at prop:a2branch").  R=5 is the kill list the
+    # sweeps were generated from; a PASS at R=5 only is conditional on open reach 4.
+    for R, status in ((4, 'PROVED reach 3'), (5, 'CONDITIONAL on open reach 4')):
         E = escapes(f, R)
         cov = ok | {mirror(f, w) for w in ok}
         miss = sorted(E - cov)
-        print(f"f={f} N={3*f*f-1} reach={R-1} (R={R})  escapes={len(E)} orbits={len(transversal(f, R))}"
-              f"  exhausted={len(ok)}  {'PASS' if not miss else 'FAIL missing ' + str(miss)}")
+        print(f"f={f} N={3*f*f-1} reach={R-1} (R={R}, {status})  escapes={len(E)} "
+              f"orbits={len(transversal(f, R))}  exhausted={len(ok)}  "
+              f"{'PASS' if not miss else 'FAIL missing ' + str(len(miss)) + ' ' + str(miss[:12])}")

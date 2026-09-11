@@ -25,11 +25,21 @@ INST="${SPEC#FILE:}"
 [ -r "$INST" ] || { echo "guard: cannot read instance '$INST'" >&2; exit 2; }
 [ -r "$REG"  ] || { echo "guard: registry $REG missing -- refusing to run blind" >&2; exit 2; }
 
-# Parse: 1st standalone integer = D (radicand); line 2 = tile sides; 2nd standalone integer = N.
-TILE="$(sed -n '2p' "$INST" | tr -s ' ' | sed 's/^ *//; s/ *$//')"
+# Parse by TOKEN, not by line.  Both instance formats -- multi-line (i*.txt) and packed
+# one-line (fp*.txt, the format of every N=83/N=131 run) -- carry the same token stream:
+#   D, a b c, 18 tile-vertex coords, 3 misc, N, ...   (N is token 26)
+# The old line-based parse read "WALKS" as the tile and "1" as N on packed files, so the
+# guard said NOVEL on fp59/fp66/fp107 (all settled) -- found by the 2026-09-12 data audit.
+TOKS="$(awk 'BEGIN{RS="[ \t\r\n]+"} $0=="WALKS"||$0=="CORNERS"||$0=="CORNERS2"{exit} {print}' "$INST" | head -26 | tr '\n' ' ')"
+set -- $TOKS
+if [ $# -ge 26 ]; then
+  D="$1"; TILE="$2 $3 $4"; N="${26}"
+else
+  TILE="$(sed -n '2p' "$INST" | tr -s ' ' | sed 's/^ *//; s/ *$//')"
+  D="$(awk 'NF==1 && $1 ~ /^[0-9]+$/ {print $1; exit}' "$INST")"
+  N="$(awk 'NF==1 && $1 ~ /^[0-9]+$/ {c++; if(c==2){print $1; exit}}' "$INST")"
+fi
 TILE_SORTED="$(echo "$TILE" | tr ' ' '\n' | sort -n | tr '\n' ' ' | sed 's/ *$//')"
-D="$(awk 'NF==1 && $1 ~ /^[0-9]+$/ {print $1; exit}' "$INST")"
-N="$(awk 'NF==1 && $1 ~ /^[0-9]+$/ {c++; if(c==2){print $1; exit}}' "$INST")"
 [ -n "$D" ] || D="?"; [ -n "$N" ] || N="?"
 
 printf 'guard: instance %s\n' "$INST"

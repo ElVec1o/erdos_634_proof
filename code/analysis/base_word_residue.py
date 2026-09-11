@@ -7,7 +7,10 @@ the first two and last two letters lie in {a,c}, which for the single `c` means 
 
 PincerLadder.pincer_ladder: if the four kills cover depth <= R, no (bp, cp) escapes for
 f <= R+1.  For f > R+1 the escapes are those satisfying none of the four disjuncts.
-Reach r gives R = r+1; the best proved reach is 4, i.e. R = 5.
+Reach r gives R = r+1.  The PROVED reach is 3 (R = 4): erdos-634.tex "the proved reach 3",
+PincerLadder.lean "reach 4 remains open at prop:a2branch".  The sweeps' kill lists were generated
+at R = 5, i.e. they ASSUME reach 4; verify_sweep.py reports both.  (Corrected 2026-09-12: this
+docstring previously claimed reach 4 was proved.)
 """
 def admissible(f):
     """1-indexed positions 1..f+2; position 1 and f+2 are `a`."""

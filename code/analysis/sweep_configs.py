@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """The instance list of an e=1 exhaustive sweep at a given f, and its coverage certificate.
 
-The admissible base words are the (bp, cp) of `base_word_residue.admissible`; the pincer window at
-the proved reach 3 (R = 5) kills those satisfying `base_word_residue.killed`.  What survives is
+The admissible base words are the (bp, cp) of `base_word_residue.admissible`; the pincer window
+kills those satisfying `base_word_residue.killed`.  The default R = 5 is reach 4, which is OPEN;
+the proved reach is 3 (R = 4) -- see base_word_residue.py and verify_sweep.py.  What survives is
 closed under the word reversal (bp, cp) -> (f+3-bp, f+3-cp), which is a mirror image of the tiling
 (`MirrorKill.kill_mirror`), so one representative per orbit suffices.
 

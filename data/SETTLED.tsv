@@ -13,7 +13,7 @@ basebeta	2	5	1	71	10 21 25	NO_TILING	553417	paper/erdos-634.tex tab:basebeta
 basebeta	1	5	1	74	5 24 25	NO_TILING	132519	paper/erdos-634.tex tab:basebeta
 basebeta	5	6	1	83	30 11 36	SEARCHING		paper/erdos-634.tex tab:basebeta
 basebeta	1	2	3	99	2 3 4	TILING_EXISTS		lean/Erdos634/Tiling99.lean
-basebeta	1	3	2	104	3 8 9	NO_TILING		paper/erdos-634.tex abstract
+basebeta	1	3	2	104	3 8 9	NO_TILING	43541916	paper/erdos-634.tex abstract; private/r104p.log (instance private/inst/g104.txt, no riders)
 basebeta	1	6	1	107	6 35 36	NO_TILING	1251382	paper/erdos-634.tex tab:basebeta
 basebeta	1	2	4	176	2 3 4	TILING_EXISTS		paper/erdos-634.tex
 cevian	1	2	1	7	2 3 4	NO_TILING	33	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
@@ -24,8 +24,20 @@ cevian	1	4	1	31	4 15 16	NO_TILING	550	RESEARCH_LOG 2026-09-06 room advance/Raman
 cevian	4	5	1	34	20 9 25	NO_TILING	52345	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
 cevian	3	5	1	41	15 16 25	NO_TILING	44134	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
 cevian	2	5	1	46	10 21 25	NO_TILING	4685	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
-cevian	5	6	1	47	30 11 36	NO_TILING	896455	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
+cevian	5	6	1	47	30 11 36	SEARCHING	95705	private/run_cevm1_5_6.log stopped at 2.2% with no RESULT ("killed as unnecessary", RESEARCH_LOG:6606); the earlier NO_TILING/896455 row was unsupported (2026-09-12 audit)
 cevian	1	5	1	49	5 24 25	NO_TILING	2974	RESEARCH_LOG 2026-09-06 room advance/Ramanujan
-cevian	2	3	3	63	2 3 4	TILING_EXISTS	9125	lean/Erdos634/CevianTiling63.lean
+cevian	1	2	3	63	2 3 4	TILING_EXISTS	9125	lean/Erdos634/CevianTiling63.lean (tile (2,3,4) = member (1,2), N = 9*7; was mislabelled (2,3) until the 2026-09-12 audit)
 basebeta	1	7	1	146	7 48 49	NO_TILING	13729561	paper/erdos-634-companion.tex cor:walls16 (instance w146)
-basebeta	1	4	2	188	4 15 16	NO_TILING	148753599	cengine_lifo private/scratch/infl/basebeta_1_4_m2.txt, this session
+basebeta	1	4	2	188	4 15 16	NO_TILING	148753599	cengine_lifo private/scratch/infl/basebeta_1_4_m2.txt (2026-09-10); instance carries WALKS+CORNERS riders (P5/P6), so the verdict is conditional on that walk list being complete at m=2
+basebeta	4	7	1	131	28 33 49	SEARCHING	725842402	private/r131.log (4 threads, PCKPT2 private/ck131.txt, 1188 leaves, queue 1758/5766; instance private/inst/fp131.txt carries a WALKS rider); abandoned, no verdict
+basebeta	3	7	1	138	21 40 49	SEARCHING	636571997	RESTRICTED: p=1 branch only (private/inst138w.txt, WALKS rider) EXHAUSTED_NO_TILING at 636571997 nodes, private/r138L.log 2026-08-13; the unrestricted (3,7) instance is NOT settled -- see private/I2_SWEEP.md
+basebeta	2	3	2	92	6 5 9	SEARCHING	8652587	private/r92p.log (3 threads, PCKPT2, 86 leaves, queue 131/14018); abandoned 2026-08-01, no verdict; STATUS_TABLE.md:1173 cites a 253.6M-node run with a 526-node checkpoint
+basebeta	3	4	2	156	12 7 16	SEARCHING	0	LIVE 2026-09-12: cengine_lifo private/scratch/infl/basebeta_3_4_m2.txt (WALKS+CORNERS riders), checkpoint private/ckpt_basebeta_3_4_m2.ckpt, log /tmp/basebeta_3_4_m2.log
+basebeta	1	3	3	234	3 8 9	SEARCHING	0	LIVE 2026-09-12: cengine_lifo private/scratch/infl/basebeta_1_3_m3.txt (WALKS+CORNERS riders), checkpoint private/ckpt_1_3_m3.ckpt, log /tmp/basebeta_1_3_m3.log
+cevian	1	6	1	71	6 35 36	NO_TILING	9251	private/run_cevm1_1_6.log (instance private/inst/cevm1_1_6.txt), 2026-08-16
+cevian	6	7	1	62	42 13 49	NO_TILING	12872188	private/run_cev62.log (instance private/inst/cev62.txt)
+cevian	2	3	2	56	6 5 9	NO_TILING	4890763	private/run_cev56.log (instance private/inst/cev56.txt)
+cevian	1	3	2	68	3 8 9	NO_TILING	43992	private/r68.log (instance private/inst/cev68.txt)
+basealpha	2	3	1	70	6 5 9	NO_TILING	134631158	code/engine/r70g.log (instance private/inst/g70.txt, WALKS rider -- conditional on that walk list); cited at paper/erdos-634.tex:524
+pgram	1	3	1	52	3 8 9	TILING_EXISTS	79003	private/rpgram52.log (instance private/inst/pgram52.txt); lean/Erdos634/PgramTiling52.lean
+pgram	2	3	1	46	6 5 9	NO_TILING	4334789	private/rpgram46.log (instance private/inst/pgram46.txt)
