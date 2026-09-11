@@ -873,6 +873,43 @@ and the (R) pocket, whose region-level content is not assembled. **No label of `
 Census after this pass: **no Rule 0 label moves** (K4/M-strip/M-slot are new sub-atoms of an OPEN
 remark, not paper statements). `lake build Erdos634.All` clean, `#print axioms` standard three.
 
+### The `a|a` junction step and the run induction (2026-09-12, latest) — `MarchInduction.lean`
+
+The composition the corpus lacked: an induction along the base.  `junction_step` is the `a|a` step
+of `rem:marchobl` as a theorem about a `CongruentDissection` of the `e=1` target (bundle as
+`c_slot_kill`): given a tile with the vertex set of `aTileBG t f` and a tile laying the next
+letter as an `a` (an edge `[t+f, t+2f]` on the base), the next tile is `aTileBG (t+f) f` and the
+junction `(t+f, 0)` is covered by exactly one further tile, whose vertex set is that of
+`flushFiller t f` or `offsetFiller t f` — the two chiralities, no third placement.  The previously
+undischarged wedge hypotheses `hφm`/`hψm` of `JunctionWedge.march_junction_real` are replaced by
+`edge_in_wedge` (an `ε`-push into `MarchOverlap.wedge_disjoint_combo`) and extremality by the
+Gram-form `gram_extremal`.  Vertex-set statements throughout (a tile of `D` has no vertex order).
+
+| Atom | Statement | Lean declaration | Label |
+|---|---|---|---|
+| M-trans | block `k` of the configuration is block `0` translated by `(k f, 0)`; the `(k+m)`-block configuration is the first `k` blocks plus the translate of the `m`-block configuration of the shifted word | `MarchInduction.block_translate`, `.marchConfig_translate`, `.marchConfig_add`, `.block_k_eq_translate`, `.translateTri_carrier` | VERIFIED (identities of sets of `Tri`) |
+| M-strip′ | every vertex of the configuration has height in `[0, overshootH f]`; the configuration lies in the target for `f/(f²−1) ≤ t`, `t + k f + 2 dBG ≤ L` | `.marchConfig_confined`, `.marchConfig_subset_target`, `.block_subset_target` | VERIFIED |
+| M-aletter | a tile laying an `a`-letter `[x₀, x₀+f]` on the base has the vertex set of `aTileBG x₀` or `aTileGB x₀`; after a `BG` tile it is `BG` | `.a_letter_tile`, `.gb_after_bg_dies`, `.a_letter_after_bg` | VERIFIED — `prop:orientmono`'s hard direction at a real junction for a tile known only by its base edge (vertex-set form of `MarchKills.no_bg_then_gb`) |
+| M-figure | at an `a|a` junction of two `BG` tiles exactly one further tile presents `α` | `.bg_localAngle_left/right`, `.junction_alpha_tile` | VERIFIED |
+| **M-junction** | **the `a|a` junction step**: the `α`-tile's edges lie in the closed wedge, and it is the flush or the offset filler | `.alpha_corner_data`, `.edge_in_wedge`, `.gram_extremal`, `.wedge_extremal_coords`, `.alpha_tile_is_filler`, **`.junction_step`** | **VERIFIED** — every hypothesis satisfiable (`block_subset_target`, `config_f3`, `junction_step_hyps_f3`) |
+| M-run | `M_k → M_{k+1}` when letter `k+1` is an `a`; a laid `a`-run whose first tile is `BG` is the march with flush/offset fillers at every interior junction | `.march_step`, `.run_rigid` (`MarchUpTo`, `LaysARun`) | VERIFIED conditional on the base case `M₀` |
+| M-base-a | a first letter `a` is laid `BG` (the `GB` apex has `dGB < 0`) | `.first_letter_bg` | VERIFIED — `M₀` for every word beginning with `a` |
+| M-corner | at the corner junction `(f, 0)` only the flush chirality survives: the offset's overshoot vertex is outside the target by `f/(f²−1)` | `.offset_at_corner_junction_outside`, `.corner_junction_flush` | VERIFIED (new; the data never places the corner) |
+| K4′ | the far-corner kill with the `GB` half derived | `.far_corner_kill'` | VERIFIED conditional on the `BG` tile on `[L−3f, L−2f]` and an `a` on `[L−2f, L−f]` |
+
+**What this does to the rows above.**  M-i for the *base run* is now VERIFIED by `junction_step`
+(the march's steps land on `{α,β,γ}` vertices because the next tile is forced `BG`); its abstract-run
+form (`MarchRun`) stands.  M-ii/M-iii keep HEURISTIC: their statement is about *advance along the
+run*, which is the count's language; their coordinate content — "flush or offset, and the next block
+is this block translated" — is `junction_step` + `block_translate`, and is VERIFIED.  **`rem:marchobl`
+stays OPEN.**  The residue, exactly: the mixed junctions `a|b`, `b|a`, `a|c`, `c|a` (the slot
+passage, (G2)/(G3) of `report_experimental.md`; the `c`-slot kills of `MarchKillsFan` start from R_c,
+which the run induction reaches only through a `c|a` analysis), the edge-level realisation of the
+second-offset kill K1 (`run_rigid` admits every chirality word), and the base case for words
+beginning with `c`.  The far corner is reached only through the mixed junctions.  No Rule 0 label
+of a paper statement moves.  `lake build Erdos634.All` clean, `#print axioms` standard three on
+every theorem, no `sorry`.
+
 ### Re-check of the elliptical blockers, batch 2 (2026-09-01)
 
 | Paper | Verdict | Real blocker |
