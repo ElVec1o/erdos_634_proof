@@ -371,3 +371,4 @@ import Erdos634.NormalPosition
 import Erdos634.RouteOneCrossing
 import Erdos634.EpredColumnKill
 import Erdos634.MarchKills
+import Erdos634.MarchKillsFan
