@@ -781,7 +781,14 @@ unproved for this step is gone: no straight angle below the line, no `π`-count,
 hypothesis either.  What remains are the standard serving-tile facts (`hne0`, `hne2pi`, `hserve`,
 already discharged by `serving_ne_zero` / `serving_ne_two_pi` / `pigeonhole_wall`) together with
 plain configuration data — the two tiles keep to the upper side of the wall, the `α`-tile lays its
-horizontal edge from `V` leftward to `A`, and `V`, `A` are interior to the target.
+horizontal edge from `V` leftward to `A`, `V` is interior to the target and `A` lies in it.
+
+**(2026-09-11) `A` is only required to be a point of the target**, not an interior point: the
+argument consumes the *open* segment `V`–`A`, and `Convex.openSegment_interior_self_subset_interior`
+puts that inside the interior already.  This matters at `rem:route1uniform`, whose `A = c·u` is the
+upper end of the side's first `c`-edge and therefore lies **on the target's left side**
+(`BaseBetaTargetCoord.sideA_not_mem_interior`); with the old hypothesis the theorem was inapplicable
+at the very configuration it was written for.
 
 The conclusion is `route_one_flank_composed`'s: the serving tile has `V` as a vertex and a
 horizontal rightward edge there, which is what `overshoot_dichotomy` consumes. -/
@@ -797,14 +804,15 @@ theorem route_one_flank_from_configuration {N : ℕ} (D : Dissection N) (i j : F
     (hjseg : openSegment ℝ V A
       ⊆ openSegment ℝ ((D.tile j).pts (mj + 1)) ((D.tile j).pts (mj + 2)))
     (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
-    (hVint : V ∈ interior D.target.carrier) (hAint : A ∈ interior D.target.carrier) :
+    (hVint : V ∈ interior D.target.carrier) (hAcar : A ∈ D.target.carrier) :
     ∃ m : Fin 3, (D.tile i).pts m = V ∧
       ((((D.tile i).pts (m + 1) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (m + 1) - V) 0) ∨
        (((D.tile i).pts (m + 2) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (m + 2) - V) 0)) := by
-  have hint : ∀ W : Plane, W ∈ openSegment ℝ V A → W ∈ interior D.target.carrier := by
-    intro W hW
-    exact (D.target.convex.interior).segment_subset hVint hAint
-      (openSegment_subset_segment ℝ V A hW)
+  -- **`A` need only lie in the target, not in its interior** (weakened 2026-09-11): the segment
+  -- from an interior point to *any* point of a convex set is interior except possibly at its far
+  -- endpoint, and only the *open* segment `V`–`A` is ever used.
+  have hint : ∀ W : Plane, W ∈ openSegment ℝ V A → W ∈ interior D.target.carrier :=
+    fun W hW => D.target.convex.openSegment_interior_self_subset_interior hVint hAcar hW
   exact route_one_flank_no_straight D i j V A hij hne0 hne2pi habovei hserve mj hjseg hAy hAx
     (third_tile_of_interior D i j V A hAy habovei habovej hint)
 

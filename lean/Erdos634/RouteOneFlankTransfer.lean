@@ -57,12 +57,12 @@ theorem flank_propagates {N : ℕ} (D : Dissection N) (i i' : Fin N) (V E : Plan
   obtain ⟨a1, a2, b1, b2⟩ := hidx m
   rcases hE with hE1 | hE2
   · refine route_one_flank_from_configuration D i' i E V hii' hne0 hne2pi habovei' habovei hserve
-      (m + 2) ?_ hVy hVx hEint hVint
+      (m + 2) ?_ hVy hVx hEint (interior_subset hVint)
     intro W hW
     rw [a1, a2, hV, hE1, openSegment_symm]
     exact hW
   · refine route_one_flank_from_configuration D i' i E V hii' hne0 hne2pi habovei' habovei hserve
-      (m + 1) ?_ hVy hVx hEint hVint
+      (m + 1) ?_ hVy hVx hEint (interior_subset hVint)
     intro W hW
     rw [b1, b2, hV, hE2]
     exact hW
@@ -116,13 +116,13 @@ theorem route_one_flank_of_vertices {N : ℕ} (D : Dissection N) (i j : Fin N) (
     (hjseg : openSegment ℝ V A
       ⊆ openSegment ℝ ((D.tile j).pts (mj + 1)) ((D.tile j).pts (mj + 2)))
     (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
-    (hVint : V ∈ interior D.target.carrier) (hAint : A ∈ interior D.target.carrier) :
+    (hVint : V ∈ interior D.target.carrier) (hAcar : A ∈ D.target.carrier) :
     ∃ m : Fin 3, (D.tile i).pts m = V ∧
       ((((D.tile i).pts (m + 1) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (m + 1) - V) 0) ∨
        (((D.tile i).pts (m + 2) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (m + 2) - V) 0)) :=
   route_one_flank_from_configuration D i j V A hij hne0 hne2pi
     (carrier_above_of_vertices (D.tile i) V hvi)
-    (carrier_above_of_vertices (D.tile j) V hvj) hserve mj hjseg hAy hAx hVint hAint
+    (carrier_above_of_vertices (D.tile j) V hvj) hserve mj hjseg hAy hAx hVint hAcar
 
 
 end Erdos634.RouteOne

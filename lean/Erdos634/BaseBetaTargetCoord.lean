@@ -102,10 +102,19 @@ target's **left side**.  `sideA_not_mem_interior` proves `A ∉ interior carrier
 **false** at the configuration those theorems are meant to serve.  `escapeV_eq_A_shift` records
 that the `A` in question is exactly the one shifted to `V` by `(c,0)`.
 
-So the composition "discharge `hV`, then apply `flank_from_wall_only`" does **not** go through:
-`hV` is now free and `hAint` is refuted.  That is a sharper statement than "still blocked" — it
-names which hypothesis has to change, and it is the reason no such composition is stated in this
-file.
+So the composition "discharge `hV`, then apply `flank_from_wall_only`" does **not** go through as
+those theorems were stated: `hV` is free and `hAint` is refuted.  That is a sharper statement than
+"still blocked" — it names which hypothesis has to change.
+
+**Superseded 2026-09-11 (same day), `RouteOneBoundaryA.lean`.**  It is the *hypothesis* that was
+wrong, not the configuration: interiority of `A` was never used, only that the **open** segment
+`V`–`A` is interior, which holds for any `A` in a convex set given `V` interior
+(`Convex.openSegment_interior_self_subset_interior`).  `hAint` has been weakened in place to
+`hAcar : A ∈ D.target.carrier` in `route_one_flank_from_configuration`,
+`route_one_flank_of_vertices`, `flank_from_wall_only` and `flank_from_wall_only_of_vertices`;
+`RouteOneBoundaryA.sideA_mem_carrier` discharges it at this `A`, and
+`RouteOneBoundaryA.flank_at_route1uniform` states the composition.  The residue is `hwall`, normal
+position, and the `α`-tile placement — not a false hypothesis.
 
 ## What is **not** claimed
 
@@ -122,9 +131,10 @@ three files named, nothing more.  Specifically:
    nothing here bears on it.  `RouteOneWallOnly.flank_from_wall_only` had two hypotheses that were
    not witnessed at `Dissection` level, `hV` and `hwall`; this file removes the first from that
    list *given* normal position, and says nothing about the second.
-3. **`hAint` is refuted, not discharged** (§9).  Removing `hV` from the residue does not make
-   `flank_from_wall_only` applicable at `rem:route1uniform`; the interiority hypothesis on `A`
-   fails there, and weakening it is untouched work.
+3. **`hAint` is refuted, not discharged** (§9).  *(Dated 2026-09-11; superseded the same day by
+   `RouteOneBoundaryA.lean`, which weakens the hypothesis to `A ∈ D.target.carrier` — never used
+   in interior form — and discharges it here.  The composition now exists:
+   `RouteOneBoundaryA.flank_at_route1uniform`.)*
 4. No Rule 0 label moves.
 
 Axiom-clean beyond the standard three; no `sorry`.
@@ -623,7 +633,11 @@ theorem leftFunctional_carrier {e f : ℝ} (he : 0 < e) (hef : e < f) :
 /-- **`A = c·u` lies on the target's boundary, not in its interior.**  So the hypothesis
 `hAint : A ∈ interior D.target.carrier` of `RouteOneWallOnly.flank_from_wall_only` and of
 `RouteOne.route_one_flank_from_configuration` is **not** satisfied by `rem:route1uniform`'s own
-`A`, in this (or any) placement in which `A` is the upper end of the side's first `c`-edge. -/
+`A`, in this (or any) placement in which `A` is the upper end of the side's first `c`-edge.
+
+*(2026-09-11, later: those two theorems no longer carry that hypothesis — it is now
+`A ∈ D.target.carrier`, which `RouteOneBoundaryA.sideA_mem_carrier` proves.  This negative stands
+as stated and is what forced the weakening.)* -/
 theorem sideA_not_mem_interior {e f : ℝ} (he : 0 < e) (hef : e < f) :
     mkPt (sideA e f).1 (sideA e f).2 ∉ interior (baseBetaTarget e f he hef).carrier := by
   have hf : (0:ℝ) < f := lt_trans he hef

@@ -5052,3 +5052,24 @@ twins of `height_eq_coord_combo` / `carrier_above_of_vertices`); `alpha_tile_wit
 still assumed and is still the attachment's open part; the hypothesis bundle is still not witnessed
 at the `Dissection` level (same status as `route_one_flank_from_configuration`'s). What changed is
 the *content* of the residue: it no longer mentions the region below the line at `V`.
+
+## 2026-09-11 (last): `hAint` weakened to carrier-membership; Route 1's flank composed at `rem:route1uniform`
+
+`RouteOneBoundaryA.lean` (new). The hypothesis `hAint : A ∈ interior D.target.carrier` of
+`RouteOne.route_one_flank_from_configuration` / `.route_one_flank_of_vertices` and
+`RouteOneWallOnly.flank_from_wall_only` / `.flank_from_wall_only_of_vertices` is **weakened in
+place** to `hAcar : A ∈ D.target.carrier`: its only use is that the *open* segment `V`–`A` is
+interior, which `Convex.openSegment_interior_self_subset_interior` gives for any `A` in the set.
+This was forced by `BaseBetaTargetCoord.sideA_not_mem_interior` (the configuration's `A = c·u` is
+on the target's left side), and the paper's `A` cannot be moved: `erdos-634-companion.tex:1604`
+defines it as the upper end of the side's first `c`-edge and `|AV| = c` is what makes `[A,V]` a
+tile edge.
+
+* `RouteOneBoundaryA.sideA_mem_carrier` — `A = c·u ∈ (baseBetaTarget e f).carrier`.
+* `RouteOneBoundaryA.sideA_sub_escapeV` — `A − V = (−f², 0)`, discharging `hAy`, `hAx`.
+* `RouteOneBoundaryA.flank_at_route1uniform` — the composition at the configuration, with `hV`,
+  `hAcar`, `hAy`, `hAx` all discharged from the coordinate model.
+
+**No Rule 0 label moves.** The remaining hypotheses are `hwall` (`rem:routeoneopen`, OPEN), normal
+position `htgt : D.target = baseBetaTarget e f` (a placement obligation, undischarged), and the
+`α`-tile placement (witnessed at `Tri` level only, `RouteOneWallOnly.alpha_tile_witness`).

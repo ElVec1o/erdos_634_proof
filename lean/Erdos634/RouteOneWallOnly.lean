@@ -30,7 +30,9 @@ disappears from the statement entirely.
   the last field of `EscapeData` that needed `b` stops needing it.
 
 * `flank_from_wall_only` — **the main theorem.**  From
-  - `hV`, `hAint` : `V` and `A` interior to the target,
+  - `hV` : `V` interior to the target, and `hAcar` : `A` a point of the target (weakened
+    2026-09-11 from interiority — `rem:route1uniform`'s `A = c·u` is *on the left side*, so the
+    old hypothesis was false at the intended configuration; see `RouteOneBoundaryA.lean`),
   - the `α`-tile `j`: its edge `(mj+1, mj+2)` contains the open stretch `V`–`A`, `A` is horizontally
     left of `V`, `j`'s carrier lies weakly above `V` and weakly left of `V`,
   - `hwall` : `∃ ρ > 0`, every tile with a point strictly up-and-right of `V` within `ρ` lies weakly
@@ -159,7 +161,7 @@ Nothing about the region below the line at `V` occurs anywhere in the statement.
 serving tile `i` is *produced*, not assumed, and the three `EscapeData` fields that referred to a
 below-tile (`b`, `hb`, `hcard`) together with `hbelow` are absent. -/
 theorem flank_from_wall_only {N : ℕ} (D : Dissection N) (V A : Plane) (j : Fin N) (mj : Fin 3)
-    (hV : V ∈ interior D.target.carrier) (hAint : A ∈ interior D.target.carrier)
+    (hV : V ∈ interior D.target.carrier) (hAcar : A ∈ D.target.carrier)
     (hjseg : openSegment ℝ V A
       ⊆ openSegment ℝ ((D.tile j).pts (mj + 1)) ((D.tile j).pts (mj + 2)))
     (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
@@ -191,7 +193,7 @@ theorem flank_from_wall_only {N : ℕ} (D : Dissection N) (V A : Plane) (j : Fin
     Erdos634.RouteOne.route_one_flank_from_configuration D i j V A hij
       (Erdos634.RouteOne.serving_ne_zero D i hclose)
       (serving_ne_two_pi_of_above (D.tile i) V habovei)
-      habovei habovej hserve mj hjseg hAy hAx hV hAint
+      habovei habovej hserve mj hjseg hAy hAx hV hAcar
   exact ⟨i, m, hm, hflank⟩
 
 /-- **The same, with the `α`-tile's position given by its vertices.**  `carrier_above_of_vertices`
@@ -199,7 +201,7 @@ turns the two carrier hypotheses on `j` into six sign conditions on its three ve
 the corpus's own `no_downward_edge` / `edge_dir_nonneg_of_local` produce. -/
 theorem flank_from_wall_only_of_vertices {N : ℕ} (D : Dissection N) (V A : Plane) (j : Fin N)
     (mj : Fin 3)
-    (hV : V ∈ interior D.target.carrier) (hAint : A ∈ interior D.target.carrier)
+    (hV : V ∈ interior D.target.carrier) (hAcar : A ∈ D.target.carrier)
     (hjseg : openSegment ℝ V A
       ⊆ openSegment ℝ ((D.tile j).pts (mj + 1)) ((D.tile j).pts (mj + 2)))
     (hAy : (A - V) 1 = 0) (hAx : (A - V) 0 < 0)
@@ -211,7 +213,7 @@ theorem flank_from_wall_only_of_vertices {N : ℕ} (D : Dissection N) (V A : Pla
     ∃ (i : Fin N) (m : Fin 3), (D.tile i).pts m = V ∧
       ((((D.tile i).pts (m + 1) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (m + 1) - V) 0) ∨
        (((D.tile i).pts (m + 2) - V) 1 = 0 ∧ 0 < ((D.tile i).pts (m + 2) - V) 0)) := by
-  exact flank_from_wall_only D V A j mj hV hAint hjseg hAy hAx
+  exact flank_from_wall_only D V A j mj hV hAcar hjseg hAy hAx
     (Erdos634.RouteOne.carrier_above_of_vertices (D.tile j) V hvj)
     (carrier_left_of_vertices (D.tile j) V hlj) hwall
 
