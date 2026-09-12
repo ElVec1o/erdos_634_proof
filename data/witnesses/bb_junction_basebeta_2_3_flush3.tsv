@@ -1,0 +1,45 @@
+# bb_junction_basebeta_2_3_flush3 -- the b|b base junction of Group B is REALIZABLE.
+#
+# Instance: m=1 base-beta target at (e,f)=(2,3), N=23, tile (a,b,c)=(6,5,9).
+# Target: (0,0) - (46,0) - (23, 5r/2).   Field: Q(sqrt(32)),  r = sqrt(32) = 4*sqrt(2).
+# Columns x_i are exact rationals; y_i are exact rational COEFFICIENTS of r.
+#
+# WHAT THIS IS.  Group B of room e2b's trichotomy is the single word `acabbca`, whose only
+# same-letter base junction is b|b, at x = 6+9+6+5 = 31 on the base.  Room e2b2's Erdos brief
+# asked whether the order-free boundary-figure trichotomy
+#   (TileAt.congruentDissection_boundary_figure_cases: a non-vertex boundary figure is
+#    exactly {3a,2b} or {a,b,g}, where here 3*alpha+2*beta = pi exactly)
+# kills b|b outright.  IT DOES NOT.  A b-edge's endpoints carry {alpha,gamma}; of the four
+# flanking combinations only (gamma,gamma) dies (2*gamma > pi).  The combination
+# (alpha,gamma) is not merely angle-consistent: it is FLUSH-realizable, and this file is the
+# realization, placed at the word's actual junction abscissa inside the actual target.
+#
+# The three tiles:
+#   L  = the 4th base tile, b-edge [26,31] x {0}, presenting alpha at x=31, gamma at x=26
+#   Rt = the 5th base tile, b-edge [31,36] x {0}, presenting gamma at x=31, alpha at x=36
+#   M  = the filler, presenting beta at x=31; its c-edge (9) is flush with L's c-edge and its
+#        a-edge (6) is flush with Rt's a-edge -- no T-point anywhere in the patch.
+#   Their union is the trapezoid (26,0)-(36,0)-(29,r)-(24,r): parallel sides 10 and 5,
+#   legs 9 and 6, height r; area 3 * 10*sqrt(2) = 3 tile areas exactly.
+#
+# VERIFIED 2026-09-12 (room e2b2, Erdos seat), exact arithmetic, squared distances
+# d2 = dx^2 + 32*dy^2 over Q:
+#   3/3 tiles congruent to (6,5,9)   [squared sides {25,36,81}, exactly]
+#   3/3 tiles of area exactly 10*sqrt(2)  [shoelace, exactly]
+#   all 5 distinct vertices inside the target: with y_sqrt2 = 4*y_r, the two leg half-planes
+#     are 10*x - 23*(4*y_r) >= 0 and 10*(46-x) - 23*(4*y_r) >= 0, plus y_r >= 0.  All hold.
+#   (re-verified from disk in the same session, per NOVELTY_PROTOCOL sec. 5)
+#   pairwise interiors disjoint: the three tiles occupy disjoint angular sectors at (31,0),
+#     spanning 180deg -> 141.06deg -> 109.47deg -> 0deg, i.e. alpha, beta, gamma, sum pi.
+#
+# WHAT THIS DOES NOT SHOW.  It does not produce a tiling.  N=23 is NO_TILING by certified
+# search (data/SETTLED.tsv, 19 677 nodes), so this patch provably does not extend.  Its role
+# is exactly negative-for-the-hope / positive-for-the-object: pointwise angle counting cannot
+# refute Group B, because the configuration it would have to refute exists.
+#
+# Provenance: room `e2b2`, Erdos seat, 2026-09-12.
+# Consumer: none yet.  Produced for room `e2b2` (Erdos seat, Group B `acabbca`).
+tile	name	x1	y1r	x2	y2r	x3	y3r
+1	L	26	0	31	0	24	1
+2	M	31	0	24	1	29	1
+3	Rt	31	0	36	0	29	1
