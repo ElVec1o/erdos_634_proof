@@ -376,3 +376,5 @@ import Erdos634.MarchInduction
 import Erdos634.MarchSlots
 import Erdos634.RunPartition
 import Erdos634.MarchCompose
+import Erdos634.E1NormalForm
+import Erdos634.E1BaseWord
