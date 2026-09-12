@@ -373,3 +373,4 @@ import Erdos634.EpredColumnKill
 import Erdos634.MarchKills
 import Erdos634.MarchKillsFan
 import Erdos634.MarchInduction
+import Erdos634.MarchSlots

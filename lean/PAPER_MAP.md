@@ -910,6 +910,46 @@ beginning with `c`.  The far corner is reached only through the mixed junctions.
 of a paper statement moves.  `lake build Erdos634.All` clean, `#print axioms` standard three on
 every theorem, no `sorry`.
 
+### The mixed junctions: figures and placements (2026-09-12, sequential step 3) — `MarchSlots.lean`
+
+The same method as `junction_step` (boundary π-figure at the junction, edges of the third tile in
+the closed uncovered wedge by an ε-push into `wedge_disjoint_combo`, Gram-form extremality) applied
+to the six mixed junction types.  General form: `edge_in_wedge_gen` (arbitrary left/right
+neighbours given by vertex sets), `gram_extremal'` (`κ ≠ 0`, so the obtuse `γ`-wedge is covered),
+`third_tile_range` (**two placements**: the wedge's rays scaled to the tile's sides, or the
+reflection in the bisector).  `b_letter_tile`/`c_letter_tile`: a tile laying `b` (`c`) is one of
+the two reflections `bSlotTile`/`bSlotTile'` (`cSlotTile`/`cSlotTile'`), from distances.
+
+| Junction | Figure at `V` | Verdict | Lean |
+|---|---|---|---|
+| `a\|b` | `BG` `γ` + `b`-tile: `bSlotTile` gives `γ` — **killed** (two `γ`); `bSlotTile'` gives `α` | `bSlotTile'` forced; exactly one `β`-tile, vertex set `bCapSet` (horizontal `b`-edge at height `f h/b`, `c`-edge shared with the `b`-tile) or `bOverSet` (`c`-edge along the `BG` `b`-edge, one unit past its apex) | `junction_a_b` |
+| `a\|b` at the corner slot (`x₀ = f`) | as above | **new kill**: `bOverSet`'s vertex `(3f/2, (c/b)h)` is the corner offset overshoot, outside the target; only the cap survives | `bOver_corner_outside`, `junction_a_b_corner` |
+| `b\|a` (`bSlotTile'` left, `γ`) | `GB` gives `γ` — **killed**; `BG` gives `β` | `BG` forced; exactly one `α`-tile: the flush or offset filler of the virtual junction (the `b`-tile's `a`-edge has the `BG` `b`-edge's direction) | `junction_b'_a` |
+| `a\|c` | `BG` `γ` + `cSlotTile` (`β`) or `cSlotTile'` (`α`) — **both survive** | `cSlotTile`: one `α`-tile, flush/offset filler; `cSlotTile'`: one `β`-tile, `bCapSet`/`bOverSet` | `junction_a_c` |
+| `c\|a`, `cSlotTile` (`α`) | + `GB` (`γ`): `{α,β,γ}`; + `BG` (`β`): `{α,β,γ}` or `{3α,2β}` — **neither orientation killed** | `GB`: one `β`-tile, `bCapMSet`/`bOverMSet`; `BG`: one `γ`-tile, `cCapSet` (flat cap sharing the `c`-apex) / `cSplitSet`, **or** the fan (three `α`, two `β`) | `junction_c_a` |
+| `c\|a`, `cSlotTile'` (`β`) | + `GB`: `{α,β,γ}`; + `BG`: `{3α,2β}` — **neither killed** | `GB`: one `α`-tile, `flushMSet`/`offsetMSet`; `BG`: the fan | `junction_c'_a` |
+| `b\|c` (`bSlotTile'`) | as `a\|c` | same candidate lists as `a\|c` | `junction_b'_c` |
+| `c\|b` | `cSlotTile`+`bSlotTile`: `{α,β,γ}`; `cSlotTile`+`bSlotTile'`: `{3α,2β}`; `cSlotTile'`+`bSlotTile`: `{α,β,γ}`; `cSlotTile'`+`bSlotTile'`: `{γ}` or fan | `bCapMSet`/`bOverMSet`; fan; `flushMSet`/`offsetMSet`; `cCapMSet`/`cSplitMSet` or fan | `junction_c_b`, `junction_c'_b` |
+
+**Composite** (`first_run`, `run_last_tile`, `word_b_first`, `word_c_first`): for the word
+`a^p b a^q c …` everything through the `c`-slot's left junction is decided up to the binary
+choices above (first run = corner `BG` + flush at the corner junction + march; `bSlotTile'`;
+cap/overshoot; `BG`; flush/offset; march; `cSlotTile`/`cSlotTile'` with its third tile).  For
+`a^p c a …` the same through the `c`-slot's left junction, and then the `c|a` junction with the
+next `a` **`BG` or `GB`, undecided** — the run induction does not restart, the far corner is not
+reached.  Non-vacuity at `f = 4` (`N = 47`, prime): `ab_config_f4`, `ca_config_f4`,
+`word_b_first_hyps_f4`.  `no_two_gamma` reproduces `OrientBridge.no_two_gamma_at_boundary_junction`.
+
+**What this does to `rem:marchobl`: nothing moves.**  Kills obtained by the local method: two
+(`γγ` at `a|b` and `b|a`) plus the corner-slot overshoot.  Every other placement survives the
+vertex figure and the wedge; the engine's kills there are region-level (K1 stub `c − b = 1`, K2 run
+`b − a`, the P1a pockets) and no dissection-level statement of "a straight boundary run between
+convex corners is exactly partitioned by tile edges" exists in the corpus — `Frontier.lean`'s (P2)
+is a model of the search, not a theorem.  The `e = 1` family does **not** fall; the residue is now
+*located*: the `c|a` junction (orientation of the next `a`, the fan, the stubs), not the slots'
+figures.  `lake build Erdos634.All` clean, `#print axioms` standard three on every theorem, no
+`sorry`.
+
 ### Re-check of the elliptical blockers, batch 2 (2026-09-01)
 
 | Paper | Verdict | Real blocker |
