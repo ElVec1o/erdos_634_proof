@@ -1,0 +1,92 @@
+# H1_basebeta_2_3_piercing.tsv
+# Piercing-point certificates for the crux: (e,f)=(2,3), tile (a,b,c)=(6,5,9), N=23,
+#   target (0,0)-(46,0)-(23,(5/2)r), base L=46.
+# Field: Q(sqrt(D)) with D=32, r = sqrt(32) = 4*sqrt(2).  Coordinates exact, "p+q*r".
+# Date: 2026-09-12.  Provenance: room e2b3, seat `heule`.  Derived from the exact DFS
+#   constructor build23.py (round 2, seat `zhang`), re-run and re-verified this session
+#   (1126 nodes, 552 jams, 3 positive controls cc/ccc/bbb all TILING at 6/23/11 nodes).
+# CONTENT.  For each surviving base word w, S_w is the set of tile placements that occur
+#   anywhere in the exhaustive corner-forced DFS for w (|S_w| = 43/57/40/22/11).  The points
+#   below are a minimum-cardinality set P_w (exact ILP optimum over the arrangement's
+#   1/2/3-fold intersection cells) such that EVERY placement in S_w contains at least one
+#   point of P_w in its interior.  |P_w| = 19,13,13,11,6 -- all < 23.
+# VERIFICATION performed: (i) each point tested against all |S_w| placements by exact
+#   strict point-in-triangle in Q(sqrt32) -- 0 unpierced; (ii) max-clique of the
+#   interior-disjointness graph computed exactly (19,13,13,11,6), matching |P_w| in all
+#   five words, so each certificate is TIGHT; omega=19 for aabbcca independently reproduces
+#   the known best partial Z1 (19 of 23).
+# CONSEQUENCE (conditional).  Interior-disjoint tiles contain distinct points, so any
+#   dissection with base word w using only placements from S_w has at most |P_w| <= 19
+#   tiles < 23.  NO_TILING for all five words.
+# LOAD-BEARING HYPOTHESIS, NOT DISCHARGED: that S_w contains every placement occurring in a
+#   dissection.  This holds by the lex-min-corner lemma PLUS the exhaustiveness of the
+#   1126-node DFS, and by nothing else.  Measured here: the search-independent closure of
+#   the corner-placement operator does NOT stay finite-small -- it grows 1 -> 2 -> 10 -> 34
+#   -> 191 -> 1180 ... (word aabbcca, lex-min-filtered), so S_w cannot be replaced by any
+#   naive closed placement universe.  The certificate is a COMPRESSION of the search, not a
+#   replacement for it.
+# CONSUMER: none yet.  Not formalized in Lean (the hypothesis above is not statable without
+#   the search).
+word	px	py
+aabbcca	41/9	5/18*r
+aabbcca	95/9	5/18*r
+aabbcca	16	1/3*r
+aabbcca	21	1/3*r
+aabbcca	304/9	10/9*r
+aabbcca	373/9	5/18*r
+aabbcca	3871/414	5/9*r
+aabbcca	343819/33534	635/729*r
+aabbcca	44/3	2/3*r
+aabbcca	2009/54	865/2484*r
+aabbcca	86962/4347	13523/8694*r
+aabbcca	536/27	67/54*r
+aabbcca	925/42	8/9*r
+aabbcca	1573823/61236	192697/122472*r
+aabbcca	410755/16767	9893/16767*r
+aabbcca	29122/1161	895/2322*r
+aabbcca	87391855/3260088	14320493/22820616*r
+aabbcca	1288334/45279	28555/90558*r
+aabbcca	1518964/45279	28555/90558*r
+aacbbca	41/9	5/18*r
+aacbbca	95/9	5/18*r
+aacbbca	373/9	5/18*r
+aacbbca	3871/414	5/9*r
+aacbbca	33/2	15/92*r
+aacbbca	71/2	15/92*r
+aacbbca	114943/6210	367/378*r
+aacbbca	243085/16767	9893/16767*r
+aacbbca	275161/11178	1835/3402*r
+aacbbca	5108/243	115/243*r
+aacbbca	7643717/287109	184846/287109*r
+aacbbca	1469/54	115/378*r
+aacbbca	2351/77	101/252*r
+aabcbca	41/9	5/18*r
+aabcbca	95/9	5/18*r
+aabcbca	16	1/3*r
+aabcbca	373/9	5/18*r
+aabcbca	3871/414	5/9*r
+aabcbca	44/3	2/3*r
+aabcbca	43/2	15/92*r
+aabcbca	57/2	5/42*r
+aabcbca	71/2	15/92*r
+aabcbca	1842683202917/76511677410	30752832517/38255838705*r
+aabcbca	326920/16767	9893/16767*r
+aabcbca	6323/243	115/243*r
+aabcbca	57/2	185/378*r
+acabbca	41/9	5/18*r
+acabbca	176/9	5/18*r
+acabbca	25	1/3*r
+acabbca	30	1/3*r
+acabbca	21/2	15/92*r
+acabbca	71/3	2/3*r
+acabbca	86/3	2/3*r
+acabbca	71/2	15/92*r
+acabbca	475/54	865/2484*r
+acabbca	13301110/861327	10/27*r
+acabbca	612517/34776	115/216*r
+acbabca	41/9	5/18*r
+acbabca	19	1/3*r
+acbabca	21/2	15/92*r
+acbabca	1038053/62608	125627/125216*r
+acbabca	475/54	865/2484*r
+acbabca	155/9	23/36*r
