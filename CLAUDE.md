@@ -137,6 +137,7 @@ only. Details: `private/GOAL_PRIMES.md` (2026-09-12), `lean/PAPER_MAP.md` rows `
 
 **Standing directive (user, 2026-08-29): halt local boundary exhaustion, e-parameter edge tracing,
 and point-set topology formalization. Work only on global/scale-dependent invariants.**
-*(Flag, 2026-09-12: the `e = 1` result above is local boundary exhaustion, done at the user's explicit
-2026-09-12 instruction; whether this directive still stands for `e ≥ 2` is the user's call — it has
-not been rewritten here.)*
+**Lifted for `e ≥ 2` by the user, 2026-09-12**, after the `e = 1` boundary-layer march closed that
+branch: attack `e ≥ 2` by the same method. First target is Target B (thick `e = f−1` members),
+whose residue (`EpredColumnKill.lean`) is proved to be exclusion of the `⌊f/2⌋+2` extra base
+columns, not the crossing question — so it is not blocked by `prop:ninetools`.
