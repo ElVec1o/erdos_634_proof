@@ -121,15 +121,19 @@ route through it reduces to one crossing question, which nine tool classes prova
 The e=1 side and the e≥2 side are the same wall in different costumes. Beeson claims the theorem in
 an unrevised preprint whose route we refuted.
 
-**Update 2026-09-12 — the `e = 1` half no longer reduces to the crossing question.**
-`MarchCompose.base_word_dies` (Lean, axiom-clean, adversarially audited) proves: no congruent
-dissection of the `m = 1`, `e = 1` target for `f ≥ 3` whose base is laid as any permutation of
-`(a^f, b, c)` beginning and ending with `a` — i.e. the content of `thm:e1family` conditional on the
-paper's own PROVED `thm:e1reduce`(ii) (positional form not yet in Lean) and on the normal-position /
-model-labelling reduction (mechanical, not yet composed). The march route reaches `False` on the
-boundary layer alone; `def:crossQ` is never used. **`e ≥ 2` is untouched** (`N = 83` first); the
-crossing-question assessment above stands for that branch only. Details:
-`private/GOAL_PRIMES.md` (2026-09-12 night), `lean/PAPER_MAP.md` rows `thm:e1family`, `rem:marchobl`.
+**Update 2026-09-12 — the `e = 1` half is closed in Lean for `f ≥ 3`, and it never met the crossing
+question.** `E1BaseWord.e1_family_f_ge_3_congruent` (Lean, standard axioms, no `sorry`, two
+independent adversarial audits): for any `CongruentDissection` whose target is congruent to the
+`m = 1`, `e = 1` base-β target and whose model is congruent to the tile `(f, f²−1, f²)`, `f ≥ 3`,
+`False`. Quantifies over exactly the paper's class of tilings (isometries incl. reflections, any
+vertex relabelling, `N` free); negative control passed by computation on every real dissection in the
+corpus. This is `thm:e1family` for `f ≥ 3` (`f = 2`, `N = 11`, stays on the 135-node search); with
+`thm:mod12`/`prop:repunique`/`thm:main` (paper-level) every prime `3f² − 1 ≥ 47` is excluded. Route:
+the march on the boundary layer (`MarchInduction` → `MarchSlots` → `RunPartition` → `MarchCompose` →
+`E1NormalForm`/`E1BaseWord`); `def:crossQ` is never used. **`e ≥ 2` is untouched** (`N = 83` first,
+≈99 % of base-β primes by density); the crossing-question assessment above stands for that branch
+only. Details: `private/GOAL_PRIMES.md` (2026-09-12), `lean/PAPER_MAP.md` rows `thm:e1family`,
+`thm:e1reduce`, `rem:marchobl`.
 
 **Standing directive (user, 2026-08-29): halt local boundary exhaustion, e-parameter edge tracing,
 and point-set topology formalization. Work only on global/scale-dependent invariants.**
