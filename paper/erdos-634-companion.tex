@@ -659,7 +659,7 @@ seven to four, for $N=66$ from four to three.
 
 \section{The $e=1$ family}\label{sec:compe1}
 
-\begin{theorem}[The $e=1$ base-$\beta$ family]\label{thm:e1family}\lab{CONJECTURE: effective, the strip-and-column exposition being deferred}
+\begin{theorem}[The $e=1$ base-$\beta$ family]\label{thm:e1family}\lab{PROVED for $f\ge3$ (machine-checked); $f=2$ by exhaustive search}
 Let $f\ge 2$, and consider the base-$\beta$ instance $(e,f)=(1,f)$ at $m=1$: the tile
 $(f,\,f^2-1,\,f^2)$ on the isosceles target with base angles $\beta$, base $Y=3f^2-1$ and equal
 sides $X=f^3$, with tile count $N=3f^2-1$. No such tiling exists. In particular no prime
@@ -667,7 +667,21 @@ $p=3f^2-1$ whose only base-$\beta$ representation is $(1,f)$ is a number of cong
 into which a triangle can be cut; this covers $p=11,47,107,191,431$.
 \end{theorem}
 
-The proof is a finite chain of forcing lemmas; we state the architecture and prove the three
+For $f\ge3$ this is machine-checked
+(\texttt{lean/Erdos634/E1BaseWord.lean}, \texttt{e1\_family\_f\_ge\_3\_congruent}), axiom-free
+beyond \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, over exactly the class
+of tilings above (any congruent dissection, isometries including reflections, tile count
+unconstrained). The route is not the strip-and-column chain below but a direct argument on the
+base layer: every junction of the forced base word is a boundary point of the target, hence a
+finite vertex figure, which pins each tile's orientation (\texttt{MarchInduction.lean},
+\texttt{MarchSlots.lean}); an exact-partition lemma for a straight run clamped between two placed
+tiles or the target boundary (\texttt{RunPartition.lean}, formalising the argument of
+Proposition~\ref{prop:cornerpara}) then excludes every remaining case
+(\texttt{MarchCompose.lean}). The case $f=2$ ($N=11$) is settled by exhaustive computational search
+(Table~\ref{tab:basebeta}) and is not part of the Lean theorem, which requires $f\ge3$.
+
+The strip-and-column chain below predates the Lean route above and is kept for its architecture;
+we state it and prove the three
 arithmetic pivots, deferring the full strip-and-column exposition to the extended version of this
 note. The chain: the walk trichotomy (base walks $(2f,1,0)$, $(f,1,1)$, $(0,1,2)$, the last dead
 by Theorem~\ref{thm:e1reduce}); the corner and partner forcing; for each corner, either the
