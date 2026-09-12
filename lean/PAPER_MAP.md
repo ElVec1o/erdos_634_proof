@@ -945,7 +945,7 @@ reached.  Non-vacuity at `f = 4` (`N = 47`, prime): `ab_config_f4`, `ca_config_f
 vertex figure and the wedge; the engine's kills there are region-level (K1 stub `c − b = 1`, K2 run
 `b − a`, the P1a pockets) and no dissection-level statement of "a straight boundary run between
 convex corners is exactly partitioned by tile edges" exists in the corpus — `Frontier.lean`'s (P2)
-is a model of the search, not a theorem.  The `e = 1` family does **not** fall; the residue is now
+is a model of the search, not a theorem.  *(Superseded the same day by steps 4–5 below: `RunPartition` + `MarchCompose.base_word_dies`.)*  At this step the `e = 1` family did **not** fall; the residue was then
 *located*: the `c|a` junction (orientation of the next `a`, the fan, the stubs), not the slots'
 figures.  `lake build Erdos634.All` clean, `#print axioms` standard three on every theorem, no
 `sorry`.
@@ -987,7 +987,7 @@ its area is a multiple of the tile's" — **not built**; named here as the P1a h
 are now killed at dissection level, by the tool the engine uses (P2), for every `f ≥ 3`; the
 orientation of the `a` after a `c`-slot is still undecided (both `GB`+cap and `BG`+cap/fan
 survive), so the run induction does not restart and the far corner is not reached.  The `e = 1`
-family does **not** fall.  `lake build Erdos634.All` clean, `#print axioms` standard three on
+family did **not** fall at this step *(superseded by step 5, `MarchCompose.base_word_dies`, below)*.  `lake build Erdos634.All` clean, `#print axioms` standard three on
 every theorem, no `sorry`.  Novelty (`code/novelty_check.sh`): "run partition", "convex corner"
 as a dissection statement — no prior Lean; the prose exists only as the engine's P2 description.
 

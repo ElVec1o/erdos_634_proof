@@ -62,7 +62,14 @@ the search's frontier, not a theorem about dissections; the "exact partition of 
 between convex corners" lemma does not exist and is not assumed here).  In particular the
 orientation of the `a` after a `c`-slot is undecided (`junction_c_a`: `GB` survives with a
 `β`-tile, `BG` with a `γ`-cap or the fan), so the run induction cannot restart there and the far
-corner is not reached.  The `e = 1` family does **not** fall.
+corner is not reached.  As of this file the `e = 1` family did **not** fall.
+
+**Superseded the same day (2026-09-12, steps 4–5).**  `RunPartition.lean` supplies the
+dissection-level run-partition lemma and kills two of the `c|a` placements; `MarchCompose.lean`
+kills the rest or bypasses them (the `BG` branch restarts `run_rigid` regardless of what covers
+`V`) and composes the whole base word: `MarchCompose.base_word_dies` concludes `False` for every
+word `a^p b a^q c a^r` / `a^p c a^q b a^r`, `f ≥ 3`, conditional only on the standard bundle and
+the positional form of `thm:e1reduce`(ii).  The residue named below is therefore historical.
 
 Axiom-clean beyond the standard three; no `sorry`.
 -/

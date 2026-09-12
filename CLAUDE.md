@@ -121,5 +121,18 @@ route through it reduces to one crossing question, which nine tool classes prova
 The e=1 side and the e≥2 side are the same wall in different costumes. Beeson claims the theorem in
 an unrevised preprint whose route we refuted.
 
+**Update 2026-09-12 — the `e = 1` half no longer reduces to the crossing question.**
+`MarchCompose.base_word_dies` (Lean, axiom-clean, adversarially audited) proves: no congruent
+dissection of the `m = 1`, `e = 1` target for `f ≥ 3` whose base is laid as any permutation of
+`(a^f, b, c)` beginning and ending with `a` — i.e. the content of `thm:e1family` conditional on the
+paper's own PROVED `thm:e1reduce`(ii) (positional form not yet in Lean) and on the normal-position /
+model-labelling reduction (mechanical, not yet composed). The march route reaches `False` on the
+boundary layer alone; `def:crossQ` is never used. **`e ≥ 2` is untouched** (`N = 83` first); the
+crossing-question assessment above stands for that branch only. Details:
+`private/GOAL_PRIMES.md` (2026-09-12 night), `lean/PAPER_MAP.md` rows `thm:e1family`, `rem:marchobl`.
+
 **Standing directive (user, 2026-08-29): halt local boundary exhaustion, e-parameter edge tracing,
 and point-set topology formalization. Work only on global/scale-dependent invariants.**
+*(Flag, 2026-09-12: the `e = 1` result above is local boundary exhaustion, done at the user's explicit
+2026-09-12 instruction; whether this directive still stands for `e ≥ 2` is the user's call — it has
+not been rewritten here.)*
