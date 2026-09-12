@@ -391,6 +391,15 @@ Four blockers recur, and they are the project's real formalization frontier: the
 tile-placement layer (a tile laid at a position, with its neighbours), no scale or composition map
 on dissections, no certified-search format, and no dual-graph development.
 
+**Blocker (iv), "no certified-search format", re-scoped 2026-09-12** (see the dated section at the
+foot of this file): its *geometric* half — the constructor's branching rule, `erdos-634.tex:1829-1836`
+— is now a `Dissection`-level theorem, `PlacementCompleteness.placement_completeness`, with the
+six-placement enumeration `SixPlacements.six_placements`; the two are composed at one real node
+(`LemmaPNode2.node2_jam`) and controlled on `Tiling44` (`Tiling44Control.control_root`). What remains
+of (iv) is the *per-node* discharge of the three hypotheses (`hlex`, `hfree`, `hblocked`) and the
+per-placement kills over a whole tree — coordinate arithmetic with no format yet, not a missing
+geometric argument.
+
 ## VERIFIED audit (2026-08-30)
 
 Every statement carrying VERIFIED was compared with the declarations its row names, asking whether
@@ -5393,3 +5402,99 @@ tiles — each congruent to the tile, inside the target, pairwise disjoint inter
 needs the completeness of the constructor's placement rule (the geometric half of H7), which is
 unbuilt, and is stated in prose only. No paper statement's label moves; this row-less file is new
 content, not a discharge.
+
+## 2026-09-12 (night): blocker (iv)'s geometric half — placement completeness is a theorem
+
+Room `e2b3` (Hilbert §5, Heule §6, hitting-set §3, Ramanujan §8) identified, independently, the one
+hypothesis keeping every exhaustion certificate from being a theorem: the constructor's branching
+rule, "at the lexicographically least vertex of the unfilled region every tile whose closure
+contains it has a corner there, the clockwise-most has an edge along the clockwise boundary ray,
+six placements". It had never been formalized. Four new files, all in `All.lean`, `lake build
+Erdos634.All` clean, `#print axioms` = the standard three on every named theorem, no `sorry`.
+
+**`PlacementCompleteness.lean` — the theorem, at the `Dissection` level (staged outcome (1)).**
+
+```
+placement_completeness {N} (D : Dissection N) (S : Finset (Fin N)) (v d : Plane)
+    (hunit : d 0 ^ 2 + d 1 ^ 2 = 1)
+    (hlex : ∀ p ∈ closure (unfilled D S), LexLE v p)
+    (hfree : ∀ ε : ℝ, 0 < ε → ∃ t s : ℝ, 0 < t ∧ t < ε ∧ 0 < s ∧ s < ε ∧
+      v + t • (d + s • perp d) ∈ unfilled D S)
+    (hblocked : ∃ δ : ℝ, 0 < δ ∧ ∀ t s : ℝ, 0 < t → t < δ → 0 < s → s < δ →
+      v + t • (d - s • perp d) ∉ unfilled D S) :
+    ∃ j, j ∉ S ∧ ∃ k₀ k₁ k₂ : Fin 3, k₀ ≠ k₁ ∧ k₀ ≠ k₂ ∧ k₁ ≠ k₂ ∧
+      (D.tile j).pts k₀ = v ∧ (∃ c : ℝ, 0 < c ∧ (D.tile j).pts k₁ = v + c • d) ∧
+      0 < cross d ((D.tile j).pts k₂ - v)
+```
+
+`unfilled D S = D.target.carrier \ ⋃ i ∈ S, (D.tile i).carrier`; `LexLE v p` is `y` first then
+`x`, read off `build23.py`'s `pick_point`; `d` is the *start* of the free sector, so the tile lies
+counter-clockwise of `d` — that is the meaning of `hfree`/`hblocked`, and it matches
+`free_dirs`/`starts.sort` in the constructor. The three facts of the paper are separate theorems:
+(a) `exists_unplaced_of_mem_closure`; (c) `lexmin_carrier_is_vertex` (a lex-least point of a
+triangle is a vertex — two applications of `SupportFace.mem_convexHull_max`) together with
+`carrier_subset_closure_unfilled` (**every unplaced tile lies inside `closure U`**, by the
+measure-zero argument on placed frontiers — this replaces the paper's "an edge through `v` would
+subtend `π`" and gives `unplaced_corner_at_lexmin`); (d) `corner_edge_dichotomy` (edge-frame
+coordinates of `d` at the vertex; the "tile on both sides of `d`" case is killed by
+`not_isOpen_subset_frontiers`: an open wedge cannot sit inside finitely many tile frontiers).
+(b), convexity of `U` at `v`, is never stated — `hlex` is used directly.
+
+**`SixPlacements.lean` — the enumeration.** `third_vertex`: side `ℓ₁` along `d`, side `ℓ₂` at
+`v`, opposite `ℓ₃`, tile counter-clockwise ⟹ third vertex `= placeThird v d ℓ₁ ℓ₂ ℓ₃ := v +
+p·d + √(ℓ₂²−p²)·d^⊥`, `p = (ℓ₁²+ℓ₂²−ℓ₃²)/(2ℓ₁)`. **Orientation is forced** (the sign of the
+square root is fixed by `hccw`); the paper's "two choices being mirror images" is *which adjacent
+side lies along `d`*, i.e. the pair `placeThird v d ℓ₁ ℓ₂ ℓ₃` / `placeThird v d ℓ₂ ℓ₁ ℓ₃`, not a
+chirality bit. `sides_perm_of_congruent`: for a tile `Congruent` to a model with sides `a,b,c`,
+`(ℓ₁,ℓ₂,ℓ₃)` is one of the six permutations. `six_placements` is the composition: exactly six
+explicit triangles.
+
+**`LemmaPNode2.lean` — the composition at one real node.**
+
+```
+node2_jam {N} (D : CongruentDissection N)
+    (htarget : D.target.carrier = ThickBlockingLemmas.target63.carrier)
+    (hmodel : D.model.Congruent ThickBlockingLemmas.w1t0)
+    (i₀ i₁ : Fin N) (h₀ : D.tile i₀ = w1t0) (h₁ : D.tile i₁ = w1t1) : False
+```
+
+Node 2 of Lemma P (`report_ramanujan.md` §5), for the first time a statement about dissections:
+no congruent dissection of the `(2,3)` base-`β` target by `(6,5,9)` extends the two-tile
+configuration `w1t0, w1t1`. `hlex` is discharged because the target's `x<6` part is inside `w1t0`
+(so `closure U ⊆ {x ≥ 6}`), `hfree`/`hblocked` by explicit `ℚ(√32)` inequalities, and the six
+third vertices evaluate to exactly the six points of `blocking_B1` (`six_eq_B1`), each escaping
+through the left leg. Non-vacuity of the configuration is `B1_witness` (restated as
+`node2_configuration_exists`).
+
+**`Tiling44Control.lean` — satisfiability control.** On the real `Tiling44Bridge.dissection` with
+`S = ∅`, `v = (0,0)`, `d = (1,0)`: `hlex`, `hfree`, `hblocked` are all discharged and the theorem
+yields a tile at the origin along the base (`control_root`); the actual tile is
+`Tiling44.tiles[0] = (0,0),(16,0),(22,6√15)`, whose third vertex **is** `placeThird (0,0) (1,0) 16
+32 24` — the `(a,c,b)` placement (`tile0_is_the_placement`). So the hypotheses are not
+contradictory and the six-placement formula matches a real tiling.
+
+**What remains of blocker (iv), exactly.**
+
+1. Lemma P is 13 nodes; **one is closed** (node 2). Nodes 9 and 11 (`blocking_B2`, six-tile
+   configuration `w2t0..w2t5`) are the same shape and are not done; nodes 6, 7, 12 are killed by
+   *overlap* with a placed tile, not escape, and need `interiors_disjoint` contradictions at
+   explicit interior points; the internal nodes need all six placements dispatched (escape, overlap,
+   or recursion) plus the base-word restriction at the root (the word `a c b` as a hypothesis on
+   the dissection's base — no Lean statement of "base word of a `CongruentDissection`" exists at
+   thick members). **`lemmaP_no_dissection` is NOT proved**, and the `acb`-prefix exclusion at
+   `N=23` is not a kernel-checked theorem. Nothing about `N=23` as a whole moved.
+2. Per node, three coordinate obligations (`hlex`, `hfree`, `hblocked`) and six placement kills.
+   Each was done by hand at node 2 in ~120 lines of `nlinarith`. A tree of 201 nodes (the canonical
+   `N=23` certificate) is ~1 200 such obligations: a *format* (generated Lean, or a `decide`-shaped
+   checker over `ℚ(√D)`) is still needed — that is what "certified-search format" now means.
+3. That the constructor's chosen `(v, d₀)` at each node actually satisfies `hlex`/`hfree`/`hblocked`
+   is not proved *of the constructor*; it is proved per node, by hand. In particular the
+   constructor's candidate set (vertices of placed tiles and of the target) being complete is a
+   corollary-shaped fact not formalized here.
+4. `placement_completeness` requires `d` unit and uses `EuclideanSpace` coordinates; no other
+   restriction (arbitrary `Dissection`, topological closure, arbitrary `S`).
+
+**Which `/goal` outcome moved: none.** `N=83` untouched, `aabbcca` untouched, prime case untouched.
+This is formalization debt, at the priced-out position Hilbert §5 gave it: the geometric obligation
+(1) of that list is closed; obligations (2) (the two prunes) and (3) (the node checks at scale)
+are not.

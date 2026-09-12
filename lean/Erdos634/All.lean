@@ -384,3 +384,7 @@ import Erdos634.RunPartition
 import Erdos634.MarchCompose
 import Erdos634.E1NormalForm
 import Erdos634.E1BaseWord
+import Erdos634.PlacementCompleteness
+import Erdos634.SixPlacements
+import Erdos634.LemmaPNode2
+import Erdos634.Tiling44Control
