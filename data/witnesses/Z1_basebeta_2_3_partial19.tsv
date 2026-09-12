@@ -1,0 +1,38 @@
+# Z1 — partial dissection of the m=1 base-beta target at (e,f)=(2,3), N=23.
+# 19 of 23 tiles, congruent to (6,5,9).  Strictly extends F1 (17 tiles); tiles 1-14 agree
+# with F1's 1-14 up to relabelling, tiles 15-19 are new.  Extends to NO tiling.
+# Field: Q(sqrt(32)).  r = sqrt(32) = 4*sqrt(2).  Target: (0,0) - (46,0) - (23, 5r/2).
+# Coordinates exact; the "*r" column is the coefficient of r.
+# VERIFIED 2026-09-12 (room e2b2, Zhang/constructor seat), exact arithmetic, no floating point:
+#   19/19 tiles congruent to (6,5,9)  [squared sides exactly {25,36,81}, zero irrational part]
+#   all 57 vertices inside the target (closed)
+#   ZERO pairwise interior overlap (exact SAT over Q(sqrt 32))
+#   area ratio exactly 19/23; residue exactly 4 tiles
+# Base word: a a b b c c a  (blocks 6,6,5,5,9,9,6 at x = 0,6,12,17,22,31,40,46)
+# Produced by: depth-first exact constructor (lex-min-uncovered-corner rule), 188 nodes,
+#   whole per-word branch exhausted -> NO_TILING for this word, consistent with
+#   data/SETTLED.tsv's certified N=23 NO_TILING.
+# Jam at depth 19: uncovered-region corner v = (14, 1r), forced ray d0 = (1,0),
+#   straight frontier run = 5; all six oriented placements fail (overlap / leaves target).
+# Consumer: none yet.  Candidate upgrade for lean/Erdos634/LocalCriterionBound.lean's
+#   ">N-6" bound (which currently rests on F1); NOT checked against that file this session.
+tile	x1	y1r	x2	y2r	x3	y3r
+1	0	0	6	0	23/3	5/6
+2	6	0	12	0	41/3	5/6
+3	6	0	41/3	5/6	23/3	5/6
+4	12	0	17	0	19	1
+5	12	0	19	1	14	1
+6	17	0	22	0	24	1
+7	17	0	65/3	2/3	20	3/2
+8	22	0	31	0	233/9	5/9
+9	22	0	29	1	24	1
+10	31	0	40	0	314/9	5/9
+11	31	0	314/9	5/9	233/9	5/9
+12	40	0	46	0	115/3	5/6
+13	40	0	115/3	5/6	97/3	5/6
+14	233/9	5/9	314/9	5/9	268/9	10/9
+15	65/3	2/3	230/9	11/9	212/9	20/9
+16	65/3	2/3	212/9	20/9	59/3	5/3
+17	23/3	5/6	41/3	5/6	46/3	5/3
+18	97/3	5/6	115/3	5/6	92/3	5/3
+19	97/3	5/6	92/3	5/3	74/3	5/3
