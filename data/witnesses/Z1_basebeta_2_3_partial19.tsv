@@ -14,8 +14,12 @@
 #   data/SETTLED.tsv's certified N=23 NO_TILING.
 # Jam at depth 19: uncovered-region corner v = (14, 1r), forced ray d0 = (1,0),
 #   straight frontier run = 5; all six oriented placements fail (overlap / leaves target).
-# Consumer: none yet.  Candidate upgrade for lean/Erdos634/LocalCriterionBound.lean's
-#   ">N-6" bound (which currently rests on F1); NOT checked against that file this session.
+# Consumer: lean/Erdos634/LocalCriterionBound.lean (F2).  CHECKED AND CONSUMED 2026-09-12
+#   (room e2b3, Erdos seat): re-verified independently from this file in exact Q(sqrt 32)
+#   (19/19 squared sides {25,36,81}, 57/57 vertices inside the closed target, 0/171 pairwise
+#   interior overlaps by exact separating-axis, area exactly 19/23), and F2's bound at N=23
+#   sharpens from ">N-6" to ">N-4".  F1 re-verified the same way; F1 is NOT a subset of Z1
+#   (15 tiles in common), so the two residues are independent constraints.
 tile	x1	y1r	x2	y2r	x3	y3r
 1	0	0	6	0	23/3	5/6
 2	6	0	12	0	41/3	5/6

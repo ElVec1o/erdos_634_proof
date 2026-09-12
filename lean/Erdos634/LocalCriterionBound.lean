@@ -25,6 +25,26 @@ So no criterion supported on the boundary layer, the first tile layer, or any do
 prefix of `≤ N−6` tiles can settle a close pair — a boundary is `O(√N)` tiles and a first layer is
 `O(√N)`, while F2 demands a set that reaches into the last six.
 
+## The sharpening at `(2,3)`, 2026-09-12 (room `e2b3`, Erdős seat)
+
+A **19**-tile partial dissection of the same `(2,3)` target now exists
+(`data/witnesses/Z1_basebeta_2_3_partial19.tsv`, room `e2b2`).  It was re-verified independently
+this session in exact `ℚ(√32)` from the file on disk: 19/19 squared side multisets `{25,36,81}`
+with zero irrational part, all 57 vertices inside the closed target, **zero** pairwise interior
+overlap by exact separating-axis over all 171 pairs, area exactly `19/23`.  F1 was re-verified the
+same way.  So at `N = 23` the residue is `4`, not `6`, and the bound sharpens from `> N−6` to
+`> N−4`: a sound criterion must contain a forbidden configuration reaching into the **last four**
+tiles.
+
+The two witnesses are **incomparable** — `|W₁₇ ∩ W₁₉| = 15`, and `W₁₇ ⊄ W₁₉` (checked exactly on
+the coordinate sets) — so they are two independent constraints, not one subsumed by the other:
+every forbidden configuration must meet **both** residues (`forbidden_meets_both_residues`).
+
+Honest scope of the sharpening: the mathematical content is the *witness*, verified outside Lean;
+everything below is parametric in `W` and did not change.  The `(3,4)` member is untouched — its
+best known partial is still 33 of 39, residue 6 — so `> N−4` is an `N = 23` statement and
+`> N−6` remains the family-level one.
+
 ## Scope, stated honestly
 
 This file formalizes the **combinatorial engine** of F2 and its cardinality bookkeeping.  It does
@@ -81,9 +101,25 @@ theorem local_criterion_powerless
     ∀ F, ¬ Bad F :=
   fun F hF => no_forbidden_inside_witness Realizable Bad hsound W hW F hF (hsupp F hF)
 
+/-- **Two incomparable witnesses give two independent constraints.**  Neither residue is contained
+in the other when `W₁ ⊄ W₂` and `W₂ ⊄ W₁`, so a forbidden configuration must meet each. -/
+theorem forbidden_meets_both_residues
+    (Realizable : Finset α → Prop) (Bad : Finset α → Prop)
+    (hsound : ∀ A, Realizable A → ∀ F, Bad F → ¬ F ⊆ A)
+    {T W₁ W₂ F : Finset α} (hFT : F ⊆ T)
+    (h₁ : Realizable W₁) (h₂ : Realizable W₂) (hF : Bad F) :
+    (F ∩ (T \ W₁)).Nonempty ∧ (F ∩ (T \ W₂)).Nonempty :=
+  ⟨forbidden_meets_residue hFT (hsound W₁ h₁ F hF),
+   forbidden_meets_residue hFT (hsound W₂ h₂ F hF)⟩
+
 /-- **The `(2,3)` instance, so the bookkeeping is not abstract.**  `N = 23`, witness `17`, residue
 `6`; and `(3,4)`: `N = 39`, witness `33`, residue `6`. -/
 theorem witness_23 : 23 - 17 = 6 ∧ 39 - 33 = 6 := by norm_num
+
+/-- **The sharpened `(2,3)` instance (2026-09-12).**  `N = 23`, witness `19`, residue `4`; the two
+witnesses overlap in `15` tiles, so neither contains the other (`17 - 15 = 2 > 0` tiles of `W₁₇`
+lie outside `W₁₉`).  `(3,4)` is unchanged at residue `6`. -/
+theorem witness_23_sharp : 23 - 19 = 4 ∧ 17 - 15 = 2 ∧ 19 - 15 = 4 ∧ 39 - 33 = 6 := by norm_num
 
 /-- **Why a boundary layer cannot reach.**  A boundary is `O(√N)` tiles.  At `(3,4)` the witness
 already carries `33` of `39`, so any forbidden configuration must include one of the last `6` —
