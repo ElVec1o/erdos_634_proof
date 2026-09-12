@@ -375,3 +375,4 @@ import Erdos634.MarchKillsFan
 import Erdos634.MarchInduction
 import Erdos634.MarchSlots
 import Erdos634.RunPartition
+import Erdos634.MarchCompose

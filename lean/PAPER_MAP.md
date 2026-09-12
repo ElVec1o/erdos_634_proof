@@ -301,7 +301,7 @@ per-wall statements to the *boundary word* as a sequence, which is a different a
 | C `prop:rung2` | Rung two: the pre-piercer chain |
 | C `prop:widecol` | Wide columns, all $(e,f)$ |
 | C `thm:chain` | The $b$-run orientation lemma |
-| C `thm:e1family` | The $e=1$ base-$\beta$ family |
+| C `thm:e1family` | The $e=1$ base-$\beta$ family: no tiling of the $(1,f)$ target by $(f,f^2-1,f^2)$ | `MarchCompose.base_word_dies` (= `.word_b_first_dies` ∨ `.word_c_first_dies`), `.bundle_witness` | Paper tag CONJECTURE ("effective, the strip-and-column exposition being deferred"). **Lean, 2026-09-12 (sequential step 5)**: the statement is a theorem for `f = n ≥ 3` **conditional on `thm:e1reduce`(ii) in positional form** — the base laid as `a^p b a^q c a^r` or `a^p c a^q b a^r`, `p, r ≥ 1`, `q ≥ 0`, `p+q+r = f`, each letter a tile edge with vertices at the letter's ends (`LaysWordBFirst`/`LaysWordCFirst`) — and the standard bundle (normal position `htgt`; `ModelData` = the model's vertex labelling; `AngleData`, inhabited by the model angles, `bundle_witness`). Nothing about placements is assumed. Not VERIFIED: the paper statement as written has none of those hypotheses and includes `f = 2`; `thm:e1reduce`(ii) is PROVED, not VERIFIED (its Lean is `BaseCountsE1.*`, counts only — the positional partition of the base and "first and last are `a`" are not assembled). Route: not the paper's strip-and-column chain but the march (`MarchInduction`, `MarchSlots`, `RunPartition`, `MarchCompose`), see the step-5 subsection under `rem:marchobl`. |
 | C `thm:e1reduce` | The $e=1$ subfamily reduces to one walk |
 | C `thm:efminus1` | The side parameter vanishes on the family $e=f-1$ | `EpredColumnKill.side_p_zero_of_two_c`, `.epred_side_no_a` | **LABEL CONFLICT (2026-09-12, not edited)**: companion `\lab{CONJECTURE}` (line 3367), while the main paper proves the identical statement after `cor:pbound` (~line 2455, "`p=0` on every equal side at every member with `e=f−1`") and `rem:efminus1` says "proved, not machine-checked". The papers' own tags disagree; left for the author. Lean: the arithmetic tail is now in — from the real side walk, `n_c ≥ 2` forces `P = Q = 0` on `e = f−1` (`epred_side_no_a`). The geometric premise `n_c ≥ 2` is `cor:pbound` = `thm:secondc`'s open `a`-exclusion (`SideWalk.apex_edge_and_next_of_gammatrap`), carried as `hR`. PROVED-with-VERIFIED-arithmetic at best; not flippable while `thm:secondc` stands. |
 | C `thm:farregion` | The far region is a scaled tile |
@@ -990,6 +990,42 @@ survive), so the run induction does not restart and the far corner is not reache
 family does **not** fall.  `lake build Erdos634.All` clean, `#print axioms` standard three on
 every theorem, no `sorry`.  Novelty (`code/novelty_check.sh`): "run partition", "convex corner"
 as a dissection statement — no prior Lean; the prose exists only as the engine's P2 description.
+
+### The `c|a` junction closed and the march composed along the base word (2026-09-12, sequential step 5) — `MarchCompose.lean`
+
+Step 4 left five items at `c|a`: S1 the cap `bCapMSet` (`GB` branch), S2 the flat cap `cCapSet`
+and S3 the fan (`BG` branch), S4 the whole `cSlotTile'` side, S5 the pockets.  Verdicts:
+
+| Item | Verdict | Lean |
+|---|---|---|
+| S1 `bCapMSet` | **killed** — its `c`-edge runs along `[V, A]` and overruns `A` by one (`capM_far_eq`: far vertex `V + (c/b)(A − V)`); the filler at `B` carries its interior across the line beyond `A` (`RunPartition.CSlot.filler_blocks`), so the midpoint of `(A, A')` is on the cap's edge and in the filler's interior (`Dissection.edge_point_not_interior`). No side condition beyond `2 ≤ f`; no run partition | `MarchCompose.bCapM_dies_of_blocks`, `.bCapM_dies` |
+| S4 `cSlotTile'` + `GB` | **killed** by reflection: `reflX L` (the isometry `(x,y) ↦ (L−x, y)`, an `AffineIsometryEquiv`), `reflCD` (the reflected `CongruentDissection`, same target via `DissectionMap.mapDissection` and `retarget`); `cSlotTile' X ↦ cSlotTile (L−X−f²)`, `bCapSet/bOverSet X ↦ bCapMSet/bOverMSet (L−X)`, `flushMSet/offsetMSet (X+f²) ↦` the fillers at `L−X−f²`; then S1/K2 on the reflection. Needs `f ≤ X`, `X + f² ≤ L` | `.reflX`, `.reflCD`, `.reflCD_range`, `.reflCD_modelData`, `.cslot'_gb_dies` |
+| S2 `cCapSet`, S3 the fan, and `cSlotTile'` + `BG` (the `3α` fan) | **bypassed, not analysed**: the `BG` branch restarts `run_rigid` from the `BG` tile itself, which never looks at what covers `V`; the run reaches `[L−2f, L−f]` or `[L−f, L]` and a `BG` tile there has its apex outside (`MarchKills.bg_apex_second_to_last_outside`, `.bg_apex_last_outside`). With `a^q b a^r` after the slot: `run_last_tile` → `junction_a_b` → `junction_b'_a` → run again. The fan's placements are never needed | `.bg_run_to_end_dies`, `.cslot_then_run_dies`, `.bslot'_then_run_dies`, `.bg_then_b_then_run_dies` |
+| S5 pockets | **not needed**; not built | — |
+| pins `b c`, `c b` | handled by `junction_b'_c`, `junction_c_b`, `junction_c'_b`; the `cSlotTile + bSlotTile` case dies at `V` (S1/K2, independent of the right neighbour), `cSlotTile' + bSlotTile` by S4, the `bSlotTile'` cases by the run | inside `.word_b_first_dies`, `.word_c_first_dies` |
+
+**The composites (`§E`, `§F`).**  `word_b_first_dies` (`a^p b a^q c a^r`) and `word_c_first_dies`
+(`a^p c a^q b a^r`): hypotheses `2 ≤ f`, `(n:ℝ) = f`, `3 ≤ n`, `htgt`, `ModelData D f α β γ`,
+`AngleData α β γ`, `1 ≤ p`, `1 ≤ r`, `p + q + r = n`, and the base word laid — `LaysARun D f 0 p`,
+the `b`-tile with vertices at `(pf, 0)`, `(pf + b, 0)`, `LaysARun` of length `q` after it, the
+`c`-tile with vertices at its letter's ends, `LaysARun` of length `r` to `L` (and symmetrically);
+conclusion **`False`**.  `base_word_dies` packages both shapes (`LaysWordBFirst ∨ LaysWordCFirst`).
+Non-vacuity: `bundle_witness` (a concrete `modelTri f` with `ModelData`'s shape whose corner angles
+— by the law of cosines — are the model angles, which satisfy `AngleData`, every natural `f ≥ 2`),
+`word_b_first_hyps_f4'`, `word_c_first_hyps_f4` (`f = 4`, `N = 47`, prime: positions `4, 19, 27,
+43, 47` and `4, 20, 24, 39, 47`, `p + q + r = 4`).
+
+**What this does to `rem:marchobl`**: its content — that a hypothetical tiling's base layer is the
+march — is no longer needed as a separate obligation for `e = 1`: the march is *derived* along
+every run (`run_rigid`) and through every mixed junction, and the composite reaches `False`.
+M-ii/M-iii (the advance counts) stay HEURISTIC as statements about the search; the `e = 1` family
+theorem no longer routes through them.  **`thm:e1family`'s row updated** (Lean proof conditional on
+`thm:e1reduce`(ii) in positional form + the standard bundle, `f ≥ 3`).  `lake build Erdos634.All`
+clean, `#print axioms` standard three on every theorem, no `sorry`.  Novelty
+(`code/novelty_check.sh`): "base word dies" matches only the search-model kills of
+`OrderForcing`/`ThinClosed` (the latter's headline is retracted in its own header and its cascade is
+`thm:e1cascade`, CONJECTURE); no dissection-level statement existed; "reflection of a
+dissection", "run to the far corner": no match.
 
 ### Re-check of the elliptical blockers, batch 2 (2026-09-01)
 
