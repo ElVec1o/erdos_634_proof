@@ -491,4 +491,69 @@ theorem overhang_position_independent (t₁ t₂ e f : ℝ) (orient : Bool) :
     bApexX t₂ e f orient - t₂ = bApexX t₁ e f orient - t₁ := by
   unfold bApexX; cases orient <;> ring
 
+/-! ## Two adjacent `b`-blocks: the crossed orientation always overlaps
+
+Two `b`-blocks placed back to back, `[t, t+b]` then `[t+b, t+2b]`, each independently choose one of
+the two apex orientations above. This is the exact structural analogue of the `a`-run's `BG`/`GB`
+choice at each junction (`bg_then_gb_straddles` et al. above), now for the general-`(e,f)` `b`-run
+that four `e2b8`/`e2b9` seats identified as the missing piece and could not push past.
+
+**"Crossed inward"** means the first block takes orientation 2 (apex overhangs its own *right* end,
+towards the second block) and the second takes orientation 1 (apex overhangs its own *left* end,
+back towards the first) — the direct analogue of `BG → GB`. Exactly as in that case, both apexes
+then land on the *wrong* side of the shared vertex, and the same positive-combination-of-wedge-edges
+argument (`vertical_in_bg_gb_wedges`) applies verbatim with `b` in place of `f`: the shared vertical
+is a positive combination of each tile's own edge directions there, so the two tiles' interiors meet
+at the junction. This is checked here exactly, algebraically, for every `(e,f)` — not just `N=83` —
+and the negative control (the two "same-direction" orientations, the honest fallback the naive
+scalar overhang test in `e2b9_followup/report.md` could not distinguish from this one) has no
+positive solution, so the kill correctly does not fire there. -/
+
+/-- **Crossed inward: both apexes land on the wrong side of the shared vertex**, the `b`-run
+analogue of `bg_then_gb_straddles`. Junction is at (relative) offset `b = f²-e²` from the first
+block's own left end. -/
+theorem crossedB_straddles (e f : ℝ) (he : 0 < e) (hef : e < f) :
+    0 < dB2 e f - (f ^ 2 - e ^ 2) ∧ dB1 e f < 0 ∧ 0 < hB2 e f := by
+  refine ⟨?_, ?_, ?_⟩
+  · unfold dB2; nlinarith
+  · unfold dB1; nlinarith
+  · unfold hB2
+    have h4 : (0:ℝ) < 4 * f ^ 2 - e ^ 2 := by nlinarith
+    have hesq : (0:ℝ) < e ^ 2 := by positivity
+    positivity
+
+/-- **The vertical at the shared vertex is a positive combination of each tile's own edge
+directions, in the crossed-inward orientation.** The `b`-run analogue of
+`vertical_in_bg_gb_wedges`: the first tile's edges at the junction are `(-b, 0)` and
+`(dB2 e f - b, h)`, the second's are `(b, 0)` and `(dB1 e f, h)`, where `b = f² - e²`. -/
+theorem vertical_in_crossedB_wedges (e f h : ℝ) (he : 0 < e) (hef : e < f) (hh : 0 < h) :
+    (∃ α β : ℝ, 0 < α ∧ 0 < β ∧
+        α * (-(f ^ 2 - e ^ 2)) + β * (dB2 e f - (f ^ 2 - e ^ 2)) = 0 ∧ β * h = 1)
+    ∧ (∃ α β : ℝ, 0 < α ∧ 0 < β ∧ α * (f ^ 2 - e ^ 2) + β * (dB1 e f) = 0 ∧ β * h = 1) := by
+  have hb : 0 < f ^ 2 - e ^ 2 := by nlinarith
+  have hs := crossedB_straddles e f he hef
+  have hpos : 0 < dB2 e f - (f ^ 2 - e ^ 2) := hs.1
+  have hneg : dB1 e f < 0 := hs.2.1
+  constructor
+  · refine ⟨(dB2 e f - (f ^ 2 - e ^ 2)) / ((f ^ 2 - e ^ 2) * h), 1 / h,
+      div_pos hpos (by positivity), by positivity, ?_, by field_simp⟩
+    field_simp; ring
+  · refine ⟨-(dB1 e f) / ((f ^ 2 - e ^ 2) * h), 1 / h,
+      div_pos (neg_pos.mpr hneg) (by positivity), by positivity, ?_, by field_simp⟩
+    field_simp; ring
+
+/-- **Negative control: "same-direction" (both blocks orientation 2) has no positive solution.**
+At the shared junction, the second block's own two edges point at `(b, 0)` (its right base
+corner) and `(dB2 e f, h)` (its own apex) — and `dB2 e f = f² - e²/2 > 0` since `e < 2f`. Both
+edges therefore have *strictly positive* first component, so any positive combination of them has
+strictly positive first component and can never equal the purely-vertical `(0, β)`. This is the
+`b`-run analogue of `vertical_not_in_gb_wedge`: the kill correctly refuses to fire on the
+non-crossed orientation. -/
+theorem vertical_not_in_sameB_wedge (e f h : ℝ) (he : 0 < e) (hef : e < f) (hh : 0 < h) :
+    ¬ ∃ α β : ℝ, 0 < α ∧ 0 < β ∧ α * (f ^ 2 - e ^ 2) + β * (dB2 e f) = 0 ∧ β * h = 1 := by
+  rintro ⟨α, β, hα, hβ, hzero, -⟩
+  have hb : 0 < f ^ 2 - e ^ 2 := by nlinarith
+  have hd2 : 0 < dB2 e f := by unfold dB2; nlinarith
+  nlinarith [mul_pos hα hb, mul_pos hβ hd2]
+
 end Erdos634.MarchCoords
