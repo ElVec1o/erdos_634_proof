@@ -5378,3 +5378,18 @@ hypothetical tiling; the theorems are vacuous there, and the wall-based apex too
 and `T_mid` (needs the double cut) are provably inapplicable to Target B.
 
 **Label moves: none.** Census unchanged. Nothing here excludes a column or a member.
+
+---
+
+**Note, 2026-09-12 — `ThickBlockingLemmas.lean` (no label moves).** The corpus now holds its first
+dissection-level *blocking* content at a thick member: `blocking_B1`, `blocking_B2` at
+`(e,f)=(2,3)`, tile `(6,5,9)`, target `(0,0)–(46,0)–(23,10√2)` — at the corners `(6,0)` and
+`(15,0)` with their forced rays, all six oriented placements of a triangle congruent to `(6,5,9)`
+escape the target. Each carries a congruence proof (`sides_*`), a frame proof (`B1_frame`,
+`B2_frame`: corner and ray), and a **non-vacuity witness** (`B1_witness` 2 tiles, `B2_witness` 6
+tiles — each congruent to the tile, inside the target, pairwise disjoint interiors).
+`target63_carrier_eq` identifies the model with `BaseBetaTargetCoord.baseBetaTarget 2 3`.
+**No covering claim is formalised**: "these lemmas close all jams, hence no dissection exists"
+needs the completeness of the constructor's placement rule (the geometric half of H7), which is
+unbuilt, and is stated in prose only. No paper statement's label moves; this row-less file is new
+content, not a discharge.
