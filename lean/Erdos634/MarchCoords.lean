@@ -403,4 +403,92 @@ theorem vertical_not_in_gb_wedge (f h : ℝ) (hf : 1 < f) (hh : 0 < h) :
     have := (gb_then_bg_separates f hf).1; linarith
   nlinarith [mul_pos hα hf0, mul_pos hβ (neg_pos.mpr hg)]
 
+/-! ## The `b`-run apex coordinate, general `(e,f)`
+
+Everything above is `e = 1` (tile `(f, f²-1, f²)`, only `a`-blocks march). For general `(e,f)` the
+base-β tile is `(a,b,c) = (ef, f²-e², f²)`, and a base word over `{a,b,c}` places each letter's tile
+base-down along the base line, in running position. This section gives the `b`-block's apex
+coordinate — the piece four independent expert seats (`e2b8`) converged on needing and none had
+built: `MarchCoords` had it only for the `a`-run (`gb_left`/`bg_left` above).
+
+The general apex-offset identity for a flat base block of length `L`, base-down, flanked by sides
+`p` (toward the left end) and `q` (toward the right end): if `d` is the apex's horizontal offset
+from the left end, then `d = (p² − q² + L²)/(2L)` and the apex height satisfies `h² = p² − d²`. This
+is exactly the identity already used for the `a`-run above (`dGB`/`dBG` are its `L=f, {p,q}={b,c}`
+instances — `gb_left` etc. are literally this formula, unfolded and checked by `ring`).
+
+Applied to a `b`-block (`L = b = f²−e²`, flanking sides `a = ef` and `c = f²`, the tile's other two
+sides), the two possible orientations give offsets `d = −e²/2` and `d = b + e²/2 = f² − e²/2`, and
+BOTH give the same apex height² `= e²(4f²−e²)/4` — the spike height of `SYNTHESIS_2026-09-13.md`
+§8, `e√D/2` with `D = 4f²−e²` (checked numerically at `N=83`, `(e,f)=(5,6)`: `d₁ = −12.5`,
+`h² = 743.75 = 25·119/4`, `D=119=4·36−25` ✓, matching room `e2b8`'s Ramanujan seat exactly). -/
+
+/-- The `b`-block's apex offset from its own left end, orientation 1 (`a` on the left, `c` on the
+right): `d = (a² − c² + b²)/(2b) = −e²/2`. This is an **overhang**: the apex sits strictly to the
+*left* of the block's own left edge (the analogue of `dGB`'s negative sign for the `a`-run). -/
+noncomputable def dB1 (e f : ℝ) : ℝ := -(e ^ 2) / 2
+
+/-- The `b`-block's apex offset from its own left end, orientation 2 (`c` on the left, `a` on the
+right): `d = (c² − a² + b²)/(2b) = f² − e²/2`, i.e. it overhangs the block's own *right* end by
+`e²/2` (the mirror of orientation 1). -/
+noncomputable def dB2 (e f : ℝ) : ℝ := f ^ 2 - e ^ 2 / 2
+
+/-- The squared apex height of a `b`-block, common to both orientations. -/
+noncomputable def hB2 (e f : ℝ) : ℝ := e ^ 2 * (4 * f ^ 2 - e ^ 2) / 4
+
+/-- **The two `b`-offsets are complementary**, `dB1 + dB2 = b = f² − e²`, exactly as
+`offsets_complementary` for the `a`-run (`dGB + dBG = f`). -/
+theorem dB_complementary (e f : ℝ) : dB1 e f + dB2 e f = f ^ 2 - e ^ 2 := by
+  unfold dB1 dB2; ring
+
+/-- **Orientation 1 places the apex at distance `a = ef` from the block's left end.** -/
+theorem b1_left (e f : ℝ) : dB1 e f ^ 2 + hB2 e f = (e * f) ^ 2 := by
+  unfold dB1 hB2; ring
+
+/-- **Orientation 1 places the apex at distance `c = f²` from the block's right end.** -/
+theorem b1_right (e f : ℝ) :
+    (dB1 e f - (f ^ 2 - e ^ 2)) ^ 2 + hB2 e f = (f ^ 2) ^ 2 := by
+  unfold dB1 hB2; ring
+
+/-- **Orientation 2 places the apex at distance `c = f²` from the block's left end.** -/
+theorem b2_left (e f : ℝ) : dB2 e f ^ 2 + hB2 e f = (f ^ 2) ^ 2 := by
+  unfold dB2 hB2; ring
+
+/-- **Orientation 2 places the apex at distance `a = ef` from the block's right end.** -/
+theorem b2_right (e f : ℝ) :
+    (dB2 e f - (f ^ 2 - e ^ 2)) ^ 2 + hB2 e f = (e * f) ^ 2 := by
+  unfold dB2 hB2; ring
+
+/-- **Both orientations give the same apex height.** The `b`-run analogue of
+`apex_height_common`. -/
+theorem b_apex_height_common (e f : ℝ) :
+    (e * f) ^ 2 - dB1 e f ^ 2 = (f ^ 2) ^ 2 - dB2 e f ^ 2 := by
+  have h1 := b1_left e f
+  have h2 := b2_left e f
+  linarith
+
+/-- **Reproduces the `N=83`, `(e,f)=(5,6)` numbers exactly**, as an executable check against room
+`e2b8`'s independently-derived numbers (`report_ramanujan.md`): `dB1 = -12.5`,
+`hB2 = 743.75 = 25·119/4`, and the implied discriminant `D = 4f²-e² = 119`. -/
+theorem model_matches_e2b8_N83 :
+    dB1 5 6 = -(25 : ℝ) / 2 ∧ hB2 5 6 = (743.75 : ℝ) ∧ (4 : ℝ) * 6 ^ 2 - 5 ^ 2 = 119 := by
+  refine ⟨?_, ?_, by norm_num⟩
+  · unfold dB1; norm_num
+  · unfold hB2; norm_num
+
+/-- **A `b`-block's apex position along a running word**, at running left-edge coordinate `t`,
+mirroring `Config.apex1X`/`apex2X` for the `a`-run. -/
+noncomputable def bApexX (t e f : ℝ) (orient1 : Bool) : ℝ :=
+  t + if orient1 then dB1 e f else dB2 e f
+
+/-- **The overhang is position-independent**: it is `e²/2` in either orientation, regardless of
+where the block sits along the run. This is the `b`-run counterpart of the fact used throughout the
+`a`-run section that offsets are constants of `(e,f)` alone. It is exactly what makes the "envelope
+cone" (the wedge from the apex down to the two block corners) translate rigidly with the word
+prefix: its opening (fixed by `a,b,c`, hence by `(e,f)`) never changes, only its apex location `t`
+does. -/
+theorem overhang_position_independent (t₁ t₂ e f : ℝ) (orient : Bool) :
+    bApexX t₂ e f orient - t₂ = bApexX t₁ e f orient - t₁ := by
+  unfold bApexX; cases orient <;> ring
+
 end Erdos634.MarchCoords
