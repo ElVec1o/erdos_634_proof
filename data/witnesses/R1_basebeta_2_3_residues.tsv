@@ -2,7 +2,7 @@
 #   tile (6,5,9), base word aabbcca, canonical orientation.  Field Q(sqrt 32), r = sqrt 32.
 # Two enumerations: (i) the exact DFS constructor (build23.py rule) has exactly ONE depth-19 leaf, Z1;
 #   (ii) the interior-disjointness graph on its 43 placements has omega = 19 with exactly 11 maximum cliques,
-#   one of which is Z1 (the others are not DFS-reachable partials: they leave the lex-min corner uncovered).
+#   one of which is Z1 (the other ten are not nodes of the constructor tree, which has exactly one depth-19 node).
 # Every residue has area exactly 4 tiles (checked exactly); 9 are simply connected, 2 have one tile-island hole.
 # All 11 boundary words are pairwise distinct up to rotation/reflection.
 # KILL: every residue has a straight boundary run clamped at both ends by convex corners whose length (1, 3 or 4)
