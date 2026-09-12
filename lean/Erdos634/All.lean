@@ -390,3 +390,8 @@ import Erdos634.PlacementCompleteness
 import Erdos634.SixPlacements
 import Erdos634.LemmaPNode2
 import Erdos634.Tiling44Control
+import Erdos634.CertNode
+import Erdos634.LemmaPTree
+import Erdos634.LemmaPTheorem
+import Erdos634.Tiling44Nodes
+import Erdos634.Tiling44NodesControl
