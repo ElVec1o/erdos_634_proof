@@ -320,7 +320,7 @@ theorem bg_run_to_end_dies {N : ℕ} (D : CongruentDissection N) {f α β γ : �
     rw [ht'] at hmem
     exact bg_apex_last_outside hf1 hmem
   · have hnL : t + r * f ≤ baseLen 1 f := hfit.le
-    have hMk := run_rigid D hf htgt hM hA.hα hA.hαβ hA.hγdef hA.hrel hA.hirr ht hnL hrun hbase
+    have hMk := run_rigid D hf htgt hM hA.hα hA.hβ hA.hαβ hA.hγdef hA.hrel hA.hirr ht hnL hrun hbase
       (r - 2) (by omega)
     obtain ⟨i, hi⟩ := hMk.1 (r - 2) le_rfl
     obtain ⟨k, hk⟩ := mem_range_of_eq hi (by rw [range_aTileBG]; right; right; rfl)
@@ -631,7 +631,9 @@ theorem base_word_dies {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} 
 /-- **The angle bundle at `f = 4`** (tile `(4, 15, 16)`): the model angles satisfy `AngleData`. -/
 theorem angleData_f4 : ∃ α β γ : ℝ, AngleData α β γ := by
   refine ⟨modelAlpha 1 4, modelBeta 1 4, 2 * modelAlpha 1 4 + modelBeta 1 4,
-    ⟨modelAlpha_pos (by norm_num), modelAlpha_lt_modelBeta (by norm_num), rfl,
+    ⟨modelAlpha_pos (by norm_num),
+      (modelAlpha_pos (by norm_num)).trans (modelAlpha_lt_modelBeta (by norm_num)),
+      (modelAlpha_lt_modelBeta (by norm_num)).ne, rfl,
       modelAngle_rel 1 4, ?_⟩⟩
   have h := modelAlpha_irrational 4 (by norm_num)
   rw [show ((4 : ℕ) : ℝ) = 4 by norm_num] at h
@@ -785,7 +787,8 @@ theorem bundle_witness (n : ℕ) (hn : 2 ≤ n) :
   obtain ⟨hA, hB, hC⟩ := modelTri_angles hf
   refine ⟨modelTri n hf1, modelAlpha 1 n, modelBeta 1 n, 2 * modelAlpha 1 n + modelBeta 1 n,
     hs0, hs1, hs2, hA, hB, hC,
-    ⟨modelAlpha_pos hf1, modelAlpha_lt_modelBeta hf, rfl, modelAngle_rel 1 n,
+    ⟨modelAlpha_pos hf1, (modelAlpha_pos hf1).trans (modelAlpha_lt_modelBeta hf),
+      (modelAlpha_lt_modelBeta hf).ne, rfl, modelAngle_rel 1 n,
       modelAlpha_irrational n hn⟩, ?_⟩
   intro N D hD
   exact ⟨by rw [hD]; exact hs0, by rw [hD]; exact hs1, by rw [hD]; exact hs2,

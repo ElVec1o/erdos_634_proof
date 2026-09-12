@@ -95,7 +95,8 @@ theorem angleData_model (n : ℕ) (hn : 2 ≤ n) :
     AngleData (modelAlpha 1 n) (modelBeta 1 n) (2 * modelAlpha 1 n + modelBeta 1 n) := by
   have hf : (2:ℝ) ≤ n := by exact_mod_cast hn
   have hf1 : (1:ℝ) < n := by linarith
-  exact ⟨modelAlpha_pos hf1, modelAlpha_lt_modelBeta hf, rfl, modelAngle_rel 1 n,
+  exact ⟨modelAlpha_pos hf1, (modelAlpha_pos hf1).trans (modelAlpha_lt_modelBeta hf),
+    (modelAlpha_lt_modelBeta hf).ne, rfl, modelAngle_rel 1 n,
     modelAlpha_irrational n hn⟩
 
 /-- A dissection whose model is `modelTri n` has `ModelData` at the model angles. -/

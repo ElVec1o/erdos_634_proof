@@ -590,19 +590,33 @@ theorem base_point_not_vertex {f : ℝ} (hf : 1 < f) {v : ℝ} (h0 : 0 < v)
 
 /-! ### The abstract kills at a straight boundary point -/
 
-/-- The ten distinctness facts the trichotomy consumes, from `0 < α < β`, `γ = 2α + β`,
-`3α + 2β = π`. -/
-theorem distinct_of_order {α β γ : ℝ} (hα : 0 < α) (hαβ : α < β) (hγ : γ = 2 * α + β)
-    (hrel : 3 * α + 2 * β = Real.pi) :
+/-- **Order-free form.**  The ten distinctness facts the trichotomy consumes, from *positivity of
+both angles and their distinctness* — `0 < α`, `0 < β`, `α ≠ β` — together with `γ = 2α + β` and
+`3α + 2β = π`.  No comparison between `α` and `β` is used anywhere.
+
+This matters beyond `e = 1`: at the thick member `(e, f) = (2, 3)` the tile angle order is
+**reversed** (`cos α = 21/27`, `cos β = 23/27`, so `β < α`), and every consumer of the trichotomy
+below therefore needed re-checking.  The check is discharged here once and for all: the order was
+only ever a convenient way to produce `α ≠ β` and the positivity of `β`. -/
+theorem distinct_of_pos_ne {α β γ : ℝ} (hα : 0 < α) (hβ : 0 < β) (hαβ : α ≠ β)
+    (hγ : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi) :
     α ≠ β ∧ α ≠ γ ∧ α ≠ Real.pi ∧ α ≠ 0 ∧ β ≠ γ ∧ β ≠ Real.pi ∧ β ≠ 0 ∧ γ ≠ Real.pi ∧ γ ≠ 0 ∧
       Real.pi ≠ 0 := by
   subst hγ
-  refine ⟨hαβ.ne, ?_, ?_, hα.ne', ?_, ?_, ?_, ?_, ?_, Real.pi_pos.ne'⟩ <;> nlinarith
+  refine ⟨hαβ, ?_, ?_, hα.ne', ?_, ?_, hβ.ne', ?_, ?_, Real.pi_pos.ne'⟩ <;> nlinarith
+
+/-- Legacy order-carrying form, kept for callers that still hold `α < β`.  A one-line corollary of
+the order-free `distinct_of_pos_ne`: the order contributes nothing but `0 < β` and `α ≠ β`. -/
+theorem distinct_of_order {α β γ : ℝ} (hα : 0 < α) (hαβ : α < β) (hγ : γ = 2 * α + β)
+    (hrel : 3 * α + 2 * β = Real.pi) :
+    α ≠ β ∧ α ≠ γ ∧ α ≠ Real.pi ∧ α ≠ 0 ∧ β ≠ γ ∧ β ≠ Real.pi ∧ β ≠ 0 ∧ γ ≠ Real.pi ∧ γ ≠ 0 ∧
+      Real.pi ≠ 0 :=
+  distinct_of_pos_ne hα (hα.trans hαβ) hαβ.ne hγ hrel
 
 /-- **No straight boundary point of a congruent dissection carries four `α`-corners.**  The
 trichotomy `{π}`, `{3α, 2β}`, `{α, β, γ}` allows at most three. -/
 theorem straight_point_no_fourth_alpha {N : ℕ} (D : CongruentDissection N) {α β γ : ℝ}
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
     (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
     (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
@@ -613,7 +627,7 @@ theorem straight_point_no_fourth_alpha {N : ℕ} (D : CongruentDissection N) {α
     (hi : (D.tile i).localAngle v = α) (hk₁ : (D.tile k₁).localAngle v = α)
     (hk₂ : (D.tile k₂).localAngle v = α) (hl : (D.tile l).localAngle v = α) : False := by
   classical
-  obtain ⟨hαβ', hαγ, hαπ, hα0, hβγ, hβπ, hβ0, hγπ, hγ0, hπ0⟩ := distinct_of_order hα hαβ hγdef hrel
+  obtain ⟨hαβ', hαγ, hαπ, hα0, hβγ, hβπ, hβ0, hγπ, hγ0, hπ0⟩ := distinct_of_pos_ne hα hβpos hαβ hγdef hrel
   have hsub : ({i, k₁, k₂, l} : Finset (Fin N)) ⊆ ({m | (D.tile m).localAngle v = α} : Finset (Fin N)) := by
     intro m hm
     simp only [Finset.mem_insert, Finset.mem_singleton] at hm
@@ -631,7 +645,7 @@ theorem straight_point_no_fourth_alpha {N : ℕ} (D : CongruentDissection N) {α
 
 /-- **A straight boundary point carrying a `γ`-corner carries no second `α`-corner.** -/
 theorem straight_point_gamma_no_second_alpha {N : ℕ} (D : CongruentDissection N) {α β γ : ℝ}
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
     (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
     (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
@@ -641,7 +655,7 @@ theorem straight_point_gamma_no_second_alpha {N : ℕ} (D : CongruentDissection 
     (hi : (D.tile i).localAngle v = α) (hj : (D.tile j).localAngle v = γ)
     (hl : (D.tile l).localAngle v = α) : False := by
   classical
-  obtain ⟨hαβ', hαγ, hαπ, hα0, hβγ, hβπ, hβ0, hγπ, hγ0, hπ0⟩ := distinct_of_order hα hαβ hγdef hrel
+  obtain ⟨hαβ', hαγ, hαπ, hα0, hβγ, hβπ, hβ0, hγπ, hγ0, hπ0⟩ := distinct_of_pos_ne hα hβpos hαβ hγdef hrel
   have hsubα : ({i, l} : Finset (Fin N)) ⊆ ({m | (D.tile m).localAngle v = α} : Finset (Fin N)) := by
     intro m hm
     simp only [Finset.mem_insert, Finset.mem_singleton] at hm
@@ -662,7 +676,7 @@ theorem straight_point_gamma_no_second_alpha {N : ℕ} (D : CongruentDissection 
 
 /-- **A straight boundary point with three `α`-corners carries exactly two `β`-corners.** -/
 theorem straight_point_three_alpha_two_beta {N : ℕ} (D : CongruentDissection N) {α β γ : ℝ}
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
     (hα' : cornerAngle (D.model.pts 1) (D.model.pts 0) (D.model.pts 2) = α)
     (hβ' : cornerAngle (D.model.pts 2) (D.model.pts 1) (D.model.pts 0) = β)
@@ -673,7 +687,7 @@ theorem straight_point_three_alpha_two_beta {N : ℕ} (D : CongruentDissection N
     (hk₂ : (D.tile k₂).localAngle v = α) :
     ({m | (D.tile m).localAngle v = β} : Finset (Fin N)).card = 2 := by
   classical
-  obtain ⟨hαβ', hαγ, hαπ, hα0, hβγ, hβπ, hβ0, hγπ, hγ0, hπ0⟩ := distinct_of_order hα hαβ hγdef hrel
+  obtain ⟨hαβ', hαγ, hαπ, hα0, hβγ, hβπ, hβ0, hγπ, hγ0, hπ0⟩ := distinct_of_pos_ne hα hβpos hαβ hγdef hrel
   have hsub : ({i, k₁, k₂} : Finset (Fin N)) ⊆ ({m | (D.tile m).localAngle v = α} : Finset (Fin N)) := by
     intro m hm
     simp only [Finset.mem_insert, Finset.mem_singleton] at hm
@@ -710,7 +724,7 @@ half (four `α`-corners at a straight point are already impossible); it enters
 theorem c_slot_kill {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
     (htgt : D.target = baseBetaTarget 1 f one_pos (by linarith))
     (hM : ModelData D f α β γ)
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
     {x : ℝ} (hx : 0 ≤ x) (hxL : x + f ^ 2 < baseLen 1 f)
     {i k₁ k₂ : Fin N} (h12 : i ≠ k₁) (h13 : i ≠ k₂) (h23 : k₁ ≠ k₂)
@@ -724,7 +738,7 @@ theorem c_slot_kill {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf
     rw [htgt]; exact base_point_mem_frontier hf1 (by positivity) hxL.le
   have hnv : mkPt (x + f ^ 2) 0 ∉ Set.range D.target.pts := by
     rw [htgt]; exact base_point_not_vertex hf1 (by positivity) hxL
-  exact straight_point_no_fourth_alpha D hα hαβ hγdef hrel hirr hM.hα' hM.hβ' hM.hγ' hv hnv
+  exact straight_point_no_fourth_alpha D hα hβpos hαβ hγdef hrel hirr hM.hα' hM.hβ' hM.hγ' hv hnv
     h12 h13 (Ne.symm hli) h23 (Ne.symm hl1) (Ne.symm hl2)
     (cSlotTile_localAngle_V D hf hM hi) hk₁ hk₂ hl
 
@@ -734,7 +748,7 @@ theorem c_slot_kill {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf
 theorem c_slot_kill_gb {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
     (htgt : D.target = baseBetaTarget 1 f one_pos (by linarith))
     (hM : ModelData D f α β γ)
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
     {x : ℝ} (hx : 0 ≤ x) (hxL : x + f ^ 2 < baseLen 1 f)
     {i j : Fin N}
@@ -747,7 +761,7 @@ theorem c_slot_kill_gb {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} 
     rw [htgt]; exact base_point_mem_frontier hf1 (by positivity) hxL.le
   have hnv : mkPt (x + f ^ 2) 0 ∉ Set.range D.target.pts := by
     rw [htgt]; exact base_point_not_vertex hf1 (by positivity) hxL
-  exact straight_point_gamma_no_second_alpha D hα hαβ hγdef hrel hirr hM.hα' hM.hβ' hM.hγ' hv hnv
+  exact straight_point_gamma_no_second_alpha D hα hβpos hαβ hγdef hrel hirr hM.hα' hM.hβ' hM.hγ' hv hnv
     (Ne.symm hli) (cSlotTile_localAngle_V D hf hM hi) (aTileGB_localAngle_left D hf hM hj) hl
 
 /-- **What R_c forces instead: exactly one more `β`-corner at `V`.**  With the `c`-tile, the `BG`
@@ -758,7 +772,7 @@ existing, edge-level realisation not built). -/
 theorem c_slot_forced_beta {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
     (htgt : D.target = baseBetaTarget 1 f one_pos (by linarith))
     (hM : ModelData D f α β γ)
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
     {x : ℝ} (hx : 0 ≤ x) (hxL : x + f ^ 2 < baseLen 1 f)
     {i j k₁ k₂ : Fin N} (h12 : i ≠ k₁) (h13 : i ≠ k₂) (h23 : k₁ ≠ k₂)
@@ -774,7 +788,7 @@ theorem c_slot_forced_beta {N : ℕ} (D : CongruentDissection N) {f α β γ : �
     rw [htgt]; exact base_point_mem_frontier hf1 (by positivity) hxL.le
   have hnv : mkPt (x + f ^ 2) 0 ∉ Set.range D.target.pts := by
     rw [htgt]; exact base_point_not_vertex hf1 (by positivity) hxL
-  have hcard := straight_point_three_alpha_two_beta D hα hαβ hγdef hrel hirr hM.hα' hM.hβ' hM.hγ'
+  have hcard := straight_point_three_alpha_two_beta D hα hβpos hαβ hγdef hrel hirr hM.hα' hM.hβ' hM.hγ'
     hv hnv h12 h13 h23 (cSlotTile_localAngle_V D hf hM hi) hk₁ hk₂
   have hjβ : (D.tile j).localAngle (mkPt (x + f ^ 2) 0) = β := aTileBG_localAngle_left D hf hM hj
   set S : Finset (Fin N) := ({m | (D.tile m).localAngle (mkPt (x + f ^ 2) 0) = β} : Finset (Fin N)) with hS

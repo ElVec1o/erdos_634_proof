@@ -321,7 +321,7 @@ theorem distinct_of_angleData {α β γ : ℝ} (hA : AngleData α β γ) :
     α ≠ β ∧ α ≠ γ ∧ α ≠ Real.pi ∧ α ≠ 0 ∧ β ≠ γ ∧ β ≠ Real.pi ∧ β ≠ 0 ∧ β ≠ 2 * Real.pi ∧
       γ ≠ Real.pi ∧ γ ≠ 0 ∧ Real.pi ≠ 0 := by
   obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10⟩ :=
-    distinct_of_order hA.hα hA.hαβ hA.hγdef hA.hrel
+    distinct_of_pos_ne hA.hα hA.hβ hA.hαβ hA.hγdef hA.hrel
   refine ⟨h1, h2, h3, h4, h5, h6, h7, ?_, h8, h9, h10⟩
   have := hA.hrel; have := hA.hα; have := Real.pi_pos
   intro h; linarith
@@ -591,7 +591,7 @@ theorem corner_c_tile {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (
   · exfalso
     have hβ := corner_tile_beta D hf htgt hM hA hk
     have hα := (cSlot'_angles D hf hM h).1
-    exact hA.hαβ.ne (hα.symm.trans hβ)
+    exact hA.hαβ (hα.symm.trans hβ)
 
 /-! ## E. The words the counts leave that `base_word_dies` does not cover -/
 

@@ -102,17 +102,24 @@ theorem two_le_card_of_ne {N : ℕ} {P : Fin N → Prop} [DecidablePred P] {i j 
 
 /-! ## 2. The figure at an interior base point -/
 
-/-- The bundle of angle hypotheses used throughout, packaged. -/
+/-- The bundle of angle hypotheses used throughout.
+
+**Order-free (2026-09-12).**  The field that was `hαβ : α < β` is now `hβ : 0 < β` together with
+`hαβ : α ≠ β`.  Nothing in this file, or in `MarchInduction`, ever compared `α` and `β`: the
+order was used only to produce distinctness and the positivity of `β`.  This matters because at
+the thick member `(e, f) = (2, 3)` the order is **reversed** (`β < α`), so an order-carrying
+bundle would have locked the whole junction layer out of the `e ≥ 2` branch for no reason. -/
 structure AngleData (α β γ : ℝ) : Prop where
   hα : 0 < α
-  hαβ : α < β
+  hβ : 0 < β
+  hαβ : α ≠ β
   hγdef : γ = 2 * α + β
   hrel : 3 * α + 2 * β = Real.pi
   hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi
 
 theorem angleData_f3 : ∃ α β γ, AngleData α β γ := by
   obtain ⟨α, β, γ, h1, h2, h3, h4, h5⟩ := angle_bundle_nonvacuous_f3
-  exact ⟨α, β, γ, ⟨h4, h5, h1, h2, h3⟩⟩
+  exact ⟨α, β, γ, ⟨h4, h4.trans h5, h5.ne, h1, h2, h3⟩⟩
 
 /-- **The boundary figure at an interior base point `(x₀, 0)`**, `0 < x₀ < L`. -/
 theorem base_figure {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
@@ -131,7 +138,7 @@ theorem base_figure {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf
   classical
   have hf1 : 1 < f := by linarith
   obtain ⟨hαβ', hαγ, hαπ, hα0, hβγ, hβπ, hβ0, hγπ, hγ0, hπ0⟩ :=
-    distinct_of_order hA.hα hA.hαβ hA.hγdef hA.hrel
+    distinct_of_pos_ne hA.hα hA.hβ hA.hαβ hA.hγdef hA.hrel
   have hv : mkPt x₀ 0 ∈ frontier D.target.carrier := by
     rw [htgt]; exact base_point_mem_frontier hf1 hx0.le hxL.le
   have hnv : mkPt x₀ 0 ∉ Set.range D.target.pts := by
@@ -160,7 +167,7 @@ theorem third_of_gamma_beta {N : ℕ} (D : CongruentDissection N) {f α β γ : 
     ∃ l : Fin N, l ≠ i ∧ l ≠ j ∧ (D.tile l).localAngle (mkPt x₀ 0) = α ∧
       ∀ l', (D.tile l').localAngle (mkPt x₀ 0) = α → l' = l := by
   classical
-  obtain ⟨hαβ', hαγ, -, -, hβγ, -, -, -, -, -⟩ := distinct_of_order hA.hα hA.hαβ hA.hγdef hA.hrel
+  obtain ⟨hαβ', hαγ, -, -, hβγ, -, -, -, -, -⟩ := distinct_of_pos_ne hA.hα hA.hβ hA.hαβ hA.hγdef hA.hrel
   have hγpos : 0 < ({m | (D.tile m).localAngle (mkPt x₀ 0) = γ} : Finset (Fin N)).card :=
     Finset.card_pos.mpr ⟨i, by simp [hi]⟩
   rcases base_figure D hf htgt hM hA hx0 hxL with ⟨_, _, _, hG⟩ | ⟨_, _, hG⟩ | ⟨hAc, _, _⟩
@@ -180,7 +187,7 @@ theorem third_of_gamma_alpha {N : ℕ} (D : CongruentDissection N) {f α β γ :
     ∃ l : Fin N, l ≠ i ∧ l ≠ j ∧ (D.tile l).localAngle (mkPt x₀ 0) = β ∧
       ∀ l', (D.tile l').localAngle (mkPt x₀ 0) = β → l' = l := by
   classical
-  obtain ⟨hαβ', hαγ, -, -, hβγ, -, -, -, -, -⟩ := distinct_of_order hA.hα hA.hαβ hA.hγdef hA.hrel
+  obtain ⟨hαβ', hαγ, -, -, hβγ, -, -, -, -, -⟩ := distinct_of_pos_ne hA.hα hA.hβ hA.hαβ hA.hγdef hA.hrel
   have hγpos : 0 < ({m | (D.tile m).localAngle (mkPt x₀ 0) = γ} : Finset (Fin N)).card :=
     Finset.card_pos.mpr ⟨i, by simp [hi]⟩
   rcases base_figure D hf htgt hM hA hx0 hxL with ⟨_, _, _, hG⟩ | ⟨_, _, hG⟩ | ⟨_, hBc, _⟩
@@ -237,7 +244,7 @@ theorem alpha_beta_cases {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ
      ({m | (D.tile m).localAngle (mkPt x₀ 0) = β} : Finset (Fin N)).card = 2 ∧
      ({m | (D.tile m).localAngle (mkPt x₀ 0) = γ} : Finset (Fin N)).card = 0) := by
   classical
-  obtain ⟨hαβ', hαγ, -, -, hβγ, -, -, -, -, -⟩ := distinct_of_order hA.hα hA.hαβ hA.hγdef hA.hrel
+  obtain ⟨hαβ', hαγ, -, -, hβγ, -, -, -, -, -⟩ := distinct_of_pos_ne hA.hα hA.hβ hA.hαβ hA.hγdef hA.hrel
   have hαpos : 0 < ({m | (D.tile m).localAngle (mkPt x₀ 0) = α} : Finset (Fin N)).card :=
     Finset.card_pos.mpr ⟨i, by simp [hi]⟩
   rcases base_figure D hf htgt hM hA hx0 hxL with ⟨_, hAc, _, _⟩ | h | ⟨_, _, hGc⟩
@@ -332,7 +339,8 @@ theorem beta_corner_data {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ
        (dist ((D.tile l).pts k) ((D.tile l).pts (k + 1)) = f ^ 2 ∧
         dist ((D.tile l).pts k) ((D.tile l).pts (k + 2)) = f)) := by
   have hπ := Real.pi_pos
-  have hα := hA.hα; have hαβ := hA.hαβ; have hγdef := hA.hγdef; have hrel := hA.hrel
+  have hα := hA.hα; have hβpos := hA.hβ; have hαβ := hA.hαβ
+  have hγdef := hA.hγdef; have hrel := hA.hrel
   have hβπ : β < Real.pi := by nlinarith
   rcases Erdos634.PinPlumbing.localAngle_cases (D.tile l) v with ⟨k, hk, hang⟩ | h | h | h
   · rw [hang] at hl
@@ -343,7 +351,7 @@ theorem beta_corner_data {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ
       by_contra hne
       have hβγ : β ≠ γ := by rw [hγdef]; intro h; linarith
       fin_cases k'
-      · exact hαβ.ne (hk'ang.trans hM.hα').symm
+      · exact hαβ (hk'ang.trans hM.hα').symm
       · exact hne rfl
       · exact hβγ (hk'ang.trans hM.hγ')
     subst hk'1
@@ -356,7 +364,7 @@ theorem beta_corner_data {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ
     · right; exact ⟨h1, h2⟩
   · rw [h] at hl; linarith
   · rw [h] at hl; linarith
-  · rw [h] at hl; linarith [hA.hα, hA.hαβ]
+  · rw [h] at hl; linarith [hA.hβ]
 
 /-- **A tile presenting `γ` at `v` has a vertex there, opposite side `c`, adjacent sides `{a, b}`.** -/
 theorem gamma_corner_data {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
@@ -369,7 +377,8 @@ theorem gamma_corner_data {N : ℕ} (D : CongruentDissection N) {f α β γ : �
        (dist ((D.tile l).pts k) ((D.tile l).pts (k + 1)) = f ^ 2 - 1 ∧
         dist ((D.tile l).pts k) ((D.tile l).pts (k + 2)) = f)) := by
   have hπ := Real.pi_pos
-  have hα := hA.hα; have hαβ := hA.hαβ; have hγdef := hA.hγdef; have hrel := hA.hrel
+  have hα := hA.hα; have hβpos := hA.hβ; have hαβ := hA.hαβ
+  have hγdef := hA.hγdef; have hrel := hA.hrel
   have hγπ : γ < Real.pi := by nlinarith
   have hγ0 : 0 < γ := by nlinarith
   rcases Erdos634.PinPlumbing.localAngle_cases (D.tile l) v with ⟨k, hk, hang⟩ | h | h | h
@@ -407,7 +416,7 @@ theorem alpha_corner_data' {N : ℕ} (D : CongruentDissection N) {f α β γ : �
         dist ((D.tile l).pts k) ((D.tile l).pts (k + 2)) = f ^ 2 - 1) ∨
        (dist ((D.tile l).pts k) ((D.tile l).pts (k + 1)) = f ^ 2 - 1 ∧
         dist ((D.tile l).pts k) ((D.tile l).pts (k + 2)) = f ^ 2)) :=
-  alpha_corner_data D hf hM hA.hα hA.hαβ hA.hγdef hA.hrel hl
+  alpha_corner_data D hf hM hA.hα hA.hβ hA.hαβ hA.hγdef hA.hrel hl
 
 /-! ## 4. The slot tiles' vertex sets, and local angles read off a vertex set -/
 
@@ -1893,7 +1902,7 @@ theorem run_last_tile {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (
     (hbase : ∃ i, Set.range (D.tile i).pts = Set.range (aTileBG t f (by linarith)).pts) :
     MarchUpTo D f (by linarith) t (n - 1) ∧
     ∃ i, Set.range (D.tile i).pts = Set.range (aTileBG (t + n * f - f) f (by linarith)).pts := by
-  have hM' := run_rigid D hf htgt hM hA.hα hA.hαβ hA.hγdef hA.hrel hA.hirr ht hnL hrun hbase (n - 1)
+  have hM' := run_rigid D hf htgt hM hA.hα hA.hβ hA.hαβ hA.hγdef hA.hrel hA.hirr ht hnL hrun hbase (n - 1)
     (by omega)
   refine ⟨hM', ?_⟩
   obtain ⟨i, hi⟩ := hM'.1 (n - 1) le_rfl
@@ -1947,7 +1956,7 @@ theorem first_run {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf :
     obtain ⟨hMf, i2, hi2⟩ := run_last_tile D hf htgt hM hA hf0 (n := p - 1) (by omega) hnL hrun' ⟨i1, hB1⟩
     refine ⟨⟨i2, ?_⟩, fun _ => ⟨?_, by simpa using hMf⟩⟩
     · rw [hi2]; congr 3; rw [Nat.cast_sub hp]; push_cast; ring
-    · obtain ⟨l, hl⟩ := corner_junction_flush D hf htgt hM hA.hα hA.hαβ hA.hγdef hA.hrel hA.hirr
+    · obtain ⟨l, hl⟩ := corner_junction_flush D hf htgt hM hA.hα hA.hβ hA.hαβ hA.hγdef hA.hrel hA.hirr
         (by nlinarith) hbase0 hk1m1 (by rw [hk1']; congr 1; ring) (by rw [hm1']; congr 1; ring)
       exact ⟨l, hl⟩
 

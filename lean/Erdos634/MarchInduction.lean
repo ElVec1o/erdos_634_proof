@@ -54,7 +54,7 @@ coordinate triangles `{aTileBG t, aTileBG (t+f), filler b t}` (`filler true = fl
 `t` is sharp: at `t = 0` the offset filler's overshoot vertex leaves the target, §13.)
 
 **§3–10, THE JUNCTION STEP, proved.**  `junction_step`: for a `CongruentDissection D` of
-`baseBetaTarget 1 f` (`f ≥ 2`, model sides `f, f²−1, f²`, angles `0 < α < β`, `γ = 2α + β`,
+`baseBetaTarget 1 f` (`f ≥ 2`, model sides `f, f²−1, f²`, angles `0 < α`, `0 < β`, `α ≠ β`, `γ = 2α + β`,
 `3α + 2β = π`, `α/π ∉ ℚ` — the bundle `c_slot_kill` uses, inhabited by the model angles), if some
 tile of `D` has the vertex set of `aTileBG t f` (**M**) and some tile lays the next letter as an
 `a` — has an edge `[t + f, t + 2f]` on the base (**the base word**) — with `0 < t`,
@@ -834,7 +834,7 @@ right one `β`; the trichotomy `TileAt.congruentDissection_boundary_figure_cases
 figure `{α, β, γ}`. -/
 theorem junction_alpha_tile {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
     (htgt : D.target = baseBetaTarget 1 f one_pos (by linarith)) (hM : ModelData D f α β γ)
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
     {x₀ : ℝ} (hx0 : 0 < x₀) (hxL : x₀ < baseLen 1 f) {i j : Fin N}
     (hA : Set.range (D.tile i).pts = Set.range (aTileBG (x₀ - f) f (by linarith)).pts)
@@ -843,7 +843,7 @@ theorem junction_alpha_tile {N : ℕ} (D : CongruentDissection N) {f α β γ : 
       ∀ l', (D.tile l').localAngle (mkPt x₀ 0) = α → l' = l := by
   classical
   have hf1 : 1 < f := by linarith
-  obtain ⟨hαβ', hαγ, hαπ, hα0, hβγ, hβπ, hβ0, hγπ, hγ0, hπ0⟩ := distinct_of_order hα hαβ hγdef hrel
+  obtain ⟨hαβ', hαγ, hαπ, hα0, hβγ, hβπ, hβ0, hγπ, hγ0, hπ0⟩ := distinct_of_pos_ne hα hβpos hαβ hγdef hrel
   have hv : mkPt x₀ 0 ∈ frontier D.target.carrier := by
     rw [htgt]; exact base_point_mem_frontier hf1 hx0.le hxL.le
   have hnv : mkPt x₀ 0 ∉ Set.range D.target.pts := by
@@ -876,7 +876,7 @@ theorem junction_alpha_tile {N : ℕ} (D : CongruentDissection N) {f α β γ : 
 /-- **A tile presenting `α` at `v` has a vertex there, opposite side `a = f`, adjacent sides
 `{b, c}`.** -/
 theorem alpha_corner_data {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
-    (hM : ModelData D f α β γ) (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β)
+    (hM : ModelData D f α β γ) (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β)
     (hrel : 3 * α + 2 * β = Real.pi) {l : Fin N} {v : Plane}
     (hl : (D.tile l).localAngle v = α) :
     ∃ k : Fin 3, (D.tile l).pts k = v ∧
@@ -898,7 +898,7 @@ theorem alpha_corner_data {N : ℕ} (D : CongruentDissection N) {f α β γ : �
       have hαγ : α ≠ γ := by rw [hγdef]; intro h; linarith
       fin_cases k'
       · exact hne rfl
-      · exact hαβ.ne (hk'ang.trans hM.hβ')
+      · exact hαβ (hk'ang.trans hM.hβ')
       · exact hαγ (hk'ang.trans hM.hγ')
     subst hk'0
     have hopp : dist ((D.tile l).pts (k + 1)) ((D.tile l).pts (k + 2)) = f := by
@@ -1226,7 +1226,7 @@ theorem wedge_extremal_coords {f : ℝ} (hf : 1 < f) {u w u' w' : ℝ}
 /-- **The `α`-tile at an `a|a` junction is the flush or the offset filler**, as a vertex set. -/
 theorem alpha_tile_is_filler {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
     (htgt : D.target = baseBetaTarget 1 f one_pos (by linarith)) (hM : ModelData D f α β γ)
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     {x₀ : ℝ} {i j l : Fin N} (hli : l ≠ i) (hlj : l ≠ j)
     (hA : Set.range (D.tile i).pts = Set.range (aTileBG (x₀ - f) f (by linarith)).pts)
     (hB : Set.range (D.tile j).pts = Set.range (aTileBG x₀ f (by linarith)).pts)
@@ -1234,7 +1234,7 @@ theorem alpha_tile_is_filler {N : ℕ} (D : CongruentDissection N) {f α β γ :
     Set.range (D.tile l).pts = Set.range (flushFiller (x₀ - f) f (by linarith)).pts ∨
     Set.range (D.tile l).pts = Set.range (offsetFiller (x₀ - f) f (by linarith)).pts := by
   have hf1 : 1 < f := by linarith
-  obtain ⟨k, hk, hopp, hsides⟩ := alpha_corner_data D hf hM hα hαβ hγdef hrel hl
+  obtain ⟨k, hk, hopp, hsides⟩ := alpha_corner_data D hf hM hα hβpos hαβ hγdef hrel hl
   have hw1 := edge_in_wedge D hf htgt hli hlj hA hB hk
     (E := (D.tile l).pts (k + 1)) (E' := (D.tile l).pts (k + 2)) (Or.inl ⟨rfl, rfl⟩)
   have hw2 := edge_in_wedge D hf htgt hli hlj hA hB hk
@@ -1307,7 +1307,7 @@ theorem next_letter_ne {N : ℕ} (D : Dissection N) {f : ℝ} (hf : 1 < f) {i j 
   refine ⟨mkPt_ne_of_fst (by linarith), mkPt_ne_of_fst (by linarith), mkPt_ne_of_snd hpos.ne⟩
 
 /-- **THE `a|a` JUNCTION STEP.**  Let `D` be a congruent dissection of the `e = 1` target in
-normal position, with model sides `f, f²−1, f²` and angles `α < β`, `γ = 2α + β`,
+normal position, with model sides `f, f²−1, f²` and angles `0 < α`, `0 < β`, `α ≠ β`, `γ = 2α + β`,
 `3α + 2β = π`, `α/π ∉ ℚ`.  Suppose
 
 * (**M**) some tile `i` of `D` is the march's `BG` tile on the letter `[t, t + f]` (as a vertex
@@ -1325,7 +1325,7 @@ Every hypothesis is satisfiable (`junction_step_config_in_target`, `junction_ste
 hypothesis is about the search. -/
 theorem junction_step {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
     (htgt : D.target = baseBetaTarget 1 f one_pos (by linarith)) (hM : ModelData D f α β γ)
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
     {t : ℝ} (ht : 0 < t) (htL : t + 2 * f ≤ baseLen 1 f) {i j : Fin N}
     (hA : Set.range (D.tile i).pts = Set.range (aTileBG t f (by linarith)).pts)
@@ -1343,10 +1343,10 @@ theorem junction_step {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (
   have hB : Set.range (D.tile j).pts = Set.range (aTileBG (t + f) f hf1).pts :=
     a_letter_after_bg D hf htgt hM hij hA' hkm hk hm
   refine ⟨hB, ?_⟩
-  obtain ⟨l, hli, hlj, hl, huniq⟩ := junction_alpha_tile D hf htgt hM hα hαβ hγdef hrel hirr
+  obtain ⟨l, hli, hlj, hl, huniq⟩ := junction_alpha_tile D hf htgt hM hα hβpos hαβ hγdef hrel hirr
     (by linarith) (by linarith) hA' hB
   refine ⟨l, hli, hlj, hl, huniq, ?_⟩
-  have := alpha_tile_is_filler D hf htgt hM hα hαβ hγdef hrel hli hlj hA' hB hl
+  have := alpha_tile_is_filler D hf htgt hM hα hβpos hαβ hγdef hrel hli hlj hA' hB hl
   rwa [show t + f - f = t by ring] at this
 
 /-! ## 12. The induction along an `a`-run -/
@@ -1367,7 +1367,7 @@ def MarchUpTo {N : ℕ} (D : CongruentDissection N) (f : ℝ) (hf : 1 < f) (t : 
 /-- **`M_k → M_{k+1}`**, given that letter `k + 1` is an `a`. -/
 theorem march_step {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
     (htgt : D.target = baseBetaTarget 1 f one_pos (by linarith)) (hM : ModelData D f α β γ)
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
     {t : ℝ} (ht : 0 < t) {k : ℕ} (hkL : t + (k + 2) * f ≤ baseLen 1 f)
     (hrun : ∃ (i : Fin N) (k' m : Fin 3), k' ≠ m ∧
@@ -1378,7 +1378,7 @@ theorem march_step {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf 
   obtain ⟨j, k', m, hk'm, hk', hm⟩ := hrun
   have hk'' : (D.tile j).pts k' = mkPt (t + k * f + f) 0 := by rw [hk']; congr 1; ring
   have hm' : (D.tile j).pts m = mkPt (t + k * f + f + f) 0 := by rw [hm]; congr 1; ring
-  obtain ⟨hB, l, -, -, -, -, hl⟩ := junction_step D hf htgt hM hα hαβ hγdef hrel hirr
+  obtain ⟨hB, l, -, -, -, -, hl⟩ := junction_step D hf htgt hM hα hβpos hαβ hγdef hrel hirr
     (t := t + k * f) (by positivity) (by linarith) hi hk'm hk'' hm'
   refine ⟨fun j' hj' => ?_, fun j' hj' => ?_⟩
   · rcases Nat.lt_or_ge j' (k + 1) with h | h
@@ -1398,7 +1398,7 @@ every letter of the run is laid `BG` and every interior junction carries a flush
 filler: `M_{n-1}`.  Conditional on nothing but the base case and the bundle. -/
 theorem run_rigid {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
     (htgt : D.target = baseBetaTarget 1 f one_pos (by linarith)) (hM : ModelData D f α β γ)
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi)
     {t : ℝ} (ht : 0 < t) {n : ℕ} (hnL : t + n * f ≤ baseLen 1 f)
     (hrun : LaysARun D f t n)
@@ -1417,7 +1417,7 @@ theorem run_rigid {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf :
     intro hk
     have hf0 : (0:ℝ) < f := by linarith
     have hkn : ((k : ℝ) + 2) ≤ n := by exact_mod_cast (by omega : k + 2 ≤ n)
-    refine march_step D hf htgt hM hα hαβ hγdef hrel hirr ht (k := k) ?_ ?_ (ih (by omega))
+    refine march_step D hf htgt hM hα hβpos hαβ hγdef hrel hirr ht (k := k) ?_ ?_ (ih (by omega))
     · nlinarith
     · obtain ⟨i, k', m, hk'm, hk', hm⟩ := hrun (k + 1) (by omega)
       exact ⟨i, k', m, hk'm, by rw [hk']; congr 3; push_cast; ring,
@@ -1500,7 +1500,7 @@ theorem offset_at_corner_junction_outside {f : ℝ} (hf : 1 < f) :
 `flushFiller 0 f` — the offset one has a vertex outside the target. -/
 theorem corner_junction_flush {N : ℕ} (D : CongruentDissection N) {f α β γ : ℝ} (hf : 2 ≤ f)
     (htgt : D.target = baseBetaTarget 1 f one_pos (by linarith)) (hM : ModelData D f α β γ)
-    (hα : 0 < α) (hαβ : α < β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
+    (hα : 0 < α) (hβpos : 0 < β) (hαβ : α ≠ β) (hγdef : γ = 2 * α + β) (hrel : 3 * α + 2 * β = Real.pi)
     (hirr : ¬ ∃ r : ℚ, α = (r : ℝ) * Real.pi) (hL : 2 * f ≤ baseLen 1 f)
     {i j : Fin N}
     (hA : Set.range (D.tile i).pts = Set.range (aTileBG 0 f (by linarith)).pts)
@@ -1515,9 +1515,9 @@ theorem corner_junction_flush {N : ℕ} (D : CongruentDissection N) {f α β γ 
     rw [show (0:ℝ) + f - f = 0 by ring]; exact hA
   have hB : Set.range (D.tile j).pts = Set.range (aTileBG (0 + f) f hf1).pts :=
     a_letter_after_bg D hf htgt hM hij hA' hkm hk hm
-  obtain ⟨l, hli, hlj, hl, -⟩ := junction_alpha_tile D hf htgt hM hα hαβ hγdef hrel hirr
+  obtain ⟨l, hli, hlj, hl, -⟩ := junction_alpha_tile D hf htgt hM hα hβpos hαβ hγdef hrel hirr
     (by linarith) (by linarith) hA' hB
-  rcases alpha_tile_is_filler D hf htgt hM hα hαβ hγdef hrel hli hlj hA' hB hl with h | h
+  rcases alpha_tile_is_filler D hf htgt hM hα hβpos hαβ hγdef hrel hli hlj hA' hB hl with h | h
   · exact ⟨l, by rw [h, show (0:ℝ) + f - f = 0 by ring]⟩
   · exfalso
     rw [show (0:ℝ) + f - f = 0 by ring] at h
