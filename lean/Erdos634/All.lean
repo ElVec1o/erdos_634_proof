@@ -373,6 +373,8 @@ import Erdos634.EpredColumnKill
 import Erdos634.MarchKills
 import Erdos634.MarchKillsFan
 import Erdos634.ThickJunctionCoords
+import Erdos634.ThickAngleIrrational
+import Erdos634.ThickWedgeGram
 import Erdos634.MarchInduction
 import Erdos634.MarchSlots
 import Erdos634.RunPartition
