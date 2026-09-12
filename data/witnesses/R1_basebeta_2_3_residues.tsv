@@ -1,0 +1,27 @@
+# R1 -- uncovered regions (residues) of every 19-tile partial of the (2,3) base-beta target, N=23,
+#   tile (6,5,9), base word aabbcca, canonical orientation.  Field Q(sqrt 32), r = sqrt 32.
+# Two enumerations: (i) the exact DFS constructor (build23.py rule) has exactly ONE depth-19 leaf, Z1;
+#   (ii) the interior-disjointness graph on its 43 placements has omega = 19 with exactly 11 maximum cliques,
+#   one of which is Z1 (the others are not DFS-reachable partials: they leave the lex-min corner uncovered).
+# Every residue has area exactly 4 tiles (checked exactly); 9 are simply connected, 2 have one tile-island hole.
+# All 11 boundary words are pairwise distinct up to rotation/reflection.
+# KILL: every residue has a straight boundary run clamped at both ends by convex corners whose length (1, 3 or 4)
+#   is below the shortest side 5, so no completion exists (run-partition argument, prose in
+#   private/ROOM/attack/report_residue.md; the tile-free half at Z1 is lean/Erdos634/ResidueRunZ1.lean).
+#   The run of length 4 = e^2 from (46/3,5/3 r) [on the left leg] to (14,1 r) kills 9 of 11, Z1 included.
+# Sign control: the same test fires 0 times on all prefixes (two orders) of tiling_N44B, tiling_N44C, tiling_99.
+# Columns: clique id | is_Z1 | component | vertex list x,y (coefficient of r in y column) | kills
+clique	isZ1	comp	vertices	kills
+0	0	0	(65/3,2/3r) (24,1r) (25,3/2r) (80/3,2/3r) (268/9,10/9r) (74/3,5/3r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (14,1r) (21,2r) (20,3/2r) (74/3,13/6r)	gaprun:(65/3,2/3r)->(24,1r):len=3;gaprun:(80/3,2/3r)->(268/9,10/9r):len=4;gaprun:(46/3,5/3r)->(14,1r):len=4
+1	0	0	(65/3,2/3r) (24,1r) (25,3/2r) (80/3,2/3r) (268/9,10/9r) (74/3,5/3r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (14,1r) (21,2r) (551/27,46/27r) (20,3/2r)	gaprun:(65/3,2/3r)->(24,1r):len=3;gaprun:(80/3,2/3r)->(268/9,10/9r):len=4;gaprun:(46/3,5/3r)->(14,1r):len=4
+1	0	1	(74/3,13/6r) (65/3,2/3r) (551/27,46/27r)	gaprun:(65/3,2/3r)->(24,1r):len=3;gaprun:(80/3,2/3r)->(268/9,10/9r):len=4;gaprun:(46/3,5/3r)->(14,1r):len=4
+2	0	0	(50/3,2/3r) (19,1r) (20,3/2r) (59/3,5/3r) (212/9,20/9r) (74/3,5/3r) (230/9,11/9r) (24,1r) (29,1r) (268/9,10/9r) (74/3,5/3r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (15,3/2r)	gaprun:(50/3,2/3r)->(19,1r):len=3;gaprun:(19,1r)->(20,3/2r):len=3;gaprun:(29,1r)->(268/9,10/9r):len=1;gaprun:(46/3,5/3r)->(15,3/2r):len=1
+3	0	0	(65/3,2/3r) (24,1r) (29,1r) (268/9,10/9r) (74/3,5/3r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (14,1r) (21,2r) (20,3/2r) (74/3,13/6r)	gaprun:(29,1r)->(268/9,10/9r):len=1;gaprun:(46/3,5/3r)->(14,1r):len=4
+4	0	0	(65/3,2/3r) (24,1r) (29,1r) (268/9,10/9r) (74/3,5/3r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (14,1r) (21,2r) (551/27,46/27r) (20,3/2r)	gaprun:(29,1r)->(268/9,10/9r):len=1;gaprun:(46/3,5/3r)->(14,1r):len=4
+4	0	1	(74/3,13/6r) (65/3,2/3r) (551/27,46/27r)	gaprun:(29,1r)->(268/9,10/9r):len=1;gaprun:(46/3,5/3r)->(14,1r):len=4
+5	0	0	(20,3/2r) (65/3,2/3r) (212/9,20/9r) (74/3,5/3r) (230/9,11/9r) (24,1r) (29,1r) (268/9,10/9r) (74/3,5/3r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (14,1r) (21,2r)	gaprun:(29,1r)->(268/9,10/9r):len=1;gaprun:(46/3,5/3r)->(14,1r):len=4
+6	1	0	(19,1r) (20,3/2r) (59/3,5/3r) (212/9,20/9r) (74/3,5/3r) (230/9,11/9r) (24,1r) (29,1r) (268/9,10/9r) (74/3,5/3r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (14,1r)	gaprun:(19,1r)->(20,3/2r):len=3;gaprun:(29,1r)->(268/9,10/9r):len=1;gaprun:(46/3,5/3r)->(14,1r):len=4
+7	0	0	(268/9,10/9r) (97/3,5/6r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (14,1r) (21,2r) (20,3/2r) (74/3,13/6r) (79/3,4/3r) (24,1r) (29,1r)	gaprun:(46/3,5/3r)->(14,1r):len=4
+8	0	0	(20,3/2r) (65/3,2/3r) (551/27,46/27r) (74/3,13/6r) (79/3,4/3r) (24,1r) (29,1r) (268/9,10/9r) (97/3,5/6r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (14,1r) (21,2r) (551/27,46/27r)	gaprun:(46/3,5/3r)->(14,1r):len=4;aperture:(65/3,2/3r):α+γ+γ+γ
+9	0	0	(268/9,10/9r) (97/3,5/6r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (14,1r) (21,2r) (20,3/2r) (74/3,13/6r) (71/3,5/3r) (86/3,5/3r) (24,1r) (29,1r)	gaprun:(46/3,5/3r)->(14,1r):len=4
+10	0	0	(20,3/2r) (65/3,2/3r) (551/27,46/27r) (74/3,13/6r) (71/3,5/3r) (86/3,5/3r) (24,1r) (29,1r) (268/9,10/9r) (97/3,5/6r) (92/3,5/3r) (23,5/2r) (46/3,5/3r) (14,1r) (21,2r) (551/27,46/27r)	gaprun:(46/3,5/3r)->(14,1r):len=4;aperture:(65/3,2/3r):α+γ+γ+γ
