@@ -950,6 +950,47 @@ is a model of the search, not a theorem.  The `e = 1` family does **not** fall; 
 figures.  `lake build Erdos634.All` clean, `#print axioms` standard three on every theorem, no
 `sorry`.
 
+### The run-partition lemma and the first region-level kills at `c|a` (2026-09-12, sequential step 4) — `RunPartition.lean`
+
+Step 3 named the residue's missing tool: "a straight boundary run between two convex corners is
+exactly partitioned by whole tile edges" (the engine's prune P2; `erdos-634.tex` `sub:frontier`
+~l.1837 states it in prose as a theorem about completable states, never formalised; `Frontier.lean`
+(P2) is a search model).  Ledger before this pass: `WallChain.wall_partition` partitions a wall by
+*traces*; `TPErdos.chord_clamp`/`chain_edge_lengths_sum` upgrade traces to whole edges **only when
+both ends are clamped by supporting half-planes of the target** (`prop:cornerpara`'s case).  No
+clamp by *placed tiles* existed.  Built now, at dissection level:
+
+| Atom | Statement | Lean declaration | Label |
+|---|---|---|---|
+| RP-clamp | a segment on the line that straddles neither end of `[P,Q]` (meets both `(P',P)` and `(P,Q)`, resp. `(Q',Q)` and `(Q,P)`) is contained in `[P,Q]` or meets it in ≤ 1 point | `RunPartition.Straddles`, `.edge_clamped` | VERIFIED |
+| RP-corner | three clamps: (a) the open extension beyond `P` lies in some tile's **interior**; (b) a placed tile **on the run's side** has an edge on the line containing `[P',P]` (`sameside_edges_subsingleton`); (c) the extension is **outside the target** (the `prop:cornerpara` case) | `.not_straddles_of_interior`, `.not_straddles_of_sameside_edge`, `.not_straddles_of_outside`, `.not_straddles_extension` | VERIFIED |
+| **RP** | **the run-partition lemma**: wall segment `[P,Q]` (on `{f=c}`, open segment inside the target, meeting no tile interior), no near-side chain edge straddling `P` or `Q` ⟹ the chain edges *contained in* `[P,Q]` have lengths summing to `dist P Q` | **`.run_partition`** | **VERIFIED**; non-vacuous: `.run_partition_witness` (`TPErdos.wallDissection`, both ends type (c), sum `√2`, filter nonempty) |
+| RP-arith | for a `CongruentDissection` with `ModelData`: `dist P Q = x f + y(f²−1) + z f²`, `x,y,z ∈ ℕ`; a clamped run of length `b−a` (`f ≥ 3`) or `1` is impossible | `.edge_length_cases`, `.run_partition_semigroup`, `.run_b_sub_a_dies`, `.run_one_dies` | VERIFIED (via `OrderForcing.east_cover_gap`, `FanKill.one_is_gap`) |
+| **K2 at `c\|a`** | in a `CongruentDissection` of the `e=1` target (`f = n ≥ 3`, `f² ≤ x₀`, `x₀+f ≤ L`) with `cSlotTile (x₀−f²)`, a tile `{V, K, W}` (`K = V + (a/b)(A−V)` on the `c`-tile's `b`-edge, `W` strictly on the uncovered side) and a tile whose interior contains the extension of the line `VA` beyond the apex `A`: **False** | `RunPartition.CSlot.cslot_run_kill` (clamp at `K` type (b), at `A` type (a); `K_mem_interior`, `A_mem_target`, `dist_K_A = f²−1−f`) | **VERIFIED** — the first region-level kill of the march stated for dissections |
+| K2-inst | `bOverMSet x₀ f` dies; `cSplitSet x₀ f` dies — each given the filler at `B` from `junction_a_c` (`flushFiller`/`offsetFiller (x₀−f²−f)`), whose edge through `A` carries its interior across the line (`flush_blocks`, `offset_blocks`, strict determinants at `A' = V + (1+1/(2b))(A−V)`) | `.bOverM_dies`, `.cSplit_dies`, `.FillerAtB`, `.filler_blocks` | VERIFIED |
+| `c\|a` restated | `junction_c_a` with the two killed placements removed: `GB` + `bCapMSet`, or `BG` + (`cCapSet` or the fan `{3α,2β}`) | `.junction_c_a_run` | VERIFIED conditional on the filler at `B` (`FillerAtB`) |
+| numbers | `f = 4`, `x₀ = 20` (`N = 47`, prime): `K = (129/8, h/15)`, `|KA| = 11 = b − a`, `K` interior, the `c`-tile in the target | `.config_f4` | VERIFIED |
+
+**What survives at `c|a` after this pass** (exact coordinates, `V = (x₀,0)`): with `cSlotTile`:
+`GB` + `bCapMSet x₀ f = {V, (x₀−1/2, f h/(f²−1)), (x₀−f²+1/2, f h/(f²−1))}` — its `c`-edge runs
+along `[V,A]` and *overruns* `A` by `1`; the stub `[A, (x₀−f²+1/2, h_b)]` ends at a **reflex**
+corner (`2π − α`), so the run lemma does not apply, and the cap's kill is an *overlap* with the
+filler at `B` (both occupy a half-plane at `A`; sectors `[π, 2π]` vs `[γ, γ+π]`) — a coordinate
+interior-intersection, **not built**; `BG` + `cCapSet` (the flat `γ`-cap sharing `[V,A]`; its
+horizontal run is exactly one `c`, no kill); `BG` + the fan `{3α,2β}` (`MarchKillsFan.c_slot_kill`
+territory).  With `cSlotTile'`: `GB` + `flushMSet`/`offsetMSet` and `BG` + the fan — the mirror
+run `[K'', A']` on the line `B A'` (with `bOverSet` at `B`) is the same argument reflected,
+**not built**.  The pockets: "a bounded component of the uncovered region is a union of tiles, so
+its area is a multiple of the tile's" — **not built**; named here as the P1a hypothesis.
+
+**What this does to `rem:marchobl`: nothing moves.**  Two of the six surviving `c|a` placements
+are now killed at dissection level, by the tool the engine uses (P2), for every `f ≥ 3`; the
+orientation of the `a` after a `c`-slot is still undecided (both `GB`+cap and `BG`+cap/fan
+survive), so the run induction does not restart and the far corner is not reached.  The `e = 1`
+family does **not** fall.  `lake build Erdos634.All` clean, `#print axioms` standard three on
+every theorem, no `sorry`.  Novelty (`code/novelty_check.sh`): "run partition", "convex corner"
+as a dissection statement — no prior Lean; the prose exists only as the engine's P2 description.
+
 ### Re-check of the elliptical blockers, batch 2 (2026-09-01)
 
 | Paper | Verdict | Real blocker |
