@@ -389,6 +389,7 @@ import Erdos634.E1BaseWord
 import Erdos634.PlacementCompleteness
 import Erdos634.SixPlacements
 import Erdos634.LemmaPNode2
+import Erdos634.PickPointNode2
 import Erdos634.Tiling44Control
 import Erdos634.CertNode
 import Erdos634.LemmaPTree
